@@ -177,7 +177,6 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
         $i++;
         }
 
-
       $fire_time = false;
       $time_interval = false;
       if(isset($_POST['date']))
@@ -330,7 +329,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
       }
     switch($type)
       {
-      case 'isexecutable' :
+      case 'isexecutable':
         $itemDao = $this->Item->load($entry);
         if($itemDao !== false && $this->ModuleComponent->Executable->getExecutable($itemDao) !== false)
           {
@@ -341,7 +340,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
           echo "false";
           }
         return;
-      case 'ismeta' :
+      case 'ismeta':
         $itemDao = $this->Item->load($entry);
         if($itemDao !== false && $this->ModuleComponent->Executable->getMetaIoFile($itemDao) !== false)
           {
@@ -352,7 +351,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
           echo "false";
           }
         return;
-      default :
+      default:
         echo "false";
         return;
       }
@@ -372,15 +371,14 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
       }
     switch($type)
       {
-      case 'getRecentExecutable' :
+      case 'getRecentExecutable':
         // We no longer store a list of "recent uploads" in the session.  For now
         // this action is vestigial.
         echo JsonComponent::encode(array());
         return;
-      default :
+      default:
         echo JsonComponent::encode(false);
         return;
       }
     } //end valid entry
-
   } // end class

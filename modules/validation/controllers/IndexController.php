@@ -28,7 +28,6 @@ class Validation_IndexController extends Validation_AppController
    */
   function init()
     {
-
     } // end method indexAction
 
   /** index action*/
@@ -43,5 +42,4 @@ class Validation_IndexController extends Validation_AppController
     $this->view->dashboards = $dashboards;
     $this->view->nDashboards = count($dashboards);
     }
-
   } // end class

@@ -43,5 +43,4 @@ class Ratings_RatingController extends Ratings_AppController
     $message = $rating == 0 ? 'Rating removed' : 'Rating saved';
     echo JsonComponent::encode(array_merge(array('status' => 'ok', 'message' => $message), $info));
     }
-
   } // end class

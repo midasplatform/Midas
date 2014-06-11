@@ -43,5 +43,4 @@ class ConfigControllerTest extends BatchmakeControllerTest
     $this->getRequest()->setMethod('GET');
     $this->dispatchUrI($page);
     }
-
   }

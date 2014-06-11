@@ -60,7 +60,7 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
          <?php echo $job->getFireTime()?>
        </td>
        <td qtip='<?php echo str_replace("'", '"', $job->getParams())?>'>
-         <?php echo substr($job->getParams(),0,30)?>
+         <?php echo substr($job->getParams(), 0, 30)?>
        </td>
        <td >
          <a href="<?php echo $this->webroot?>/scheduler/run?id=<?php echo $job->getKey()?>">Run Now</a>
@@ -72,7 +72,6 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
    <?php
      }
      ?>
-
 
       <?php
    if(!empty($this->jobsErrors))
@@ -112,10 +111,10 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
          <?php echo $job->getFireTime()?>
        </td>
        <td qtip='<?php echo $job->getParams()?>'>
-         <?php echo substr($job->getParams(),0,30)?>
+         <?php echo substr($job->getParams(), 0, 30)?>
        </td>
        <td qtip='<?php echo str_replace("'", '"', $logContent)?>'>
-         <?php echo substr($logContent,0,30)?>
+         <?php echo substr($logContent, 0, 30)?>
        </td>
      </tr>
      <?

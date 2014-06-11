@@ -89,5 +89,4 @@ class Solr_ConfigController extends Solr_AppController
     $this->Setting->setConfig('solrWebroot', $solrWebroot, $this->moduleName);
     echo JsonComponent::encode(array(true, 'Changes saved'));
     }
-
   } // end class

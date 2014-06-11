@@ -93,8 +93,6 @@ abstract class AssetstoreModelBase extends AppModel
       }
     }
 
-
-
   /** save an assetsore*/
   public function save($dao)
     {

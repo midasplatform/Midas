@@ -76,7 +76,6 @@ class RestCallUserMethodsTest extends RestCallMethodsTest
     $resp = $this->_callRestApi('POST', $apipath);
     $this->_assertStatusOk($resp);
 
-
     $this->assertEquals($resp['body']->data->apikey, $apiKey);
     }
 
@@ -147,5 +146,4 @@ class RestCallUserMethodsTest extends RestCallMethodsTest
     $usersFile = $this->loadData('User', 'default');
     $this->assertEquals(count($resp['body']->data), count($usersFile));
     }
-
   }

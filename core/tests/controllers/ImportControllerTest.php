@@ -245,5 +245,4 @@ class ImportControllerTest extends ControllerTestCase
     $this->assertEquals('baz.txt', $subSubItemsMap['baz.txt']->getName(),
                         'SubSubItem improperly imported via local import.');
     }
-
   } // end ImportControllerTest

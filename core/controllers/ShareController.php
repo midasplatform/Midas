@@ -29,9 +29,7 @@ class ShareController extends AppController
   /** Init Controller */
   function init()
     {
-
     } // end init()
-
 
   /** ajax dialog for managing permissions */
   function dialogAction()

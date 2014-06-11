@@ -33,13 +33,9 @@
 class Batchmake_ConfigController extends Batchmake_AppController
   {
 
-
-
-
   public $_moduleForms = array('Config');
   public $_components = array('Utility', 'Internationalization');
   public $_moduleComponents = array('KWBatchmake');
-
 
   /**
    * @method archiveOldModuleLocal()
@@ -57,8 +53,6 @@ class Batchmake_ConfigController extends Batchmake_AppController
       rename(MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG, MIDAS_BATCHMAKE_MODULE_LOCAL_OLD_CONFIG);
       }
     }
-
-
 
   /**
    * will create default paths in the midas temp directory
@@ -95,10 +89,6 @@ class Batchmake_ConfigController extends Batchmake_AppController
     return $returnedConfig;
     }
 
-
-
-
-
   /**
    * @method indexAction(), will test the configuration that the user has set
    * and return validation info for the passed in properties.
@@ -114,8 +104,6 @@ class Batchmake_ConfigController extends Batchmake_AppController
     // create these properties as default dir locations in tmp
     $batchmakeConfig = $this->createDefaultConfig($batchmakeConfig);
     $configPropertiesRequirements = $this->ModuleComponent->KWBatchmake->getConfigPropertiesRequirements();
-
-
 
     if($this->_request->isPost())
       {
@@ -148,9 +136,5 @@ class Batchmake_ConfigController extends Batchmake_AppController
         }
       $this->view->configForm = $formArray;
       }
-
     }
-
-
-
   } // end class

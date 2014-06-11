@@ -33,5 +33,4 @@ class IndexControllerTest extends ControllerTestCase
       $this->fail('Unable to find body element');
       }
     }
-
   }

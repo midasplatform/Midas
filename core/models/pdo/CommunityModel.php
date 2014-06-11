@@ -178,5 +178,4 @@ class CommunityModel extends CommunityModelBase
       }
     return $return;
     } // end getCommunitiesFromSearch()
-
   } // end class

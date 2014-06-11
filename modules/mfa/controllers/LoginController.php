@@ -95,5 +95,4 @@ class Mfa_LoginController extends Mfa_AppController
       echo JsonComponent::encode(array('status' => 'error', 'message' => 'Incorrect token'));
       }
     }
-
   } // end class

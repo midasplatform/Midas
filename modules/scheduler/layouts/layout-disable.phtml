@@ -218,9 +218,9 @@ echo $this->doctype() ?>
 <?php
 function sliceRecentItem($name)
   {
-    if(strlen($name)>20)
+  if(strlen($name)>20)
     {
-    $name=substr($name,0, 6).'...'.substr($name,strlen($name)-11);
+    $name = substr($name, 0, 6).'...'.substr($name, strlen($name) - 11);
     }
   return $name;
   }

@@ -277,5 +277,4 @@ class MIDAS_GlobalDao
       }
     return $return;
     }
-
   } // end class

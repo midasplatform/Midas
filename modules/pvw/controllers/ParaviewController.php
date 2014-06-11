@@ -315,5 +315,4 @@ class Pvw_ParaviewController extends Pvw_AppController
       return empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
       }
     }
-
   } // end class

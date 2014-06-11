@@ -28,9 +28,8 @@ class AppForm
     $this->webroot = $fc->getBaseUrl();
     }//end construct
 
-
   /** translation  */
-  protected  function t($text)
+  protected function t($text)
     {
     Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
     return InternationalizationComponent::translate($text);

@@ -121,7 +121,6 @@ class Mfa_OtpComponent extends AppComponent
         radius_strerror($rh));
       }
 
-
     /* this is the key parameter */
     radius_put_attr($rh, RADIUS_USER_NAME, $otpDevice->getSecret());
 

@@ -29,8 +29,6 @@ class AssetstoreModelTest extends DatabaseTestCase
     parent::setUp();
     }
 
-
-
   /**
    * helper function, will save an Assetstore, using either the passed in
    * assetstoreDao or creating a new one, will set the three parameter
@@ -99,7 +97,6 @@ class AssetstoreModelTest extends DatabaseTestCase
     $this->assertEquals('Default', $default->getName());
     // Correct Create Test
 
-
     // create new ones with a different path from existing ones
 
     $assetstoreDao1 = $this->validSaveTestcase('test_assetstore_1', '/testassetstore1/path', 0);
@@ -165,7 +162,6 @@ class AssetstoreModelTest extends DatabaseTestCase
     $this->assertEquals($foundDao->getName(), $newName);
     $assetstoreDao1->setName($savedName);
 
-
     // take existing, try to save with a non-colliding path
     $savedPath = $assetstoreDao1->getPath();
     $newPath = 'noncolliding/path';
@@ -185,5 +181,4 @@ class AssetstoreModelTest extends DatabaseTestCase
     $this->Assetstore->delete($assetstoreDao2);
     $this->Assetstore->delete($assetstoreDao3);
     }
-
   }

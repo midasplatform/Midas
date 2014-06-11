@@ -42,7 +42,6 @@ abstract class FeedpolicygroupModelBase extends AppModel
   abstract function getPolicy($group, $feed);
   abstract function deleteGroupPolicies($group);
 
-
   /** create a policy
    * @return FeedpolicygroupDao*/
   public function createPolicy($group, $feed, $policy)
@@ -74,5 +73,4 @@ abstract class FeedpolicygroupModelBase extends AppModel
     $this->save($policyGroupDao);
     return $policyGroupDao;
     } // end createPolicy
-
   } // end class

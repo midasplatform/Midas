@@ -441,8 +441,6 @@ class ItemController extends AppController
       }
     }//end delete
 
-
-
   /**
    * Delete an itemrevision
    *
@@ -528,7 +526,6 @@ class ItemController extends AppController
     $formArray['name']->setValue($bitstreamDao->getName());
     $formArray['mimetype']->setValue($bitstreamDao->getMimetype());
     $this->view->bitstreamform = $formArray;
-
     }//end editbitstreamAction
 
   /**
@@ -635,7 +632,6 @@ class ItemController extends AppController
 
     echo JsonComponent::encode($ifShared);
     } // end checkshared
-
 
   /**
    * ajax function which checks if a metadata value is defined for a given

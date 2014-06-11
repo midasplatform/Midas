@@ -25,5 +25,4 @@
 class CommunityDao extends AppDao
   {
   public $_model = 'Community';
-
   }

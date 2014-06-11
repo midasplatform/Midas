@@ -485,5 +485,4 @@ class ApihelperComponent extends AppComponent
       return true;
       }
     }
-
   } // end class

@@ -36,5 +36,4 @@ class Scheduler_ConfigForm extends AppForm
     $form->addElements(array($dot, $submit));
     return $form;
     }
-
   } // end class

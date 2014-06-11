@@ -420,5 +420,4 @@ class ApiCallMethodsTest extends ControllerTestCase
         }
       }
     }
-
   }

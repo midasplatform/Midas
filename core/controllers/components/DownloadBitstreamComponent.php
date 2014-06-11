@@ -42,7 +42,6 @@ class DownloadBitstreamComponent extends AppComponent
       apache_setenv('no-gzip', '1');
       }
 
-
     $mimetype = $bitstream->getMimetype();
     $path = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
     $name = $bitstream->getName();

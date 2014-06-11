@@ -56,5 +56,4 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
     $clause = 'group_id = '.$group->getKey();
     Zend_Registry::get('dbAdapter')->delete($this->_name, $clause);
     }
-
   } // end class

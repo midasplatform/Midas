@@ -17,12 +17,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 require_once BASE_PATH . '/modules/example/AppController.php';
 
 /** example index controller*/
 class Example_IndexController extends Example_AppController
   {
-
   /** init method */
   function init()
     {
@@ -34,7 +34,4 @@ class Example_IndexController extends Example_AppController
   function indexAction()
     {
     }
-
-
-
   } // end class

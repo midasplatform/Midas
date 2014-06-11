@@ -19,5 +19,4 @@ class Cleanup_ConfigForm extends AppForm
     $form->addElements(array($olderThan, $submit));
     return $form;
     }
-
   } // end class

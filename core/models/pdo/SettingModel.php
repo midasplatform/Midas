@@ -19,7 +19,7 @@ require_once BASE_PATH.'/core/models/base/SettingModelBase.php';
 class SettingModel extends SettingModelBase
   {
   /** get by name*/
-  function  getDaoByName($name, $module = 'core')
+  function getDaoByName($name, $module = 'core')
     {
     if(!is_string($name) || !is_string($module))
       {

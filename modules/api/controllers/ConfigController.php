@@ -65,5 +65,4 @@ class Api_ConfigController extends Api_AppController
         }
       }
     }
-
   } // end class

@@ -7,5 +7,4 @@ class Cleanup_IndexController extends Cleanup_AppController
   function indexAction()
     {
     }
-
   } // end class

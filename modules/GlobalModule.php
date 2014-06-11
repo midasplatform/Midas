@@ -107,7 +107,6 @@ class MIDAS_GlobalModule extends AppController
 
     parent::postDispatch();
 
-
     $this->view->addHelperPath(BASE_PATH."/".$this->moduleName."/views/helpers", "Zend_View_Helper_");
     }
 
@@ -121,7 +120,7 @@ class MIDAS_GlobalModule extends AppController
       {
       MidasLoader::loadModels($this->_moduleModels, $this->moduleName);
       $modelsArray = Zend_Registry::get('models');
-      foreach($this->_moduleModels as  $value)
+      foreach($this->_moduleModels as $value)
         {
         if(isset($modelsArray[$this->moduleName.$value]))
           {

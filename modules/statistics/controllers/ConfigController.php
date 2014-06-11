@@ -127,5 +127,4 @@ class Statistics_ConfigController extends Statistics_AppController
         }
       }
     }
-
   } // end class

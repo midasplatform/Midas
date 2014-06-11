@@ -21,5 +21,4 @@
 /** module App Dao */
 class Solr_AppDao extends MIDAS_GlobalDao
   {
-
   } // end class

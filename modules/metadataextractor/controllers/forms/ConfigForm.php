@@ -36,5 +36,4 @@ class Metadataextractor_ConfigForm extends AppForm
     $form->addElements(array($hachoir, $submit));
     return $form;
     }
-
   } // end class

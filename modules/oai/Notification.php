@@ -26,5 +26,4 @@ class Oai_Notification extends MIDAS_Notification
   public function init()
     {
     }//end init
-
   } // end class

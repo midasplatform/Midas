@@ -16,7 +16,7 @@ include_once BASE_PATH . '/library/KWUtils.php';
 class Dicomserver_ApiComponent extends AppComponent
   {
   /** Return the user dao */
-  private function _callModuleApiMethod($args, $coreApiMethod, $resource = null,  $hasReturn = true)
+  private function _callModuleApiMethod($args, $coreApiMethod, $resource = null, $hasReturn = true)
     {
     $ApiComponent = MidasLoader::loadComponent('Api'.$resource, 'dicomserver');
     $rtn = $ApiComponent->$coreApiMethod($args);

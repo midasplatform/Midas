@@ -47,5 +47,4 @@ class Communityagreement_ConfigForm extends AppForm
     $form->addElements(array($agreement, $submit));
     return $form;
     }
-
   } // end class

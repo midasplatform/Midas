@@ -59,7 +59,6 @@ abstract class Batchmake_ItemmetricModelBase extends Batchmake_AppModel
     return $itemmetric;
     } // end createItemmetric()
 
-
   /**
    * getAll returns all rows
    */

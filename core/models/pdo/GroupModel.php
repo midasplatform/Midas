@@ -98,7 +98,6 @@ class GroupModel extends GroupModelBase
     $this->database->removeLink('users', $group, $user);
     } // end function removeUser
 
-
   /** Return a list of group corresponding to the search */
   function getGroupFromSearch($search, $limit = 14)
     {

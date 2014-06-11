@@ -285,7 +285,6 @@ class BrowseController extends AppController
 
     $communities = $this->User->getUserCommunities($this->userSession->Dao);
 
-
     if(isset($policy) && $policy == 'read')
       {
       $policy = MIDAS_POLICY_READ;

@@ -24,5 +24,4 @@
  */
 class AppDao extends MIDAS_GlobalDao
   {
-
   } // end class

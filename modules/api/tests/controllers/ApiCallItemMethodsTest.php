@@ -177,7 +177,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->assertEquals($resp->data->owningfolders[0]->folder_id, '1013');
     }
 
-
   /** Test file upload */
   public function testBitstreamUpload()
     {
@@ -312,7 +311,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->assertEquals($bitstreams[0]->name, 'test.txt');
     $this->assertEquals($bitstreams[0]->sizebytes, $length);
     $this->assertEquals($bitstreams[0]->checksum, $md5);
-
 
     // 4
     // when calling midas.upload.perform 2x in a row with the same params
@@ -1383,7 +1381,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $metadata_mismatched = array(array('element' => $multiElement1, 'value' => $multiValue1),
                        array('element' => $multiElement2));
 
-
     // add multiple metadata to an invalid item, should be an error
     $this->_callSetmultiplemetadata("-1", $metadata, null, null, MIDAS_INVALID_POLICY);
 
@@ -1611,7 +1608,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
         }
       $this->assertTrue($found, "didn't find expected element ".$metadatum['element']);
       }
-
 
     // delete metadata from revision 1, should leave 1 metadata on that revision
     $this->_callDeletemetadata($generatedItemId, $element1, null, null, "1");

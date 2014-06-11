@@ -72,7 +72,6 @@ class JsonComponent extends AppComponent
     return $tab;
     }
 
-
   /**
    * Encode the mixed $valueToEncode into the JSON format
    *

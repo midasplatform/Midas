@@ -112,7 +112,5 @@ class Remoteprocessing_ExecutableController extends Remoteprocessing_AppControll
         unlink($pathFile);
         }
       }
-
     }
-
   } // end class

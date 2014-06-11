@@ -15,7 +15,7 @@ class Thumbnailcreator_ApiComponent extends AppComponent
   {
 
   /** Return the user dao */
-  private function _callModuleApiMethod($args, $coreApiMethod, $resource = null,  $hasReturn = true)
+  private function _callModuleApiMethod($args, $coreApiMethod, $resource = null, $hasReturn = true)
     {
     $ApiComponent = MidasLoader::loadComponent('Api'.$resource, 'thumbnailcreator');
     $rtn = $ApiComponent->$coreApiMethod($args);
@@ -37,8 +37,7 @@ class Thumbnailcreator_ApiComponent extends AppComponent
     return $this->_callModuleApiMethod($args, 'createBigThumbnail', 'item');
     }
 
-
-/**
+  /**
    * Create a 100x100 small thumbnail for the given item. It is used for preview purpose and displayed in the 'preview' and 'thumbnails' sidebar sections.
    * @param itemId The item to set the thumbnail on
    * @return The Item obejct (with the new thumbnail_id) and the path where the newly created thumbnail is stored
@@ -48,5 +47,4 @@ class Thumbnailcreator_ApiComponent extends AppComponent
     {
     return $this->_callModuleApiMethod($args, 'createSmallThumbnail', 'item');
     }
-
   } // end class

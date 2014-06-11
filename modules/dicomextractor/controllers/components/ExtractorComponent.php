@@ -164,7 +164,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
     $tempDirectory = $utilityComponent->getTempDirectory();
     $tmpSlice = $tempDirectory.'/'.$bitstream->getName().'.jpg';
     $command = $modulesConfig['dicomextractor']->dcmj2pnm;
-    $preparedCommand = str_replace("'", '"',$command);
+    $preparedCommand = str_replace("'", '"', $command);
     $preparedCommand .= ' "'.$bitstream->getFullPath().'" "'.$tmpSlice.'"';
     $this->prependDataDict($preparedCommand);
     exec($preparedCommand, $output);
@@ -263,5 +263,4 @@ class Dicomextractor_ExtractorComponent extends AppComponent
         }
       }
     }
-
   } // end class

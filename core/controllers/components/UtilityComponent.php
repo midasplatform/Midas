@@ -156,14 +156,29 @@ class UtilityComponent extends AppComponent
                 {
                 switch($fileDB)
                   {
-                  case 'mysql' : $config->db->PDO_MYSQL = true; break;
-                  case 'pgsql' : $config->db->PDO_PGSQL = true;break;
-                  case 'ibm' : $config->db->PDO_IBM = true;break;
-                  case 'oci' : $config->db->PDO_OCI = true;break;
-                  case 'sqlite' : $config->db->PDO_SQLITE = true;break;
-                  case 'cassandra' : $config->db->CASSANDRA = true;break;
-                  case 'mongo' : $config->db->MONGO = true;break;
-                  default : break;
+                  case 'mysql':
+                    $config->db->PDO_MYSQL = true;
+                    break;
+                  case 'pgsql':
+                    $config->db->PDO_PGSQL = true;
+                    break;
+                  case 'ibm':
+                    $config->db->PDO_IBM = true;
+                    break;
+                  case 'oci':
+                    $config->db->PDO_OCI = true;
+                    break;
+                  case 'sqlite':
+                    $config->db->PDO_SQLITE = true;
+                    break;
+                  case 'cassandra':
+                    $config->db->CASSANDRA = true;
+                    break;
+                  case 'mongo':
+                    $config->db->MONGO = true;
+                    break;
+                  default:
+                    break;
                   }
                 }
               }
@@ -243,7 +258,6 @@ class UtilityComponent extends AppComponent
       }
     return md5_file($filename);
     }
-
 
   /**
    * Check if the php function/extension are available
@@ -436,7 +450,6 @@ class UtilityComponent extends AppComponent
     {
     return self::getTempDirectory('cache');
     }
-
 
   /** install a module */
   public function installModule($moduleName)

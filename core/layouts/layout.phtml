@@ -139,7 +139,6 @@ echo $this->doctype()
                       <li onclick="window.location = \''.$this->webroot.'/admin\';"><a>'.$this->t('Administration').'</a></li>';
                   }
 
-
               $linksModules = Zend_Registry::get('notifier')->callback("CALLBACK_CORE_GET_USER_MENU", array());
               if(!empty($linksModules))
                 {
@@ -321,7 +320,7 @@ echo $this->doctype()
                 {
                 if(is_array($item))
                   {
-                  echo "<li onclick=\"window.location = '{$this->webroot}/item/{$item['item_id']}';\" class='recentItem' qtip='".  str_replace("'", '"', $item['name'])."'><a  href='{$this->webroot}/item/{$item['item_id']}'>".$this->slicename($item['name'],20)."</a></li>";
+                  echo "<li onclick=\"window.location = '{$this->webroot}/item/{$item['item_id']}';\" class='recentItem' qtip='".  str_replace("'", '"', $item['name'])."'><a  href='{$this->webroot}/item/{$item['item_id']}'>".$this->slicename($item['name'], 20)."</a></li>";
                   }
                 }
               echo '</ul>';

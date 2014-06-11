@@ -442,7 +442,7 @@ class ApiitemComponent extends AppComponent
       throw new Exception("Admin privileges required on the item to list permissions.", MIDAS_INVALID_POLICY);
       }
 
-    return $apihelperComponent->listResourcePermissions($itempolicygroupModel->computePolicyStatus($item), $item->getItempolicyuser(),  $item->getItempolicygroup());
+    return $apihelperComponent->listResourcePermissions($itempolicygroupModel->computePolicyStatus($item), $item->getItempolicyuser(), $item->getItempolicygroup());
     }
 
   /**
@@ -949,5 +949,4 @@ class ApiitemComponent extends AppComponent
     $r = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
     $r->gotoUrl($redirUrl);
     }
-
   } // end class

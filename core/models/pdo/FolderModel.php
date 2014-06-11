@@ -414,7 +414,6 @@ class FolderModel extends FolderModelBase
     $subSqlFolders = $this->database->select()
             ->union(array($subqueryUser, $subqueryGroup));
 
-
     $rowset = $this->database->fetchAll($subSqlFolders);
 
     $folders = array();
@@ -707,7 +706,6 @@ class FolderModel extends FolderModelBase
                                                                    ->where('name = ?', $name)
                                                                    ->where('parent_id = ?', $parent->getKey())));
     }
-
 
   /**
    * Get child items of a folder filtered by policy check for the provided user

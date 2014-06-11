@@ -94,5 +94,4 @@ class Ldap_ConfigController extends Ldap_AppController
         }
       }
     }
-
   } // end class

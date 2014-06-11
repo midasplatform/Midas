@@ -67,7 +67,6 @@ class Apisizequota_QuotaController extends ApiController
     $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'post', $apiFunctions, 'sizequota');
     }
 
-
   /**
    * The options action handles OPTIONS requests; it should respond with
    * the HTTP methods that the server supports for specified URL.

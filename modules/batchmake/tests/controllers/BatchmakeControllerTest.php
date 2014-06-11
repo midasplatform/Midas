@@ -79,7 +79,6 @@ class BatchmakeControllerTest extends ControllerTestCase
     $extension = '.bmm';
     $this->symlinkFileset($srcDir, $targetDir, $extension);
 
-
     // the mock object strategy requires both an interface and for
     // executable files to exist on disk in a particular location,
     // so here we will create symlinks to a known executable
@@ -145,5 +144,4 @@ class BatchmakeControllerTest extends ControllerTestCase
       }
     closedir($handle);
     }
-
   }

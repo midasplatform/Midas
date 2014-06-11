@@ -75,7 +75,7 @@ class Dicomserver_ConfigController extends Dicomserver_AppController
           }
         if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini"))
           {
-          rename(BASE_PATH."/core/configs/".$this->moduleName.".local.ini",BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old");
+          rename(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old");
           }
         $applicationConfig['global']['dcm2xml'] = $this->_getParam('dcm2xml');
         $applicationConfig['global']['storescp'] = $this->_getParam('storescp');
@@ -106,5 +106,4 @@ class Dicomserver_ConfigController extends Dicomserver_AppController
     unset($dashboard_array['Status']);
     $this->view->dashboard = $dashboard_array;
     }
-
   } // end class

@@ -39,5 +39,4 @@ class Oai_ConfigForm extends AppForm
     $form->addElements(array($repositoryidentifier, $adminemail, $repositoryname, $submit));
     return $form;
     }
-
   } // end class

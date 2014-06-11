@@ -189,5 +189,4 @@ class Statistics_ItemController extends Statistics_AppController
       }
     echo JsonComponent::encode(array('downloads' => $markers, 'count' => $totalCount));
     }
-
   } // end class

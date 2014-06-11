@@ -138,7 +138,6 @@ class ItemRevisionModel extends ItemRevisionModelBase
     unset($revisiondao->itemrevision_id);
     }//end delete
 
-
   /** Returns the latest revision of a model */
   function getLatestRevision($itemdao)
     {

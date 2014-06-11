@@ -57,7 +57,6 @@ class UserControllerTest extends ControllerTestCase
     $this->request->setMethod('POST');
     $this->dispatchUrI("/user/register", null, true);
 
-
     $this->params = array();
     $this->params['email'] = 'user2@user1.com';
     $this->params['password1'] = 'test';

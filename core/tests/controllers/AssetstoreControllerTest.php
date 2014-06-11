@@ -186,7 +186,6 @@ class AssetstoreControllerTest extends ControllerTestCase
     $this->assertFalse($testAssetstoreDao);
     }
 
-
   /** helper method, sends a request to assetstore controller */
   protected function dispatchRequestJson($pageURI, $params)
     {
@@ -219,8 +218,6 @@ class AssetstoreControllerTest extends ControllerTestCase
     $response = $this->dispatchRequestJson($pageURI, $params);
     $this->assertTrue(isset($response->error));
     }
-
-
 
   /** test edit action */
   function testEditAction()
@@ -283,8 +280,6 @@ class AssetstoreControllerTest extends ControllerTestCase
     $this->assertEquals($updatedTestAssetstore->getName(), $testAssetstoreName);
     $this->assertEquals($updatedTestAssetstore->getPath(), $testAssetstorePath);
     }
-
-
 
   /** test add action */
   function testAddAction()

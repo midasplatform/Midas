@@ -229,5 +229,4 @@ class Sizequota_Notification extends ApiEnabled_Notification
       }
     return array('status' => true);
     }
-
   } // end class

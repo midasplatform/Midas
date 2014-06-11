@@ -52,6 +52,4 @@ class Example_SampleController extends Example_AppController
     {
     $this->view->header = 'Example Module Sample Controller Delete Action';
     }
-
-
   } // end class

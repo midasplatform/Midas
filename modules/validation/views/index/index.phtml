@@ -20,13 +20,18 @@ $this->headScript()->appendFile(
 <div class="viewMain">
   <h3>Active Validation Dashboards</h3>
   <div class="dashList">
-<?php foreach($this->dashboards as $index => $dashboard) {?>
+<?php
+foreach($this->dashboards as $index => $dashboard)
+  {
+?>
     <div class="dashEntry <?php if($index % 2 == 1) echo 'grayEntry';?>"/>
        <span class="dashIcon"><img src="<?php echo $this->coreWebroot . '/public/images/icons/ok.png'; ?>" /></span><span class="dashTitle"><?php echo $dashboard->getName(); ?></span>
        <span class="dashDeleteIcon"><img src="<?php echo $this->coreWebroot . '/public/images/icons/nok.png'; ?>" /></span>
        <span class="dashDescription"><?php echo $dashboard->getDescription(); ?></span>
     </div>
-<?php } ?>
+  <?php
+  }
+?>
   </div>
   <div class="dashPanel">
     <span id="addDash" class="dashButton">

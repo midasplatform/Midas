@@ -79,7 +79,6 @@ abstract class ItempolicygroupModelBase extends AppModel
     return $policyGroupDao;
     }
 
-
   /** delete */
   public function delete($dao)
     {

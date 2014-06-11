@@ -40,7 +40,6 @@ class Batchmake_Upgrade_0_2_0 extends MIDASUpgrade
     $this->db->query($sql);
     }
 
-
   public function postUpgrade()
     {
     }

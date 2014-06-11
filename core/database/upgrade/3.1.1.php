@@ -30,7 +30,6 @@ class Upgrade_3_1_1 extends MIDASUpgrade
     $this->db->query('DROP TABLE item2keyword');
     }
 
-
   public function pgsql()
     {
     $this->db->query('DROP TABLE itemkeyword');

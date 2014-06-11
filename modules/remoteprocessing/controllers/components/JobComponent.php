@@ -66,7 +66,6 @@ class Remoteprocessing_JobComponent extends AppComponent
     return $return;
     }
 
-
   /** init Job*/
   public function scheduleJob($parameters, $script, $os = MIDAS_REMOTEPROCESSING_OS_WINDOWS, $fire_time = false, $time_interval = false, $only_once = true, $condition = '')
     {

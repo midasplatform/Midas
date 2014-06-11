@@ -21,5 +21,4 @@
 class Batchmake_AppDao extends MIDAS_GlobalDao
   {
   public $moduleName = 'batchmake';
-
   } // end class

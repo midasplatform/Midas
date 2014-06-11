@@ -32,7 +32,6 @@ class ApidocsController extends AppController
     $this->disableView();
     }
 
-
   /** Index resource */
   function indexAction()
     {

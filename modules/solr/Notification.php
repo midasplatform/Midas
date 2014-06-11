@@ -253,7 +253,6 @@ class Solr_Notification extends ApiEnabled_Notification
       }
     }
 
-
   /**
    * Override the default folder search behavior
    */

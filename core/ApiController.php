@@ -215,5 +215,4 @@ class ApiController extends REST_Controller
     {
     $this->_response->setHeader('Allow', 'OPTIONS');
     }
-
   } // end class

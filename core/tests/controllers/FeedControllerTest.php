@@ -28,7 +28,6 @@ class FeedControllerTest extends ControllerTestCase
     $this->_models = array('User', 'Feed');
     $this->_daos = array('User');
     parent::setUp();
-
     }
 
   /** test index*/

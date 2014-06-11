@@ -286,5 +286,4 @@ class ExportComponentTest extends ControllerTestCase
     // clean up
     KWUtils::recursiveRemoveDirectory($midas_exporttest_dir);
     }
-
   } // end class

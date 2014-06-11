@@ -22,8 +22,8 @@ class Upgrade_3_0_13 extends MIDASUpgrade
   {
   public function preUpgrade()
     {
-    $this->addTableField('metadatadocumentvalue', 'metadatavalue_id', 'bigint(20)', 'serial',false);
-    $this->addTableField('metadatavalue', 'metadatavalue_id', 'bigint(20)', 'serial',false);
+    $this->addTableField('metadatadocumentvalue', 'metadatavalue_id', 'bigint(20)', 'serial', false);
+    $this->addTableField('metadatavalue', 'metadatavalue_id', 'bigint(20)', 'serial', false);
     }
 
   public function mysql()
@@ -35,7 +35,6 @@ class Upgrade_3_0_13 extends MIDASUpgrade
     $this->db->query("ALTER TABLE `metadatavalue` CHANGE `metadatavalue_id`
                       `metadatavalue_id` BIGINT( 20 ) NOT NULL AUTO_INCREMENT");
     }
-
 
   public function pgsql()
     {

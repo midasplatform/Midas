@@ -8,5 +8,4 @@ class Comments_ConfigController extends Comments_AppController
     {
     $this->requireAdminPrivileges();
     }
-
   } // end class

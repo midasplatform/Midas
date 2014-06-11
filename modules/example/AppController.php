@@ -18,7 +18,6 @@
  limitations under the License.
 =========================================================================*/
 
-
 class Example_AppController extends MIDAS_GlobalModule
   {
   public $moduleName='example';

@@ -74,5 +74,4 @@ class Dicomanonymize_UploadController extends Dicomanonymize_AppController
     $this->view->extraHtml = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_JAVAUPLOAD_EXTRA_HTML',
                                                                       array('folder' => $folder));
     }
-
   } // end class

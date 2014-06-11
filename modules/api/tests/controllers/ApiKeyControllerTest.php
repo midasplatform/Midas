@@ -77,5 +77,4 @@ class ApiKeyControllerTest extends ControllerTestCase
     $key = $userApiModel->getByAppAndEmail('Default', 'some.user@server.com')->getApikey();
     $this->assertNotEmpty($key);
     }
-
   }

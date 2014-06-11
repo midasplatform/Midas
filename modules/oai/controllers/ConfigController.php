@@ -70,6 +70,4 @@ class Oai_ConfigController extends Oai_AppController
         }
       }
     }
-
-
   } // end class

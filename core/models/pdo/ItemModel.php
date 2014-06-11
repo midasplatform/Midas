@@ -223,7 +223,6 @@ class ItemModel extends ItemModelBase
     return $results;
     }
 
-
   /**
    * Get Items where user policy = Admin
    * @param type $userDao

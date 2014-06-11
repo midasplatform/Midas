@@ -35,7 +35,6 @@ class Batchmake_Notification extends ApiEnabled_Notification
     // $this->addCallBack('CALLBACK_CORE_GET_LEFT_LINKS', 'getLeftLink');
     }//end init
 
-
   /**
    *@method getDashboard
    *will generate information about this module to display on the Dashboard
@@ -48,7 +47,6 @@ class Batchmake_Notification extends ApiEnabled_Notification
     return $return;
     }
 
-
   /**
    *@method getLeftLink
    * will generate a link for this module to be displayed in the main view.
@@ -59,7 +57,6 @@ class Batchmake_Notification extends ApiEnabled_Notification
     $fc = Zend_Controller_Front::getInstance();
     $baseURL = $fc->getBaseUrl();
     $moduleWebroot = $baseURL . '/' . MIDAS_BATCHMAKE_MODULE;
-    return array(ucfirst(MIDAS_BATCHMAKE_MODULE) => array($moduleWebroot . '/index',  $baseURL . '/modules/batchmake/public/images/cmake.png'));
+    return array(ucfirst(MIDAS_BATCHMAKE_MODULE) => array($moduleWebroot . '/index', $baseURL . '/modules/batchmake/public/images/cmake.png'));
     }
-
   } // end class

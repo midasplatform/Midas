@@ -28,7 +28,6 @@ class Upgrade_3_1_0 extends MIDASUpgrade
     {
     }
 
-
   public function pgsql()
     {
     $this->db->query('ALTER TABLE community ALTER COLUMN moderatorgroup_id DROP NOT NULL');

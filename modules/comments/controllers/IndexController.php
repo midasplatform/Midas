@@ -7,5 +7,4 @@ class Comments_IndexController extends Comments_AppController
   function indexAction()
     {
     }
-
   } // end class

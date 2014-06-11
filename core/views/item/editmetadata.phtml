@@ -27,10 +27,11 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/i
       $id = '';
       }
    ?>
-   <?php if($this->itemrevision)
-     {
-     echo '<input type="hidden" name="itemrevision" value="'.$this->itemrevision.'"/>';
-     }
+   <?php
+    if($this->itemrevision)
+      {
+      echo '<input type="hidden" name="itemrevision" value="'.$this->itemrevision.'"/>';
+      }
    ?>
    <input type="hidden" name="metadataId" value="<?php echo $id; ?>"/>
    <input type="hidden" name="editMetadata" value="1" />

@@ -38,5 +38,4 @@ class Solr_ConfigForm extends AppForm
     $form->addElements(array($host, $port, $webroot, $submit));
     return $form;
     }
-
   } // end class

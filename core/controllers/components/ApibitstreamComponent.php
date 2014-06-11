@@ -92,7 +92,6 @@ class ApibitstreamComponent extends AppComponent
     return $out;
     }
 
-
   /**
    * Change the properties of a bitstream. Requires write access to the containing item.
    * @path /bitstream/{id}
@@ -308,5 +307,4 @@ class ApibitstreamComponent extends AppComponent
     {
     $this->bitstreamDownload($args);
     }
-
   } // end class

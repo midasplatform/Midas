@@ -126,7 +126,6 @@ class Dicomserver_ServerComponent extends AppComponent
     file_put_contents($cfg_file, $cfg_file_content);
     }
 
-
   /**
    * Register DICOM image files (bistreams)
    */
@@ -139,7 +138,7 @@ class Dicomserver_ServerComponent extends AppComponent
       }
     $modulesConfig = Zend_Registry::get('configsModules');
     $command = $modulesConfig['dicomserver']->dcmqridx;
-    $command = str_replace("'", '',$command);
+    $command = str_replace("'", '', $command);
     $command_params = array();
     $reciptionDir = $modulesConfig['dicomserver']->receptiondir;
     if(!is_writable($reciptionDir))
@@ -170,5 +169,4 @@ class Dicomserver_ServerComponent extends AppComponent
       $registrationModel->createRegistration($itemId);
       }
     }
-
   } // end class

@@ -71,7 +71,6 @@ class UploadController extends AppController
     return array_key_exists('HTTPS', $_SERVER) && $_SERVER["HTTPS"] === 'on';
     }
 
-
   /** simple upload*/
   public function simpleuploadAction()
     {
@@ -277,7 +276,6 @@ class UploadController extends AppController
       'CALLBACK_CORE_GET_REVISIONUPLOAD_EXTRA_HTML', array('item' => $item));
     }//end revisionAction
 
-
   /** save a link*/
   public function savelinkAction()
     {
@@ -405,7 +403,6 @@ class UploadController extends AppController
       throw $e;
       }
     } //end get_http_upload_unique_identifier
-
 
   /**
    * Process a java upload

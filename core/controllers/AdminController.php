@@ -397,8 +397,6 @@ class AdminController extends AppController
       $offset = 0;
       }
 
-
-
     $results = $this->Errorlog->getLog($start, $end, $module, $priority, $limit, $offset, $priorityOperator);
     $this->view->jsonContent = array();
     $this->view->jsonContent['currentFilter'] = array('start' => $start,
@@ -645,7 +643,6 @@ class AdminController extends AppController
       }
     // No views
     } // end function  serversidefilechooserAction
-
 
   /**
    * \fn

@@ -39,7 +39,6 @@ class Batchmake_TaskModelBase extends Batchmake_AppModel {
     $this->initialize(); // required
     }
 
-
   /** Create a task
    * @return TaskDao */
   function createTask($userDao, $tmpWorkDirRoot)

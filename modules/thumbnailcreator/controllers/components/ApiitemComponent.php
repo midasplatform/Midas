@@ -85,7 +85,6 @@ class Thumbnailcreator_ApiitemComponent extends AppComponent
       }
     }
 
-
 /**
    * Create a 100x100 small thumbnail for the given item. It is used for preview purpose and displayed in the 'preview' and 'thumbnails' sidebar sections.
    * @path /thumbnailcreator/item/smallthumbnail/{id}
@@ -140,5 +139,4 @@ class Thumbnailcreator_ApiitemComponent extends AppComponent
     $return['pathToCreatedThumbnail'] = $pathThumbnail;
     return $return;
     }
-
   } // end class

@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** Error management*/
-class NotifyErrorComponent  extends AppComponent
+class NotifyErrorComponent extends AppComponent
   {
   protected $_environment;
   protected $_mailer;
@@ -30,7 +30,6 @@ class NotifyErrorComponent  extends AppComponent
   /** Constructor */
   public function __construct()
     {
-
     }
 
   /** Init*/
@@ -318,5 +317,4 @@ class NotifyErrorComponent  extends AppComponent
       }
     return $message;
     }
-
   }

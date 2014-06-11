@@ -45,27 +45,22 @@ class MIDASUpgrade
   /** preUpgrade called before the upgrade*/
   public function preUpgrade()
     {
-
     }
 
   /** calls if mysql enable*/
   public function mysql()
     {
-
     }
 
   /** called is pgsql enabled*/
   public function pgsql()
     {
-
     }
 
   /** called after the upgrade*/
   public function postUpgrade()
     {
-
     }
-
 
   /**
    * @method public  loadElements()
@@ -77,7 +72,7 @@ class MIDASUpgrade
       {
       MidasLoader::loadModels($this->_moduleModels, $this->moduleName);
       $modelsArray = Zend_Registry::get('models');
-      foreach($this->_moduleModels as  $value)
+      foreach($this->_moduleModels as $value)
         {
         if(isset($modelsArray[$this->moduleName.$value]))
           {
@@ -216,7 +211,6 @@ class MIDASUpgrade
         }
       }
     }//end loadElements
-
 
   /**
    * @method public AddTableField()
@@ -375,5 +369,4 @@ class MIDASUpgrade
       $this->db->query("ALTER TABLE ".$table." DROP PRIMARY KEY");
       }
     }
-
   } // end class

@@ -29,7 +29,6 @@ class Rest_IndexController extends AppController
     $this->view->setScriptPath(BASE_PATH."/core/views/rest");
     }
 
-
   /** Index function */
   function indexAction()
     {

@@ -20,7 +20,6 @@
 /** index controller*/
 class Remoteprocessing_IndexController extends Remoteprocessing_AppController
   {
-
   /** select action */
   function selectactionAction()
     {
@@ -31,5 +30,4 @@ class Remoteprocessing_IndexController extends Remoteprocessing_AppController
   function dashboardAction()
     {
     }
-
   } // end class

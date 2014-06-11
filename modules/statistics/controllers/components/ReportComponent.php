@@ -96,6 +96,5 @@ class Statistics_ReportComponent extends AppComponent
       $mail->addTo($admin->getEmail(), $admin->getFullName());
       $mail->send();
       }
-    }//end send
-
+    } //end send
   } // end class

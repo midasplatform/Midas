@@ -26,7 +26,6 @@ define('MIDAS_BATCHMAKE_INVALID_PARAMETER', -150);
 class Batchmake_ApiComponent extends AppComponent
   {
 
-
   /**
    * Helper function for verifying keys in an input array
    */
@@ -46,7 +45,6 @@ class Batchmake_ApiComponent extends AppComponent
     $authComponent = MidasLoader::loadComponent('Authentication');
     return $authComponent->getUser($args, Zend_Registry::get('userSession')->Dao);
     }
-
 
   /**
    * @param tmp_dir the path to the batchmake temp dir
@@ -78,8 +76,6 @@ class Batchmake_ApiComponent extends AppComponent
     $kwbatchmakeComponent = MidasLoader::loadComponent('KWBatchmake', 'batchmake');
     return $kwbatchmakeComponent->testconfig($configParams);
     }
-
-
 
   /**
    * Add a condorDag entry to the specified batchmake task
@@ -123,7 +119,6 @@ class Batchmake_ApiComponent extends AppComponent
     $condorDagModel->save($condorDagDao);
     return $condorDagDao;
     }
-
 
   /**
    * Add a condorJob entry to the specified batchmake task
@@ -193,7 +188,4 @@ class Batchmake_ApiComponent extends AppComponent
     $condorJobModel->save($condorJobDao);
     return $condorJobDao;
     }
-
-
-
   } // end class

@@ -63,5 +63,4 @@ class Thumbnailcreator_ConfigForm extends AppForm
     $form->addElements(array($useThumbnailer, $thumbnailer, $submit));
     return $form;
     }
-
   } // end class

@@ -198,7 +198,6 @@ abstract class CommunityModelBase extends AppModel
     return $communityDao;
     } // end createCommunity()
 
-
   /** Delete a community */
   function delete($communityDao)
     {
@@ -237,7 +236,6 @@ abstract class CommunityModelBase extends AppModel
     unset($communityDao->community_id);
     $communityDao->saved = false;
     }//end delete
-
 
   /** check ifthe policy is valid
   *
@@ -359,7 +357,6 @@ abstract class CommunityModelBase extends AppModel
 
     return $folderModel->countBitstreams($folderDao, $userDao);
     } //end countBitstreams
-
 
   /**
    * set the privacy on the passed in Community to the passed in privacyCode,

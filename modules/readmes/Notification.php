@@ -57,5 +57,4 @@ class Readmes_Notification extends MIDAS_Notification
     $moduleUriroot = $fc->getBaseUrl().'/modules/readmes';
     return array($moduleUriroot.'/public/js/readmes.community.js');
     }
-
   } // end class

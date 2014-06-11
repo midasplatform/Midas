@@ -41,5 +41,4 @@ class Landingpage_ConfigForm extends AppForm
     $form->addElements(array($name, $submit));
     return $form;
     } // end function createForm
-
   } // end class

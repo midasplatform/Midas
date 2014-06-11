@@ -71,7 +71,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.d
         <?php
         foreach($this->results['params']['parametersList'] as $parameter)
           {
-          echo "<th qtip='".ucfirst($parameter)."'><b>".$this->slicename(ucfirst($parameter),10)."</b></th>";
+          echo "<th qtip='".ucfirst($parameter)."'><b>".$this->slicename(ucfirst($parameter), 10)."</b></th>";
           }
         echo "<th qtip='Execution status'><b>Stat.</b></th>";
         echo "<th qtip='Duration'><b>Dur.</b></th>";
@@ -99,7 +99,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.d
           {
           if(isset($result['parameters'][$key]) && isset($this->inputs[trim($result['parameters'][$key])]))
             {
-            echo "<td><a href='".$this->webroot."/item/".$this->inputs[trim($result['parameters'][$key])]->getKey()."' elementItem='".$this->inputs[trim($result['parameters'][$key])]->getKey()."'>".$this->slicename($result['parameters'][$key],15)."</a></td>";
+            echo "<td><a href='".$this->webroot."/item/".$this->inputs[trim($result['parameters'][$key])]->getKey()."' elementItem='".$this->inputs[trim($result['parameters'][$key])]->getKey()."'>".$this->slicename($result['parameters'][$key], 15)."</a></td>";
             }
           elseif(isset($result['parameters'][$key]))
             {
@@ -112,8 +112,8 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.d
           }
         echo "<td class='xmlStatus'>".$result['status']."</td>";
         echo "<td >".str_replace(' seconds', 's', $this->duration($result['time']))."</td>";
-        echo "<td class='showInDialog' output='".htmlentities($result['stdout'])."'><a>".$this->slicename(htmlentities($result['stdout']),15)."</a></td>";
-        echo "<td class='showInDialog' output='".htmlentities($result['stderr'])."'><a>".$this->slicename(htmlentities($result['stderr']),15)."</a></td>";
+        echo "<td class='showInDialog' output='".htmlentities($result['stdout'])."'><a>".$this->slicename(htmlentities($result['stdout']), 15)."</a></td>";
+        echo "<td class='showInDialog' output='".htmlentities($result['stderr'])."'><a>".$this->slicename(htmlentities($result['stderr']), 15)."</a></td>";
 
         $htmltArray = Zend_Registry::get('notifier')->callback("CALLBACK_REMOTEPROCESSING_JOB_DASHBOARD_BODY", array($result));
         foreach($htmltArray as $html)
@@ -208,6 +208,5 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.d
     <?php
       }
    ?>
-
 
 </div>

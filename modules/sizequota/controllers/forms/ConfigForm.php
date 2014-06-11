@@ -67,5 +67,4 @@ class Sizequota_ConfigForm extends AppForm
     $form->addElements(array($useDefault, $quota, $submit));
     return $form;
     }
-
   } // end class

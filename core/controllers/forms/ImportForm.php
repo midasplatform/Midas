@@ -110,7 +110,6 @@ class ImportForm extends AppForm
     $importFolder->setRequired(true);
     $form->addElement($importFolder);
 
-
     // Hidden filed to pass the translation of the stop import
     $stopimport = new Zend_Form_Element_Hidden('importstop', array('value' => $this->t('Stop import')));
     $stopimport->setDecorators(array(
@@ -124,8 +123,6 @@ class ImportForm extends AppForm
     // Submit
     $submit = new Zend_Form_Element_Button('importsubmit', $this->t('Import data'));
     $form->addElement($submit);
-
-
 
     return $form;
     }

@@ -43,7 +43,6 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
     return self::$configPropertiesRequirements;
     }
 
-
   protected static $applicationsPaths = array(MIDAS_BATCHMAKE_CONDOR_STATUS => MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY,
   MIDAS_BATCHMAKE_CONDOR_QUEUE => MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY,
   MIDAS_BATCHMAKE_CONDOR_SUBMIT => MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY,
@@ -59,7 +58,6 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
     return self::$applicationsPaths;
     }
 
-
   // component configuration settings
   protected $componentConfig;
   // individual config properties, for convenience
@@ -69,7 +67,6 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
   protected $configBinDir;
   protected $configDataDir;
   protected $configCondorBinDir;
-
 
   protected $executor;
 
@@ -92,7 +89,6 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       }
     } // end __construct($alternateConfig)
 
-
   /**
    * helper function to load the correct config file
    * @param bool $processSections param to be passed on to parse_ini_file,
@@ -112,7 +108,6 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       }
     return $config;
     }
-
 
   /**
    * takes in an array read out of an ini file, looks in the 'global'
@@ -137,7 +132,6 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       }
     return $batchmakeProps;
     }
-
 
   /**
    * @method loadConfigProperties
@@ -409,9 +403,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
         }
       }
 
-
     return array($total_config_correct, $configStatus);
-
     }
 
   /**
@@ -429,7 +421,6 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
 
   // above here is config testing
   // below here is execution functionality
-
 
   /**
    * @method getBatchmakeScripts
@@ -449,8 +440,6 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       }
     return $scriptNames;
     }
-
-
 
   /**
    * will createa  new batchmake task, along with a work directory
@@ -533,7 +522,6 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
     // return the processed list
     return $processed;
     }
-
 
   /**
    * @method preparePipelineBmms
@@ -640,8 +628,6 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
     throw new Zend_Exception("compileBatchMakeScript: Error in BatchMake script, the compile step didn't report errors, output: [".implode(",", $output )."]");
     }
 
-
-
   /**
    * @method generateCondorDag will create condor scripts and a condor dag
    * from the batchmake script $bmScript, in the directory $workDir.
@@ -700,10 +686,5 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       throw new Zend_Exception("condorSubmitDag: Failed to run: [".$cmd."], output: [".implode(",", $output )."]");
       }
     }
-
-
-
-
-
   } // end class
 ?>

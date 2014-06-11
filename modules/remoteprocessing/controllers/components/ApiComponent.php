@@ -289,7 +289,6 @@ class Remoteprocessing_ApiComponent extends AppComponent
     return array();
     }
 
-
   /** recursively delete a folder*/
   private function _rrmdir($dir)
     {
@@ -315,5 +314,4 @@ class Remoteprocessing_ApiComponent extends AppComponent
     reset($objects);
     rmdir($dir);
     }
-
   } // end class

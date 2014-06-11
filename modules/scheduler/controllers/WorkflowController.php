@@ -33,7 +33,6 @@ class Scheduler_WorkflowController extends Scheduler_AppController
    */
   function init()
     {
-
     } // end method indexAction
 
   /** create workflow */
@@ -42,41 +41,39 @@ class Scheduler_WorkflowController extends Scheduler_AppController
     $definition = $this->ModuleComponent->Ezc->initWorkflowDefinitionStorage();
     // Load latest version of workflow named "Test".
 
-    $workflow = new ezcWorkflow( 'Test' );
+    $workflow = new ezcWorkflow('Test');
     $input = new ezcWorkflowNodeInput(
-      array( 'item1' => new ezcWorkflowConditionIsObject, 'item2' => new ezcWorkflowConditionIsObject )
+      array('item1' => new ezcWorkflowConditionIsObject, 'item2' => new ezcWorkflowConditionIsObject)
     );
-    $workflow->startNode->addOutNode( $input );
+    $workflow->startNode->addOutNode($input);
 
     $split = new ezcWorkflowNodeParallelSplit();
     $input->addOutNode($split);
-    $nodeExec1 = new ezcWorkflowNodeAction( 'Process A' );
-    $nodeExec2 = new ezcWorkflowNodeAction( 'Process A' );
+    $nodeExec1 = new ezcWorkflowNodeAction('Process A');
+    $nodeExec2 = new ezcWorkflowNodeAction('Process A');
     $nodeExec1->addInNode($split);
     $nodeExec2->addInNode($split);
 
     $disc = new ezcWorkflowNodeDiscriminator();
-    $disc->addInNode( $nodeExec1 );
-    $disc->addInNode( $nodeExec2 );
+    $disc->addInNode($nodeExec1);
+    $disc->addInNode($nodeExec2);
 
+    $processB = new ezcWorkflowNodeAction('Process B');
+    $disc->addOutNode($processB);
 
-    $processB = new ezcWorkflowNodeAction( 'Process B' );
-    $disc->addOutNode($processB );
-
-    $processB->addOutNode( $workflow->endNode);
-
+    $processB->addOutNode($workflow->endNode);
 
     $this->_createGraph($workflow);
 
     // Save workflow definition to database.
-   // $definition->save( $workflow );
+    // $definition->save( $workflow );
     }
 
   /** create graph */
   private function _createGraph($workflow)
     {
     $visitor = new ezcWorkflowVisitorVisualization;
-    $workflow->accept( $visitor );
+    $workflow->accept($visitor);
     $modulesConfig=Zend_Registry::get('configsModules');
     $command = $modulesConfig['scheduler']->dot;
     $dotFile = $this->getTempDirectory().'/graphviz_workflow_'.$workflow->__get('id').'.dot';
@@ -102,5 +99,4 @@ class Scheduler_WorkflowController extends Scheduler_AppController
       }
     return $image;
     }
-
   } // end class

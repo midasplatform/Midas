@@ -43,7 +43,6 @@ class ItemmetricModelTest extends DatabaseTestCase
     $itemmetricModel = MidasLoader::loadModel('Itemmetric', 'batchmake');
     $user1Dao = $usersFile[0];
 
-
     // create an itemmetric
     $metricName = 'metrictest1';
     $bmsName = 'metrictest1.bms';
@@ -115,6 +114,4 @@ class ItemmetricModelTest extends DatabaseTestCase
         }
       }
     }
-
-
   }

@@ -7,5 +7,4 @@ class Ratings_IndexController extends Ratings_AppController
   function indexAction()
     {
     }
-
   } // end class

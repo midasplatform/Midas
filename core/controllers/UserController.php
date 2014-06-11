@@ -546,7 +546,6 @@ class UserController extends AppController
       }
     } // end method login
 
-
   /** Term of service */
   public function termofserviceAction()
     {
@@ -555,7 +554,6 @@ class UserController extends AppController
       $this->_helper->layout->disableLayout();
       }
     } // end term of service
-
 
   /**
    * Test whether a given user already exists or not.

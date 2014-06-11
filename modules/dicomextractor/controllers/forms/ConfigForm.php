@@ -34,5 +34,4 @@ class Dicomextractor_ConfigForm extends AppForm
       $submit));
     return $form;
     }
-
   } // end class

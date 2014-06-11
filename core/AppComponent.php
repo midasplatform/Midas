@@ -24,6 +24,4 @@
  */
 class AppComponent extends MIDAS_GlobalComponent
   {
-
-
   }

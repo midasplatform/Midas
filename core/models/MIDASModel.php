@@ -38,9 +38,14 @@ class MIDASModel
     $configDatabase = Zend_Registry::get('configDatabase');
     switch($configDatabase->database->type)
       {
-      case 'pdo': $this->database = new MIDASDatabasePdo(); break;
-      case 'mongo': $this->database = new MIDASDatabaseMongo(); break;
-      default: break;
+      case 'pdo':
+        $this->database = new MIDASDatabasePdo();
+        break;
+      case 'mongo':
+        $this->database = new MIDASDatabaseMongo();
+        break;
+      default:
+        break;
       }
     } // end __construct()
 
@@ -60,7 +65,6 @@ class MIDASModel
     {
     return UtilityComponent::getTempDirectory();
     }
-
 
   /**
    * Save a Dao to the database.
@@ -217,7 +221,6 @@ class MIDASModel
       }
     } //end initDao
 
-
   /**
    * @method public  __call($method, $params)
    *  Catch ifthe method doesn't exists and create a method dynamically
@@ -247,7 +250,6 @@ class MIDASModel
       throw new Zend_Exception($this->_name."Model : method ".$method." doesn't exist.");
       }
     }// end method __call
-
 
   /**
    * @method public  findBy($var, $value)
@@ -306,9 +308,6 @@ class MIDASModel
       }
     } //end method findBy
 
-
-
-
   /**
    * DEPRECATED: Use MidasLoader::newDao to load the class and instantiate a dao
    */
@@ -350,9 +349,7 @@ class MIDASModel
         throw new Zend_Exception('Unable to load dao class ' . ucfirst($module).'_'.$name);
         }
       }
-
     }
-
 
   /**
    * @fn public  load()
@@ -433,7 +430,6 @@ class MIDASModel
       }
     } //end load
 
-
   /**
    * @method public getValue()
    * Generic get function. You can define custom function.
@@ -493,5 +489,4 @@ class MIDASModel
       }
     return true;
     } //end method compareDao
-
   } // end class

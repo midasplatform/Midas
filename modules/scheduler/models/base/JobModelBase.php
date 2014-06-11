@@ -70,7 +70,7 @@ abstract class Scheduler_JobModelBase extends Scheduler_AppModel
       ob_end_clean();
       if($status === 0)
         {
-        if(preg_match("/\,\"([0-9]+\.[0-9]+)\"/",$content,$load))
+        if(preg_match("/\,\"([0-9]+\.[0-9]+)\"/", $content, $load))
           {
           $this->load = $load;
           return $load;

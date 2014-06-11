@@ -46,5 +46,4 @@ class Landingpage_IndexCoreController extends Landingpage_AppController
       $this->callCoreAction();
       }
     }
-
   } // end class

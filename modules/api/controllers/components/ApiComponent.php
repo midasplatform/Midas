@@ -18,8 +18,6 @@
  limitations under the License.
 =========================================================================*/
 
-
-
 /** These are the implementations of the core web api methods */
 class Api_ApiComponent extends AppComponent
   {
@@ -78,7 +76,7 @@ class Api_ApiComponent extends AppComponent
     }
 
   /** Return the user dao */
-  private function _callCoreApiMethod($args, $coreApiMethod, $resource = null,  $hasReturn = true)
+  private function _callCoreApiMethod($args, $coreApiMethod, $resource = null, $hasReturn = true)
     {
     $ApiComponent = MidasLoader::loadComponent('Api'.$resource);
     $rtn = $ApiComponent->$coreApiMethod($args);
@@ -1128,5 +1126,4 @@ class Api_ApiComponent extends AppComponent
     $ApihelperComponent->renameParamKey($args, 'community_id', 'id');
     return $this->_callCoreApiMethod($args, 'communityListGroups', 'community');
     }
-
   } // end class

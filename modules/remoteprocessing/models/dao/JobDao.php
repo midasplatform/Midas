@@ -24,7 +24,6 @@ class Remoteprocessing_JobDao extends Remoteprocessing_AppDao
   public $_model = 'Job';
   public $_module = 'remoteprocessing';
 
-
   /** get Items */
   function getItems()
     {

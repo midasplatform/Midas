@@ -40,7 +40,6 @@ class SearchController extends AppController
       }
     }  // end init()
 
-
   /** search live Action */
   public function indexAction()
     {
@@ -75,8 +74,6 @@ class SearchController extends AppController
       $this->view->json['search']['moreResults'] = $this->t('Show more results.');
       }
     }//end indexAction
-
-
 
   /** search live Action */
   public function liveAction()
@@ -167,7 +164,6 @@ class SearchController extends AppController
       $UsersDao = $this->User->getUsersFromSearch($search, $this->userSession->Dao);
       $GroupsDao = array();
       }
-
 
     // Compute how many of each we should display
     $nitems = count($ItemsDao);

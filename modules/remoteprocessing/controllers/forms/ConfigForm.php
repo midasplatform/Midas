@@ -38,5 +38,4 @@ class Remoteprocessing_ConfigForm extends AppForm
     $form->addElements(array($securitykey, $showbutton, $submit));
     return $form;
     }
-
   } // end class

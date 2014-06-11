@@ -81,5 +81,4 @@ class Mfa_ApiComponent extends AppComponent
     $token = $apiToken->getToken();
     return array('token' => $token);
     }
-
   } // end class

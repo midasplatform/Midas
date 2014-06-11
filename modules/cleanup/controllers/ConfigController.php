@@ -76,5 +76,4 @@ class Cleanup_ConfigController extends Cleanup_AppController
         }
       }
     }
-
   } // end class

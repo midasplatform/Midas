@@ -227,7 +227,6 @@ class FolderController extends AppController
     $this->view->json['folder'] = $folder;
     }// end View Action
 
-
   /**
    * Prompt the user to confirm deletion of a folder
    * @param folderId The id of the folder to be deleted
@@ -419,5 +418,4 @@ class FolderController extends AppController
         }
       }
     }// end createfolderAction
-
   } // end class

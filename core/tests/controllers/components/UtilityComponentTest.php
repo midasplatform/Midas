@@ -55,5 +55,4 @@ class UtilityComponentTest extends ControllerTestCase
     $val = UtilityComponent::filterHtmlTags($text);
     $this->assertEquals($val, 'malicious javascript');
     }
-
   } // end class

@@ -81,5 +81,4 @@ class Thumbnailcreator_ConfigController extends Thumbnailcreator_AppController
         }
       }
     }
-
   } // end class

@@ -28,7 +28,6 @@ class Upgrade_3_0_16 extends MIDASUpgrade
     {
     }
 
-
   public function pgsql()
     {
     }

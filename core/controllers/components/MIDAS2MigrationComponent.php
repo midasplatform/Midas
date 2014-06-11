@@ -374,7 +374,6 @@ class MIDAS2MigrationComponent extends AppComponent
       }
     } // end _createFolderForCollection()
 
-
   /** Recursive function to create the communities */
   private function _createFolderForCommunity($communityidMIDAS2, $parentFolderid)
     {
@@ -468,7 +467,6 @@ class MIDAS2MigrationComponent extends AppComponent
   function migrate($userid)
     {
     $this->userId = $userid;
-
 
     // Check that we are in development mode
     if(Zend_Registry::get('configGlobal')->environment != 'development')

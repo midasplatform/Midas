@@ -34,7 +34,6 @@ class Apireadmes_FolderController extends ApiController
     $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'get', $apiFunctions, 'readmes');
     }
 
-
   /**
    * The options action handles OPTIONS requests; it should respond with
    * the HTTP methods that the server supports for specified URL.

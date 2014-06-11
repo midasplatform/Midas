@@ -142,7 +142,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
           }
 
         $html .=   "<li>";
-        $html .=    "<a  element='".$item->getKey()."' href='".Zend_Registry::get('webroot')."/item/".$item->getKey()."'>".$component->slicename($item->getName(),25)."</a>";
+        $html .=    "<a  element='".$item->getKey()."' href='".Zend_Registry::get('webroot')."/item/".$item->getKey()."'>".$component->slicename($item->getName(), 25)."</a>";
         $html .=    "</li>";
         if($i > 7)
           {
@@ -333,5 +333,4 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       }
     return;
     }
-
   } // end class

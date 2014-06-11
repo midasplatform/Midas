@@ -38,7 +38,6 @@ class Scheduler_JobLogModelBase extends Scheduler_AppModel
     $this->initialize(); // required
     } // end __construct()
 
-
   /** save logs */
   public function saveLog($jobDao, $text)
     {

@@ -567,7 +567,6 @@ class ApiControllerTest extends ControllerTestCase
     $this->request->setMethod('POST');
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
-
     }
 
   /**
@@ -622,7 +621,6 @@ class ApiControllerTest extends ControllerTestCase
     $this->assertEquals(1, $resp->data->dashboard_id);
     $this->assertEquals($expected[1], $resp->data->scores->{1000});
     $this->assertEquals($expected[2], $resp->data->scores->{1001});
-
     }
 
   /**

@@ -58,5 +58,4 @@ class Communityagreement_AgreementModelBase extends Communityagreement_AppModel
     $this->save($agreementDao);
     return $agreementDao;
     }
-
   } // end class

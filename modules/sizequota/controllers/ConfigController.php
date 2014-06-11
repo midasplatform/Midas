@@ -255,5 +255,4 @@ class Sizequota_ConfigController extends Sizequota_AppController
       }
     return true;
     }
-
   } // end class

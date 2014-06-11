@@ -16,7 +16,7 @@ class Dicomextractor_ConfigController extends Dicomextractor_AppController
    public $_components = array('Utility', 'Date');
 
    /** index action*/
-   function indexAction()
+  function indexAction()
     {
     $this->requireAdminPrivileges();
 
@@ -59,7 +59,7 @@ class Dicomextractor_ConfigController extends Dicomextractor_AppController
           }
         if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini"))
           {
-          rename(BASE_PATH."/core/configs/".$this->moduleName.".local.ini",BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old");
+          rename(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old");
           }
         $applicationConfig['global']['dcm2xml'] = $this->_getParam('dcm2xml');
         $applicationConfig['global']['dcmj2pnm'] = $this->_getParam('dcmj2pnm');
@@ -71,5 +71,4 @@ class Dicomextractor_ConfigController extends Dicomextractor_AppController
         }
       }
     }
-
   } // end class

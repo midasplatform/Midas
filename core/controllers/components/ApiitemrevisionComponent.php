@@ -69,7 +69,5 @@ class ApiitemrevisionComponent extends AppComponent
         $itemRevision->getBitstreams());
 
     return $out;
-
     }
-
   } // end of class

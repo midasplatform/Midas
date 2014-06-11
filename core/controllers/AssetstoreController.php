@@ -44,9 +44,7 @@ class AssetstoreController extends AppController
    */
   function indexAction()
     {
-
     }// end indexAction
-
 
   /** change default assetstore*/
   function defaultassetstoreAction()
@@ -68,7 +66,6 @@ class AssetstoreController extends AppController
       }
     echo JsonComponent::encode(array(false, $this->t('Error')));
     }//defaultassetstoreAction
-
 
   /** delete an assetstore */
   function deleteAction()

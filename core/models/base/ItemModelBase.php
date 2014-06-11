@@ -181,7 +181,6 @@ abstract class ItemModelBase extends AppModel
       }
     }//end addReadonlyPolicy
 
-
   /**
    * Duplicate an item in destination folder/community
    *

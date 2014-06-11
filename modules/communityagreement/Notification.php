@@ -77,5 +77,4 @@ class Communityagreement_Notification extends MIDAS_Notification
     $val .= '</span>';
     return $val;
     }
-
   } // end class

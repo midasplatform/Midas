@@ -41,9 +41,8 @@ class Dicomanonymize_ConfigController extends Dicomanonymize_AppController
     $this->disableView();
 
     $repoBrowserUrl = $this->_getParam('repoBrowserUrl');
-    //$this->Setting->setConfig('repoBrowserUrl',  $repoBrowserUrl, $this->moduleName);
+    //$this->Setting->setConfig('repoBrowserUrl', $repoBrowserUrl, $this->moduleName);
 
     echo JsonComponent::encode(array('message' => 'Changes saved', 'status' => 'ok'));
     }
-
   } // end class

@@ -461,7 +461,6 @@ class DashboardModelTest extends DatabaseTestCase
       {
       $this->assertEquals($values[$fid], $scores);
       }
-
     }
 
   /**

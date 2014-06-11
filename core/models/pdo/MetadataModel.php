@@ -124,7 +124,6 @@ class MetadataModel extends MetadataModelBase
       throw new Zend_Exception("Should be a metadata.");
       }
 
-
     $row = $this->database->fetchRow($this->database->select()
                                           ->setIntegrityCheck(false)
                                           ->from($this->getTableValueName($metadataDao->getMetadatatype()))
@@ -173,6 +172,4 @@ class MetadataModel extends MetadataModelBase
       }
     return true;
     } // end function saveMetadataValue()
-
-
   } // end class

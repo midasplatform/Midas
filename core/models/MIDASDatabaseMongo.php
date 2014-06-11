@@ -221,7 +221,6 @@ class MIDASDatabaseMongo implements MIDASDatabaseInterface
     return 0;
     }//end getCountAll
 
-
   /**
    * @method public  get()
    * Generic get function. You can define custom function.
@@ -337,5 +336,4 @@ class MIDASDatabaseMongo implements MIDASDatabaseInterface
       throw new Zend_Exception($e);
       }
     } // end getMongo()
-
   } // end class

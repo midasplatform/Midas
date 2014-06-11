@@ -34,7 +34,6 @@ class Scheduler_RunController extends Scheduler_AppController
    */
   function init()
     {
-
     } // end method indexAction
 
   function indexAction()
@@ -123,5 +122,4 @@ class Scheduler_RunController extends Scheduler_AppController
       $this->Setting->delete($lastRunSetting);
       }
     }
-
   } // end class

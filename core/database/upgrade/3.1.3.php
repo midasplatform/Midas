@@ -30,7 +30,6 @@ class Upgrade_3_1_3 extends MIDASUpgrade
     $this->db->query($sql);
     }
 
-
   public function pgsql()
     {
     $sql = "ALTER TABLE item ALTER COLUMN description TYPE TEXT;";

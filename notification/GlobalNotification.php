@@ -161,7 +161,7 @@ class MIDAS_Notification
       {
       MidasLoader::loadModels($this->_moduleModels, $this->moduleName);
       $modelsArray = Zend_Registry::get('models');
-      foreach($this->_moduleModels as  $value)
+      foreach($this->_moduleModels as $value)
         {
         if(isset($modelsArray[$this->moduleName.$value]))
           {

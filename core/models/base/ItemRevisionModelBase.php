@@ -163,7 +163,6 @@ abstract class ItemRevisionModelBase extends AppModel
     $ItemModel->save($item, true);
     } // end addBitstream
 
-
   /** save */
   public function save($dao)
     {

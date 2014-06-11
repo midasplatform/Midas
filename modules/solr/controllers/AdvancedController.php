@@ -95,5 +95,4 @@ class Solr_AdvancedController extends Solr_AppController
       'displayOffset' => $displayOffset,
       'items' => $items));
     }
-
   } // end class

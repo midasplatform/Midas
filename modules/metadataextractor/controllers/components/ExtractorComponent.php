@@ -95,5 +95,4 @@ class Metadataextractor_ExtractorComponent extends AppComponent
       }
     return;
     }
-
   } // end class

@@ -71,5 +71,4 @@ class Dicomserver_Notification extends ApiEnabled_Notification
               <span>Note: if the latest revision is updated, registration action needs to be rerun.</span>
             </div>';
     }
-
   } // end class

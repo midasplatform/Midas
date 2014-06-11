@@ -18,7 +18,6 @@ class Upgrade_3_1_4 extends MIDASUpgrade
     $this->db->query($sql);
     }
 
-
   public function pgsql()
     {
     $sql = "CREATE TABLE  setting (

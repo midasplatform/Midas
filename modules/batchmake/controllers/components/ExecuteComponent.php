@@ -43,7 +43,6 @@ class Batchmake_ExecuteComponent extends AppComponent
     $symlink = true;
     $exportComponent->exportBitstreams($userDao, $datapath, $itemIds, $symlink);
 
-
     // for each of these items, generate a path that points to a single bitstream
 
     // get the bitstream path, assuming latest revision of item, with one bitstream
@@ -88,7 +87,6 @@ class Batchmake_ExecuteComponent extends AppComponent
     $symlink = true;
     $exportComponent->exportBitstreams($userDao, $datapath, $itemIds, $symlink);
     }
-
 
   /**
    * creates a python config file in a work dir,
@@ -176,12 +174,4 @@ class Batchmake_ExecuteComponent extends AppComponent
       throw new Zend_Exception('Unable to write configuration file: '.$configFilePath);
       }
     }
-
-
-
-
-
-
-
-
   } // end class

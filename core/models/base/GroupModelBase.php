@@ -97,7 +97,6 @@ abstract class GroupModelBase extends AppModel
     $group->saved = false;
     }//end deleteGroup
 
-
   /** create a group
    * @return GroupDao*/
   public function createGroup($communityDao, $name)

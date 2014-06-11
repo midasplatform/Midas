@@ -55,7 +55,6 @@ class Apisolr_SearchController extends ApiController
     $this->_response->setHttpResponseCode(200); // 200 OK
     }
 
-
   /**
    * The options action handles OPTIONS requests; it should respond with
    * the HTTP methods that the server supports for specified URL.

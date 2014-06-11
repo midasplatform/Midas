@@ -130,7 +130,6 @@ class InstallForm extends AppForm
 
     $smartoptimizer = new Zend_Form_Element_Checkbox("smartoptimizer");
 
-
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel('Create configuration');
 

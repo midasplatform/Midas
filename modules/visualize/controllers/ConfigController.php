@@ -80,5 +80,4 @@ class Visualize_ConfigController extends Visualize_AppController
         }
       }
     }
-
   } // end class

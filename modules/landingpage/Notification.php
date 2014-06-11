@@ -20,10 +20,8 @@
 /** notification manager*/
 class Landingpage_Notification extends MIDAS_Notification
   {
-
   /** init notification process*/
   public function init()
     {
     }//end init
-
   } // end class

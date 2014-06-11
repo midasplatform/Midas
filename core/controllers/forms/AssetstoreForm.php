@@ -37,7 +37,6 @@ class AssetstoreForm extends AppForm
     $inputDirectory->setRequired(true);
     $form->addElement($inputDirectory);
 
-
     // Input directory
     $basedirectory = new Zend_Form_Element_Text('basedirectory', array('label' => $this->t('Pick a base directory'),
                                                 'id' => 'assetstoreinputdirectory'));

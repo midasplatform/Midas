@@ -158,8 +158,6 @@ class UserModel extends UserModelBase
     return $return;
     } // end getAll()
 
-
-
   /** Returns a user given its root folder */
   function getByFolder($folder)
     {
@@ -242,7 +240,6 @@ class UserModel extends UserModelBase
                           ->where('g1.user_id = u.user_id')
                           ->where('g2.user_id= ? ', $userId);
 
-
     $sql = $this->database->select();
     if($group)
       {
@@ -270,7 +267,6 @@ class UserModel extends UserModelBase
           ->limit($limit)
           ->setIntegrityCheck(false);
       }
-
 
     if($group)
       {

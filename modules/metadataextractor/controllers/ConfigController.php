@@ -23,7 +23,6 @@ class Metadataextractor_ConfigController extends Metadataextractor_AppController
    public $_moduleForms=array('Config');
    public $_components=array('Utility', 'Date');
 
-
    /** index action*/
    function indexAction()
     {
@@ -57,7 +56,7 @@ class Metadataextractor_ConfigController extends Metadataextractor_AppController
           }
         if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini"))
           {
-          rename(BASE_PATH."/core/configs/".$this->moduleName.".local.ini",BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old");
+          rename(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old");
           }
         $applicationConfig['global']['hachoir'] = $this->_getParam('hachoir');
         $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", $applicationConfig);
@@ -65,5 +64,4 @@ class Metadataextractor_ConfigController extends Metadataextractor_AppController
         }
       }
     }
-
   } // end class

@@ -38,7 +38,6 @@ class Apithumbnailcreator_ItemController extends ApiController
     $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'put', $apiFunctions, 'thumbnailcreator');
     }
 
-
   /**
    * The options action handles OPTIONS requests; it should respond with
    * the HTTP methods that the server supports for specified URL.

@@ -162,5 +162,4 @@ class Tracker_ProducerController extends Tracker_AppController
     $this->Tracker_Producer->save($producer);
     echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Changes saved', 'producer' => $producer));
     }
-
   } // end class

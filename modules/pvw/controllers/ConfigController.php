@@ -85,5 +85,4 @@ class Pvw_ConfigController extends Pvw_AppController
         'status' => $this->ModuleComponent->Paraview->isRunning($instance));
       }
     }
-
   } // end class

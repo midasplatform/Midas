@@ -45,12 +45,10 @@ class Remoteprocessing_JobModelBase extends Remoteprocessing_AppModel
     $this->initialize(); // required
     } // end __construct()
 
-
   /** save */
   public function save($dao)
     {
     $dao->setCreationDate(date("Y-m-d H:i:s"));
     parent::save($dao);
     }
-
   } // end class

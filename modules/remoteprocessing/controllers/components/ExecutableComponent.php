@@ -179,7 +179,6 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
       $script .= "print returnArray[1]\n";
       }
 
-
     $tmpOutputArray = $ouputArray;
     foreach($tmpOutputArray as $ouput)
       {

@@ -138,5 +138,4 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
       }
     $this->view->agreementDao = $agreementDao;
     }
-
   } // end class

@@ -8,5 +8,4 @@ class Ratings_ConfigController extends Ratings_AppController
     {
     $this->requireAdminPrivileges();
     }
-
   } // end class

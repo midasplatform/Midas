@@ -504,5 +504,4 @@ class Validation_ApiComponent extends AppComponent
     return array('dashboard_id' => $dashboardDao->getKey(),
                  'scores' => $scores);
     }
-
   } // end class

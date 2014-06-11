@@ -78,7 +78,6 @@ class IndexControllerTest extends ControllerTestCase
       $this->fail('ListIdentifiers unable to find uuid');
       }
 
-
     $this->resetAll();
     $this->params['verb'] = 'ListMetadataFormats';
     $this->params['identifier'] = 'oai:midas.foo.com:'.$itemsFile[0]->getUuid();

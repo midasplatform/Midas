@@ -37,7 +37,6 @@ class Upgrade_3_0_11 extends MIDASUpgrade
     $this->db->query($sql);
     }
 
-
   public function pgsql()
     {
     $sql = "

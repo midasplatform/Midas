@@ -108,7 +108,7 @@ class UploadComponent extends AppComponent
       case MIDAS_ASSETSTORE_AMAZON:
         throw new Zend_Exception("Amazon support is not implemented yet.");
         break;
-      default :
+      default:
         break;
       }
     return true;
@@ -184,7 +184,6 @@ class UploadComponent extends AppComponent
     $this->getLogger()->info('Link item created ('.$item->getName().', id='.$item->getKey().')');
     return $item;
     }
-
 
   /**
    * Save an uploaded file in the database as an item with a new revision

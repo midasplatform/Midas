@@ -35,7 +35,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     $view->doctype('XHTML1_STRICT');
     }//end _initDoctype
 
-
   /**
    * \fn protected _initConfig()
    * \brief set the configuration  and save it in the registry

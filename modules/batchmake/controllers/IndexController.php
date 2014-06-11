@@ -23,7 +23,6 @@
  */
 class Batchmake_IndexController extends Batchmake_AppController
   {
-
   /**
    * @method indexAction(), will display the index page of the batchmake module.
    */
@@ -31,7 +30,4 @@ class Batchmake_IndexController extends Batchmake_AppController
     {
     $this->view->header = $this->t("Batchmake Server Side Processing");
     }
-
-
-
   } // end class

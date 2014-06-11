@@ -64,7 +64,6 @@ class InstallController extends AppController
       }
     } // end method indexAction
 
-
   /**
    * @method step2Action()
    */
@@ -300,7 +299,6 @@ class InstallController extends AppController
       $this->_redirect("/admin#tabs-modules");
       }
     } // end method step2Action
-
 
   /** ajax function which tests connectivity to a db */
   public function testconnexionAction()

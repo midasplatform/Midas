@@ -233,5 +233,4 @@ class ApidocsComponent extends AppComponent
       }
     return $swaggerDoc;
     }
-
   } // end class

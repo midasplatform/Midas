@@ -23,7 +23,6 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/index/index.i
   <br/>
   <br/>
 
-
   The api will send you an XML RPC response at the following URL:<br/>
   <pre><?php echo $this->serverURL.$this->webroot?>/api/rest?method=METHOD_NAME</pre>
   <br/>
@@ -39,7 +38,7 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/index/index.i
     Available methods:
     <ul class="listmethods">
       <?php
-      foreach( $this->data['api.listmethods'] as $methodname )
+      foreach($this->data['api.listmethods'] as $methodname)
         {
         echo "<li class='methodListElement'>".$methodname." <a class='showHideHelp'>?</a></li>";
         if(isset($this->help[$methodname]))

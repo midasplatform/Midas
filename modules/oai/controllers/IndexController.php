@@ -170,7 +170,6 @@ class Oai_IndexController extends Oai_AppController
         }
       }
 
-
     if(isset($args['verb']))
       {
       switch($args['verb'])
@@ -183,7 +182,7 @@ class Oai_IndexController extends Oai_AppController
         case 'Identify':
           unset($args['verb']);
           // we never use compression in Identify
-          $compress = FALSE;
+          $compress = false;
           include(BASE_PATH . '/modules/oai/library/oai/identify.php');
           break;
 
@@ -209,7 +208,7 @@ class Oai_IndexController extends Oai_AppController
 
         default:
           // we never use compression with errors
-          $compress = FALSE;
+          $compress = false;
           $errors .= oai_error('badVerb', $args['verb']);
         } /*switch */
 
@@ -249,5 +248,4 @@ class Oai_IndexController extends Oai_AppController
       exit;
       }
     }
-
   } // end class

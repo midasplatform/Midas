@@ -62,7 +62,6 @@ class UpgradeComponent extends AppComponent
     $this->init = true;
     }//end init
 
-
   /** get Newest version */
   public function getNewestVersion($text = false)
     {

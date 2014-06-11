@@ -90,5 +90,4 @@ class Statistics_IndexController extends Statistics_AppController
     $this->view->piwikId = $modulesConfig['statistics']->piwik->id;
     $this->view->piwikKey = $modulesConfig['statistics']->piwik->apikey;
     }
-
   } // end class

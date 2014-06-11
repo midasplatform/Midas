@@ -14,7 +14,7 @@ PURPOSE.  See the above copyright notices for more information.
 class Solr_ApiComponent extends AppComponent
   {
  /** Return the user dao */
-  private function _callModuleApiMethod($args, $coreApiMethod, $resource = null,  $hasReturn = true)
+  private function _callModuleApiMethod($args, $coreApiMethod, $resource = null, $hasReturn = true)
     {
     $ApiComponent = MidasLoader::loadComponent('Api'.$resource, 'solr');
     $rtn = $ApiComponent->$coreApiMethod($args);

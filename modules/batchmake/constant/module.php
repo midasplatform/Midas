@@ -19,12 +19,10 @@
 =========================================================================*/
 define("MIDAS_BATCHMAKE_CHECK_IF_READABLE", 0x2);
 define("MIDAS_BATCHMAKE_CHECK_IF_WRITABLE", 0x4);
-define("MIDAS_BATCHMAKE_CHECK_IF_RW",  0x6); // 0x2 + 0x4;
+define("MIDAS_BATCHMAKE_CHECK_IF_RW", 0x6); // 0x2 + 0x4;
 define("MIDAS_BATCHMAKE_CHECK_IF_EXECUTABLE", 0x8);
 define("MIDAS_BATCHMAKE_CHECK_IF_CHMODABLE", 0x10);
 define("MIDAS_BATCHMAKE_CHECK_IF_CHMODABLE_RW", 0x16); // 0x10 + 0x6
-
-
 
 // Condor executables
 define("MIDAS_BATCHMAKE_CONDOR_STATUS", "condor_status");
@@ -36,7 +34,6 @@ define("MIDAS_BATCHMAKE_CONDOR_SUBMIT_DAG", "condor_submit_dag");
 define("MIDAS_BATCHMAKE_EXE", "BatchMake");
 // Batchmake temporary execution dir
 define("MIDAS_BATCHMAKE_SSP_DIR", "SSP");
-
 
 // Extension automatically appended to dagman
 // description file when 'condor_dag_submit' generates it
@@ -63,7 +60,6 @@ define("MIDAS_BATCHMAKE_STATUS_TYPE_INFO", "info");
 define("MIDAS_BATCHMAKE_STATUS_TYPE_WARNING", "warning");
 define("MIDAS_BATCHMAKE_STATUS_TYPE_ERROR", "error");
 
-
 // config states
 define("MIDAS_BATCHMAKE_CONFIG_VALUE_MISSING", "config value missing");
 define("MIDAS_BATCHMAKE_CONFIG_CORRECT", "Configuration is correct");
@@ -76,12 +72,8 @@ define("MIDAS_BATCHMAKE_CONFIGS_PATH", BASE_PATH . "/core/configs/" . MIDAS_BATC
 define("MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG", MIDAS_BATCHMAKE_CONFIGS_PATH . ".local.ini");
 define("MIDAS_BATCHMAKE_MODULE_LOCAL_OLD_CONFIG", MIDAS_BATCHMAKE_CONFIGS_PATH . ".local.ini.old");
 
-
 // submit button name for config
-define("MIDAS_BATCHMAKE_SUBMIT_CONFIG","submitConfig");
-
-
-
+define("MIDAS_BATCHMAKE_SUBMIT_CONFIG", "submitConfig");
 
 // strings
 define("MIDAS_BATCHMAKE_CHANGES_SAVED_STRING", 'Changes saved');
@@ -104,14 +96,12 @@ define("MIDAS_BATCHMAKE_NO_SCRIPT_FOUND", "No script found at: ");
 define("MIDAS_BATCHMAKE_CREATE_TMP_DIR_FAILED", "Failed to create temporary directory: ");
 define("MIDAS_BATCHMAKE_SYMLINK_FAILED", "Failed to create symbolic link: ");
 
-
 // property keys
-define("MIDAS_BATCHMAKE_DIR_KEY",'dir');
-define("MIDAS_BATCHMAKE_PROPERTY_KEY",'property');
-define("MIDAS_BATCHMAKE_STATUS_KEY",'status');
-define("MIDAS_BATCHMAKE_TYPE_KEY",'type');
-
+define("MIDAS_BATCHMAKE_DIR_KEY", 'dir');
+define("MIDAS_BATCHMAKE_PROPERTY_KEY", 'property');
+define("MIDAS_BATCHMAKE_STATUS_KEY", 'status');
+define("MIDAS_BATCHMAKE_TYPE_KEY", 'type');
 
 // properties for the batchmake execution view
-define("MIDAS_BATCHMAKE_AVAILABLE_SCRIPTS",'Batchmake Scripts');
-define("MIDAS_BATCHMAKE_EDIT_CONFIG",'edit Batchmake configuration');
+define("MIDAS_BATCHMAKE_AVAILABLE_SCRIPTS", 'Batchmake Scripts');
+define("MIDAS_BATCHMAKE_EDIT_CONFIG", 'edit Batchmake configuration');

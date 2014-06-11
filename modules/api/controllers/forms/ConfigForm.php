@@ -37,5 +37,4 @@ class Api_ConfigForm extends AppForm
     $form->addElements(array($methodprefix, $submit));
     return $form;
     }
-
   } // end class

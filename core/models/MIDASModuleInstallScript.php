@@ -50,5 +50,4 @@ class MIDASModuleInstallScript
   public function postInstall()
     {
     }
-
   } // end class
