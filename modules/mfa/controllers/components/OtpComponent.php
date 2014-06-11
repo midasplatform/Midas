@@ -128,7 +128,7 @@ class Mfa_OtpComponent extends AppComponent
     /* this is the one time pin + 6-digit hard token or 8 digit smart token */
     radius_put_attr($rh, RADIUS_USER_PASSWORD, $token);
 
-    switch (radius_send_request($rh))
+    switch(radius_send_request($rh))
       {
       case RADIUS_ACCESS_ACCEPT:
         $this->getLogger()->info("MIDAS RADIUS successful authentication " .

@@ -34,13 +34,13 @@ class Dicomserver_ServerComponent extends AppComponent
     $ret['dcmqridx'] = $kwdicomextractorComponent->getApplicationStatus($dcmqridxCommand,
                                                    'dcmqridx');
     $receptionDir= $modulesConfig['dicomserver']->receptiondir;
-    if (empty($receptionDir))
+    if(empty($receptionDir))
       {
       $receptionDir = $this->getDefaultReceptionDir();
       }
     $ret['Reception Directory Writable'] = array(is_writable($receptionDir));
     $peer_aes = $modulesConfig['dicomserver']->peer_aes;
-    if (!empty($peer_aes) && strpos($peer_aes, '(') !== false && strpos($peer_aes, ')') !== false)
+    if(!empty($peer_aes) && strpos($peer_aes, '(') !== false && strpos($peer_aes, ')') !== false)
       {
       $ret['Peer AE List Not Empty'] = array(true, "At least one peer AE is given");
       }
@@ -52,19 +52,19 @@ class Dicomserver_ServerComponent extends AppComponent
     $status_args['storescp_cmd']= $storescpCommand;
     $status_args['dcmqrscp_cmd']= $dcmqrscpCommand;
     $status_results = $apiComponent->status($status_args);
-    if ($status_results['status'] == MIDAS_DICOM_STORESCP_IS_RUNNING + MIDAS_DICOM_DCMQRSCP_IS_RUNNING)
+    if($status_results['status'] == MIDAS_DICOM_STORESCP_IS_RUNNING + MIDAS_DICOM_DCMQRSCP_IS_RUNNING)
       {
       $ret['Status'] = array(true, "DICOM Server is running");
       }
-    else if ($status_results['status'] == MIDAS_DICOM_STORESCP_IS_RUNNING)
+    else if($status_results['status'] == MIDAS_DICOM_STORESCP_IS_RUNNING)
       {
       $ret['Status'] = array(false, 'DICOM C-STORE receiver is running, but DICOM Query/Retrieve service are NOT running');
       }
-    else if ($status_results['status'] == MIDAS_DICOM_DCMQRSCP_IS_RUNNING)
+    else if($status_results['status'] == MIDAS_DICOM_DCMQRSCP_IS_RUNNING)
       {
       $ret['Status'] = array(false, 'DICOM Query/Retrieve services are running, but DICOM C-STORE receiver is NOT running');
       }
-    else if ($status_results['status'] == MIDAS_DICOM_SERVER_NOT_RUNNING)
+    else if($status_results['status'] == MIDAS_DICOM_SERVER_NOT_RUNNING)
       {
       $ret['Status'] = array(false, "DICOM Server is not running");
       }

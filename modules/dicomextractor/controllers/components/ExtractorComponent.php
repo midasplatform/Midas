@@ -119,7 +119,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
       $dataDictVar = $modulesConfig['dicomextractor']->dcmdictpath;
       $dictPaths = explode(":", $dataDictVar);
       $errorInDictVar = false;
-      foreach ($dictPaths as $path)
+      foreach($dictPaths as $path)
         {
         if(!is_readable($path))
           {
@@ -257,7 +257,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
                                            $row['value']);
           }
         }
-      catch (Zend_Exception $exc)
+      catch(Zend_Exception $exc)
         {
         echo $exc->getMessage();
         }

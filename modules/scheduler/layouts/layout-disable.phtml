@@ -20,7 +20,7 @@ echo $this->doctype() ?>
     <!-- Import CSS -->
     <link rel="shortcut icon" href="<?php echo $this->coreWebroot ?>/public/images/icons/favicon.ico" />
     <?php
-    if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
+    if(Zend_Registry::get("configGlobal")->smartoptimizer == 1)
       {
       echo '<link type="text/css" rel="stylesheet" href="' . $this->coreWebroot . '/public/css/layout/midas.layout.css,view.css,jquery-ui.css,form.css,loginForm.css,jquery.treeTable.css,jquery.cluetip.css" />';
       }
@@ -160,7 +160,7 @@ echo $this->doctype() ?>
               echo "<h1>{$this->t('Recently Viewed')}</h1>";
               $recentReverse=array_reverse($this->recentItems);
               echo '<ul>';
-              foreach ($recentReverse as $item)
+              foreach($recentReverse as $item)
                 {
                 echo "<li onclick=\"location.replace('{$this->webroot}/item/{$item->getKey()}');\" class='recentItem' title='".  str_replace("'", '"', $item->getName())." | todo'><a  href='{$this->webroot}/item/{$item->getKey()}'>".sliceRecentItem($item->getName())."</a></li>";
                 }
@@ -170,7 +170,7 @@ echo $this->doctype() ?>
           </div>
           <div class="SubMainContent">
             <?php
-            if (isset($this->header))
+            if(isset($this->header))
               {
               echo "<div class='viewHeader'>{$this->header} </div>";
               }
@@ -194,7 +194,7 @@ echo $this->doctype() ?>
       <hr style="display: none;"/>
     </div>
     <?php
-              if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
+              if(Zend_Registry::get("configGlobal")->smartoptimizer == 1)
                 {
                 echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js,jquery-ui.js,midas.layout.js,jquery.treeTable.js,jquery.cluetip.js"></script>';
                 }

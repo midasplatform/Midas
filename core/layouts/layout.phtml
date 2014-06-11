@@ -40,7 +40,7 @@ echo $this->doctype()
     <!-- Import CSS -->
     <link rel="shortcut icon" href="<?php echo $this->coreWebroot ?>/public/images/icons/favicon.ico" />
     <?php
-    if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
+    if(Zend_Registry::get("configGlobal")->smartoptimizer == 1)
       {
       echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/midas.layout.css,'.
            'view.css,'.
@@ -170,7 +170,7 @@ echo $this->doctype()
                 }
               else
                 {
-                if (!isset(Zend_Registry::get('configGlobal')->closeregistration) || Zend_Registry::get('configGlobal')->closeregistration == "0")
+                if(!isset(Zend_Registry::get('configGlobal')->closeregistration) || Zend_Registry::get('configGlobal')->closeregistration == "0")
                   {
                   echo '<a class="registerLink" href="#" > '.$this->t('Register').'</a>';
                   }
@@ -317,7 +317,7 @@ echo $this->doctype()
               echo "<h1>{$this->t('Recently Viewed')}</h1>";
               $recentReverse=array_reverse($this->recentItems);
               echo '<ul>';
-              foreach ($recentReverse as $item)
+              foreach($recentReverse as $item)
                 {
                 if(is_array($item))
                   {
@@ -330,7 +330,7 @@ echo $this->doctype()
           </div>
           <div class="SubMainContent">
             <?php
-            if (isset($this->header))
+            if(isset($this->header))
               {
               echo "<div class='viewHeader'><span class='headerSpan'>{$this->header} </span></div>";
               }
@@ -367,7 +367,7 @@ echo $this->doctype()
       <hr style="display: none;"/>
     </div>
     <?php
-      if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
+      if(Zend_Registry::get("configGlobal")->smartoptimizer == 1)
         {
         echo '<script type="text/javascript" src="' . $this->coreWebroot.'/public/js/layout/jquery.js,'.
              'jquery-ui.js,'.

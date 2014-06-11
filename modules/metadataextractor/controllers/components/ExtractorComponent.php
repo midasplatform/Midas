@@ -54,7 +54,7 @@ class Metadataextractor_ExtractorComponent extends AppComponent
           $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT,
                        'misc', $name, $property);
           }
-        catch (Zend_Exception $exc)
+        catch(Zend_Exception $exc)
           {
           echo $exc->getMessage();
           }
@@ -87,7 +87,7 @@ class Metadataextractor_ExtractorComponent extends AppComponent
           $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT,
                'misc', $name, $value);
           }
-        catch (Zend_Exception $exc)
+        catch(Zend_Exception $exc)
           {
           echo $exc->getMessage();
           }

@@ -51,7 +51,7 @@ class ApiController extends REST_Controller
     {
     $errorInfo['code'] = $e->getCode();
     $errorInfo['msg'] = $e->getMessage();
-    switch ($errorInfo['code'])
+    switch($errorInfo['code'])
       {
       case MIDAS_INVALID_PARAMETER:
       case MIDAS_INVALID_POLICY:
@@ -130,7 +130,7 @@ class ApiController extends REST_Controller
           $calledFunction = $calledFunction . 'Wrapper';
         }
         $resultsArray = $ApiComponent->$calledFunction($args, $userDao);
-        if (isset($resultsArray))
+        if(isset($resultsArray))
           {
           $apiResults['data'] = $resultsArray;
           }
@@ -139,7 +139,7 @@ class ApiController extends REST_Controller
           $apiResults['msg'] = "succeed!"; // there is no exception if code reaches here
           }
         }
-      catch (Exception $e)
+      catch(Exception $e)
         {
         list($apiResults['error'], $httpCode) = $this->_exceptionHandler($e);
         }

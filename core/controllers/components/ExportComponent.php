@@ -185,7 +185,7 @@ class ExportComponent extends AppComponent
               }
             } // end foreach($bitstreams as $bitstream)
           } // end if(!empty($bitstreams))
-        } // end foreach ($revisions ...
+        } // end foreach($revisions ...
       }
     } // end function exportBitstreams
   } // end class
