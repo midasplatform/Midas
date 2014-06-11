@@ -17,10 +17,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 require_once BASE_PATH.'/modules/@MN@/models/base/ThingModelBase.php';
 
-/** Thing model pdo implementation */
+/** PDO model template for the @MN@ module */
 class @MN_CAP@_ThingModel extends @MN_CAP@_ThingModelBase
-{
-}
-?>
+  {
+  }
