@@ -32,4 +32,4 @@ add_midas_style_test( StyleCoreMIDASDatabaseMongo ${CMAKE_SOURCE_DIR}/core/model
 add_midas_style_test( StyleCoreMIDASDatabaseInterface ${CMAKE_SOURCE_DIR}/core/models/MIDASDatabaseInterface.php )
 add_midas_style_test( StyleCoreMIDASModel ${CMAKE_SOURCE_DIR}/core/models/MIDASModel.php )
 add_midas_style_test( StyleCoreMIDASUpgrade ${CMAKE_SOURCE_DIR}/core/models/MIDASUpgrade.php )
-add_midas_style_test( StyleCoreProductionDbProfiler ${CMAKE_SOURCE_DIR}/core/models/prfiler/ProductionDbProfiler.php )
+add_midas_style_test( StyleCoreProductionDbProfiler ${CMAKE_SOURCE_DIR}/core/models/profiler/ProductionDbProfiler.php )

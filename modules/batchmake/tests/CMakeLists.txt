@@ -17,27 +17,23 @@
 # limitations under the License.
 #=============================================================================
 
-option( MIDAS_RUN_BATCHMAKE_TESTS "Should MIDAS run BatchMake tests?  Specific configuration is required, see modules/batchmake/tests/README." )
-if(MIDAS_RUN_BATCHMAKE_TESTS)
+set( module_name batchmake )
+to_titlecase( ${module_name} module_name_titlecase )
 
-  # functionality tests will be added by the subdirectories 
+option( MIDAS_RUN_BATCHMAKE_TESTS "Should MIDAS run BatchMake tests? Specific configuration is required, see modules/batchmake/tests/README." )
+
+if(MIDAS_RUN_BATCHMAKE_TESTS)
   add_subdirectory( models )
   add_subdirectory( controllers )
-
-  # Style tests for code
-  add_midas_style_test( StyleBatchmakeControllers ${CMAKE_SOURCE_DIR}/modules/batchmake/controllers )
-  add_midas_style_test( StyleBatchmakeLibrary ${CMAKE_SOURCE_DIR}/modules/batchmake/library )
-
-  add_midas_style_test( StyleBatchmakeModels ${CMAKE_SOURCE_DIR}/modules/batchmake/models )
-  add_midas_style_test( StyleBatchmakeModelsBase ${CMAKE_SOURCE_DIR}/modules/batchmake/models/base )
-  add_midas_style_test( StyleBatchmakeModelsDAO ${CMAKE_SOURCE_DIR}/modules/batchmake/models/dao )
-  add_midas_style_test( StyleBatchmakeModelPDO ${CMAKE_SOURCE_DIR}/modules/batchmake/models/pdo )
-
-  # Style tests for test code
-  add_midas_style_test( StyleTestsBatchmakeControllers ${CMAKE_SOURCE_DIR}/modules/batchmake/tests/controllers )
-  add_midas_style_test( StyleTestsBatchmakeComponents ${CMAKE_SOURCE_DIR}/modules/batchmake/tests/controllers/components )
-  add_midas_style_test( StyleTestsBatchmakeLibrary ${CMAKE_SOURCE_DIR}/modules/batchmake/tests/library )
-  add_midas_style_test( StyleTestsBatchmakeModels ${CMAKE_SOURCE_DIR}/modules/batchmake/tests/models )
-  add_midas_style_test( StyleTestsBatchmakeModelsBase ${CMAKE_SOURCE_DIR}/modules/batchmake/tests/models/base )
-
 endif()
+
+add_midas_style_test( Style${module_name_titlecase}AppController ${CMAKE_SOURCE_DIR}/modules/${module_name}/AppController.php )
+add_midas_style_test( Style${module_name_titlecase}Constant ${CMAKE_SOURCE_DIR}/modules/${module_name}/constant )
+add_midas_style_test( Style${module_name_titlecase}Controllers ${CMAKE_SOURCE_DIR}/modules/${module_name}/controllers )
+add_midas_style_test( Style${module_name_titlecase}Library ${CMAKE_SOURCE_DIR}/modules/${module_name}/library )
+add_midas_style_test( Style${module_name_titlecase}Models ${CMAKE_SOURCE_DIR}/modules/${module_name}/models )
+add_midas_style_test( Style${module_name_titlecase}Notification ${CMAKE_SOURCE_DIR}/modules/${module_name}/Notification.php )
+
+add_midas_style_test( Style${module_name_titlecase}TestsControllers ${CMAKE_SOURCE_DIR}/modules/${module_name}/tests/controllers )
+add_midas_style_test( Style${module_name_titlecase}TestsLibrary ${CMAKE_SOURCE_DIR}/modules/${module_name}/tests/library )
+add_midas_style_test( Style${module_name_titlecase}TestsModels ${CMAKE_SOURCE_DIR}/modules/${module_name}/tests/models )

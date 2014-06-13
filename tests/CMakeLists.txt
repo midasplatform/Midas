@@ -37,6 +37,13 @@ if(NOT EXISTS ${CMAKE_BINARY_DIR}/xdebugCoverage)
   file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/xdebugCoverage)
 endif()
 
+macro(to_titlecase Arg Result)
+  string(SUBSTRING ${Arg} 0 1 ArgHead)
+  string(TOUPPER ${ArgHead} ArgHead)
+  string(SUBSTRING ${Arg} 1 -1 ArgTail)
+  set(${Result} ${ArgHead}${ArgTail})
+endmacro(to_titlecase)
+
 function(add_midas_test TestName TestFile)
   add_midas_mysql_test(${TestName} ${TestFile})
   add_midas_pgsql_test(${TestName} ${TestFile})

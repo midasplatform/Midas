@@ -17,9 +17,14 @@
 # limitations under the License.
 #=============================================================================
 
+set( module_name archive )
+to_titlecase( ${module_name} module_name_titlecase )
+
 add_subdirectory( controllers )
 
-# Style
-add_midas_style_test( StyleArchiveControllers ${CMAKE_SOURCE_DIR}/modules/archive/controllers )
-add_midas_style_test( StyleTestsArchiveControllers ${CMAKE_SOURCE_DIR}/modules/archive/tests/controllers )
-add_midas_style_test( StyleArchiveNotification ${CMAKE_SOURCE_DIR}/modules/archive/Notification.php )
+add_midas_style_test( Style${module_name_titlecase}AppController ${CMAKE_SOURCE_DIR}/modules/${module_name}/AppController.php )
+add_midas_style_test( Style${module_name_titlecase}Constant ${CMAKE_SOURCE_DIR}/modules/${module_name}/constant )
+add_midas_style_test( Style${module_name_titlecase}Controllers ${CMAKE_SOURCE_DIR}/modules/${module_name}/controllers )
+add_midas_style_test( Style${module_name_titlecase}Notification ${CMAKE_SOURCE_DIR}/modules/${module_name}/Notification.php )
+
+add_midas_style_test( Style${module_name_titlecase}TestsControllers ${CMAKE_SOURCE_DIR}/modules/${module_name}/tests/controllers )
