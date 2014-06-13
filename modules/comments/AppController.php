@@ -18,7 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
+/** App controller for the comments module */
 class Comments_AppController extends MIDAS_GlobalModule
   {
   public $moduleName = 'comments';
-  } // end class
+  }

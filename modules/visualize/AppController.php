@@ -18,7 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
+/** App controller for the visualize module */
 class Visualize_AppController extends MIDAS_GlobalModule
   {
-  public $moduleName='visualize';
-  } // end class
+  public $moduleName = 'visualize';
+  }

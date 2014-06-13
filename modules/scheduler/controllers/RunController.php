@@ -18,10 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * TaskController
- *
- */
+/** Run controller for the scheduler module */
 class Scheduler_RunController extends Scheduler_AppController
   {
   public $_models = array('Setting');
@@ -36,6 +33,7 @@ class Scheduler_RunController extends Scheduler_AppController
     {
     } // end method indexAction
 
+  /** Index action */
   function indexAction()
     {
     $startTime = time();

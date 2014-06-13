@@ -17,9 +17,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
+/** Config form for the metadataextractor module */
 class Metadataextractor_ConfigForm extends AppForm
   {
-
   /** create  form */
   public function createConfigForm()
     {
@@ -36,4 +37,4 @@ class Metadataextractor_ConfigForm extends AppForm
     $form->addElements(array($hachoir, $submit));
     return $form;
     }
-  } // end class
+  }

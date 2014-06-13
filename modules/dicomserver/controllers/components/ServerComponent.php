@@ -23,12 +23,11 @@ include_once BASE_PATH . '/library/KWUtils.php';
 /** Uploade dicom files */
 class Dicomserver_ServerComponent extends AppComponent
   {
-
   /**
    * Verify that DICOM server is setup properly
    */
   public function isDICOMServerWorking()
-  {
+    {
     $ret = array();
     $modulesConfig = Zend_Registry::get('configsModules');
     $dcm2xmlCommand = $modulesConfig['dicomserver']->dcm2xml;
@@ -43,7 +42,7 @@ class Dicomserver_ServerComponent extends AppComponent
                                                    'dcmqrscp');
     $ret['dcmqridx'] = $kwdicomextractorComponent->getApplicationStatus($dcmqridxCommand,
                                                    'dcmqridx');
-    $receptionDir= $modulesConfig['dicomserver']->receptiondir;
+    $receptionDir = $modulesConfig['dicomserver']->receptiondir;
     if(empty($receptionDir))
       {
       $receptionDir = $this->getDefaultReceptionDir();
@@ -59,8 +58,8 @@ class Dicomserver_ServerComponent extends AppComponent
       $ret['Peer AE List Not Empty'] = array(false, "Please input your peer AEs!");
       }
     $apiComponent = MidasLoader::loadComponent('Api', 'dicomserver');
-    $status_args['storescp_cmd']= $storescpCommand;
-    $status_args['dcmqrscp_cmd']= $dcmqrscpCommand;
+    $status_args['storescp_cmd'] = $storescpCommand;
+    $status_args['dcmqrscp_cmd'] = $dcmqrscpCommand;
     $status_results = $apiComponent->status($status_args);
     if($status_results['status'] == MIDAS_DICOM_STORESCP_IS_RUNNING + MIDAS_DICOM_DCMQRSCP_IS_RUNNING)
       {
@@ -84,13 +83,13 @@ class Dicomserver_ServerComponent extends AppComponent
       }
 
     return $ret;
-  }
+    }
 
   /**
    * Get default reception directory
    */
   public function getDefaultReceptionDir()
-  {
+    {
     $utilityComponent = MidasLoader::loadComponent('Utility');
     $default_reception_dir = $utilityComponent->getTempDirectory('');
     if(substr($default_reception_dir, -1) == '/')
@@ -104,7 +103,7 @@ class Dicomserver_ServerComponent extends AppComponent
       }
 
     return $default_reception_dir;
-  }
+    }
 
   /**
    * Generate the configuaration file used for dcmqrscp

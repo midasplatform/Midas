@@ -18,19 +18,13 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * TaskController
- *
- */
+/** Workflow controller for the scheduler module */
 class Scheduler_WorkflowController extends Scheduler_AppController
   {
-  public $_moduleModels=array();
-  public $_moduleComponents=array('Ezc');
+  public $_moduleModels = array();
+  public $_moduleComponents = array('Ezc');
 
-  /**
-   * @method initAction()
-   *  Index Action (first action when we access the application)
-   */
+  /** init action (first action when we access the application) */
   function init()
     {
     } // end method indexAction
@@ -39,8 +33,8 @@ class Scheduler_WorkflowController extends Scheduler_AppController
   function createAction()
     {
     $definition = $this->ModuleComponent->Ezc->initWorkflowDefinitionStorage();
-    // Load latest version of workflow named "Test".
 
+    // Load latest version of workflow named "Test".
     $workflow = new ezcWorkflow('Test');
     $input = new ezcWorkflowNodeInput(
       array('item1' => new ezcWorkflowConditionIsObject, 'item2' => new ezcWorkflowConditionIsObject)
@@ -74,7 +68,7 @@ class Scheduler_WorkflowController extends Scheduler_AppController
     {
     $visitor = new ezcWorkflowVisitorVisualization;
     $workflow->accept($visitor);
-    $modulesConfig=Zend_Registry::get('configsModules');
+    $modulesConfig = Zend_Registry::get('configsModules');
     $command = $modulesConfig['scheduler']->dot;
     $dotFile = $this->getTempDirectory().'/graphviz_workflow_'.$workflow->__get('id').'.dot';
     $image = $this->getTempDirectory().'/graphviz_workflow_'.$workflow->__get('id').'.png';

@@ -18,7 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
+/** App controller for the statistics module */
 class Statistics_AppController extends MIDAS_GlobalModule
   {
-  public $moduleName='statistics';
-  } // end class
+  public $moduleName = 'statistics';
+  }

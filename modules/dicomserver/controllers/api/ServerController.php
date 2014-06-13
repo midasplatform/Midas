@@ -23,7 +23,7 @@
  */
 class Apidicomserver_ServerController extends ApiController
   {
- /**
+  /**
    * The index action handles index/list requests; it should respond with a
    * list of the requested resources.
    */

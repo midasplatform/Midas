@@ -111,8 +111,8 @@ class Mfa_OtpComponent extends AppComponent
     if(!radius_add_server($rh, $radiusserver, $radiusport, $radiuspw,
       $radiusTimeout, $radiusMaxTries))
       {
-        throw new Zend_Exception('Cannot connect to the RADIUS server: ' .
-          radius_strerror($rh));
+      throw new Zend_Exception('Cannot connect to the RADIUS server: ' .
+        radius_strerror($rh));
       }
 
     if(!radius_create_request($rh, RADIUS_ACCESS_REQUEST))

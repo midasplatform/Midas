@@ -64,7 +64,7 @@ class Dicomserver_ApiComponent extends AppComponent
     return $this->_callModuleApiMethod($args, 'status', 'server');
     }
 
- /**
+  /**
    * Stop DICOM server
    * @param storescp_cmd (Optional) The command to run storescp
    * @param dcmqrscp_cmd (Optional) The command to run dcmqrscp

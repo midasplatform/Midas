@@ -18,7 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
+/** App DAO for the thumbnailcreator module */
 class Thumbnailcreator_AppDao extends MIDAS_GlobalDao
   {
-    public $moduleName='thumbnailcreator';
-  } // end class
+  public $moduleName = 'thumbnailcreator';
+  }

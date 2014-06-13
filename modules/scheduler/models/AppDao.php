@@ -18,7 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
+/** App DAO for the scheduler module */
 class Scheduler_AppDao extends MIDAS_GlobalDao
   {
-    public $moduleName = 'scheduler';
-  } // end class
+  public $moduleName = 'scheduler';
+  }

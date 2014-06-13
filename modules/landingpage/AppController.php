@@ -18,7 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
+/** App controller for the landingpage module */
 class Landingpage_AppController extends MIDAS_GlobalModule
   {
-    public $moduleName='landingpage';
-  } // end class
+  public $moduleName = 'landingpage';
+  }

@@ -98,7 +98,7 @@ class Solr_ApisearchComponent extends AppComponent
             }
           $tmp = $revision->toArray();
           $revisionsArray[] = $tmp['itemrevision_id'];
-         }
+          }
         $itemInfo['revisions'] = $revisionsArray;
         // get bitstreams only from last revision
         $bitstreamArray = array();

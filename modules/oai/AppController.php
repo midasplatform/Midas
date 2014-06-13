@@ -18,7 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
+/** App controller for the oai module */
 class Oai_AppController extends MIDAS_GlobalModule
   {
-    public $moduleName='oai';
-  } // end class
+  public $moduleName = 'oai';
+  }

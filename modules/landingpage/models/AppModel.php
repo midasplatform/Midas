@@ -18,6 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
+/** Base model class for the landingpage module */
 class Landingpage_AppModel extends MIDASModel
   {
   }

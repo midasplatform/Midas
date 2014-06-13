@@ -18,7 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
+/** App controller for the thumbnailcreator module */
 class Thumbnailcreator_AppController extends MIDAS_GlobalModule
   {
-    public $moduleName='thumbnailcreator';
-  } // end class
+  public $moduleName = 'thumbnailcreator';
+  }

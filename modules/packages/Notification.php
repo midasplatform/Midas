@@ -20,6 +20,7 @@
 
 require_once BASE_PATH.'/modules/api/library/APIEnabledNotification.php';
 
+/** Notification manager for the packages module */
 class Packages_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'packages';
@@ -54,8 +55,8 @@ class Packages_Notification extends ApiEnabled_Notification
     $list = array();
     foreach($enabledProjects as $project)
       {
-      $list[$project->name.' Packages'] =
-        array($this->webroot.'/community/'.$project->getCommunityId().'#Packages',
+      $list[$project->name.' Packages'] = array(
+        $this->webroot.'/community/'.$project->getCommunityId().'#Packages',
         $this->webroot.'/modules/'.$this->moduleName.'/public/images/package.png');
       }
     return $list;

@@ -18,7 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
+/** App controller for the dicomserver module */
 class Dicomserver_AppController extends MIDAS_GlobalModule
   {
-  public $moduleName='dicomserver';
-  } // end class
+  public $moduleName = 'dicomserver';
+  }

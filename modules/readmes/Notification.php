@@ -17,6 +17,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /**
  * Readmes_Notification
  *
@@ -35,9 +36,8 @@ class Readmes_Notification extends MIDAS_Notification
   public function init()
     {
     $this->addCallBack('CALLBACK_CORE_FOLDER_VIEW_JS', 'getFolderViewJs');
-    $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_VIEW_JSS',
-                       'getCommunityViewJs');
-    }//end init
+    $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_VIEW_JSS', 'getCommunityViewJs');
+    }
 
   /**
    * callback function to get javascript for the folder
@@ -51,10 +51,15 @@ class Readmes_Notification extends MIDAS_Notification
     return array($moduleUriroot.'/public/js/readmes.folder.js');
     }
 
+  /**
+   * callback function to get javascript for the community
+   *
+   * @return array
+   */
   public function getCommunityViewJs()
     {
     $fc = Zend_Controller_Front::getInstance();
     $moduleUriroot = $fc->getBaseUrl().'/modules/readmes';
     return array($moduleUriroot.'/public/js/readmes.community.js');
     }
-  } // end class
+  }

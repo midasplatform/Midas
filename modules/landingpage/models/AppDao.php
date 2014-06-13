@@ -18,7 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
+/** App DAO for the landingpage module */
 class Landingpage_AppDao extends MIDAS_GlobalDao
   {
-    public $moduleName='landingpage';
-  } // end class
+  public $moduleName = 'landingpage';
+  }

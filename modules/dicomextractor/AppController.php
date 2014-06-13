@@ -18,7 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
+/** App controller for the dicomextractor module */
 class Dicomextractor_AppController extends MIDAS_GlobalModule
   {
-  public $moduleName='dicomextractor';
-  } // end class
+  public $moduleName = 'dicomextractor';
+  }

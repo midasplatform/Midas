@@ -18,12 +18,14 @@
  limitations under the License.
 =========================================================================*/
 
+/** Config controller for the ldap module */
 class Ldap_ConfigController extends Ldap_AppController
   {
-   public $_moduleForms = array('Config');
-   public $_components = array('Utility');
+  public $_moduleForms = array('Config');
+  public $_components = array('Utility');
 
-   function indexAction()
+  /** Index action */
+  function indexAction()
     {
     $this->requireAdminPrivileges();
 
@@ -94,4 +96,4 @@ class Ldap_ConfigController extends Ldap_AppController
         }
       }
     }
-  } // end class
+  }

@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Base model class for the module
- */
+/** Base model class for the tracker module */
 class Tracker_AppModel extends MIDASModel
   {
   public $moduleName = 'tracker';

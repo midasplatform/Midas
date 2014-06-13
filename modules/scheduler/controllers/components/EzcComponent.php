@@ -18,29 +18,31 @@
  limitations under the License.
 =========================================================================*/
 
-// load ezc autoloader
-set_include_path( BASE_PATH."/modules/scheduler/library/ezcomponents" . PATH_SEPARATOR .  get_include_path());
+set_include_path(BASE_PATH."/modules/scheduler/library/ezcomponents" . PATH_SEPARATOR .  get_include_path());
 require_once "Base/src/base.php";
-function __autoload( $className )
+
+/** Load ezc autoloader */
+function __autoload($className)
   {
-  ezcBase::autoload( $className );
+  ezcBase::autoload($className);
   }
 
+/** Exc component for the scheduler module */
 class Scheduler_EzcComponent extends AppComponent
   {
+  /** Init workflow definition storage */
   public function initWorkflowDefinitionStorage()
     {
     $autoloader = Zend_Loader_Autoloader::getInstance();
     $autoloader->pushAutoloader(array('ezcBase', 'autoload'), 'ezc');
     // Set up database connection.
     $configDatabase = Zend_Registry::get('configDatabase');
-    $db = ezcDbFactory::create( 'mysql://'.$configDatabase->database->params->username.':'.$configDatabase->database->params->password.'@'.$configDatabase->database->params->host.'/'.$configDatabase->database->params->dbname );
+    $db = ezcDbFactory::create('mysql://'.$configDatabase->database->params->username.':'.$configDatabase->database->params->password.'@'.$configDatabase->database->params->host.'/'.$configDatabase->database->params->dbname);
 
     // Set up workflow definition storage (database).
-    $definition = new ezcWorkflowDatabaseDefinitionStorage( $db );
+    $definition = new ezcWorkflowDatabaseDefinitionStorage($db);
     $options = $definition->__get('options');
     $options->__set('prefix', 'scheduler_');
     return $definition;
     }
-
-  } // end class
+  }

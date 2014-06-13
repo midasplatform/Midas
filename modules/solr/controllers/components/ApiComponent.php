@@ -21,7 +21,7 @@
 /** Component for api methods */
 class Solr_ApiComponent extends AppComponent
   {
- /** Return the user dao */
+  /** Return the user dao */
   private function _callModuleApiMethod($args, $coreApiMethod, $resource = null, $hasReturn = true)
     {
     $ApiComponent = MidasLoader::loadComponent('Api'.$resource, 'solr');

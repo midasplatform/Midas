@@ -18,6 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
+/** Extractor component for the metadataextractor module */
 class Metadataextractor_ExtractorComponent extends AppComponent
   {
   /** extract metadata */
@@ -62,9 +63,9 @@ class Metadataextractor_ExtractorComponent extends AppComponent
       }
     else
       {
-      $modulesConfig=Zend_Registry::get('configsModules');
+      $modulesConfig = Zend_Registry::get('configsModules');
       $command = $modulesConfig['metadataextractor']->hachoir;
-      exec(str_replace("'", '"',$command).' "'.$bitstream->getFullPath().'"', $output);
+      exec(str_replace("'", '"', $command).' "'.$bitstream->getFullPath().'"', $output);
 
       if(!isset($output[0]) || $output[0] != "Metadata:")
         {

@@ -18,7 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
+/** App controller for the scheduler module */
 class Scheduler_AppController extends MIDAS_GlobalModule
   {
-  public $moduleName='scheduler';
-  } // end class
+  public $moduleName = 'scheduler';
+  }

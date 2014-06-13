@@ -18,7 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
+/** App controller for the batchmake module */
 class Batchmake_AppController extends MIDAS_GlobalModule
   {
-  public $moduleName='batchmake';
-  } // end class
+  public $moduleName = 'batchmake';
+  }

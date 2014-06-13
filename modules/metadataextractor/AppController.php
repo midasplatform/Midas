@@ -18,7 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
+/** App controller for the metadataextractor module */
 class Metadataextractor_AppController extends MIDAS_GlobalModule
   {
-  public $moduleName='metadataextractor';
-  } // end class
+  public $moduleName = 'metadataextractor';
+  }

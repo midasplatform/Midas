@@ -93,7 +93,7 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
         }
       }
 
-   $sql = $this->database->select()
+    $sql = $this->database->select()
           ->setIntegrityCheck(false)
           ->where('priority >= ?', $minPriority)
           ->where('status = ?', SCHEDULER_JOB_STATUS_TORUN)

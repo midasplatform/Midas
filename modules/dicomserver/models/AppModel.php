@@ -18,6 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
+/** Base model class for the dicomserver module */
 class Dicomserver_AppModel extends MIDASModel
   {
   public $moduleName = 'dicomserver';

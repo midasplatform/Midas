@@ -17,13 +17,14 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** notification manager*/
+
+/** notification manager */
 class Oai_Notification extends MIDAS_Notification
   {
-  public $_models=array();
+  public $_models = array();
 
   /** init notification process*/
   public function init()
     {
-    }//end init
-  } // end class
+    }
+  }

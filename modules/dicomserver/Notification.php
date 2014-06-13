@@ -45,11 +45,12 @@ class Dicomserver_Notification extends ApiEnabled_Notification
   public function getItemMenuLink($params)
     {
     $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
-    return '<li id="dicomRegisterListItem" style="display: none;">'.
-      '<a id="dicomRegisterAction" href="#">'.
-      '<img alt="" src="'.$webroot.'/modules/'.
-      $this->moduleName.'/public/images/dicom_register_icon.jpg" /> '.
-      $this->t('Register for DICOM Query/Retrieve').'</a></li>';
+    $html = '<li id="dicomRegisterListItem" style="display: none;">';
+    $html .= '<a id="dicomRegisterAction" href="#">';
+    $html .= '<img alt="" src="'.$webroot.'/modules/';
+    $html .= $this->moduleName.'/public/images/dicom_register_icon.jpg" /> ';
+    $html .= $this->t('Register for DICOM Query/Retrieve').'</a></li>';
+    return $html;
     }
 
   /** Get javascript for the item view that will specify the ajax call

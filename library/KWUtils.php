@@ -13,14 +13,12 @@ This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
-?>
-<?php
+
 /**
  * globally useful utility functions.
  */
 class KWUtils
-{
-
+  {
   CONST DEFAULT_MKDIR_MODE = 0775;
 
   /**
@@ -83,7 +81,6 @@ class KWUtils
     return (strtolower(substr(PHP_OS, 0, 3)) == "win");
     }
 
-
   /**
    * @method escapeCommand
    * will escape a command respecting the format of the current platform
@@ -130,7 +127,7 @@ class KWUtils
         {
         if(!getcwd())
           {
-          throw new Exception ('getcwd failed');
+          throw new Exception('getcwd failed');
           }
         $currCwd = getcwd();
 
@@ -158,7 +155,6 @@ class KWUtils
       }
     }
 
-
   /**
    * @method isLinux()
    * @return True if the current platform is Linux
@@ -167,8 +163,6 @@ class KWUtils
     {
     return (strtolower(substr(PHP_OS, 0, 5)) == "linux");
     }
-
-
 
   /**
    * @method prepareExecCommand
@@ -198,7 +192,6 @@ class KWUtils
     // glue together app_name and params using spaces
     return escapeshellarg($app_name).' '.implode(' ', $escapedParams);
     }
-
 
   /**
    * @method isExecutable will return true if the app can be found and is
@@ -239,7 +232,7 @@ class KWUtils
    * can't be found, or if $check_execution_flag  is set and the app is not
    * executable.
    */
-  public static function findApp($app_name, $check_execution_flag )
+  public static function findApp($app_name, $check_execution_flag)
     {
     $PHP_PATH_SEPARATOR = ":";
     // split path
@@ -274,9 +267,6 @@ class KWUtils
     return $path_to_app;
     }
 
-
-
-
   /**
    * @method formatAppName
    * Format the application name according to the platform.
@@ -289,7 +279,6 @@ class KWUtils
       }
     return $app_name;
     }
-
 
   /**
    * @method recursiveRemoveDirectory
@@ -345,5 +334,4 @@ class KWUtils
       }
     return true;
     }
-
-}
+  }

@@ -18,10 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * AppDao for the module.
- */
+/** App DAO for the tracker module */
 class Tracker_AppDao extends MIDAS_GlobalDao
   {
   public $moduleName = 'tracker';
-  } // end class
+  }

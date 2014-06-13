@@ -18,12 +18,13 @@
  limitations under the License.
 =========================================================================*/
 
+/** Config controller for the dicomextractor controller */
 class Dicomextractor_ConfigController extends Dicomextractor_AppController
   {
-   public $_moduleForms = array('Config');
-   public $_components = array('Utility', 'Date');
+  public $_moduleForms = array('Config');
+  public $_components = array('Utility', 'Date');
 
-   /** index action*/
+  /** index action */
   function indexAction()
     {
     $this->requireAdminPrivileges();
@@ -72,8 +73,7 @@ class Dicomextractor_ConfigController extends Dicomextractor_AppController
         $applicationConfig['global']['dcm2xml'] = $this->_getParam('dcm2xml');
         $applicationConfig['global']['dcmj2pnm'] = $this->_getParam('dcmj2pnm');
         $applicationConfig['global']['dcmftest'] = $this->_getParam('dcmftest');
-        $applicationConfig['global']['dcmdictpath'] =
-          $this->_getParam('dcmdictpath');
+        $applicationConfig['global']['dcmdictpath'] = $this->_getParam('dcmdictpath');
         $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changes saved'));
         }

@@ -128,7 +128,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
     $log_dir = $incoming_dir . LOG_DIR;
     if(!file_exists($log_dir))
       {
-       KWUtils::mkDir($log_dir, 0777);
+      KWUtils::mkDir($log_dir, 0777);
       }
     $dcmqrscp_cmd = 'dcmqrscp';
     if(!empty($args['dcmqrscp_cmd']))
@@ -138,7 +138,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
     $dcmqrscp_pacs_dir = $incoming_dir . PACS_DIR;
     if(!file_exists($dcmqrscp_pacs_dir))
       {
-       KWUtils::mkDir($dcmqrscp_pacs_dir, 0777);
+      KWUtils::mkDir($dcmqrscp_pacs_dir, 0777);
       }
     // DICOM Store Service Receiver
     $python_cmd = 'python';
@@ -220,7 +220,8 @@ class Dicomserver_ApiserverComponent extends AppComponent
 
     $ret = array();
     if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
-      { // currently not supported in windows
+      {
+      // currently not supported in windows
       $ret['status'] = MIDAS_DICOM_SERVER_NOT_SUPPORTED;
       return $ret;
       }
@@ -242,7 +243,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
       if(!strcmp($process, $storescp_cmd))
         {
         $ret['status'] = MIDAS_DICOM_STORESCP_IS_RUNNING;
-        # need to be updated if python script is changed
+        // need to be updated if python script is changed
         $ret['user_email'] = $fields[21];
         $runningSCPs += 1;
         if($runningSCPs == $totalSCPs)
@@ -264,7 +265,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
     return $ret;
     }
 
- /**
+  /**
    * Stop DICOM server
    * @path /dicomserver/server/stop
    * @http POST
@@ -324,7 +325,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
     $log_dir = $incoming_dir . LOG_DIR;
     if(!file_exists($log_dir))
       {
-       KWUtils::mkDir($log_dir, 0777);
+      KWUtils::mkDir($log_dir, 0777);
       }
 
     $python_cmd = 'python';

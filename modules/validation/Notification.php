@@ -20,15 +20,16 @@
 
 require_once BASE_PATH . '/modules/api/library/APIEnabledNotification.php';
 
+/** Notification manager for the validation module */
 class Validation_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'validation';
-  public $_moduleComponents=array('Api');
-  public $_models=array();
+  public $_moduleComponents = array('Api');
+  public $_models = array();
 
   /** init notification process*/
   public function init()
     {
     $this->enableWebAPI($this->moduleName);
-    } //end init
-  } // end class
+    }
+  }

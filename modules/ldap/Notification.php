@@ -125,7 +125,7 @@ class Ldap_Notification extends MIDAS_Notification
     $server = false;
     $backup = false;
 
-     if(isset($ldap) && $ldap !== false)
+    if(isset($ldap) && $ldap !== false)
       {
       if($proxybasedn != '')
         {
@@ -292,11 +292,12 @@ class Ldap_Notification extends MIDAS_Notification
 
               $names = explode(' ', $givenname);
               $firstname = ' ';
-              if(count($names) > 1)
+              $namesCount = count($names);
+              if($namesCount > 1)
                 {
                 $firstname = $names[0];
                 $lastname = $names[1];
-                for($i = 2; $i < count($names); $i++)
+                for($i = 2; $i < $namesCount; $i++)
                   {
                   $lastname .= ' '.$names[$i];
                   }

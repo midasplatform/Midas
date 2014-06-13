@@ -18,7 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
+/** App controller for the ratings module */
 class Ratings_AppController extends MIDAS_GlobalModule
   {
   public $moduleName = 'ratings';
-  } // end class
+  }

@@ -18,13 +18,14 @@
  limitations under the License.
 =========================================================================*/
 
+/** Config controller for the metadataextractor module */
 class Metadataextractor_ConfigController extends Metadataextractor_AppController
   {
-   public $_moduleForms=array('Config');
-   public $_components=array('Utility', 'Date');
+  public $_moduleForms = array('Config');
+  public $_components = array('Utility', 'Date');
 
-   /** index action*/
-   function indexAction()
+  /** index action*/
+  function indexAction()
     {
     $this->requireAdminPrivileges();
 

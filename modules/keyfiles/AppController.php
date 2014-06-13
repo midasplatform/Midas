@@ -18,7 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
+/** App controller for the keyfiles module */
 class Keyfiles_AppController extends MIDAS_GlobalModule
   {
   public $moduleName = 'keyfiles';
-  } // end class
+  }

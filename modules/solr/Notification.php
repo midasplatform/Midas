@@ -262,8 +262,7 @@ class Solr_Notification extends ApiEnabled_Notification
     $limit = $args['limit'];
     $user = $args['user'];
 
-    $solrQuery = 'name: '.$query.
-                 ' OR description: '.$query;
+    $solrQuery = 'name: '.$query.' OR description: '.$query;
 
     $folders = array();
     try
@@ -343,6 +342,7 @@ class Solr_Notification extends ApiEnabled_Notification
     {
     return array('Advanced search' => array(
       $this->webroot.'/solr/advanced',
-      $this->webroot.'/core/public/images/icons/magnifier.png'));
+      $this->webroot.'/core/public/images/icons/magnifier.png'
+      ));
     }
   } // end class

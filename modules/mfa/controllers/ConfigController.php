@@ -33,17 +33,11 @@ class Mfa_ConfigController extends Mfa_AppController
   function indexAction()
     {
     $userOtpSetting = $this->Setting->GetValueByName('userOtpControl', 'mfa');
-    $this->view->radiusServer =
-      $this->Setting->GetValueByName('radiusServer', 'mfa');
-    $this->view->radiusPort =
-      $this->Setting->GetValueByName('radiusPort', 'mfa');
-    $this->view->radiusPassword =
-      $this->Setting->GetValueByName('radiusPassword', 'mfa');
-    $this->view->radiusTimeout =
-      $this->Setting->GetValueByName('radiusTimeout', 'mfa');
-    $this->view->radiusMaxTries =
-      $this->Setting->GetValueByName('radiusMaxTries', 'mfa');
-
+    $this->view->radiusServer = $this->Setting->GetValueByName('radiusServer', 'mfa');
+    $this->view->radiusPort = $this->Setting->GetValueByName('radiusPort', 'mfa');
+    $this->view->radiusPassword = $this->Setting->GetValueByName('radiusPassword', 'mfa');
+    $this->view->radiusTimeout = $this->Setting->GetValueByName('radiusTimeout', 'mfa');
+    $this->view->radiusMaxTries = $this->Setting->GetValueByName('radiusMaxTries', 'mfa');
     $this->view->userOtpControl = $userOtpSetting === 'true';
     }
 
@@ -131,9 +125,7 @@ class Mfa_ConfigController extends Mfa_AppController
       $this->view->length = '';
       }
     $this->view->user = $user;
-    $this->view->algList = array(
-      MIDAS_MFA_PAM => 'PAM',
-      MIDAS_MFA_RADIUS => 'RADIUS');
+    $this->view->algList = array(MIDAS_MFA_PAM => 'PAM', MIDAS_MFA_RADIUS => 'RADIUS');
     }
 
   /**

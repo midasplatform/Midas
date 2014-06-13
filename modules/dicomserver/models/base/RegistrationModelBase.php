@@ -44,7 +44,7 @@ abstract class Dicomserver_RegistrationModelBase extends Dicomserver_AppModel
   /** Check registration information by an itemId */
   abstract function checkByItemId($itemId);
 
- /**
+  /**
    * Register an item
    *
    * @param string $item_id
@@ -57,4 +57,4 @@ abstract class Dicomserver_RegistrationModelBase extends Dicomserver_AppModel
     $this->save($registrationDao);
     return $registrationDao;
     }
-  } // end class
+  }

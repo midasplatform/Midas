@@ -20,6 +20,7 @@
 
 require_once BASE_PATH.'/modules/api/library/APIEnabledNotification.php';
 
+/** Notification manager for the tracker module */
 class Tracker_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'tracker';

@@ -18,7 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
+/** App controller for the cleanup module */
 class Cleanup_AppController extends MIDAS_GlobalModule
   {
   public $moduleName = 'cleanup';
-  } // end class
+  }
