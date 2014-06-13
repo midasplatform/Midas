@@ -32,7 +32,6 @@ $toTest .= TEST_DIR.'/../core/Bootstrap.php,';
 $toTest .= TEST_DIR.'/../core/include.php,';
 $toTest .= TEST_DIR.'/../index.php,';
 $toTest .= TEST_DIR.'/../core/models,';
-$toTest .= TEST_DIR.'/../library/MIDAS,';
 $toTest .= TEST_DIR.'/../core/controllers';
 $_SERVER['argv'][2] = $toTest;
 $_SERVER['argv'][3] = '--outdir';

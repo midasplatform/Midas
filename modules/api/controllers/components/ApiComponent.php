@@ -317,9 +317,6 @@ class Api_ApiComponent extends AppComponent
             is supplied.
    * @param filename The filename of the file you will upload, will be used as the
             bitstream's name and the item's name (unless <b>itemname</b> is supplied).
-   * @param itemprivacy (Optional)
-            When passing the <b>folderid</b> param, the privacy status of the newly
-            created item, Default 'Public', possible values [Public|Private].
    * @param itemdescription (Optional)
             When passing the <b>folderid</b> param, the description of the item,
             if not supplied the item's description will be blank.

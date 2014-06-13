@@ -18,12 +18,12 @@
  limitations under the License.
 =========================================================================*/
 
-/** tools for detecting non utf8 files and tranforming non utf8 files to utf8. */
+/** tools for detecting non utf8 files and transforming non utf8 files to utf8. */
 class Utf8tools
   {
-  protected $excludedDirs = array('data', 'library', 'tmp', '.git', 'log', 'bin');
-  protected $excludedExts = array('ini', 'jpg', 'png', 'gif', 'swf', 'jar', 'ico', 'psd', 'swc', 'keystore');
-  protected $excludedFiles = array('.DS_Store', '.htaccess');
+  protected $excludedDirs = array('_build', '_test', '.git', 'bin', 'build', 'data', 'library', 'log', 'tmp');
+  protected $excludedExts = array('gif', 'ico', 'ini', 'jar', 'jpeg', 'jpg', 'keystore', 'png', 'psd', 'swc', 'swf');
+  protected $excludedFiles = array('.DS_Store', '.htaccess', '.gitignore', '.travis.yml');
 
   /**
    * return true if the string is UTF8 encoded.

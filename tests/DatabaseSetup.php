@@ -105,7 +105,7 @@ function installCore($db, $dbType, $utilityComponent)
 
   $newestVersion = $upgradeComponent->getNewestVersion(true);
 
-  $sqlFile = BASE_PATH.'/core/database/{$dbType}/'.$newestVersion.'.sql';
+  $sqlFile = BASE_PATH.'/core/database/'.$dbType.'/'.$newestVersion.'.sql';
   if(!isset($sqlFile) || !file_exists($sqlFile))
     {
     throw new Zend_Exception('Unable to find sql file: '.$sqlFile);

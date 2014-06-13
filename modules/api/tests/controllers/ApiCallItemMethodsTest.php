@@ -588,7 +588,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
 
     // 15
-    // test upload.generatetoken passing in folderid, default of Public
+    // test upload.generatetoken passing in folderid
     $this->resetAll();
     $this->params['token'] = $this->_loginAsNormalUser();
     $this->params['method'] = 'midas.upload.generatetoken';
@@ -612,13 +612,12 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     // test that the properties of the item are as expected with defaults
     $this->assertEquals($itemDao->getName(), $filename, 'Expected a different name for generated item');
     $this->assertEquals($itemDao->getDescription(), '', 'Expected a different description for generated item');
-    $this->assertEquals($itemDao->getPrivacyStatus(), MIDAS_PRIVACY_PUBLIC, 'Expected a different privacy_status for generated item');
+    $this->assertEquals($itemDao->getPrivacyStatus(), MIDAS_PRIVACY_PRIVATE, 'Expected a different privacy_status for generated item');
     // delete the newly created item
     $this->Item->delete($itemDao);
 
     // 16
-    // test upload.generatetoken passing in folderid and setting optional values,
-    // with Private itemprivacy
+    // test upload.generatetoken passing in folderid and setting optional values
     $filename = 'test.txt';
     $description = 'generated item description';
     $itemname = 'generated item name';
@@ -627,7 +626,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params['method'] = 'midas.upload.generatetoken';
     $this->params['filename'] = $filename;
     $this->params['folderid'] = '1000';
-    $this->params['itemprivacy'] = 'Private';
+    $this->params['itemprivacy'] = 'Public';
     $this->params['itemdescription'] = $description;
     $this->params['itemname'] = $itemname;
     $resp = $this->_callJsonApi();
@@ -790,7 +789,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params['filename'] = $filename;
     $this->params['checksum'] = $md5;
     $this->params['folderid'] = '1000';
-    $this->params['itemprivacy'] = 'Public';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
     $token = $resp->data->token;
@@ -801,8 +799,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     // this at least allows us to test it
     $generatedItemId = $generatedItemId + 1;
     $itemDao = $this->Item->load($generatedItemId);
-    // ensure privacy status when passing Public explicitly
-    $this->assertEquals($itemDao->getPrivacyStatus(), MIDAS_PRIVACY_PUBLIC, 'Expected a different privacy_status for generated item');
+    $this->assertEquals($itemDao->getPrivacyStatus(), MIDAS_PRIVACY_PRIVATE, 'Expected a different privacy_status for generated item');
     $revisions = $itemDao->getRevisions();
     $this->assertEquals(count($revisions), 1, 'Wrong number of revisions in the item');
     $bitstreams = $revisions[0]->getBitstreams();
