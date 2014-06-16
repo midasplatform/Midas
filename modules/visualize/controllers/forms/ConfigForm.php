@@ -20,7 +20,7 @@
 
 /** config form*/
 class Visualize_ConfigForm extends AppForm
-{
+  {
   /** create  form */
   public function createConfigForm()
     {
@@ -43,4 +43,4 @@ class Visualize_ConfigForm extends AppForm
     $form->addElements(array($pvbatch, $PWApp, $usesymlinks, $userwebgl, $paraviewworkdir, $customtmp, $useparaview, $submit));
     return $form;
     }
-} // end class
+  } // end class

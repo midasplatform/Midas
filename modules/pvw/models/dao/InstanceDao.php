@@ -23,4 +23,3 @@ class Pvw_InstanceDao extends Pvw_AppDao
   public $_model = 'Instance';
   public $_module = 'pvw';
   }
-?>

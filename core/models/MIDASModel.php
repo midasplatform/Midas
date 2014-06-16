@@ -21,7 +21,7 @@ require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 
 /** global midas model library*/
 class MIDASModel
-{
+  {
   protected $database;
   protected $_name = ''; // I don't like this (should be protected)
   protected $_key = '';
@@ -38,9 +38,14 @@ class MIDASModel
     $configDatabase = Zend_Registry::get('configDatabase');
     switch($configDatabase->database->type)
       {
-      case 'pdo': $this->database = new MIDASDatabasePdo(); break;
-      case 'mongo': $this->database = new MIDASDatabaseMongo(); break;
-      default: break;
+      case 'pdo':
+        $this->database = new MIDASDatabasePdo();
+        break;
+      case 'mongo':
+        $this->database = new MIDASDatabaseMongo();
+        break;
+      default:
+        break;
       }
     } // end __construct()
 
@@ -60,7 +65,6 @@ class MIDASModel
     {
     return UtilityComponent::getTempDirectory();
     }
-
 
   /**
    * Save a Dao to the database.
@@ -187,7 +191,7 @@ class MIDASModel
         {
         require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. 'Dao.php';
         }
-      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php'))
+      else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php'))
         {
         require_once BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php';
         }
@@ -217,7 +221,6 @@ class MIDASModel
       }
     } //end initDao
 
-
   /**
    * @method public  __call($method, $params)
    *  Catch ifthe method doesn't exists and create a method dynamically
@@ -231,7 +234,7 @@ class MIDASModel
       {
       throw new Zend_Exception(__CLASS__ . " " . $this->_name . ": ".$method." has been deprecated. Please fix.");
       }
-    elseif(substr($method, 0, 6) == 'findBy')
+    else if(substr($method, 0, 6) == 'findBy')
       {
       if(isset($this->_mainData[strtolower(substr($method, 6))]))
         {
@@ -247,7 +250,6 @@ class MIDASModel
       throw new Zend_Exception($this->_name."Model : method ".$method." doesn't exist.");
       }
     }// end method __call
-
 
   /**
    * @method public  findBy($var, $value)
@@ -306,9 +308,6 @@ class MIDASModel
       }
     } //end method findBy
 
-
-
-
   /**
    * DEPRECATED: Use MidasLoader::newDao to load the class and instantiate a dao
    */
@@ -328,7 +327,7 @@ class MIDASModel
         {
         require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. 'Dao.php';
         }
-      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php'))
+      else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php'))
         {
         require_once BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. 'Dao.php';
         }
@@ -336,7 +335,7 @@ class MIDASModel
         {
         require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name. '.php';
         }
-      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. '.php'))
+      else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. '.php'))
         {
         require_once BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name. '.php';
         }
@@ -350,9 +349,7 @@ class MIDASModel
         throw new Zend_Exception('Unable to load dao class ' . ucfirst($module).'_'.$name);
         }
       }
-
     }
-
 
   /**
    * @fn public  load()
@@ -375,7 +372,7 @@ class MIDASModel
       $this->loadDaoClass($name, $this->moduleName);
       $name = ucfirst($this->moduleName).'_'.$name;
       }
-    elseif(isset($this->moduleName))
+    else if(isset($this->moduleName))
       {
       $this->loadDaoClass(ucfirst(substr($name, strpos($name, '_') + 1)), $this->moduleName);
       }
@@ -432,7 +429,6 @@ class MIDASModel
       throw new Zend_Exception('Unable to load dao ' . $name);
       }
     } //end load
-
 
   /**
    * @method public getValue()
@@ -493,5 +489,4 @@ class MIDASModel
       }
     return true;
     } //end method compareDao
-
-} // end class GlobalModel
+  } // end class

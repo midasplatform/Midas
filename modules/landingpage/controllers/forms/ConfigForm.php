@@ -20,7 +20,7 @@
 
 /** Landingpage module config form*/
 class Landingpage_ConfigForm extends AppForm
-{
+  {
   /** main config form */
   public function createForm()
     {
@@ -41,5 +41,4 @@ class Landingpage_ConfigForm extends AppForm
     $form->addElements(array($name, $submit));
     return $form;
     } // end function createForm
-
-} // end class
+  } // end class

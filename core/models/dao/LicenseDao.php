@@ -25,4 +25,3 @@ class LicenseDao extends AppDao
   {
   public $_model = 'License';
   }
-?>

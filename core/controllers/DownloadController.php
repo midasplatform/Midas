@@ -22,7 +22,7 @@
  *  Controller for downloading elements.
  */
 class DownloadController extends AppController
-{
+  {
   public $_models = array('Folder', 'Item', 'Community', 'User', 'Bitstream');
   public $_daos = array();
   public $_components = array('DownloadBitstream');
@@ -160,7 +160,7 @@ class DownloadController extends AppController
         $this->Item->incrementDownloadCount($revision->getItem());
         $this->_downloadEmptyItem($revision->getItem());
         }
-      elseif(count($bitstreams) == 1)
+      else if(count($bitstreams) == 1)
         {
         if(preg_match('/^https?:\/\//', $bitstreams[0]->getPath()))
           {
@@ -546,4 +546,4 @@ class DownloadController extends AppController
     $zip->finish();
     exit();
     }
-} // end class
+  } // end class

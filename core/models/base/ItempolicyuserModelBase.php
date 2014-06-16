@@ -20,7 +20,7 @@
 
 /** ItempolicyuserModelBase */
 abstract class ItempolicyuserModelBase extends AppModel
-{
+  {
   /** Constructor */
   public function __construct()
     {
@@ -77,4 +77,4 @@ abstract class ItempolicyuserModelBase extends AppModel
     {
     parent::delete($dao);
     }//end delete
-} // end class ItempolicyuserModelBase
+  } // end class

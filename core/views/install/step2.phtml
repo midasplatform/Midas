@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -17,20 +17,20 @@ PURPOSE.  See the above copyright notices for more information.
   $this->headScript()->appendFile($this->coreWebroot.'/public/js/install/install.step2.js');
 ?>
 
-<div class="viewMain"> 
+<div class="viewMain">
 
    <h3>Select a database type:</h3>
-   
-   <?php 
+
+   <?php
    echo "<select id='databaseType'>";
    echo "<option value=''>Please select a database</option>";
-    foreach($this->databaseType as $d=>$form)
+    foreach($this->databaseType as $d => $form)
       {
       echo "<option value='{$d}'>$d</option>";
       }
    echo "</select>";
-   
-   foreach($this->databaseType as $d=>$form)
+
+   foreach($this->databaseType as $d => $form)
       {
       echo "<div class='dbForm' id='form$d'>";
       echo "<form class='genericForm' method='{$form['method']}'  action='{$form['action']}'>";
@@ -66,7 +66,7 @@ PURPOSE.  See the above copyright notices for more information.
                     <div>
                   <img style='display:none;' class='testLoading'  alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/>
                   <img style='display:none;' class='testOk'  alt='' src='{$this->coreWebroot}/public/images/icons/ok.png'/>
-                  <img style='display:none;' class='testNok'  alt='' src='{$this->coreWebroot}/public/images/icons/nok.png'/>             
+                  <img style='display:none;' class='testNok'  alt='' src='{$this->coreWebroot}/public/images/icons/nok.png'/>
                   <span class='testError'/>
                     </div>
                   </div>
@@ -75,9 +75,9 @@ PURPOSE.  See the above copyright notices for more information.
                 <div>
                 </div>
               </div>";
-                
-      echo "  <h3>Set up Administrator account:</h3> 
-        
+
+      echo "  <h3>Set up Administrator account:</h3>
+
               <div class='adminAcountForm'>
                 <div>
                   <label for='email'>E-mail</label>
@@ -105,7 +105,7 @@ PURPOSE.  See the above copyright notices for more information.
                 </div>
               </div>
               ";
-              
+
       echo "    <div>
                 {$form['submit']}
                 </div>
@@ -113,6 +113,5 @@ PURPOSE.  See the above copyright notices for more information.
       echo "</div>";
       }
    ?>
-  
 
 </div>

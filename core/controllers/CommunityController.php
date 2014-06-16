@@ -253,7 +253,6 @@ class CommunityController extends AppController
     $this->view->customTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_COMMUNITY_MANAGE_TABS', array('community' => $communityDao));
     }//end manageAction
 
-
   /** Index */
   function indexAction()
     {
@@ -814,4 +813,4 @@ class CommunityController extends AppController
         }
       }
     }
-  }//end class
+  } // end class

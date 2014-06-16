@@ -17,14 +17,15 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** notification manager*/
+
 require_once BASE_PATH . '/modules/api/library/APIEnabledNotification.php';
 
+/** Notification manager for the thumbnailcreator module */
 class Thumbnailcreator_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'thumbnailcreator';
   public $_moduleComponents = array('Api', 'Imagemagick');
-  
+
   /** init notification process*/
   public function init()
     {
@@ -43,7 +44,7 @@ class Thumbnailcreator_Notification extends ApiEnabled_Notification
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_JSON', 'getJson');
     $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDashboard');
     }//end init
-    
+
   /** createThumbnail */
   public function createThumbnail($params)
     {
@@ -111,5 +112,4 @@ class Thumbnailcreator_Notification extends ApiEnabled_Notification
 
     return $return;
     }//end _getDasboard
-  } //end class
-?>
+  } // end class

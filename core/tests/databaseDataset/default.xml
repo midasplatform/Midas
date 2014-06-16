@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <dataset>
 
-  <folder folder_id="1" name="name Folder 1" description="Description Folder 1"   left_indice="1" right_indice="2" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72800'
+  <folder folder_id="1" name="name Folder 1" description="Description Folder 1" privacy_status="0"  left_indice="1" right_indice="2" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72800'
     parent_id="-1"/>
   <folderpolicygroup folder_id="1" group_id="0" policy='0' />
-  <folder folder_id="2" name="name Folder 2" description="Description Folder 2"  left_indice="3" right_indice="4" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72801'
+  <folder folder_id="2" name="name Folder 2" description="Description Folder 2" privacy_status="0" left_indice="3" right_indice="4" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72801'
     parent_id="-1"/>
-  <folder folder_id="3" name="name Folder 3" description="Description Folder 3"  left_indice="5" right_indice="6" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72802'
+  <folder folder_id="3" name="name Folder 3" description="Description Folder 3" privacy_status="0" left_indice="5" right_indice="6" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72802'
     parent_id="-1"/>
 
   <community community_id="2000" name="Community test User 1"
@@ -14,32 +14,32 @@
     admingroup_id="3000" moderatorgroup_id="3001" membergroup_id="3002"
     uuid='4e311fdf82107d245f0798d654fc24205f2621eb72777' />
 
-  <folder folder_id="1000" name="User 1 name Folder 1"  uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72760'
+  <folder folder_id="1000" name="User 1 name Folder 1"  privacy_status="2" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72760'
     description="Description Folder 1" left_indice="1000" right_indice="1005"
     parent_id="-1" />
   <folderpolicyuser folder_id="1000" user_id="1" policy='2' />
-  <folder folder_id="1001" name="User 1 name Folder 2" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72761'
+  <folder folder_id="1001" name="User 1 name Folder 2" privacy_status="0" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72761'
     description="Description Folder 2" left_indice="1001" right_indice="1002"
     parent_id="1000" />
   <folderpolicyuser folder_id="1001" user_id="1" policy='2' />
-  <folder folder_id="1002" name="User 1 name Folder 3" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72762'
+  <folder folder_id="1002" name="User 1 name Folder 3" privacy_status="2" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72762'
     description="Description Folder 3" left_indice="1003" right_indice="1004"
     parent_id="1000" />
   <folderpolicyuser folder_id="1002" user_id="1" policy='2' />
-  <folder folder_id="1003" name="community_2000" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72763'
+  <folder folder_id="1003" name="community_2000" privacy_status="0" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72763'
     description="Description Folder 1" left_indice="1006" right_indice="10011"
     parent_id="-2" />
-  <folder folder_id="1004" name="Community test User 1 name Folder 2" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72764'
+  <folder folder_id="1004" name="Community test User 1 name Folder 2" privacy_status="0" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72764'
     description="Description Folder 2" left_indice="1007" right_indice="1008"
     parent_id="1003" />
-  <folder folder_id="1005" name="Community test User 1 name Folder 3" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72765'
+  <folder folder_id="1005" name="Community test User 1 name Folder 3" privacy_status="0" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72765'
     description="Description Folder 3" left_indice="1009" right_indice="1010"
     parent_id="1003" />
 
   <!-- Admin's folders -->
-  <folder folder_id="1006" name="user_3" description="" parent_id="-1" left_indice="1" right_indice="2" uuid="123890231890" />
-  <folder folder_id="1007" name="Public" description="" parent_id="1006" left_indice="2" right_indice="3" uuid="123890231891" />
-  <folder folder_id="1008" name="Private" description="" parent_id="1006" left_indice="3" right_indice="4" uuid="123890231892" />
+  <folder folder_id="1006" name="user_3" description="" privacy_status="2" parent_id="-1" left_indice="1" right_indice="2" uuid="123890231890" />
+  <folder folder_id="1007" name="Public" description="" privacy_status="0" parent_id="1006" left_indice="2" right_indice="3" uuid="123890231891" />
+  <folder folder_id="1008" name="Private" description="" privacy_status="2" parent_id="1006" left_indice="3" right_indice="4" uuid="123890231892" />
 
   <group group_id="3000" community_id="2000" name="Community test User 1 Admin" />
   <group group_id="3001" community_id="2000"
@@ -138,18 +138,18 @@
   <group group_id="3003" community_id="2001" name="Community For Deletion Admin" />
   <group group_id="3004" community_id="2001" name="Community For Deletion Moderator" />
   <group group_id="3005" community_id="2001" name="Community For Deletion Member" />
-  <folder folder_id="1009" name="Community For Deletion Folder" description="" parent_id="-1" left_indice="1" right_indice="2" uuid="123890231890" />
-  <folder folder_id="1010" name="Community For Deletion Folder Public" description="" parent_id="1009" left_indice="2" right_indice="3" uuid="123890231891" />
-  <folder folder_id="1011" name="Community For Deletion Folder Private" description="" parent_id="1009" left_indice="3" right_indice="4" uuid="123890231892" />
+  <folder folder_id="1009" name="Community For Deletion Folder" description="" privacy_status="0" parent_id="-1" left_indice="1" right_indice="2" uuid="123890231890" />
+  <folder folder_id="1010" name="Community For Deletion Folder Public" description="" privacy_status="0" parent_id="1009" left_indice="2" right_indice="3" uuid="123890231891" />
+  <folder folder_id="1011" name="Community For Deletion Folder Private" description="" privacy_status="2" parent_id="1009" left_indice="3" right_indice="4" uuid="123890231892" />
   <folderpolicygroup folder_id="1009" group_id="3003" policy='2' />
   <folderpolicygroup folder_id="1009" group_id="3004" policy='1' />
   <folderpolicygroup folder_id="1009" group_id="3005" policy='0' />
 
-  <folder folder_id="1012" name="Folder User 1 Read" description="" parent_id="1009" left_indice="3" right_indice="4" uuid="1012123890231892" />
+  <folder folder_id="1012" name="Folder User 1 Read" description="" privacy_status="0" parent_id="1009" left_indice="3" right_indice="4" uuid="1012123890231892" />
   <folderpolicyuser folder_id="1012" user_id="1" policy='0' />
-  <folder folder_id="1013" name="Folder User 1 Write" description="" parent_id="1009" left_indice="3" right_indice="4" uuid="1013123890231892" />
+  <folder folder_id="1013" name="Folder User 1 Write" description="" privacy_status="0" parent_id="1009" left_indice="3" right_indice="4" uuid="1013123890231892" />
   <folderpolicyuser folder_id="1013" user_id="1" policy='1' />
-  <folder folder_id="1014" name="Folder User 1 Admin" description="" parent_id="1009" left_indice="3" right_indice="4" uuid="1014123890231892" />
+  <folder folder_id="1014" name="Folder User 1 Admin" description="" privacy_status="0" parent_id="1009" left_indice="3" right_indice="4" uuid="1014123890231892" />
   <folderpolicyuser folder_id="1014" user_id="1" policy='2' />
   <folderpolicygroup folder_id="1014" group_id="3003" policy='2' />
   <folderpolicygroup folder_id="1014" group_id="3004" policy='1' />

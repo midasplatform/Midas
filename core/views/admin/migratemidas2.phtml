@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/admin/admin.migrate.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
-  
+
 $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/jquery/jquery.filetree.css');
 $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/admin/admin.migrate.css');
 $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/assetstore/assetstore.add.css');
@@ -21,13 +21,13 @@ $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/assetstore/a
 <h2> Migrating from MIDAS version 2 to MIDAS version 3</h2>
 <?php echo $this->migrateForm; ?>
 
-<?php echo $this->element('serversidefilechooser', 
+<?php echo $this->element('serversidefilechooser',
                      array('id'=>'midas2_assetstore_button',
                            'fileFilterErrorMsg' => 'Select the MIDAS2 assetstore directory on the server',
                            'destSelector' => '#midas2_assetstore',
-                     )) 
+                     ))
                     ?>
-                    
+
 <div id="newassetstore-form"  style="display:none">
    <?php echo $this->assetstoreForm; ?>
 </div>

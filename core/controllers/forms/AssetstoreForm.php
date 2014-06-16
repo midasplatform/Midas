@@ -20,7 +20,7 @@
 
 /** Assetstore forms*/
 class AssetstoreForm extends AppForm
-{
+  {
   /** Create assetstore form*/
   public function createAssetstoreForm()
     {
@@ -36,7 +36,6 @@ class AssetstoreForm extends AppForm
                                                  'id' => 'assetstorename'));
     $inputDirectory->setRequired(true);
     $form->addElement($inputDirectory);
-
 
     // Input directory
     $basedirectory = new Zend_Form_Element_Text('basedirectory', array('label' => $this->t('Pick a base directory'),
@@ -70,5 +69,4 @@ class AssetstoreForm extends AppForm
 
     return $form;
     }
-} // end class
-?>
+  } // end class

@@ -42,7 +42,6 @@ class Example_WalletModelBase extends Example_AppModel
     $this->initialize(); // required
     }
 
-
   /** Create a wallet
    * @return WalletDao */
   function createWallet($userDao, $dollars)
@@ -53,5 +52,4 @@ class Example_WalletModelBase extends Example_AppModel
     $this->save($wallet);
     return $wallet;
     } // end createWallet()
-
-  }  // end class Example_WalletModelBase
+  } // end class

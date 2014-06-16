@@ -63,4 +63,4 @@ class Archive_Notification extends MIDAS_Notification
     {
     return array($this->moduleWebroot.'/public/js/common/archive.common.js');
     }
-  } //end class
+  } // end class

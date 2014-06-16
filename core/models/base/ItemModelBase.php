@@ -20,7 +20,7 @@
 
 /** ItemModelBase */
 abstract class ItemModelBase extends AppModel
-{
+  {
   /** Constructor */
   public function __construct()
     {
@@ -180,7 +180,6 @@ abstract class ItemModelBase extends AppModel
         }
       }
     }//end addReadonlyPolicy
-
 
   /**
    * Duplicate an item in destination folder/community
@@ -575,4 +574,4 @@ abstract class ItemModelBase extends AppModel
     $item->setThumbnailId($thumb->getKey());
     $this->save($item);
     }
-} // end class ItemModelBase
+  } // end class

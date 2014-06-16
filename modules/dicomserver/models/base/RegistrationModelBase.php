@@ -1,18 +1,28 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
-include_once BASE_PATH . '/modules/dicomserver/constant/module.php';
-/** RegistrationModel Base class */
-abstract class Dicomserver_RegistrationModelBase extends Dicomserver_AppModel {
 
+include_once BASE_PATH . '/modules/dicomserver/constant/module.php';
+
+/** RegistrationModel Base class */
+abstract class Dicomserver_RegistrationModelBase extends Dicomserver_AppModel
+  {
   /**
    * constructor
    */
@@ -34,7 +44,7 @@ abstract class Dicomserver_RegistrationModelBase extends Dicomserver_AppModel {
   /** Check registration information by an itemId */
   abstract function checkByItemId($itemId);
 
- /**
+  /**
    * Register an item
    *
    * @param string $item_id
@@ -47,6 +57,4 @@ abstract class Dicomserver_RegistrationModelBase extends Dicomserver_AppModel {
     $this->save($registrationDao);
     return $registrationDao;
     }
-
-
-}  // end class Dicomserver_RegistrationModelBase
+  }

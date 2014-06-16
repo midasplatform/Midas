@@ -23,4 +23,3 @@ class Comments_ItemcommentDao extends Comments_AppDao
   public $_model = 'Itemcomment';
   public $_module = 'comments';
   }
-?>

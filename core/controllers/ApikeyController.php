@@ -20,7 +20,7 @@
 
 /** Apikey controller for Web Api */
 class ApikeyController extends AppController
-{
+  {
   public $_models = array('User', 'Userapi');
   public $_forms = array('Apikey');
   public $_components = array('Date');
@@ -92,5 +92,4 @@ class ApikeyController extends AppController
     $this->view->userapiDaos = $userapiDaos;
     $this->view->user = $user;
     }
-
-}//end class
+  } // end class

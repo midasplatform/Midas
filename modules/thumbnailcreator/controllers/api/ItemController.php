@@ -21,9 +21,8 @@
 /**
  *  WebApi controller for Item Resource (in thumbnailcreator module)
  */
-
 class Apithumbnailcreator_ItemController extends ApiController
-{
+  {
   /**
    * The put action handles PUT requests and receives an 'id' parameter; it
    * should update the server resource state of the resource identified by
@@ -39,7 +38,6 @@ class Apithumbnailcreator_ItemController extends ApiController
     $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'put', $apiFunctions, 'thumbnailcreator');
     }
 
-
   /**
    * The options action handles OPTIONS requests; it should respond with
    * the HTTP methods that the server supports for specified URL.
@@ -48,5 +46,4 @@ class Apithumbnailcreator_ItemController extends ApiController
     {
     $this->_response->setHeader('Allow', 'OPTIONS, PUT');
     }
-
-}
+  }

@@ -21,7 +21,7 @@
  * Mock object used to simulate BatchMake executable for testing.
  */
 class Batchmake_BatchmakeMock
-{
+  {
 
   protected $compileFlag = "'-c'";
   protected $generateDagFlag = "'--condor'";
@@ -212,4 +212,4 @@ class Batchmake_BatchmakeMock
     }
 
 
-} // end class
+  } // end class

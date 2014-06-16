@@ -19,7 +19,7 @@
 =========================================================================*/
 
 interface MIDASDatabaseInterface
-{
+  {
   /** generic save*/
   public function save($dataarray);
   /** generic delete*/
@@ -28,4 +28,4 @@ interface MIDASDatabaseInterface
   public function getValue($var, $key, $dao);
   /** generic get all by key*/
   public function getAllByKey($keys);
-} // end interface
+  } // end interface

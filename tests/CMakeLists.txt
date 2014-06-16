@@ -1,3 +1,22 @@
+#=============================================================================
+# MIDAS Server
+# Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+# All rights reserved.
+# More information http://www.kitware.com
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0.txt
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#=============================================================================
+
 # Create the configuredVars.php file used for testing
 option(MIDAS_TEST_COVERAGE "Perform xdebug coverage. Only turn on if you need coverage." OFF)
 
@@ -17,6 +36,13 @@ file(APPEND ${CMAKE_SOURCE_DIR}/tests/configuredVars.php "); ?>")
 if(NOT EXISTS ${CMAKE_BINARY_DIR}/xdebugCoverage)
   file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/xdebugCoverage)
 endif()
+
+macro(to_titlecase Arg Result)
+  string(SUBSTRING ${Arg} 0 1 ArgHead)
+  string(TOUPPER ${ArgHead} ArgHead)
+  string(SUBSTRING ${Arg} 1 -1 ArgTail)
+  set(${Result} ${ArgHead}${ArgTail})
+endmacro(to_titlecase)
 
 function(add_midas_test TestName TestFile)
   add_midas_mysql_test(${TestName} ${TestFile})
@@ -75,7 +101,6 @@ endfunction(add_midas_style_test)
 
 add_midas_style_test( StyleTestsControllerTestCase ${CMAKE_SOURCE_DIR}/tests/ControllerTestCase.php )
 add_midas_style_test( StyleTestsDatabaseTestCase ${CMAKE_SOURCE_DIR}/tests/DatabaseTestCase.php )
-
 
 add_test(Utf8encoding ${PHP} ${CMAKE_SOURCE_DIR}/tests/Utf8tools.php --src ${CMAKE_SOURCE_DIR})
 set_tests_properties(

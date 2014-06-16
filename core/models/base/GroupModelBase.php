@@ -20,7 +20,7 @@
 
 /** GroupModelBase*/
 abstract class GroupModelBase extends AppModel
-{
+  {
   /** Constructor*/
   public function __construct()
     {
@@ -55,7 +55,7 @@ abstract class GroupModelBase extends AppModel
       $dao->saved = true;
       return $dao;
       }
-    elseif($key == MIDAS_GROUP_SERVER_KEY)
+    else if($key == MIDAS_GROUP_SERVER_KEY)
       {
       $dao = MidasLoader::newDao('GroupDao');
       $dao->setGroupId(MIDAS_GROUP_SERVER_KEY);
@@ -96,7 +96,6 @@ abstract class GroupModelBase extends AppModel
     unset($group->group_id);
     $group->saved = false;
     }//end deleteGroup
-
 
   /** create a group
    * @return GroupDao*/
@@ -140,5 +139,4 @@ abstract class GroupModelBase extends AppModel
       }
     return false;
     }
-
-} // end class GroupModelBase
+  } // end class

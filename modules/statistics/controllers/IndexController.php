@@ -20,7 +20,7 @@
 
 /** Index controller for the statistics module */
 class Statistics_IndexController extends Statistics_AppController
-{
+  {
   public $_moduleModels = array('Download');
   public $_models = array('Errorlog', 'Assetstore');
   public $_components = array('Utility');
@@ -90,5 +90,4 @@ class Statistics_IndexController extends Statistics_AppController
     $this->view->piwikId = $modulesConfig['statistics']->piwik->id;
     $this->view->piwikKey = $modulesConfig['statistics']->piwik->apikey;
     }
-
-}//end class
+  } // end class

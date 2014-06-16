@@ -20,7 +20,7 @@
 
 /** Apikey form */
 class ApikeyForm extends AppForm
-{
+  {
   /** create form */
   public function createKeyForm()
     {
@@ -38,5 +38,4 @@ class ApikeyForm extends AppForm
     $form->addElements(array($appplication_name, $expiration, $submit));
     return $form;
     }
-} // end class
-?>
+  } // end class

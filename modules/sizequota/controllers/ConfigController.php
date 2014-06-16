@@ -24,7 +24,7 @@
  * maintaining folder-specific quotas.
  */
 class Sizequota_ConfigController extends Sizequota_AppController
-{
+  {
   public $_models = array('Assetstore', 'Folder', 'Setting');
   public $_moduleModels = array('FolderQuota');
   public $_moduleForms = array('Config');
@@ -255,5 +255,4 @@ class Sizequota_ConfigController extends Sizequota_AppController
       }
     return true;
     }
-
-}//end class
+  } // end class

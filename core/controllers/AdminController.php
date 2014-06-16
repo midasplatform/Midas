@@ -22,7 +22,7 @@
  * Admin Controller
  */
 class AdminController extends AppController
-{
+  {
   public $_models = array('Assetstore', 'Bitstream', 'Errorlog', 'Item', 'ItemRevision', 'Folder', 'License');
   public $_daos = array();
   public $_components = array('Upgrade', 'Utility', 'MIDAS2Migration', 'Demo');
@@ -193,12 +193,12 @@ class AdminController extends AppController
           copy($moduleConfigFile, $moduleConfigLocalFile);
           $this->Component->Utility->installModule($moduleName);
           }
-        elseif(!file_exists($moduleConfigLocalFile) && file_exists($moduleConfigPrivateFile))
+        else if(!file_exists($moduleConfigLocalFile) && file_exists($moduleConfigPrivateFile))
           {
           copy($moduleConfigPrivateFile, $moduleConfigLocalFile);
           $this->Component->Utility->installModule($moduleName);
           }
-        elseif(!file_exists($moduleConfigLocalFile))
+        else if(!file_exists($moduleConfigLocalFile))
           {
           throw new Zend_Exception("Unable to find config file");
           }
@@ -264,7 +264,7 @@ class AdminController extends AppController
         {
         $allModules[$key]->configPage = true;
         }
-      elseif(file_exists(BASE_PATH."/privateModules/".$key."/controllers/ConfigController.php"))
+      else if(file_exists(BASE_PATH."/privateModules/".$key."/controllers/ConfigController.php"))
         {
         $allModules[$key]->configPage = true;
         }
@@ -397,8 +397,6 @@ class AdminController extends AppController
       $offset = 0;
       }
 
-
-
     $results = $this->Errorlog->getLog($start, $end, $module, $priority, $limit, $offset, $priorityOperator);
     $this->view->jsonContent = array();
     $this->view->jsonContent['currentFilter'] = array('start' => $start,
@@ -416,7 +414,7 @@ class AdminController extends AppController
         {
         $shortMessage = substr($log->getMessage(), strpos($log->getMessage(), '[message]') + 13, 60);
         }
-      elseif(substr($log->getMessage(), 0, 6) == 'Server')
+      else if(substr($log->getMessage(), 0, 6) == 'Server')
         {
         $shortMessage = substr($log->getMessage(), strpos($log->getMessage(), 'Message:') + 9, 60);
         }
@@ -646,7 +644,6 @@ class AdminController extends AppController
     // No views
     } // end function  serversidefilechooserAction
 
-
   /**
    * \fn
    * \brief
@@ -715,5 +712,4 @@ class AdminController extends AppController
 
     // Display the form
     }
-
-} // end class
+  } // end class

@@ -18,8 +18,6 @@
  limitations under the License.
 =========================================================================*/
 
-
-
 require_once BASE_PATH.'/modules/batchmake/tests/controllers/BatchmakeControllerTest.php';
 
 /**
@@ -30,7 +28,6 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
 
   protected $kwBatchmakeComponent;
   protected $applicationConfig;
-
 
   protected $cwd;
 
@@ -61,7 +58,6 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     // change the current dir back to the saved cwd after each test
     chdir($this->cwd);
     }
-
 
   /**
    * tests config setup, relies on an alternate testing config to be defined,
@@ -160,7 +156,6 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
       }
     }
 
-
   /** tests preparePipelineScripts, and exercises createTask. */
   public function testPreparePipelineScripts()
     {
@@ -200,7 +195,6 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     $scriptName = 'cycle31.bms';
     $this->preparePipelineScriptsTestcaseException($workDir, $scriptName);
     }
-
 
   /** tests preparePipelineBmms */
   public function testPreparePipelineBmms()
@@ -255,9 +249,6 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     $this->assertEquals($processedBmms_anotherscript, $foundBmms_anotherscript, "BMMs: processed != found, for anotherscript.bms");
     }
 
-
-
-
   /** tests testCompileBatchMakeScript */
   public function testCompileBatchMakeScript()
     {
@@ -306,7 +297,6 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
       $this->assertEquals(1, preg_match('/compileBatchMakeScript/', $ze->getMessage()));
       }
 
-
     //a script that returns a zero value but an empty output from the compile step
     $scriptName = 'CompileEmptyOutput.bms';
     $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
@@ -322,7 +312,6 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
       // check that the exception came from the right place
       $this->assertEquals(1, preg_match('/compileBatchMakeScript/', $ze->getMessage()));
       }
-
     }
 
   /** tests generateCondorDag */
@@ -365,7 +354,6 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
       }
     }
 
-
   /** tests function testCondorSubmitDag */
   public function testCondorSubmitDag()
     {
@@ -400,6 +388,4 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     // perhaps send something back through the web-api
     // what would that be testing exactly?
     }
-
-
   } // end class

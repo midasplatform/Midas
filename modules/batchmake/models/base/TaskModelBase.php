@@ -17,7 +17,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 include_once BASE_PATH . '/modules/batchmake/constant/module.php';
+
 /** TaskModel Base class */
 class Batchmake_TaskModelBase extends Batchmake_AppModel {
 
@@ -36,7 +38,6 @@ class Batchmake_TaskModelBase extends Batchmake_AppModel {
       'work_dir' => array('type' => MIDAS_DATA));
     $this->initialize(); // required
     }
-
 
   /** Create a task
    * @return TaskDao */
@@ -58,11 +59,4 @@ class Batchmake_TaskModelBase extends Batchmake_AppModel {
     $this->save($task);
     return $task;
     } // end createTask()
-
-
-
-
-
-
-
-}  // end class Batchmake_TaskModelBase
+  } // end class

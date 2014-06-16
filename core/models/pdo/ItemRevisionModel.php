@@ -25,7 +25,7 @@ require_once BASE_PATH.'/core/models/base/ItemRevisionModelBase.php';
  * \brief Pdo Model
  */
 class ItemRevisionModel extends ItemRevisionModelBase
-{
+  {
   /** get by uuid*/
   function getByUuid($uuid)
     {
@@ -138,7 +138,6 @@ class ItemRevisionModel extends ItemRevisionModelBase
     unset($revisiondao->itemrevision_id);
     }//end delete
 
-
   /** Returns the latest revision of a model */
   function getLatestRevision($itemdao)
     {
@@ -224,4 +223,4 @@ class ItemRevisionModel extends ItemRevisionModelBase
       $this->delete($revision);
       }
     }
-} // end class
+  } // end class

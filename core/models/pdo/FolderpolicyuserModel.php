@@ -25,7 +25,7 @@ require_once BASE_PATH.'/core/models/base/FolderpolicyuserModelBase.php';
  * \brief Pdo Model
  */
 class FolderpolicyuserModel extends FolderpolicyuserModelBase
-{
+  {
   /** getPolicy
    * @return FolderpolicyuserDao
    */
@@ -44,5 +44,4 @@ class FolderpolicyuserModel extends FolderpolicyuserModelBase
           ->where('user_id = ?', $user->getKey())
           ));
     }
-}  // end class FolderpolicyuserModel
-?>
+  } // end class

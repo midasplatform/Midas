@@ -49,5 +49,4 @@ class AgreementModelTest extends DatabaseTestCase
     $this->assertEquals(1, count($dao));
     $this->assertEquals('Community agreement for Community test User 1', $dao->getAgreement());
     }
-
   }

@@ -20,7 +20,6 @@
 
 /** App model for sizequota module */
 class Sizequota_AppModel extends MIDASModel
-{
+  {
   public $moduleName = 'sizequota';
-}
-?>
+  }

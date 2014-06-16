@@ -17,6 +17,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 require_once BASE_PATH.'/modules/communityagreement/models/base/AgreementModelBase.php';
 
 /**
@@ -28,7 +29,7 @@ require_once BASE_PATH.'/modules/communityagreement/models/base/AgreementModelBa
  * @package    communityagreement
  */
 class Communityagreement_AgreementModel extends Communityagreement_AgreementModelBase
-{
+  {
   /**
    * get all the community agreements
    *
@@ -59,4 +60,4 @@ class Communityagreement_AgreementModel extends Communityagreement_AgreementMode
     $dao = $this->initDao('Agreement', $row, 'communityagreement');
     return $dao;
     }
-}  // end class
+  } // end class

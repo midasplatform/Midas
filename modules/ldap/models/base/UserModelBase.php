@@ -20,7 +20,7 @@
 
 /** Base class for the ldap user model */
 abstract class Ldap_UserModelBase extends Ldap_AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -38,9 +38,9 @@ abstract class Ldap_UserModelBase extends Ldap_AppModel
     $this->initialize();
     }
 
-  public abstract function getLdapUser($login);
-  public abstract function deleteByUser($userDao);
-  public abstract function getByUser($userDao);
+  abstract public function getLdapUser($login);
+  abstract public function deleteByUser($userDao);
+  abstract public function getByUser($userDao);
 
   /**
    * Create a new ldap user and an underlying core user entry.
@@ -66,5 +66,4 @@ abstract class Ldap_UserModelBase extends Ldap_AppModel
 
     return $ldapUserDao;
     }
-}
-?>
+  }

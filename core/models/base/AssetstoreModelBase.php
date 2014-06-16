@@ -20,7 +20,7 @@
 
 /** Assetstore Model Base*/
 abstract class AssetstoreModelBase extends AppModel
-{
+  {
   /** Constructor*/
   public function __construct()
     {
@@ -92,8 +92,6 @@ abstract class AssetstoreModelBase extends AppModel
       return false;
       }
     }
-
-
 
   /** save an assetsore*/
   public function save($dao)
@@ -197,5 +195,4 @@ abstract class AssetstoreModelBase extends AppModel
 
     return $defaultAssetstore;
     } // end getDefault
-
-} // end class AssetstoreModelBase
+  } // end class

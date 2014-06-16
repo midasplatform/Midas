@@ -20,10 +20,9 @@
 
 /** Component for api methods */
 class Sizequota_ApiComponent extends AppComponent
-{
-
+  {
   /** Return the user dao */
-  private function _callModuleApiMethod($args, $coreApiMethod, $resource = null,  $hasReturn = true)
+  private function _callModuleApiMethod($args, $coreApiMethod, $resource = null, $hasReturn = true)
     {
     $ApiComponent = MidasLoader::loadComponent('Api'.$resource, 'sizequota');
     $rtn = $ApiComponent->$coreApiMethod($args);
@@ -65,5 +64,4 @@ class Sizequota_ApiComponent extends AppComponent
     {
     return $this->_callModuleApiMethod($args, 'set', 'quota');
     }
-
-}
+  }

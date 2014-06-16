@@ -42,7 +42,6 @@ class DownloadBitstreamComponent extends AppComponent
       apache_setenv('no-gzip', '1');
       }
 
-
     $mimetype = $bitstream->getMimetype();
     $path = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
     $name = $bitstream->getName();
@@ -167,7 +166,7 @@ class DownloadBitstreamComponent extends AppComponent
       exit();
       }
     }
-  } //end class
+  } // end class
 
 /**
  * Gets an environment variable from available sources, and provides emulation
@@ -203,11 +202,11 @@ function env($key)
     {
     $val = $_SERVER[$key];
     }
-  elseif(isset($_ENV[$key]))
+  else if(isset($_ENV[$key]))
     {
     $val = $_ENV[$key];
     }
-  elseif(getenv($key) !== false)
+  else if(getenv($key) !== false)
     {
     $val = getenv($key);
     }

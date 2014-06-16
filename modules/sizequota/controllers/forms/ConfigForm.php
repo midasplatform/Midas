@@ -20,7 +20,7 @@
 
 /** sizequota config form */
 class Sizequota_ConfigForm extends AppForm
-{
+  {
   /** create the admin->modules page config form */
   public function createConfigForm()
     {
@@ -67,6 +67,4 @@ class Sizequota_ConfigForm extends AppForm
     $form->addElements(array($useDefault, $quota, $submit));
     return $form;
     }
-
-} // end class
-?>
+  } // end class

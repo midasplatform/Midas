@@ -1,18 +1,28 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
+
 include_once BASE_PATH . '/library/KWUtils.php';
+
 /** Exract dicom metadata */
 class Dicomextractor_ExtractorComponent extends AppComponent
-{
+  {
 
   /**
    * Check whether a given application is configured properly.
@@ -30,7 +40,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
       {
       $preparedCommand .= ' --version';
       }
-    $this->prependDataDict($preparedCommand);
+    $this->_prependDataDict($preparedCommand);
     exec($preparedCommand, $output, $return_var);
     if(empty($output))
       {
@@ -51,10 +61,10 @@ class Dicomextractor_ExtractorComponent extends AppComponent
   /**
    * Remove any params to the command, returning only the executable argument
    */
-  private function getExecutableArg($commandWithParams)
+  private function _getExecutableArg($commandWithParams)
     {
     $commandWithParams = trim($commandWithParams);
-    // First test if the executable arugment has quotes
+    // First test if the executable argument has quotes
     $isQuoted = preg_match('/^["\'][^"]*["\']/', $commandWithParams, $matches);
     if($isQuoted)
       {
@@ -71,7 +81,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
   /**
    * Prepend data dictionary environment variable if necessary.
    */
-  private function prependDataDict(&$command)
+  private function _prependDataDict(&$command)
     {
     $modulesConfig = Zend_Registry::get('configsModules');
     $dictPath = $modulesConfig['dicomextractor']->dcmdictpath;
@@ -93,7 +103,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
     // dcmj2pnmCommand may have some params that will cause it to throw
     // an error when no input is given, hence for existence and configuration
     // testing just get the command itself, without params
-    $dcmj2pnmCommand = $this->getExecutableArg($modulesConfig['dicomextractor']->dcmj2pnm);
+    $dcmj2pnmCommand = $this->_getExecutableArg($modulesConfig['dicomextractor']->dcmj2pnm);
     $ret['dcm2xml'] = $this->getApplicationStatus($dcm2xmlCommand, 'dcm2xml');
     $ret['dcmftest'] = $this->getApplicationStatus($dcmftestCommand,
                                                    'dcmftest',
@@ -119,7 +129,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
       $dataDictVar = $modulesConfig['dicomextractor']->dcmdictpath;
       $dictPaths = explode(":", $dataDictVar);
       $errorInDictVar = false;
-      foreach ($dictPaths as $path)
+      foreach($dictPaths as $path)
         {
         if(!is_readable($path))
           {
@@ -157,23 +167,23 @@ class Dicomextractor_ExtractorComponent extends AppComponent
     $thumbnailComponent = MidasLoader::loadComponent('Imagemagick',
                                                      'thumbnailcreator');
     $utilityComponent = MidasLoader::loadComponent('Utility');
-    $bitstream = $bitstreams[$numBitstreams/2];
+    $bitstream = $bitstreams[$numBitstreams / 2];
 
     // Turn the DICOM into a JPEG
     $modulesConfig = Zend_Registry::get('configsModules');
     $tempDirectory = $utilityComponent->getTempDirectory();
     $tmpSlice = $tempDirectory.'/'.$bitstream->getName().'.jpg';
     $command = $modulesConfig['dicomextractor']->dcmj2pnm;
-    $preparedCommand = str_replace("'", '"',$command);
+    $preparedCommand = str_replace("'", '"', $command);
     $preparedCommand .= ' "'.$bitstream->getFullPath().'" "'.$tmpSlice.'"';
-    $this->prependDataDict($preparedCommand);
+    $this->_prependDataDict($preparedCommand);
     exec($preparedCommand, $output);
 
     // We have to spoof an item array for the thumbnail component. This
     // should certainly be fixed one day. It's a hack, but not my hack.
     $spoofedItem = array();
     $spoofedItem['item_id'] = $item->getKey();
-    $thumbnailComponent->createThumbnail($spoofedItem,$tmpSlice);
+    $thumbnailComponent->createThumbnail($spoofedItem, $tmpSlice);
     unlink($tmpSlice);
     }
 
@@ -192,9 +202,9 @@ class Dicomextractor_ExtractorComponent extends AppComponent
     $bitstream = $bitstreams[0];
     $modulesConfig = Zend_Registry::get('configsModules');
     $command = $modulesConfig['dicomextractor']->dcm2xml;
-    $preparedCommand = str_replace("'", '"',$command);
+    $preparedCommand = str_replace("'", '"', $command);
     $preparedCommand .= ' "'.$bitstream->getFullPath().'"';
-    $this->prependDataDict($preparedCommand);
+    $this->_prependDataDict($preparedCommand);
     exec($preparedCommand, $output);
     $xml = new XMLReader();
     $xml->xml(implode($output)); // implode our output
@@ -216,12 +226,9 @@ class Dicomextractor_ExtractorComponent extends AppComponent
                 {
                 $tagField['tag'] = $xml->value;
                 }
-              elseif($xml->name == 'name')
+              else if($xml->name == 'name')
                 {
                 $tagField['name'] = $xml->value;
-                }
-              else
-                {
                 }
               }
             }
@@ -229,6 +236,8 @@ class Dicomextractor_ExtractorComponent extends AppComponent
         case XMLReader::TEXT:
           $tagField['value'] = $xml->value;
           $tagArray[] = $tagField;
+          break;
+        default:
           break;
         }
       }
@@ -257,11 +266,10 @@ class Dicomextractor_ExtractorComponent extends AppComponent
                                            $row['value']);
           }
         }
-      catch (Zend_Exception $exc)
+      catch(Zend_Exception $exc)
         {
         echo $exc->getMessage();
         }
       }
     }
-
-} // end class
+  } // end class

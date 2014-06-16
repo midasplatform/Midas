@@ -316,6 +316,4 @@ class ApiCallCommunityMethodsTest extends ApiCallMethodsTest
       $this->assertTrue(in_array($id, $expectedGroups), 'id should have been in expectedGroups');
       }
     }
-
-
   }

@@ -26,12 +26,11 @@
  */
 class Communityagreement_AppController extends MIDAS_GlobalModule
   {
-  public $moduleName='communityagreement';
-    
+  public $moduleName = 'communityagreement';
+
   /**
    * Communityagreement_Agreement Model
    * @var Communityagreement_AgreementModelBase
    */
   var $Communityagreement_Agreement;
-  } //end class
-?>
+  }

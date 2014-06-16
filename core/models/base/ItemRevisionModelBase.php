@@ -20,7 +20,7 @@
 
 /** ItemRevisionModelBase*/
 abstract class ItemRevisionModelBase extends AppModel
-{
+  {
   /** Constructor */
   public function __construct()
     {
@@ -163,7 +163,6 @@ abstract class ItemRevisionModelBase extends AppModel
     $ItemModel->save($item, true);
     } // end addBitstream
 
-
   /** save */
   public function save($dao)
     {
@@ -177,6 +176,4 @@ abstract class ItemRevisionModelBase extends AppModel
       }
     parent::save($dao);
     }
-
-
-} // end class ItemRevisionModelBase
+  } // end class

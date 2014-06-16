@@ -21,4 +21,3 @@
 define("MIDAS_PRIORITY_INFO", 6);
 define("MIDAS_PRIORITY_CRITICAL", 2);
 define("MIDAS_PRIORITY_WARNING", 4);
-?>

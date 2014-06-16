@@ -23,9 +23,6 @@
  * \brief DAO Assetstore
  */
 class CommunityInvitationDao extends AppDao
-{
+  {
   public $_model = 'CommunityInvitation';
-
-
-} // end class
-?>
+  } // end class

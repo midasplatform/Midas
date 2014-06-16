@@ -18,7 +18,7 @@
  limitations under the License.
 =========================================================================*/
 abstract class UserapiModelBase extends AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -107,6 +107,4 @@ abstract class UserapiModelBase extends AppModel
     $this->save($userApiDao);
     return $userApiDao;
     }
-
-}
-?>
+  }

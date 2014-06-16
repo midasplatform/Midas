@@ -15,9 +15,9 @@
  * @category   Zend
  * @package    Zend_Dojo
  * @subpackage Form_Element
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Editor.php 20096 2010-01-06 02:05:09Z bkarwin $
+ * @version    $Id: Editor.php 24594 2012-01-05 21:27:01Z matthew $
  */
 
 /** Zend_Dojo_Form_Element_Dijit */
@@ -30,7 +30,7 @@
  * @category   Zend
  * @package    Zend_Dojo
  * @subpackage Form_Element
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
@@ -247,7 +247,7 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
     {
         $plugin = (string) $plugin;
         $plugins = $this->getPlugins();
-        if (in_array($plugin, $plugins)) {
+        if (in_array($plugin, $plugins) && $plugin !== '|') {
             return $this;
         }
 
@@ -446,11 +446,11 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
      */
     public function setMinHeight($minHeight)
     {
-        if (!preg_match('/^\d+(em)?$/i', $minHeight)) {
+        if (!preg_match('/^\d+(em|px|%)?$/i', $minHeight)) {
             // require_once 'Zend/Form/Element/Exception.php';
             throw new Zend_Form_Element_Exception('Invalid minHeight provided; must be integer or CSS measurement');
         }
-        if ('em' != substr($minHeight, -2)) {
+        if (!preg_match('/(em|px|%)$/', $minHeight)) {
             $minHeight .= 'em';
         }
         return $this->setDijitParam('minHeight', $minHeight);

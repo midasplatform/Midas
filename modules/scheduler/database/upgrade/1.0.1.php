@@ -19,10 +19,9 @@
 =========================================================================*/
 
 class Scheduler_Upgrade_1_0_1 extends MIDASUpgrade
-{
+  {
   public function preUpgrade()
     {
-
     }
 
   public function mysql()
@@ -35,13 +34,9 @@ class Scheduler_Upgrade_1_0_1 extends MIDASUpgrade
         PRIMARY KEY (`log_id`)
       ) DEFAULT CHARSET=utf8";
     $this->db->query($sql);
-
     }
-
 
   public function postUpgrade()
     {
-
     }
-}
-?>
+  }

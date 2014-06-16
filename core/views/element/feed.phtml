@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -20,7 +20,7 @@ PURPOSE.  See the above copyright notices for more information.
 
   if(!function_exists('createFeedElement'))
     {
-    function createFeedElement(&$view,$feed)
+    function createFeedElement(&$view, $feed)
       {
       $type=$feed->getType();
       if($feed->policy == 2)
@@ -29,7 +29,7 @@ PURPOSE.  See the above copyright notices for more information.
         echo "<img class='feedDeleteLink' qtip='".$view->t('Delete the post')."' element='{$feed->getKey()}' src='{$view->coreWebroot}/public/images/icons/close.png' alt=''/>";
         echo "</div>";
         }
-      
+
       if(!isset($view->disableFeedImages))
         {
         echo "<div class='feedUserImage'>";
@@ -43,7 +43,7 @@ PURPOSE.  See the above copyright notices for more information.
       switch($type)
         {
         case MIDAS_FEED_CREATE_COMMUNITY:
-          echo "{$view->t("added the community")} <a href='{$view->webroot}/community/{$feed->getRessource()->getKey()}'>".$view->slicename($feed->getRessource()->getName(),30)."</a>";
+          echo "{$view->t("added the community")} <a href='{$view->webroot}/community/{$feed->getRessource()->getKey()}'>".$view->slicename($feed->getRessource()->getName(), 30)."</a>";
           break;
         case MIDAS_FEED_COMMUNITY_INVITATION:
           if($view->loggedUser && $view->loggedUser->getKey() == $feed->getRessource()->getUser()->getKey())
@@ -54,18 +54,18 @@ PURPOSE.  See the above copyright notices for more information.
             {
             echo $view->t('invited').' '.$view->linkuser($feed->getRessource()->getUser()).' '.$view->t('to the community');
             }
-          echo  " <a href='{$view->webroot}/community/{$feed->getRessource()->getCommunity()->getKey()}'>".$view->slicename($feed->getRessource()->getCommunity()->getName(),30)."</a>";
+          echo  " <a href='{$view->webroot}/community/{$feed->getRessource()->getCommunity()->getKey()}'>".$view->slicename($feed->getRessource()->getCommunity()->getName(), 30)."</a>";
           break;
         case MIDAS_FEED_UPDATE_COMMUNITY:
         case MIDAS_FEED_CREATE_FOLDER:
         case MIDAS_FEED_CREATE_ITEM:
-          echo "{$view->t("added the item")} <a  href='{$view->webroot}/item/{$feed->getRessource()->getKey()}'>".$view->slicename($feed->getRessource()->getName(),30)."</a>";
+          echo "{$view->t("added the item")} <a  href='{$view->webroot}/item/{$feed->getRessource()->getKey()}'>".$view->slicename($feed->getRessource()->getName(), 30)."</a>";
           break;
         case MIDAS_FEED_CREATE_LINK_ITEM:
-          echo "{$view->t("added the link")} <a href='{$view->webroot}/item/{$feed->getRessource()->getKey()}'>".$view->slicename($feed->getRessource()->getName(),30)."</a>";
+          echo "{$view->t("added the link")} <a href='{$view->webroot}/item/{$feed->getRessource()->getKey()}'>".$view->slicename($feed->getRessource()->getName(), 30)."</a>";
           break;
         case MIDAS_FEED_CREATE_REVISION:
-          echo "{$view->t("added a new revision to")} <a href='{$view->webroot}/item/{$feed->getRessource()->getItem()->getKey()}'>".$view->slicename($feed->getRessource()->getItem()->getName(),30)."</a>";
+          echo "{$view->t("added a new revision to")} <a href='{$view->webroot}/item/{$feed->getRessource()->getItem()->getKey()}'>".$view->slicename($feed->getRessource()->getItem()->getName(), 30)."</a>";
           break;
         case MIDAS_FEED_CREATE_USER:
           echo "{$view->t("registered")}";
@@ -83,12 +83,12 @@ PURPOSE.  See the above copyright notices for more information.
       echo "<div style='clear:left;'></div>";
       }
     }
-    
+
   $feeds=$this->feeds;
   if(!isset($feeds)||empty($feeds))
     {
-    echo $this->t("Feed is currently empty. It could be that the community is not very active 
-          or you may not have the permissions to see the feeds.");  
+    echo $this->t("Feed is currently empty. It could be that the community is not very active
+          or you may not have the permissions to see the feeds.");
     return;
     }
 
@@ -100,8 +100,8 @@ PURPOSE.  See the above copyright notices for more information.
       {
       echo "<img class='newFeedElement'  src='{$this->coreWebroot}/public/images/icons/new.png' alt=''/>";
       }
-    echo createFeedElement($this,$feed);
+    echo createFeedElement($this, $feed);
     echo "</div>";
     }
   echo "</div>";
- 
+

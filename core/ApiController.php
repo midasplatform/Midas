@@ -21,7 +21,6 @@
 /** Web Api Controller */
 class ApiController extends REST_Controller
   {
-
   private $httpSuccessCode = array(
     'index' => 200, // 200 OK
     'get' => 200,
@@ -51,7 +50,7 @@ class ApiController extends REST_Controller
     {
     $errorInfo['code'] = $e->getCode();
     $errorInfo['msg'] = $e->getMessage();
-    switch ($errorInfo['code'])
+    switch($errorInfo['code'])
       {
       case MIDAS_INVALID_PARAMETER:
       case MIDAS_INVALID_POLICY:
@@ -73,7 +72,7 @@ class ApiController extends REST_Controller
       default:
         $httpCode = 400; // 400 Bad Request
       }
-      return array($errorInfo, $httpCode);
+    return array($errorInfo, $httpCode);
     }
 
   /**
@@ -104,49 +103,49 @@ class ApiController extends REST_Controller
    * for given url: {base_path}/rest/item/duplicate/2, Midas will call
    *   'itemDuplicate' in ApiComponent (in core module) to do the api;
    */
-
   protected function _genericAction($args, $resource, $restAction, $apiFunctions, $moduleName = null)
     {
-      $ApiComponent = MidasLoader::loadComponent('Api'.$resource, $moduleName);
-      $httpCode = $this->httpSuccessCode[strtolower($restAction)];
-      $calledFunction = $apiFunctions['default'];
-      $apiResults = array();
-      try
+    $ApiComponent = MidasLoader::loadComponent('Api'.$resource, $moduleName);
+    $httpCode = $this->httpSuccessCode[strtolower($restAction)];
+    $calledFunction = $apiFunctions['default'];
+    $apiResults = array();
+    try
+      {
+      $userDao = $this->_getUser($args);
+      if(isset($args['method']))
         {
-        $userDao = $this->_getUser($args);
-        if(isset($args['method']))
+        $method = strtolower($args['method']);
+        if(array_key_exists($method, $apiFunctions))
           {
-          $method = strtolower($args['method']);
-          if(array_key_exists($method, $apiFunctions))
-            {
-            $calledFunction = $apiFunctions[$method];
-            }
-          else
-            {
-            throw new Exception('Server error. Operation ' . $args['method']  . ' is not supported.', -100);
-            }
-        }
-        if(method_exists($ApiComponent, $calledFunction . 'Wrapper')) {
-          $calledFunction = $calledFunction . 'Wrapper';
-        }
-        $resultsArray = $ApiComponent->$calledFunction($args, $userDao);
-        if (isset($resultsArray))
-          {
-          $apiResults['data'] = $resultsArray;
+          $calledFunction = $apiFunctions[$method];
           }
-        else // if the api function doesn't provide an return value
+        else
           {
-          $apiResults['msg'] = "succeed!"; // there is no exception if code reaches here
+          throw new Exception('Server error. Operation ' . $args['method']  . ' is not supported.', -100);
           }
         }
-      catch (Exception $e)
+      if(method_exists($ApiComponent, $calledFunction . 'Wrapper'))
         {
-        list($apiResults['error'], $httpCode) = $this->_exceptionHandler($e);
+        $calledFunction = $calledFunction . 'Wrapper';
         }
-      $this->_response->setHttpResponseCode($httpCode);
-      // only the data assigned to '$this->view->apiresults' will be serilized
-      // in requested format (json, xml, etc) and filled in response body
-      $this->view->apiresults = $apiResults;
+      $resultsArray = $ApiComponent->$calledFunction($args, $userDao);
+      if(isset($resultsArray))
+        {
+        $apiResults['data'] = $resultsArray;
+        }
+      else // if the api function doesn't provide an return value
+        {
+        $apiResults['msg'] = "succeed!"; // there is no exception if code reaches here
+        }
+      }
+    catch(Exception $e)
+      {
+      list($apiResults['error'], $httpCode) = $this->_exceptionHandler($e);
+      }
+    $this->_response->setHttpResponseCode($httpCode);
+    // only the data assigned to '$this->view->apiresults' will be serilized
+    // in requested format (json, xml, etc) and filled in response body
+    $this->view->apiresults = $apiResults;
     }
 
   /**
@@ -215,6 +214,4 @@ class ApiController extends REST_Controller
     {
     $this->_response->setHeader('Allow', 'OPTIONS');
     }
-
-  } //end class
-?>
+  }

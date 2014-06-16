@@ -20,7 +20,7 @@
 
 /** Admin forms*/
 class AdminForm extends AppForm
-{
+  {
   /** create form */
   public function createConfigForm()
     {
@@ -70,5 +70,4 @@ class AdminForm extends AppForm
       $verifyEmail));
     return $form;
     }
-
-} // end class
+  } // end class

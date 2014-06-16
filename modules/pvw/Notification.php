@@ -88,4 +88,4 @@ class Pvw_Notification extends MIDAS_Notification
     $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
     return array('ParaViewWeb' => $webroot.'/'.$this->moduleName.'/config/status');
     }
-  } //end class
+  } // end class

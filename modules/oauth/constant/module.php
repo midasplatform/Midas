@@ -21,4 +21,3 @@
 // List of token types to be stored in the oauth_token table
 define('MIDAS_OAUTH_TOKEN_TYPE_ACCESS', 0);
 define('MIDAS_OAUTH_TOKEN_TYPE_REFRESH', 1);
-?>

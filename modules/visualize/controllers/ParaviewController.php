@@ -20,7 +20,7 @@
 
 /** Paraview Controller*/
 class Visualize_ParaviewController extends Visualize_AppController
-{
+  {
   public $_models = array('Item', 'ItemRevision', 'Bitstream');
   public $_moduleComponents = array('Main');
 
@@ -570,6 +570,4 @@ class Visualize_ParaviewController extends Visualize_AppController
       return '80';
       }
     }
-} // end class
-?>
-
+  } // end class

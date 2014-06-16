@@ -31,4 +31,3 @@ class Oauth_CodeDao extends AppDao
     return time() > strtotime($this->getExpirationDate());
     }
   }
-?>

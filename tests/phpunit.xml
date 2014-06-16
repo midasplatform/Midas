@@ -7,7 +7,6 @@
             <directory suffix=".php">../core/controllers</directory>
             <directory suffix=".php">../core/models/pdo</directory>
             <directory suffix=".php">../core/models/dao</directory>
-            <directory suffix=".php">../library/MIDAS</directory>
             <exclude>
                 <file>../core/Bootstrap.php</file>
                 <file>../core/controllers/ErrorController.php</file>

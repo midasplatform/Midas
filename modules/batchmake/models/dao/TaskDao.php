@@ -17,10 +17,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** Batchmake_TaskDao */
-class Batchmake_TaskDao extends AppDao {
 
+/** Batchmake_TaskDao */
+class Batchmake_TaskDao extends AppDao
+  {
   public $_model = 'Task';
   public $_module = 'batchmake';
-
-}
+  }

@@ -19,7 +19,7 @@
 =========================================================================*/
 /** Module configuration controller (for admin use) */
 class Tracker_ConfigController extends Tracker_AppController
-{
+  {
   public $_models = array('Setting');
   public $_components = array('Breadcrumb');
 
@@ -58,4 +58,4 @@ class Tracker_ConfigController extends Tracker_AppController
 
     echo JsonComponent::encode(array('message' => 'Changes saved', 'status' => 'ok'));
     }
-} // end class
+  } // end class

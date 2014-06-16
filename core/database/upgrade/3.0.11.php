@@ -19,12 +19,11 @@
 =========================================================================*/
 
 class Upgrade_3_0_11 extends MIDASUpgrade
-{ 
+  {
   public function preUpgrade()
     {
-    
     }
-    
+
   public function mysql()
     {
     $sql = "
@@ -38,7 +37,6 @@ class Upgrade_3_0_11 extends MIDASUpgrade
     $this->db->query($sql);
     }
 
-    
   public function pgsql()
     {
     $sql = "
@@ -46,16 +44,12 @@ class Upgrade_3_0_11 extends MIDASUpgrade
         communityinvitation_id  serial  PRIMARY KEY,
         community_id bigint,
         user_id bigint
-      )  
+      )
       ; ";
     $this->db->query($sql);
     }
-    
+
   public function postUpgrade()
     {
-    
     }
-}
-?>
-
-
+  }

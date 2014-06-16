@@ -24,7 +24,7 @@ require_once BASE_PATH.'/modules/ldap/models/base/UserModelBase.php';
  * Ldap user pdo model
  */
 class Ldap_UserModel extends Ldap_UserModelBase
-{
+  {
   /**
    * Pass the user's login credentials and see if they are an ldap user
    * @param login The user's login name
@@ -77,4 +77,4 @@ class Ldap_UserModel extends Ldap_UserModelBase
       return false;
       }
     }
-}
+  }

@@ -20,7 +20,7 @@
 
 /** ItemRevisionModelBase*/
 class CommunityInvitationModelBase extends AppModel
-{
+  {
   /** Constructor */
   public function __construct()
     {
@@ -122,4 +122,4 @@ class CommunityInvitationModelBase extends AppModel
       }
     return;
     }
-  } // end class ItemRevisionModelBase
+  } // end class

@@ -18,12 +18,9 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * TaskController
- *
- */
+/** Run controller for the scheduler module */
 class Scheduler_RunController extends Scheduler_AppController
-{
+  {
   public $_models = array('Setting');
   public $_moduleModels = array('Job', 'JobLog');
   public $_components = array('Json');
@@ -34,9 +31,9 @@ class Scheduler_RunController extends Scheduler_AppController
    */
   function init()
     {
-
     } // end method indexAction
 
+  /** Index action */
   function indexAction()
     {
     $startTime = time();
@@ -123,5 +120,4 @@ class Scheduler_RunController extends Scheduler_AppController
       $this->Setting->delete($lastRunSetting);
       }
     }
-
-}//end class
+  } // end class

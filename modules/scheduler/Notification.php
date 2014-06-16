@@ -29,7 +29,7 @@ class Scheduler_Notification extends MIDAS_Notification
   public function init()
     {
     $this->addTask('TASK_SCHEDULER_SCHEDULE_TASK', 'scheduleTask', "Schedule a task. Parameters: task, priority, params");
-    
+
     $this->addCallBack('CALLBACK_SCHEDULER_SCHEDULE_TASK', 'scheduleTask');
     $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
     }//end init
@@ -55,13 +55,9 @@ class Scheduler_Notification extends MIDAS_Notification
       {
       $params['fire_time'] = date("Y-m-d H:i:s");
       }
-    elseif(is_numeric($params['fire_time']))
+    else if(is_numeric($params['fire_time']))
       {
       $params['fire_time'] = date("Y-m-d H:i:s", $params['fire_time']);
-      }
-    else
-      {
-      $params['fire_time'] = $params['fire_time'];
       }
 
     if(!$params['run_only_once'])
@@ -107,5 +103,4 @@ class Scheduler_Notification extends MIDAS_Notification
     $jobModel = MidasLoader::loadModel('Job', $this->moduleName);
     $jobModel->removeUserReferences($user->getKey());
     }
-  } //end class
-?>
+  } // end class

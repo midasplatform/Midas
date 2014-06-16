@@ -1,7 +1,7 @@
 <!-- somewhat inspired by java checkstyle -->
 <phpcheckstyle-configuration>
 
-	<!--  ****************  -->
+    <!--  ****************  -->
     <!--        Naming      -->
     <!--  ****************  -->
 
@@ -28,10 +28,9 @@
     <test name="classNaming" regexp="/^[A-Z]/" level="ERROR"/>
 
 
-	<!--  ****************  -->
+    <!--  ****************  -->
     <!--      PHP Tags      -->
     <!--  ****************  -->
-
 
     <!-- Test if a short php code open tag is used (<? instead of <?php ). -->
     <test name="noShortPhpCodeTag"/>
@@ -47,7 +46,7 @@
     <!--      Comments      -->
     <!--  ****************  -->
 
-	<!-- Check if some C style comments are used (#) -->
+    <!-- Check if some C style comments are used (#) -->
     <test name="noShellComments"/>
 
     <!-- Tests that every function and class is immediately preceded by a docblock. A property "excludePrivateMembers" can be set if you want to disable docblocks for private member functions. -->
@@ -57,6 +56,7 @@
         <property name="testParam" value="false"/>
         <property name="testThrow" value="false"/>
     </test>
+
 
     <!--  ****************  -->
     <!--    Indentation     -->
@@ -86,8 +86,8 @@
         <property name="position" value="nl"/>
     </test>
 
-	<!-- Check the position of the else -->
-	<!-- sl = same line -->
+    <!-- Check the position of the else -->
+    <!-- sl = same line -->
     <!-- nl = new line -->
     <test name="controlStructElse">
 	 	<property name="position" value="nl"/>
@@ -102,8 +102,9 @@
          are followed by a space before the opening parenthesis.
          PEAR standard stipulates this to distinguish it from function calls.
     -->
-  <!-- <test name="spaceAfterControlStmt"/> -->
-   <test name="noSpaceAfterControlStmt"/>
+
+    <!-- <test name="spaceAfterControlStmt"/> -->
+    <test name="noSpaceAfterControlStmt"/>
 
     <!-- Check that there is no space after a function name in a function call -->
      <test name="noSpaceAfterFunctionName" level="INFO"></test>
@@ -133,6 +134,7 @@
     <test name="noSpaceAfterToken"  level="INFO">
     </test>
 
+
     <!--  ****************  -->
     <!--      Metrics       -->
     <!--  ****************  -->
@@ -142,24 +144,11 @@
         <property name="maxLineLength" value="160"/>
     </test>
 
-    <!-- Checks that the lenght (in lines) of a function doesn't pass the max value -->
-   <!-- <test name="functionLength" level="INFO">
-        <property name="maxLength" value="200"/>
-    </test>
-    -->
-
     <!--  Checks for excessive parameters in a function declaration -->
     <test name="functionMaxParameters">
         <property name="maxParameters" value="9"/>
     </test>
 
-    <!-- Check Cyclomatic Complexity -->
-	<!-- see http://www.aivosto.com/project/help/pm-complexity.html -->
- <!--	<test name="cyclomaticComplexity">
-        <property name="warningLevel" value="10"/>
-
-        <property name="errorLevel" value="20"/>
-    </test> -->
 
     <!--  ****************  -->
     <!--      Other         -->
@@ -178,12 +167,9 @@
     	<item value="set_magic_quotes_runtime"/>
     	<item value="magic_quotes_runtime"/>
     	<item value="sql_regcase "/>
-    	<item value="passthru"/>
     	<item value="exit"/>
     	<item value="phpinfo"/>
     	<item value="die"/>
-    	<!-- <item value="copy"/>  -->
-    	<!-- <item value="fwrite"/>  -->
     </test>
 
     <!-- Check for prohibited tokens -->
@@ -200,35 +186,19 @@
     	<item value="T_HALT_COMPILER"/>
     	<item value="T_OLD_FUNCTION"/>
     	<item value="T_PRINT"/>
-
-    	<!--  Same thing as the noShortPhpCodeTag rule -->
-    	<!-- <item value="T_OPEN_TAG_WITH_ECHO"/> -->
-
-    	<!-- <item value="T_INLINE_HTML"/> -->
-    	<!-- <item value="T_ECHO"/>  -->
-
-
     </test>
 
      <!-- Check for silenced errors before function calls (@function) -->
     <test name="checkSilencedError">
-    	<exception value="rename"/> <!-- Exceptions to this rule -->
+    	<exception value="chmod"/> <!-- Exceptions to this rule -->
+    	<exception value="ldap_bind"/>
     	<exception value="mkdir"/>
-    	<exception value="chmod"/>
+    	<exception value="rename"/>
     </test>
 
     <!-- Check for encapsed variables inside a String ("$a") -->
     <test name="encapsedVariablesInsideString">
     </test>
-
-     <!-- Avoid passing parameters by reference -->
-   <!-- <test name="avoidPassingReferences">
-    </test> -->
-
-     <!--
-    <test name="showTODOs">
-    </test>
-    -->
 
     <!-- Use boolean operators (&&) instead of logical operators (AND) -->
     <test name="useBooleanOperators">
@@ -255,14 +225,9 @@
     <test name="switchNeedDefault">
     </test>
 
-     <!-- Switch case should have a break -->
-    <!--  <test name="switchCaseNeedBreak">
-    </test>  -->
-
     <!-- Switch default value should be at the end -->
     <test name="switchDefaultOrder">
     </test>
-
 
     <!--
     Avoid using unary operators (++) inside a control statement
@@ -272,25 +237,10 @@
    		<exception value="for"/>
     </test>
 
-    <!-- Detect unused private functions (detecting unused public ones is more difficult) -->
-   <!-- <test name="checkUnusedPrivateFunctions">
-    </test> -->
-
-    <!-- Detect unused variables -->
-   <!-- <test name="checkUnusedVariables">
-    </test>-->
-
-    <!-- Detect unused function parameters -->
- <!--   <test name="checkUnusedFunctionParameters">
-    </test> -->
-
-    <!-- Detect unused code (after return) -->
- <!--   <test name="checkUnusedCode">
-    </test>
-    -->
     <!-- Only one class declaration per PHP file -->
     <test name="oneClassPerFile">
     </test>
+
 
     <!--  *******************  -->
     <!--      Optimisation     -->
@@ -300,6 +250,7 @@
     <test name="functionInsideLoop">
     </test>
 
+
     <!--  *******************  -->
     <!--      Deprecation      -->
     <!--  see http://php.net/manual/en/migration53.deprecated.php -->
@@ -307,19 +258,41 @@
 
     <!-- Replace deprecated methods -->
     <test name="checkDeprecation">
-    	<deprecated old="split" new="explode($pattern, $string) or preg_split('@'.$pattern.'@', $string)" version="5.3"/>
-    	<deprecated old="spliti" new="preg_split('@'.$pattern.'@i', $string) " version="5.3"/>
-    	<deprecated old="ereg" new="preg_match('@'.$pattern.'@', $string)"  version="5.3"/>
-    	<deprecated old="eregi" new="preg_match('@'.$pattern.'@i', $string)"  version="5.3"/>
-    	<deprecated old="ereg_replace" new="preg_replace('@'.$pattern.'@', $string)" version="5.3"/>
-    	<deprecated old="eregi_replace" new="preg_replace('@'.$pattern.'@i', $string)" version="5.3"/>
-    	<deprecated old="call_user_method" new="call_user_func" version="5.3"/>
-    	<deprecated old="call_user_method_array" new="call_user_func_array" version="5.3"/>
-    	<deprecated old="session_register" new="$_SESSION" version="5.3"/>
-    	<deprecated old="session_unregister" new="$_SESSION" version="5.3"/>
-    	<deprecated old="session_is_registered" new="$_SESSION" version="5.3"/>
-    	<deprecated old="mysql_db_query" new="mysql_select_db and mysql_query" version="5.3"/>
-    	<deprecated old="mysql_escape_string" new="mysql_real_escape_string" version="5.3"/>
+        <deprecated old="$HTTP_COOKIE_VARS" new="$_COOKIE" version="5.3"/>
+        <deprecated old="$HTTP_ENV_VARS" new="$_ENV" version="5.3"/>
+        <deprecated old="$HTTP_GET_VARS" new="$_GET" version="5.3"/>
+        <deprecated old="$HTTP_POST_VARS" new="$_POST" version="5.3"/>
+        <deprecated old="$HTTP_SERVER_VARS" new="$_SERVER" version="5.3"/>
+        <deprecated old="$HTTP_SESSION_VARS" new="$_SESSION" version="5.3"/>
+        <deprecated old="call_user_method_array" new="call_user_func_array" version="4.1"/>
+        <deprecated old="call_user_method" new="call_user_func" version="4.1"/>
+        <deprecated old="define_syslog_variables" new="none" version="5.4"/>
+        <deprecated old="dl" new="extension_loaded" version="5.3"/>
+        <deprecated old="ereg_replace" new="preg_replace('@'.$pattern.'@', $string)" version="5.3"/>
+        <deprecated old="ereg" new="preg_match('@'.$pattern.'@', $string)"  version="5.3"/>
+        <deprecated old="eregi_replace" new="preg_replace('@'.$pattern.'@i', $string)" version="5.3"/>
+        <deprecated old="eregi" new="preg_match('@'.$pattern.'@i', $string)"  version="5.3"/>
+        <deprecated old="import_request_variables" new="none" version="5.4"/>
+        <deprecated old="magic_quotes_runtime" new="none" version="5.3"/>
+        <deprecated old="mcrypt_generic_end" new="mcrypt_generic_deinit" version="5.4"/>
+        <deprecated old="mysql_db_query" new="mysql_select_db and mysql_query" version="5.3"/>
+        <deprecated old="mysql_escape_string" new="mysql_real_escape_string" version="5.3"/>
+        <deprecated old="mysql_list_dbs" new="none" version="5.4"/>
+        <deprecated old="mysqli_bind_param" new="mysqli_stmt_bind_param" version="5.4"/>
+        <deprecated old="mysqli_bind_result" new="mysqli_stmt_bind_result" version="5.4"/>
+        <deprecated old="mysqli_client_encoding" new="mysqli_character_set_name" version="5.4"/>
+        <deprecated old="mysqli_fetch" new="mysqli_stmt_fetch" version="5.4"/>
+        <deprecated old="mysqli_get_metadata" new="mysqli_stmt_result_metadata" version="5.4"/>
+        <deprecated old="mysqli_param_count" new="mysqli_stmt_param_count" version="5.4"/>
+        <deprecated old="mysqli_send_long_data" new=" mysqli_stmt_send_long_data" version="5.4"/>
+        <deprecated old="session_is_registered" new="$_SESSION" version="5.3"/>
+        <deprecated old="session_register" new="$_SESSION" version="5.3"/>
+        <deprecated old="session_unregister" new="$_SESSION" version="5.3"/>
+        <deprecated old="set_magic_quotes_runtime" new="none" version="5.3"/>
+        <deprecated old="set_socket_blocking" new="stream_set_blocking" version="5.3"/>
+        <deprecated old="split" new="explode($pattern, $string) or preg_split('@'.$pattern.'@', $string)" version="5.3"/>
+        <deprecated old="spliti" new="preg_split('@'.$pattern.'@i', $string)" version="5.3"/>
+        <deprecated old="sql_regcase" new="none" version="5.3"/>
     </test>
 
 </phpcheckstyle-configuration>

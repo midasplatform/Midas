@@ -15,9 +15,9 @@
  * @category   Zend
  * @package    Zend_Service_WindowsAzure
  * @subpackage Storage
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: TableInstance.php 22773 2010-08-03 07:18:27Z maartenba $
+ * @version    $Id: TableInstance.php 24594 2012-01-05 21:27:01Z matthew $
  */
 
 /**
@@ -34,27 +34,27 @@
  * @category   Zend
  * @package    Zend_Service_WindowsAzure
  * @subpackage Storage
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * 
+ *
  * @property string  $Id              Id
  * @property string  $Name            Name
  * @property string  $Href            Href
  * @property string  $Updated         Updated
  */
 class Zend_Service_WindowsAzure_Storage_TableInstance
-	extends Zend_Service_WindowsAzure_Storage_StorageEntityAbstract
+    extends Zend_Service_WindowsAzure_Storage_StorageEntityAbstract
 {
     /**
      * Constructor
-     * 
+     *
      * @param string  $id              Id
      * @param string  $name            Name
      * @param string  $href            Href
      * @param string  $updated         Updated
      */
-    public function __construct($id, $name, $href, $updated) 
-    {	        
+    public function __construct($id, $name, $href, $updated)
+    {	
         $this->_data = array(
             'id'               => $id,
             'name'             => $name,

@@ -23,7 +23,7 @@
  * for all of the supported OTP technologies.
  */
 class Mfa_OtpComponent extends AppComponent
-{
+  {
   /** Constructor */
   function __construct()
     {
@@ -111,15 +111,15 @@ class Mfa_OtpComponent extends AppComponent
     if(!radius_add_server($rh, $radiusserver, $radiusport, $radiuspw,
       $radiusTimeout, $radiusMaxTries))
       {
-        throw new Zend_Exception('Cannot connect to the RADIUS server: ' .
-          radius_strerror($rh));
+      throw new Zend_Exception('Cannot connect to the RADIUS server: ' .
+        radius_strerror($rh));
       }
 
-    if(!radius_create_request($rh, RADIUS_ACCESS_REQUEST)) {
+    if(!radius_create_request($rh, RADIUS_ACCESS_REQUEST))
+      {
       throw new Zend_Exception('Cannot process requests to RADIUS server: ' .
         radius_strerror($rh));
-    }
-
+      }
 
     /* this is the key parameter */
     radius_put_attr($rh, RADIUS_USER_NAME, $otpDevice->getSecret());
@@ -127,7 +127,7 @@ class Mfa_OtpComponent extends AppComponent
     /* this is the one time pin + 6-digit hard token or 8 digit smart token */
     radius_put_attr($rh, RADIUS_USER_PASSWORD, $token);
 
-    switch (radius_send_request($rh))
+    switch(radius_send_request($rh))
       {
       case RADIUS_ACCESS_ACCEPT:
         $this->getLogger()->info("MIDAS RADIUS successful authentication " .
@@ -149,5 +149,4 @@ class Mfa_OtpComponent extends AppComponent
           radius_strerror($rh));
       }
     }
-
-}
+  }

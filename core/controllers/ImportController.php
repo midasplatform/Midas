@@ -98,7 +98,6 @@ class ImportController extends AppController
     return $initialcount;
     } // end function _recursiveCountFiles
 
-
   /** Check if the import should be stopped */
   private function _checkStopImport()
     {
@@ -158,7 +157,6 @@ class ImportController extends AppController
           {
           continue;
           }
-
 
         // Get the files in the directory and skip the folder if it does not
         // contain any files and we aren't set to import empty directories. The
@@ -251,7 +249,7 @@ class ImportController extends AppController
           // Upload the bitstream
           $assetstoreDao = $this->Assetstore->load($this->assetstoreid);
           $this->Component->Upload->uploadBitstream($bitstreamDao,
-                                                    $assetstoreDao, TRUE);
+                                                    $assetstoreDao, true);
 
           $this->ItemRevision->addBitstream($itemRevisionDao, $bitstreamDao);
           } // end new revision
@@ -369,7 +367,6 @@ class ImportController extends AppController
     return false;
     } // end import action
 
-
   /**
    * This function pulls the progress for the temporary importprogress_ file.
    */
@@ -418,5 +415,4 @@ class ImportController extends AppController
       }
     return false;
     } // end stopAction
-
-} // end class
+  } // end class

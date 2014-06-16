@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
+/** App DAO for the visualize module */
 class Visualize_AppDao extends MIDAS_GlobalDao
   {
- 
-  } //end class
-
-?>
+  }

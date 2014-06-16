@@ -17,13 +17,14 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** demo config controller*/
+
+/** Config controller for the landingpage module */
 class Landingpage_ConfigController extends Landingpage_AppController
-{
-   public $_moduleForms=array('Config');
-   public $_components=array('Utility');
-   public $_moduleModels = array('Text');
-   public $_moduleDaos = array('Text');
+  {
+  public $_moduleForms = array('Config');
+  public $_components = array('Utility');
+  public $_moduleModels = array('Text');
+  public $_moduleDaos = array('Text');
 
   /** index action */
   function indexAction()
@@ -43,7 +44,7 @@ class Landingpage_ConfigController extends Landingpage_AppController
       }
     $text = $textDao->getText();
     $configForm = $this->ModuleForm->Config->createForm();
-    
+
     $formArray = $this->getFormAsArray($configForm);
     $formArray['text']->setValue($text);
 
@@ -63,4 +64,4 @@ class Landingpage_ConfigController extends Landingpage_AppController
         }
       }
     }
-} // end class
+  } // end class

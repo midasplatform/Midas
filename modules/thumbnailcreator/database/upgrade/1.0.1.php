@@ -1,10 +1,9 @@
 <?php
-
 /**
  * Add a table that will store a separate thumbnail for an item
  */
 class Thumbnailcreator_Upgrade_1_0_1 extends MIDASUpgrade
-{
+  {
   public function preUpgrade()
     {
     }
@@ -35,5 +34,4 @@ class Thumbnailcreator_Upgrade_1_0_1 extends MIDASUpgrade
   public function postUpgrade()
     {
     }
-}
-?>
+  }

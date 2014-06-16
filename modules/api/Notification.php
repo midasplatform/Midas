@@ -31,6 +31,4 @@ class Api_Notification extends ApiEnabled_Notification
     {
     $this->enableWebAPI('api');
     }//end init
-
-  } //end class
-?>
+  } // end class

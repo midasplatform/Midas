@@ -15,37 +15,35 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/browse/browse.ind
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
 ?>
 
-
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/browse/browse.index.css" />
 <div class="viewMain">
   <h3 class='itemSubTitle'> <?php echo $this->t('Most Popular Items'); ?></h3>
   <div class="itemList">
-  <?php 
+  <?php
   if(!empty($this->items))
     {
     foreach($this->items as $item)
       {
-      ?>  
+      ?>
       <div class="itemBlock">
       <a class="itemTitle" qtip="<?php echo str_replace('"', "'", $item->getDescription())?>" href="<?php echo $this->webroot?>/item/<?php echo $item->getItemId(); ?>"><?php echo $item->getName(); ?></a>
       <div class="itemStats"><?php echo $item->getView(); ?> views, <?php echo $item->getDownload(); ?> downloads</div>
       </div>
-  <?php    
+  <?php
       }
     }
   ?>
   </div>
-  
-</div>
 
+</div>
 
 <div class="viewSideBar">
   <div class="sideElementFirst viewAction" >
     <h1>Actions</h1>
     <ul>
       <li>
-        
+
       </li>
     </ul>
   </div>
@@ -54,14 +52,14 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <span></span>
   </div>
   <div class="sideElementLast viewInfo" >
-    <h1>Info</h1>    
+    <h1>Info</h1>
     <img class="infoLoading" style="display:none;" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
     <div class="ajaxInfoElement">
     </div>
   </div>
-    
+
   <div class="defaultSide" >
-    <?php 
+    <?php
     if(!empty($this->itemThumbnails))
       {
       echo '<div class="sideElementFirst feedThumbnail">';
@@ -69,7 +67,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       foreach($this->itemThumbnails as $item)
         {
         echo "<a href='{$this->webroot}/item/{$item->getKey()}'>";
-        echo "<img qtip='".$item->getName()."' src='{$this->webroot}/item/thumbnail?itemId={$item->getKey()}' alt=''/>"; 
+        echo "<img qtip='".$item->getName()."' src='{$this->webroot}/item/thumbnail?itemId={$item->getKey()}' alt=''/>";
         echo "</a>";
         }
       echo '</div>';
@@ -87,7 +85,3 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     </div>
   </div>
 </div>
-
-
-
-

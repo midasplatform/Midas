@@ -15,9 +15,9 @@
  * @category   Zend
  * @package    Zend_Feed_Pubsubhubbub
  * @subpackage Callback
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: CallbackAbstract.php 22662 2010-07-24 17:37:36Z mabe $
+ * @version    $Id: CallbackAbstract.php 24594 2012-01-05 21:27:01Z matthew $
  */
 
 /**
@@ -34,14 +34,14 @@
  * @category   Zend
  * @package    Zend_Feed_Pubsubhubbub
  * @subpackage Callback
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_Feed_Pubsubhubbub_CallbackAbstract
     implements Zend_Feed_Pubsubhubbub_CallbackInterface
 {
     /**
-     * An instance of Zend_Feed_Pubsubhubbub_Model_SubscriptionInterface used 
+     * An instance of Zend_Feed_Pubsubhubbub_Model_SubscriptionInterface used
      * to background save any verification tokens associated with a subscription
      * or other.
      *

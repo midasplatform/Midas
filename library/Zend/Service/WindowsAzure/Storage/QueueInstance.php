@@ -15,9 +15,9 @@
  * @category   Zend
  * @package    Zend_Service_WindowsAzure
  * @subpackage Storage
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: QueueInstance.php 22773 2010-08-03 07:18:27Z maartenba $
+ * @version    $Id: QueueInstance.php 24594 2012-01-05 21:27:01Z matthew $
  */
 
 /**
@@ -34,23 +34,23 @@
  * @category   Zend
  * @package    Zend_Service_WindowsAzure
  * @subpackage Storage
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * 
+ *
  * @property string  $Name                     Name of the queue
  * @property array   $Metadata                 Key/value pairs of meta data
  * @property integer $ApproximateMessageCount  The approximate number of messages in the queue
  */
 class Zend_Service_WindowsAzure_Storage_QueueInstance
-	extends Zend_Service_WindowsAzure_Storage_StorageEntityAbstract
+    extends Zend_Service_WindowsAzure_Storage_StorageEntityAbstract
 {
     /**
      * Constructor
-     * 
+     *
      * @param string $name          Name
      * @param array  $metadata      Key/value pairs of meta data
      */
-    public function __construct($name, $metadata = array()) 
+    public function __construct($name, $metadata = array())
     {
         $this->_data = array(
             'name'         => $name,

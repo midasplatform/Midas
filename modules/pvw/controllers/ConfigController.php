@@ -20,7 +20,7 @@
 
 /** Config controller for the instance-wide module settings */
 class Pvw_ConfigController extends Pvw_AppController
-{
+  {
   public $_moduleForms = array('Config');
   public $_models = array('Setting');
   public $_moduleModels = array('Instance');
@@ -85,5 +85,4 @@ class Pvw_ConfigController extends Pvw_AppController
         'status' => $this->ModuleComponent->Paraview->isRunning($instance));
       }
     }
-
-}//end class
+  } // end class

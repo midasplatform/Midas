@@ -17,10 +17,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 require_once BASE_PATH . '/modules/batchmake/models/base/TaskModelBase.php';
 
-
 /** Batchmake_TaskModel */
-class Batchmake_TaskModel extends Batchmake_TaskModelBase {
-
-}
+class Batchmake_TaskModel extends Batchmake_TaskModelBase
+  {
+  }

@@ -19,7 +19,7 @@
 =========================================================================*/
 /** Executable controller */
 class Remoteprocessing_ExecutableController extends Remoteprocessing_AppController
-{
+  {
   public $_models = array('Item', 'Bitstream', 'ItemRevision', 'Assetstore');
   public $_components = array('Upload');
   public $_moduleComponents = array('Executable');
@@ -112,7 +112,5 @@ class Remoteprocessing_ExecutableController extends Remoteprocessing_AppControll
         unlink($pathFile);
         }
       }
-
     }
-
-}//end class
+  } // end class

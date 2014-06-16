@@ -23,7 +23,6 @@
  */
 class ProgressController extends AppController
   {
-
   public $_models = array('Progress');
   public $_daos = array();
   public $_components = array();
@@ -76,4 +75,4 @@ class ProgressController extends AppController
       echo JsonComponent::encode($progress->toArray());
       }
     }
-}
+  }

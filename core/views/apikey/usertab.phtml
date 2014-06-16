@@ -17,7 +17,7 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/a
 <h3><?php echo $this->t('Generated API keys')?></h3>
 <?php if(count($this->userapiDaos)==0)
 {
- echo "You don't have any API keys.<br/>";
+  echo "You don't have any API keys.<br/>";
 }
 else
 {
@@ -30,9 +30,10 @@ else
    <td><center><b>Creation</b></center></td>
    <td><center><b>Action</b></center></td>
  </tr>
-<?php foreach($this->userapiDaos as $userapiDao)
- {
- ?>
+  <?php
+  foreach($this->userapiDaos as $userapiDao)
+    {
+    ?>
  <tr>
    <td><?php echo $userapiDao->getApplicationName(); ?></td>
    <td><?php echo $userapiDao->getApikey(); ?></td>
@@ -40,9 +41,13 @@ else
    <td><?php echo $this->Date->ago($userapiDao->getCreationDate()); ?></td>
    <td><a style='text-decoration: underline;' class='deleteApiKeyLink' element='<?php echo $userapiDao->getKey()?>'><?php echo $this->t('delete')?></a></td>
  </tr>
-<?php } // end foreach keys ?>
+  <?php
+    } // end foreach keys
+  ?>
 </table>
-<?php } // end count ?>
+  <?php
+  } // end count
+?>
 
 <a href="<?php echo $this->webroot?>/rest">Web API Information</a>
 
@@ -63,9 +68,3 @@ else
      <?php echo $this->form['createAPIKey']?>
   </div>
 </form>
-
-
-
-
-
-

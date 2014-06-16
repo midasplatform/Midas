@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -14,10 +14,10 @@ PURPOSE.  See the above copyright notices for more information.
 
 <?php
   $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.listfiles.js');
-  
+
    if(!function_exists('createFileElement'))
-    {  
-    function createFileElement(&$view,$file)
+    {
+    function createFileElement(&$view, $file)
       {
       echo "<div class='feedUserImage'>";
       echo "<img class='thumbnailSmall' src='{$view->coreWebroot}/public/images/icons/document-big.png' alt=''/>";
@@ -31,33 +31,30 @@ PURPOSE.  See the above copyright notices for more information.
       echo "<div style='clear:left;'></div>";
       }
     }
-    
-   if(!function_exists('trimFileName'))
-    {  
+
+  if(!function_exists('trimFileName'))
+    {
     function trimFileName($name)
       {
-      if(strlen($name)>35)
+      if(strlen($name) > 35)
         {
-        $name=substr($name,0, 10).'...'.substr($name,strlen($name)-35);
+        $name = substr($name, 0, 10) . '...' . substr($name, strlen($name) - 35);
         }
       return $name;
       }
     }
-  
+
   $files=$this->listFiles;
   if(empty($files))
     {
     return;
     }
-  
+
   echo "<div class='listFilesContainer'>";
   foreach($this->listFiles as $key => $file)
     {
     echo "<div class='fileElement'  element='{$file->getKey()}'>";
-    echo createFileElement($this,$file);
+    echo createFileElement($this, $file);
     echo "</div>";
     }
-  echo "</div>"; 
- 
-    
-?>
+  echo "</div>";

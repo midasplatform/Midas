@@ -17,8 +17,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 abstract class Ratings_ItemratingModelBase extends Ratings_AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -48,5 +49,4 @@ abstract class Ratings_ItemratingModelBase extends Ratings_AppModel
   abstract public function deleteByUser($user);
   /** Delete all comments on a given item. Called when item is about to be deleted. */
   abstract public function deleteByItem($item);
-}
-?>
+  }

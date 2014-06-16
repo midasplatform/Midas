@@ -21,7 +21,7 @@
 /** Internationalization tools */
 class InternationalizationComponent extends AppComponent
   {
-  static private $_instance = null;
+  private static $_instance = null;
 
   /** Constructor */
   function __construct()
@@ -29,7 +29,7 @@ class InternationalizationComponent extends AppComponent
     }
 
   /** Instance */
-  static public function getInstance()
+  public static function getInstance()
     {
     if(!self::$_instance instanceof self)
       {
@@ -39,7 +39,7 @@ class InternationalizationComponent extends AppComponent
     }
 
   /** translate*/
-  static public function translate($text)
+  public static function translate($text)
     {
     if(Zend_Registry::get('configGlobal')->application->lang == 'fr')
       {
@@ -67,7 +67,7 @@ class InternationalizationComponent extends AppComponent
    * Is Debug mode ON
    * @return boolean
    */
-  static public function isDebug()
+  public static function isDebug()
     {
     $config = Zend_Registry::get('config');
     if($config->mode->debug == 1)
@@ -79,4 +79,4 @@ class InternationalizationComponent extends AppComponent
       return false;
       }
     }
-} // end class
+  } // end class

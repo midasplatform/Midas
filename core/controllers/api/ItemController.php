@@ -22,7 +22,7 @@
  *  WebApi Controller for Item Resource
  */
 class Rest_ItemController extends ApiController
-{
+  {
   /**
    * The index action handles index/list requests; it should respond with a
    * list of the requested resources.
@@ -116,5 +116,4 @@ class Rest_ItemController extends ApiController
     {
     $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET, POST, PUT, DELETE');
     }
-
-}
+  }

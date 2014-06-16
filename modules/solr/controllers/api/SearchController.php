@@ -21,10 +21,8 @@
 /**
  *  WebApi controller for Search Resource (in solr module)
  */
-
 class Apisolr_SearchController extends ApiController
-{
-
+  {
   /**
    * The index action handles index/list requests; it should respond with a
    * list of the requested resources.
@@ -57,7 +55,6 @@ class Apisolr_SearchController extends ApiController
     $this->_response->setHttpResponseCode(200); // 200 OK
     }
 
-
   /**
    * The options action handles OPTIONS requests; it should respond with
    * the HTTP methods that the server supports for specified URL.
@@ -66,5 +63,4 @@ class Apisolr_SearchController extends ApiController
     {
     $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET');
     }
-
-}
+  }

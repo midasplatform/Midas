@@ -29,7 +29,6 @@ class TaskModelTest extends DatabaseTestCase
     $this->setupDatabase(array('default'), 'batchmake'); // module dataset
     }
 
-
   /** Test that TaskModel::createTask($userDao) works */
   public function testCreateTask()
     {
@@ -71,7 +70,6 @@ class TaskModelTest extends DatabaseTestCase
     // make sure each of the tasks got a different id
     $this->assertNotEquals($taskId1, $taskId2);
 
-
     // now try to retrieve it by key
     $task3Dao = $taskModel->load($taskId1);
     $this->assertTrue($taskModel->compareDao($task1Dao, $task3Dao));
@@ -79,6 +77,4 @@ class TaskModelTest extends DatabaseTestCase
     $task4Dao = $taskModel->load($taskId2);
     $this->assertTrue($taskModel->compareDao($task2Dao, $task4Dao));
     }
-
-
   }

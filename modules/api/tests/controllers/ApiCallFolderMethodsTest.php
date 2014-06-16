@@ -106,7 +106,6 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
 
-
     $userDao = $userModel->load('1');
     $readFolder = $folderModel->load('1012');
     $writeFolder = $folderModel->load('1013');
@@ -388,8 +387,6 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
       $this->assertTrue($groupFound, 'API call missing group '. $groupId);
       }
     }
-
-
 
   /** Test the folder.set.privacy.recursive method */
   public function testFolderSetPrivacyRecursive()
@@ -827,5 +824,4 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $this->assertPolicyuserNonexistence($testFolders, $testItems, $targetUser);
     $this->assertPolicyuserNonexistence($testFolders, $testItems, $targetUser3);
     }
-
   }

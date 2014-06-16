@@ -17,6 +17,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /**
  * Communityagreement_AgreementModelBase
  *
@@ -26,7 +27,7 @@
  * @package    communityagreement
  */
 class Communityagreement_AgreementModelBase extends Communityagreement_AppModel
-{
+  {
   /** constructor*/
   public function __construct()
     {
@@ -57,5 +58,4 @@ class Communityagreement_AgreementModelBase extends Communityagreement_AppModel
     $this->save($agreementDao);
     return $agreementDao;
     }
-
-} // end class AgreementModelBase
+  } // end class

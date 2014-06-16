@@ -23,7 +23,7 @@
  * \brief DAO Bitstream (table bitstream)
  */
 class BitstreamDao extends AppDao
-{
+  {
   public $_model = 'Bitstream';
   public $_components = array('MimeType', 'Utility');
 
@@ -56,7 +56,4 @@ class BitstreamDao extends AppDao
     $assetstore = $this->get('assetstore');
     return $assetstore->getPath().'/'.$this->getPath();
     } // end function getFullPath()
-
-
-} // end class
-?>
+  } // end class

@@ -20,7 +20,7 @@
 
 /** Base class for the job log model */
 abstract class Sizequota_FolderQuotaModelBase extends Sizequota_AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -39,7 +39,7 @@ abstract class Sizequota_FolderQuotaModelBase extends Sizequota_AppModel
     }
 
   /** Get the quota dao for a particular folder, or return false if none is set */
-  public abstract function getQuota($folder);
+  abstract public function getQuota($folder);
 
   /** Get the quota in bytes for a particular folder, or return the default if none is set */
   public function getFolderQuota($folder)
@@ -115,5 +115,4 @@ abstract class Sizequota_FolderQuotaModelBase extends Sizequota_AppModel
       return false;
       }
     }
-}
-?>
+  }

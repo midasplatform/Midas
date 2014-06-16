@@ -373,12 +373,12 @@ class RestCallMethodsTest extends ControllerTestCase
             }
           $this->params[$requiredParam['name']] = $requiredParam['invalid'];
           }
-        elseif($state == 2)
+        else if($state == 2)
           {
           // 2s mean a valid form of the param is sent
           $this->params[$requiredParam['name']] = $requiredParam['valid'];
           }
-        elseif($state < 0 || $state > 2)
+        else if($state < 0 || $state > 2)
           {
           throw new Exception("left most param state is invalid value: ".$state);
           }
@@ -417,5 +417,4 @@ class RestCallMethodsTest extends ControllerTestCase
         }
       }
     }
-
   }

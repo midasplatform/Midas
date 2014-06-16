@@ -26,7 +26,5 @@
  */
 class Readmes_AppController extends MIDAS_GlobalModule
   {
-  public $moduleName='readmes';
-
-
-  } //end class
+  public $moduleName = 'readmes';
+  }

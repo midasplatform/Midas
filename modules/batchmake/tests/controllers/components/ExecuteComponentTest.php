@@ -18,8 +18,6 @@
  limitations under the License.
 =========================================================================*/
 
-
-
 require_once BASE_PATH.'/modules/batchmake/tests/controllers/BatchmakeControllerTest.php';
 
 /**
@@ -33,7 +31,6 @@ class ExecuteComponentTest extends BatchmakeControllerTest
   protected $cwd;
   protected $testTmpDir = 'batchmake/tests';
   protected $tmpItem;
-
 
   /** set up tests*/
   public function setUp()
@@ -93,8 +90,6 @@ class ExecuteComponentTest extends BatchmakeControllerTest
     $this->tmpItem = $uploadComponent->createUploadedItem($userDao, $user1_public_filename,
                                           $user1_public_path, $user1_public_parent, $license, '', true);
 
-
-
     parent::setUp();
     }
 
@@ -110,7 +105,6 @@ class ExecuteComponentTest extends BatchmakeControllerTest
     chdir($this->cwd);
     }
 
-
   /**
    * tests that a list of items gets correctly exported to a batchmake work dir.
    */
@@ -125,7 +119,6 @@ class ExecuteComponentTest extends BatchmakeControllerTest
     // check that the exported file now exists on the file system
     $this->assertTrue(file_exists($workDir.'/data/'.$itemIds[0].'/'.$this->tmpItem->getName()), "exported item should exist");
     }
-
 
   /**
    * tests that a list of items gets correctly exported to a batchmake work dir,
@@ -149,8 +142,6 @@ class ExecuteComponentTest extends BatchmakeControllerTest
       $this->assertEquals($exportedPath, $expectedExportPath, "Expected export path does not match actual.");
       }
     }
-
-
 
   /**
    * tests that a python config file will be generated in the batchmake work dir
@@ -184,9 +175,6 @@ class ExecuteComponentTest extends BatchmakeControllerTest
     unset($_SERVER['HTTP_HOST']);
     }
 
-
-
-
   /**
    * tests that a python config file will be generated in the batchmake work dir
    */
@@ -202,5 +190,4 @@ class ExecuteComponentTest extends BatchmakeControllerTest
     $expectedConfigPath = $workDir.'/'.$configScriptStem . ".config.bms";
     $this->assertTrue(file_exists($expectedConfigPath), "batchmake config file should exist");
     }
-
   } // end class

@@ -17,16 +17,17 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** notification manager*/
+
 require_once BASE_PATH . '/modules/api/library/APIEnabledNotification.php';
 
+/** Notification manager for the remoteprocessing module */
 class Remoteprocessing_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'remoteprocessing';
-  public $_moduleComponents=array('Api');
-  public $_moduleModels=array('Job');
-  public $_models=array('Item');
-  public $_moduleDaos=array('Job');
+  public $_moduleComponents = array('Api');
+  public $_moduleModels = array('Job');
+  public $_models = array('Item');
+  public $_moduleDaos = array('Job');
 
   /** init notification process*/
   public function init()
@@ -57,7 +58,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
   /** add a process button */
   public function getButton($params)
     {
-    $modulesConfig=Zend_Registry::get('configsModules');
+    $modulesConfig = Zend_Registry::get('configsModules');
     if($modulesConfig[$this->moduleName]->showbutton)
       {
       $html =  "<li class='processButton' style='margin-left:5px;' title='Process' rel='".Zend_Registry::get('webroot')."/remoteprocessing/index/selectaction'>
@@ -142,7 +143,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
           }
 
         $html .=   "<li>";
-        $html .=    "<a  element='".$item->getKey()."' href='".Zend_Registry::get('webroot')."/item/".$item->getKey()."'>".$component->slicename($item->getName(),25)."</a>";
+        $html .=    "<a  element='".$item->getKey()."' href='".Zend_Registry::get('webroot')."/item/".$item->getKey()."'>".$component->slicename($item->getName(), 25)."</a>";
         $html .=    "</li>";
         if($i > 7)
           {
@@ -187,10 +188,10 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     return "";
     }
 
-    /** Process results*/
+  /** Process results */
   public function processProcessingResults($params)
     {
-    $modulesConfig=Zend_Registry::get('configsModules');
+    $modulesConfig = Zend_Registry::get('configsModules');
 
     $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
     $userModel = MidasLoader::loadModel('User');
@@ -263,7 +264,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
   public function addJob($params)
     {
     // dynamically process the params
-    if(isset($params['params']['cmdOptions']) && empty($params['script'])&& isset($params['params']['executable']))
+    if(isset($params['params']['cmdOptions']) && empty($params['script']) && isset($params['params']['executable']))
       {
       $executableComponent = MidasLoader::loadComponent('Executable', 'remoteprocessing');
       $tmp = $executableComponent->processScheduledJobParameters($params);
@@ -325,7 +326,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
           {
           $this->Remoteprocessing_Job->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_INPUT);
           }
-        elseif($item != false)
+        else if($item != false)
           {
           $this->Remoteprocessing_Job->addItemRelation($job, $item, MIDAS_REMOTEPROCESSING_RELATION_TYPE_EXECUTABLE);
           }
@@ -333,6 +334,4 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
       }
     return;
     }
-
-  } //end class
-?>
+  } // end class

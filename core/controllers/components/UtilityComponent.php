@@ -20,8 +20,7 @@
 
 /** Utility componenet */
 class UtilityComponent extends AppComponent
-{
-
+  {
   /**
    * The main function for converting to an XML document.
    * Pass in a multi dimensional array and this recrusively loops through and builds up an XML document.
@@ -101,7 +100,7 @@ class UtilityComponent extends AppComponent
   public static function extractPathParams()
     {
     $request = Zend_Controller_Front::getInstance()->getRequest();
-    $allTokens = preg_split('@/@', $request->getPathInfo(), NULL, PREG_SPLIT_NO_EMPTY);
+    $allTokens = preg_split('@/@', $request->getPathInfo(), null, PREG_SPLIT_NO_EMPTY);
 
     $tokens = array();
     $i = 0;
@@ -157,14 +156,29 @@ class UtilityComponent extends AppComponent
                 {
                 switch($fileDB)
                   {
-                  case 'mysql' : $config->db->PDO_MYSQL = true; break;
-                  case 'pgsql' : $config->db->PDO_PGSQL = true;break;
-                  case 'ibm' : $config->db->PDO_IBM = true;break;
-                  case 'oci' : $config->db->PDO_OCI = true;break;
-                  case 'sqlite' : $config->db->PDO_SQLITE = true;break;
-                  case 'cassandra' : $config->db->CASSANDRA = true;break;
-                  case 'mongo' : $config->db->MONGO = true;break;
-                  default : break;
+                  case 'mysql':
+                    $config->db->PDO_MYSQL = true;
+                    break;
+                  case 'pgsql':
+                    $config->db->PDO_PGSQL = true;
+                    break;
+                  case 'ibm':
+                    $config->db->PDO_IBM = true;
+                    break;
+                  case 'oci':
+                    $config->db->PDO_OCI = true;
+                    break;
+                  case 'sqlite':
+                    $config->db->PDO_SQLITE = true;
+                    break;
+                  case 'cassandra':
+                    $config->db->CASSANDRA = true;
+                    break;
+                  case 'mongo':
+                    $config->db->MONGO = true;
+                    break;
+                  default:
+                    break;
                   }
                 }
               }
@@ -178,7 +192,7 @@ class UtilityComponent extends AppComponent
     }
 
   /** format long names*/
-  static public function sliceName($name, $nchar)
+  public static function sliceName($name, $nchar)
     {
     if(strlen($name) > $nchar)
       {
@@ -194,7 +208,7 @@ class UtilityComponent extends AppComponent
     }
 
   /** create init file*/
-  static public function createInitFile($path, $data)
+  public static function createInitFile($path, $data)
     {
     if(!is_writable(dirname($path)))
       {
@@ -233,7 +247,7 @@ class UtilityComponent extends AppComponent
     return $text;
     }
   /** PHP md5_file is very slow on large file. If md5 sum is on the system we use it. */
-  static public function md5file($filename)
+  public static function md5file($filename)
     {
     // If we have md5 sum
     if(Zend_Registry::get('configGlobal')->md5sum->path)
@@ -244,7 +258,6 @@ class UtilityComponent extends AppComponent
       }
     return md5_file($filename);
     }
-
 
   /**
    * Check if the php function/extension are available
@@ -283,7 +296,7 @@ class UtilityComponent extends AppComponent
    * which is not supported by PHP's filesize()
    * @param path Path of the file to check
    */
-  static public function fileSize($path)
+  public static function fileSize($path)
     {
     if(strpos(strtolower(PHP_OS), 'win') === 0)
       {
@@ -301,7 +314,7 @@ class UtilityComponent extends AppComponent
    * Format file size. Rounds to 1 decimal place and makes sure
    * to use 3 or less digits before the decimal place.
    */
-  static public function formatSize($sizeInBytes, $separator = ',')
+  public static function formatSize($sizeInBytes, $separator = ',')
     {
     $suffix = 'B';
     if(Zend_Registry::get('configGlobal')->application->lang == 'fr')
@@ -331,7 +344,7 @@ class UtilityComponent extends AppComponent
     }
 
   /** Safe delete function. Checks ifthe file can be deleted. */
-  static public function safedelete($filename)
+  public static function safedelete($filename)
     {
     if(!file_exists($filename))
       {
@@ -437,7 +450,6 @@ class UtilityComponent extends AppComponent
     {
     return self::getTempDirectory('cache');
     }
-
 
   /** install a module */
   public function installModule($moduleName)
@@ -689,5 +701,4 @@ class UtilityComponent extends AppComponent
       }
     return false;
     }
-
-} // end class
+  } // end class

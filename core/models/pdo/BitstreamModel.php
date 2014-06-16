@@ -130,4 +130,3 @@ class BitstreamModel extends BitstreamModelBase
       }
     }
   }
-?>

@@ -1,10 +1,9 @@
 <?php
-
 /**
  * Adds branch name to scalar submission table, and adds an index for it.
  */
 class Tracker_Upgrade_1_0_4 extends MIDASUpgrade
-{
+  {
   public function preUpgrade()
     {
     }
@@ -26,5 +25,4 @@ class Tracker_Upgrade_1_0_4 extends MIDASUpgrade
   public function postUpgrade()
     {
     }
-}
-?>
+  }

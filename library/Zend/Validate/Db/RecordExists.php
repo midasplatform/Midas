@@ -14,9 +14,9 @@
  *
  * @category   Zend
  * @package    Zend_Validate
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: RecordExists.php 20096 2010-01-06 02:05:09Z bkarwin $
+ * @version    $Id: RecordExists.php 24594 2012-01-05 21:27:01Z matthew $
  */
 
 /**
@@ -30,7 +30,7 @@
  * @category   Zend
  * @package    Zend_Validate
  * @uses       Zend_Validate_Db_Abstract
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Validate_Db_RecordExists extends Zend_Validate_Db_Abstract
@@ -39,8 +39,8 @@ class Zend_Validate_Db_RecordExists extends Zend_Validate_Db_Abstract
     {
         $valid = true;
         $this->_setValue($value);
-        $result = $this->_query($value);
 
+        $result = $this->_query($value);
         if (!$result) {
             $valid = false;
             $this->_error(self::ERROR_NO_RECORD_FOUND);

@@ -30,8 +30,6 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.manag
   <br/>
   <br/>
 
-
-
     <?php
   if(empty($this->relatedJobs))
     {
@@ -60,15 +58,15 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.manag
         {
         echo  "<td class='elementStatus'>Done</td>";
         }
-      elseif(strtotime($job->getExpirationDate()) < strtotime(date("Y-m-d H:i:s")))
+      else if(strtotime($job->getExpirationDate()) < strtotime(date("Y-m-d H:i:s")))
         {
         echo  "<td class='elementStatus'>Expired</td>";
         }
-      elseif($job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_WAIT)
+      else if($job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_WAIT)
         {
         echo  "<td class='elementStatus'>Waiting</td>";
         }
-      elseif($job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_STARTED)
+      else if($job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_STARTED)
         {
         echo  "<td class='elementStatus'>Started</td>";
         }
@@ -83,7 +81,6 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.manag
   <?php
     }
     ?>
-
 
     <?php
   if(empty($this->relatedJobs))
@@ -131,12 +128,3 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/job/job.manag
     </ul>
    </div>
 </div>
-
-
-
-
-
-
-
-
-

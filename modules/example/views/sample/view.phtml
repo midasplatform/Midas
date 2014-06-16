@@ -15,12 +15,11 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/sample/example.
 <?php
   foreach($this->sampleList as $sample)
   {
-  echo '<tr><td>'.$sample.'</td></tr>';    
+  echo '<tr><td>'.$sample.'</td></tr>';
   }
 ?>
 </table>
 <?php
-echo 'wallet dollars: '.$this->wallet->getDollars(); 
-echo 'credit card count: '.$this->wallet->getCreditCardCount(); 
+echo 'wallet dollars: '.$this->wallet->getDollars();
+echo 'credit card count: '.$this->wallet->getCreditCardCount();
 ?>
-

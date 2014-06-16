@@ -55,7 +55,7 @@ foreach($cssArray as $module => $list)
       <?php
       $htmltArray = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_VIEW_BUTTON', array('item' => $this->itemDao, 'isModerator' => $this->isModerator, 'isAdmin' => $this->isAdmin));
       $htmltArray = array_diff($htmltArray, array(''));
-      echo join(" ",$htmltArray);
+      echo join(" ", $htmltArray);
       ?>
       <br/>
   </div>
@@ -65,7 +65,7 @@ foreach($cssArray as $module => $list)
       echo "<img src='{$this->coreWebroot}/public/images/icons/document-big.png' alt=''/>";
     ?>
     </div>
-    <div class="genericName <?php if(strlen($this->itemDao->getName()) > 30) echo "tips";?>" <?php if(strlen($this->itemDao->getName()) > 30) echo "style='cursor:help;' title='".$this->itemDao->getName()."'";?>  ><?php   echo $this->slicename($this->itemDao->getName(),30);  ?></div>
+    <div class="genericName <?php if(strlen($this->itemDao->getName()) > 30) echo "tips";?>" <?php if(strlen($this->itemDao->getName()) > 30) echo "style='cursor:help;' title='".$this->itemDao->getName()."'";?>  ><?php   echo $this->slicename($this->itemDao->getName(), 30);  ?></div>
     <div class="genericSubtitle" style="color:grey;"><?php echo $this->itemSize;?></div>
   </div>
   <div class="itemViewMainSection">
@@ -152,8 +152,6 @@ foreach($cssArray as $module => $list)
           echo '  </form></div>';
           }
         echo '</div>';
-
-
 
         echo '<div class="revisionMetadata">';
         echo '<h4>METADATA</h4>';

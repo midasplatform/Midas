@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -18,12 +18,13 @@ PURPOSE.  See the above copyright notices for more information.
 <br/><br/>
 <div class="separator"></div>
 <h3>Generated API keys</h3>
-<?php if(count($apikeys)==0)
-{
- echo "You don't have any API keys";
-}
+<?php
+if(count($apikeys)==0)
+  {
+  echo "You don't have any API keys";
+  }
 else
-{
+  {
 ?>
 <table width="100%"  border="0">
  <tr bgcolor="#999999">
@@ -33,9 +34,10 @@ else
    <td width="10%"><center><b>Date</b></center></td>
    <td width="10%"><center><b>Action</b></center></td>
  </tr>
-<?php foreach($apikeys as $apikey)
- {
- ?>
+  <?php
+  foreach($apikeys as $apikey)
+    {
+   ?>
  <tr>
    <td><?php echo $apikey['applicationname']; ?></td>
    <td><?php echo $apikey['key']; ?></td>
@@ -43,9 +45,13 @@ else
    <td><?php echo $apikey['creationdate']; ?></td>
    <td><a href="<?php echo $this->webroot ?>api/user/deletekey/<?php echo $apikey['id']; ?>">[remove]</a></td>
  </tr>
-<?php } // end foreach keys ?>
+  <?php
+    } // end foreach keys
+  ?>
 </table>
-<?php } // end count ?>
+  <?php
+  } // end count
+?>
 
 <div class="separator"></div>
 <h3>Generate new API key</h3>

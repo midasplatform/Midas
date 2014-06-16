@@ -20,7 +20,7 @@
 
 /** Wrapper controller*/
 class Visualize_WrapperController extends Visualize_AppController
-{
+  {
   public $_moduleComponents = array('Main');
   public $_models = array('Item', 'Folder');
   public $_components = array('Date', 'Utility', 'Sortdao');
@@ -80,7 +80,7 @@ class Visualize_WrapperController extends Visualize_AppController
       {
       $currentFolder = $parents[0];
       }
-    elseif(isset($this->userSession->recentFolders))
+    else if(isset($this->userSession->recentFolders))
       {
       foreach($parents as $p)
         {
@@ -117,4 +117,3 @@ class Visualize_WrapperController extends Visualize_AppController
     $this->view->json['viewMode'] = $viewMode;
     }//end index
   } // end class
-?>

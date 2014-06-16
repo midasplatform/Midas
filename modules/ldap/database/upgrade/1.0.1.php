@@ -1,10 +1,9 @@
 <?php
-
 /**
  * Add the ldap_user table for storing ldap users
  */
 class Ldap_Upgrade_1_0_1 extends MIDASUpgrade
-{
+  {
   public function preUpgrade()
     {
     }
@@ -28,12 +27,11 @@ class Ldap_Upgrade_1_0_1 extends MIDASUpgrade
                       ldap_user_id serial PRIMARY KEY,
                       user_id bigint NOT NULL,
                       login character varying(255) NOT NULL)");
-   
+
     $this->db->query("CREATE INDEX ldap_user_login_idx ON ldap_user (login)");
     }
 
   public function postUpgrade()
     {
     }
-}
-?>
+  }

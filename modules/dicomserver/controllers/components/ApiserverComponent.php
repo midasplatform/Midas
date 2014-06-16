@@ -1,20 +1,28 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
 include_once BASE_PATH . '/library/KWUtils.php';
+
 /** Component for api methods */
 class Dicomserver_ApiserverComponent extends AppComponent
-{
-
+  {
   /**
    * Start DICOM server
    * @path /dicomserver/server/start
@@ -113,14 +121,14 @@ class Dicomserver_ApiserverComponent extends AppComponent
       $incoming_dir = $serverComponent->getDefaultReceptionDir();
       }
     $processing_dir = $incoming_dir . PROCESSING_DIR;
-    if (!file_exists($processing_dir))
+    if(!file_exists($processing_dir))
       {
       KWUtils::mkDir($processing_dir, 0777);
       }
     $log_dir = $incoming_dir . LOG_DIR;
-    if (!file_exists($log_dir))
+    if(!file_exists($log_dir))
       {
-       KWUtils::mkDir($log_dir, 0777);
+      KWUtils::mkDir($log_dir, 0777);
       }
     $dcmqrscp_cmd = 'dcmqrscp';
     if(!empty($args['dcmqrscp_cmd']))
@@ -128,9 +136,9 @@ class Dicomserver_ApiserverComponent extends AppComponent
       $dcmqrscp_cmd = $args['dcmqrscp_cmd'];
       }
     $dcmqrscp_pacs_dir = $incoming_dir . PACS_DIR;
-    if (!file_exists($dcmqrscp_pacs_dir))
+    if(!file_exists($dcmqrscp_pacs_dir))
       {
-       KWUtils::mkDir($dcmqrscp_pacs_dir, 0777);
+      KWUtils::mkDir($dcmqrscp_pacs_dir, 0777);
       }
     // DICOM Store Service Receiver
     $python_cmd = 'python';
@@ -158,7 +166,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
       $start_server_command_string = str_replace("'", "", $start_server_command);
       return escapeshellarg($start_server_command_string);
       }
-    if (!isset($serverComponent))
+    if(!isset($serverComponent))
       {
       $serverComponent = MidasLoader::loadComponent('Server', 'dicomserver');
       }
@@ -211,8 +219,9 @@ class Dicomserver_ApiserverComponent extends AppComponent
       }
 
     $ret = array();
-    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
-      { // currently not supported in windows
+    if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+      {
+      // currently not supported in windows
       $ret['status'] = MIDAS_DICOM_SERVER_NOT_SUPPORTED;
       return $ret;
       }
@@ -227,17 +236,17 @@ class Dicomserver_ApiserverComponent extends AppComponent
     KWUtils::exec($ps_command, $output);
     $runningSCPs = 0;
     $totalSCPs = 2;
-    foreach ($output as $line)
+    foreach($output as $line)
       {
       $fields = preg_split("/\s+/", trim($line));
       $process = $fields[4];
       if(!strcmp($process, $storescp_cmd))
         {
         $ret['status'] = MIDAS_DICOM_STORESCP_IS_RUNNING;
-        # need to be updated if python script is changed
+        // need to be updated if python script is changed
         $ret['user_email'] = $fields[21];
         $runningSCPs += 1;
-        if ($runningSCPs == $totalSCPs)
+        if($runningSCPs == $totalSCPs)
           {
           break;
           }
@@ -246,7 +255,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
         {
         $ret['status'] += MIDAS_DICOM_DCMQRSCP_IS_RUNNING;
         $runningSCPs += 1;
-        if ($runningSCPs == $totalSCPs)
+        if($runningSCPs == $totalSCPs)
           {
           break;
           }
@@ -256,7 +265,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
     return $ret;
     }
 
- /**
+  /**
    * Stop DICOM server
    * @path /dicomserver/server/stop
    * @http POST
@@ -314,9 +323,9 @@ class Dicomserver_ApiserverComponent extends AppComponent
       $incoming_dir = $serverComponent->getDefaultReceptionDir();
       }
     $log_dir = $incoming_dir . LOG_DIR;
-    if (!file_exists($log_dir))
+    if(!file_exists($log_dir))
       {
-       KWUtils::mkDir($log_dir, 0777);
+      KWUtils::mkDir($log_dir, 0777);
       }
 
     $python_cmd = 'python';
@@ -408,7 +417,5 @@ class Dicomserver_ApiserverComponent extends AppComponent
       {
       return array('status' => true);
       }
+    }
   }
-}
-
-?>

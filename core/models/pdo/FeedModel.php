@@ -25,7 +25,7 @@ require_once BASE_PATH.'/core/models/base/FeedModelBase.php';
  * \brief Pdo Model
  */
 class FeedModel extends FeedModelBase
-{
+  {
 
   /** get feed by resource*/
   function getFeedByResourceAndType($typeArray, $dao)
@@ -116,8 +116,6 @@ class FeedModel extends FeedModelBase
     return true;
     } //end policyCheck
 
-
-
   /** get feed
    * @param UserDao $loggedUserDao
    * @param UserDao $userDao
@@ -154,7 +152,6 @@ class FeedModel extends FeedModelBase
       {
       throw new Zend_Exception("Should be a community.");
       }
-
 
     $sql = $this->database->select()
           ->setIntegrityCheck(false)
@@ -232,7 +229,6 @@ class FeedModel extends FeedModelBase
     return $rowsetAnalysed;
     } // end _getFeeds
 
-
   /** Add a community to a feed
    * @return void */
   function addCommunity($feed, $community)
@@ -274,6 +270,4 @@ class FeedModel extends FeedModelBase
       }
     return parent::delete($feedDao);
     } // end delete
-
-} // end class
-?>
+  } // end class

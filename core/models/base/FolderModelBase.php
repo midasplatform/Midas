@@ -20,7 +20,7 @@
 
 /** FolderModelBase */
 abstract class FolderModelBase extends AppModel
-{
+  {
   /** Contrcutor*/
   public function __construct()
     {
@@ -189,4 +189,4 @@ abstract class FolderModelBase extends AppModel
 
     return array('size' => $totalSize, 'count' => $totalCount);
     } //end countBitstreams
-} // end class FolderModelBase
+  } // end class

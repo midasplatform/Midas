@@ -17,6 +17,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /**
  * Readmes_ConfigController
  *
@@ -24,8 +25,7 @@
  * @package    readmes
  */
 class Readmes_ConfigController extends Readmes_AppController
-{
-
+  {
   public $_components = array('Breadcrumb');
 
   /**
@@ -44,5 +44,4 @@ class Readmes_ConfigController extends Readmes_AppController
                            'icon' => $iconPath);
     $this->Component->Breadcrumb->setBreadcrumbHeader($breadcrumbs, $this->view);
     }
-
-} // end of class
+  } // end class

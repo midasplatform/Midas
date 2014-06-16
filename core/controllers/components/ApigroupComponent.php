@@ -223,5 +223,4 @@ class ApigroupComponent extends AppComponent
     $groupModel->delete($group);
     return array('success' => 'true');
     }
-
   } // end class

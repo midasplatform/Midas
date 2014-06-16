@@ -141,7 +141,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
          }
        echo "<br/>Path: <span class='assetstorePath'>{$assetstore->getPath()}</span>";
        echo "<br/>Type: ";
-       switch ($assetstore->getType())
+       switch($assetstore->getType())
          {
           case MIDAS_ASSETSTORE_LOCAL:
               echo "Local";
@@ -241,7 +241,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
                       Not available with your database type
                     </td>";
                       }
-                    elseif(!$module->dependenciesExist)
+                    else if(!$module->dependenciesExist)
                       {
                     echo "
                     <td style='width:300px;'>
@@ -269,6 +269,5 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
 
 </div>
 <div class="viewSideBar">
-
 
 </div>

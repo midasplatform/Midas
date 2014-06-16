@@ -20,7 +20,7 @@
 
 /** Media Controller*/
 class Visualize_MediaController extends Visualize_AppController
-{
+  {
   public $_models = array('Item', 'ItemRevision', 'Bitstream');
   /** index */
   public function indexAction()
@@ -47,7 +47,7 @@ class Visualize_MediaController extends Visualize_AppController
       {
       $this->view->json['type'] = 'm4v';
       }
-    elseif(in_array($ext, array('mp3')))
+    else if(in_array($ext, array('mp3')))
       {
       $this->view->json['type'] = 'mp3';
       }
@@ -57,5 +57,4 @@ class Visualize_MediaController extends Visualize_AppController
       }
     $this->view->json['itemId'] = $item->getKey();
     }
-} // end class
-?>
+  } // end class

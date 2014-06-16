@@ -20,7 +20,7 @@
 
 /** Config controller */
 class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
-{
+  {
   public $_moduleForms = array('Config');
   public $_components = array('Utility', 'Date');
 
@@ -115,5 +115,4 @@ class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
         }
       }
     }
-}//end class
-
+  } // end class

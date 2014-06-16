@@ -1,23 +1,32 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
 
+/** Config controller for the dicomserver module */
 class Dicomserver_ConfigController extends Dicomserver_AppController
-{
-   public $_moduleComponents = array('Server');
-   public $_moduleForms=array('Config');
-   public $_components=array('Utility', 'Date');
+  {
+  public $_moduleComponents = array('Server');
+  public $_moduleForms = array('Config');
+  public $_components = array('Utility', 'Date');
 
-   /** index action*/
-   function indexAction()
+  /** index action*/
+  function indexAction()
     {
     if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
       {
@@ -75,28 +84,19 @@ class Dicomserver_ConfigController extends Dicomserver_AppController
           }
         if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini"))
           {
-          rename(BASE_PATH."/core/configs/".$this->moduleName.".local.ini",BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old");
+          rename(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old");
           }
         $applicationConfig['global']['dcm2xml'] = $this->_getParam('dcm2xml');
         $applicationConfig['global']['storescp'] = $this->_getParam('storescp');
-        $applicationConfig['global']['storescp_port'] =
-          $this->_getParam('storescp_port');
-        $applicationConfig['global']['storescp_study_timeout'] =
-          $this->_getParam('storescp_study_timeout');
-        $applicationConfig['global']['receptiondir'] =
-          $this->_getParam('receptiondir');
-        $applicationConfig['global']['pydas_dest_folder'] =
-          $this->_getParam('pydas_dest_folder');
-        $applicationConfig['global']['dcmqrscp'] =
-          $this->_getParam('dcmqrscp');
-        $applicationConfig['global']['dcmqridx'] =
-          $this->_getParam('dcmqridx');
-        $applicationConfig['global']['dcmqrscp_port'] =
-          $this->_getParam('dcmqrscp_port');
-        $applicationConfig['global']['server_ae_title'] =
-          $this->_getParam('server_ae_title');
-        $applicationConfig['global']['peer_aes'] =
-          $this->_getParam('peer_aes');
+        $applicationConfig['global']['storescp_port'] = $this->_getParam('storescp_port');
+        $applicationConfig['global']['storescp_study_timeout'] = $this->_getParam('storescp_study_timeout');
+        $applicationConfig['global']['receptiondir'] = $this->_getParam('receptiondir');
+        $applicationConfig['global']['pydas_dest_folder'] = $this->_getParam('pydas_dest_folder');
+        $applicationConfig['global']['dcmqrscp'] = $this->_getParam('dcmqrscp');
+        $applicationConfig['global']['dcmqridx'] = $this->_getParam('dcmqridx');
+        $applicationConfig['global']['dcmqrscp_port'] = $this->_getParam('dcmqrscp_port');
+        $applicationConfig['global']['server_ae_title'] = $this->_getParam('server_ae_title');
+        $applicationConfig['global']['peer_aes'] = $this->_getParam('peer_aes');
         $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
@@ -106,5 +106,4 @@ class Dicomserver_ConfigController extends Dicomserver_AppController
     unset($dashboard_array['Status']);
     $this->view->dashboard = $dashboard_array;
     }
-
-}//end class
+  } // end class

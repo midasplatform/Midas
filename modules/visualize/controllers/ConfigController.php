@@ -20,7 +20,7 @@
 
 /** Config controller*/
 class Visualize_ConfigController extends Visualize_AppController
-{
+  {
   public $_moduleForms = array('Config');
   public $_components = array('Utility', 'Date');
   public $_moduleModels = array();
@@ -80,5 +80,4 @@ class Visualize_ConfigController extends Visualize_AppController
         }
       }
     }
-
-}//end class
+  } // end class

@@ -17,10 +17,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** Dao for @MN@ thing */
+
+/** DAO template for the @MN@ module */
 class @MN_CAP@_ThingDao extends @MN_CAP@_AppDao
   {
   public $_model = 'Thing';
   public $_module = '@MN@';
   }
-?>

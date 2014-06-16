@@ -87,5 +87,3 @@ class Ratings_Notification extends MIDAS_Notification
     $itemRatingModel->deleteByItem($params['item']);
     }
   }
-?>
-

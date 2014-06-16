@@ -15,9 +15,9 @@
  * @category   Zend
  * @package    Zend_Service_Amazon
  * @subpackage Ec2
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: CloudWatch.php 20096 2010-01-06 02:05:09Z bkarwin $
+ * @version    $Id: CloudWatch.php 24594 2012-01-05 21:27:01Z matthew $
  */
 
 /**
@@ -32,7 +32,7 @@
  * @category   Zend
  * @package    Zend_Service_Amazon
  * @subpackage Ec2
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Service_Amazon_Ec2_CloudWatch extends Zend_Service_Amazon_Ec2_Abstract
@@ -261,16 +261,16 @@ class Zend_Service_Amazon_Ec2_CloudWatch extends Zend_Service_Amazon_Ec2_Abstrac
 
         if(isset($options['StartTime'])) {
             if(!is_numeric($options['StartTime'])) $options['StartTime'] = strtotime($options['StartTime']);
-            $options['StartTime'] = gmdate("Y-m-d H:i:s", $options['StartTime']);
+            $options['StartTime'] = gmdate('c', $options['StartTime']);
         } else {
-            $options['StartTime'] = gmdate("Y-m-d H:i:s", strtotime('-1 hour'));
+            $options['StartTime'] = gmdate('c', strtotime('-1 hour'));
         }
 
         if(isset($options['EndTime'])) {
             if(!is_numeric($options['EndTime'])) $options['EndTime'] = strtotime($options['EndTime']);
-            $options['EndTime'] = gmdate("Y-m-d H:i:s", $options['EndTime']);
+            $options['EndTime'] = gmdate('c', $options['EndTime']);
         } else {
-            $options['EndTime'] = gmdate("Y-m-d H:i:s");
+            $options['EndTime'] = gmdate('c');
         }
 
         if(isset($options['Dimensions'])) {
@@ -281,7 +281,7 @@ class Zend_Service_Amazon_Ec2_CloudWatch extends Zend_Service_Amazon_Ec2_Abstrac
                 $options['Dimensions.member.' . $x . '.Value'] = $dimVal;
                 $x++;
             }
-            
+
             unset($options['Dimensions']);
         }
 

@@ -57,5 +57,4 @@ class IndexController extends AppController
     {
     $this->disableLayout();
     } // end method indexAction
-
-}//end class
+  } // end class

@@ -20,7 +20,7 @@
 
 /** ItempolicygroupModelBase */
 abstract class ItempolicygroupModelBase extends AppModel
-{
+  {
   /** Constructor */
   public function __construct()
     {
@@ -79,7 +79,6 @@ abstract class ItempolicygroupModelBase extends AppModel
     return $policyGroupDao;
     }
 
-
   /** delete */
   public function delete($dao)
     {
@@ -90,6 +89,4 @@ abstract class ItempolicygroupModelBase extends AppModel
       $this->computePolicyStatus($item);
       }
     }//end delete
-
-
-} // end class ItempolicygroupModelBase
+  } // end class

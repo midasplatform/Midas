@@ -23,7 +23,7 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/produc
   </div>
 
   <div class="sectionTitle">Trends</div>
-  
+
   <?php
   foreach($this->trendGroups as $trendGroup)
     {
@@ -58,7 +58,7 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/produc
             echo '<div class="trendContainer">';
             echo '<input type="checkbox" class="selectTrend" element="'.$trend->getKey().'" />';
             echo '<a class="trendLink" href="'.$this->webroot.'/tracker/trend/view?trendId='.$trend->getKey().'">';
-            echo $trend->getDisplayName().'</a>'; 
+            echo $trend->getDisplayName().'</a>';
             echo '</div>';
             }
           ?>

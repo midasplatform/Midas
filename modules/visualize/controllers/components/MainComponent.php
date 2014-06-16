@@ -21,7 +21,7 @@ require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 
 /** main  component */
 class Visualize_MainComponent extends AppComponent
-{
+  {
   /** convert to threejs */
   public function convertToThreejs($revision)
     {
@@ -297,7 +297,6 @@ class Visualize_MainComponent extends AppComponent
     return in_array($ext, $extensions);
     }//end canVisualize
 
-
   /** processParaviewData*/
   public function processParaviewData($itemDao)
     {
@@ -509,7 +508,6 @@ class Visualize_MainComponent extends AppComponent
     rename($tmpPath.'/screenshot2.png', $data_dir.'_'.$itemDao->getKey().'_2.png');
     rename($tmpPath.'/screenshot3.png', $data_dir.'_'.$itemDao->getKey().'_3.png');
     rename($tmpPath.'/screenshot4.png', $data_dir.'_'.$itemDao->getKey().'_4.png');
-
     }
 
   /** createParaviewPath*/
@@ -556,7 +554,6 @@ class Visualize_MainComponent extends AppComponent
     return array('path' => $path, 'foderName' => $tmpFolderName);
     }
 
-
   /** recursively delete a folder*/
   private function _rrmdir($dir)
     {
@@ -582,4 +579,4 @@ class Visualize_MainComponent extends AppComponent
     reset($objects);
     rmdir($dir);
     }
-} // end class
+  } // end class

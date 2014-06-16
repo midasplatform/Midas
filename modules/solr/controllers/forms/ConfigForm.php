@@ -20,7 +20,7 @@
 
 /** module config form */
 class Solr_ConfigForm extends AppForm
-{
+  {
   /** create the admin->modules page config form */
   public function createConfigForm()
     {
@@ -38,6 +38,4 @@ class Solr_ConfigForm extends AppForm
     $form->addElements(array($host, $port, $webroot, $submit));
     return $form;
     }
-
-} // end class
-?>
+  } // end class

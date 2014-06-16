@@ -18,15 +18,17 @@
  limitations under the License.
 =========================================================================*/
 
+/** Config controller for the ldap module */
 class Ldap_ConfigController extends Ldap_AppController
-{
-   public $_moduleForms = array('Config');
-   public $_components = array('Utility');
+  {
+  public $_moduleForms = array('Config');
+  public $_components = array('Utility');
 
-   function indexAction()
+  /** Index action */
+  function indexAction()
     {
     $this->requireAdminPrivileges();
-    
+
     if(file_exists(BASE_PATH."/core/configs/ldap.local.ini"))
       {
       $applicationConfig = parse_ini_file(BASE_PATH."/core/configs/ldap.local.ini", true);
@@ -36,8 +38,8 @@ class Ldap_ConfigController extends Ldap_AppController
       $applicationConfig = parse_ini_file(BASE_PATH.'/modules/ldap/configs/module.ini', true);
       }
     $configForm = $this->ModuleForm->Config->createConfigForm();
-    
-    $formArray = $this->getFormAsArray($configForm);    
+
+    $formArray = $this->getFormAsArray($configForm);
     $formArray['hostname']->setValue($applicationConfig['global']['ldap.hostname']);
     $formArray['port']->setValue($applicationConfig['global']['ldap.port']);
     $formArray['basedn']->setValue($applicationConfig['global']['ldap.basedn']);
@@ -51,7 +53,7 @@ class Ldap_ConfigController extends Ldap_AppController
     $formArray['useActiveDirectory']->setValue($applicationConfig['global']['ldap.useActiveDirectory']);
     $formArray['autoAddUnknownUser']->setValue($applicationConfig['global']['ldap.autoAddUnknownUser']);
     $this->view->configForm = $formArray;
-    
+
     if($this->_request->isPost())
       {
       $this->_helper->layout->disableLayout();
@@ -76,23 +78,22 @@ class Ldap_ConfigController extends Ldap_AppController
         $applicationConfig['global']['ldap.autoAddUnknownUser'] = $this->_getParam('autoAddUnknownUser');
         $applicationConfig['global']['ldap.useActiveDirectory'] = $this->_getParam('useActiveDirectory');
         $applicationConfig['global']['ldap.bindn'] = $this->_getParam('bindn');
-        
+
         $bindpw = $this->_getParam('bindpw');
         if(isset($bindpw))
           {
           $applicationConfig['global']['ldap.bindpw'] = $this->_getParam('bindpw');
-          } 
-        
+          }
+
         $proxyPassword = $this->_getParam('proxyPassword');
         if(isset($proxyPassword))
           {
           $applicationConfig['global']['ldap.proxyPassword'] = $this->_getParam('proxyPassword');
-          }        
+          }
         $applicationConfig['global']['ldap.backup'] = $this->_getParam('backup');
         $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/ldap.local.ini', $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       }
-    } 
-    
-}//end class
+    }
+  }

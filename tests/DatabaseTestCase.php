@@ -22,7 +22,7 @@ require_once dirname(__FILE__).'/bootstrap.php';
 require_once dirname(__FILE__).'/configuredVars.php';
 require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 
-/** main models test element*/
+/** main models test element */
 abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
   {
   protected $application;
@@ -57,7 +57,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
 
   /**
    * @method protected getTempDirectory()
-   * get the midas temporary directory
+   * get the Midas temporary directory
    * @return string
    */
   protected function getTempDirectory()
@@ -65,7 +65,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
     return UtilityComponent::getTempDirectory();
     }
 
-  /** init tests*/
+  /** init tests */
   public function setUp()
     {
     $this->bootstrap = array($this, 'appBootstrap');
@@ -74,17 +74,17 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
       {
       foreach($this->enabledModules as $route)
         {
-        if(file_exists(BASE_PATH . "/modules/".$route."/AppController.php"))
+        if(file_exists(BASE_PATH.'/modules/'.$route.'/AppController.php'))
           {
-          require_once BASE_PATH . "/modules/".$route."/AppController.php";
+          require_once BASE_PATH.'/modules/'.$route.'/AppController.php';
           }
-        if(file_exists(BASE_PATH . "/modules/".$route."/models/AppDao.php"))
+        if(file_exists(BASE_PATH.'/modules/'.$route.'/models/AppDao.php'))
           {
-          require_once BASE_PATH . "/modules/".$route."/models/AppDao.php";
+          require_once BASE_PATH.'/modules/'.$route.'/models/AppDao.php';
           }
-        if(file_exists(BASE_PATH . "/modules/".$route."/models/AppModel.php"))
+        if(file_exists(BASE_PATH.'/modules/'.$route.'/models/AppModel.php'))
           {
-          require_once BASE_PATH . "/modules/".$route."/models/AppModel.php";
+          require_once BASE_PATH.'/modules/'.$route.'/models/AppModel.php';
           }
         }
       }
@@ -93,14 +93,14 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
     $this->startCodeCoverage();
     }
 
-  /** end tests*/
+  /** end tests */
   public function tearDown()
     {
     parent::tearDown();
     $this->stopCodeCoverage();
     }
 
-  /** init midas*/
+  /** init Midas */
   public function appBootstrap()
     {
     $this->application = new Zend_Application(APPLICATION_ENV, CORE_CONFIG);
@@ -111,17 +111,17 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
   public function setupDatabase($files, $module = null)
     {
     $db = Zend_Registry::get('dbAdapter');
-    $configDatabase = Zend_Registry::get('configDatabase' );
+    $configDatabase = Zend_Registry::get('configDatabase');
     $connection = new Zend_Test_PHPUnit_Db_Connection($db, $configDatabase->database->params->dbname);
     $databaseTester = new Zend_Test_PHPUnit_Db_SimpleTester($connection);
     if(is_array($files))
       {
       foreach($files as $f)
         {
-        $path = BASE_PATH.'/core/tests/databaseDataset/'.$f.".xml";
+        $path = BASE_PATH.'/core/tests/databaseDataset/'.$f.'.xml';
         if(isset($module))
           {
-          $path = BASE_PATH.'/modules/'.$module.'/tests/databaseDataset/'.$f.".xml";
+          $path = BASE_PATH.'/modules/'.$module.'/tests/databaseDataset/'.$f.'.xml';
           }
         $databaseFixture = new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
         $databaseTester->setupDatabase($databaseFixture);
@@ -129,10 +129,10 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
       }
     else
       {
-      $path = BASE_PATH.'/core/tests/databaseDataset/'.$files.".xml";
+      $path = BASE_PATH.'/core/tests/databaseDataset/'.$files.'.xml';
       if(isset($module))
         {
-        $path = BASE_PATH.'/modules/'.$module.'/tests/databaseDataset/'.$files.".xml";
+        $path = BASE_PATH.'/modules/'.$module.'/tests/databaseDataset/'.$files.'.xml';
         }
       $databaseFixture = new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
       $databaseTester->setupDatabase($databaseFixture);
@@ -149,7 +149,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
       }
     }
 
-  /** create mock database connection*/
+  /** create mock database connection */
   protected function getConnection()
     {
     if(!isset($this->_connectionMock) || $this->_connectionMock == null)
@@ -162,7 +162,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
           'username' => $configDatabase->database->params->username,
           'password' => $configDatabase->database->params->password,
           'dbname' => $configDatabase->database->params->dbname,
-         )
+        )
         );
         $this->_connectionMock = $this->createZendDbConnection(
           $db, $configDatabase->database->params->dbname
@@ -178,10 +178,10 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
    */
   protected function getDataSet($name = 'default', $module = null)
     {
-    $path = BASE_PATH.'/core/tests/databaseDataset/'.$name.".xml";
+    $path = BASE_PATH.'/core/tests/databaseDataset/'.$name.'.xml';
     if(isset($module) && !empty($module))
       {
-      $path = BASE_PATH.'/modules/'.$module.'/tests/databaseDataset/'.$name.".xml";
+      $path = BASE_PATH.'/modules/'.$module.'/tests/databaseDataset/'.$name.'.xml';
       }
     return $this->createFlatXmlDataSet($path);
     }
@@ -203,7 +203,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
     $dataUsers = $data->getTable($model->getName());
     $rows = $dataUsers->getRowCount();
     $key = array();
-    for($i = 0; $i < $dataUsers->getRowCount();$i++)
+    for($i = 0; $i < $dataUsers->getRowCount(); $i++)
       {
       $key[] = $dataUsers->getValue($i, $model->getKey());
       }
@@ -230,7 +230,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
       {
       foreach($this->_daos as $dao)
         {
-        Zend_Loader::loadClass($dao . "Dao", BASE_PATH . '/core/models/dao');
+        Zend_Loader::loadClass($dao.'Dao', BASE_PATH.'/core/models/dao');
         }
       }
 
@@ -239,8 +239,8 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
       {
       foreach($this->_components as $component)
         {
-        $nameComponent = $component . "Component";
-        Zend_Loader::loadClass($nameComponent, BASE_PATH . '/core/controllers/components');
+        $nameComponent = $component.'Component';
+        Zend_Loader::loadClass($nameComponent, BASE_PATH.'/core/controllers/components');
         @$this->Component->$component = new $nameComponent();
         }
       }
@@ -250,15 +250,15 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
       {
       foreach($this->_forms as $forms)
         {
-        $nameForm = $forms . "Form";
+        $nameForm = $forms.'Form';
 
-        Zend_Loader::loadClass($nameForm, BASE_PATH . '/core/controllers/forms');
+        Zend_Loader::loadClass($nameForm, BASE_PATH.'/core/controllers/forms');
         @$this->Form->$forms = new $nameForm();
         }
       }
     }
 
-  /**completion eclipse*/
+  /** completion eclipse */
   /**
    * Assetstrore Model
    * @var AssetstoreModel
@@ -334,6 +334,5 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
    * @var UserModel
    */
   var $User;
-  /**end completion eclipse */
-
+  /** end completion eclipse */
   }

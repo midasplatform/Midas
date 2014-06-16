@@ -104,8 +104,4 @@ class CommunityModelTest extends DatabaseTestCase
     // ensure that any folderpolicygroups connected with the deleted community are deleted
     $this->assertFalse($movedFolderDeletedCommunityMemberGroupPolicy, "A moved folder still has folderpolicygroup references to a deleted community");
     }
-
-
-
-
   }

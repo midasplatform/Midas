@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -20,14 +20,14 @@ Current version: <?php echo $this->core['currentText']?><br/>
     {
     echo "Need to upgrade to version: ".$this->core['targetText'];
     }
-  else 
+  else
     {
     echo "MIDAS is up to date.";
-    }  
+    }
 ?>
 <h3>Modules:</h3>
 <?php
-foreach($this->modules as $name=>$module)
+foreach($this->modules as $name => $module)
   {
   echo "<b>{$name}</b><br/>";
   echo "Current version: {$module['currentText']} <br/>";
@@ -36,7 +36,7 @@ foreach($this->modules as $name=>$module)
     echo "Need to upgrade to version: ".$module['targetText'].'<br/>';
     }
   }
-  
+
 if(count($this->modules) == 0)
   {
   echo "No module enabled.";

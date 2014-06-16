@@ -22,7 +22,7 @@
  * Admin configuration form for the ldap module
  */
 class Ldap_ConfigForm extends AppForm
-{
+  {
   /** create form */
   public function createConfigForm()
     {
@@ -92,5 +92,4 @@ class Ldap_ConfigForm extends AppForm
       $submit));
     return $form;
     }
-} // end class
-?>
+  } // end class

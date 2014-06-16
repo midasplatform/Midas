@@ -19,7 +19,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.for
   <div class="userList">
   <?php
   echo "<h3 class='userSubTitle'>";
-  switch ($this->order)
+  switch($this->order)
     {
     case 'lastname':
       echo $this->t('Alphabetic');
@@ -34,7 +34,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.for
   if($this->order == 'lastname')
     {
     echo "<a href='{$this->webroot}/user?order=lastname'>{$this->t('All')}</a> ";
-    for ($i = ord('A'); $i <= ord('Z'); $i++)
+    for($i = ord('A'); $i <= ord('Z'); $i++)
       {
       if($this->offset === chr($i))
         {
@@ -45,7 +45,6 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.for
         echo "<a href='{$this->webroot}/user?order=lastname&offset=".chr($i)."'>".chr($i)."</a> ";
         }
       }
-
     }
   if(!empty($this->users))
     {
@@ -134,7 +133,3 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.for
     ?>
   </div>
 </div>
-
-
-
-

@@ -23,7 +23,7 @@
  *  Global model methods
  */
 class MIDASDatabaseMongo implements MIDASDatabaseInterface
-{
+  {
   protected $_name;
   protected $_mainData;
   protected $_key;
@@ -221,7 +221,6 @@ class MIDASDatabaseMongo implements MIDASDatabaseInterface
     return 0;
     }//end getCountAll
 
-
   /**
    * @method public  get()
    * Generic get function. You can define custom function.
@@ -337,6 +336,4 @@ class MIDASDatabaseMongo implements MIDASDatabaseInterface
       throw new Zend_Exception($e);
       }
     } // end getMongo()
-
-} // end class MIDASDatabaseMongo
-?>
+  } // end class

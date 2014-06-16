@@ -96,5 +96,4 @@ class Notification extends MIDAS_Notification
     $token = $params['authToken'];
     return $this->Component->Authentication->getUser(array('token' => $token), null);
     }
-  } //end class
-?>
+  } // end class

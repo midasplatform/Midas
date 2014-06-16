@@ -23,7 +23,7 @@
  * \brief DAO Item (table Feed)
  */
 class FeedDao extends AppDao
-{
+  {
   public $_model = 'Feed';
 
   /** overwite get Ressource method */
@@ -62,5 +62,4 @@ class FeedDao extends AppDao
         break;
       }
     }
-} // end class
-?>
+  } // end class

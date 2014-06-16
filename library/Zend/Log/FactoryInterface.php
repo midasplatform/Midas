@@ -14,24 +14,24 @@
  *
  * @category   Zend
  * @package    Zend_Log
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: FactoryInterface.php 20785 2010-01-31 09:43:03Z mikaelkael $
+ * @version    $Id: FactoryInterface.php 24594 2012-01-05 21:27:01Z matthew $
  */
 
 /**
  * @category   Zend
  * @package    Zend_Log
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: FactoryInterface.php 20785 2010-01-31 09:43:03Z mikaelkael $
+ * @version    $Id: FactoryInterface.php 24594 2012-01-05 21:27:01Z matthew $
  */
 interface Zend_Log_FactoryInterface
 {
     /**
      * Construct a Zend_Log driver
-     * 
-     * @param  array|Zen_Config $config
+     *
+     * @param  array|Zend_Config $config
      * @return Zend_Log_FactoryInterface
      */
     static public function factory($config);

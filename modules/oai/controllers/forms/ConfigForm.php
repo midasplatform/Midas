@@ -19,7 +19,7 @@
 =========================================================================*/
 /** Forms */
 class Oai_ConfigForm extends AppForm
-{
+  {
 
   /** create  form */
   public function createConfigForm()
@@ -39,5 +39,4 @@ class Oai_ConfigForm extends AppForm
     $form->addElements(array($repositoryidentifier, $adminemail, $repositoryname, $submit));
     return $form;
     }
-
-} // end class
+  } // end class

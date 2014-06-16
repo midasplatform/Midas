@@ -23,7 +23,6 @@
  */
 class LicenseController extends AppController
   {
-
   public $_models = array('License');
   public $_daos = array('License');
   public $_components = array();
@@ -123,4 +122,4 @@ class LicenseController extends AppController
     $this->License->save($license);
     echo JsonComponent::encode(array(true, 'Created new license'));
     }
-}
+  }

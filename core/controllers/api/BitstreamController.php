@@ -22,7 +22,7 @@
  *  WebApi Controller for Bitstream Resource
  */
 class Rest_BitstreamController extends ApiController
-{
+  {
   /**
    * The index action handles index/list requests; it should respond with a
    * list of the requested resources.
@@ -91,4 +91,4 @@ class Rest_BitstreamController extends ApiController
     $apiFunctions['default'] = 'bitstreamDelete';
     $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'delete', $apiFunctions);
     }
-}
+  }

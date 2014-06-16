@@ -18,66 +18,57 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * TaskController
- * 
- */
+/** Workflow controller for the scheduler module */
 class Scheduler_WorkflowController extends Scheduler_AppController
-{
-  public $_moduleModels=array();
-  public $_moduleComponents=array('Ezc');
+  {
+  public $_moduleModels = array();
+  public $_moduleComponents = array('Ezc');
 
-  /**
-   * @method initAction()
-   *  Index Action (first action when we access the application)
-   */
+  /** init action (first action when we access the application) */
   function init()
-    {      
-
+    {
     } // end method indexAction
 
   /** create workflow */
   function createAction()
     {
     $definition = $this->ModuleComponent->Ezc->initWorkflowDefinitionStorage();
+
     // Load latest version of workflow named "Test".
-    
-    $workflow = new ezcWorkflow( 'Test' );
+    $workflow = new ezcWorkflow('Test');
     $input = new ezcWorkflowNodeInput(
-      array( 'item1' => new ezcWorkflowConditionIsObject, 'item2' => new ezcWorkflowConditionIsObject )
+      array('item1' => new ezcWorkflowConditionIsObject, 'item2' => new ezcWorkflowConditionIsObject)
     );
-    $workflow->startNode->addOutNode( $input );
+    $workflow->startNode->addOutNode($input);
 
     $split = new ezcWorkflowNodeParallelSplit();
     $input->addOutNode($split);
-    $nodeExec1 = new ezcWorkflowNodeAction( 'Process A' );
-    $nodeExec2 = new ezcWorkflowNodeAction( 'Process A' );
+    $nodeExec1 = new ezcWorkflowNodeAction('Process A');
+    $nodeExec2 = new ezcWorkflowNodeAction('Process A');
     $nodeExec1->addInNode($split);
     $nodeExec2->addInNode($split);
 
     $disc = new ezcWorkflowNodeDiscriminator();
-    $disc->addInNode( $nodeExec1 );
-    $disc->addInNode( $nodeExec2 );
-    
-    
-    $processB = new ezcWorkflowNodeAction( 'Process B' );
-    $disc->addOutNode($processB );
-    
-    $processB->addOutNode( $workflow->endNode);
+    $disc->addInNode($nodeExec1);
+    $disc->addInNode($nodeExec2);
 
-    
+    $processB = new ezcWorkflowNodeAction('Process B');
+    $disc->addOutNode($processB);
+
+    $processB->addOutNode($workflow->endNode);
+
     $this->_createGraph($workflow);
 
     // Save workflow definition to database.
-   // $definition->save( $workflow );
-    } 
-    
+    // $definition->save( $workflow );
+    }
+
   /** create graph */
   private function _createGraph($workflow)
     {
     $visitor = new ezcWorkflowVisitorVisualization;
-    $workflow->accept( $visitor );
-    $modulesConfig=Zend_Registry::get('configsModules');
+    $workflow->accept($visitor);
+    $modulesConfig = Zend_Registry::get('configsModules');
     $command = $modulesConfig['scheduler']->dot;
     $dotFile = $this->getTempDirectory().'/graphviz_workflow_'.$workflow->__get('id').'.dot';
     $image = $this->getTempDirectory().'/graphviz_workflow_'.$workflow->__get('id').'.png';
@@ -90,7 +81,7 @@ class Scheduler_WorkflowController extends Scheduler_AppController
       unlink($image);
       }
     file_put_contents($dotFile, (string) $visitor);
-    
+
     exec('"'.$command.'" -Tpng -o "'.$image.'" "'.$dotFile.'"');
     if(file_exists($dotFile))
       {
@@ -102,5 +93,4 @@ class Scheduler_WorkflowController extends Scheduler_AppController
       }
     return $image;
     }
-    
-}//end class
+  } // end class

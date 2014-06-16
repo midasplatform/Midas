@@ -18,9 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
+/** Base model class for the visualize module */
 class Visualize_AppModel extends MIDASModel
-{
-  public $moduleName='visualize';
-    
-}
-?>
+  {
+  public $moduleName = 'visualize';
+  }

@@ -22,7 +22,7 @@
  * Batchmake_ConfigForm
  */
 class Batchmake_ConfigForm extends AppForm
-{
+  {
 
   /**
    * @method createConfigForm
@@ -43,14 +43,11 @@ class Batchmake_ConfigForm extends AppForm
       $formElements[] = $textElement;
       }
 
-
     $submit = new  Zend_Form_Element_Submit(MIDAS_BATCHMAKE_SUBMIT_CONFIG);
     $submit ->setLabel($this->t(MIDAS_BATCHMAKE_SAVE_CONFIGURATION_STRING));
     $formElements[] = $submit;
 
-
     $form->addElements($formElements);
     return $form;
     }
-} // end class
-?>
+  } // end class

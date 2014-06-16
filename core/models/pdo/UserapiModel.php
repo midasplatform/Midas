@@ -22,7 +22,7 @@ require_once BASE_PATH.'/core/models/base/UserapiModelBase.php';
 
 /** User api key model implementation */
 class UserapiModel extends UserapiModelBase
-{
+  {
   /**
    * Get UserapiDao by
    * @param string $appname Application Name
@@ -65,7 +65,6 @@ class UserapiModel extends UserapiModelBase
     return $dao;
     } // end getByAppAndUser
 
-
   /**
    * Return the tokendao
    * @param type $email
@@ -97,7 +96,6 @@ class UserapiModel extends UserapiModelBase
                       ->where('u.application_name = ?', $appname)
                       ->where('t.expiration_date > ?', $now)
                       ->where('u.apikey = ?', $apikey);
-
 
     $row = $this->database->fetchRow($sql);
     $tokenDao = $this->initDao('Token', $row);
@@ -153,7 +151,6 @@ class UserapiModel extends UserapiModelBase
     return $tokenDao;
     } //get Token
 
-
   /** Return the userid from a token */
   function getUserapiFromToken($token)
     {
@@ -190,5 +187,4 @@ class UserapiModel extends UserapiModelBase
       }
     return $return;
     }
-}
-?>
+  }

@@ -265,8 +265,7 @@ class ApifolderComponent extends AppComponent
       throw new Exception("Admin privileges required on the folder to list permissions.", MIDAS_INVALID_POLICY);
       }
 
-    return $apihelperComponent->listResourcePermissions($folderpolicygroupModel->computePolicyStatus($folder), $folder->getFolderpolicyuser(),  $folder->getFolderpolicygroup());
-
+    return $apihelperComponent->listResourcePermissions($folderpolicygroupModel->computePolicyStatus($folder), $folder->getFolderpolicyuser(), $folder->getFolderpolicygroup());
     }
 
   /**

@@ -20,7 +20,7 @@
 
 /** Api controller for /json */
 class Api_JsonController extends Api_AppController
-{
+  {
 
   /** Before filter */
   function preDispatch()
@@ -29,4 +29,3 @@ class Api_JsonController extends Api_AppController
     parent::preDispatch();
     }
   } // end class
-?>

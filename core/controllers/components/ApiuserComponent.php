@@ -136,5 +136,4 @@ class ApiuserComponent extends AppComponent
       throw new Exception('Please provide a user email or both first and last name', MIDAS_INVALID_PARAMETER);
       }
     }
-
   } // end class

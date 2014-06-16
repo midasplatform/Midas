@@ -22,7 +22,7 @@
  *  WebApi Controller for System Resource
  */
 class Rest_SystemController extends ApiController
-{
+  {
   /**
    * The index action handles index/list requests; it should respond with a
    * list of the requested resources.
@@ -89,5 +89,4 @@ class Rest_SystemController extends ApiController
     {
     $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET, POST, PUT');
     }
-
-}
+  }

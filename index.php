@@ -36,9 +36,9 @@ if(!$mod_rewrite)
 error_reporting(E_ALL | E_STRICT);
 ini_set('display_errors', 'on');
 set_include_path('.'
- . PATH_SEPARATOR . './library'
- . PATH_SEPARATOR . './core/dao/'
- . PATH_SEPARATOR . get_include_path());
+  . PATH_SEPARATOR . './library'
+  . PATH_SEPARATOR . './core/dao/'
+  . PATH_SEPARATOR . get_include_path());
 
 define('BASE_PATH', realpath(dirname(__FILE__)));
 
@@ -71,4 +71,3 @@ $application = new Zend_Application('global', CORE_CONFIG);
 
 $application->bootstrap()
 ->run();
-

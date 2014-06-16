@@ -20,7 +20,7 @@
 
 /** Client management */
 class Oauth_ClientController extends Oauth_AppController
-{
+  {
   public $_models = array('User');
   public $_moduleModels = array('Client', 'Code', 'Token');
 
@@ -129,4 +129,3 @@ class Oauth_ClientController extends Oauth_AppController
     echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Client deleted'));
     }
   } // end class
-?>

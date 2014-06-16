@@ -20,7 +20,7 @@
 
 /** Folder forms*/
 class ItemForm extends AppForm
-{
+  {
   /** create edit folder form */
   public function createEditForm()
     {
@@ -60,6 +60,4 @@ class ItemForm extends AppForm
     $form->addElements(array($name, $mimetype, $submit));
     return $form;
     }
-
-} // end class
-?>
+  } // end class

@@ -19,7 +19,7 @@
 =========================================================================*/
 /** job controller*/
 class Remoteprocessing_JobController extends Remoteprocessing_AppController
-{
+  {
   public $_models = array('Item', 'Bitstream', 'ItemRevision', 'Assetstore', 'Folder');
   public $_components = array('Upload');
   public $_moduleComponents = array('Executable', 'Job');
@@ -144,7 +144,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
             {
             $cmdOptions[$i]['values'] = explode(';', $result);
             }
-          elseif(strpos($result, '-') !== false && strpos($result, '-') !== 0)
+          else if(strpos($result, '-') !== false && strpos($result, '-') !== 0)
             {
             $tmpArray = explode('(', $result);
             if(count($tmpArray) == 1)
@@ -176,7 +176,6 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
           }
         $i++;
         }
-
 
       $fire_time = false;
       $time_interval = false;
@@ -268,11 +267,11 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
         {
         $executable = $item;
         }
-      elseif($item->type == MIDAS_REMOTEPROCESSING_RELATION_TYPE_INPUT)
+      else if($item->type == MIDAS_REMOTEPROCESSING_RELATION_TYPE_INPUT)
         {
         $inputs[$item->getName()] = $item;
         }
-      elseif($item->type == MIDAS_REMOTEPROCESSING_RELATION_TYPE_OUPUT)
+      else if($item->type == MIDAS_REMOTEPROCESSING_RELATION_TYPE_OUPUT)
         {
         $reviesion = $this->Item->getLastRevision($item);
         $metadata = $this->ItemRevision->getMetadata($reviesion);
@@ -289,7 +288,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
 
         $outputs[] = $item;
         }
-      elseif($item->type == MIDAS_REMOTEPROCESSING_RELATION_TYPE_RESULTS)
+      else if($item->type == MIDAS_REMOTEPROCESSING_RELATION_TYPE_RESULTS)
         {
         $reviesion = $this->Item->getLastRevision($item);
         $metadata = $this->ItemRevision->getMetadata($reviesion);
@@ -330,7 +329,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
       }
     switch($type)
       {
-      case 'isexecutable' :
+      case 'isexecutable':
         $itemDao = $this->Item->load($entry);
         if($itemDao !== false && $this->ModuleComponent->Executable->getExecutable($itemDao) !== false)
           {
@@ -341,7 +340,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
           echo "false";
           }
         return;
-      case 'ismeta' :
+      case 'ismeta':
         $itemDao = $this->Item->load($entry);
         if($itemDao !== false && $this->ModuleComponent->Executable->getMetaIoFile($itemDao) !== false)
           {
@@ -352,7 +351,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
           echo "false";
           }
         return;
-      default :
+      default:
         echo "false";
         return;
       }
@@ -372,15 +371,14 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
       }
     switch($type)
       {
-      case 'getRecentExecutable' :
+      case 'getRecentExecutable':
         // We no longer store a list of "recent uploads" in the session.  For now
         // this action is vestigial.
         echo JsonComponent::encode(array());
         return;
-      default :
+      default:
         echo JsonComponent::encode(false);
         return;
       }
     } //end valid entry
-
-}//end class
+  } // end class

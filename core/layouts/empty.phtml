@@ -38,7 +38,7 @@ echo $this->doctype()
   <!-- Import CSS -->
   <link rel="shortcut icon" href="<?php echo $this->coreWebroot ?>/public/images/icons/favicon.ico" />
   <?php
-  if (Zend_Registry::get("configGlobal")->smartoptimizer == 1)
+  if(Zend_Registry::get("configGlobal")->smartoptimizer == 1)
     {
     echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/view.css,'.
          'midas.empty.css,'.

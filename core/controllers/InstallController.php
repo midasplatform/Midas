@@ -22,7 +22,7 @@
  *  InstallController
  */
 class InstallController extends AppController
-{
+  {
   public $_models = array('User', 'Assetstore');
   public $_daos = array('Assetstore');
   public $_components = array('Utility');
@@ -63,7 +63,6 @@ class InstallController extends AppController
       $this->_redirect("/install/step2");
       }
     } // end method indexAction
-
 
   /**
    * @method step2Action()
@@ -301,7 +300,6 @@ class InstallController extends AppController
       }
     } // end method step2Action
 
-
   /** ajax function which tests connectivity to a db */
   public function testconnexionAction()
     {
@@ -353,6 +351,4 @@ class InstallController extends AppController
       }
     echo JsonComponent::encode($return);
     }//end getElementInfo
-
-} // end class
-
+  } // end class

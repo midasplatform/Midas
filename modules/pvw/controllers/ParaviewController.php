@@ -20,7 +20,7 @@
 
 /** Paraview Controller */
 class Pvw_ParaviewController extends Pvw_AppController
-{
+  {
   public $_models = array('Item', 'ItemRevision', 'Bitstream', 'Setting');
   public $_moduleComponents = array('Paraview');
   public $_moduleModels = array('Instance');
@@ -315,6 +315,4 @@ class Pvw_ParaviewController extends Pvw_AppController
       return empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
       }
     }
-
-} // end class
-?>
+  } // end class

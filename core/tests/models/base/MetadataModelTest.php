@@ -30,7 +30,6 @@ class MetadataModelTest extends DatabaseTestCase
     parent::setUp();
     }
 
-
   /**
    * tests getMetadata and addMetadata
    */
@@ -142,5 +141,4 @@ class MetadataModelTest extends DatabaseTestCase
     sort($qualifiers);
     $this->assertEquals($qualifiers, array('Manufacturer', 'NumSlices', 'PatientName'));
     }
-
   }

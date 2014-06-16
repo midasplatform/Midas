@@ -20,7 +20,7 @@
 
 /** Helper component for the comments module */
 class Comments_CommentComponent extends AppComponent
-{
+  {
   /**
    * Returns a page of comments and all required information
    * to be rendered in the view
@@ -42,4 +42,4 @@ class Comments_CommentComponent extends AppComponent
       }
     return array($commentsList, $total);
     }
-} // end class
+  } // end class

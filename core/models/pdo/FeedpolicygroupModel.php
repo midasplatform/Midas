@@ -25,7 +25,7 @@ require_once BASE_PATH.'/core/models/base/FeedpolicygroupModelBase.php';
  * \brief Pdo Model
  */
 class FeedpolicygroupModel extends FeedpolicygroupModelBase
-{
+  {
 
   /** getPolicy
    * @return FeedpolicygroupDao
@@ -56,6 +56,4 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
     $clause = 'group_id = '.$group->getKey();
     Zend_Registry::get('dbAdapter')->delete($this->_name, $clause);
     }
-
-} // end class
-?>
+  } // end class

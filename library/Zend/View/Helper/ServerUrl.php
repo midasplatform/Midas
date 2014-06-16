@@ -15,9 +15,9 @@
  * @category   Zend
  * @package    Zend_View
  * @subpackage Helper
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: ServerUrl.php 23371 2010-11-18 20:49:55Z bittarman $
+ * @version    $Id: ServerUrl.php 24594 2012-01-05 21:27:01Z matthew $
  */
 
 /**
@@ -26,7 +26,7 @@
  * @category   Zend
  * @package    Zend_View
  * @subpackage Helper
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_View_Helper_ServerUrl
@@ -59,7 +59,7 @@ class Zend_View_Helper_ServerUrl
                 $scheme = 'https';
                 break;
             default:
-            $scheme = 'http';   
+            $scheme = 'http';
         }
         $this->setScheme($scheme);
 

@@ -23,7 +23,7 @@
  *  Global model methods
  */
 class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseInterface
-{
+  {
 
   protected $_name;
   protected $_mainData;
@@ -54,7 +54,6 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
       throw new Zend_Exception("Model PDO " . $this->_name . " is not defined properly.");
       }
     }  // end function initialize
-
 
   /** Return the database */
   public function getDB()
@@ -241,7 +240,6 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     return false;
     } //end method link
 
-
   /**
    * @method public  removeLink($var, $daoParent, $daoSon)
    *  remove a link between 2 tables
@@ -262,7 +260,6 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
       $this->_mainData[$var]['child_column'] . ' = ?' => $daoSon->get($this->_mainData[$var]['child_column'])
     ));
     } //end method removeLink
-
 
   /**
    * @method public  findBy($var, $value)
@@ -292,7 +289,6 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
       }
     return $return;
     } //end method getAll
-
 
   /**
    * @method public  getValues($key)
@@ -376,7 +372,6 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     return true;
     }//end delete
 
-
   /** getAllByKey() */
   public function getAllByKey($keys)
     {
@@ -402,6 +397,4 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     $count = $this->fetchRow($this->select()->from($this->_name, 'count(*) as COUNT'));
     return $count['COUNT'];
     }//end getCountAll
-
-} //end class MIDASDatabasePdo
-?>
+  } // end class

@@ -22,7 +22,7 @@
  * Generates and sends piwik statistics reports to admin users
  */
 class Statistics_ReportComponent extends AppComponent
-{
+  {
   /** generate report */
   public function generate()
     {
@@ -96,7 +96,5 @@ class Statistics_ReportComponent extends AppComponent
       $mail->addTo($admin->getEmail(), $admin->getFullName());
       $mail->send();
       }
-    }//end send
-
-} // end class
-?>
+    } //end send
+  } // end class

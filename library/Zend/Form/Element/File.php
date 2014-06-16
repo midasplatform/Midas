@@ -14,7 +14,7 @@
  *
  * @category   Zend
  * @package    Zend_Form
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
@@ -27,9 +27,9 @@
  * @category   Zend
  * @package    Zend_Form
  * @subpackage Element
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: File.php 22371 2010-06-04 20:09:44Z thomas $
+ * @version    $Id: File.php 24594 2012-01-05 21:27:01Z matthew $
  */
 class Zend_Form_Element_File extends Zend_Form_Element_Xhtml
 {
@@ -71,7 +71,7 @@ class Zend_Form_Element_File extends Zend_Form_Element_Xhtml
     /**
      * Load default decorators
      *
-     * @return void
+     * @return Zend_Form_Element_File
      */
     public function loadDefaultDecorators()
     {

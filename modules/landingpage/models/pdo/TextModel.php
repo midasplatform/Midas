@@ -17,13 +17,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 require_once BASE_PATH.'/modules/landingpage/models/base/TextModelBase.php';
 
 /** Landingpage text pdo model */
-
 class Landingpage_TextModel extends Landingpage_TextModelBase
-{
-   /** Get all */
+  {
+  /** Get all */
   public function getAll()
     {
     $rowset = $this->database->fetchAll($this->database->select());
@@ -33,6 +33,5 @@ class Landingpage_TextModel extends Landingpage_TextModelBase
       $return[] = $this->initDao('Text', $row, 'landingpage');
       }
     return $return;
-    } // end getAll()
-
-}  // end class
+    }
+  }

@@ -15,9 +15,9 @@
  * @category   Zend
  * @package    Zend_Markup
  * @subpackage Parser
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Textile.php 20277 2010-01-14 14:17:12Z kokx $
+ * @version    $Id: Textile.php 24594 2012-01-05 21:27:01Z matthew $
  */
 
 /**
@@ -34,7 +34,7 @@
  * @category   Zend
  * @package    Zend_Markup
  * @subpackage Parser
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Markup_Parser_Textile implements Zend_Markup_Parser_ParserInterface
@@ -288,7 +288,7 @@ class Zend_Markup_Parser_Textile implements Zend_Markup_Parser_ParserInterface
                         $this->_temp = array(
                             'tag'        => '',
                             'name'       => 'p',
-                            'type'       => Zend_Markup_token::TYPE_TAG,
+                            'type'       => Zend_Markup_Token::TYPE_TAG,
                             'attributes' => array()
                         );
                     } else {

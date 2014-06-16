@@ -21,7 +21,6 @@
 /** Upgrade MIDAS*/
 class UpgradeComponent extends AppComponent
   {
-
   public $dir;
   protected $module;
   protected $db;
@@ -36,7 +35,7 @@ class UpgradeComponent extends AppComponent
       {
       $this->dir = BASE_PATH.'/core/database/upgrade';
       }
-    elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/database/upgrade'))
+    else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/database/upgrade'))
       {
       $this->dir = BASE_PATH.'/privateModules/'.$module.'/database/upgrade';
       }
@@ -62,7 +61,6 @@ class UpgradeComponent extends AppComponent
       }
     $this->init = true;
     }//end init
-
 
   /** get Newest version */
   public function getNewestVersion($text = false)
@@ -269,4 +267,4 @@ class UpgradeComponent extends AppComponent
     $class->$dbtypeShort();
     $class->postUpgrade();
     }
-} // end class
+  } // end class

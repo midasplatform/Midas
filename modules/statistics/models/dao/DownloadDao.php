@@ -20,8 +20,7 @@
 
 /** dao for the statistics_download model */
 class Statistics_DownloadDao extends Statistics_AppDao
-{
+  {
   public $_model = 'Download';
   public $_module = 'statistics';
-}
-?>
+  }

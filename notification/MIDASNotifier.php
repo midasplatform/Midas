@@ -243,5 +243,4 @@ class MIDAS_Notifier
     {
     return Zend_Registry::get('logger');
     }
-
   } // end class

@@ -20,7 +20,7 @@
 
 /** Base class for instance model */
 abstract class Pvw_InstanceModelBase extends Pvw_AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -42,6 +42,5 @@ abstract class Pvw_InstanceModelBase extends Pvw_AppModel
     $this->initialize();
     }
 
-  public abstract function getAll();
-}
-?>
+  abstract public function getAll();
+  }

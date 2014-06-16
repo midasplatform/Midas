@@ -10,7 +10,6 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
-
 $i = 0;
 foreach($this->metaContent->option as $option)
   {
@@ -24,7 +23,6 @@ foreach($this->metaContent->option as $option)
     echo "<div id='option_".$i."' name='".htmlentities(ucfirst($option->name))."' class='optionWrapper'  tag='".htmlentities($option->tag)."'>";
     echo "<h4>".ucfirst($option->name)."</h4>";
     }
-
 
   $type = 'inputParam';
   if($option->channel == 'ouput')
@@ -42,7 +40,6 @@ foreach($this->metaContent->option as $option)
   echo "</div>";
   $i++;
   }
-
 
 function elementOuputFile($i, $option)
   {
@@ -68,9 +65,3 @@ function elementInputParam($i, $option)
   {
   echo "Value (".ucfirst($option->field->type)."): <input variable='".$option->field->type."' type='text' qtip='Example multiple values: <b>5;6;9</b><br/>Example range with a step of 0.5: <b>5-10(0.5)</b>' class='valueInputOption'/>";
   }
-?>
-
-
-
-
-

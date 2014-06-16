@@ -20,7 +20,7 @@
 
 /** Feed Model Base */
 abstract class FeedModelBase extends AppModel
-{
+  {
   /** Constructor*/
   public function __construct()
     {
@@ -43,11 +43,10 @@ abstract class FeedModelBase extends AppModel
     } // end __construct()
 
   /** get Feeds*/
-  protected abstract function getFeeds($loggedUserDao, $userDao = null, $communityDao = null, $policy = 0, $limit = 20);
+  abstract protected function getFeeds($loggedUserDao, $userDao = null, $communityDao = null, $policy = 0, $limit = 20);
   /** add a community*/
-  protected abstract function addCommunity($feed, $community);
+  abstract protected function addCommunity($feed, $community);
   abstract function policyCheck($feedDao, $userDao = null, $policy = 0);
-
 
   /** get feeds (filtered by policies)
    * @return Array of FeedDao */
@@ -95,14 +94,14 @@ abstract class FeedModelBase extends AppModel
       case MIDAS_FEED_COMMUNITY_INVITATION:
         if(!$ressource instanceof CommunityInvitationDao)
           {
-          throw new Zend_Exception("Error in parameter ressource, expecting CommunityInvitationDao,  type:".$type);
+          throw new Zend_Exception("Error in parameter ressource, expecting CommunityInvitationDao, type:".$type);
           }
         $feed->setRessource($ressource->getKey());
         break;
       case MIDAS_FEED_CREATE_FOLDER:
         if(!$ressource instanceof FolderDao)
           {
-          throw new Zend_Exception("Error in parameter ressource, expecting FolderDao,  type:".$type);
+          throw new Zend_Exception("Error in parameter ressource, expecting FolderDao, type:".$type);
           }
         $feed->setRessource($ressource->getKey());
         break;
@@ -110,21 +109,21 @@ abstract class FeedModelBase extends AppModel
       case MIDAS_FEED_CREATE_ITEM:
         if(!$ressource instanceof ItemDao)
           {
-          throw new Zend_Exception("Error in parameter ressource, expecting ItemDao,  type:".$type);
+          throw new Zend_Exception("Error in parameter ressource, expecting ItemDao, type:".$type);
           }
         $feed->setRessource($ressource->getKey());
         break;
       case MIDAS_FEED_CREATE_REVISION:
         if(!$ressource instanceof ItemRevisionDao)
           {
-          throw new Zend_Exception("Error in parameter ressource, expecting ItemRevisionDao,  type:".$type);
+          throw new Zend_Exception("Error in parameter ressource, expecting ItemRevisionDao, type:".$type);
           }
         $feed->setRessource($ressource->getKey());
         break;
       case MIDAS_FEED_CREATE_USER:
         if(!$ressource instanceof UserDao)
           {
-          throw new Zend_Exception("Error in parameter ressource, expecting UserDao,  type:".$type);
+          throw new Zend_Exception("Error in parameter ressource, expecting UserDao, type:".$type);
           }
         $feed->setRessource($ressource->getKey());
         break;
@@ -133,7 +132,7 @@ abstract class FeedModelBase extends AppModel
       case MIDAS_FEED_DELETE_ITEM:
         if(!is_string($ressource))
           {
-          throw new Zend_Exception("Error in parameter ressource, expecting string,  type:".$type);
+          throw new Zend_Exception("Error in parameter ressource, expecting string, type:".$type);
           }
         $feed->setRessource($ressource);
         break;
@@ -150,5 +149,4 @@ abstract class FeedModelBase extends AppModel
       }
     return $feed;
     } // end createFeed()
-
-} // end class FeedModelBase
+  } // end class

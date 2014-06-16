@@ -24,7 +24,7 @@
  * and has been invited by an existing user into a community group
  */
 abstract class NewUserInvitationModelBase extends AppModel
-{
+  {
   /** Contructor */
   public function __construct()
     {
@@ -48,10 +48,10 @@ abstract class NewUserInvitationModelBase extends AppModel
     } // end __construct()
 
   /** abstract functions */
-  public abstract function getByParams($params);
-  public abstract function getAllByParams($params);
-  public abstract function deleteByGroup($group);
-  public abstract function deleteByCommunity($community);
+  abstract public function getByParams($params);
+  abstract public function getAllByParams($params);
+  abstract public function deleteByGroup($group);
+  abstract public function deleteByCommunity($community);
 
   /**
    * Create the database record for inviting a user via email that is not registered yet
@@ -88,4 +88,4 @@ abstract class NewUserInvitationModelBase extends AppModel
     $this->save($newUserInvitation);
     return $newUserInvitation;
     }
-}
+  }

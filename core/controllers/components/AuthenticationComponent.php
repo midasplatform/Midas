@@ -20,8 +20,7 @@
 
 /** Web API Authentication Component */
 class AuthenticationComponent extends AppComponent
-{
-
+  {
   /** Constructor */
   function __construct()
     {
@@ -84,4 +83,4 @@ class AuthenticationComponent extends AppComponent
       return $userDao;
       }
     }
-}
+  }

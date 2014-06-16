@@ -20,8 +20,7 @@
 
 /** This class handles the upload of files into the different assetstores */
 class UploadComponent extends AppComponent
-{
-
+  {
   /** Helper function to create the two-level hierarchy */
   private function _createAssetstoreDirectory($directorypath)
     {
@@ -109,7 +108,7 @@ class UploadComponent extends AppComponent
       case MIDAS_ASSETSTORE_AMAZON:
         throw new Zend_Exception("Amazon support is not implemented yet.");
         break;
-      default :
+      default:
         break;
       }
     return true;
@@ -185,7 +184,6 @@ class UploadComponent extends AppComponent
     $this->getLogger()->info('Link item created ('.$item->getName().', id='.$item->getKey().')');
     return $item;
     }
-
 
   /**
    * Save an uploaded file in the database as an item with a new revision
@@ -406,5 +404,4 @@ class UploadComponent extends AppComponent
 
     return $item;
     }//end
-} // end class UploadComponent
-?>
+  } // end class

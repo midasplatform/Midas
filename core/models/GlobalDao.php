@@ -23,7 +23,7 @@
  *  Global dao methods
  */
 class MIDAS_GlobalDao
-{
+  {
   protected $key;
 
   /**
@@ -146,7 +146,7 @@ class MIDAS_GlobalDao
       $name = 'get' . ucfirst($var);
       return $this->$name($var);
       }
-    elseif(isset($this->$var))
+    else if(isset($this->$var))
       {
       return $this->$var;
       }
@@ -277,6 +277,4 @@ class MIDAS_GlobalDao
       }
     return $return;
     }
-
-}// end class
-?>
+  } // end class

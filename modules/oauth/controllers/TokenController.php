@@ -20,7 +20,7 @@
 
 /** Handles issuing new tokens and refreshing tokens for a registered client */
 class Oauth_TokenController extends Oauth_AppController
-{
+  {
   public $_models = array('User');
   public $_moduleModels = array('Client', 'Code', 'Token');
 
@@ -235,4 +235,3 @@ class Oauth_TokenController extends Oauth_AppController
     echo JsonComponent::encode($array);
     }
   } // end class
-?>

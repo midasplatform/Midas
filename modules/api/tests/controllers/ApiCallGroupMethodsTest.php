@@ -27,7 +27,6 @@ class ApiCallGroupMethodsTest extends ApiCallMethodsTest
     parent::setUp();
     }
 
-
   /** Test adding and removing a user from a group */
   public function testGroupUserAddRemove()
     {
@@ -186,7 +185,6 @@ class ApiCallGroupMethodsTest extends ApiCallMethodsTest
     $commUsers =
       array($commMemberId => $commMember, $commModeratorId =>  $commModerator, $commAdminId =>  $commAdmin);
 
-
     // add in an anonymous user to non admins
     $invalidUsers = array($commMember, $commModerator, false);
 
@@ -260,5 +258,4 @@ class ApiCallGroupMethodsTest extends ApiCallMethodsTest
       $this->assertEquals($commUsers[$id]->getLastname(), $names->lastname);
       }
     }
-
   }

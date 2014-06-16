@@ -20,7 +20,7 @@
 
 /** Bitstream Base Model*/
 abstract class BitstreamModelBase extends AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -37,7 +37,6 @@ abstract class BitstreamModelBase extends AppModel
       'sizebytes' =>  array('type' => MIDAS_DATA),
       'checksum' =>  array('type' => MIDAS_DATA),
       'path' =>  array('type' => MIDAS_DATA),
-      'assetstore_id' =>  array('type' => MIDAS_DATA),
       'date' =>  array('type' => MIDAS_DATA),
       'itemrevision' =>  array('type' => MIDAS_MANY_TO_ONE, 'model' => 'ItemRevision', 'parent_column' => 'itemrevision_id', 'child_column' => 'itemrevision_id'),
       'assetstore' =>  array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Assetstore', 'parent_column' => 'assetstore_id', 'child_column' => 'assetstore_id'),
@@ -136,4 +135,4 @@ abstract class BitstreamModelBase extends AppModel
       chmod($directorypath, 0777);
       }
     }
-} // end class BitstreamModelBase
+  } // end class

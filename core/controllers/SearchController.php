@@ -22,7 +22,7 @@
  *  Search controller
  */
 class SearchController extends AppController
-{
+  {
   public $_models = array('Item', 'Folder', 'User', 'Community', 'Group');
   public $_daos = array('Item', 'Folder', 'User', 'Community');
   public $_components = array('Sortdao', 'Date', 'Utility', 'Search');
@@ -39,7 +39,6 @@ class SearchController extends AppController
       $this->_forward('index', null, null, array('q' => $actionName));
       }
     }  // end init()
-
 
   /** search live Action */
   public function indexAction()
@@ -75,8 +74,6 @@ class SearchController extends AppController
       $this->view->json['search']['moreResults'] = $this->t('Show more results.');
       }
     }//end indexAction
-
-
 
   /** search live Action */
   public function liveAction()
@@ -122,7 +119,7 @@ class SearchController extends AppController
       // Search for the users
       $UsersDao = $this->User->getUsersFromSearch($search, $this->userSession->Dao);
       }
-    elseif(isset($userSearch))
+    else if(isset($userSearch))
       {
       $ItemsDao = array();
       $FoldersDao = array();
@@ -143,7 +140,7 @@ class SearchController extends AppController
           }
         }
       }
-    elseif(isset($itemSearch))
+    else if(isset($itemSearch))
       {
       $ItemsDao = $this->Item->getItemsFromSearch($search, $this->userSession->Dao, 15, false);
       $FoldersDao = array();
@@ -167,7 +164,6 @@ class SearchController extends AppController
       $UsersDao = $this->User->getUsersFromSearch($search, $this->userSession->Dao);
       $GroupsDao = array();
       }
-
 
     // Compute how many of each we should display
     $nitems = count($ItemsDao);
@@ -336,6 +332,4 @@ class SearchController extends AppController
 
     echo JsonComponent::encode($results);
     }
-
-} // end class
-
+  } // end class

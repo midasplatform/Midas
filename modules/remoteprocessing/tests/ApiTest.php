@@ -156,5 +156,4 @@ class ApiTest extends ControllerTestCase
       $this->fail('Error json');
       }
     }
-
   }

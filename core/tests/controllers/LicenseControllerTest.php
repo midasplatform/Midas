@@ -132,5 +132,4 @@ class LicenseControllerTest extends ControllerTestCase
     $this->assertEquals($revision2->getLicenseId(), $license2->getKey());
     $this->assertEquals($revision3->getLicenseId(), null);
     }
-
   }

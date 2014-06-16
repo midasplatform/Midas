@@ -71,9 +71,9 @@ foreach($cssArray as $module => $list)
         {
         $privacyClass = $folder->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
         echo "<tr id='node--$node' privacy='{$folder->getPrivacyStatus()}' class='parent' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
-        echo "  <td class='treeBrowseElement'><span class='folder{$privacyClass}'>{$this->slicename($folder->getName(),40)}</span></td>";
+        echo "  <td class='treeBrowseElement'><span class='folder{$privacyClass}'>{$this->slicename($folder->getName(), 40)}</span></td>";
         echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
-        echo "  <td>{$this->Date->ago($folder->getDateUpdate(),true)}</td>";
+        echo "  <td>{$this->Date->ago($folder->getDateUpdate(), true)}</td>";
         echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$folder->getFolderId()}' /></td>";
         echo "</tr>";
         $node++;
@@ -83,9 +83,9 @@ foreach($cssArray as $module => $list)
         {
         $privacyClass = $item->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
         echo "<tr id='node--$node' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}' >";
-        echo "  <td class='treeBrowseElement'><span class='file{$privacyClass}'>{$this->slicename($item->getName(),40)}</span></td>";
+        echo "  <td class='treeBrowseElement'><span class='file{$privacyClass}'>{$this->slicename($item->getName(), 40)}</span></td>";
         echo "  <td>{$item->size}</td>";
-        echo "  <td>{$this->Date->ago($item->getDateUpdate(),true)}</td>";
+        echo "  <td>{$this->Date->ago($item->getDateUpdate(), true)}</td>";
         echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$item->getItemId()}' /></td>";
         echo "</tr>";
         $node++;
@@ -189,7 +189,6 @@ foreach($cssArray as $module => $list)
   </div>
   <div class="sideElementLast viewInfo">';
   ?>
-
 
     <h1>Info</h1>
     <img class="infoLoading" style="display:none;" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>

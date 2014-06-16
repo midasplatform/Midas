@@ -20,7 +20,7 @@
 
 /** Active Download Model Base*/
 abstract class ActivedownloadModelBase extends AppModel
-{
+  {
   /** Constructor*/
   public function __construct()
     {
@@ -38,7 +38,7 @@ abstract class ActivedownloadModelBase extends AppModel
     }
 
   /** Check for an active download by ip address */
-  public abstract function getByIp($ip);
+  abstract public function getByIp($ip);
 
   /**
    * Call this function to acquire the download lock.
@@ -89,5 +89,4 @@ abstract class ActivedownloadModelBase extends AppModel
     $lockDao->setLastUpdate(date("Y-m-d H:i:s"));
     $this->save($lockDao);
     }
-
-}
+  }

@@ -25,7 +25,7 @@ require_once BASE_PATH.'/core/models/base/PendingUserModelBase.php';
  * \brief Pdo Model for a pending user
  */
 class PendingUserModel extends PendingUserModelBase
-{
+  {
   /**
    * Search the table for a matching record.  If any exists, returns the first dao.  Otherwise returns false.
    */
@@ -61,5 +61,4 @@ class PendingUserModel extends PendingUserModelBase
       }
     return $daos;
     }
-}
-?>
+  }

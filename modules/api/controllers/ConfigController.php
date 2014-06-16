@@ -20,7 +20,7 @@
 
 /** api config controller */
 class Api_ConfigController extends Api_AppController
-{
+  {
   public $_moduleForms = array('Config');
   public $_components = array('Utility');
 
@@ -65,5 +65,4 @@ class Api_ConfigController extends Api_AppController
         }
       }
     }
-
-}//end class
+  } // end class

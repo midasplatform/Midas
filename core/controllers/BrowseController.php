@@ -22,7 +22,7 @@
  *  AJAX request for the admin Controller
  */
 class BrowseController extends AppController
-{
+  {
   public $_models = array('User', 'Community', 'Folder', 'Item', 'ItemRevision');
   public $_daos = array('User', 'Community', 'Folder', 'Item');
   public $_components = array('Date', 'Utility', 'Sortdao');
@@ -137,7 +137,7 @@ class BrowseController extends AppController
             $this->Item->addReadonlyPolicy($item, $destinationFolder);
             }
           }
-        elseif(isset($duplicateSubmit))
+        else if(isset($duplicateSubmit))
           {
           if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
             {
@@ -228,7 +228,7 @@ class BrowseController extends AppController
         {
         $this->view->shareEnabled = true;
         }
-      elseif(isset($duplicate))
+      else if(isset($duplicate))
         {
         $this->view->duplicateEnabled = true;
         }
@@ -284,7 +284,6 @@ class BrowseController extends AppController
     $policy = $this->_getParam('policy');
 
     $communities = $this->User->getUserCommunities($this->userSession->Dao);
-
 
     if(isset($policy) && $policy == 'read')
       {
@@ -645,4 +644,4 @@ class BrowseController extends AppController
       }
     echo JsonComponent::encode($resp);
     }
-} // end class
+  } // end class

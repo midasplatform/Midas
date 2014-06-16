@@ -17,8 +17,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 abstract class Oauth_TokenModelBase extends Oauth_AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -43,10 +44,10 @@ abstract class Oauth_TokenModelBase extends Oauth_AppModel
     $this->initialize(); // required
     } // end __construct()
 
-  public abstract function getByToken($token);
-  public abstract function getByUser($userDao, $onlyValid = true);
-  public abstract function expireTokens($userDao, $clientDao);
-  public abstract function cleanExpired();
+  abstract public function getByToken($token);
+  abstract public function getByUser($userDao, $onlyValid = true);
+  abstract public function expireTokens($userDao, $clientDao);
+  abstract public function cleanExpired();
 
   /**
    * Use the provided codeDao to create and return an oauth access token.
@@ -92,5 +93,4 @@ abstract class Oauth_TokenModelBase extends Oauth_AppModel
 
     return $tokenDao;
     }
-}
-?>
+  }

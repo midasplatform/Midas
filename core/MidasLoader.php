@@ -23,7 +23,7 @@
  * It handles importing the required file and instantiating the object of the desired type.
  */
 class MidasLoader
-{
+  {
   /**
    * Load a component
    * @param component The name of the component to load
@@ -45,7 +45,7 @@ class MidasLoader
           {
           include_once BASE_PATH.'/modules/'.$module.'/controllers/components/'.$component.'Component.php';
           }
-        elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/controllers/components/'.$component.'Component.php'))
+        else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/controllers/components/'.$component.'Component.php'))
           {
           include_once BASE_PATH.'/privateModules/'.$module.'/controllers/components/'.$component.'Component.php';
           }
@@ -96,7 +96,7 @@ class MidasLoader
           {
           include_once BASE_PATH.'/modules/'.$module.'/models/base/'.$model.'ModelBase.php';
           }
-        elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/base/'.$model.'ModelBase.php'))
+        else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/base/'.$model.'ModelBase.php'))
           {
           include_once BASE_PATH.'/privateModules/'.$module.'/models/base/'.$model.'ModelBase.php';
           }
@@ -105,7 +105,7 @@ class MidasLoader
           {
           include_once BASE_PATH.'/modules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php';
           }
-        elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php'))
+        else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php'))
           {
           include_once BASE_PATH.'/privateModules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php';
           }
@@ -139,7 +139,7 @@ class MidasLoader
       {
       self::loadModel($models, $module);
       }
-    elseif(is_array($models))
+    else if(is_array($models))
       {
       foreach($models as $model)
         {
@@ -170,7 +170,7 @@ class MidasLoader
         {
         require_once BASE_PATH.'/modules/'.$module.'/models/dao/'.$name.'.php';
         }
-      elseif(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name.'.php'))
+      else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name.'.php'))
         {
         require_once BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name.'.php';
         }
@@ -187,4 +187,4 @@ class MidasLoader
       return new $classname;
       }
     }
-} // end class
+  } // end class

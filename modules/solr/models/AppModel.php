@@ -20,7 +20,6 @@
 
 /** App model base class for module */
 class Solr_AppModel extends MIDASModel
-{
+  {
   public $moduleName = 'solr';
-}
-?>
+  }

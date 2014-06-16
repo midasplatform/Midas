@@ -25,7 +25,7 @@ require_once BASE_PATH.'/core/models/base/NewUserInvitationModelBase.php';
  * \brief Pdo Model for a new user invitation
  */
 class NewUserInvitationModel extends NewUserInvitationModelBase
-{
+  {
   /**
    * Search the table for a matching record.  If any exists, returns the first dao.  Otherwise returns false.
    */
@@ -87,5 +87,4 @@ class NewUserInvitationModel extends NewUserInvitationModelBase
       }
     Zend_Registry::get('dbAdapter')->delete($this->_name, 'community_id = '.$community->getKey());
     }
-}
-?>
+  }

@@ -21,10 +21,9 @@
 /**
  *  WebApi controller for Server Resource (in dicomserver module)
  */
-
 class Apidicomserver_ServerController extends ApiController
-{
- /**
+  {
+  /**
    * The index action handles index/list requests; it should respond with a
    * list of the requested resources.
    */
@@ -33,7 +32,7 @@ class Apidicomserver_ServerController extends ApiController
     $apiFunctions = array(
       'default' => 'status',
       'status' => 'status',
-      'registrationstatus' => 'registrationstatus'  
+      'registrationstatus' => 'registrationstatus'
       );
     $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'index', $apiFunctions, 'dicomserver');
     }
@@ -73,7 +72,6 @@ class Apidicomserver_ServerController extends ApiController
     $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'post', $apiFunctions, 'dicomserver');
     }
 
-
   /**
    * The options action handles OPTIONS requests; it should respond with
    * the HTTP methods that the server supports for specified URL.
@@ -82,5 +80,4 @@ class Apidicomserver_ServerController extends ApiController
     {
     $this->_response->setHeader('Allow', 'OPTIONS, GET, HEAD, POST');
     }
-
-}
+  }

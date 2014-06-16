@@ -24,7 +24,7 @@
  * various paraviewweb apps
  */
 class Pvw_ValidationComponent extends AppComponent
-{
+  {
 
   /** Test whether we can visualize with slice viewer */
   public function canVisualizeWithSliceView($itemDao)
@@ -56,4 +56,4 @@ class Pvw_ValidationComponent extends AppComponent
     $ext = strtolower(substr(strrchr($bitstreams[0]->getName(), '.'), 1));
     return in_array($ext, $extensions);
     }
-} // end class
+  } // end class

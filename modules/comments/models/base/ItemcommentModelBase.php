@@ -17,8 +17,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 abstract class Comments_ItemcommentModelBase extends Comments_AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -59,5 +60,4 @@ abstract class Comments_ItemcommentModelBase extends Comments_AppModel
 
     Zend_Registry::get('notifier')->callback('CALLBACK_COMMENTS_ADDED_COMMENT', array('comment' => $commentDao));
     }
-}
-?>
+  }

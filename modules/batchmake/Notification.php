@@ -17,16 +17,17 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 require_once BASE_PATH . '/modules/api/library/APIEnabledNotification.php';
 
-/** notification manager*/
+/** Notification manager for the batchmake module */
 class Batchmake_Notification extends ApiEnabled_Notification
   {
   public $moduleName = 'batchmake';
   public $_components = array('Utility', 'Internationalization');
-  public $_moduleComponents=array('KWBatchmake','Api');
+  public $_moduleComponents = array('KWBatchmake', 'Api');
 
-  /** init notification process*/
+  /** init notification process */
   public function init()
     {
     $this->enableWebAPI($this->moduleName);
@@ -35,12 +36,11 @@ class Batchmake_Notification extends ApiEnabled_Notification
     // $this->addCallBack('CALLBACK_CORE_GET_LEFT_LINKS', 'getLeftLink');
     }//end init
 
-
   /**
-   *@method getDashboard
-   *will generate information about this module to display on the Dashboard
-   *@return array with key being the module name, the value being an array 
-    of configuration correctness values (0 or 1).
+   * @method getDashboard
+   * will generate information about this module to display on the Dashboard
+   * @return array with key being the module name, the value being an array
+   * of configuration correctness values (0 or 1).
    */
   public function getDashboard()
     {
@@ -48,21 +48,16 @@ class Batchmake_Notification extends ApiEnabled_Notification
     return $return;
     }
 
-
   /**
-   *@method getLeftLink
+   * @method getLeftLink
    * will generate a link for this module to be displayed in the main view.
-   *@return ['batchmake' => [ link to batchmake module, module icon image path]]
+   * @return ['batchmake' => [ link to batchmake module, module icon image path]]
    */
   public function getLeftLink()
     {
     $fc = Zend_Controller_Front::getInstance();
     $baseURL = $fc->getBaseUrl();
     $moduleWebroot = $baseURL . '/' . MIDAS_BATCHMAKE_MODULE;
-    return array(ucfirst(MIDAS_BATCHMAKE_MODULE) => array($moduleWebroot . '/index',  $baseURL . '/modules/batchmake/public/images/cmake.png'));
+    return array(ucfirst(MIDAS_BATCHMAKE_MODULE) => array($moduleWebroot . '/index', $baseURL . '/modules/batchmake/public/images/cmake.png'));
     }
-
-  } //end class
-
-
-?>
+  }

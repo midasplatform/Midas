@@ -18,11 +18,9 @@
  limitations under the License.
 =========================================================================*/
 
+/** Job log DAO for the scheduler module */
 class Scheduler_JobLogDao extends Scheduler_AppDao
   {
-    public $_model='JobLog';
-    public $_module='scheduler';
-    
-
+  public $_model = 'JobLog';
+  public $_module = 'scheduler';
   }
-?>

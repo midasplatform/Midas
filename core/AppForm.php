@@ -1,7 +1,7 @@
 <?php
 /*=========================================================================
  MIDAS Server
- Copyright (c) Kitware SAS. 20 rue de la Villette. 69328 Lyon, FRANCE
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
  All rights reserved.
  More information http://www.kitware.com
 
@@ -28,11 +28,10 @@ class AppForm
     $this->webroot = $fc->getBaseUrl();
     }//end construct
 
-
   /** translation  */
-  protected  function t($text)
+  protected function t($text)
     {
     Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
     return InternationalizationComponent::translate($text);
     }//en method t
-  }//end class
+  } // end class

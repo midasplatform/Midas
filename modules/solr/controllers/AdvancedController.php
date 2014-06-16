@@ -22,7 +22,7 @@
  * Controller for the Advanced Search feature
  */
 class Solr_AdvancedController extends Solr_AppController
-{
+  {
   public $_models = array('Item', 'Setting');
   public $_moduleForms = array('Config');
   public $_moduleComponents = array('Solr');
@@ -95,5 +95,4 @@ class Solr_AdvancedController extends Solr_AppController
       'displayOffset' => $displayOffset,
       'items' => $items));
     }
-
-}//end class
+  } // end class

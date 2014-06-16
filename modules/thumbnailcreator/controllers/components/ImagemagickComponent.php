@@ -21,7 +21,7 @@
 include_once BASE_PATH . '/library/KWUtils.php';
 /** Component used to create thumbnails using phMagick library (on top of ImageMagick) */
 class Thumbnailcreator_ImagemagickComponent extends AppComponent
-{
+  {
   /**
    * Create a 100x100 thumbnail from an item.
    * Echoes an error message if a problem occurs (for the scheduler log)
@@ -136,7 +136,6 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       case 'avi':
       case 'mov':
       case 'flv':
-      case 'mp4':
       case 'rm':
         // If this is a video, we have to have the file extension, so symlink it
         if(function_exists('symlink') && symlink($fullPath, $fullPath.'.'.$ext))
@@ -288,4 +287,4 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       }
     return array(false, 'No output from '.$cmd);
     }
-} // end class
+  } // end class

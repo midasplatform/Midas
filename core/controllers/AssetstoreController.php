@@ -24,7 +24,6 @@
  */
 class AssetstoreController extends AppController
   {
-
   public $_models = array('Assetstore', 'Bitstream', 'Progress', 'Setting');
   public $_daos = array('Assetstore');
   public $_components = array('Utility');
@@ -45,9 +44,7 @@ class AssetstoreController extends AppController
    */
   function indexAction()
     {
-
     }// end indexAction
-
 
   /** change default assetstore*/
   function defaultassetstoreAction()
@@ -69,7 +66,6 @@ class AssetstoreController extends AppController
       }
     echo JsonComponent::encode(array(false, $this->t('Error')));
     }//defaultassetstoreAction
-
 
   /** delete an assetstore */
   function deleteAction()
@@ -262,5 +258,4 @@ class AssetstoreController extends AppController
 
     echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Bitstreams moved'));
     }
-} // end class
-
+  } // end class

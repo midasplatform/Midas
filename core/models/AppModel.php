@@ -18,11 +18,9 @@
  limitations under the License.
 =========================================================================*/
 
-
 /**
  *
  */
 class AppModel extends MIDASModel
-{
-}
-?>
+  {
+  }

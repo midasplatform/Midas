@@ -19,7 +19,7 @@
 =========================================================================*/
 /** Form for configuring the statistics module */
 class Statistics_ConfigForm extends AppForm
-{
+  {
   /** create  form */
   public function createConfigForm()
     {
@@ -40,6 +40,4 @@ class Statistics_ConfigForm extends AppForm
     $form->addElements(array($report, $piwikapikey, $piwik, $piwikid, $ipinfodbapikey, $submit));
     return $form;
     }
-
-} // end class
-?>
+  } // end class

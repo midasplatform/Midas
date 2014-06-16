@@ -16,9 +16,9 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gbase
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Gbase.php 20096 2010-01-06 02:05:09Z bkarwin $
+ * @version    $Id: Gbase.php 24594 2012-01-05 21:27:01Z matthew $
  */
 
 /**
@@ -54,7 +54,7 @@
  * @category   Zend
  * @package    Zend_Gdata
  * @subpackage Gbase
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Gbase extends Zend_Gdata
@@ -63,12 +63,12 @@ class Zend_Gdata_Gbase extends Zend_Gdata
     /**
      * Path to the customer items feeds on the Google Base server.
      */
-    const GBASE_ITEM_FEED_URI = 'http://www.google.com/base/feeds/items';
+    const GBASE_ITEM_FEED_URI = 'https://www.google.com/base/feeds/items';
 
     /**
      * Path to the snippets feeds on the Google Base server.
      */
-    const GBASE_SNIPPET_FEED_URI = 'http://www.google.com/base/feeds/snippets';
+    const GBASE_SNIPPET_FEED_URI = 'https://www.google.com/base/feeds/snippets';
 
     /**
      * Authentication service name for Google Base

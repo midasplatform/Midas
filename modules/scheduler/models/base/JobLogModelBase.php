@@ -18,9 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
-/** Base class for the job log model */
+/** Job base model class for the scheduler module */
 class Scheduler_JobLogModelBase extends Scheduler_AppModel
-{
+  {
+  /** constructor */
   public function __construct()
     {
     parent::__construct();
@@ -33,11 +34,10 @@ class Scheduler_JobLogModelBase extends Scheduler_AppModel
       'job_id' => array('type' => MIDAS_DATA),
       'date' => array('type' => MIDAS_DATA),
       'log' => array('type' => MIDAS_DATA),
-      'job' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Job','module' => 'scheduler', 'parent_column' => 'job_id', 'child_column' => 'job_id')
+      'job' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Job', 'module' => 'scheduler', 'parent_column' => 'job_id', 'child_column' => 'job_id')
       );
     $this->initialize(); // required
     } // end __construct()
-
 
   /** save logs */
   public function saveLog($jobDao, $text)
@@ -49,5 +49,4 @@ class Scheduler_JobLogModelBase extends Scheduler_AppModel
 
     $this->save($joblog);
     }
-} // end class JobLogModelBase
-?>
+  } // end class

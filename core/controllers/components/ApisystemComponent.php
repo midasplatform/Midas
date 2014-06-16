@@ -66,7 +66,6 @@ class ApisystemComponent extends AppComponent
       $data[$resource] = $apiroot . $resource;
       }
     return array('resources' => $data);
-
     }
 
   /**
@@ -640,5 +639,4 @@ class ApisystemComponent extends AppComponent
       MidasLoader::loadModel($model)->removeOrphans();
       }
     }
-
   } // end class

@@ -14,9 +14,9 @@
  *
  * @category   Zend
  * @package    Zend_Validate
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Abstract.php 23356 2010-11-18 15:59:10Z ralph $
+ * @version    $Id: Abstract.php 24594 2012-01-05 21:27:01Z matthew $
  */
 
 /**
@@ -30,7 +30,7 @@
  * @category   Zend
  * @package    Zend_Validate
  * @uses       Zend_Validate_Abstract
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_Validate_Db_Abstract extends Zend_Validate_Abstract
@@ -276,7 +276,7 @@ abstract class Zend_Validate_Db_Abstract extends Zend_Validate_Abstract
 
     /**
      * Sets the select object to be used by the validator
-     * 
+     *
      * @param Zend_Db_Select $select
      * @return Zend_Validate_Db_Abstract
      */
@@ -340,12 +340,12 @@ abstract class Zend_Validate_Db_Abstract extends Zend_Validate_Abstract
         /**
          * Run query
          */
-  
         $result = $select->getAdapter()->fetchRow(
             $select,
             array('value' => $value), // this should work whether db supports positional or named params
             Zend_Db::FETCH_ASSOC
             );
+
         return $result;
     }
 }

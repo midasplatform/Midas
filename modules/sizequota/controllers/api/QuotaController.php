@@ -21,10 +21,8 @@
 /**
  *  WebApi controller for Quota Resource (in sizequota module)
  */
-
 class Apisizequota_QuotaController extends ApiController
-{
-
+  {
   /**
    * The index action handles index/list requests; it should respond with a
    * list of the requested resources.
@@ -69,7 +67,6 @@ class Apisizequota_QuotaController extends ApiController
     $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'post', $apiFunctions, 'sizequota');
     }
 
-
   /**
    * The options action handles OPTIONS requests; it should respond with
    * the HTTP methods that the server supports for specified URL.
@@ -78,5 +75,4 @@ class Apisizequota_QuotaController extends ApiController
     {
     $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET, POST');
     }
-
-}
+  }

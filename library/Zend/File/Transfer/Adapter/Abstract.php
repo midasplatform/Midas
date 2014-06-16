@@ -14,9 +14,9 @@
  *
  * @category  Zend
  * @package   Zend_File_Transfer
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
- * @version   $Id: Abstract.php 22371 2010-06-04 20:09:44Z thomas $
+ * @version   $Id: Abstract.php 24594 2012-01-05 21:27:01Z matthew $
  */
 
 /**
@@ -24,7 +24,7 @@
  *
  * @category  Zend
  * @package   Zend_File_Transfer
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_File_Transfer_Adapter_Abstract
@@ -946,7 +946,7 @@ abstract class Zend_File_Transfer_Adapter_Abstract
         $result    = array();
         $directory = "";
         foreach($files as $file) {
-            if (empty($this->_files[$file]['name']) && $this->_files[$file]['name'] !== '0') {
+            if (empty($this->_files[$file]['name'])) {
                 continue;
             }
 

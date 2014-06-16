@@ -18,9 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
+/** Base model class for the remoteprocessing module */
 class Remoteprocessing_AppModel extends MIDASModel
-{
-  public $moduleName='remoteprocessing';
-
-}
-?>
+  {
+  public $moduleName = 'remoteprocessing';
+  }

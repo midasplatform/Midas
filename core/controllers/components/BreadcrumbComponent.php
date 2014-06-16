@@ -22,7 +22,7 @@
  * Use this component to generate consistent breadcrumb bars for Midas
  */
 class BreadcrumbComponent extends AppComponent
-{
+  {
   /**
    * Build a breadcrumb bar for the header and set it on the view provided
    * @param nodes An ordered list of nodes.  Each node must have a 'type' key whose value is
@@ -216,4 +216,4 @@ class BreadcrumbComponent extends AppComponent
     $str .= '</span></li>';
     return $str;
     }
-} // end class
+  } // end class

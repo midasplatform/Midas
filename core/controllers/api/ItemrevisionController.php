@@ -22,8 +22,7 @@
  *  WebApi Controller for ItemRevision Resource
  */
 class Rest_ItemrevisionController extends ApiController
-{
-
+  {
   /**
    * The head action handles HEAD requests; it should respond with an
    * identical response to the one that would correspond to a GET request,
@@ -55,5 +54,4 @@ class Rest_ItemrevisionController extends ApiController
     {
     $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET');
     }
-
   } // end of class

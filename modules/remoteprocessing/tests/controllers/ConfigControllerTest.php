@@ -54,6 +54,6 @@ class ConfigControllerTest extends ControllerTestCase
       }
     $applicationConfig = parse_ini_file(BASE_PATH."/core/configs/remoteprocessing.local.ini", true);
 
-    $this->assertEquals($securityKey,  $applicationConfig['global']['securitykey']);
+    $this->assertEquals($securityKey, $applicationConfig['global']['securitykey']);
     }
   }

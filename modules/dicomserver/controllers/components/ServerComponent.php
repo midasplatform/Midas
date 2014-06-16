@@ -1,24 +1,33 @@
 <?php
 /*=========================================================================
-MIDAS Server
-Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
-69328 Lyon, FRANCE.
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
+
 include_once BASE_PATH . '/library/KWUtils.php';
+
 /** Uploade dicom files */
 class Dicomserver_ServerComponent extends AppComponent
-{
-
+  {
   /**
    * Verify that DICOM server is setup properly
    */
   public function isDICOMServerWorking()
-  {
+    {
     $ret = array();
     $modulesConfig = Zend_Registry::get('configsModules');
     $dcm2xmlCommand = $modulesConfig['dicomserver']->dcm2xml;
@@ -33,14 +42,14 @@ class Dicomserver_ServerComponent extends AppComponent
                                                    'dcmqrscp');
     $ret['dcmqridx'] = $kwdicomextractorComponent->getApplicationStatus($dcmqridxCommand,
                                                    'dcmqridx');
-    $receptionDir= $modulesConfig['dicomserver']->receptiondir;
-    if (empty($receptionDir))
+    $receptionDir = $modulesConfig['dicomserver']->receptiondir;
+    if(empty($receptionDir))
       {
       $receptionDir = $this->getDefaultReceptionDir();
       }
     $ret['Reception Directory Writable'] = array(is_writable($receptionDir));
     $peer_aes = $modulesConfig['dicomserver']->peer_aes;
-    if (!empty($peer_aes) && strpos($peer_aes, '(') !== FALSE && strpos($peer_aes, ')') !== FALSE)
+    if(!empty($peer_aes) && strpos($peer_aes, '(') !== false && strpos($peer_aes, ')') !== false)
       {
       $ret['Peer AE List Not Empty'] = array(true, "At least one peer AE is given");
       }
@@ -49,22 +58,22 @@ class Dicomserver_ServerComponent extends AppComponent
       $ret['Peer AE List Not Empty'] = array(false, "Please input your peer AEs!");
       }
     $apiComponent = MidasLoader::loadComponent('Api', 'dicomserver');
-    $status_args['storescp_cmd']= $storescpCommand;
-    $status_args['dcmqrscp_cmd']= $dcmqrscpCommand;
+    $status_args['storescp_cmd'] = $storescpCommand;
+    $status_args['dcmqrscp_cmd'] = $dcmqrscpCommand;
     $status_results = $apiComponent->status($status_args);
-    if ($status_results['status'] == MIDAS_DICOM_STORESCP_IS_RUNNING + MIDAS_DICOM_DCMQRSCP_IS_RUNNING)
+    if($status_results['status'] == MIDAS_DICOM_STORESCP_IS_RUNNING + MIDAS_DICOM_DCMQRSCP_IS_RUNNING)
       {
       $ret['Status'] = array(true, "DICOM Server is running");
       }
-    else if ($status_results['status'] == MIDAS_DICOM_STORESCP_IS_RUNNING)
+    else if($status_results['status'] == MIDAS_DICOM_STORESCP_IS_RUNNING)
       {
       $ret['Status'] = array(false, 'DICOM C-STORE receiver is running, but DICOM Query/Retrieve service are NOT running');
       }
-    else if ($status_results['status'] == MIDAS_DICOM_DCMQRSCP_IS_RUNNING)
+    else if($status_results['status'] == MIDAS_DICOM_DCMQRSCP_IS_RUNNING)
       {
       $ret['Status'] = array(false, 'DICOM Query/Retrieve services are running, but DICOM C-STORE receiver is NOT running');
       }
-    else if ($status_results['status'] == MIDAS_DICOM_SERVER_NOT_RUNNING)
+    else if($status_results['status'] == MIDAS_DICOM_SERVER_NOT_RUNNING)
       {
       $ret['Status'] = array(false, "DICOM Server is not running");
       }
@@ -74,13 +83,13 @@ class Dicomserver_ServerComponent extends AppComponent
       }
 
     return $ret;
-  }
+    }
 
   /**
    * Get default reception directory
    */
   public function getDefaultReceptionDir()
-  {
+    {
     $utilityComponent = MidasLoader::loadComponent('Utility');
     $default_reception_dir = $utilityComponent->getTempDirectory('');
     if(substr($default_reception_dir, -1) == '/')
@@ -94,7 +103,7 @@ class Dicomserver_ServerComponent extends AppComponent
       }
 
     return $default_reception_dir;
-  }
+    }
 
   /**
    * Generate the configuaration file used for dcmqrscp
@@ -126,7 +135,6 @@ class Dicomserver_ServerComponent extends AppComponent
     file_put_contents($cfg_file, $cfg_file_content);
     }
 
-
   /**
    * Register DICOM image files (bistreams)
    */
@@ -139,7 +147,7 @@ class Dicomserver_ServerComponent extends AppComponent
       }
     $modulesConfig = Zend_Registry::get('configsModules');
     $command = $modulesConfig['dicomserver']->dcmqridx;
-    $command = str_replace("'", '',$command);
+    $command = str_replace("'", '', $command);
     $command_params = array();
     $reciptionDir = $modulesConfig['dicomserver']->receptiondir;
     if(!is_writable($reciptionDir))
@@ -170,5 +178,4 @@ class Dicomserver_ServerComponent extends AppComponent
       $registrationModel->createRegistration($itemId);
       }
     }
-
-} // end class
+  } // end class

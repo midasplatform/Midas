@@ -22,7 +22,7 @@
  *  MIDASUpgrade
  */
 class MIDASUpgrade
-{
+  {
   protected $db;
   protected $dbtype;
 
@@ -45,27 +45,22 @@ class MIDASUpgrade
   /** preUpgrade called before the upgrade*/
   public function preUpgrade()
     {
-
     }
 
   /** calls if mysql enable*/
   public function mysql()
     {
-
     }
 
   /** called is pgsql enabled*/
   public function pgsql()
     {
-
     }
 
   /** called after the upgrade*/
   public function postUpgrade()
     {
-
     }
-
 
   /**
    * @method public  loadElements()
@@ -77,7 +72,7 @@ class MIDASUpgrade
       {
       MidasLoader::loadModels($this->_moduleModels, $this->moduleName);
       $modelsArray = Zend_Registry::get('models');
-      foreach($this->_moduleModels as  $value)
+      foreach($this->_moduleModels as $value)
         {
         if(isset($modelsArray[$this->moduleName.$value]))
           {
@@ -95,7 +90,7 @@ class MIDASUpgrade
           {
           include_once (BASE_PATH . "/modules/".$this->moduleName."/models/dao/".$dao."Dao.php");
           }
-        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php"))
+        else if(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php"))
           {
           include_once (BASE_PATH . "/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php");
           }
@@ -115,7 +110,7 @@ class MIDASUpgrade
           {
           include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/components/".$component."Component.php");
           }
-        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php"))
+        else if(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php"))
           {
           include_once (BASE_PATH . "/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php");
           }
@@ -141,7 +136,7 @@ class MIDASUpgrade
           {
           include_once (BASE_PATH . "/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
           }
-        elseif(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php"))
+        else if(file_exists(BASE_PATH . "/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php"))
           {
           include_once (BASE_PATH . "/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php");
           }
@@ -216,7 +211,6 @@ class MIDASUpgrade
         }
       }
     }//end loadElements
-
 
   /**
    * @method public AddTableField()
@@ -375,6 +369,4 @@ class MIDASUpgrade
       $this->db->query("ALTER TABLE ".$table." DROP PRIMARY KEY");
       }
     }
-
-} //end class MIDASUpgrade
-?>
+  } // end class

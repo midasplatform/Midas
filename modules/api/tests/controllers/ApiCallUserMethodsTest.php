@@ -76,7 +76,6 @@ class ApiCallUserMethodsTest extends ApiCallMethodsTest
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
 
-
     $this->assertEquals($resp->data->apikey, $apiKey);
     }
 
@@ -146,5 +145,4 @@ class ApiCallUserMethodsTest extends ApiCallMethodsTest
     $usersFile = $this->loadData('User', 'default');
     $this->assertEquals(count($resp->data), count($usersFile));
     }
-
   }

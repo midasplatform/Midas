@@ -20,7 +20,7 @@
 
 /** Api controller for /rest */
 class Api_RestController extends Api_AppController
-{
+  {
 
   /** Before filter */
   function preDispatch()
@@ -29,4 +29,3 @@ class Api_RestController extends Api_AppController
     parent::preDispatch();
     }
   } // end class
-?>

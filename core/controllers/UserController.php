@@ -546,7 +546,6 @@ class UserController extends AppController
       }
     } // end method login
 
-
   /** Term of service */
   public function termofserviceAction()
     {
@@ -555,7 +554,6 @@ class UserController extends AppController
       $this->_helper->layout->disableLayout();
       }
     } // end term of service
-
 
   /**
    * Test whether a given user already exists or not.
@@ -993,7 +991,7 @@ class UserController extends AppController
       $this->_helper->viewRenderer->setNoRender();
       return false;
       }
-    elseif(!isset($user_id))
+    else if(!isset($user_id))
       {
       $userDao = $this->userSession->Dao;
       $this->view->activemenu = 'myprofile'; // set the active menu
@@ -1081,7 +1079,7 @@ class UserController extends AppController
       $this->_helper->viewRenderer->setNoRender();
       return false;
       }
-    elseif(!isset($userId))
+    else if(!isset($userId))
       {
       $userDao = $this->userSession->Dao;
       $this->view->activemenu = 'user'; // set the active menu
@@ -1284,4 +1282,4 @@ class UserController extends AppController
     $this->getLogger()->info('User '.$name.' successfully deleted');
     echo JsonComponent::encode(array(true, 'User '.$name.' successfully deleted'));
     }
-  }//end class
+  } // end class

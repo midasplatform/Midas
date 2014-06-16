@@ -20,7 +20,7 @@
 
 /** Metadata Model Base */
 abstract class MetadataModelBase extends AppModel
-{
+  {
   /** Constructor*/
   public function __construct()
     {
@@ -45,7 +45,7 @@ abstract class MetadataModelBase extends AppModel
 
   abstract function getMetadata($type, $element, $qualifier);
   abstract function getAllMetadata();
-  protected abstract function saveMetadataValue($metadataDao);
+  abstract protected function saveMetadataValue($metadataDao);
   abstract function getMetadataValueExists($metadataDao);
 
   /** Add a metadata
@@ -160,4 +160,4 @@ abstract class MetadataModelBase extends AppModel
         throw new Zend_Exception('Invalid metadata type string passed');
       }
     }
-} // end class MetadataModelBase
+  } // end class

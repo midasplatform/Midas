@@ -20,7 +20,7 @@
 
 /** Configure controller for archive module */
 class Archive_ConfigController extends Archive_AppController
-{
+  {
   public $_models = array('Setting');
 
   /** Admin config page */
@@ -48,4 +48,4 @@ class Archive_ConfigController extends Archive_AppController
     $this->Setting->setConfig('unzipCommand', $unzipCmd, $this->moduleName);
     echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Changes saved'));
     }
-}//end class
+  } // end class

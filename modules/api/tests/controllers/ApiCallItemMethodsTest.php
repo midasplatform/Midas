@@ -177,7 +177,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->assertEquals($resp->data->owningfolders[0]->folder_id, '1013');
     }
 
-
   /** Test file upload */
   public function testBitstreamUpload()
     {
@@ -312,7 +311,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->assertEquals($bitstreams[0]->name, 'test.txt');
     $this->assertEquals($bitstreams[0]->sizebytes, $length);
     $this->assertEquals($bitstreams[0]->checksum, $md5);
-
 
     // 4
     // when calling midas.upload.perform 2x in a row with the same params
@@ -590,7 +588,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->_assertStatusFail($resp, MIDAS_INVALID_PARAMETER);
 
     // 15
-    // test upload.generatetoken passing in folderid, default of Public
+    // test upload.generatetoken passing in folderid
     $this->resetAll();
     $this->params['token'] = $this->_loginAsNormalUser();
     $this->params['method'] = 'midas.upload.generatetoken';
@@ -614,13 +612,12 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     // test that the properties of the item are as expected with defaults
     $this->assertEquals($itemDao->getName(), $filename, 'Expected a different name for generated item');
     $this->assertEquals($itemDao->getDescription(), '', 'Expected a different description for generated item');
-    $this->assertEquals($itemDao->getPrivacyStatus(), MIDAS_PRIVACY_PUBLIC, 'Expected a different privacy_status for generated item');
+    $this->assertEquals($itemDao->getPrivacyStatus(), MIDAS_PRIVACY_PRIVATE, 'Expected a different privacy_status for generated item');
     // delete the newly created item
     $this->Item->delete($itemDao);
 
     // 16
-    // test upload.generatetoken passing in folderid and setting optional values,
-    // with Private itemprivacy
+    // test upload.generatetoken passing in folderid and setting optional values
     $filename = 'test.txt';
     $description = 'generated item description';
     $itemname = 'generated item name';
@@ -629,7 +626,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params['method'] = 'midas.upload.generatetoken';
     $this->params['filename'] = $filename;
     $this->params['folderid'] = '1000';
-    $this->params['itemprivacy'] = 'Private';
+    $this->params['itemprivacy'] = 'Public';
     $this->params['itemdescription'] = $description;
     $this->params['itemname'] = $itemname;
     $resp = $this->_callJsonApi();
@@ -792,7 +789,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params['filename'] = $filename;
     $this->params['checksum'] = $md5;
     $this->params['folderid'] = '1000';
-    $this->params['itemprivacy'] = 'Public';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
     $token = $resp->data->token;
@@ -803,8 +799,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     // this at least allows us to test it
     $generatedItemId = $generatedItemId + 1;
     $itemDao = $this->Item->load($generatedItemId);
-    // ensure privacy status when passing Public explicitly
-    $this->assertEquals($itemDao->getPrivacyStatus(), MIDAS_PRIVACY_PUBLIC, 'Expected a different privacy_status for generated item');
+    $this->assertEquals($itemDao->getPrivacyStatus(), MIDAS_PRIVACY_PRIVATE, 'Expected a different privacy_status for generated item');
     $revisions = $itemDao->getRevisions();
     $this->assertEquals(count($revisions), 1, 'Wrong number of revisions in the item');
     $bitstreams = $revisions[0]->getBitstreams();
@@ -1383,7 +1378,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $metadata_mismatched = array(array('element' => $multiElement1, 'value' => $multiValue1),
                        array('element' => $multiElement2));
 
-
     // add multiple metadata to an invalid item, should be an error
     $this->_callSetmultiplemetadata("-1", $metadata, null, null, MIDAS_INVALID_POLICY);
 
@@ -1611,7 +1605,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
         }
       $this->assertTrue($found, "didn't find expected element ".$metadatum['element']);
       }
-
 
     // delete metadata from revision 1, should leave 1 metadata on that revision
     $this->_callDeletemetadata($generatedItemId, $element1, null, null, "1");

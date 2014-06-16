@@ -22,7 +22,7 @@ require_once BASE_PATH.'/modules/scheduler/models/base/JobModelBase.php';
 
 /** job model */
 class Scheduler_JobModel extends Scheduler_JobModelBase
-{
+  {
   /** get by tasks */
   public function getJobsByTask($task)
     {
@@ -93,7 +93,7 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
         }
       }
 
-   $sql = $this->database->select()
+    $sql = $this->database->select()
           ->setIntegrityCheck(false)
           ->where('priority >= ?', $minPriority)
           ->where('status = ?', SCHEDULER_JOB_STATUS_TORUN)
@@ -159,6 +159,4 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
     {
     $this->database->update(array('creator_id' => null), array('creator_id = ?' => $userId));
     }
-
-}  // end class
-?>
+  } // end class

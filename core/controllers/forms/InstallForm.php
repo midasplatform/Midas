@@ -20,7 +20,7 @@
 
 /** Install forms*/
 class InstallForm extends AppForm
-{
+  {
   /** create  form */
   public function createDBForm($type)
     {
@@ -130,11 +130,10 @@ class InstallForm extends AppForm
 
     $smartoptimizer = new Zend_Form_Element_Checkbox("smartoptimizer");
 
-
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit ->setLabel('Create configuration');
 
     $form->addElements(array($keywords, $description, $process, $timezone, $environment, $lang, $name, $smartoptimizer, $submit));
     return $form;
     }
-} // end class
+  } // end class

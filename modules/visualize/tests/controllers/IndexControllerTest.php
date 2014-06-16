@@ -18,7 +18,6 @@
  limitations under the License.
 =========================================================================*/
 
-
 /** index controller test*/
 class IndexControllerTest extends ControllerTestCase
   {

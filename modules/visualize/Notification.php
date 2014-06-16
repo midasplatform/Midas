@@ -99,4 +99,4 @@ class Visualize_Notification extends MIDAS_Notification
       }
     return $prefix.$_SERVER['SERVER_NAME'].$currentPort;
     }
-  } //end class
+  } // end class

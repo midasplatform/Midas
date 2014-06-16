@@ -20,7 +20,7 @@
 
 /** User forms*/
 class UserForm extends AppForm
-{
+  {
   /** create login form */
   public function createLoginForm()
     {
@@ -64,13 +64,11 @@ class UserForm extends AppForm
           ->setAttrib('id', 'registerForm')
           ->setAttrib('class', 'genericForm');
 
-
     $email = new Zend_Form_Element_Text('email');
     $email->setRequired(true)
           ->addValidator('NotEmpty', true)
           ->setAttrib('maxLength', 255)
           ->addValidator('EmailAddress');
-
 
     $firstname = new Zend_Form_Element_Text('firstname');
     $firstname
@@ -104,7 +102,6 @@ class UserForm extends AppForm
 
     return $form;
     }
-
 
   /** acount  form */
   public function createAccountForm($defaultValue = array())
@@ -206,4 +203,4 @@ class UserForm extends AppForm
 
     return $form;
     }
-} // end class
+  } // end class

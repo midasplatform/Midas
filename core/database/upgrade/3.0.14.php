@@ -19,9 +19,9 @@
 =========================================================================*/
 
 class Upgrade_3_0_14 extends MIDASUpgrade
-{ 
+  {
   public function preUpgrade()
-    {             
+    {
     // Insert common metadata
     $this->db->query("INSERT INTO metadata (metadatatype,element,qualifier,description) VALUES ('0','contributor','author','Author of the data')");
     $this->db->query("INSERT INTO metadata (metadatatype,element,qualifier,description) VALUES ('0','date','uploaded','Date when the data was uploaded')");
@@ -38,20 +38,16 @@ class Upgrade_3_0_14 extends MIDASUpgrade
     $this->db->query("INSERT INTO metadata (metadatatype,element,qualifier,description) VALUES ('0','subject','keyword','Keyword')");
     $this->db->query("INSERT INTO metadata (metadatatype,element,qualifier,description) VALUES ('0','subject','ocis','OCIS subject')");
     }
-    
+
   public function mysql()
     {
     }
 
-    
   public function pgsql()
     {
     }
-    
+
   public function postUpgrade()
     {
     }
-}
-?>
-
-
+  }

@@ -23,4 +23,3 @@ class Mfa_AppDao extends MIDAS_GlobalDao
   {
   public $moduleName = 'mfa';
   }
-?>

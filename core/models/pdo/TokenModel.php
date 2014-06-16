@@ -22,7 +22,7 @@ require_once BASE_PATH.'/core/models/base/TokenModelBase.php';
 
 /** Api Token model implementation */
 class TokenModel extends TokenModelBase
-{
+  {
   /** Remove all expired api tokens */
   function cleanExpired()
     {
@@ -34,5 +34,4 @@ class TokenModel extends TokenModelBase
       parent::delete($tmpDao);
       }
     }
-}
-?>
+  }

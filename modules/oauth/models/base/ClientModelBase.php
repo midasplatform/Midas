@@ -17,8 +17,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 abstract class Oauth_ClientModelBase extends Oauth_AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -39,7 +40,7 @@ abstract class Oauth_ClientModelBase extends Oauth_AppModel
     $this->initialize(); // required
     } // end __construct()
 
-  public abstract function getByUser($userDao);
+  abstract public function getByUser($userDao);
 
   /**
    * Create and return a new oauth client owned by the given user.
@@ -91,5 +92,4 @@ abstract class Oauth_ClientModelBase extends Oauth_AppModel
 
     parent::delete($clientDao);
     }
-}
-?>
+  }

@@ -33,8 +33,8 @@ class SortdaoComponent extends AppComponent
       throw new Zend_Exception("Error in field required by sortByDate.");
       }
 
-    $a_t = strtotime($a->$field );
-    $b_t = strtotime($b->$field );
+    $a_t = strtotime($a->$field);
+    $b_t = strtotime($b->$field);
 
     if($a_t == $b_t)
       {

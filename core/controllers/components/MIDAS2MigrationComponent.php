@@ -38,7 +38,7 @@ define("MIDAS2_POLICY_REMOVE", 4);
 
 /** Migration tool*/
 class MIDAS2MigrationComponent extends AppComponent
-{
+  {
   /** These variables should be set by the UI */
   var $midas2User = "midas";
   var $midas2Password = "midas";
@@ -374,7 +374,6 @@ class MIDAS2MigrationComponent extends AppComponent
       }
     } // end _createFolderForCollection()
 
-
   /** Recursive function to create the communities */
   private function _createFolderForCommunity($communityidMIDAS2, $parentFolderid)
     {
@@ -469,7 +468,6 @@ class MIDAS2MigrationComponent extends AppComponent
     {
     $this->userId = $userid;
 
-
     // Check that we are in development mode
     if(Zend_Registry::get('configGlobal')->environment != 'development')
       {
@@ -536,7 +534,7 @@ class MIDAS2MigrationComponent extends AppComponent
           {
           $privacy = MIDAS_COMMUNITY_PUBLIC;
           }
-        $communityDao = $Community->createCommunity($name, $short_description, $privacy, NULL); // no user
+        $communityDao = $Community->createCommunity($name, $short_description, $privacy, null); // no user
 
         // Add the users to the community
         // MIDAS2 was not using the group heavily so we ignore them. This would have to be a manual step
@@ -593,5 +591,4 @@ class MIDAS2MigrationComponent extends AppComponent
     // Close the database connection
     pg_close($pgdb);
     } // end function migrate()
-
-} // end class
+  } // end class

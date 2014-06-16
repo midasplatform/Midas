@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** Error management*/
-class NotifyErrorComponent  extends AppComponent
+class NotifyErrorComponent extends AppComponent
   {
   protected $_environment;
   protected $_mailer;
@@ -30,7 +30,6 @@ class NotifyErrorComponent  extends AppComponent
   /** Constructor */
   public function __construct()
     {
-
     }
 
   /** Init*/
@@ -63,27 +62,27 @@ class NotifyErrorComponent  extends AppComponent
             {
             $e['typeText'] = 'E_NOTICE';
             }
-          elseif($e['type'] == E_ERROR )
+          else if($e['type'] == E_ERROR )
             {
             $e['typeText'] = 'E_ERROR';
             }
-          elseif($e['type'] == 4 )
+          else if($e['type'] == 4 )
             {
             $e['typeText'] = '4';
             }
-          elseif($e['type'] == E_WARNING )
+          else if($e['type'] == E_WARNING )
             {
             $e['typeText'] = 'E_WARNING';
             }
-          elseif($e['type'] == E_PARSE)
+          else if($e['type'] == E_PARSE)
             {
             $e['typeText '] = 'E_PARSE';
             }
-          elseif($e['type'] == E_RECOVERABLE_ERROR)
+          else if($e['type'] == E_RECOVERABLE_ERROR)
             {
             $e['typeText '] = 'E_RECOVERABLE_ERROR';
             }
-          elseif($e['type'] == E_COMPILE_ERROR)
+          else if($e['type'] == E_COMPILE_ERROR)
             {
             $e['typeText '] = 'E_COMPILE_ERROR';
             }
@@ -106,27 +105,27 @@ class NotifyErrorComponent  extends AppComponent
             {
             $e['typeText'] = 'E_NOTICE';
             }
-          elseif($e['type'] == E_ERROR )
+          else if($e['type'] == E_ERROR )
             {
             $e['typeText'] = 'E_ERROR';
             }
-          elseif($e['type'] == 4 )
+          else if($e['type'] == 4 )
             {
             $e['typeText'] = '4';
             }
-          elseif($e['type'] == E_WARNING )
+          else if($e['type'] == E_WARNING )
             {
             $e['typeText'] = 'E_WARNING';
             }
-          elseif($e['type'] == E_PARSE)
+          else if($e['type'] == E_PARSE)
             {
             $e['typeText '] = 'E_PARSE';
             }
-          elseif($e['type'] == E_RECOVERABLE_ERROR)
+          else if($e['type'] == E_RECOVERABLE_ERROR)
             {
             $e['typeText '] = 'E_RECOVERABLE_ERROR';
             }
-          elseif($e['type'] == E_COMPILE_ERROR)
+          else if($e['type'] == E_COMPILE_ERROR)
             {
             $e['typeText '] = 'E_COMPILE_ERROR';
             }
@@ -318,5 +317,4 @@ class NotifyErrorComponent  extends AppComponent
       }
     return $message;
     }
-
   }

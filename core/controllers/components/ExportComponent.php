@@ -30,8 +30,7 @@ require_once BASE_PATH.'/library/KWUtils.php';
  */
 
 class ExportComponent extends AppComponent
-{
-
+  {
   /**
    * Helper function to create a directory for an item
    *
@@ -186,9 +185,7 @@ class ExportComponent extends AppComponent
               }
             } // end foreach($bitstreams as $bitstream)
           } // end if(!empty($bitstreams))
-        } // end foreach ($revisions ...
+        } // end foreach($revisions ...
       }
     } // end function exportBitstreams
-
-} // end class ExportComponent
-?>
+  } // end class

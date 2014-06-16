@@ -19,12 +19,11 @@
 =========================================================================*/
 
 class Upgrade_3_0_6 extends MIDASUpgrade
-{ 
+  {
   public function preUpgrade()
     {
-    
     }
-    
+
   public function mysql()
     {
     $sql = "ALTER TABLE community MODIFY admingroup_id bigint(20) NULL DEFAULT NULL;  ";
@@ -33,7 +32,6 @@ class Upgrade_3_0_6 extends MIDASUpgrade
     $this->db->query($sql);
     }
 
-    
   public function pgsql()
     {
     $sql = "ALTER TABLE community ALTER COLUMN admingroup_id DROP NOT NULL; ; ";
@@ -41,11 +39,8 @@ class Upgrade_3_0_6 extends MIDASUpgrade
     $sql = "ALTER TABLE community ALTER COLUMN membergroup_id DROP NOT NULL; ; ";
     $this->db->query($sql);
     }
-    
+
   public function postUpgrade()
     {
-    
     }
-}
-?>
-
+  }

@@ -21,7 +21,7 @@
 /** Json Component */
 class JsonComponent extends AppComponent
   {
-  static private $_instance = null;
+  private static $_instance = null;
 
   /** Constructor */
   function __construct()
@@ -29,7 +29,7 @@ class JsonComponent extends AppComponent
     }
 
   /** Instance */
-  static public function getInstance()
+  public static function getInstance()
     {
     if(!self::$_instance instanceof self)
       {
@@ -46,7 +46,7 @@ class JsonComponent extends AppComponent
    * @param boolean
    * @return mixed
    */
-  static public function decode($encodedValue, $objectDecodeType = true)
+  public static function decode($encodedValue, $objectDecodeType = true)
     {
     $char = substr($encodedValue, 0, 1);
     $isValue = false;
@@ -72,14 +72,13 @@ class JsonComponent extends AppComponent
     return $tab;
     }
 
-
   /**
    * Encode the mixed $valueToEncode into the JSON format
    *
    * @param mixed $valueToEncode
    * @return string JSON encoded object
    */
-  static public function encode($valueToEncode)
+  public static function encode($valueToEncode)
     {
     if(!is_array($valueToEncode))
       {
@@ -134,4 +133,4 @@ class JsonComponent extends AppComponent
       $array = utf8_decode($array);
       }
     }
-}
+  }

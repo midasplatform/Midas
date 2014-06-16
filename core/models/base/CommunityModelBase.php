@@ -20,7 +20,7 @@
 
 /** Community Model Base*/
 abstract class CommunityModelBase extends AppModel
-{
+  {
   /** constructor */
   public function __construct()
     {
@@ -163,7 +163,7 @@ abstract class CommunityModelBase extends AppModel
     $communityDao->setMembergroupId($memberGroup->getKey());
     $this->save($communityDao);
 
-    if($user != NULL)
+    if($user != null)
       {
       $groupModel->addUser($adminGroup, $user);
       $groupModel->addUser($memberGroup, $user);
@@ -190,14 +190,13 @@ abstract class CommunityModelBase extends AppModel
       $folderpolicygroupModel->createPolicy($moderatorsGroup, $folderPublic, MIDAS_POLICY_WRITE);
       $folderpolicygroupModel->createPolicy($memberGroup, $folderPublic, MIDAS_POLICY_READ);
       $folderpolicygroupModel->createPolicy($anonymousGroup, $folderPublic, MIDAS_POLICY_READ);
-      if($user != NULL)
+      if($user != null)
         {
         $feedpolicygroupModel->createPolicy($anonymousGroup, $feed, MIDAS_POLICY_READ);
         }
       }
     return $communityDao;
     } // end createCommunity()
-
 
   /** Delete a community */
   function delete($communityDao)
@@ -237,7 +236,6 @@ abstract class CommunityModelBase extends AppModel
     unset($communityDao->community_id);
     $communityDao->saved = false;
     }//end delete
-
 
   /** check ifthe policy is valid
   *
@@ -360,7 +358,6 @@ abstract class CommunityModelBase extends AppModel
     return $folderModel->countBitstreams($folderDao, $userDao);
     } //end countBitstreams
 
-
   /**
    * set the privacy on the passed in Community to the passed in privacyCode,
    * which should be one of MIDAS_COMMUNITY_PUBLIC, MIDAS_COMMUNITY_PRIVATE.
@@ -409,5 +406,4 @@ abstract class CommunityModelBase extends AppModel
     $communityDao->setPrivacy($privacyCode);
     $this->save($communityDao);
     }
-
-} // end class CommunityModelBase
+  } // end class

@@ -25,7 +25,7 @@ require_once BASE_PATH.'/core/models/base/CommunityModelBase.php';
  *  Pdo Model
  */
 class CommunityModel extends CommunityModelBase
-{
+  {
   /** get by uuid*/
   function getByUuid($uuid)
     {
@@ -178,5 +178,4 @@ class CommunityModel extends CommunityModelBase
       }
     return $return;
     } // end getCommunitiesFromSearch()
-
-}// end class
+  } // end class

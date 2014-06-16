@@ -98,7 +98,7 @@ class AppController extends MIDAS_GlobalController
         $user->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
         }
 
-      if($user->Dao == null)
+      if($user->Dao == null && $fc->getRequest()->getControllerName() != 'install')
         {
         $userModel = MidasLoader::loadModel('User');
         $cookieData = $this->getRequest()->getCookie('midasUtil');
@@ -668,4 +668,4 @@ class AppController extends MIDAS_GlobalController
   var $Setting;
 
   /**end completion eclipse */
-  }//end class
+  } // end class

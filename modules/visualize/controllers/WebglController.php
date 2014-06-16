@@ -20,7 +20,7 @@
 
 /** Webgl controller*/
 class Visualize_WebglController extends Visualize_AppController
-{
+  {
   public $_moduleForms = array('Config');
   public $_components = array('Utility', 'Date');
   public $_models = array('Item', 'Folder');
@@ -111,4 +111,4 @@ class Visualize_WebglController extends Visualize_AppController
     $color .= (strlen($b) < 2 ? '0' : '').$b;
     return $color;
     }
-}//end class
+  } // end class

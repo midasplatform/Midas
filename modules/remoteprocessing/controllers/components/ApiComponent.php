@@ -20,7 +20,7 @@
 require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 /** Component for api methods */
 class Remoteprocessing_ApiComponent extends AppComponent
-{
+  {
   /**
    * Register a server
    * @param email (Optional)
@@ -289,7 +289,6 @@ class Remoteprocessing_ApiComponent extends AppComponent
     return array();
     }
 
-
   /** recursively delete a folder*/
   private function _rrmdir($dir)
     {
@@ -315,9 +314,4 @@ class Remoteprocessing_ApiComponent extends AppComponent
     reset($objects);
     rmdir($dir);
     }
-
-} // end class
-
-
-
-
+  } // end class

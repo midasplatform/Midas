@@ -26,4 +26,3 @@ class ItemRevisionDao extends AppDao
   {
   public $_model = 'ItemRevision';
   }
-?>

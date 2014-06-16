@@ -22,4 +22,3 @@ class UserapiDao extends AppDao
   {
   public $_model = 'Userapi';
   }
-?>

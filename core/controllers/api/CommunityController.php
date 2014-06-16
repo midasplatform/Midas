@@ -22,8 +22,7 @@
  *  WebApi Controller for Community Resource
  */
 class Rest_CommunityController extends ApiController
-{
-
+  {
   /**
    * The index action handles index/list requests; it should respond with a
    * list of the requested resources.
@@ -89,5 +88,4 @@ class Rest_CommunityController extends ApiController
     {
     $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET, POST, DELETE');
     }
-
-}
+  }

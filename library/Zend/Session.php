@@ -15,9 +15,9 @@
  *
  * @category   Zend
  * @package    Zend_Session
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Session.php 22587 2010-07-16 20:14:18Z ralph $
+ * @version    $Id: Session.php 24594 2012-01-05 21:27:01Z matthew $
  * @since      Preview Release 0.2
  */
 
@@ -43,7 +43,7 @@
  *
  * @category   Zend
  * @package    Zend_Session
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Session extends Zend_Session_Abstract
@@ -308,24 +308,13 @@ class Zend_Session extends Zend_Session_Abstract
                 "() before any output has been sent to the browser; output started in {$filename}/{$linenum}");
         }
 
-        if (self::$_sessionStarted && self::$_regenerateIdState <= 0) {
+        if ( !self::$_sessionStarted ) {
+            self::$_regenerateIdState = -1;
+        } else {
             if (!self::$_unitTestEnabled) {
                 session_regenerate_id(true);
             }
             self::$_regenerateIdState = 1;
-        } else {
-            /**
-             * @todo If we can detect that this requester had no session previously,
-             *       then why regenerate the id before the session has started?
-             *       Feedback wanted for:
-             //
-            if (isset($_COOKIE[session_name()]) || (!use only cookies && isset($_REQUEST[session_name()]))) {
-                self::$_regenerateIdState = 1;
-            } else {
-                self::$_regenerateIdState = -1;
-            }
-            //*/
-            self::$_regenerateIdState = -1;
         }
     }
 
@@ -335,7 +324,7 @@ class Zend_Session extends Zend_Session_Abstract
      * seconds is specified, then this defaults to self::$_rememberMeSeconds.  Due to clock errors on end users' systems,
      * large values are recommended to avoid undesirable expiration of session cookies.
      *
-     * @param $seconds integer - OPTIONAL specifies TTL for cookie in seconds from present time
+     * @param int $seconds OPTIONAL specifies TTL for cookie in seconds from present time
      * @return void
      */
     public static function rememberMe($seconds = null)
@@ -374,6 +363,7 @@ class Zend_Session extends Zend_Session_Abstract
         }
 
         $cookieParams = session_get_cookie_params();
+
         session_set_cookie_params(
             $seconds,
             $cookieParams['path'],
@@ -571,13 +561,13 @@ class Zend_Session extends Zend_Session_Abstract
                         }
                     }
                     if (empty($_SESSION['__ZF'][$namespace]['ENVGH'])) {
-                        unset($_SESSION['__ZF'][$namespace]['ENVGH']);    
+                        unset($_SESSION['__ZF'][$namespace]['ENVGH']);
                     }
                 }
-            }
 
-            if (isset($namespace) && empty($_SESSION['__ZF'][$namespace])) {
-                unset($_SESSION['__ZF'][$namespace]);
+                if (isset($namespace) && empty($_SESSION['__ZF'][$namespace])) {
+                    unset($_SESSION['__ZF'][$namespace]);
+                }
             }
         }
 

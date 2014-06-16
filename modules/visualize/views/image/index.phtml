@@ -1,4 +1,4 @@
-<?php  
+<?php
 /*=========================================================================
 MIDAS Server
 Copyright (c) Kitware SAS. 20 rue de la Villette. All rights reserved.
@@ -18,7 +18,7 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/image/image.i
 $this->headScript()->appendFile($this->moduleWebroot . '/public/js/jquery/iviewer/jquery.iviewer.min.js');
 $this->headScript()->appendFile($this->moduleWebroot . '/public/js/jquery/iviewer/jquery.mousewheel.min.js');
 ?>
-<style> 
+<style>
     .viewer
     {
         width: 750px;
@@ -31,10 +31,11 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/jquery/iviewe
     {
         overflow: hidden;
     }
-</style> 
+</style>
 
-<div class="wrapper"> 
-  <div id="viewer" class="viewer"></div> 
+<div class="wrapper">
+  <div id="viewer" class="viewer"></div>
 </div>
 <div id='urlImage' style="display:none;"><?php echo $this->imageUrl?></div>
-<?php echo $this->headScript() ?>
+<?php
+echo $this->headScript()

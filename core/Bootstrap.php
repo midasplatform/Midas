@@ -35,7 +35,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     $view->doctype('XHTML1_STRICT');
     }//end _initDoctype
 
-
   /**
    * \fn protected _initConfig()
    * \brief set the configuration  and save it in the registry
@@ -110,7 +109,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       Zend_Db_Table::setDefaultAdapter($db);
       Zend_Registry::set('dbAdapter', $db);
       }
-    elseif($configDatabase->database->type == 'mongo')
+    else if($configDatabase->database->type == 'mongo')
       {
       // The mongo driver should be a php extension
       $db = new Mongo($configDatabase->database->params->host.":".
@@ -133,7 +132,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         'message' => 'message',
         'datetime' => 'timestamp',
         'module'   => 'module');
-      $writerDb = new Zend_Log_Writer_Db($db, 'errorlog', $columnMapping);
       if($configGlobal->environment == 'production')
         {
         $formatter = new Zend_Log_Formatter_Simple();
@@ -162,6 +160,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       if($configDatabase->database->adapter == 'PDO_MYSQL'
          && $configDatabase->database->params->password != 'set_your_password')
         {
+        $writerDb = new Zend_Log_Writer_Db($db, 'errorlog', $columnMapping);
         $logger->addWriter($writerDb);
         $logger->setEventItem('datetime', date('Y-m-d H:i:s'));
         $logger->setEventItem('module', 'unknown');
@@ -218,7 +217,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
           $apiModules[] = $key;
           }
         }
-      elseif($module == 1 &&  file_exists(BASE_PATH.'/privateModules/'.$key) && file_exists(BASE_PATH . "/privateModules/".$key."/AppController.php"))
+      else if($module == 1 &&  file_exists(BASE_PATH.'/privateModules/'.$key) && file_exists(BASE_PATH . "/privateModules/".$key."/AppController.php"))
         {
         $listeModule[] = $key;
         // get WebApi controller directories and WebApi module names for enabled modules
@@ -333,6 +332,4 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     $restContexts = new REST_Controller_Action_Helper_RestContexts();
     Zend_Controller_Action_HelperBroker::addHelper($restContexts);
     }
-
   }
-

@@ -25,7 +25,7 @@ require_once BASE_PATH.'/core/models/base/GroupModelBase.php';
  *  Pdo Model
  */
 class GroupModel extends GroupModelBase
-{
+  {
 
   /** Get a groups by Community */
   function findByCommunity($communityDao)
@@ -98,7 +98,6 @@ class GroupModel extends GroupModelBase
     $this->database->removeLink('users', $group, $user);
     } // end function removeUser
 
-
   /** Return a list of group corresponding to the search */
   function getGroupFromSearch($search, $limit = 14)
     {
@@ -119,5 +118,4 @@ class GroupModel extends GroupModelBase
       }
     return $return;
     } // end getCommunitiesFromSearch()
-}// end class
-?>
+  } // end class

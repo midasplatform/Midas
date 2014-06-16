@@ -25,7 +25,7 @@ require_once BASE_PATH.'/core/models/base/MetadataModelBase.php';
  * \brief Pdo Model
  */
 class MetadataModel extends MetadataModelBase
-{
+  {
 
   /**
    * Get all metadata types currently stored in the database.
@@ -124,7 +124,6 @@ class MetadataModel extends MetadataModelBase
       throw new Zend_Exception("Should be a metadata.");
       }
 
-
     $row = $this->database->fetchRow($this->database->select()
                                           ->setIntegrityCheck(false)
                                           ->from($this->getTableValueName($metadataDao->getMetadatatype()))
@@ -173,6 +172,4 @@ class MetadataModel extends MetadataModelBase
       }
     return true;
     } // end function saveMetadataValue()
-
-
-} // end class
+  } // end class
