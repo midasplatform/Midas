@@ -15,9 +15,9 @@
  * @category   Zend
  * @package    Zend_View
  * @subpackage Helper
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Sitemap.php 20104 2010-01-06 21:26:01Z matthew $
+ * @version    $Id: Sitemap.php 24594 2012-01-05 21:27:01Z matthew $
  */
 
 /**
@@ -33,7 +33,7 @@
  * @category   Zend
  * @package    Zend_View
  * @subpackage Helper
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_View_Helper_Navigation_Sitemap
@@ -405,7 +405,7 @@ class Zend_View_Helper_Navigation_Sitemap
 
                 // prevent 1970-01-01...
                 if ($lastmod !== false) {
-                    $lastmod = date("Y-m-d H:i:s", $lastmod);
+                    $lastmod = date('c', $lastmod);
                 }
 
                 if (!$this->getUseSitemapValidators() ||

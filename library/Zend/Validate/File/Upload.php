@@ -14,9 +14,9 @@
  *
  * @category  Zend
  * @package   Zend_Validate
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
- * @version   $Id: Upload.php 22398 2010-06-09 19:05:46Z thomas $
+ * @version   $Id: Upload.php 24594 2012-01-05 21:27:01Z matthew $
  */
 
 /**
@@ -29,7 +29,7 @@
  *
  * @category  Zend
  * @package   Zend_Validate
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Validate_File_Upload extends Zend_Validate_Abstract
@@ -134,6 +134,11 @@ class Zend_Validate_File_Upload extends Zend_Validate_Abstract
             $this->_files = $_FILES;
         } else {
             $this->_files = $files;
+        }
+
+        // see ZF-10738
+        if (is_null($this->_files)) {
+            $this->_files = array();
         }
 
         foreach($this->_files as $file => $content) {

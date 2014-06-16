@@ -15,9 +15,9 @@
  * @category   Zend
  * @package    Zend_Service_WindowsAzure
  * @subpackage Storage
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: SignedIdentifier.php 22773 2010-08-03 07:18:27Z maartenba $
+ * @version    $Id: SignedIdentifier.php 24594 2012-01-05 21:27:01Z matthew $
  */
 
 /**
@@ -34,26 +34,26 @@
  * @category   Zend
  * @package    Zend_Service_WindowsAzure
  * @subpackage Storage
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * 
+ *
  * @property string $Id           Id for the signed identifier
  * @property string $Start        The time at which the Shared Access Signature becomes valid.
  * @property string $Expiry       The time at which the Shared Access Signature becomes invalid.
  * @property string $Permissions  Signed permissions - read (r), write (w), delete (d) and list (l)
  */
 class Zend_Service_WindowsAzure_Storage_SignedIdentifier
-	extends Zend_Service_WindowsAzure_Storage_StorageEntityAbstract
+    extends Zend_Service_WindowsAzure_Storage_StorageEntityAbstract
 {
     /**
      * Constructor
-     * 
+     *
      * @param string $id           Id for the signed identifier
      * @param string $start        The time at which the Shared Access Signature becomes valid.
      * @param string $expiry       The time at which the Shared Access Signature becomes invalid.
      * @param string $permissions  Signed permissions - read (r), write (w), delete (d) and list (l)
      */
-    public function __construct($id = '', $start = '', $expiry = '', $permissions = '') 
+    public function __construct($id = '', $start = '', $expiry = '', $permissions = '')
     {
         $this->_data = array(
             'id'           => $id,

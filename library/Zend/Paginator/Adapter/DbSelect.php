@@ -14,9 +14,9 @@
  *
  * @category   Zend
  * @package    Zend_Paginator
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: DbSelect.php 20096 2010-01-06 02:05:09Z bkarwin $
+ * @version    $Id: DbSelect.php 24594 2012-01-05 21:27:01Z matthew $
  */
 
 /**
@@ -37,7 +37,7 @@
 /**
  * @category   Zend
  * @package    Zend_Paginator
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Paginator_Adapter_DbSelect implements Zend_Paginator_Adapter_Interface
@@ -100,7 +100,9 @@ class Zend_Paginator_Adapter_DbSelect implements Zend_Paginator_Adapter_Interfac
         if ($rowCount instanceof Zend_Db_Select) {
             $columns = $rowCount->getPart(Zend_Db_Select::COLUMNS);
 
-            $countColumnPart = $columns[0][1];
+            $countColumnPart = empty($columns[0][2])
+                             ? $columns[0][1]
+                             : $columns[0][2];
 
             if ($countColumnPart instanceof Zend_Db_Expr) {
                 $countColumnPart = $countColumnPart->__toString();
@@ -201,7 +203,10 @@ class Zend_Paginator_Adapter_DbSelect implements Zend_Paginator_Adapter_Interfac
         if (!empty($unionParts)) {
             $expression = new Zend_Db_Expr($countPart . $countColumn);
 
-            $rowCount = $db->select()->from($rowCount, $expression);
+            $rowCount = $db
+                            ->select()
+                            ->bind($rowCount->getBind())
+                            ->from($rowCount, $expression);
         } else {
             $columnParts = $rowCount->getPart(Zend_Db_Select::COLUMNS);
             $groupParts  = $rowCount->getPart(Zend_Db_Select::GROUP);
@@ -213,8 +218,13 @@ class Zend_Paginator_Adapter_DbSelect implements Zend_Paginator_Adapter_Interfac
              * than one group, or if the query has a HAVING clause, then take
              * the original query and use it as a subquery os the COUNT query.
              */
-            if (($isDistinct && count($columnParts) > 1) || count($groupParts) > 1 || !empty($havingParts)) {
-                $rowCount = $db->select()->from($this->_select);
+            if (($isDistinct && ((count($columnParts) == 1 && $columnParts[0][1] == Zend_Db_Select::SQL_WILDCARD) 
+                 || count($columnParts) > 1)) || count($groupParts) > 1 || !empty($havingParts)) {
+                $rowCount->reset(Zend_Db_Select::ORDER);
+                $rowCount = $db
+                               ->select()
+                               ->bind($rowCount->getBind())
+                               ->from($rowCount);
             } else if ($isDistinct) {
                 $part = $columnParts[0];
 
@@ -227,8 +237,7 @@ class Zend_Paginator_Adapter_DbSelect implements Zend_Paginator_Adapter_Interfac
 
                     $groupPart = $column;
                 }
-            } else if (!empty($groupParts) && $groupParts[0] !== Zend_Db_Select::SQL_WILDCARD &&
-                       !($groupParts[0] instanceof Zend_Db_Expr)) {
+            } else if (!empty($groupParts)) {
                 $groupPart = $db->quoteIdentifier($groupParts[0], true);
             }
 

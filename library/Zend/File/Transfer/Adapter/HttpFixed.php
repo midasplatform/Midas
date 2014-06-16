@@ -1,5 +1,4 @@
 <?php
-
 require_once 'Zend/File/Transfer/Adapter/Http.php';
 
 /**

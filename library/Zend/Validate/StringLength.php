@@ -14,9 +14,9 @@
  *
  * @category   Zend
  * @package    Zend_Validate
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: StringLength.php 22668 2010-07-25 14:50:46Z thomas $
+ * @version    $Id: StringLength.php 24594 2012-01-05 21:27:01Z matthew $
  */
 
 /**
@@ -27,7 +27,7 @@
 /**
  * @category   Zend
  * @package    Zend_Validate
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Validate_StringLength extends Zend_Validate_Abstract
@@ -199,14 +199,24 @@ class Zend_Validate_StringLength extends Zend_Validate_Abstract
     public function setEncoding($encoding = null)
     {
         if ($encoding !== null) {
-            $orig   = iconv_get_encoding('internal_encoding');
-            $result = iconv_set_encoding('internal_encoding', $encoding);
+            $orig = PHP_VERSION_ID < 50600
+                        ? iconv_get_encoding('internal_encoding')
+                        : ini_get('default_charset');
+            if (PHP_VERSION_ID < 50600) {
+                $result = iconv_set_encoding('internal_encoding', $encoding);
+            } else {
+                $result = ini_set('default_charset', $encoding);
+            }
             if (!$result) {
                 // require_once 'Zend/Validate/Exception.php';
                 throw new Zend_Validate_Exception('Given encoding not supported on this OS!');
             }
 
-            iconv_set_encoding('internal_encoding', $orig);
+            if (PHP_VERSION_ID < 50600) {
+                iconv_set_encoding('internal_encoding', $orig);
+            } else {
+                ini_set('default_charset', $orig);
+            }
         }
 
         $this->_encoding = $encoding;

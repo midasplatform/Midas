@@ -14,9 +14,9 @@
  *
  * @category  Zend
  * @package   Zend_Navigation
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Page.php 22882 2010-08-22 14:00:16Z freak $
+ * @version    $Id: Page.php 24594 2012-01-05 21:27:01Z matthew $
  */
 
 /**
@@ -29,7 +29,7 @@
  *
  * @category  Zend
  * @package   Zend_Navigation
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_Navigation_Page extends Zend_Navigation_Container
@@ -40,6 +40,20 @@ abstract class Zend_Navigation_Page extends Zend_Navigation_Container
      * @var string|null
      */
     protected $_label;
+
+    /**
+     * Fragment identifier (anchor identifier)
+     * 
+     * The fragment identifier (anchor identifier) pointing to an anchor within 
+     * a resource that is subordinate to another, primary resource.
+     * The fragment identifier introduced by a hash mark "#".
+     * Example: http://www.example.org/foo.html#bar ("bar" is the fragment identifier)
+     * 
+     * @link http://www.w3.org/TR/html401/intro/intro.html#fragment-uri
+     * 
+     * @var string|null
+     */
+    protected $_fragment;
 
     /**
      * Page id
@@ -68,6 +82,18 @@ abstract class Zend_Navigation_Page extends Zend_Navigation_Container
      * @var string|null
      */
     protected $_target;
+
+    /**
+     * Accessibility key character
+     *
+     * This attribute assigns an access key to an element. An access key is a
+     * single character from the document character set.
+     *
+     * @link http://www.w3.org/TR/html401/interact/forms.html#access-keys
+     *
+     * @var string|null
+     */
+    protected $_accesskey;
 
     /**
      * Forward links to other pages
@@ -138,11 +164,11 @@ abstract class Zend_Navigation_Page extends Zend_Navigation_Container
 
     /**
      * The type of page to use when it wasn't set
-     * 
+     *
      * @var string
      */
     protected static $_defaultPageType;
-    
+
     // Initialization:
 
     /**
@@ -191,7 +217,7 @@ abstract class Zend_Navigation_Page extends Zend_Navigation_Container
         } elseif(self::getDefaultPageType()!= null) {
             $type = self::getDefaultPageType();
         }
-        
+
         if(isset($type)) {
             if (is_string($type) && !empty($type)) {
                 switch (strtolower($type)) {
@@ -330,6 +356,35 @@ abstract class Zend_Navigation_Page extends Zend_Navigation_Container
     }
 
     /**
+     * Sets a fragment identifier
+     *
+     * @param  string $fragment   new fragment identifier
+     * @return Zend_Navigation_Page         fluent interface, returns self
+     * @throws Zend_Navigation_Exception    if empty/no string is given
+     */
+    public function setFragment($fragment)
+    {
+        if (null !== $fragment && !is_string($fragment)) {
+            // require_once 'Zend/Navigation/Exception.php';
+            throw new Zend_Navigation_Exception(
+                    'Invalid argument: $fragment must be a string or null');
+        }
+ 
+        $this->_fragment = $fragment;
+        return $this;
+    }
+    
+     /**
+     * Returns fragment identifier
+     *
+     * @return string|null  fragment identifier
+     */
+    public function getFragment()
+    {
+        return $this->_fragment;
+    }
+
+    /**
      * Sets page id
      *
      * @param  string|null $id            [optional] id to set. Default is null,
@@ -448,6 +503,40 @@ abstract class Zend_Navigation_Page extends Zend_Navigation_Container
     public function getTarget()
     {
         return $this->_target;
+    }
+
+    /**
+     * Sets access key for this page
+     *
+     * @param  string|null $character     [optional] access key to set. Default
+     *                                    is null, which sets no access key.
+     * @return Zend_Navigation_Page       fluent interface, returns self
+     * @throws Zend_Navigation_Exception  if access key is not string or null or
+     *                                    if the string length not equal to one
+     */
+    public function setAccesskey($character = null)
+    {
+        if (null !== $character
+            && (!is_string($character) || 1 != strlen($character)))
+        {
+            // require_once 'Zend/Navigation/Exception.php';
+            throw new Zend_Navigation_Exception(
+                'Invalid argument: $character must be a single character or null'
+            );
+        }
+ 
+        $this->_accesskey = $character;
+        return $this;
+    }
+
+     /**
+     * Returns page access key
+     *
+     * @return string|null  page access key or null
+     */
+    public function getAccesskey()
+    {
+        return $this->_accesskey;
     }
 
     /**
@@ -740,6 +829,9 @@ abstract class Zend_Navigation_Page extends Zend_Navigation_Container
      */
     public function setVisible($visible = true)
     {
+        if (is_string($visible) && 'false' == strtolower($visible)) {
+            $visible = false;
+        }
         $this->_visible = (bool) $visible;
         return $this;
     }
@@ -1091,10 +1183,12 @@ abstract class Zend_Navigation_Page extends Zend_Navigation_Container
             $this->getCustomProperties(),
             array(
                 'label'     => $this->getlabel(),
+                'fragment' => $this->getFragment(),
                 'id'        => $this->getId(),
                 'class'     => $this->getClass(),
                 'title'     => $this->getTitle(),
                 'target'    => $this->getTarget(),
+                'accesskey' => $this->getAccesskey(),
                 'rel'       => $this->getRel(),
                 'rev'       => $this->getRev(),
                 'order'     => $this->getOrder(),
@@ -1119,17 +1213,17 @@ abstract class Zend_Navigation_Page extends Zend_Navigation_Container
     {
         return str_replace(' ', '', ucwords(str_replace('_', ' ', $property)));
     }
-    
+
     public static function setDefaultPageType($type = null) {
         if($type !== null && !is_string($type)) {
             throw new Zend_Navigation_Exception(
                 'Cannot set default page type: type is no string but should be'
             );
         }
-        
+
         self::$_defaultPageType = $type;
     }
-    
+
     public static function getDefaultPageType() {
         return self::$_defaultPageType;
     }
