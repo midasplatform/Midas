@@ -5,6 +5,8 @@ Midas Platform
 
 _Version 3.x_
 
+[![Build Status](https://travis-ci.org/midasplatform/Midas.png?branch=master)](https://travis-ci.org/midasplatform/Midas)
+
 Midas Platform is an open-source toolkit that enables the rapid creation of
 tailored, web-enabled data storage. Designed to meet the needs of advanced
 data-centric computing, Midas Platform addresses the growing challenge of large
