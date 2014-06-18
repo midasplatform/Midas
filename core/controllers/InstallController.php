@@ -300,8 +300,8 @@ class InstallController extends AppController
       }
     } // end method step2Action
 
-  /** ajax function which tests connectivity to a db */
-  public function testconnexionAction()
+  /** AJAX function which tests connectivity to a database */
+  public function testconnectionAction()
     {
     $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
