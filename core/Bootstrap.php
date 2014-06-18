@@ -173,12 +173,12 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       }
     Zend_Registry::set('logger', $logger);
 
-    // Catch fatal errors
-    require_once BASE_PATH.'/core/controllers/components/NotifyErrorComponent.php';
-    $notifyErrorCompoenent = new NotifyErrorComponent();
+    // Init error handler
+    require_once BASE_PATH . '/core/controllers/components/NotifyErrorComponent.php';
+    $notifyErrorComponent = new NotifyErrorComponent();
     ini_set('display_errors', 0);
-    register_shutdown_function(array($notifyErrorCompoenent, 'fatalEror'), $logger, new Zend_Mail());
-    set_error_handler(array($notifyErrorCompoenent, 'warningError'), E_NOTICE|E_WARNING);
+    register_shutdown_function(array($notifyErrorComponent, 'fatalError'), $logger, new Zend_Mail());
+    set_error_handler(array($notifyErrorComponent, 'warningError'), E_NOTICE | E_WARNING);
 
     return $config;
     }

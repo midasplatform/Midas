@@ -43,8 +43,8 @@ class NotifyErrorComponent extends AppComponent
     $this->_server = $server;
     }
 
-  /** Handle fatal Errors*/
-  public function fatalEror($logger, $mailer)
+  /** Handle fatal errors */
+  public function fatalError($logger, $mailer)
     {
     if(!is_null(error_get_last()))
       {
@@ -155,7 +155,7 @@ class NotifyErrorComponent extends AppComponent
       $logger->crit($this->getFatalErrorMessage($e));
       $logger->__destruct();
       }
-    } // end fatalEror
+    }
 
   /** handle warning*/
   public function warningError($errno, $errstr, $errfile, $errline)
@@ -244,7 +244,7 @@ class NotifyErrorComponent extends AppComponent
     return $message;
     }
 
-  /** Create Exception message error*/
+  /** Create exception message error */
   public function getFullErrorMessage()
     {
     $message = '';
