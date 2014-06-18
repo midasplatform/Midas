@@ -22,11 +22,36 @@
 class Googleauth_Notification extends MIDAS_Notification
   {
   public $moduleName = 'googleauth';
-  public $_models = array('User');
+  public $_models = array('Setting');
 
   /** init notification process*/
   public function init()
     {
-
+    $this->addCallBack('CALLBACK_CORE_LOGIN_EXTRA_HTML', 'googleAuthLink');
     }//end init
-  }
+
+  /**
+   * Constructs the link that is used to initiate a google oauth authentication.
+   * This link redirects the user to google so they can approve of the requested
+   * oauth scopes, and in turn google will redirect them back to our callback
+   * url with an authorization code.
+   */
+  public function googleAuthLink()
+    {
+    $clientId = $this->Setting->getValueByName('client_id', $this->moduleName);
+    $scheme = (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS']) ? 'https://' : 'http://';
+    $redirectUri = $scheme.$_SERVER['HTTP_HOST'].
+                   Zend_Controller_Front::getInstance()->getBaseUrl().
+                   '/'.$this->moduleName.'/callback';
+    $scopes = array('profile', 'email');
+
+    $href = 'https://accounts.google.com/o/oauth2/auth?response_type=code'.
+            '&client_id='.urlencode($clientId).
+            '&redirect_uri='.urlencode($redirectUri).
+            '&scope='.urlencode(join(' ', $scopes));
+
+    return '<div style="margin-top: 10px; display: inline-block;">Or '.
+           '<a style="text-decoration: underline;" href="'.$href.'">'.
+           'Login with your Google account</a></div>';
+    }
+  } // end class
