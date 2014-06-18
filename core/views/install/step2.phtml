@@ -34,11 +34,6 @@ PURPOSE.  See the above copyright notices for more information.
       {
       echo "<div class='dbForm' id='form$d'>";
       echo "<form class='genericForm' method='{$form['method']}'  action='{$form['action']}'>";
-      if(isset($this->phpextension_missing[$d]))
-        {
-        echo "<span style='color:red;'>{$this->phpextension_missing[$d]}</span>";
-        }
-
       echo "  {$form['type']}
               <div class='configDBForm'>
                 <div>

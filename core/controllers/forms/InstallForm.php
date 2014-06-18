@@ -27,32 +27,28 @@ class InstallForm extends AppForm
     $form = new Zend_Form;
 
     $form->setAction($this->webroot.'/install/step2')
-          ->setMethod('post');
+         ->setMethod('post');
     $type = new Zend_Form_Element_Hidden('type');
 
     $host = new Zend_Form_Element_Text('host');
-    $host
-          ->setRequired(true)
-          ->addValidator('NotEmpty', true)
-          ->setValue('localhost');
+    $host->setRequired(true)
+         ->addValidator('NotEmpty', true)
+         ->setValue('localhost');
 
     $username = new Zend_Form_Element_Text('username');
-    $username
-          ->setRequired(true)
-          ->addValidator('NotEmpty', true);
+    $username->setRequired(true)
+             ->addValidator('NotEmpty', true);
 
     $password = new Zend_Form_Element_Password('password');
 
     $dbname = new Zend_Form_Element_Text('dbname');
-    $dbname
-          ->setRequired(true)
-          ->addValidator('NotEmpty', true)
-          ->setValue('midas');
+    $dbname->setRequired(true)
+           ->addValidator('NotEmpty', true)
+           ->setValue('midas');
 
     $port = new Zend_Form_Element_Text('port');
-    $port
-          ->setRequired(true)
-          ->addValidator('NotEmpty', true);
+    $port->setRequired(true)
+         ->addValidator('NotEmpty', true);
 
     $gravatar = new Zend_Form_Element_Checkbox('gravatar');
 
@@ -62,31 +58,27 @@ class InstallForm extends AppForm
           ->addValidator('EmailAddress');
 
     $userpassword1 = new Zend_Form_Element_Password('userpassword1');
-    $userpassword1
-             ->addValidator('NotEmpty', true)
-             ->setRequired(true);
+    $userpassword1->addValidator('NotEmpty', true)
+                  ->setRequired(true);
 
     $userpassword2 = new Zend_Form_Element_Password('userpassword2');
-    $userpassword2
-             ->addValidator('NotEmpty', true)
-             ->setRequired(true);
+    $userpassword2->addValidator('NotEmpty', true)
+                  ->setRequired(true);
 
     $firstname = new Zend_Form_Element_Text('firstname');
-    $firstname
-          ->setRequired(true)
-          ->addValidator('NotEmpty', true);
+    $firstname->setRequired(true)
+              ->addValidator('NotEmpty', true);
 
     $lastname = new Zend_Form_Element_Text('lastname');
-    $lastname
-          ->setRequired(true)
-          ->addValidator('NotEmpty', true);
+    $lastname->setRequired(true)
+             ->addValidator('NotEmpty', true);
 
     $submit = new  Zend_Form_Element_Submit('submit');
-    $submit ->setLabel('Set up database');
+    $submit->setLabel('Set up database');
 
     $form->addElements(array($port, $gravatar, $type, $host, $username, $password, $dbname, $submit, $lastname, $firstname, $userpassword2, $userpassword1, $email));
     return $form;
-    } //end createDBForm
+    }
 
   /** create  form */
   public function createConfigForm()
@@ -94,28 +86,28 @@ class InstallForm extends AppForm
     $form = new Zend_Form;
 
     $form->setAction($this->webroot.'/install/step3')
-          ->setMethod('post');
+         ->setMethod('post');
 
     $lang = new Zend_Form_Element_Select('lang');
-    $lang ->addMultiOptions(array(
+    $lang->addMultiOptions(array(
                     'en' => 'English',
                     'fr' => 'French'
                         ));
 
     $process = new Zend_Form_Element_Select('process');
-    $process ->addMultiOptions(array(
+    $process->addMultiOptions(array(
                     'onthefly' => 'On the fly',
                     'cron' => 'External'
                         ));
 
     $timezone = new Zend_Form_Element_Select('timezone');
-    $timezone ->addMultiOptions(array(
+    $timezone->addMultiOptions(array(
                     'America/New_York' => 'America/New_York',
                     'Europe/Paris' => 'Europe/Paris'
                         ));
 
     $environment = new Zend_Form_Element_Select('environment');
-    $environment ->addMultiOptions(array(
+    $environment->addMultiOptions(array(
                     'production' => 'Production',
                     'development' => 'Development'
                         ));
@@ -125,15 +117,16 @@ class InstallForm extends AppForm
     $keywords = new Zend_Form_Element_Textarea('keywords');
 
     $name = new Zend_Form_Element_Text('name');
-    $name ->setRequired(true)
-          ->addValidator('NotEmpty', true);
+    $name->setRequired(true)
+         ->addValidator('NotEmpty', true);
 
     $smartoptimizer = new Zend_Form_Element_Checkbox("smartoptimizer");
+    $smartoptimizer->setChecked(true);
 
     $submit = new  Zend_Form_Element_Submit('submit');
-    $submit ->setLabel('Create configuration');
+    $submit->setLabel('Create configuration');
 
     $form->addElements(array($keywords, $description, $process, $timezone, $environment, $lang, $name, $smartoptimizer, $submit));
     return $form;
     }
-  } // end class
+  }
