@@ -13,7 +13,7 @@ class REST_Controller_Action_Helper_ContextSwitch extends Zend_Controller_Action
         'json'  => 'Zend_Serializer_Adapter_Json',
         'xml'   => 'REST_Serializer_Adapter_Xml',
         'php'   => 'Zend_Serializer_Adapter_PhpSerialize',
-        'html'  => 'Zend_Serializer_Adapter_Json',
+        'html'  => 'Zend_Serializer_Adapter_Json'
     );
 
     protected $_rest_contexts = array(
@@ -74,7 +74,7 @@ class REST_Controller_Action_Helper_ContextSwitch extends Zend_Controller_Action
             'options' => array(
                 'autoDisableLayout' => false,
             ),
-          
+
             'callbacks' => array(
                 'init' => 'initAbstractContext',
                 'post' => 'restContext'
@@ -128,6 +128,7 @@ class REST_Controller_Action_Helper_ContextSwitch extends Zend_Controller_Action
         if ($view instanceof Zend_View_Interface) {
             if (method_exists($view, 'getVars')) {
                 $vars = $view->getVars();
+  
                 if (isset($vars['apiresults'])) {
                     $data = $vars['apiresults'];
 
@@ -142,7 +143,7 @@ class REST_Controller_Action_Helper_ContextSwitch extends Zend_Controller_Action
                                 $body = str_replace('<?xml version="1.0"?>', sprintf('<?xml version="1.0"?><?xml-stylesheet type="text/xsl" href="%s"?>', $stylesheet), $body);
                             }
                         }
-                        
+
                         if ($this->_currentContext == 'json') {
                             $callback = $this->getRequest()->getParam('jsonp-callback', false);
 
@@ -150,9 +151,9 @@ class REST_Controller_Action_Helper_ContextSwitch extends Zend_Controller_Action
                                 $body = sprintf('%s(%s)', $callback, $body);
                             }
                         }
-                        
+
                         if ($this->_currentContext == 'html') {
-                           $body = $this->prettyPrint($body, array("format" => "html"));
+                            $body = self::prettyPrint($body, array('format' => 'html'));
                         }
 
                         $this->getResponse()->setBody($body);
@@ -172,14 +173,8 @@ class REST_Controller_Action_Helper_ContextSwitch extends Zend_Controller_Action
     {
         return $this->_autoSerialization;
     }
-    
-    
+
     /**
-     * This function is based on the below Zend patches with minor customized changes
-     * Refs:
-     * http://framework.zend.com/issues/browse/ZF-9577
-     * http://framework.zend.com/issues/browse/ZF-10185
-     * 
      * Pretty-print JSON string
      *
      * Use 'format' option to select output format - currently html and txt supported, txt is default
@@ -189,58 +184,59 @@ class REST_Controller_Action_Helper_ContextSwitch extends Zend_Controller_Action
      * @param array $options Encoding options
      * @return string
      */
-    public function prettyPrint($json, $options = array())
+    private static function prettyPrint($json, $options = array())
     {
         $tokens = preg_split('|([\{\}\]\[,])|', $json, -1, PREG_SPLIT_DELIM_CAPTURE);
-        $result = "";
+        $result = '';
         $indent = 0;
 
-        $format= "txt";
+        $format= 'txt';
 
         $ind = "\t";
 
-        if(isset($options['format'])) {
+        if (isset($options['format'])) {
             $format = $options['format'];
         }
 
-        switch ($format):
+        switch ($format) {
             case 'html':
-                $line_break = "<br />";
-                $line_break_length = 6;
-                $ind = "&nbsp;&nbsp;&nbsp;&nbsp;";
+                $lineBreak = '<br />';
+                $ind = '&nbsp;&nbsp;&nbsp;&nbsp;';
                 break;
             default:
             case 'txt':
-                $line_break = "\n";
-                $line_break_length = 2;
+                $lineBreak = "\n";
                 $ind = "\t";
                 break;
-        endswitch;
+        }
 
-        //override the defined indent setting with the supplied option
-        if(isset($options['indent'])) {
+        // override the defined indent setting with the supplied option
+        if (isset($options['indent'])) {
             $ind = $options['indent'];
         }
-        
-        $inLiteral = false; 
+
+        $inLiteral = false;
         foreach($tokens as $token) {
-            if($token == "") continue;
+            if($token == '') {
+                continue;
+            }
 
             $prefix = str_repeat($ind, $indent);
             if (!$inLiteral && ($token == '{' || $token == '[')) {
                 $indent++;
-                if($result != "" && substr($result, strlen($result)-$line_break_length) == $line_break) {
+                if (($result != '') && ($result[(strlen($result)-1)] == $lineBreak)) {
                     $result .= $prefix;
                 }
-                $result .= "$token$line_break";
+                $result .= $token . $lineBreak;
             } elseif (!$inLiteral && ($token == '}' || $token == ']')) {
                 $indent--;
                 $prefix = str_repeat($ind, $indent);
-                $result .= "$line_break$prefix$token";
+                $result .= $lineBreak . $prefix . $token;
             } elseif (!$inLiteral && $token == ',') {
-                $result .= "$token$line_break" ;
+                $result .= $token . $lineBreak;
             } else {
                 $result .= ( $inLiteral ? '' : $prefix ) . $token;
+
                 // Count # of unescaped double-quotes in token, subtract # of
                 // escaped double-quotes and if the result is odd then we are
                 // inside a string literal
