@@ -13,22 +13,19 @@ PURPOSE.  See the above copyright notices for more information.
 <link href="<?php echo $this->coreWebroot?>/public/css/install/install.css" rel="stylesheet" type="text/css" />
 
 <div class="viewMain">
-
-  <h2>Welcome to MIDAS!</h2>
-    <p>MIDAS is a collection of server, client, and stand-alone tools for data archiving, analysis, and access.</p>
+  <h2>Welcome to Midas Platform!</h2>
+    <p>Midas Platform is a collection of server, client, and standalone tools for data archiving, analysis, and access.</p>
     <ul>
-      <li>Hosts public and private collections of data</li>
-      <li>Handles massive collections and images</li>
-      <li>Manages image and non-image files and meta-data</li>
-      <li>Integrates BatchMake technology for server-side and stand-alone batch processing</li>
-      <li>Builds upon open source code and open standards</li>
+      <li>Hosts public and private collections of data;</li>
+      <li>Handles massive collections and images;</li>
+      <li>Manages images, files, and metadata;</li>
+      <li>Integrates BatchMake technology for server-side and standalone batch processing;</li>
+      <li>Builds upon open source code and open standards.</li>
       </ul>
       <div class="separator"></div>
       <h3>Installation</h3>
-      This script will guide you during the installation of MIDAS.
-      MIDAS will store the datasets and related information in these directories.
-      Make sure they are fitting your installation or modify your config.php file.
-      <br/><br/>For more information go to: <a href="http://www.kitware.com/midaswiki/index.php/MIDAS3-Installation">http://www.kitware.com/midaswiki/index.php/MIDAS3-Installation</a>
+      This script will guide you during the installation of Midas Platform.<br/><br/>
+      For more information go to: <a href="http://www.kitware.com/midaswiki/index.php/MIDAS3-Installation">http://www.kitware.com/midaswiki/index.php/MIDAS3-Installation</a>
 
       <h3>System check</h3>
   <?php
@@ -37,22 +34,22 @@ PURPOSE.  See the above copyright notices for more information.
       {
       foreach($this->phpextension_missing as $missing)
         {
-        echo "<li><span style=\"color:#d48304\"> $missing </span> </li>";
+        echo "<li><span style=\"color:#d48304\">$missing</span></li>";
         }
       }
 
-    if($this->writable==false)
+    if($this->writable === false)
       {
-      echo "<li><span style=\"color:red\"> Unable to right in the application folder: {$this->basePath}. Please check you apache server permissions</span> </li>";
+      echo "<li><span style=\"color:red\"> Unable to write to the application folder: {$this->basePath}. Please check your web server permissions.</span></li>";
       }
 
-    if($this->writable&&empty($this->phpextension_missing))
+    if($this->writable && empty($this->phpextension_missing))
       {
-      echo "<li><span style=\"color:green\"> Your system is OK</span> </li>";
+      echo "<li><span style=\"color:green\"> Your system is OK.</span></li>";
       }
     echo "</ul>";
 
-    if($this->writable!=false)
+    if($this->writable !== false)
       {
       echo "<form method='post' action=''>";
       echo "<input type='submit' name='submit' value='Go to next step'>";
@@ -60,9 +57,8 @@ PURPOSE.  See the above copyright notices for more information.
       }
     else
       {
-      echo "<input type='submit' name='submit' value='Go to next step' disabled> <br/>";
-      echo "Please fix the differents problems to be able to access to the next step.";
+      echo "<input type='submit' name='submit' value='Go to next step' disabled><br/>";
+      echo "Please fix the above issues to proceed to the next step.";
       }
   ?>
-
 </div>
