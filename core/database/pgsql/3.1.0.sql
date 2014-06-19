@@ -442,5 +442,3 @@ CREATE TABLE user2group (
     user_id bigint NOT NULL,
     group_id bigint NOT NULL
 );
-
-

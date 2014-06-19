@@ -33,7 +33,7 @@ class Upgrade_3_2_12 extends MIDASUpgrade
     $this->db->query("ALTER TABLE `user` ADD COLUMN `salt` varchar(64) NOT NULL default ''");
     $this->db->query("ALTER TABLE `pendinguser` ADD COLUMN `salt` varchar(64) NOT NULL default ''");
 
-    $this->db->query("CREATE TABLE `password` (
+    $this->db->query("CREATE TABLE IF NOT EXISTS `password` (
                         `hash` varchar(128) NOT NULL,
                         PRIMARY KEY (`hash`)
                      ) ENGINE=InnoDB DEFAULT CHARSET=utf8");

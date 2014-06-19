@@ -29,7 +29,7 @@ class Upgrade_3_2_10 extends MIDASUpgrade
 
   public function mysql()
     {
-    $this->db->query("CREATE TABLE `newuserinvitation` (
+    $this->db->query("CREATE TABLE IF NOT EXISTS `newuserinvitation` (
       `newuserinvitation_id` bigint(20) NOT NULL AUTO_INCREMENT,
       `auth_key` varchar(255) NOT NULL,
       `email` varchar(255) NOT NULL,
@@ -39,7 +39,7 @@ class Upgrade_3_2_10 extends MIDASUpgrade
       `date_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
       PRIMARY KEY (`newuserinvitation_id`)
       )");
-    $this->db->query("CREATE TABLE `pendinguser` (
+    $this->db->query("CREATE TABLE IF NOT EXISTS `pendinguser` (
       `pendinguser_id` bigint(20) NOT NULL AUTO_INCREMENT,
       `auth_key` varchar(255) NOT NULL,
       `email` varchar(255) NOT NULL,

@@ -149,7 +149,7 @@ class Upgrade_3_2_2 extends MIDASUpgrade
   public function mysql()
     {
     // Create the license table
-    $this->db->query("CREATE TABLE `license` (
+    $this->db->query("CREATE TABLE IF NOT EXISTS `license` (
       `license_id` bigint(20) NOT NULL AUTO_INCREMENT,
       `name` TEXT NOT NULL,
       `fulltext` TEXT NOT NULL,
