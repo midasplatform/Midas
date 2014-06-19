@@ -61,6 +61,11 @@ foreach($files as $file)
 function _getMatchingFilesRecursive($src, $dir = '')
   {
   $files = array();
+  if(!file_exists($src))
+    {
+    echo 'ERROR: '.$src.' does not exist';
+    exit;
+    }
   if(!is_dir($src))
     {
     $files[] = $src;
