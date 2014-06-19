@@ -1,20 +1,23 @@
 <?php
 /*=========================================================================
-Program:   MIDAS Server
-Language:  PHP/HTML/Java/Javascript/SQL
-Date:      $Date: 2010-01-17 21:32:26 -0500 (Sun, 17 Jan 2010) $
-Version:   $Revision: 1186 $
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
 
-Copyright (c) Kitware Inc. 28 Corporate Drive. All rights reserved.
-Clifton Park, NY, 12065, USA.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-See Copyright.txt for details.
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 =========================================================================*/
-?>
-<?php
+
 /**
  * File picker - display a tree view to choose a file or a folder on the local computer
  * All the html elements have the prefix 'fp-' (for File Picker)
@@ -29,8 +32,7 @@ PURPOSE.  See the above copyright notices for more information.
  * @param $destSelector : jquery selector to insert the filename when user click on 'OK'
  * 
 **/
-?>
-<?php
+
   // assign unique identifier to this element
   if( is_numeric( Configure::read('filePickerId') ) )
     {
