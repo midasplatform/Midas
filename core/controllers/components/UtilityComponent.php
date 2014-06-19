@@ -343,7 +343,7 @@ class UtilityComponent extends AppComponent
       }
     }
 
-  /** Safe delete function. Checks ifthe file can be deleted. */
+  /** Safe delete function. Checks if the file can be deleted. */
   public static function safedelete($filename)
     {
     if(!file_exists($filename))
@@ -353,65 +353,62 @@ class UtilityComponent extends AppComponent
     unlink($filename);
     }
 
-  /** Function to run the sql script */
-  static function run_mysql_from_file($sqlfile, $host, $username, $password, $dbname, $port)
+  /** Function to run a SQL script */
+  static function run_query_from_file($adapter, $sqlfile, $host, $username, $password, $dbname, $port)
     {
-    $db = mysql_connect($host.":".$port, $username, $password);
-    $select = mysql_select_db($dbname, $db);
-    if(!$db || !$select)
+    $db = Zend_Db::factory($adapter, array(
+      'host' => $host,
+      'port' => $port,
+      'username' => $username,
+      'password' => $password,
+      'dbname' => $dbname));
+
+    try
+      {
+      $db->getConnection();
+      }
+    catch(Zend_Exception $exception)
       {
       throw new Zend_Exception("Unable to connect.");
       }
-    $requetes = "";
 
-    $sql = file($sqlfile);
-    foreach($sql as $l)
+    $sql = '';
+    $lines = file($sqlfile);
+    foreach($lines as $line)
       {
-      if(substr(trim($l), 0, 2) != "--")
+      if(trim($line) != '' && substr(trim($line), 0, 2) != '--' && substr($line, 0, 1) != '#')
         {
-        $requetes .= $l;
+        $sql .= $line;
         }
       }
-
-    $reqs = explode(";", $requetes);
-    foreach($reqs as $req)
-      {// And they are executed
-      if(!mysql_query($req, $db) && trim($req) != "")
+    $queries = explode(';', $sql);
+    foreach($queries as $query)
+      {
+      try
         {
-        throw new Zend_Exception("Unable to execute: ".$req );
+        $db->query($query);
+        }
+      catch(Zend_Exception $exception)
+        {
+        if(trim($query) != '')
+          {
+          throw new Zend_Exception("Unable to connect.");
+          }
         }
       }
     return true;
     }
+  
+  /** Function to run a MySQL script */
+  static function run_mysql_from_file($sqlfile, $host, $username, $password, $dbname, $port)
+    {
+    return self::run_query_from_file('Pdo_Mysql', $sqlfile, $host, $username, $password, $dbname, $port);
+    }
 
-  /** Function to run the sql script */
+  /** Function to run a PostgreSQL script */
   static function run_pgsql_from_file($sqlfile, $host, $username, $password, $dbname, $port)
     {
-    $pgdb = pg_connect("host = ".$host." port = ".$port." dbname = ".$dbname." user = ".$username." password = ".$password);
-    $file_content = file($sqlfile);
-    $query = "";
-    $linnum = 0;
-    foreach($file_content as $sql_line)
-      {
-      $tsl = trim($sql_line);
-      if(($sql_line != "") && (substr($tsl, 0, 2) != "--") && (substr($tsl, 0, 1) != "#"))
-        {
-        $query .= $sql_line;
-        if(preg_match("/;\s*$/", $sql_line))
-          {
-          $query = str_replace(";", "", "$query");
-          $result = pg_query($query);
-          if(!$result)
-            {
-            echo "Error line:".$linnum."<br>";
-            return pg_last_error();
-            }
-          $query = "";
-          }
-        }
-      $linnum++;
-      } // end for each line
-    return true;
+    return self::run_query_from_file('Pdo_Pgsql', $sqlfile, $host, $username, $password, $dbname, $port);
     }
 
   /**
