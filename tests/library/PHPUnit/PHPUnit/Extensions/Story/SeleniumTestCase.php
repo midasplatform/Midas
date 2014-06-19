@@ -40,7 +40,7 @@
  * @copyright  2010-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://www.phpunit.de/
- * @since      File available since Release 3.3.0
+ * @since      File available since Release 1.0.0
  */
 
 /**
@@ -51,9 +51,9 @@
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @copyright  2010-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    Release: 1.0.2
+ * @version    Release: 1.0.3
  * @link       http://www.phpunit.de/
- * @since      Class available since Release 3.3.0
+ * @since      Class available since Release 1.0.0
  */
 abstract class PHPUnit_Extensions_Story_SeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase
 {

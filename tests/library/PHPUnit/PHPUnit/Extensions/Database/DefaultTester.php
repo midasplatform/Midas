@@ -50,7 +50,7 @@
  * @author     Mike Lively <m@digitalsandwich.com>
  * @copyright  2010 Mike Lively <m@digitalsandwich.com>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    Release: 1.0.1
+ * @version    Release: 1.0.3
  * @link       http://www.phpunit.de/
  * @since      Class available since Release 1.0.0
  */
@@ -69,6 +69,8 @@ class PHPUnit_Extensions_Database_DefaultTester extends PHPUnit_Extensions_Datab
      */
     public function __construct(PHPUnit_Extensions_Database_DB_IDatabaseConnection $connection)
     {
+        parent::__construct();
+
         $this->connection = $connection;
     }
 

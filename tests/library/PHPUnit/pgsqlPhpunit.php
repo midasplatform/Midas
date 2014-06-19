@@ -1,5 +1,23 @@
-#!/usr/bin/env php
 <?php
+/*=========================================================================
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+=========================================================================*/
+
 /* PHPUnit
  *
  * Copyright (c) 2002-2011, Sebastian Bergmann <sebastian@phpunit.de>.
@@ -35,24 +53,18 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-$base_path= realpath(dirname(__FILE__)) . "/../../../";
+$base_path = realpath(dirname(__FILE__)) . '/../../..';
+set_include_path(get_include_path() . PATH_SEPARATOR . $base_path . '/tests/library');
 
-set_include_path(get_include_path() . PATH_SEPARATOR . $base_path.'/tests/library');
-require_once 'PHP/CodeCoverage/Filter.php';
-
-if(!file_exists($base_path.'/tests/configs/pgsql.ini'))
-  {
-  echo 'Failures: 1 Unable to find config';
-  exit;
-  }
-  
-copy($base_path.'/tests/configs/pgsql.ini', $base_path.'/tests/configs/lock.pgsql.ini');
-
-PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__, 'PHPUNIT');
-
-if (extension_loaded('xdebug')) {
-    xdebug_disable();
+if (!file_exists($base_path . '/tests/configs/pgsql.ini')) {
+    echo 'Failures: 1 Unable to find config';
+    exit();
 }
+
+copy($base_path . '/tests/configs/pgsql.ini', $base_path . '/tests/configs/lock.pgsql.ini');
+
+require_once 'PHP/CodeCoverage/Filter.php';
+PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__, 'PHPUNIT');
 
 if (strpos('@php_bin@', '@php_bin') === 0) {
     set_include_path(dirname(__FILE__) . PATH_SEPARATOR . get_include_path());
@@ -63,5 +75,3 @@ require_once 'PHPUnit/Autoload.php';
 define('PHPUnit_MAIN_METHOD', 'PHPUnit_TextUI_Command::main');
 
 PHPUnit_TextUI_Command::main();
-
-?>

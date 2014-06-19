@@ -51,7 +51,7 @@
  * @author     Sebastian Bergmann <sebastian@phpunit.de>
  * @copyright  2002-2011 Sebastian Bergmann <sebastian@phpunit.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    Release: 3.5.13
+ * @version    Release: 3.5.15
  * @link       http://www.phpunit.de/
  * @since      Class available since Release 2.0.0
  */
@@ -76,7 +76,7 @@ class PHPUnit_Runner_StandardTestSuiteLoader implements PHPUnit_Runner_TestSuite
 
         if (!class_exists($suiteClassName, FALSE)) {
             PHPUnit_Util_Class::collectStart();
-            PHPUnit_Util_Fileloader::checkAndLoad($suiteClassFile, $syntaxCheck);
+            $filename = PHPUnit_Util_Fileloader::checkAndLoad($suiteClassFile, $syntaxCheck);
             $loadedClasses = PHPUnit_Util_Class::collectEnd();
         }
 
@@ -84,7 +84,9 @@ class PHPUnit_Runner_StandardTestSuiteLoader implements PHPUnit_Runner_TestSuite
             $offset = 0 - strlen($suiteClassName);
 
             foreach ($loadedClasses as $loadedClass) {
-                if (substr($loadedClass, $offset) === $suiteClassName) {
+                $class = new ReflectionClass($loadedClass);
+                if (substr($loadedClass, $offset) === $suiteClassName &&
+                    $class->getFileName() == $filename) {
                     $suiteClassName = $loadedClass;
                     break;
                 }

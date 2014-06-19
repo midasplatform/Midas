@@ -2,7 +2,7 @@
 /**
  * Text_Template
  *
- * Copyright (c) 2009-2010, Sebastian Bergmann <sb@sebastian-bergmann.de>.
+ * Copyright (c) 2009-2014, Sebastian Bergmann <sebastian@phpunit.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,9 +36,9 @@
  *
  * @category   Text
  * @package    Template
- * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
+ * @author     Sebastian Bergmann <sebastian@phpunit.de>
+ * @copyright  2009-2014 Sebastian Bergmann <sebastian@phpunit.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://github.com/sebastianbergmann/php-text-template
  * @since      File available since Release 1.0.0
  */
@@ -48,10 +48,10 @@
  *
  * @category   Text
  * @package    Template
- * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    Release: 1.1.0
+ * @author     Sebastian Bergmann <sebastian@phpunit.de>
+ * @copyright  2009-2014 Sebastian Bergmann <sebastian@phpunit.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ * @version    Release: 1.2.0
  * @link       http://github.com/sebastianbergmann/php-text-template
  * @since      Class available since Release 1.0.0
  */
@@ -61,6 +61,16 @@ class Text_Template
      * @var string
      */
     protected $template = '';
+
+    /**
+     * @var string
+     */
+    protected $openDelimiter = '{';
+
+    /**
+     * @var string
+     */
+    protected $closeDelimiter = '}';
 
     /**
      * @var array
@@ -73,9 +83,11 @@ class Text_Template
      * @param  string $file
      * @throws InvalidArgumentException
      */
-    public function __construct($file = '')
+    public function __construct($file = '', $openDelimiter = '{', $closeDelimiter = '}')
     {
         $this->setFile($file);
+        $this->openDelimiter  = $openDelimiter;
+        $this->closeDelimiter = $closeDelimiter;
     }
 
     /**
@@ -128,7 +140,7 @@ class Text_Template
         $keys = array();
 
         foreach ($this->values as $key => $value) {
-            $keys[] = '{' . $key . '}';
+            $keys[] = $this->openDelimiter . $key . $this->closeDelimiter;
         }
 
         return str_replace($keys, $this->values, $this->template);
@@ -147,7 +159,19 @@ class Text_Template
             fwrite($fp, $this->render());
             fclose($fp);
         } else {
-            throw new RuntimeException('Could not write to ' . $target . '.');
+            $error = error_get_last();
+
+            throw new RuntimeException(
+              sprintf(
+                'Could not write to %s: %s',
+                $target,
+                substr(
+                  $error['message'],
+                  strpos($error['message'], ':') + 2
+                )
+              )
+            );
         }
     }
 }
+
