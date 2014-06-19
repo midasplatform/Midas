@@ -18,8 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
-/** tools for detecting non utf8 files and transforming non utf8 files to utf8. */
-class Utf8tools
+/** tools for detecting non UTF-8 files and transforming non UTF-8 files to UTF-8. */
+class UTF8Tools
   {
   protected $excludedDirs = array('_build', '_test', '.git', 'bin', 'build', 'data', 'library', 'log', 'tmp');
   protected $excludedExts = array('gif', 'ico', 'ini', 'jar', 'jpeg', 'jpg', 'keystore', 'png', 'psd', 'swc', 'swf');
@@ -28,7 +28,7 @@ class Utf8tools
   /**
    * return true if the string is UTF8 encoded.
    */
-  protected function isUtf8($str)
+  protected function isUTF8($str)
     {
     $len = strlen($str);
     for($i = 0; $i < $len; $i++)
@@ -131,10 +131,10 @@ class Utf8tools
 
   /**
    * create a listing of files, should be called from the MIDAS BASE DIR, checks
-   * them for non-utf8 encoded files, and if createUtf8Version is true,
-   * will create another file in the same dir alongside any non-utf8 file
-   * that is utf8 encoded and has the same name as the non-utf8 file, with
-   * an extension of .utf8 .
+   * them for non-UTF-8 encoded files, and if createUtf8Version is true,
+   * will create another file in the same dir alongside any non-UTF-8 file
+   * that is UTF-8 encoded and has the same name as the non-UTF-8 file, with
+   * an extension of .utf8.
    */
   public function listNonUtf8Files($srcDir, $createUtf8Version = false)
     {
@@ -142,9 +142,9 @@ class Utf8tools
     foreach($allFiles as $file)
       {
       $filecontents = file_get_contents($file);
-      if(!$this->isUtf8($filecontents))
+      if(!$this->isUTF8($filecontents))
         {
-        echo "ERROR: non-utf8 characters found in ".$file."\n";
+        echo "ERROR: non-UTF-8 characters found in ".$file."\n";
         if($createUtf8Version)
           {
           $utf8Version = mb_convert_encoding($filecontents, 'UTF-8');
@@ -156,13 +156,13 @@ class Utf8tools
     }
   }
 
-// don't create utf8 versions by default
+// do not create UTF-8 versions by default
 $create = false;
 if(sizeof($argv) > 3 || sizeof($argv) < 2)
   {
   if($argv[3] !== 'create')
     {
-    echo "Usage:\n\nphp Utf8tools.php --src <MIDAS SOURCE DIR> [create]\n\noptional argument create says to create utf8 versions on non utf8 encoded files\n";
+    echo "Usage:\n\nphp UTF8Tools.php --src <MIDAS SOURCE DIR> [create]\n\noptional argument create says to create UTF-8 versions on non UTF-8 encoded files\n";
     exit();
     }
   else
@@ -171,5 +171,5 @@ if(sizeof($argv) > 3 || sizeof($argv) < 2)
     }
   }
 $srcDir = $argv[2];
-$utf8 = new Utf8tools();
+$utf8 = new UTF8Tools();
 $utf8->listNonUtf8Files($srcDir, $create);
