@@ -39,7 +39,7 @@ if($src === false)
   exit;
   }
 
-$files = _getMatchingFilesRecursive($src);
+$files = getMatchingFilesRecursive($src);
 
 foreach($files as $file)
   {
@@ -51,14 +51,15 @@ foreach($files as $file)
     $i++;
     if(preg_match('/ [\n\r]*$/', $line))
       {
-      echo "ERROR: Trailing whitespace: $file ($i)\n";
+      echo "ERROR: Trailing whitespace: ".$file." (".$i.")\n";
       }
     }
 
   fclose($fh);
   }
 
-function _getMatchingFilesRecursive($src, $dir = '')
+/** Recursively get matching files */
+function getMatchingFilesRecursive($src, $dir = '')
   {
   $files = array();
   if(!file_exists($src))
@@ -86,7 +87,7 @@ function _getMatchingFilesRecursive($src, $dir = '')
         $relPath = substr($fullPath, strlen($src) - strlen($dir) + 1);
         if(is_dir($src.'/'.$file))
           {
-          $files = array_merge($files, _getMatchingFilesRecursive($src.'/'.$file, $dir.'/'.$file));
+          $files = array_merge($files, getMatchingFilesRecursive($src.'/'.$file, $dir.'/'.$file));
           }
         else
           {

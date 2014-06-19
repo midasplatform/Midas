@@ -194,6 +194,7 @@
     	<exception value="ldap_bind"/>
     	<exception value="mkdir"/>
     	<exception value="rename"/>
+    	<exception value="readdir"/>
     </test>
 
     <!-- Check for encapsed variables inside a String ("$a") -->

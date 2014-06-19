@@ -33,7 +33,6 @@ set_include_path(implode(PATH_SEPARATOR, $includePaths));
 
 require_once dirname(__FILE__).'/../library/Zend/Loader/Autoloader.php';
 
-# Zend_Loader::registerAutoload();
 $loader = Zend_Loader_Autoloader::getInstance();
 $loader->setFallbackAutoloader(true);
 $loader->suppressNotFoundWarnings(false);
@@ -78,7 +77,7 @@ if($configDatabase->database->type == 'pdo')
     'username' => $configDatabase->database->params->username,
     'password' => $configDatabase->database->params->password,
     'dbname' => $configDatabase->database->params->dbname,
-    'port' =>$configDatabase->database->params->port,
+    'port' => $configDatabase->database->params->port,
   )
   );
   if($configDatabase->database->profiler == '1')
@@ -96,7 +95,7 @@ else
 Zend_Registry::set('configDatabase', $configDatabase);
 
 require_once BASE_PATH.'/core/controllers/components/UpgradeComponent.php';
-$upgradeComponent=new UpgradeComponent();
+$upgradeComponent = new UpgradeComponent();
 $db = Zend_Registry::get('dbAdapter');
 $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
 
@@ -106,22 +105,22 @@ if(!isset($version))
   {
   if(Zend_Registry::get('configDatabase')->database->adapter == 'PDO_MYSQL')
     {
-    $type='mysql';
+    $type = 'mysql';
     }
   else
     {
-    $type='pgsql';
+    $type = 'pgsql';
     }
-  $MyDirectory = opendir(BASE_PATH."/core/database/{$type}");
+  $MyDirectory = opendir(BASE_PATH."/core/database/".$type);
   while($Entry = @readdir($MyDirectory))
     {
     if(strpos($Entry, '.sql') != false)
       {
-      $sqlFile=BASE_PATH."/core/database/{$type}/".$Entry;
+      $sqlFile = BASE_PATH."/core/database/".$type."/".$Entry;
       }
     }
 
-  $version=str_replace('.sql', '', basename($sqlFile));
+  $version = str_replace('.sql', '', basename($sqlFile));
   }
 $upgradeComponent->upgrade($version, true);
 

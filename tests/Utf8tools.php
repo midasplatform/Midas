@@ -29,13 +29,13 @@ class Utf8tools
    * return true if the string is UTF8 encoded.
    */
   protected function isUtf8($str)
-    { 
-    $len = strlen($str); 
+    {
+    $len = strlen($str);
     for($i = 0; $i < $len; $i++)
-      { 
-      $c = ord($str[$i]); 
+      {
+      $c = ord($str[$i]);
       if($c > 128)
-        { 
+        {
         if(($c > 247))
           {
           return false;
@@ -61,19 +61,19 @@ class Utf8tools
           return false;
           }
         while($bytes > 1)
-          { 
-          $i++; 
-          $b = ord($str[$i]); 
+          {
+          $i++;
+          $b = ord($str[$i]);
           if($b < 128 || $b > 191)
             {
             return false;
             }
-          $bytes--; 
-          } 
-        } 
-      } 
-      return true; 
-    } // end of check_utf8 
+          $bytes--;
+          }
+        }
+      }
+    return true;
+    }
 
   /**
    * gets a list of all files rooted at the src, excluding
@@ -144,7 +144,7 @@ class Utf8tools
       $filecontents = file_get_contents($file);
       if(!$this->isUtf8($filecontents))
         {
-        echo "ERROR: non-utf8 characters found in $file \n";
+        echo "ERROR: non-utf8 characters found in ".$file."\n";
         if($createUtf8Version)
           {
           $utf8Version = mb_convert_encoding($filecontents, 'UTF-8');

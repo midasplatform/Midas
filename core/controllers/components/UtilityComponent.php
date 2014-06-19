@@ -398,7 +398,7 @@ class UtilityComponent extends AppComponent
       }
     return true;
     }
-  
+
   /** Function to run a MySQL script */
   static function run_mysql_from_file($sqlfile, $host, $username, $password, $dbname, $port)
     {
