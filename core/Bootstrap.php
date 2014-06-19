@@ -33,7 +33,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     $this->bootstrap('view');
     $view = $this->getResource('view');
     $view->doctype('XHTML1_STRICT');
-    }//end _initDoctype
+    }
 
   /**
    * \fn protected _initConfig()
@@ -99,9 +99,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         'dbname' => $configDatabase->database->params->dbname,
         'port' => $configDatabase->database->params->port,
         'driver_options' => $pdoParams);
-      if($configGlobal->environment == "production")
+      if($configGlobal->environment == 'production')
         {
-        Zend_Loader::loadClass("ProductionDbProfiler", BASE_PATH . '/core/models/profiler');
+        Zend_Loader::loadClass('ProductionDbProfiler', BASE_PATH . '/core/models/profiler');
         $params['profiler'] = new ProductionDbProfiler();
         }
       $db = Zend_Db::factory($configDatabase->database->adapter, $params);
@@ -125,52 +125,45 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
     Zend_Registry::set('configDatabase', $configDatabase);
 
-    // Init Log
-    if(is_writable(BASE_PATH."/log"))
+    // Init log
+    if($configGlobal->environment == 'production')
       {
-      $columnMapping = array('priority' => 'priority',
-        'message' => 'message',
-        'datetime' => 'timestamp',
-        'module'   => 'module');
-      if($configGlobal->environment == 'production')
-        {
-        $formatter = new Zend_Log_Formatter_Simple();
-        Zend_Loader_Autoloader::getInstance()->suppressNotFoundWarnings(false);
-        $logger = Zend_Log::factory(array(
-          array(
-            'writerName' => 'Stream',
-            'writerParams' => array(
-              'stream' => './log/prod.log'),
-            'filterName' => 'Priority',
-            'filterParams' => array(
-              'priority' => Zend_Log::INFO))));
-        }
-      else
-        {
-        Zend_Loader_Autoloader::getInstance()->suppressNotFoundWarnings(true);
-        $logger = Zend_Log::factory(array(
-          array(
-            'writerName' => 'Stream',
-            'writerParams' => array(
-              'stream' => './log/dev.log'),
-            'filterName' => 'Priority',
-            'filterParams' => array(
-              'priority' => Zend_Log::WARN))));
-        }
-      if($configDatabase->database->adapter == 'PDO_MYSQL'
-         && $configDatabase->database->params->password != 'set_your_password')
-        {
-        $writerDb = new Zend_Log_Writer_Db($db, 'errorlog', $columnMapping);
-        $logger->addWriter($writerDb);
-        $logger->setEventItem('datetime', date('Y-m-d H:i:s'));
-        $logger->setEventItem('module', 'unknown');
-        }
+      Zend_Loader_Autoloader::getInstance()->suppressNotFoundWarnings(true);
+      $priority = Zend_Log::WARN;
       }
     else
       {
-      $redacteur = new Zend_Log_Writer_Stream('php://output');
-      $logger = new Zend_Log($redacteur);
+      Zend_Loader_Autoloader::getInstance()->suppressNotFoundWarnings(false);
+      $priority = Zend_Log::DEBUG;
       }
+
+    if(is_writable(BASE_PATH . '/log'))
+      {
+      $stream = './log/' . $configGlobal->environment . '.log';
+      }
+    else
+      {
+      $stream = 'php://output';
+      }
+    $logger = Zend_Log::factory(array(
+      array(
+        'writerName' => 'Stream',
+        'writerParams' => array('stream' => $stream),
+        'formatterName' => 'Simple',
+        'filterName' => 'Priority',
+        'filterParams' => array('priority' => $priority))));
+    if($configDatabase->database->type == 'pdo' && $configDatabase->database->params->password != 'set_your_password')
+      {
+      $columnMapping = array(
+        'priority' => 'priority',
+        'message' => 'message',
+        'module'   => 'module');
+      $writer = new Zend_Log_Writer_Db($db, 'errorlog', $columnMapping);
+      $filter = new Zend_Log_Filter_Priority(Zend_Log::INFO);
+      $writer->addFilter($filter);
+      $logger->addWriter($writer);
+      }
+    $logger->registerErrorHandler();
     Zend_Registry::set('logger', $logger);
 
     // Init error handler
