@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `packages_application` (
   `application_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `project_id` bigint(20) NOT NULL,
   `name` varchar(255) NOT NULL DEFAULT '',
-  `description` text NOT NULL DEFAULT '',
+  `description` text NOT NULL,
   PRIMARY KEY (`application_id`),
   KEY `project_id` (`project_id`)
 );
