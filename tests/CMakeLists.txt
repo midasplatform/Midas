@@ -99,8 +99,11 @@ function(add_midas_style_test TestName TestDir)
   endif()
 endfunction(add_midas_style_test)
 
+add_midas_style_test( StyleTestsBootstrap ${CMAKE_SOURCE_DIR}/tests/bootstrap.php )
 add_midas_style_test( StyleTestsControllerTestCase ${CMAKE_SOURCE_DIR}/tests/ControllerTestCase.php )
+add_midas_style_test( StyleTestsDatabaseSetup ${CMAKE_SOURCE_DIR}/tests/DatabaseSetup.php )
 add_midas_style_test( StyleTestsDatabaseTestCase ${CMAKE_SOURCE_DIR}/tests/DatabaseTestCase.php )
+add_midas_style_test( StyleTestsUtf8tools ${CMAKE_SOURCE_DIR}/tests/Utf8tools.php )
 
 add_test(Utf8encoding ${PHP} ${CMAKE_SOURCE_DIR}/tests/Utf8tools.php --src ${CMAKE_SOURCE_DIR})
 set_tests_properties(
