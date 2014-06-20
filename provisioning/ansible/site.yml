@@ -1,0 +1,10 @@
+---
+- name: midas
+  hosts: all
+  sudo: yes
+  roles:
+    - common
+    - apache2
+    - memcached
+    - mysql
+    - postgresql

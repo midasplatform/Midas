@@ -1,0 +1,10 @@
+<VirtualHost *:80>
+    ServerName vagrant.dev
+    DocumentRoot /var/www/vagrant
+    <Directory /var/www/vagrant>
+        Options FollowSymLinks
+        AllowOverride All
+        Order allow,deny
+        allow from all
+    </Directory>
+</VirtualHost>
