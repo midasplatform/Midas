@@ -54,7 +54,7 @@
  */
 
 $base_path = realpath(dirname(__FILE__)) . '/../../..';
-set_include_path(get_include_path() . PATH_SEPARATOR . $base_path . '/tests/library');
+set_include_path(get_include_path() . PATH_SEPARATOR . $base_path . '/tests/library/PHPUnit');
 
 if (!file_exists($base_path . '/tests/configs/mysql.ini')) {
     echo 'Failures: 1 Unable to find config';
