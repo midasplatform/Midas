@@ -141,7 +141,7 @@ class NotifyErrorComponent extends AppComponent
 
           $db = Zend_Registry::get('dbAdapter');
           $table = $db->listTables();
-          if(file_exists(BASE_PATH.'/core/configs/database.local.ini') && empty($table))
+          if(file_exists(LOCAL_CONFIGS_PATH.'/database.local.ini') && empty($table))
             {
             $fc = Zend_Controller_Front::getInstance();
             $webroot = $fc->getBaseUrl();

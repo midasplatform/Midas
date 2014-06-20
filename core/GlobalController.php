@@ -67,9 +67,9 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         $translaters[$module] = new Zend_Translate('csv', BASE_PATH.'/privateModules/'.$module.'/translation/fr-main.csv', 'en');
         }
 
-      if(file_exists(BASE_PATH.'/core/configs/'.$module.'.local.ini'))
+      if(file_exists(LOCAL_CONFIGS_PATH.'/'.$module.'.local.ini'))
         {
-        $configs[$module] = new Zend_Config_Ini(BASE_PATH.'/core/configs/'.$module.'.local.ini', 'global');
+        $configs[$module] = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/'.$module.'.local.ini', 'global');
         }
       else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/configs/module.ini'))
         {

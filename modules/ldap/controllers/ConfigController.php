@@ -29,9 +29,9 @@ class Ldap_ConfigController extends Ldap_AppController
     {
     $this->requireAdminPrivileges();
 
-    if(file_exists(BASE_PATH."/core/configs/ldap.local.ini"))
+    if(file_exists(LOCAL_CONFIGS_PATH."/ldap.local.ini"))
       {
-      $applicationConfig = parse_ini_file(BASE_PATH."/core/configs/ldap.local.ini", true);
+      $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH."/ldap.local.ini", true);
       }
     else
       {
@@ -61,13 +61,13 @@ class Ldap_ConfigController extends Ldap_AppController
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
         {
-        if(file_exists(BASE_PATH.'/core/configs/ldap.local.ini.old'))
+        if(file_exists(LOCAL_CONFIGS_PATH.'/ldap.local.ini.old'))
           {
-          unlink(BASE_PATH.'/core/configs/ldap.local.ini.old');
+          unlink(LOCAL_CONFIGS_PATH.'/ldap.local.ini.old');
           }
-        if(file_exists(BASE_PATH.'/core/configs/ldap.local.ini'))
+        if(file_exists(LOCAL_CONFIGS_PATH.'/ldap.local.ini'))
           {
-          rename(BASE_PATH.'/core/configs/ldap.local.ini', BASE_PATH.'/core/configs/ldap.local.ini.old');
+          rename(LOCAL_CONFIGS_PATH.'/ldap.local.ini', LOCAL_CONFIGS_PATH.'/ldap.local.ini.old');
           }
         $applicationConfig['global']['ldap.hostname'] = $this->_getParam('hostname');
         $applicationConfig['global']['ldap.port'] = $this->_getParam('port');
@@ -91,7 +91,7 @@ class Ldap_ConfigController extends Ldap_AppController
           $applicationConfig['global']['ldap.proxyPassword'] = $this->_getParam('proxyPassword');
           }
         $applicationConfig['global']['ldap.backup'] = $this->_getParam('backup');
-        $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/ldap.local.ini', $applicationConfig);
+        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH.'/ldap.local.ini', $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       }

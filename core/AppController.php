@@ -161,7 +161,7 @@ class AppController extends MIDAS_GlobalController
         $this->view->userDao = $user->Dao;
         $cookieData = $this->getRequest()->getCookie('recentItems'.$this->userSession->Dao->user_id);
         $this->view->recentItems = array();
-        if(isset($cookieData) && file_exists(BASE_PATH.'/core/configs/database.local.ini')) //check if midas installed
+        if(isset($cookieData) && file_exists(LOCAL_CONFIGS_PATH.'/database.local.ini')) //check if midas installed
           {
           $itemModel = MidasLoader::loadModel('Item');
           $tmpRecentItems = unserialize($cookieData);

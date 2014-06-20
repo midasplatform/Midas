@@ -48,11 +48,11 @@ class ConfigControllerTest extends ControllerTestCase
     $this->request->setMethod('POST');
     $this->dispatchUrI("/remoteprocessing/config", $userDao);
 
-    if(!file_exists(BASE_PATH."/core/configs/remoteprocessing.local.ini"))
+    if(!file_exists(LOCAL_CONFIGS_PATH."/remoteprocessing.local.ini"))
       {
       $this->fail('Unable to find config file');
       }
-    $applicationConfig = parse_ini_file(BASE_PATH."/core/configs/remoteprocessing.local.ini", true);
+    $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH."/remoteprocessing.local.ini", true);
 
     $this->assertEquals($securityKey, $applicationConfig['global']['securitykey']);
     }

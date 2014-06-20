@@ -33,8 +33,8 @@ class InstallController extends AppController
    */
   function init()
     {
-    if(file_exists(BASE_PATH . '/core/configs/database.local.ini') &&
-       file_exists(BASE_PATH . '/core/configs/application.local.ini') &&
+    if(file_exists(LOCAL_CONFIGS_PATH . '/database.local.ini') &&
+       file_exists(LOCAL_CONFIGS_PATH . '/application.local.ini') &&
        Zend_Controller_Front::getInstance()->getRequest()->getActionName() != 'step3')
       {
       throw new Zend_Exception('Midas is already installed.');
@@ -46,7 +46,7 @@ class InstallController extends AppController
    */
   function indexAction()
     {
-    if(file_exists(BASE_PATH . '/core/configs/database.local.ini'))
+    if(file_exists(LOCAL_CONFIGS_PATH . '/database.local.ini'))
       {
       $this->_redirect('/install/step3');
       }
@@ -56,7 +56,7 @@ class InstallController extends AppController
       'simplexml'  => array(false, ''),
     );
     $this->view->phpextension_missing = $this->Component->Utility->checkPhpExtensions($phpextensions);
-    $this->view->writable = is_writable(BASE_PATH . '/core/configs');
+    $this->view->writable = is_writable(LOCAL_CONFIGS_PATH);
     $this->view->basePath = BASE_PATH;
     if(!empty($_POST) && $this->view->writable)
       {
@@ -69,7 +69,7 @@ class InstallController extends AppController
    */
   function step2Action()
     {
-    if(file_exists(BASE_PATH . '/core/configs/database.local.ini'))
+    if(file_exists(LOCAL_CONFIGS_PATH . '/database.local.ini'))
       {
       $this->_redirect('/install/step3');
       }
@@ -114,7 +114,7 @@ class InstallController extends AppController
       $form = $this->Form->Install->createDBForm($type);
       if($form->isValid($this->getRequest()->getPost()))
         {
-        $databaseConfig = parse_ini_file(BASE_PATH . '/core/configs/database.ini', true);
+        $databaseConfig = parse_ini_file(CORE_CONFIGS_PATH . '/database.ini', true);
         require_once BASE_PATH . '/core/controllers/components/UpgradeComponent.php';
         $upgradeComponent = new UpgradeComponent();
         $upgradeComponent->dir = BASE_PATH . '/core/database/'.$type;
@@ -197,18 +197,18 @@ class InstallController extends AppController
         $databaseConfig['production']['version'] = str_replace('.sql', '', basename($sqlFile));
         $databaseConfig['development']['version'] = str_replace('.sql', '', basename($sqlFile));
 
-        $this->Component->Utility->createInitFile(BASE_PATH . '/core/configs/database.local.ini', $databaseConfig);
+        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH . '/database.local.ini', $databaseConfig);
 
         // Must generate and store our password salt before we create our first user
-        $appConfig = parse_ini_file(BASE_PATH . '/core/configs/application.ini', true);
+        $appConfig = parse_ini_file(CORE_CONFIGS_PATH . '/application.ini', true);
         $appConfig['global']['password.prefix'] = UtilityComponent::generateRandomString(32);
 
         // Verify whether the user wants to use gravatars or not
         $appConfig['global']['gravatar'] = $form->getValue('gravatar');
 
         // Save the new config
-        $this->Component->Utility->createInitFile(BASE_PATH . '/core/configs/application.local.ini', $appConfig);
-        $configGlobal = new Zend_Config_Ini(BASE_PATH . '/core/configs/application.local.ini', 'global', true);
+        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH . '/application.local.ini', $appConfig);
+        $configGlobal = new Zend_Config_Ini(LOCAL_CONFIGS_PATH . '/application.local.ini', 'global', true);
         Zend_Registry::set('configGlobal', $configGlobal);
 
         require_once BASE_PATH . '/core/controllers/components/UpgradeComponent.php';
@@ -241,7 +241,7 @@ class InstallController extends AppController
   function step3Action()
     {
     $this->requireAdminPrivileges();
-    if(!file_exists(BASE_PATH . '/core/configs/database.local.ini'))
+    if(!file_exists(LOCAL_CONFIGS_PATH . '/database.local.ini'))
       {
       $this->_redirect('/install/index');
       }
@@ -249,10 +249,10 @@ class InstallController extends AppController
     $userDao = $this->userSession->Dao;
     if(!isset($userDao) || !$userDao->isAdmin())
       {
-      unlink(BASE_PATH . '/core/configs/database.local.ini');
+      unlink(LOCAL_CONFIGS_PATH . '/database.local.ini');
       $this->_redirect('/install/index');
       }
-    $applicationConfig = parse_ini_file(BASE_PATH . '/core/configs/application.local.ini', true);
+    $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH . '/application.local.ini', true);
 
     $form = $this->Form->Install->createConfigForm();
     $formArray = $this->getFormAsArray($form);
@@ -273,7 +273,7 @@ class InstallController extends AppController
       $allModules = $this->Component->Utility->getAllModules();
       foreach($allModules as $key => $module)
         {
-        $configLocal = BASE_PATH . '/core/configs/'.$key.'.local.ini';
+        $configLocal = LOCAL_CONFIGS_PATH.'/'.$key.'.local.ini';
         if(file_exists($configLocal))
           {
           unlink($configLocal);
@@ -288,7 +288,7 @@ class InstallController extends AppController
       $applicationConfig['global']['smartoptimizer'] = $form->getValue('smartoptimizer');
       $applicationConfig['global']['default.timezone'] = $form->getValue('timezone');
 
-      $this->Component->Utility->createInitFile(BASE_PATH . '/core/configs/application.local.ini', $applicationConfig);
+      $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH . '/application.local.ini', $applicationConfig);
       $this->_redirect('/admin#tabs-modules');
       }
     }

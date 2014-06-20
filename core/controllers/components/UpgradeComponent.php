@@ -174,7 +174,7 @@ class UpgradeComponent extends AppComponent
       {
       if(isset($migration))
         {
-        $path = BASE_PATH.'/core/configs/database.local.ini';
+        $path = LOCAL_CONFIGS_PATH.'/database.local.ini';
         if($testing || Zend_Registry::get('configGlobal')->environment == 'testing')
           {
           if(file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini'))
@@ -214,7 +214,7 @@ class UpgradeComponent extends AppComponent
       }
     else
       {
-      $path = BASE_PATH."/core/configs/".$this->module.".local.ini";
+      $path = LOCAL_CONFIGS_PATH."/".$this->module.".local.ini";
       if(file_exists($path))
         {
         $data = parse_ini_file($path, true);

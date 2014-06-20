@@ -29,9 +29,9 @@ class Api_ConfigController extends Api_AppController
     {
     $this->requireAdminPrivileges();
 
-    if(file_exists(BASE_PATH."/core/configs/api.local.ini"))
+    if(file_exists(LOCAL_CONFIGS_PATH."/api.local.ini"))
       {
-      $applicationConfig = parse_ini_file(BASE_PATH."/core/configs/api.local.ini", true);
+      $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH."/api.local.ini", true);
       }
     else
       {
@@ -51,16 +51,16 @@ class Api_ConfigController extends Api_AppController
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
         {
-        if(file_exists(BASE_PATH."/core/configs/api.local.ini.old"))
+        if(file_exists(LOCAL_CONFIGS_PATH."/api.local.ini.old"))
           {
-          unlink(BASE_PATH."/core/configs/api.local.ini.old");
+          unlink(LOCAL_CONFIGS_PATH."/api.local.ini.old");
           }
-        if(file_exists(BASE_PATH."/core/configs/api.local.ini"))
+        if(file_exists(LOCAL_CONFIGS_PATH."/api.local.ini"))
           {
-          rename(BASE_PATH."/core/configs/api.local.ini", BASE_PATH."/core/configs/api.local.ini.old");
+          rename(LOCAL_CONFIGS_PATH."/api.local.ini", LOCAL_CONFIGS_PATH."/api.local.ini.old");
           }
         $applicationConfig['global']['methodprefix'] = $this->_getParam('methodprefix');
-        $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/api.local.ini", $applicationConfig);
+        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH."/api.local.ini", $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
       }
