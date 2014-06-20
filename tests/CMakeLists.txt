@@ -17,14 +17,14 @@
 # limitations under the License.
 #=============================================================================
 
-# Create the TestConfig.php file used for testing
+# Create the TestsConfig.php file used for testing
 option(MIDAS_TEST_COVERAGE "Perform xdebug coverage. Only turn on if you need coverage." OFF)
 if(MIDAS_TEST_COVERAGE)
   set(MIDAS_TEST_COVERAGE_LITERAL "true")
 else()
   set(MIDAS_TEST_COVERAGE_LITERAL "false")
 endif()
-configure_file(${CMAKE_SOURCE_DIR}/tests/TestConfig.php.in ${CMAKE_SOURCE_DIR}/tests/TestConfig.php)
+configure_file(${CMAKE_SOURCE_DIR}/tests/TestsConfig.php.in ${CMAKE_SOURCE_DIR}/tests/TestsConfig.php)
 
 # Create the xdebug coverage directory that CTest expects
 if(NOT EXISTS ${CMAKE_BINARY_DIR}/xdebugCoverage)
@@ -46,11 +46,11 @@ endfunction(add_midas_test)
 function(add_midas_mysql_test TestName TestFile)
   IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/mysql.ini)
     add_test(
-      Mysql${TestName}
-      ${PHP} ${CMAKE_SOURCE_DIR}/tests/library/PHPUnit/mysqlPhpunit.php --bootstrap ${CMAKE_SOURCE_DIR}/tests/bootstrap.php ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
+      MySQL${TestName}
+      ${PHP} ${CMAKE_SOURCE_DIR}/tests/PHPUnitMySQL.php --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
     )
     set_tests_properties(
-      Mysql${TestName} PROPERTIES
+      MySQL${TestName} PROPERTIES
       FAIL_REGULAR_EXPRESSION ".*Failures: [1-9]+.*;.*Exceptions: [1-9]+.*"
       RESOURCE_LOCK MIDASDatabase
     )
@@ -60,11 +60,11 @@ endfunction(add_midas_mysql_test)
 function(add_midas_pgsql_test TestName TestFile)
    IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/pgsql.ini)
     add_test(
-      Pgsql${TestName}
-      ${PHP} ${CMAKE_SOURCE_DIR}/tests/library/PHPUnit/pgsqlPhpunit.php --bootstrap ${CMAKE_SOURCE_DIR}/tests/bootstrap.php ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
+      PgSQL${TestName}
+      ${PHP} ${CMAKE_SOURCE_DIR}/tests/PHPUnitPgSQL.php --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
     )
     set_tests_properties(
-      Pgsql${TestName} PROPERTIES
+      PgSQL${TestName} PROPERTIES
       FAIL_REGULAR_EXPRESSION ".*Failures: [1-9]+.*;.*Exceptions: [1-9]+.*"
       RESOURCE_LOCK MIDASDatabase
     )
@@ -99,7 +99,7 @@ if(NOT WIN32)
 endif()
 
 add_midas_style_test( StyleKWUtils ${CMAKE_SOURCE_DIR}/library/KWUtils.php )
-add_midas_style_test( StyleTestsBootstrap ${CMAKE_SOURCE_DIR}/tests/bootstrap.php )
+add_midas_style_test( StyleTestsTestsBootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php )
 add_midas_style_test( StyleTestsControllerTestCase ${CMAKE_SOURCE_DIR}/tests/ControllerTestCase.php )
 add_midas_style_test( StyleTestsDatabaseSetup ${CMAKE_SOURCE_DIR}/tests/DatabaseSetup.php )
 add_midas_style_test( StyleTestsDatabaseTestCase ${CMAKE_SOURCE_DIR}/tests/DatabaseTestCase.php )
