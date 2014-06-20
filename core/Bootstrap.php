@@ -137,9 +137,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       $priority = Zend_Log::DEBUG;
       }
 
-    if(is_writable(BASE_PATH . '/log'))
+    if(is_writable(LOGS_PATH))
       {
-      $stream = './log/' . $configGlobal->environment . '.log';
+      $stream = LOGS_PATH . '/' . $configGlobal->environment . '.log';
       }
     else
       {

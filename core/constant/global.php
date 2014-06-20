@@ -20,6 +20,7 @@
 
 define('CORE_CONFIGS_PATH', BASE_PATH . '/core/configs');
 define('LOCAL_CONFIGS_PATH', CORE_CONFIGS_PATH);
+define('LOGS_PATH', BASE_PATH . '/log');
 
 if(file_exists(LOCAL_CONFIGS_PATH . '/core.local.ini'))
   {

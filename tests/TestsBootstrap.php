@@ -128,7 +128,7 @@ $logger = Zend_Log::factory(array(
   array(
     'writerName' => 'Stream',
     'writerParams' => array(
-      'stream' => BASE_PATH.'/tests/log/testing.log',
+      'stream' => LOGS_PATH.'/testing.log',
     ),
     'filterName' => 'Priority',
     'filterParams' => array(

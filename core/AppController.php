@@ -404,7 +404,7 @@ class AppController extends MIDAS_GlobalController
       }
     $entry .= "\n\n";
 
-    $fh = fopen(BASE_PATH.'/log/trace.log', 'a');
+    $fh = fopen(LOGS_PATH.'/trace.log', 'a');
     fwrite($fh, $entry);
     fclose($fh);
     }
