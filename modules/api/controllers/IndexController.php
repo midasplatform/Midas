@@ -185,8 +185,8 @@ class Api_IndexController extends Api_AppController
     }
 
   /** Allows components to call redirect */
-  function redirect($url)
+  function redirect($url, array $options = array())
     {
-    $this->_redirect($url);
+    $this->_redirect($url, $options);
     }
   } // end class
