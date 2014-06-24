@@ -88,13 +88,13 @@ class AdminController extends AppController
     $this->view->header = "Administration";
     $configForm = $this->Form->Admin->createConfigForm();
 
-    if(file_exists(BASE_PATH.'/core/configs/application.local.ini'))
+    if(file_exists(LOCAL_CONFIGS_PATH.'/application.local.ini'))
       {
-      $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/application.local.ini', true);
+      $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH.'/application.local.ini', true);
       }
     else
       {
-      $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/application.ini', true);
+      $applicationConfig = parse_ini_file(CORE_CONFIGS_PATH.'/application.ini', true);
       }
     $formArray = $this->getFormAsArray($configForm);
 
@@ -152,12 +152,12 @@ class AdminController extends AppController
       $submitModule = $this->_getParam('submitModule');
       if(isset($submitConfig))
         {
-        $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/application.local.ini', true);
-        if(file_exists(BASE_PATH.'/core/configs/application.local.ini.old'))
+        $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH.'/application.local.ini', true);
+        if(file_exists(LOCAL_CONFIGS_PATH.'/application.local.ini.old'))
           {
-          unlink(BASE_PATH.'/core/configs/application.local.ini.old');
+          unlink(LOCAL_CONFIGS_PATH.'/application.local.ini.old');
           }
-        rename(BASE_PATH.'/core/configs/application.local.ini', BASE_PATH.'/core/configs/application.local.ini.old');
+        rename(LOCAL_CONFIGS_PATH.'/application.local.ini', LOCAL_CONFIGS_PATH.'/application.local.ini.old');
         $applicationConfig['global']['application.name'] = $this->_getParam('name');
         $applicationConfig['global']['application.description'] = $this->_getParam('description');
         $applicationConfig['global']['application.keywords'] = $this->_getParam('keywords');
@@ -172,20 +172,20 @@ class AdminController extends AppController
         $applicationConfig['global']['httpproxy'] = $this->_getParam('httpProxy');
         $applicationConfig['global']['gravatar'] = $this->_getParam('gravatar');
         $applicationConfig['global']['verifyemail'] = $this->_getParam('verifyemail');
-        $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
+        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH.'/application.local.ini', $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       if(isset($submitModule))
         {
         $moduleName = $this->_getParam('modulename');
         $modulevalue = $this->_getParam('modulevalue');
-        $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/application.local.ini', true);
-        if(file_exists(BASE_PATH.'/core/configs/application.local.ini.old'))
+        $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH.'/application.local.ini', true);
+        if(file_exists(LOCAL_CONFIGS_PATH.'/application.local.ini.old'))
           {
-          unlink(BASE_PATH.'/core/configs/application.local.ini.old');
+          unlink(LOCAL_CONFIGS_PATH.'/application.local.ini.old');
           }
 
-        $moduleConfigLocalFile = BASE_PATH."/core/configs/".$moduleName.".local.ini";
+        $moduleConfigLocalFile = LOCAL_CONFIGS_PATH."/".$moduleName.".local.ini";
         $moduleConfigFile = BASE_PATH."/modules/".$moduleName."/configs/module.ini";
         $moduleConfigPrivateFile = BASE_PATH."/privateModules/".$moduleName."/configs/module.ini";
         if(!file_exists($moduleConfigLocalFile) && file_exists($moduleConfigFile))
@@ -203,9 +203,9 @@ class AdminController extends AppController
           throw new Zend_Exception("Unable to find config file");
           }
 
-        rename(BASE_PATH.'/core/configs/application.local.ini', BASE_PATH.'/core/configs/application.local.ini.old');
+        rename(LOCAL_CONFIGS_PATH.'/application.local.ini', LOCAL_CONFIGS_PATH.'/application.local.ini.old');
         $applicationConfig['module'][$moduleName] = $modulevalue;
-        $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
+        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH.'/application.local.ini', $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       }
@@ -246,9 +246,9 @@ class AdminController extends AppController
       foreach($assetstores as $key => $assetstore)
         {
         $assetstores[$key]->default = true;
-        $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/application.local.ini', true);
+        $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH.'/application.local.ini', true);
         $applicationConfig['global']['defaultassetstore.id'] = $assetstores[$key]->getKey();
-        $this->Component->Utility->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
+        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH.'/application.local.ini', $applicationConfig);
         break;
         }
       }

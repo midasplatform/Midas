@@ -1,0 +1,16 @@
+{
+    "name": "midas-platform/midas-server",
+    "description": "Midas Platform",
+    "type": "project",
+    "homepage": "http://www.midasplatform.org",
+    "license": "Apache-2.0",
+    "support": {
+        "email": "kitware@kitware.com",
+        "issues": "https://github.com/midasplatform/Midas/issues",
+        "wiki": "http://www.kitware.com/midaswiki",
+        "source": "https://github.com/midasplatform/Midas"
+    },
+    "require": {
+        "php": ">=5.3"
+    }
+}

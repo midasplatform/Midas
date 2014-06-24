@@ -33,10 +33,10 @@ class Dicomserver_ConfigController extends Dicomserver_AppController
       throw new Zend_Exception("You should be an administrator");
       }
 
-    if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini"))
+    if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini"))
       {
       $applicationConfig = parse_ini_file(
-        BASE_PATH."/core/configs/".$this->moduleName.".local.ini", true);
+        LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", true);
       }
     else
       {
@@ -78,13 +78,13 @@ class Dicomserver_ConfigController extends Dicomserver_AppController
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
         {
-        if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old"))
+        if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old"))
           {
-          unlink(BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old");
+          unlink(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old");
           }
-        if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini"))
+        if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini"))
           {
-          rename(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old");
+          rename(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old");
           }
         $applicationConfig['global']['dcm2xml'] = $this->_getParam('dcm2xml');
         $applicationConfig['global']['storescp'] = $this->_getParam('storescp');
@@ -97,7 +97,7 @@ class Dicomserver_ConfigController extends Dicomserver_AppController
         $applicationConfig['global']['dcmqrscp_port'] = $this->_getParam('dcmqrscp_port');
         $applicationConfig['global']['server_ae_title'] = $this->_getParam('server_ae_title');
         $applicationConfig['global']['peer_aes'] = $this->_getParam('peer_aes');
-        $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", $applicationConfig);
+        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
       }

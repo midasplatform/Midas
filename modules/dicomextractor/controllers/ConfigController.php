@@ -29,9 +29,9 @@ class Dicomextractor_ConfigController extends Dicomextractor_AppController
     {
     $this->requireAdminPrivileges();
 
-    if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini"))
+    if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini"))
       {
-      $applicationConfig = parse_ini_file(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", true);
+      $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", true);
       }
     else
       {
@@ -62,19 +62,19 @@ class Dicomextractor_ConfigController extends Dicomextractor_AppController
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
         {
-        if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old"))
+        if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old"))
           {
-          unlink(BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old");
+          unlink(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old");
           }
-        if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini"))
+        if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini"))
           {
-          rename(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old");
+          rename(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old");
           }
         $applicationConfig['global']['dcm2xml'] = $this->_getParam('dcm2xml');
         $applicationConfig['global']['dcmj2pnm'] = $this->_getParam('dcmj2pnm');
         $applicationConfig['global']['dcmftest'] = $this->_getParam('dcmftest');
         $applicationConfig['global']['dcmdictpath'] = $this->_getParam('dcmdictpath');
-        $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", $applicationConfig);
+        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       }

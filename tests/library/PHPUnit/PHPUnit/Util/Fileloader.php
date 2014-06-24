@@ -51,7 +51,7 @@
  * @author     Sebastian Bergmann <sebastian@phpunit.de>
  * @copyright  2002-2011 Sebastian Bergmann <sebastian@phpunit.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    Release: 3.5.13
+ * @version    Release: @package_version@
  * @link       http://www.phpunit.de/
  * @since      Class available since Release 2.3.0
  */
@@ -127,7 +127,7 @@ class PHPUnit_Util_Fileloader
         $command = PHPUnit_Util_PHP::getPhpBinary();
 
         if (DIRECTORY_SEPARATOR == '\\') {
-            $command = escapeshellarg($command);
+            $command = escapeshellcmd($command);
         }
 
         $command .= ' -l ' . escapeshellarg($filename);

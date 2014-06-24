@@ -18,8 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
-require_once dirname(__FILE__).'/bootstrap.php';
-require_once dirname(__FILE__).'/configuredVars.php';
+require_once dirname(__FILE__).'/TestsBootstrap.php';
+require_once dirname(__FILE__).'/TestsConfig.php';
 require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 
 /** main controller test element*/

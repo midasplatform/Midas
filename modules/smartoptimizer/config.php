@@ -21,14 +21,9 @@
 /*
  * SmartOptimizer Configuration File
  */
-if(file_exists('../../core/configs/application.local.ini'))
-	{
-	$config=parse_ini_file('../../core/configs/application.local.ini');
-	}
-else
-	{
-	$config=parse_ini_file('../../core/configs/application.ini');
-	}
+
+$config=parse_ini_file(APPLICATION_CONFIG);
+
 if(isset($config['smartoptimizer'])&&$config['smartoptimizer']==1)
 {
 //use this to set gzip compression On or Off

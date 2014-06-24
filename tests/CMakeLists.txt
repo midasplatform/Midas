@@ -17,20 +17,14 @@
 # limitations under the License.
 #=============================================================================
 
-# Create the configuredVars.php file used for testing
+# Create the TestsConfig.php file used for testing
 option(MIDAS_TEST_COVERAGE "Perform xdebug coverage. Only turn on if you need coverage." OFF)
-
-file(WRITE ${CMAKE_SOURCE_DIR}/tests/configuredVars.php
-     "<?php
-     define('CMAKE_BINARY_DIR', '${CMAKE_BINARY_DIR}');
-     ")
-file(APPEND ${CMAKE_SOURCE_DIR}/tests/configuredVars.php "define('MIDAS_TEST_COVERAGE', ")
 if(MIDAS_TEST_COVERAGE)
-  file(APPEND ${CMAKE_SOURCE_DIR}/tests/configuredVars.php "true")
+  set(MIDAS_TEST_COVERAGE_LITERAL "true")
 else()
-  file(APPEND ${CMAKE_SOURCE_DIR}/tests/configuredVars.php "false")
+  set(MIDAS_TEST_COVERAGE_LITERAL "false")
 endif()
-file(APPEND ${CMAKE_SOURCE_DIR}/tests/configuredVars.php "); ?>")
+configure_file(${CMAKE_SOURCE_DIR}/tests/TestsConfig.php.in ${CMAKE_SOURCE_DIR}/tests/TestsConfig.php)
 
 # Create the xdebug coverage directory that CTest expects
 if(NOT EXISTS ${CMAKE_BINARY_DIR}/xdebugCoverage)
@@ -52,11 +46,11 @@ endfunction(add_midas_test)
 function(add_midas_mysql_test TestName TestFile)
   IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/mysql.ini)
     add_test(
-      Mysql${TestName}
-      ${PHP} ${CMAKE_SOURCE_DIR}/tests/library/PHPUnit/mysqlPhpunit.php --bootstrap ${CMAKE_SOURCE_DIR}/tests/bootstrap.php ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
+      MySQL${TestName}
+      ${PHP} ${CMAKE_SOURCE_DIR}/tests/PHPUnitMySQL.php --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
     )
     set_tests_properties(
-      Mysql${TestName} PROPERTIES
+      MySQL${TestName} PROPERTIES
       FAIL_REGULAR_EXPRESSION ".*Failures: [1-9]+.*;.*Exceptions: [1-9]+.*"
       RESOURCE_LOCK MIDASDatabase
     )
@@ -66,11 +60,11 @@ endfunction(add_midas_mysql_test)
 function(add_midas_pgsql_test TestName TestFile)
    IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/pgsql.ini)
     add_test(
-      Pgsql${TestName}
-      ${PHP} ${CMAKE_SOURCE_DIR}/tests/library/PHPUnit/pgsqlPhpunit.php --bootstrap ${CMAKE_SOURCE_DIR}/tests/bootstrap.php ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
+      PgSQL${TestName}
+      ${PHP} ${CMAKE_SOURCE_DIR}/tests/PHPUnitPgSQL.php --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
     )
     set_tests_properties(
-      Pgsql${TestName} PROPERTIES
+      PgSQL${TestName} PROPERTIES
       FAIL_REGULAR_EXPRESSION ".*Failures: [1-9]+.*;.*Exceptions: [1-9]+.*"
       RESOURCE_LOCK MIDASDatabase
     )
@@ -81,7 +75,7 @@ function(add_midas_style_test TestName TestDir)
   if(MIDAS_RUN_STYLE_TESTS)
     add_test(
       ${TestName}
-      ${PHP} ${CMAKE_SOURCE_DIR}/tests/library/PhpCheckstyle/run.php --format console --src ${TestDir}
+      ${PHP} ${CMAKE_SOURCE_DIR}/tests/library/PHPCheckstyle/run.php --format console --src ${TestDir}
     )
     set_tests_properties(
       ${TestName} PROPERTIES
@@ -90,7 +84,7 @@ function(add_midas_style_test TestName TestDir)
 
     add_test(
       ${TestName}TrailingSpaces
-      ${PHP} ${CMAKE_SOURCE_DIR}/tests/library/MIDASStyleChecker.php --src ${TestDir}
+      ${PHP} ${CMAKE_SOURCE_DIR}/tests/TrailingSpaces.php --src ${TestDir}
     )
     set_tests_properties(
       ${TestName}TrailingSpaces PROPERTIES
@@ -99,13 +93,27 @@ function(add_midas_style_test TestName TestDir)
   endif()
 endfunction(add_midas_style_test)
 
-add_midas_style_test( StyleTestsControllerTestCase ${CMAKE_SOURCE_DIR}/tests/ControllerTestCase.php )
-add_midas_style_test( StyleTestsDatabaseTestCase ${CMAKE_SOURCE_DIR}/tests/DatabaseTestCase.php )
+if(NOT WIN32)
+  # This test is not designed to work on windows for some reason
+  add_midas_test( KWUtils KWUtilsTest.php )
+endif()
 
-add_test(Utf8encoding ${PHP} ${CMAKE_SOURCE_DIR}/tests/Utf8tools.php --src ${CMAKE_SOURCE_DIR})
+add_midas_style_test( StyleKWUtils ${CMAKE_SOURCE_DIR}/library/KWUtils.php )
+add_midas_style_test( StyleTestsTestsBootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php )
+add_midas_style_test( StyleTestsControllerTestCase ${CMAKE_SOURCE_DIR}/tests/ControllerTestCase.php )
+add_midas_style_test( StyleTestsDatabaseSetup ${CMAKE_SOURCE_DIR}/tests/DatabaseSetup.php )
+add_midas_style_test( StyleTestsDatabaseTestCase ${CMAKE_SOURCE_DIR}/tests/DatabaseTestCase.php )
+add_midas_style_test( StyleTestsKWUtilsTest ${CMAKE_SOURCE_DIR}/tests/KWUtilsTest.php )
+add_midas_style_test( StyleTestsTrailingSpaces ${CMAKE_SOURCE_DIR}/tests/TrailingSpaces.php )
+add_midas_style_test( StyleTestsUTF8Tools ${CMAKE_SOURCE_DIR}/tests/UTF8Tools.php )
+
+if(NOT WIN32)
+  # This test is not designed to work on Windows for some reason
+  add_midas_test( KWUtils KWUtilsTest.php )
+endif()
+
+add_test(UTF8Encoding ${PHP} ${CMAKE_SOURCE_DIR}/tests/UTF8Tools.php --src ${CMAKE_SOURCE_DIR})
 set_tests_properties(
-  Utf8encoding PROPERTIES
+  UTF8Encoding PROPERTIES
   FAIL_REGULAR_EXPRESSION "ERROR;WARNING"
   )
-
-add_subdirectory( library )

@@ -3,7 +3,7 @@
  * REST Controller default actions
  *
  */
-require_once BASE_PATH.'/core/AppController.php';
+require_once BASE_PATH . '/core/AppController.php';
 
 abstract class REST_Controller extends AppController
 {

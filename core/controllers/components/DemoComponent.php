@@ -58,9 +58,9 @@ class DemoComponent extends AppComponent
         }
       }
 
-    if(file_exists(BASE_PATH.'/core/configs/ldap.local.ini'))
+    if(file_exists(LOCAL_CONFIGS_PATH.'/ldap.local.ini'))
       {
-      unlink(BASE_PATH.'/core/configs/ldap.local.ini');
+      unlink(LOCAL_CONFIGS_PATH.'/ldap.local.ini');
       }
 
     $userModel = MidasLoader::loadModel('User');
@@ -77,7 +77,7 @@ class DemoComponent extends AppComponent
     $assetstoreDao->setType(MIDAS_ASSETSTORE_LOCAL);
     $assetstoreModel->save($assetstoreDao);
 
-    $applicationConfig = parse_ini_file(BASE_PATH.'/core/configs/application.ini', true);
+    $applicationConfig = parse_ini_file(CORE_CONFIGS_PATH.'/application.ini', true);
     $applicationConfig['global']['defaultassetstore.id'] = $assetstoreDao->getKey();
     $applicationConfig['global']['demomode'] = true;
     $applicationConfig['global']['dynamichelp'] = true;
@@ -91,20 +91,20 @@ class DemoComponent extends AppComponent
 
     foreach($enabledModules as $module)
       {
-      if(file_exists(BASE_PATH.'/core/configs/'.$module.'.demo.local.ini'))
+      if(file_exists(LOCAL_CONFIGS_PATH.'/'.$module.'.demo.local.ini'))
         {
-        copy(BASE_PATH.'/core/configs/'.$module.'.demo.local.ini', BASE_PATH.'/core/configs/'.$module.'.local.ini');
+        copy(LOCAL_CONFIGS_PATH.'/'.$module.'.demo.local.ini', LOCAL_CONFIGS_PATH.'/'.$module.'.local.ini');
         $applicationConfig['module'][$module] = true;
         }
       else
         {
-        unlink(BASE_PATH.'/core/configs/'.$module.'.local.ini');
+        unlink(LOCAL_CONFIGS_PATH.'/'.$module.'.local.ini');
         }
       }
 
     require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
     $utilityComponent = new UtilityComponent();
-    $utilityComponent->createInitFile(BASE_PATH.'/core/configs/application.local.ini', $applicationConfig);
+    $utilityComponent->createInitFile(LOCAL_CONFIGS_PATH.'/application.local.ini', $applicationConfig);
 
     $configGlobal = new Zend_Config_Ini(APPLICATION_CONFIG, 'global', true);
     Zend_Registry::set('configGlobal', $configGlobal);

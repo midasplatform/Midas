@@ -2,9 +2,7 @@ CREATE TABLE ratings_item (
   rating_id serial PRIMARY KEY,
   item_id bigint NOT NULL,
   user_id bigint NOT NULL,
-  rating smallint NOT NULL,
-  KEY (`item_id`),
-  KEY (`user_id`)
+  rating smallint NOT NULL
 );
 
 CREATE INDEX ratings_item_item_id ON ratings_item (item_id);

@@ -32,9 +32,9 @@ class Visualize_ConfigController extends Visualize_AppController
 
     $module = 'visualize';
 
-    if(file_exists(BASE_PATH."/core/configs/".$module.".local.ini"))
+    if(file_exists(LOCAL_CONFIGS_PATH."/".$module.".local.ini"))
       {
-      $applicationConfig = parse_ini_file(BASE_PATH."/core/configs/".$module.".local.ini", true);
+      $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH."/".$module.".local.ini", true);
       }
     else
       {
@@ -60,13 +60,13 @@ class Visualize_ConfigController extends Visualize_AppController
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
         {
-        if(file_exists(BASE_PATH."/core/configs/".$module.".local.ini.old"))
+        if(file_exists(LOCAL_CONFIGS_PATH."/".$module.".local.ini.old"))
           {
-          unlink(BASE_PATH."/core/configs/".$module.".local.ini.old");
+          unlink(LOCAL_CONFIGS_PATH."/".$module.".local.ini.old");
           }
-        if(file_exists(BASE_PATH."/core/configs/".$module.".local.ini"))
+        if(file_exists(LOCAL_CONFIGS_PATH."/".$module.".local.ini"))
           {
-          rename(BASE_PATH."/core/configs/".$module.".local.ini", BASE_PATH."/core/configs/".$module.".local.ini.old");
+          rename(LOCAL_CONFIGS_PATH."/".$module.".local.ini", LOCAL_CONFIGS_PATH."/".$module.".local.ini.old");
           }
         $applicationConfig['global']['useparaview'] = $this->_getParam('useparaview');
         $applicationConfig['global']['customtmp'] = $this->_getParam('customtmp');
@@ -75,7 +75,7 @@ class Visualize_ConfigController extends Visualize_AppController
         $applicationConfig['global']['pwapp'] = $this->_getParam('pwapp');
         $applicationConfig['global']['pvbatch'] = $this->_getParam('pvbatch');
         $applicationConfig['global']['paraviewworkdir'] = $this->_getParam('paraviewworkdir');
-        $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/".$module.".local.ini", $applicationConfig);
+        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH."/".$module.".local.ini", $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       }

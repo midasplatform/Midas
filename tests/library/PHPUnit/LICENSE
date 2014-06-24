@@ -1,7 +1,23 @@
-PHPUnit
+DbUnit 1.0.3
 
 Copyright (c) 2002-2011, Sebastian Bergmann <sebastian@phpunit.de>.
 All rights reserved.
+
+PHPUnit 3.5.15
+
+Copyright (c) 2002-2011, Sebastian Bergmann <sebastian@phpunit.de>.
+All rights reserved.
+
+PHPUnit_MockObject 1.2.3
+
+Copyright (c) 2002-2013, Sebastian Bergmann <sebastian@phpunit.de>.
+All rights reserved.
+
+PHPUnit_Selenium 1.0.3
+
+Copyright (c) 2002-2011, Sebastian Bergmann <sebastian@phpunit.de>.
+All rights reserved.
+
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions

@@ -18,4 +18,3 @@ CREATE TABLE IF NOT EXISTS `remoteprocessing_job2item` (
   `item_id` bigint(20) NOT NULL,
   `type` tinyint(4) NOT NULL DEFAULT 0
 );
-

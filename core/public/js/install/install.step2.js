@@ -68,7 +68,7 @@
     
           $.ajax({
           type: "POST",
-          url: json.global.webroot+'/install/testconnexion',
+          url: json.global.webroot+'/install/testconnection',
           data: {type: obj.find('[name=type]').val(), host: obj.find('[name=host]').val(), username: obj.find('[name=username]').val(),
             password: obj.find('[name=password]').val(),dbname: obj.find('[name=dbname]').val(),port: obj.find('[name=port]').val()},
           cache:false,

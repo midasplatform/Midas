@@ -63,9 +63,9 @@ class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
     {
     $this->requireAdminPrivileges();
 
-    if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini"))
+    if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini"))
       {
-      $applicationConfig = parse_ini_file(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", true);
+      $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", true);
       }
     else
       {
@@ -77,7 +77,7 @@ class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
     if(empty($applicationConfig['global']['securitykey']))
       {
       $applicationConfig['global']['securitykey'] = uniqid();
-      $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", $applicationConfig);
+      $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", $applicationConfig);
       }
     $formArray['securitykey']->setValue($applicationConfig['global']['securitykey']);
     if(isset($applicationConfig['global']['showbutton']))
@@ -99,18 +99,18 @@ class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
         {
-        if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old"))
+        if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old"))
           {
-          unlink(BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old");
+          unlink(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old");
           }
-        if(file_exists(BASE_PATH."/core/configs/".$this->moduleName.".local.ini"))
+        if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini"))
           {
-          rename(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", BASE_PATH."/core/configs/".$this->moduleName.".local.ini.old");
+          rename(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old");
           }
         $applicationConfig['global']['securitykey'] = $this->_getParam('securitykey');
         $applicationConfig['global']['showbutton'] = $this->_getParam('showbutton');
 
-        $this->Component->Utility->createInitFile(BASE_PATH."/core/configs/".$this->moduleName.".local.ini", $applicationConfig);
+        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", $applicationConfig);
         echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       }

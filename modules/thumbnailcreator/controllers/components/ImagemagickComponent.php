@@ -87,9 +87,9 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
   public function createThumbnailFromPath($name, $fullPath, $width, $height, $exact = true)
     {
     $ext = strtolower(substr(strrchr($name, '.'), 1));
-    if(file_exists(BASE_PATH."/core/configs/thumbnailcreator.local.ini"))
+    if(file_exists(LOCAL_CONFIGS_PATH."/thumbnailcreator.local.ini"))
       {
-      $applicationConfig = parse_ini_file(BASE_PATH."/core/configs/thumbnailcreator.local.ini", true);
+      $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH."/thumbnailcreator.local.ini", true);
       }
     else
       {
