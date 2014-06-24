@@ -2,7 +2,7 @@
 /**
  * PHPUnit
  *
- * Copyright (c) 2002-2011, Sebastian Bergmann <sb@sebastian-bergmann.de>.
+ * Copyright (c) 2002-2014, Sebastian Bergmann <sebastian@phpunit.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,8 +36,8 @@
  *
  * @package    DbUnit
  * @author     Mike Lively <m@digitalsandwich.com>
- * @copyright  2002-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
+ * @copyright  2002-2014 Sebastian Bergmann <sebastian@phpunit.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://www.phpunit.de/
  * @since      File available since Release 1.0.0
  */
@@ -47,9 +47,9 @@
  *
  * @package    DbUnit
  * @author     Mike Lively <m@digitalsandwich.com>
- * @copyright  2010 Mike Lively <m@digitalsandwich.com>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    Release: 1.0.3
+ * @copyright  2010-2014 Mike Lively <m@digitalsandwich.com>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ * @version    Release: 1.3.1
  * @link       http://www.phpunit.de/
  * @since      Class available since Release 1.0.0
  */
@@ -132,5 +132,36 @@ class PHPUnit_Extensions_Database_DataSet_TableFilter extends PHPUnit_Extensions
     public function clearExcludeColumns()
     {
         $this->tableMetaData->clearExcludeColumns();
+    }
+
+	/**
+     * Checks if a given row is in the table
+     *
+     * @param array $row
+     *
+     * @return bool
+     */
+    public function assertContainsRow(Array $row)
+    {
+        $this->loadData();
+        return parent::assertContainsRow($row);
+    }
+
+	/**
+	 * Loads data into local data table if it's not already loaded
+     */
+    protected function loadData()
+    {
+        if ($this->data === NULL) {
+            $data = array();
+            for($row = 0;$row < $this->originalTable->getRowCount();$row++) {
+                $tRow = array();
+                foreach($this->getTableMetaData()->getColumns() as $col) {
+                    $tRow[$col] = $this->getValue($row, $col);
+                }
+                $data[$row] = $tRow;
+            }
+            $this->data   = $data;
+        }
     }
 }

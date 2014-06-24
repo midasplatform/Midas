@@ -2,7 +2,7 @@
 /**
  * PHPUnit
  *
- * Copyright (c) 2002-2011, Sebastian Bergmann <sb@sebastian-bergmann.de>.
+ * Copyright (c) 2002-2014, Sebastian Bergmann <sebastian@phpunit.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,8 +36,8 @@
  *
  * @package    DbUnit
  * @author     Mike Lively <m@digitalsandwich.com>
- * @copyright  2002-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
+ * @copyright  2002-2014 Sebastian Bergmann <sebastian@phpunit.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://www.phpunit.de/
  * @since      File available since Release 1.0.0
  */
@@ -47,9 +47,9 @@
  *
  * @package    DbUnit
  * @author     Mike Lively <m@digitalsandwich.com>
- * @copyright  2010 Mike Lively <m@digitalsandwich.com>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    Release: 1.0.3
+ * @copyright  2010-2014 Mike Lively <m@digitalsandwich.com>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ * @version    Release: 1.3.1
  * @link       http://www.phpunit.de/
  * @since      Class available since Release 1.0.0
  */
@@ -95,6 +95,21 @@ class PHPUnit_Extensions_Database_DataSet_QueryTable extends PHPUnit_Extensions_
         return parent::getTableMetaData();
     }
 
+
+    /**
+     * Checks if a given row is in the table
+     *
+     * @param array $row
+     *
+     * @return bool
+     */
+    public function assertContainsRow(Array $row)
+    {
+        $this->loadData();
+        return parent::assertContainsRow($row);
+    }
+
+
     /**
      * Returns the number of rows in this table.
      *
@@ -135,10 +150,10 @@ class PHPUnit_Extensions_Database_DataSet_QueryTable extends PHPUnit_Extensions_
      *
      * @param PHPUnit_Extensions_Database_DataSet_ITable $other
      */
-    public function assertEquals(PHPUnit_Extensions_Database_DataSet_ITable $other)
+    public function matches(PHPUnit_Extensions_Database_DataSet_ITable $other)
     {
         $this->loadData();
-        return parent::assertEquals($other);
+        return parent::matches($other);
     }
 
     protected function loadData()
@@ -154,7 +169,24 @@ class PHPUnit_Extensions_Database_DataSet_QueryTable extends PHPUnit_Extensions_
         if ($this->tableMetaData === NULL)
         {
             $this->loadData();
-            $this->tableMetaData = new PHPUnit_Extensions_Database_DataSet_DefaultTableMetaData($this->tableName, array_keys($this->data[0]));
+
+            // if some rows are in the table
+            $columns = array();
+            if (isset($this->data[0]))
+                // get column names from data
+                $columns = array_keys($this->data[0]);
+            else {
+                // if no rows found, get column names from database
+                $pdoStatement = $this->databaseConnection->getConnection()->prepare("SELECT column_name FROM information_schema.COLUMNS WHERE table_schema=:schema AND table_name=:table");
+                $pdoStatement->execute(array(
+                    "table"        => $this->tableName,
+                    "schema"    => $this->databaseConnection->getSchema()
+                ));
+
+                $columns = $pdoStatement->fetchAll(PDO::FETCH_COLUMN, 0);
+            }
+            // create metadata
+            $this->tableMetaData = new PHPUnit_Extensions_Database_DataSet_DefaultTableMetaData($this->tableName, $columns);
         }
     }
 }

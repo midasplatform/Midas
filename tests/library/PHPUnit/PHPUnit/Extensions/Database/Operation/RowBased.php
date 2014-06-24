@@ -2,7 +2,7 @@
 /**
  * PHPUnit
  *
- * Copyright (c) 2002-2011, Sebastian Bergmann <sb@sebastian-bergmann.de>.
+ * Copyright (c) 2002-2014, Sebastian Bergmann <sebastian@phpunit.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,8 +36,8 @@
  *
  * @package    DbUnit
  * @author     Mike Lively <m@digitalsandwich.com>
- * @copyright  2002-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
+ * @copyright  2002-2014 Sebastian Bergmann <sebastian@phpunit.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://www.phpunit.de/
  * @since      File available since Release 1.0.0
  */
@@ -52,9 +52,9 @@
  *
  * @package    DbUnit
  * @author     Mike Lively <m@digitalsandwich.com>
- * @copyright  2010 Mike Lively <m@digitalsandwich.com>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    Release: 1.0.3
+ * @copyright  2010-2014 Mike Lively <m@digitalsandwich.com>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ * @version    Release: 1.3.1
  * @link       http://www.phpunit.de/
  * @since      Class available since Release 1.0.0
  */
@@ -67,9 +67,24 @@ abstract class PHPUnit_Extensions_Database_Operation_RowBased implements PHPUnit
 
     protected $iteratorDirection = self::ITERATOR_TYPE_FORWARD;
 
+    /**
+     * @return string|boolean String containing the query or FALSE if a valid query cannot be constructed
+     */
     protected abstract function buildOperationQuery(PHPUnit_Extensions_Database_DataSet_ITableMetaData $databaseTableMetaData, PHPUnit_Extensions_Database_DataSet_ITable $table, PHPUnit_Extensions_Database_DB_IDatabaseConnection $connection);
 
     protected abstract function buildOperationArguments(PHPUnit_Extensions_Database_DataSet_ITableMetaData $databaseTableMetaData, PHPUnit_Extensions_Database_DataSet_ITable $table, $row);
+
+    /**
+    * Allows an operation to disable primary keys if necessary.
+    *
+    * @param PHPUnit_Extensions_Database_DataSet_ITableMetaData $databaseTableMetaData
+    * @param PHPUnit_Extensions_Database_DataSet_ITable $table
+    * @param PHPUnit_Extensions_Database_DB_IDatabaseConnection $connection
+    */
+    protected function disablePrimaryKeys(PHPUnit_Extensions_Database_DataSet_ITableMetaData $databaseTableMetaData, PHPUnit_Extensions_Database_DataSet_ITable $table, PHPUnit_Extensions_Database_DB_IDatabaseConnection $connection)
+    {
+        return FALSE;
+    }
 
     /**
      * @param PHPUnit_Extensions_Database_DB_IDatabaseConnection $connection
@@ -82,16 +97,27 @@ abstract class PHPUnit_Extensions_Database_Operation_RowBased implements PHPUnit
         $dsIterator = $this->iteratorDirection == self::ITERATOR_TYPE_REVERSE ? $dataSet->getReverseIterator() : $dataSet->getIterator();
 
         foreach ($dsIterator as $table) {
+            $rowCount = $table->getRowCount();
+
+            if($rowCount == 0) continue;
+
             /* @var $table PHPUnit_Extensions_Database_DataSet_ITable */
             $databaseTableMetaData = $databaseDataSet->getTableMetaData($table->getTableMetaData()->getTableName());
             $query                 = $this->buildOperationQuery($databaseTableMetaData, $table, $connection);
+            $disablePrimaryKeys    = $this->disablePrimaryKeys($databaseTableMetaData, $table, $connection);
 
-            if ($query === FALSE && $table->getRowCount() > 0) {
-                throw new PHPUnit_Extensions_Database_Operation_Exception($this->operationName, '', array(), $table, "Rows requested for insert, but no columns provided!");
+            if ($query === FALSE) {
+                if ($table->getRowCount() > 0) {
+                    throw new PHPUnit_Extensions_Database_Operation_Exception($this->operationName, '', array(), $table, "Rows requested for insert, but no columns provided!");
+                }
+                continue;
+            }
+
+            if ($disablePrimaryKeys) {
+                $connection->disablePrimaryKeys($databaseTableMetaData->getTableName());
             }
 
             $statement = $connection->getConnection()->prepare($query);
-            $rowCount  = $table->getRowCount();
 
             for ($i = 0; $i < $rowCount; $i++) {
                 $args = $this->buildOperationArguments($databaseTableMetaData, $table, $i);
@@ -105,6 +131,10 @@ abstract class PHPUnit_Extensions_Database_Operation_RowBased implements PHPUnit
                       $this->operationName, $query, $args, $table, $e->getMessage()
                     );
                 }
+            }
+
+            if ($disablePrimaryKeys) {
+                $connection->enablePrimaryKeys($databaseTableMetaData->getTableName());
             }
         }
     }

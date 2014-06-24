@@ -2,7 +2,7 @@
 /**
  * PHPUnit
  *
- * Copyright (c) 2002-2011, Sebastian Bergmann <sb@sebastian-bergmann.de>.
+ * Copyright (c) 2002-2014, Sebastian Bergmann <sebastian@phpunit.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,8 +36,8 @@
  *
  * @package    DbUnit
  * @author     Mike Lively <m@digitalsandwich.com>
- * @copyright  2002-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
+ * @copyright  2002-2014 Sebastian Bergmann <sebastian@phpunit.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://www.phpunit.de/
  * @since      File available since Release 1.0.0
  */
@@ -47,9 +47,9 @@
  *
  * @package    DbUnit
  * @author     Mike Lively <m@digitalsandwich.com>
- * @copyright  2010 Mike Lively <m@digitalsandwich.com>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    Release: 1.0.3
+ * @copyright  2010-2014 Mike Lively <m@digitalsandwich.com>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ * @version    Release: 1.3.1
  * @link       http://www.phpunit.de/
  * @since      Class available since Release 1.0.0
  */
@@ -59,12 +59,12 @@ class PHPUnit_Extensions_Database_DataSet_XmlDataSet extends PHPUnit_Extensions_
     protected function getTableInfo(Array &$tableColumns, Array &$tableValues)
     {
         if ($this->xmlFileContents->getName() != 'dataset') {
-            throw new Exception("The root element of an xml data set file must be called <dataset>");
+            throw new PHPUnit_Extensions_Database_Exception("The root element of an xml data set file must be called <dataset>");
         }
 
         foreach ($this->xmlFileContents->xpath('/dataset/table') as $tableElement) {
             if (empty($tableElement['name'])) {
-                throw new Exception("Table elements must include a name attribute specifying the table name.");
+                throw new PHPUnit_Extensions_Database_Exception("Table elements must include a name attribute specifying the table name.");
             }
 
             $tableName = (string)$tableElement['name'];
@@ -82,7 +82,7 @@ class PHPUnit_Extensions_Database_DataSet_XmlDataSet extends PHPUnit_Extensions_
             foreach ($tableElement->xpath('./column') as $columnElement) {
                 $columnName = (string)$columnElement;
                 if (empty($columnName)) {
-                    throw new Exception("column elements cannot be empty");
+                    throw new PHPUnit_Extensions_Database_Exception("column elements cannot be empty");
                 }
 
                 if (!in_array($columnName, $tableColumns[$tableName])) {
@@ -92,11 +92,17 @@ class PHPUnit_Extensions_Database_DataSet_XmlDataSet extends PHPUnit_Extensions_
                 $tableInstanceColumns[] = $columnName;
             }
 
+            
             foreach ($tableElement->xpath('./row') as $rowElement) {
                 $rowValues = array();
                 $index     = 0;
+                $numOfTableInstanceColumns = count($tableInstanceColumns);
 
                 foreach ($rowElement->children() as $columnValue) {
+                    
+                    if ($index >= $numOfTableInstanceColumns) {
+                        throw new PHPUnit_Extensions_Database_Exception("More row values defined as columns exists.");
+                    }
                     switch ($columnValue->getName()) {
                         case 'value':
                             $rowValues[$tableInstanceColumns[$index]] = (string)$columnValue;
@@ -107,7 +113,7 @@ class PHPUnit_Extensions_Database_DataSet_XmlDataSet extends PHPUnit_Extensions_
                             $index++;
                             break;
                         default:
-                            throw new Exception("Unknown child in the a row element.");
+                            throw new PHPUnit_Extensions_Database_Exception("Unknown child in the a row element.");
                     }
                 }
 

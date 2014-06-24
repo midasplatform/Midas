@@ -40,7 +40,7 @@
  * @copyright  2002-2011 Sebastian Bergmann <sebastian@phpunit.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://www.phpunit.de/
- * @since      File available since Release 3.5.0
+ * @since      File available since Release 1.0.0
  */
 
 /**
@@ -51,9 +51,9 @@
  * @author     Raphael Stolt <raphael.stolt@gmail.com>
  * @copyright  2002-2011 Sebastian Bergmann <sebastian@phpunit.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    Release: 3.5.15
+ * @version    Release: 1.0.0
  * @link       http://www.phpunit.de/
- * @since      Class available since Release 3.5.0
+ * @since      Class available since Release 1.0.0
  */
 class PHPUnit_Extensions_TicketListener_GitHub extends PHPUnit_Extensions_TicketListener
 {
@@ -76,14 +76,6 @@ class PHPUnit_Extensions_TicketListener_GitHub extends PHPUnit_Extensions_Ticket
      */
     public function __construct($username, $apiToken, $repository, $printTicketStateChanges = FALSE)
     {
-        if (!extension_loaded('curl')) {
-            throw new RuntimeException('ext/curl is not available');
-        }
-
-        if (!extension_loaded('json')) {
-            throw new RuntimeException('ext/json is not available');
-        }
-
         $this->username                = $username;
         $this->apiToken                = $apiToken;
         $this->repository              = $repository;

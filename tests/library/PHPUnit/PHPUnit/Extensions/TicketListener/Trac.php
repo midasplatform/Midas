@@ -42,8 +42,10 @@
  * @copyright  2002-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://www.phpunit.de/
- * @since      Class available since Release 3.5.4
+ * @since      Class available since Release 1.0.0
  */
+
+require_once 'XML/RPC2/Client.php';
 
 /**
  * A ticket listener that interacts with Trac.
@@ -74,9 +76,9 @@
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @copyright  2002-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    Release: 3.5.15
+ * @version    Release: 1.0.0
  * @link       http://www.phpunit.de/
- * @since      Class available since Release 3.5.4
+ * @since      Class available since Release 1.0.0
  */
 class PHPUnit_Extensions_TicketListener_Trac extends PHPUnit_Extensions_TicketListener
 {
@@ -170,12 +172,6 @@ class PHPUnit_Extensions_TicketListener_Trac extends PHPUnit_Extensions_TicketLi
      */
     protected function getClient()
     {
-        if (!PHPUnit_Util_Filesystem::fileExistsInIncludePath('XML/RPC2/Client.php')) {
-            throw new PHPUnit_Framework_Exception('PEAR/XML_RPC2 is not available.');
-        }
-
-        require_once 'XML/RPC2/Client.php';
-
         $url = sprintf(
           '%s://%s:%s@%s',
           $this->scheme,

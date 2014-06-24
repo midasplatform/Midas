@@ -2,7 +2,7 @@
 /**
  * PHPUnit
  *
- * Copyright (c) 2002-2011, Sebastian Bergmann <sebastian@phpunit.de>.
+ * Copyright (c) 2011-2012, Sebastian Bergmann <sebastian@phpunit.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,23 +37,23 @@
  * @package    PHPUnit
  * @subpackage Extensions_TicketListener
  * @author     Jan Sorgalla <jsorgalla@googlemail.com>
- * @copyright  2002-2011 Sebastian Bergmann <sebastian@phpunit.de>
+ * @copyright  2011-2012 Sebastian Bergmann <sebastian@phpunit.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://www.phpunit.de/
- * @since      File available since Release 3.5.0
+ * @since      File available since Release 1.0.0
  */
 
 /**
- * A ticket listener that interacts with the GoogleCode issue API.
+ * A ticket listener that interacts with the Google Code issue API.
  *
  * @package    PHPUnit
  * @subpackage Extensions_TicketListener
  * @author     Jan Sorgalla <jsorgalla@googlemail.com>
- * @copyright  2002-2011 Sebastian Bergmann <sebastian@phpunit.de>
+ * @copyright  2011-2012 Sebastian Bergmann <sebastian@phpunit.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    Release: 3.5.15
+ * @version    Release: 1.0.0
  * @link       http://www.phpunit.de/
- * @since      Class available since Release 3.5.0
+ * @since      Class available since Release 1.0.0
  */
 class PHPUnit_Extensions_TicketListener_GoogleCode extends PHPUnit_Extensions_TicketListener
 {
@@ -81,14 +81,6 @@ class PHPUnit_Extensions_TicketListener_GoogleCode extends PHPUnit_Extensions_Ti
      */
     public function __construct($email, $password, $project, $printTicketStateChanges = FALSE, $statusClosed = 'Fixed', $statusReopened = 'Started')
     {
-        if (!extension_loaded('curl')) {
-            throw new RuntimeException('ext/curl is not available');
-        }
-
-        if (!extension_loaded('simplexml')) {
-            throw new RuntimeException('ext/simplexml is not available');
-        }
-
         $this->email                   = $email;
         $this->password                = $password;
         $this->project                 = $project;
