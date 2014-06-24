@@ -11,6 +11,21 @@
         "source": "https://github.com/midasplatform/Midas"
     },
     "require": {
-        "php": ">=5.3"
+        "php": ">=5.3.3",
+        "ext-gd": "*"
+    },
+    "suggest": {
+        "ext-ldap" : "*",
+        "ext-memcached" : "*"
+    },
+    "archive": {
+        "exclude": [
+            "/core/configs/*.local.*",
+            "/data/*/**",
+            "/log/**",
+            "/tests/TestsConfig.php",
+            "!/tests/TestsConfig.php.in",
+            "/tmp/*/**"
+        ]
     }
 }
