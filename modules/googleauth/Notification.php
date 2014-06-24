@@ -23,11 +23,13 @@ class Googleauth_Notification extends MIDAS_Notification
   {
   public $moduleName = 'googleauth';
   public $_models = array('Setting');
+  public $_moduleModels = array('User');
 
   /** init notification process*/
   public function init()
     {
     $this->addCallBack('CALLBACK_CORE_LOGIN_EXTRA_HTML', 'googleAuthLink');
+    $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
     }//end init
 
   /**
@@ -53,5 +55,13 @@ class Googleauth_Notification extends MIDAS_Notification
     return '<div style="margin-top: 10px; display: inline-block;">Or '.
            '<a style="text-decoration: underline;" href="'.$href.'">'.
            'Login with your Google account</a></div>';
+    }
+
+  /**
+   * If a user is deleted, we must delete any corresponding google auth user
+   */
+  public function handleUserDeleted($params)
+    {
+    $this->Googleauth_User->deleteByUser($params['userDao']);
     }
   } // end class

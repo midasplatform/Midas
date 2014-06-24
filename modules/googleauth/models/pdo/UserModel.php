@@ -23,4 +23,15 @@ require_once BASE_PATH.'/modules/googleauth/models/base/UserModelBase.php';
 /** pdo model implementation */
 class Googleauth_UserModel extends Googleauth_UserModelBase
   {
+  public function getByGooglePersonId($pid)
+    {
+    $sql = $this->database->select()->where('google_person_id = ?', $pid);
+    $row = $this->database->fetchRow($sql);
+    return $this->initDao('User', $row, 'googleauth');
+    }
+
+  public function deleteByUser($userDao)
+    {
+    $this->database->getDB()->delete('googleauth_user', 'user_id = '.$userDao->getKey());
+    }
   }

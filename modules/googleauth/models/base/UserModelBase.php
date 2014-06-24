@@ -30,9 +30,18 @@ abstract class Googleauth_UserModelBase extends Googleauth_AppModel
     $this->_mainData = array(
         'googleauth_user_id' => array('type' => MIDAS_DATA),
         'user_id' => array('type' => MIDAS_DATA),
+        'google_person_id' => array('type' => MIDAS_DATA),
         'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User',
                         'parent_column' => 'user_id', 'child_column' => 'user_id')
         );
     $this->initialize(); // required
     } // end __construct()
+
+  public abstract function getByGooglePersonId($pid);
+  public abstract function deleteByUser($userDao);
+
+  public function createGoogleUser($user, $googlePersonId)
+    {
+
+    }
   }
