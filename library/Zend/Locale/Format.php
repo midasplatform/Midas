@@ -15,8 +15,8 @@
  * @category   Zend
  * @package    Zend_Locale
  * @subpackage Format
- * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
- * @version    $Id: Format.php 24594 2012-01-05 21:27:01Z matthew $
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @version    $Id$
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
@@ -29,7 +29,7 @@
  * @category   Zend
  * @package    Zend_Locale
  * @subpackage Format
- * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Locale_Format
@@ -59,7 +59,7 @@ class Zend_Locale_Format
      * @param  array  $options  Array of options, keyed by option name: format_type = 'iso' | 'php', fix_date = true | false,
      *                          locale = Zend_Locale | locale string, precision = whole number between -1 and 30
      * @throws Zend_Locale_Exception
-     * @return Options array if no option was given
+     * @return array if no option was given
      */
     public static function setOptions(array $options = array())
     {
@@ -74,7 +74,7 @@ class Zend_Locale_Format
      * @param  array  $options  Array of options, keyed by option name: format_type = 'iso' | 'php', fix_date = true | false,
      *                          locale = Zend_Locale | locale string, precision = whole number between -1 and 30
      * @throws Zend_Locale_Exception
-     * @return Options array if no option was given
+     * @return array if no option was given
      */
     private static function _checkOptions(array $options = array())
     {
@@ -99,8 +99,9 @@ class Zend_Locale_Format
                         $options['number_format'] = Zend_Locale_Data::getContent($locale, 'decimalnumber');
                     } else if ((gettype($value) !== 'string') and ($value !== NULL)) {
                         // require_once 'Zend/Locale/Exception.php';
+                        $stringValue = (string)(is_array($value) ? implode(' ', $value) : $value);
                         throw new Zend_Locale_Exception("Unknown number format type '" . gettype($value) . "'. "
-                            . "Format '$value' must be a valid number format string.");
+                            . "Format '$stringValue' must be a valid number format string.");
                     }
                     break;
 
@@ -113,8 +114,9 @@ class Zend_Locale_Format
                         $options['date_format'] = Zend_Locale_Format::getDateFormat($locale);
                     } else if ((gettype($value) !== 'string') and ($value !== NULL)) {
                         // require_once 'Zend/Locale/Exception.php';
+                        $stringValue = (string)(is_array($value) ? implode(' ', $value) : $value);
                         throw new Zend_Locale_Exception("Unknown dateformat type '" . gettype($value) . "'. "
-                            . "Format '$value' must be a valid ISO or PHP date format string.");
+                            . "Format '$stringValue' must be a valid ISO or PHP date format string.");
                     } else {
                         if (((isset($options['format_type']) === true) and ($options['format_type'] == 'php')) or
                             ((isset($options['format_type']) === false) and (self::$_options['format_type'] == 'php'))) {
@@ -290,7 +292,7 @@ class Zend_Locale_Format
      * ##0.00 -> 12345.12345 -> 12345.12
      * ##,##0.00 -> 12345.12345 -> 12,345.12
      *
-     * @param   string  $input    Localized number string
+     * @param   string  $value    Localized number string
      * @param   array   $options  Options: number_format, locale, precision. See {@link setOptions()} for details.
      * @return  string  locale formatted number
      * @throws Zend_Locale_Exception
@@ -300,8 +302,8 @@ class Zend_Locale_Format
         // load class within method for speed
         // require_once 'Zend/Locale/Math.php';
 
-        $value             = Zend_Locale_Math::normalize($value);
         $value             = Zend_Locale_Math::floatalize($value);
+        $value             = Zend_Locale_Math::normalize($value);
         $options           = self::_checkOptions($options) + self::$_options;
         $options['locale'] = (string) $options['locale'];
 
@@ -309,7 +311,7 @@ class Zend_Locale_Format
         $symbols = Zend_Locale_Data::getList($options['locale'], 'symbols');
         $oenc = self::_getEncoding();
         self::_setEncoding('UTF-8');
-
+        
         // Get format
         $format = $options['number_format'];
         if ($format === null) {
@@ -473,6 +475,12 @@ class Zend_Locale_Format
         return (string) $format;
     }
 
+    /**
+     * @param string $format
+     * @param string $value
+     * @param int $precision
+     * @return string
+     */
     private static function _seperateFormat($format, $value, $precision)
     {
         if (iconv_strpos($format, ';') !== false) {
@@ -529,7 +537,9 @@ class Zend_Locale_Format
      * Internal method to convert cldr number syntax into regex
      *
      * @param  string $type
+     * @param  array  $options Options: locale. See {@link setOptions()} for details.
      * @return string
+     * @throws Zend_Locale_Exception
      */
     private static function _getRegexForType($type, $options)
     {
@@ -629,7 +639,7 @@ class Zend_Locale_Format
     /**
      * Alias for getNumber
      *
-     * @param   string  $value    Number to localize
+     * @param   string  $input    Number to localize
      * @param   array   $options  Options: locale, precision. See {@link setOptions()} for details.
      * @return  float
      */
@@ -656,9 +666,9 @@ class Zend_Locale_Format
      * Returns if a float was found
      * Alias for isNumber()
      *
-     * @param   string  $input    Localized number string
-     * @param   array   $options  Options: locale. See {@link setOptions()} for details.
-     * @return  boolean           Returns true if a number was found
+     * @param   string $value  Localized number string
+     * @param   array $options Options: locale. See {@link setOptions()} for details.
+     * @return  boolean        Returns true if a number was found
      */
     public static function isFloat($value, array $options = array())
     {
@@ -704,9 +714,9 @@ class Zend_Locale_Format
     /**
      * Returns if a integer was found
      *
-     * @param   string  $input    Localized number string
-     * @param   array   $options  Options: locale. See {@link setOptions()} for details.
-     * @return  boolean           Returns true if a integer was found
+     * @param  string $value Localized number string
+     * @param  array $options Options: locale. See {@link setOptions()} for details.
+     * @return boolean Returns true if a integer was found
      */
     public static function isInteger($value, array $options = array())
     {
@@ -753,15 +763,16 @@ class Zend_Locale_Format
             }
         }
 
-        return join($values);
+        return implode($values);
     }
 
     /**
      * Parse date and split in named array fields
      *
-     * @param   string  $date     Date string to parse
-     * @param   array   $options  Options: format_type, fix_date, locale, date_format. See {@link setOptions()} for details.
-     * @return  array             Possible array members: day, month, year, hour, minute, second, fixed, format
+     * @param  string $date    Date string to parse
+     * @param  array  $options Options: format_type, fix_date, locale, date_format. See {@link setOptions()} for details.
+     * @return array Possible array members: day, month, year, hour, minute, second, fixed, format
+     * @throws Zend_Locale_Exception
      */
     private static function _parseDate($date, $options)
     {
@@ -1179,8 +1190,9 @@ class Zend_Locale_Format
     /**
      * Returns the default time format for $locale.
      *
-     * @param  string|Zend_Locale  $locale  OPTIONAL Locale of $number, possibly in string form (e.g. 'de_AT')
+     * @param  string|Zend_Locale $locale OPTIONAL Locale of $number, possibly in string form (e.g. 'de_AT')
      * @return string  format
+     * @throws Zend_Locale_Exception
      */
     public static function getTimeFormat($locale = null)
     {
@@ -1194,7 +1206,7 @@ class Zend_Locale_Format
 
     /**
      * Returns an array with 'hour', 'minute', and 'second' elements extracted from $time
-     * according to the order described in $format.  For a format of 'H:m:s', and
+     * according to the order described in $format.  For a format of 'H:i:s', and
      * an input of 11:20:55, getTime() would return:
      * array ('hour' => 11, 'minute' => 20, 'second' => 55)
      * The optional $locale parameter may be used to help extract times from strings
@@ -1217,8 +1229,9 @@ class Zend_Locale_Format
     /**
      * Returns the default datetime format for $locale.
      *
-     * @param  string|Zend_Locale  $locale  OPTIONAL Locale of $number, possibly in string form (e.g. 'de_AT')
+     * @param  string|Zend_Locale $locale OPTIONAL Locale of $number, possibly in string form (e.g. 'de_AT')
      * @return string  format
+     * @throws Zend_Locale_Exception
      */
     public static function getDateTimeFormat($locale = null)
     {
@@ -1232,7 +1245,7 @@ class Zend_Locale_Format
 
     /**
      * Returns an array with 'year', 'month', 'day', 'hour', 'minute', and 'second' elements
-     * extracted from $datetime according to the order described in $format.  For a format of 'd.M.y H:m:s',
+     * extracted from $datetime according to the order described in $format.  For a format of 'd.M.y H:i:s',
      * and an input of 10.05.1985 11:20:55, getDateTime() would return:
      * array ('year' => 1985, 'month' => 5, 'day' => 10, 'hour' => 11, 'minute' => 20, 'second' => 55)
      * The optional $locale parameter may be used to help extract times from strings
