@@ -18,6 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
+/**
+ * We must store the fact that a given user record represents a user who has
+ * authenticated via Google Oauth, so we use this model to store that info.
+ */
 abstract class Googleauth_UserModelBase extends Googleauth_AppModel
   {
   /** constructor */

@@ -18,6 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
+/** DAO for the googleauth_user model */
 class Googleauth_UserDao extends AppDao
   {
   public $_model = 'User';
