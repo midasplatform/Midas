@@ -47,7 +47,7 @@ function(add_midas_mysql_test TestName TestFile)
   IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/mysql.ini)
     add_test(
       MySQL${TestName}
-      ${PHP} ${CMAKE_SOURCE_DIR}/tests/PHPUnitMySQL.php --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
+      ${PHP} ${CMAKE_SOURCE_DIR}/tests/PHPUnitMySQL.php --debug --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
     )
     set_tests_properties(
       MySQL${TestName} PROPERTIES
@@ -61,7 +61,7 @@ function(add_midas_pgsql_test TestName TestFile)
    IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/pgsql.ini)
     add_test(
       PgSQL${TestName}
-      ${PHP} ${CMAKE_SOURCE_DIR}/tests/PHPUnitPgSQL.php --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
+      ${PHP} ${CMAKE_SOURCE_DIR}/tests/PHPUnitPgSQL.php --debug --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
     )
     set_tests_properties(
       PgSQL${TestName} PROPERTIES
