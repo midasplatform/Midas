@@ -326,13 +326,23 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     }
 
   /**
+   * @method protected getDataDirectory()
+   * get the midas data directory
+   * @return string
+   */
+  protected function getDataDirectory($subdir = '')
+    {
+    return UtilityComponent::getDataDirectory($subdir);
+    }
+
+  /**
    * @method protected getTempDirectory()
    * get the midas temporary directory
    * @return string
    */
-  protected function getTempDirectory()
+  protected function getTempDirectory($subdir = 'misc')
     {
-    return UtilityComponent::getTempDirectory();
+    return UtilityComponent::getTempDirectory($subdir);
     }
 
   /** return an array of form element     */

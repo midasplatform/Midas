@@ -226,7 +226,7 @@ class InstallController extends AppController
         // create default assetstore
         $assetstoreDao = new AssetstoreDao();
         $assetstoreDao->setName('Local');
-        $assetstoreDao->setPath(BASE_PATH . '/data/assetstore');
+        $assetstoreDao->setPath($this->getDataDirectory('assetstore'));
         $assetstoreDao->setType(MIDAS_ASSETSTORE_LOCAL);
         $this->Assetstore = new AssetstoreModel(); //reset Database adapter
         $this->Assetstore->save($assetstoreDao);

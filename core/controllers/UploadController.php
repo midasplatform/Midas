@@ -51,7 +51,7 @@ class UploadController extends AppController
         {
         $assetstoreDao = new AssetstoreDao();
         $assetstoreDao->setName('Default');
-        $assetstoreDao->setPath(BASE_PATH.'/data/assetstore');
+        $assetstoreDao->setPath($this->getDataDirectory('assetstore'));
         $assetstoreDao->setType(MIDAS_ASSETSTORE_LOCAL);
         $this->Assetstore = new AssetstoreModel(); //reset Database adapter
         $this->Assetstore->save($assetstoreDao);

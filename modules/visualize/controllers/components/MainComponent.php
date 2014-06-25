@@ -451,10 +451,10 @@ class Visualize_MainComponent extends AppComponent
       return;
       }
 
-    $thumbnailPath = BASE_PATH.'/data/thumbnail/'.rand(1, 1000);
-    if(!file_exists(BASE_PATH.'/data/thumbnail/'))
+    $thumbnailPath = UtilityComponent::getDataDirectory('thumbnail').rand(1, 1000);
+    if(!file_exists(UtilityComponent::getDataDirectory('thumbnail')))
       {
-      throw new Zend_Exception("Problem thumbnail path: ".BASE_PATH.'/data/thumbnail/');
+      throw new Zend_Exception("Problem thumbnail path: ".UtilityComponent::getDataDirectory('thumbnail'));
       }
     if(!file_exists($thumbnailPath))
       {
@@ -499,7 +499,7 @@ class Visualize_MainComponent extends AppComponent
     $itemDao->setThumbnail(substr($pathThumbnail, strlen(BASE_PATH) + 1));
     $itemModel->save($itemDao);
 
-    $data_dir = BASE_PATH.'/data/visualize/';
+    $data_dir = UtilityComponent::getDataDirectory('visualize');
     if(!file_exists($data_dir))
       {
       mkdir($data_dir);

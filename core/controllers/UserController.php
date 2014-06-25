@@ -852,10 +852,10 @@ class UserController extends AppController
             return;
             }
 
-          $tmpPath = BASE_PATH.'/data/thumbnail/'.rand(1, 1000);
-          if(!file_exists(BASE_PATH.'/data/thumbnail/'))
+          $tmpPath = $this->getDataDirectory('thumbnail').rand(1, 1000);
+          if(!file_exists($this->getDataDirectory('thumbnail')))
             {
-            throw new Zend_Exception("Thumbnail path does not exist: ".BASE_PATH.'/data/thumbnail/');
+            throw new Zend_Exception("Thumbnail path does not exist: ".$this->getDataDirectory('thumbnail'));
             }
           if(!file_exists($tmpPath))
             {

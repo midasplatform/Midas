@@ -411,6 +411,33 @@ class UtilityComponent extends AppComponent
     return self::run_query_from_file('Pdo_Pgsql', $sqlfile, $host, $username, $password, $dbname, $port);
     }
 
+  /** Get the data directory */
+  public static function getDataDirectory($subdir = '')
+    {
+    $settingModel = MidasLoader::loadModel('Setting');
+    try
+      {
+      $dataDirectory = $settingModel->getValueByName('data_directory');
+      }
+    catch(Exception $e)
+      {
+      $dataDirectory = null;
+      }
+    if(!isset($dataDirectory) || empty($dataDirectory))
+      {
+      $dataDirectory = BASE_PATH.'/data';
+      }
+    if($subdir == '')
+      {
+      $dataDirectory .= '/';
+      }
+    else
+      {
+      $dataDirectory .= '/'.$subdir.'/';
+      }
+    return $dataDirectory;
+    }
+
   /**
    * @method public getTempDirectory()
    * @param $subdir

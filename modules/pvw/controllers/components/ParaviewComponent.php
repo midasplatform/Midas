@@ -142,7 +142,7 @@ class Pvw_ParaviewComponent extends AppComponent
       exec('kill -9 '.$instance->getPid());
       }
 
-    UtilityComponent::rrmdir(BASE_PATH.'/tmp/pvw-data/'.$instance->getKey());
+    UtilityComponent::rrmdir(UtilityComponent::getTempDirectory('pvw-data').$instance->getKey());
 
     $instanceModel = MidasLoader::loadModel('Instance', 'pvw');
     $instanceModel->delete($instance);
@@ -204,11 +204,11 @@ class Pvw_ParaviewComponent extends AppComponent
    */
   private function _createDataDir($itemDao, $meshItems, $instanceDao)
     {
-    if(!is_dir(BASE_PATH.'/tmp/pvw-data'))
+    if(!is_dir(UtilityComponent::getTempDirectory('pvw-data')))
       {
-      mkdir(BASE_PATH.'/tmp/pvw-data');
+      mkdir(UtilityComponent::getTempDirectory('pvw-data'));
       }
-    $path = BASE_PATH.'/tmp/pvw-data/'.$instanceDao->getKey();
+    $path = UtilityComponent::getTempDirectory('pvw-data').$instanceDao->getKey();
     mkdir($path);
     mkdir($path.'/main');
     mkdir($path.'/surfaces');

@@ -110,15 +110,15 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       }
 
     // create destination
-    $tmpPath = BASE_PATH.'/data/thumbnail';
+    $tmpPath = UtilityComponent::getDataDirectory('thumbnail');
     if(!file_exists($tmpPath))
       {
-      throw new Zend_Exception('Temporary thumbnail dir does not exist: '.BASE_PATH.'/data/thumbnail/');
+      throw new Zend_Exception('Temporary thumbnail dir does not exist: '.UtilityComponent::getDataDirectory('thumbnail'));
       }
-    $destination = $tmpPath.'/'.rand(1, 10000).'.jpeg';
+    $destination = $tmpPath.rand(1, 10000).'.jpeg';
     while(file_exists($destination))
       {
-      $destination = $tmpPath.'/'.rand(1, 10000).'.jpeg';
+      $destination = $tmpPath.rand(1, 10000).'.jpeg';
       }
     $pathThumbnail = $destination;
 
@@ -186,19 +186,19 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
    */
   public function preprocessByThumbnailer($name, $fullpath)
     {
-    $tmpPath = BASE_PATH.'/data/thumbnail';
+    $tmpPath = UtilityComponent::getDataDirectory('thumbnail');
     if(!file_exists($tmpPath))
       {
-      throw new Zend_Exception('Temporary thumbnail dir does not exist: '.BASE_PATH.'/data/thumbnail/');
+      throw new Zend_Exception('Temporary thumbnail dir does not exist: '.UtilityComponent::getDataDirectory('thumbnail'));
       }
 
-    $copyDestination = $tmpPath.'/'.$name;
+    $copyDestination = $tmpPath.$name;
     copy($fullpath, $copyDestination);
 
-    $jpegDestination = $tmpPath.'/'.$name.'.jpeg';
+    $jpegDestination = $tmpPath.$name.'.jpeg';
     while(file_exists($jpegDestination))
       {
-      $jpegDestination = $tmpPath.'/'.$name.rand(1, 10000).'.jpeg';
+      $jpegDestination = $tmpPath.$name.rand(1, 10000).'.jpeg';
       }
     $modulesConfig = Zend_Registry::get('configsModules');
     $thumbnailerPath = $modulesConfig['thumbnailcreator']->thumbnailer;
