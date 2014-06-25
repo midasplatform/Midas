@@ -54,5 +54,16 @@ echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/user/
       <td></td>
     </tr>
   </table>
+  <?php
+  $extraHtml = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_LOGIN_EXTRA_HTML');
+  foreach($extraHtml as $html)
+    {
+    if(!empty($html))
+      {
+      echo $html;
+      }
+    }
+  ?>
 </form>
+
 <br/>
