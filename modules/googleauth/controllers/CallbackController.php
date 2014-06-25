@@ -3,7 +3,7 @@
 
 class Googleauth_CallbackController extends Googleauth_AppController
 {
-  public $_models = array('Setting');
+  public $_models = array('Setting', 'User');
   public $_moduleModels = array('User');
 
   /**
@@ -28,7 +28,11 @@ class Googleauth_CallbackController extends Googleauth_AppController
 
     $user = $this->_createOrGetUser($info);
 
-    echo json_encode($user);
+    session_start();
+    $this->userSession->Dao = $user;
+    session_write_close();
+
+    $this->_redirect('/');
     }
 
   /**
@@ -97,22 +101,12 @@ class Googleauth_CallbackController extends Googleauth_AppController
       }
     $resp = json_decode($resp);
 
-    // Now that we have the user info, we use that to log in
-    $googlePersonId = $resp->id;
-    $firstName = $resp->name->givenName;
-    $lastName = $resp->name->familyName;
-
-    foreach($resp->emails as $emailEntry)
-      {
-      $email = $emailEntry->value;
-      break;
-      }
-
+    // Extract the relevant user information from the response.
     return array(
-      'googlePersonId' => $googlePersonId,
-      'firstName' => $firstName,
-      'lastName' => $lastName,
-      'email' => $email);
+      'googlePersonId' => $resp->id,
+      'firstName' => $resp->name->givenName,
+      'lastName' => $resp->name->familyName,
+      'email' => strtolower($resp->emails[0]->value));
     }
 
   protected function _createOrGetUser($info)
@@ -122,12 +116,20 @@ class Googleauth_CallbackController extends Googleauth_AppController
 
     if (!$existing)
       {
-      // TODO register a new user with the given info
-      $this->Googleauth_User->createGoogleUser($user, $personId)
+      $user = $this->User->getByEmail($info['email']);
+      if(!$user)
+        {
+        $user = $this->User->createUser(
+          $info['email'], null, $info['firstName'], $info['lastName'], 0, '');
+        }
+
+      $this->Googleauth_User->createGoogleUser($user, $personId);
       }
     else
       {
       $user = $this->User->load($existing->getUserId());
       }
+
+    return $user;
     }
 }//end class
