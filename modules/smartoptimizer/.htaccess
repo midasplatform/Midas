@@ -1,2 +1,0 @@
-php_flag zlib.output_compression Off
-php_flag output_buffering Off
