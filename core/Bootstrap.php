@@ -159,7 +159,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         'message' => 'message',
         'module'   => 'module');
       $writer = new Zend_Log_Writer_Db($db, 'errorlog', $columnMapping);
-      $filter = new Zend_Log_Filter_Priority(Zend_Log::INFO);
+      $filter = new Zend_Log_Filter_Priority(Zend_Log::DEBUG);
       $writer->addFilter($filter);
       $logger->addWriter($writer);
       }
