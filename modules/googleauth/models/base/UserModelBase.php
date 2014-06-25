@@ -40,6 +40,12 @@ abstract class Googleauth_UserModelBase extends Googleauth_AppModel
   public abstract function getByGooglePersonId($pid);
   public abstract function deleteByUser($userDao);
 
+  /**
+   * Create a new record of a user who authenticates via google auth.
+   * @param $user The user dao representing this user's information
+   * @param $googlePersonId The unique identifier value for the google user
+   * @return The created googleauth_user dao.
+   */
   public function createGoogleUser($user, $googlePersonId)
     {
     $guserDao = MidasLoader::newDao('UserDao', 'googleauth');
