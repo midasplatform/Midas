@@ -17,6 +17,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /*
  * SmartOptimizer JavaScript Minifier
  */
@@ -64,8 +65,6 @@ function minify_js($str) {
 			while ($i<strlen($str) && $str[$i]!="\n" && $str[$i]!="\r") $i++;
 		}
 		
-
-
 		$LF_needed = false;
 		if (preg_match('/[\n\r\t ]/', $str[$i])) {
 			if (strlen($res) && preg_match('/[\n ]/', $res[strlen($res)-1])) {
@@ -112,4 +111,3 @@ function minify_js($str) {
 	if ($i<strlen($str) && preg_match('/[^\n\r\t ]/', $str[$i])) $res .= $str[$i];
 	return $res;
 }
-?>

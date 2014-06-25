@@ -17,46 +17,48 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /*
  * SmartOptimizer Configuration File
  */
+
 if(file_exists('../../configs/application.local.ini'))
 	{
-	$config=parse_ini_file('../../configs/application.local.ini');
+	$config = parse_ini_file('../../configs/application.local.ini');
 	}
 else
 	{
-	$config=parse_ini_file('../../configs/application.ini');
+	$config = parse_ini_file('../../configs/application.ini');
 	}
-  
-if(isset($config['smartoptimizer'])&&$config['smartoptimizer']==1)
-{
-//use this to set gzip compression On or Off
-$settings['gzip'] = true;
 
-//use this to set Minifier On or Off
-$settings['minify'] = true;
+if(isset($config['smartoptimizer']) && $config['smartoptimizer'] == 1 && is_writable('../../../tmp/cache/smartoptimizer/'))
+  {
+  //use this to set gzip compression On or Off
+  $settings['gzip'] = true;
 
-//use this to set file concatenation On or Off
-$settings['concatenate'] = true;
+  //use this to set Minifier On or Off
+  $settings['minify'] = true;
 
-//specifies whether to emebed files included in css files using the data URI scheme or not 
-$settings['embed'] = false;
-}
+  //use this to set file concatenation On or Off
+  $settings['concatenate'] = true;
+
+  //specifies whether to emebed files included in css files using the data URI scheme or not 
+  $settings['embed'] = false;
+  }
 else
-{
-//use this to set gzip compression On or Off
-$settings['gzip'] = false;
+  {
+  //use this to set gzip compression On or Off
+  $settings['gzip'] = false;
 
-//use this to set Minifier On or Off
-$settings['minify'] = false;
+  //use this to set Minifier On or Off
+  $settings['minify'] = false;
 
-//use this to set file concatenation On or Off
-$settings['concatenate'] = false;
+  //use this to set file concatenation On or Off
+  $settings['concatenate'] = false;
 
-//specifies whether to emebed files included in css files using the data URI scheme or not 
-$settings['embed'] = false;
-}
+  //specifies whether to emebed files included in css files using the data URI scheme or not 
+  $settings['embed'] = false;
+  }
 
 //base dir (a relative path to the base directory)
 $settings['baseDir'] = '../';
@@ -67,14 +69,11 @@ $settings['charSet'] = 'utf-8';
 //Show error messages if any error occurs (true or false)
 $settings['debug'] = false;
 
-
 //use this to set gzip compression level (an integer between 1 and 9)
 $settings['compressionLevel'] = 9;
 
 //these types of files will not be gzipped nor minified
 $settings['gzipExceptions'] = array('gif','jpeg','jpg','png','swf'); 
-
-
 
 //separator for files to be concatenated
 $settings['separator'] = ',';
@@ -102,5 +101,3 @@ $settings['clientCache'] = true;
 
 //Setting this to false will force the browser to use cached files without checking for changes.
 $settings['clientCacheCheck'] = true;
-
-?>

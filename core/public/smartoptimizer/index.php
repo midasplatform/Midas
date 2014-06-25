@@ -17,6 +17,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /* SmartOptimizer v1.8
  * SmartOptimizer enhances your website performance using techniques
  * such as compression, concatenation, minifying, caching, and embedding on demand.
@@ -212,5 +213,3 @@ if (!$settings['clientCache'] || !$settings['clientCacheCheck'] || !isset($_SERV
 		readfile($cachedFile);
 	}
 } else headerExit('304 Not Modified');
-
-?>

@@ -17,10 +17,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /*
  * SmartOptimizer CSS Minifier
  */
-
 function convertUrl($url, $count)
 {
 	global $settings, $mimeTypes, $fileDir;
@@ -51,7 +51,7 @@ function convertUrl($url, $count)
 	}
 	
 	$contents = file_get_contents($fileDir.$url);
-	 
+	
 	if ($fileType == 'css') {
 		$oldFileDir = $fileDir;
 		$fileDir = rtrim(dirname($fileDir.$url), '\/').'/';
@@ -62,7 +62,7 @@ function convertUrl($url, $count)
 		$baseUrl = $oldBaseUrl;
 	}
 	
-	$base64   = base64_encode($contents); 
+	$base64   = base64_encode($contents);
 	return 'data:' . $mimeType . ';base64,' . $base64;
 }
 
@@ -131,4 +131,3 @@ function minify_css($str) {
 	if ($i<strlen($str) && preg_match('/[^\n\r\t ]/', $str[$i])) $res .= $str[$i];
 	return $res;
 }
-?>
