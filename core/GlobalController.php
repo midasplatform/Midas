@@ -117,7 +117,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     if(!$this->isDebug())
       {
       $frontendOptions = array('automatic_serialization' => true, 'lifetime' => 86400);
-      if(extension_loaded('memcache'))
+      if(extension_loaded('memcache') || session_save_path() === 'Memcache')
         {
         $cache = Zend_Cache::factory('Core', 'Memcached', $frontendOptions, array());
         }
@@ -128,7 +128,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       else
         {
         $cacheDir = UtilityComponent::getCacheDirectory() . '/db';
-        if(is_writable($cacheDir))
+        if(is_dir($cacheDir) && is_writable($cacheDir))
           {
           $backendOptions = array('cache_dir' => $cacheDir);
           $cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
