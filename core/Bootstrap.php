@@ -182,7 +182,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     $this->bootstrap('frontController');
     $front = $this->getResource('frontController');
     $front->addModuleDirectory(BASE_PATH.'/modules');
-    $front->addModuleDirectory(BASE_PATH.'/privateModules');
+    if(file_exists(BASE_PATH.'/privateModules'))
+      {
+      $front->addModuleDirectory(BASE_PATH.'/privateModules');
+      }
     }
 
   /** init routes*/
