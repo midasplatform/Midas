@@ -19,8 +19,24 @@
 =========================================================================*/
 
 define('CORE_CONFIGS_PATH', BASE_PATH . '/core/configs');
-define('LOCAL_CONFIGS_PATH', CORE_CONFIGS_PATH);
-define('LOGS_PATH', BASE_PATH . '/log');
+
+if(getenv('midas_local_configs_path') !== false)
+  {
+  define('LOCAL_CONFIGS_PATH', getenv('midas_local_configs_path'));
+  }
+else
+  {
+  define('LOCAL_CONFIGS_PATH', CORE_CONFIGS_PATH);
+  }
+
+if(getenv('midas_logs_path') !== false)
+  {
+  define('LOGS_PATH', getenv('midas_logs_path'));
+  }
+else
+  {
+  define('LOGS_PATH', BASE_PATH . '/log');
+  }
 
 if(file_exists(LOCAL_CONFIGS_PATH . '/core.local.ini'))
   {

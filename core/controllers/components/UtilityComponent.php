@@ -406,7 +406,14 @@ class UtilityComponent extends AppComponent
       }
     if(!isset($dataDirectory) || empty($dataDirectory))
       {
-      $dataDirectory = BASE_PATH.'/data';
+      if(getenv('midas_data_path') !== false)
+        {
+        $dataDirectory = getenv('midas_data_path');
+        }
+      else
+        {
+        $dataDirectory = BASE_PATH.'/data';
+        }
       }
     if($subdir == '')
       {
@@ -441,7 +448,14 @@ class UtilityComponent extends AppComponent
       }
     if(!isset($tempDirectory) || empty($tempDirectory))
       {
-      $tempDirectory = BASE_PATH.'/tmp';
+      if(getenv('midas_temp_path') !== false)
+        {
+        $tempDirectory = getenv('midas_temp_path');
+        }
+      else
+        {
+        $tempDirectory = BASE_PATH.'/tmp';
+        }
       }
     return $tempDirectory .'/'.$subdir.'/';
     }
