@@ -1,0 +1,27 @@
+application: your-appengine-project
+version: 1
+runtime: php
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /(.*\.(css|gif|ico|jpg|js|png))$
+  static_files: \1
+  upload: .*\.(css|gif|ico|jpg|js|png)$
+
+- url: /.*
+  script: index.php
+
+env_variables:
+  midas_data_path: gs://your-cloudstorage-bucket/data
+  midas_local_configs_path: gs://your-cloudstorage-bucket/configs
+  midas_temp_path: gs://your-cloudstorage-bucket/tmp
+
+skip_files:
+- ^(.*/)?.*/(.htaccess|CMakeLists\.txt)$
+- ^(.*/)?(\.gitignore|\.travis.yml|composer\.json|COPYRIGHT|CTestConfig\.cmake|LICENSE|README\.md|Vagrantfile)$
+- ^(.*/)?core/configs/.*\.local\.ini$
+- ^(.*/)?(\.git|\.vagrant|data|log|provisioning|tests|tmp|utils)/.*
+- ^(.*/)?(core|modules/.*)/(database/(mongo|pgsql)|tests)/.*
+- ^(.*/)?library/(CMake|Executable)/.*
+- ^(.*/)?modules/(batchmake|cleanup|dicom.*|example|metadataextractor|pvw|remoteprocessing|scheduler|solr|statistics|thumbnailcreator|tracker|visualize)/.*
