@@ -42,7 +42,7 @@ if(isset($config['smartoptimizer']) && $config['smartoptimizer'] == 1 && is_writ
   //use this to set file concatenation On or Off
   $settings['concatenate'] = true;
 
-  //specifies whether to emebed files included in css files using the data URI scheme or not 
+  //specifies whether to emebed files included in css files using the data URI scheme or not
   $settings['embed'] = false;
   }
 else
@@ -56,7 +56,7 @@ else
   //use this to set file concatenation On or Off
   $settings['concatenate'] = false;
 
-  //specifies whether to emebed files included in css files using the data URI scheme or not 
+  //specifies whether to emebed files included in css files using the data URI scheme or not
   $settings['embed'] = false;
   }
 
@@ -64,7 +64,7 @@ else
 $settings['baseDir'] = '../';
 
 //Encoding of your js and css files. FOR THE LOVE OF GOD ONLY USE UTF8
-$settings['charSet'] = 'utf-8'; 
+$settings['charSet'] = 'utf-8';
 
 //Show error messages if any error occurs (true or false)
 $settings['debug'] = false;
@@ -73,7 +73,7 @@ $settings['debug'] = false;
 $settings['compressionLevel'] = 9;
 
 //these types of files will not be gzipped nor minified
-$settings['gzipExceptions'] = array('gif','jpeg','jpg','png','swf'); 
+$settings['gzipExceptions'] = array('gif','jpeg','jpg','png','swf');
 
 //separator for files to be concatenated
 $settings['separator'] = ',';
@@ -82,7 +82,7 @@ $settings['separator'] = ',';
 $settings['embedMaxSize'] = 5120; //5KB
 
 //these types of files will not be embedded
-$settings['embedExceptions'] = array('htc'); 
+$settings['embedExceptions'] = array('htc');
 
 //to set server-side cache On or Off
 $settings['serverCache'] = true;

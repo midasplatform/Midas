@@ -30,7 +30,7 @@
  *                      http://www.regular-expressions.info/javascriptexample.html
  * @param $fileFilterErrorMsg : Message to display when regular expression is false
  * @param $destSelector : jquery selector to insert the filename when user click on 'OK'
- * 
+ *
 **/
 
   // assign unique identifier to this element
@@ -44,7 +44,7 @@
     }
   $fp_uuid = Configure::read('filePickerId');
 
-  
+ 
   if( ! isset($script) ) $script = $this->webroot . 'admin/filePicker';
   if( ! isset($width) ) $width = 400;
   if( ! isset($height) ) $height = 400;
@@ -52,7 +52,7 @@
   if( ! isset($fileFilterErrorMsg) ) $fileFilterErrorMsg = 'Incorrect file type';
   if( ! isset($destSelector) ) $destSelector = 'body>XX'; // default selector return 0 elements
   if( ! isset($msg) ) $msg = '';
-  
+ 
   // Find root:
   /*if( strpos( strtolower(PHP_OS), 'win') !== false )
       {
@@ -63,43 +63,43 @@
       $root = '/';
       }*/
   $root = '';
-  
+ 
 ?>
 
 <!-- FILE PICKER -->
-<link rel="stylesheet" type="text/css" href="<?php echo $this->webroot?>css/jqueryFileTree.css" media="screen" /> 
+<link rel="stylesheet" type="text/css" href="<?php echo $this->webroot?>css/jqueryFileTree.css" media="screen" />
 <style>
 .fp-container {
-      } 
-      
+      }
+     
 /* The fp-XXX-pannel is the div that gets lighted */
 #fp-<?php echo $fp_uuid?>-panel {
-        display:none;  
+        display:none; 
         position:fixed;
-        top:100px;  
-        left:50%;  
-        margin-left:-200px;  
-        width:<?php echo $width?>px;  
-        background:#FFFFFF;  
-        padding:10px 15px 10px 15px;  
-        border:2px solid #CCCCCC;  
+        top:100px; 
+        left:50%; 
+        margin-left:-200px; 
+        width:<?php echo $width?>px; 
+        background:#FFFFFF; 
+        padding:10px 15px 10px 15px; 
+        border:2px solid #CCCCCC; 
         z-index:1001;
         }
-        
-/* The fp-XXX-pannel is the div that covers the rest of the page */ 
-#fp-<?php echo $fp_uuid?>-background {  
-         display:none;  
-         background:#000000;  
-         opacity:0.5;  
-         filter:alpha(opacity=90);  
-         position:absolute;  
-         top:0px;  
-         left:0px;  
-         min-width:100%;  
-         min-height:100%;  
-         z-index:1000;  
-        } 
        
+/* The fp-XXX-pannel is the div that covers the rest of the page */
+#fp-<?php echo $fp_uuid?>-background { 
+         display:none; 
+         background:#000000; 
+         opacity:0.5; 
+         filter:alpha(opacity=90); 
+         position:absolute; 
+         top:0px; 
+         left:0px; 
+         min-width:100%; 
+         min-height:100%; 
+         z-index:1000; 
+        }
+      
 .fp-fileTree {
         width: <?php echo $width?>px;
         height: 300px;
@@ -112,12 +112,12 @@
         padding: 5px;
         text-align: left;
       }
-      
+     
 .fp-inputFile {
         position: relative;
         width: <?php echo $width+5?>px;
       }
-      
+     
 .fp-inputButton {
         position: relative;
         float: left;
@@ -125,9 +125,9 @@
         width: 100px;
         margin: 3px 40px;
       }
-      
+     
 .fp-open {
-      }      
+      }     
 </style>
 
 <?php if($fp_uuid == 1) {?>
@@ -148,9 +148,9 @@ $(document).ready( function() {
 
    $('#fp-<?php echo $fp_uuid?>-fileTree').fileTree(
         {
-          root: '', 
-          script: '<?php echo $script?>' 
-        }, 
+          root: '',
+          script: '<?php echo $script?>'
+        },
         function(file) {
           $("#fp-<?php echo $fp_uuid?>-inputFile").val('<?php echo $root?>' + file);
           },
@@ -169,7 +169,7 @@ $(document).ready( function() {
          // if destSelector is valid set its value to file
          if( $("<?php echo $destSelector?>").length !== 0 )
            {
-           $("<?php echo $destSelector?>").val(file); 
+           $("<?php echo $destSelector?>").val(file);
            $("#fp-<?php echo $fp_uuid?>-panel, #fp-<?php echo $fp_uuid?>-background").fadeOut(300);
            }
          }
@@ -179,7 +179,7 @@ $(document).ready( function() {
          }
        return false; // important to return false to prevent a form that include
                      // this element to be submitted when the user just want to
-                     // select a file.       
+                     // select a file.      
      });
 
    //$("#fp-<?php echo $fp_uuid?>-panel").draggable();
@@ -187,7 +187,7 @@ $(document).ready( function() {
 </script>
 <input type="submit" id="fp-<?php echo $fp_uuid?>-open" class="fp-open" value="Choose"></input>
 <div id="fp-<?php echo $fp_uuid?>-container" class="fp-container">
-  
+ 
   <div id="fp-<?php echo $fp_uuid?>-background"></div>
   <div id="fp-<?php echo $fp_uuid?>-panel">
     <b><?php echo $msg; ?></b>
