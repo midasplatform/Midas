@@ -54,7 +54,7 @@ function(add_midas_mysql_test TestName TestFile)
       FAIL_REGULAR_EXPRESSION ".*Failures: [1-9]+.*;.*Exceptions: [1-9]+.*"
       RESOURCE_LOCK MIDASDatabase
     )
-  ENDIF(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/mysql.ini)  
+  ENDIF(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/mysql.ini) 
 endfunction(add_midas_mysql_test)
 
 function(add_midas_pgsql_test TestName TestFile)
