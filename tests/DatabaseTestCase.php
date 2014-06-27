@@ -155,20 +155,33 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
     if(!isset($this->_connectionMock) || $this->_connectionMock == null)
       {
       $configDatabase = Zend_Registry::get('configDatabase');
-      if($configDatabase->database->type == 'pdo')
+      if(empty($configDatabase->database->params->driver_options))
         {
-        $db = Zend_Db::factory($configDatabase->database->adapter, array(
-          'host' => $configDatabase->database->params->host,
-          'username' => $configDatabase->database->params->username,
-          'password' => $configDatabase->database->params->password,
-          'dbname' => $configDatabase->database->params->dbname,
-        )
-        );
-        $this->_connectionMock = $this->createZendDbConnection(
-          $db, $configDatabase->database->params->dbname
-        );
-        Zend_Db_Table_Abstract::setDefaultAdapter($db);
+        $driverOptions = array();
         }
+      else
+        {
+        $driverOptions = $configDatabase->database->params->driver_options->toArray();
+        }
+      $params = array(
+        'dbname' => $configDatabase->database->params->dbname,
+        'username' => $configDatabase->database->params->username,
+        'password' => $configDatabase->database->params->password,
+        'driver_options' => $driverOptions);
+      if(empty($configDatabase->database->params->unix_socket))
+        {
+        $params['host'] = $configDatabase->database->params->host;
+        $params['port'] = $configDatabase->database->params->port;
+        }
+      else
+        {
+        $params['unix_socket'] = $configDatabase->database->params->unix_socket;
+        }
+      $db = Zend_Db::factory($configDatabase->database->adapter, $params);
+      $this->_connectionMock = $this->createZendDbConnection(
+        $db, $configDatabase->database->params->dbname
+      );
+      Zend_Db_Table_Abstract::setDefaultAdapter($db);
       }
     return $this->_connectionMock;
     }

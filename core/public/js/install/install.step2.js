@@ -58,10 +58,10 @@
     obj.find('.testOk').hide();
     obj.find('.testNok').hide();
     obj.find('.testError').html('');
-    if(obj.find('[name=host]').val()==''||obj.find('[name=port]').val()=="")
+    if((obj.find('[name=host]').val()==''||obj.find('[name=port]').val()=="") && obj.find('[name=unix_socket]').val()=='')
       {
       obj.find('.testNok').show();
-      obj.find('.testError').html("Please, set the port and the host.");  
+      obj.find('.testError').html("Please set the host and port or the socket.");  
       obj.find('.testLoading').hide();
       return;
       }
@@ -70,7 +70,7 @@
           type: "POST",
           url: json.global.webroot+'/install/testconnection',
           data: {type: obj.find('[name=type]').val(), host: obj.find('[name=host]').val(), username: obj.find('[name=username]').val(),
-            password: obj.find('[name=password]').val(),dbname: obj.find('[name=dbname]').val(),port: obj.find('[name=port]').val()},
+            password: obj.find('[name=password]').val(),dbname: obj.find('[name=dbname]').val(),port: obj.find('[name=port]').val(),unix_socket: obj.find('[name=unix_socket]').val()},
           cache:false,
           success: function(jsonContent){
             var testConnexion=jQuery.parseJSON(jsonContent);
@@ -111,7 +111,7 @@ function checkAll(obj)
   {
     if(!checkEmail(obj.val()))
     {
-      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/nok.png"/> The e-mail is not valid');
+      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/nok.png"/> The email address is not valid');
       email=false;
     }
     else  
@@ -124,7 +124,7 @@ function checkAll(obj)
   {
     if(obj.val().length<1)
     {
-      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/nok.png"/> Please set your firstname'); 
+      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/nok.png"/> Please set your first name'); 
       firstname=true;
     }
     else
@@ -138,7 +138,7 @@ function checkAll(obj)
   {
     if(obj.val().length<1)
     {
-      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/nok.png"/> Please set your lastname '); 
+      obj.parent('div').find('span').html('<img alt="" src="'+json.global.coreWebroot+'/public/images/icons/nok.png"/> Please set your last name '); 
       lastname=false;
     }
     else

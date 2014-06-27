@@ -354,15 +354,8 @@ class UtilityComponent extends AppComponent
     }
 
   /** Function to run a SQL script */
-  static function run_query_from_file($adapter, $sqlfile, $host, $username, $password, $dbname, $port)
+  static function run_sql_from_file($db, $sqlfile)
     {
-    $db = Zend_Db::factory($adapter, array(
-      'host' => $host,
-      'port' => $port,
-      'username' => $username,
-      'password' => $password,
-      'dbname' => $dbname));
-
     try
       {
       $db->getConnection();
@@ -397,18 +390,6 @@ class UtilityComponent extends AppComponent
         }
       }
     return true;
-    }
-
-  /** Function to run a MySQL script */
-  static function run_mysql_from_file($sqlfile, $host, $username, $password, $dbname, $port)
-    {
-    return self::run_query_from_file('PDO_MYSQL', $sqlfile, $host, $username, $password, $dbname, $port);
-    }
-
-  /** Function to run a PostgreSQL script */
-  static function run_pgsql_from_file($sqlfile, $host, $username, $password, $dbname, $port)
-    {
-    return self::run_query_from_file('PDO_PGSQL', $sqlfile, $host, $username, $password, $dbname, $port);
     }
 
   /** Get the data directory */
@@ -501,28 +482,43 @@ class UtilityComponent extends AppComponent
 
     try
       {
-      switch(Zend_Registry::get('configDatabase')->database->adapter)
+      $configDatabase = Zend_Registry::get('configDatabase');
+      if(empty($configDatabase->database->params->driver_options))
+        {
+        $driverOptions = array();
+        }
+      else
+        {
+        $driverOptions = $configDatabase->database->params->driver_options->toArray();
+        }
+      $params = array(
+        'dbname' => $configDatabase->database->params->dbname,
+        'username' => $configDatabase->database->params->username,
+        'password' => $configDatabase->database->params->password,
+        'driver_options' => $driverOptions);
+      if(empty($configDatabase->database->params->unix_socket))
+        {
+        $params['host'] = $configDatabase->database->params->host;
+        $params['port'] = $configDatabase->database->params->port;
+        }
+      else
+        {
+        $params['unix_socket'] = $configDatabase->database->params->unix_socket;
+        }
+      $db = Zend_Db::factory($configDatabase->database->adapter, $params);
+
+      switch($configDatabase->database->adapter)
         {
         case 'PDO_MYSQL':
           if(file_exists(BASE_PATH.'/modules/'.$moduleName.'/database/mysql/'.$version.'.sql'))
             {
-            $this->run_mysql_from_file(BASE_PATH.'/modules/'.$moduleName.'/database/mysql/'.$version.'.sql',
-                                       Zend_Registry::get('configDatabase')->database->params->host,
-                                       Zend_Registry::get('configDatabase')->database->params->username,
-                                       Zend_Registry::get('configDatabase')->database->params->password,
-                                       Zend_Registry::get('configDatabase')->database->params->dbname,
-                                       Zend_Registry::get('configDatabase')->database->params->port);
+            $this->run_sql_from_file($db, BASE_PATH.'/modules/'.$moduleName.'/database/mysql/'.$version.'.sql');
             }
           break;
         case 'PDO_PGSQL':
           if(file_exists(BASE_PATH.'/modules/'.$moduleName.'/database/pgsql/'.$version.'.sql'))
             {
-            $this->run_pgsql_from_file(BASE_PATH.'/modules/'.$moduleName.'/database/pgsql/'.$version.'.sql',
-                                       Zend_Registry::get('configDatabase')->database->params->host,
-                                       Zend_Registry::get('configDatabase')->database->params->username,
-                                       Zend_Registry::get('configDatabase')->database->params->password,
-                                       Zend_Registry::get('configDatabase')->database->params->dbname,
-                                       Zend_Registry::get('configDatabase')->database->params->port);
+            $this->run_sql_from_file($db, BASE_PATH.'/modules/'.$moduleName.'/database/pgsql/'.$version.'.sql');
             }
           break;
         default:
