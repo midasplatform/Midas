@@ -735,4 +735,12 @@ class UtilityComponent extends AppComponent
       }
     return false;
     }
-  } // end class
+  
+  /** Limits the maximum execution time. */
+  public static function setTimeLimit($seconds)
+    {
+    UtilityComponent::beginIgnoreWarnings();
+    set_time_limit($seconds);
+    UtilityComponent::endIgnoreWarnings();
+    }
+  }
