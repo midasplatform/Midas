@@ -38,8 +38,13 @@ class Statistics_ReportComponent extends AppComponent
     $assetstores = $assetstoreModel->getAll();
     foreach($assetstores as $key => $assetstore)
       {
-      $freeSpace = round((disk_free_space($assetstore->getPath()) / disk_total_space($assetstore->getPath())) * 100, 2);
-      $reportContent .= '<br/>Assetstore '.$assetstore->getName().', Free space: '.$freeSpace.'%';
+      $totalSpace = UtilityComponent::diskTotalSpace($assetstore->getPath());
+      $freeSpace = UtilityComponent::diskFreeSpace($assetstore->getPath());
+      $reportContent .= '<br/>Assetstore '.$assetstore->getName();
+      if($totalSpace > 0)
+        {
+        $reportContent .= ', Free space: '.round(($freeSpace / $totalSpace) * 100, 2).'%';
+        }
       }
 
     $reportContent .= '<br/><br/><b>Dashboard</b><br/>';

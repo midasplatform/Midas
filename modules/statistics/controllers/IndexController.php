@@ -37,11 +37,20 @@ class Statistics_IndexController extends Statistics_AppController
       // Check if we can access the path
       if(file_exists($assetstore->getPath()))
         {
-        $assetstores[$key]->totalSpace = disk_total_space($assetstore->getPath());
-        $assetstores[$key]->usedSpace = disk_total_space($assetstore->getPath()) - disk_free_space($assetstore->getPath());
-        $assetstores[$key]->freeSpace = disk_free_space($assetstore->getPath());
-        $assetstores[$key]->usedSpaceText = round(($assetstores[$key]->usedSpace / $assetstores[$key]->totalSpace) * 100, 2);
-        $assetstores[$key]->freeSpaceText = round((disk_free_space($assetstore->getPath()) / $assetstores[$key]->totalSpace) * 100, 2);
+        $assetstores[$key]->totalSpace = UtilityComponent::diskTotalSpace($assetstore->getPath());
+        $assetstores[$key]->freeSpace = UtilityComponent::diskFreeSpace($assetstore->getPath());
+        $assetstores[$key]->usedSpace = $assetstores[$key]->totalSpace - $assetstores[$key]->freeSpace;
+
+        if($assetstores[$key]->totalSpace > 0)
+          {
+          $assetstores[$key]->usedSpaceText = round(($assetstores[$key]->usedSpace / $assetstores[$key]->totalSpace) * 100, 2);
+          $assetstores[$key]->freeSpaceText = round(($assetstores[$key]->freeSpace / $assetstores[$key]->totalSpace) * 100, 2);
+          }
+        else
+          {
+          $assetstores[$key]->usedSpaceText = 0;
+          $assetstores[$key]->freeSpaceText = 0;
+          }
         }
       else
         {

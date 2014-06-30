@@ -135,19 +135,23 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
          echo "(<a qtip='If set as default, the uploaded files will be stored in this assetstore.' class='defaultAssetstoreLink' element='{$assetstore->getKey()}'>set as default</a>)";
          }
        echo '</div>';
-       if(!$assetstore->totalSpaceText)
+       if($assetstore->totalSpaceText === false)
          {
-         echo "<span class='errorText'>Error: Unable to access assetstore</span>";
+         echo "<span class='errorText'>Error: Unable to access assetstore</span><br/>";
          }
        else
          {
-         echo "Space: {$assetstore->freeSpaceText} free of {$assetstore->totalSpaceText} total";
-         if(($assetstore->freeSpace/$assetstore->totalSpace < 0.1))
+         if($assetstore->totalSpace > 0)
            {
-           echo " <span class='freeSpaceWarning'>(Warning: less than 10% free)</span>";
+           echo "Space: {$assetstore->freeSpaceText} free of {$assetstore->totalSpaceText} total";
+           if(($assetstore->freeSpace/$assetstore->totalSpace < 0.1))
+             {
+             echo " <span class='freeSpaceWarning'>(Warning: less than 10% free)</span>";
+             }
+           echo "<br/>";
            }
          }
-       echo "<br/>Path: <span class='assetstorePath'>{$assetstore->getPath()}</span>";
+       echo "Path: <span class='assetstorePath'>{$assetstore->getPath()}</span>";
        echo "<br/>Type: ";
        switch($assetstore->getType())
          {

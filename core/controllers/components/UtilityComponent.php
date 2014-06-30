@@ -743,4 +743,22 @@ class UtilityComponent extends AppComponent
     set_time_limit($seconds);
     UtilityComponent::endIgnoreWarnings();
     }
+
+  /** Returns available space on filesystem or disk partition. */
+  public static function diskFreeSpace($directory)
+    {
+    UtilityComponent::beginIgnoreWarnings();
+    $result = disk_free_space($directory);
+    UtilityComponent::endIgnoreWarnings();
+    return $result;
+    }
+
+  /** Returns the total size of a filesystem or disk partition.  */
+  public static function diskTotalSpace($directory)
+    {
+    UtilityComponent::beginIgnoreWarnings();
+    $result = disk_total_space($directory);
+    UtilityComponent::endIgnoreWarnings();
+    return $result;
+    }
   }

@@ -175,15 +175,18 @@ class AssetstoreController extends AppController
         return false;
         }
 
+      $totalSpace = UtilityComponent::diskTotalSpace($assetstoreDao->getPath());
+      $freeSpace = UtilityComponent::diskFreeSpace($assetstoreDao->getPath());
+
       echo JsonComponent::encode(array(
         'msg' => 'The assetstore has been added.',
         'assetstore_id' => $assetstoreDao->getAssetstoreId(),
         'assetstore_name' => $assetstoreDao->getName(),
         'assetstore_type' => $assetstoreDao->getType(),
-        'totalSpace' => disk_total_space($assetstoreDao->getPath()),
-        'totalSpaceText' => $this->Component->Utility->formatSize(disk_total_space($assetstoreDao->getPath())),
-        'freeSpace' => disk_free_space($assetstoreDao->getPath()),
-        'freeSpaceText' => $this->Component->Utility->formatSize(disk_free_space($assetstoreDao->getPath()))));
+        'totalSpace' => $totalSpace,
+        'totalSpaceText' => $this->Component->Utility->formatSize($totalSpace),
+        'freeSpace' => $freeSpace,
+        'freeSpaceText' => $this->Component->Utility->formatSize($freeSpace);
       return true;
       }
 
