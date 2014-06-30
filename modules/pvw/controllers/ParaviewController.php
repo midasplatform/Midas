@@ -38,7 +38,7 @@ class Pvw_ParaviewController extends Pvw_AppController
    */
   public function startinstanceAction()
     {
-    set_time_limit(30);
+    UtilityComponent::setTimeLimit(30);
     $this->disableView();
     $this->disableLayout();
 
@@ -109,7 +109,7 @@ class Pvw_ParaviewController extends Pvw_AppController
    */
   public function instanceAction()
     {
-    set_time_limit(30); //in case an exec call hangs for some odd reason
+    UtilityComponent::setTimeLimit(30); //in case an exec call hangs for some odd reason
     // TODO just plug this into the restful stuff
     $this->disableLayout();
     $this->disableView();

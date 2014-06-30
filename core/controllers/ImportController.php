@@ -270,7 +270,7 @@ class ImportController extends AppController
     $this->requireAdminPrivileges();
 
     // No time limit since import can take a long time
-    set_time_limit(0);
+    UtilityComponent::setTimeLimit(0);
     $this->view->title = $this->t("Import");
     $this->view->header = $this->t("Import server-side data");
 

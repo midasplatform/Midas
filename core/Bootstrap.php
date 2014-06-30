@@ -77,28 +77,29 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     $configDatabase = new Zend_Config_Ini(DATABASE_CONFIG, $configGlobal->environment, true);
     if($configDatabase->database->type == 'pdo')
       {
-      // Does the server PDO support MySQL?
-      if(!defined('PDO::MYSQL_ATTR_USE_BUFFERED_QUERY'))
+      if(empty($configDatabase->database->params->driver_options))
         {
-        throw new Zend_Exception('It appears PDO is not setup to support MySQL. '.
-                                 'Please check your PDO configuration.');
-        }
-      if(isset($configDatabase->database->params->driver_options))
-        {
-        $pdoParams = $configDatabase->database->params->driver_options->toArray();
+        $driverOptions = array();
         }
       else
         {
-        $pdoParams = array();
+        $driverOptions = $configDatabase->database->params->driver_options->toArray();
         }
-      $pdoParams[PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = true;
+      $driverOptions[PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = true;
       $params = array(
-        'host' => $configDatabase->database->params->host,
+        'dbname' => $configDatabase->database->params->dbname,
         'username' => $configDatabase->database->params->username,
         'password' => $configDatabase->database->params->password,
-        'dbname' => $configDatabase->database->params->dbname,
-        'port' => $configDatabase->database->params->port,
-        'driver_options' => $pdoParams);
+        'driver_options' => $driverOptions);
+      if(empty($configDatabase->database->params->unix_socket))
+        {
+        $params['host'] = $configDatabase->database->params->host;
+        $params['port'] = $configDatabase->database->params->port;
+        }
+      else
+        {
+        $params['unix_socket'] = $configDatabase->database->params->unix_socket;
+        }
       if($configGlobal->environment == 'production')
         {
         Zend_Loader::loadClass('ProductionDbProfiler', BASE_PATH . '/core/models/profiler');

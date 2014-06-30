@@ -56,7 +56,7 @@ class UpgradeComponent extends AppComponent
         $this->dbtypeShort = 'pgsql';
         break;
       default:
-        throw new Zend_Exception("Unknow database type");
+        throw new Zend_Exception("Unknown database type");
         break;
       }
     $this->init = true;

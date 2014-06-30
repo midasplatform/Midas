@@ -31,9 +31,17 @@ class InstallForm extends AppForm
     $type = new Zend_Form_Element_Hidden('type');
 
     $host = new Zend_Form_Element_Text('host');
-    $host->setRequired(true)
-         ->addValidator('NotEmpty', true)
-         ->setValue('localhost');
+    $host->setValue('localhost');
+
+    $port = new Zend_Form_Element_Text('port');
+    $port->addValidator('Digits', true);
+
+    $unixsocket = new Zend_Form_Element_Text('unix_socket');
+
+    $dbname = new Zend_Form_Element_Text('dbname');
+    $dbname->setRequired(true)
+           ->addValidator('NotEmpty', true)
+           ->setValue('midas');
 
     $username = new Zend_Form_Element_Text('username');
     $username->setRequired(true)
@@ -41,16 +49,13 @@ class InstallForm extends AppForm
 
     $password = new Zend_Form_Element_Password('password');
 
-    $dbname = new Zend_Form_Element_Text('dbname');
-    $dbname->setRequired(true)
-           ->addValidator('NotEmpty', true)
-           ->setValue('midas');
+    $firstname = new Zend_Form_Element_Text('firstname');
+    $firstname->setRequired(true)
+              ->addValidator('NotEmpty', true);
 
-    $port = new Zend_Form_Element_Text('port');
-    $port->setRequired(true)
-         ->addValidator('NotEmpty', true);
-
-    $gravatar = new Zend_Form_Element_Checkbox('gravatar');
+    $lastname = new Zend_Form_Element_Text('lastname');
+    $lastname->setRequired(true)
+             ->addValidator('NotEmpty', true);
 
     $email = new Zend_Form_Element_Text('email');
     $email->setRequired(true)
@@ -65,18 +70,12 @@ class InstallForm extends AppForm
     $userpassword2->addValidator('NotEmpty', true)
                   ->setRequired(true);
 
-    $firstname = new Zend_Form_Element_Text('firstname');
-    $firstname->setRequired(true)
-              ->addValidator('NotEmpty', true);
-
-    $lastname = new Zend_Form_Element_Text('lastname');
-    $lastname->setRequired(true)
-             ->addValidator('NotEmpty', true);
+    $gravatar = new Zend_Form_Element_Checkbox('gravatar');
 
     $submit = new  Zend_Form_Element_Submit('submit');
-    $submit->setLabel('Set up database');
+    $submit->setLabel('Setup database and account');
 
-    $form->addElements(array($port, $gravatar, $type, $host, $username, $password, $dbname, $submit, $lastname, $firstname, $userpassword2, $userpassword1, $email));
+    $form->addElements(array($type, $host, $port, $unixsocket, $dbname, $username, $password, $firstname, $lastname,  $email, $userpassword1, $userpassword2, $gravatar, $submit));
     return $form;
     }
 

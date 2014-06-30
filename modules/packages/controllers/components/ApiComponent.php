@@ -51,7 +51,7 @@ class Packages_ApiComponent extends AppComponent
    */
   private function _readUploadedFile($prefix)
     {
-    set_time_limit(0);
+    UtilityComponent::setTimeLimit(0);
     $inputfile = 'php://input';
     $tmpfile = tempnam(UtilityComponent::getTempDirectory('misc'), $prefix);
     $in = fopen($inputfile, 'rb');

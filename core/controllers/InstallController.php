@@ -114,100 +114,76 @@ class InstallController extends AppController
       $form = $this->Form->Install->createDBForm($type);
       if($form->isValid($this->getRequest()->getPost()))
         {
-        $databaseConfig = parse_ini_file(CORE_CONFIGS_PATH . '/database.ini', true);
+        $configDatabase = parse_ini_file(CORE_CONFIGS_PATH . '/database.ini', true);
         require_once BASE_PATH . '/core/controllers/components/UpgradeComponent.php';
         $upgradeComponent = new UpgradeComponent();
         $upgradeComponent->dir = BASE_PATH . '/core/database/'.$type;
         $upgradeComponent->init = true;
         $sqlFile = $upgradeComponent->getNewestVersion(true);
         $sqlFile = BASE_PATH . '/core/database/'.$type.'/'.$sqlFile.'.sql';
+
         if(!isset($sqlFile) || !file_exists($sqlFile))
           {
           throw new Zend_Exception('Unable to find sql file');
           }
 
-        switch($type)
+        $dbtype = 'PDO_' . strtoupper($type);
+        $version = str_replace('.sql', '', basename($sqlFile));
+
+        $configDatabase['production']['database.type'] = 'pdo';
+        $configDatabase['production']['database.adapter'] = $dbtype;
+        $configDatabase['production']['database.params.host'] = $form->getValue('host');
+        $configDatabase['production']['database.params.port'] = $form->getValue('port');
+        $configDatabase['production']['database.params.unix_socket'] = $form->getValue('unix_socket');
+        $configDatabase['production']['database.params.dbname'] = $form->getValue('dbname');
+        $configDatabase['production']['database.params.username'] = $form->getValue('username');
+        $configDatabase['production']['database.params.password'] = $form->getValue('password');
+        $configDatabase['production']['version'] = $version;
+
+        $configDatabase['development']['database.type'] = 'pdo';
+        $configDatabase['development']['database.adapter'] = $dbtype;
+        $configDatabase['development']['database.params.host'] = $form->getValue('host');
+        $configDatabase['development']['database.params.port'] = $form->getValue('port');
+        $configDatabase['development']['database.params.unix_socket'] = $form->getValue('unix_socket');
+        $configDatabase['development']['database.params.dbname'] = $form->getValue('dbname');
+        $configDatabase['development']['database.params.username'] = $form->getValue('username');
+        $configDatabase['development']['database.params.password'] = $form->getValue('password');
+        $configDatabase['development']['version'] = $version;
+
+        $driverOptions = array();
+        $params = array(
+          'dbname' => $form->getValue('dbname'),
+          'username' => $form->getValue('username'),
+          'password' => $form->getValue('password'),
+          'driver_options' => $driverOptions);
+        $unixsocket = $form->getValue('unix_socket');
+        if($unixsocket)
           {
-          case 'mysql':
-            $this->Component->Utility->run_mysql_from_file($sqlFile,
-                                       $form->getValue('host'), $form->getValue('username'), $form->getValue('password'), $form->getValue('dbname'), $form->getValue('port'));
-            $params = array(
-              'host' => $form->getValue('host'),
-              'username' => $form->getValue('username'),
-              'password' => $form->getValue('password'),
-              'dbname' => $form->getValue('dbname'),
-              'port' => $form->getValue('port'),
-            );
-
-            $databaseConfig['production']['database.type'] = 'pdo';
-            $databaseConfig['development']['database.type'] = 'pdo';
-            $databaseConfig['production']['database.adapter'] = 'PDO_MYSQL';
-            $databaseConfig['development']['database.adapter'] = 'PDO_MYSQL';
-            $databaseConfig['production']['database.params.host'] = $form->getValue('host');
-            $databaseConfig['development']['database.params.host'] = $form->getValue('host');
-            $databaseConfig['production']['database.params.username'] = $form->getValue('username');
-            $databaseConfig['development']['database.params.username'] = $form->getValue('username');
-            $databaseConfig['production']['database.params.password'] = $form->getValue('password');
-            $databaseConfig['development']['database.params.password'] = $form->getValue('password');
-            $databaseConfig['production']['database.params.dbname'] = $form->getValue('dbname');
-            $databaseConfig['development']['database.params.dbname'] = $form->getValue('dbname');
-            $databaseConfig['development']['database.params.port'] = $form->getValue('port');
-            $databaseConfig['production']['database.params.port'] = $form->getValue('port');
-
-            $db = Zend_Db::factory('PDO_MYSQL', $params);
-            Zend_Db_Table::setDefaultAdapter($db);
-            Zend_Registry::set('dbAdapter', $db);
-
-            $dbtype = 'PDO_MYSQL';
-            break;
-          case 'pgsql':
-            $this->Component->Utility->run_pgsql_from_file($sqlFile,
-                                       $form->getValue('host'), $form->getValue('username'), $form->getValue('password'), $form->getValue('dbname'), $form->getValue('port'));
-            $params = array(
-              'host' => $form->getValue('host'),
-              'username' => $form->getValue('username'),
-              'password' => $form->getValue('password'),
-              'dbname' => $form->getValue('dbname'),
-              'port' => $form->getValue('port'),
-            );
-
-            $databaseConfig['production']['database.type'] = 'pdo';
-            $databaseConfig['development']['database.type'] = 'pdo';
-            $databaseConfig['production']['database.adapter'] = 'PDO_PGSQL';
-            $databaseConfig['development']['database.adapter'] = 'PDO_PGSQL';
-            $databaseConfig['production']['database.params.host'] = $form->getValue('host');
-            $databaseConfig['development']['database.params.host'] = $form->getValue('host');
-            $databaseConfig['production']['database.params.username'] = $form->getValue('username');
-            $databaseConfig['development']['database.params.username'] = $form->getValue('username');
-            $databaseConfig['production']['database.params.password'] = $form->getValue('password');
-            $databaseConfig['development']['database.params.password'] = $form->getValue('password');
-            $databaseConfig['production']['database.params.dbname'] = $form->getValue('dbname');
-            $databaseConfig['development']['database.params.dbname'] = $form->getValue('dbname');
-            $databaseConfig['development']['database.params.port'] = $form->getValue('port');
-            $databaseConfig['production']['database.params.port'] = $form->getValue('port');
-
-            $db = Zend_Db::factory('PDO_PGSQL', $params);
-            Zend_Db_Table::setDefaultAdapter($db);
-            Zend_Registry::set('dbAdapter', $db);
-            $dbtype = 'PDO_PGSQL';
-            break;
-          default:
-            break;
+          $params['unix_socket'] = $unixsocket;
           }
-        $databaseConfig['production']['version'] = str_replace('.sql', '', basename($sqlFile));
-        $databaseConfig['development']['version'] = str_replace('.sql', '', basename($sqlFile));
+        else
+          {
+          $params['host'] = $form->getValue('host');
+          $params['port'] = $form->getValue('port');
+          }
 
-        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH . '/database.local.ini', $databaseConfig);
+        $db = Zend_Db::factory($dbtype, $params);
+        $this->Component->Utility->run_sql_from_file($db, $sqlFile);
+
+        Zend_Db_Table::setDefaultAdapter($db);
+        Zend_Registry::set('dbAdapter', $db);
+
+        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH . '/database.local.ini', $configDatabase);
 
         // Must generate and store our password salt before we create our first user
-        $appConfig = parse_ini_file(CORE_CONFIGS_PATH . '/application.ini', true);
-        $appConfig['global']['password.prefix'] = UtilityComponent::generateRandomString(32);
+        $configApplication = parse_ini_file(CORE_CONFIGS_PATH . '/application.ini', true);
+        $configApplication['global']['password.prefix'] = UtilityComponent::generateRandomString(32);
 
         // Verify whether the user wants to use gravatars or not
-        $appConfig['global']['gravatar'] = $form->getValue('gravatar');
+        $configApplication['global']['gravatar'] = $form->getValue('gravatar');
 
         // Save the new config
-        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH . '/application.local.ini', $appConfig);
+        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH . '/application.local.ini', $configApplication);
         $configGlobal = new Zend_Config_Ini(LOCAL_CONFIGS_PATH . '/application.local.ini', 'global', true);
         Zend_Registry::set('configGlobal', $configGlobal);
 
@@ -268,6 +244,7 @@ class InstallController extends AppController
 
     $this->view->form = $formArray;
     $this->view->databaseType = Zend_Registry::get('configDatabase')->database->adapter;
+
     if($this->_request->isPost() && $form->isValid($this->getRequest()->getPost()))
       {
       $allModules = $this->Component->Utility->getAllModules();
@@ -279,6 +256,7 @@ class InstallController extends AppController
           unlink($configLocal);
           }
         }
+
       $applicationConfig['global']['application.name'] = $form->getValue('name');
       $applicationConfig['global']['application.description'] = $form->getValue('description');
       $applicationConfig['global']['application.keywords'] = $form->getValue('keywords');
@@ -301,12 +279,23 @@ class InstallController extends AppController
     $this->_helper->viewRenderer->setNoRender();
     try
       {
-      $db = Zend_Db::factory('PDO_' . strtoupper($this->_getParam('type')), array(
-        'host' => $this->_getParam('host'),
-        'port' => $this->_getParam('port'),
+      $driverOptions = array();
+      $params = array(
+        'dbname' => $this->_getParam('dbname'),
         'username' => $this->_getParam('username'),
         'password' => $this->_getParam('password'),
-        'dbname' => $this->_getParam('dbname')));
+        'driver_options' => $driverOptions);
+      $unixsocket = $this->_getParam('unix_socket');
+      if($unixsocket)
+        {
+        $params['unix_socket'] = $this->_getParam('unix_socket');
+        }
+      else
+        {
+        $params['host'] = $this->_getParam('host');
+        $params['port'] = $this->_getParam('port');
+        }
+      $db = Zend_Db::factory('PDO_' . strtoupper($this->_getParam('type')), $params);
       $tables = $db->listTables();
       if(count($tables) > 0)
         {
@@ -320,7 +309,7 @@ class InstallController extends AppController
       }
     catch(Zend_Exception $exception)
       {
-      $return = array(false, 'Could not connect to the database server: ' . $exception->getMessage());
+      $return = array(false, 'Could not connect to the database');
       }
     echo JsonComponent::encode($return);
     }

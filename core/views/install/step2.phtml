@@ -49,20 +49,24 @@
                   {$form['host']}
                 </div>
                 <div>
-                  <label for='username'>Username</label>
-                  {$form['username']}
+                  <label for='port'>Port</label>
+                  {$form['port']}
                 </div>
                 <div>
-                  <label for='password'>Password</label>
-                  {$form['password']}
+                  <label for='unix_socket'>Socket</label>
+                  {$form['unix_socket']}
                 </div>
                 <div>
                   <label for='dbname'>Database</label>
                   {$form['dbname']}
                 </div>
                 <div>
-                  <label for='port'>Port</label>
-                  {$form['port']}
+                  <label for='username'>Username</label>
+                  {$form['username']}
+                </div>
+                <div>
+                  <label for='password'>Password</label>
+                  {$form['password']}
                 </div>
                 <div>
                   <div id='dbResult'>
@@ -83,16 +87,16 @@
 
               <div class='adminAcountForm'>
                 <div>
-                  <label for='email'>Email</label>
-                   {$form['email']}
-                </div>
-                <div >
                   <label for='firstname'>First name</label>
                    {$form['firstname']}
                 </div>
                 <div>
                   <label for='lastname'>Last name</label>
                    {$form['lastname']}
+                </div>
+                <div>
+                  <label for='email'>Email</label>
+                   {$form['email']}
                 </div>
                 <div>
                   <label for='userpassword1'>Password</label>
@@ -116,5 +120,4 @@
       echo "</div>";
       }
    ?>
-
 </div>

@@ -57,28 +57,37 @@ function loadDbAdapter($testConfigDir, $dbType)
     throw new Zend_Exception('Error, cannot load lockfile: '.$lockFile);
     }
 
-  // currently only support pdo
-  if($configDatabase->database->type == 'pdo')
+  if(empty($configDatabase->database->params->driver_options))
     {
-    $db = Zend_Db::factory($configDatabase->database->adapter, array(
-      'host' => $configDatabase->database->params->host,
-      'username' => $configDatabase->database->params->username,
-      'password' => $configDatabase->database->params->password,
-      'dbname' => $configDatabase->database->params->dbname,
-      'port' => $configDatabase->database->params->port));
-    if($configDatabase->database->profiler == '1')
-      {
-      $db->getProfiler()->setEnabled(true);
-      }
-    Zend_Db_Table::setDefaultAdapter($db);
-    Zend_Registry::set('dbAdapter', $db);
-    Zend_Registry::set('configDatabase', $configDatabase);
-    return $db;
+    $driverOptions = array();
     }
   else
     {
-    throw new Zend_Exception('Database type Error. Expecting pdo but have '.$configDatabase->database->type);
+    $driverOptions = $configDatabase->database->params->driver_options->toArray();
     }
+  $params = array(
+    'dbname' => $configDatabase->database->params->dbname,
+    'username' => $configDatabase->database->params->username,
+    'password' => $configDatabase->database->params->password,
+    'driver_options' => $driverOptions);
+  if(empty($configDatabase->database->params->unix_socket))
+    {
+    $params['host'] = $configDatabase->database->params->host;
+    $params['port'] = $configDatabase->database->params->port;
+    }
+  else
+    {
+    $params['unix_socket'] = $configDatabase->database->params->unix_socket;
+    }
+  $db = Zend_Db::factory($configDatabase->database->adapter, $params);
+  if($configDatabase->database->profiler == '1')
+    {
+    $db->getProfiler()->setEnabled(true);
+    }
+  Zend_Db_Table::setDefaultAdapter($db);
+  Zend_Registry::set('dbAdapter', $db);
+  Zend_Registry::set('configDatabase', $configDatabase);
+  return $db;
   }
 
 /** Drop database tables */
@@ -115,15 +124,14 @@ function installCore($db, $dbType, $utilityComponent)
     throw new Zend_Exception('Unable to find sql file: '.$sqlFile);
     }
 
-  $databaseConfig = $db->getConfig();
   switch($dbType)
     {
     case 'mysql':
-      $utilityComponent->run_mysql_from_file($sqlFile, $databaseConfig['host'], $databaseConfig['username'], $databaseConfig['password'], $databaseConfig['dbname'], $databaseConfig['port']);
+      $utilityComponent->run_sql_from_file($db, $sqlFile);
       $upgradeDbType = 'PDO_MYSQL';
       break;
     case 'pgsql':
-      $utilityComponent->run_pgsql_from_file($sqlFile, $databaseConfig['host'], $databaseConfig['username'], $databaseConfig['password'], $databaseConfig['dbname'], $databaseConfig['port']);
+      $utilityComponent->run_sql_from_file($db, $sqlFile);
       $upgradeDbType = 'PDO_PGSQL';
       break;
     default:
