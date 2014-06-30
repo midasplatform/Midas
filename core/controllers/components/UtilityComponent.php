@@ -735,7 +735,7 @@ class UtilityComponent extends AppComponent
       }
     return false;
     }
-  
+
   /** Limits the maximum execution time. */
   public static function setTimeLimit($seconds)
     {
