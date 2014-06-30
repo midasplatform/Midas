@@ -402,13 +402,40 @@ class UtilityComponent extends AppComponent
   /** Function to run a MySQL script */
   static function run_mysql_from_file($sqlfile, $host, $username, $password, $dbname, $port)
     {
-    return self::run_query_from_file('Pdo_Mysql', $sqlfile, $host, $username, $password, $dbname, $port);
+    return self::run_query_from_file('PDO_MYSQL', $sqlfile, $host, $username, $password, $dbname, $port);
     }
 
   /** Function to run a PostgreSQL script */
   static function run_pgsql_from_file($sqlfile, $host, $username, $password, $dbname, $port)
     {
-    return self::run_query_from_file('Pdo_Pgsql', $sqlfile, $host, $username, $password, $dbname, $port);
+    return self::run_query_from_file('PDO_PGSQL', $sqlfile, $host, $username, $password, $dbname, $port);
+    }
+
+  /** Get the data directory */
+  public static function getDataDirectory($subdir = '')
+    {
+    $settingModel = MidasLoader::loadModel('Setting');
+    try
+      {
+      $dataDirectory = $settingModel->getValueByName('data_directory');
+      }
+    catch(Exception $e)
+      {
+      $dataDirectory = null;
+      }
+    if(!isset($dataDirectory) || empty($dataDirectory))
+      {
+      $dataDirectory = BASE_PATH.'/data';
+      }
+    if($subdir == '')
+      {
+      $dataDirectory .= '/';
+      }
+    else
+      {
+      $dataDirectory .= '/'.$subdir.'/';
+      }
+    return $dataDirectory;
     }
 
   /**

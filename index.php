@@ -25,30 +25,22 @@ set_include_path('.'
   . PATH_SEPARATOR . './core/dao/'
   . PATH_SEPARATOR . get_include_path());
 
-if(function_exists('apache_get_modules'))
+if(isset($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'Apache'))
   {
-  $mod_rewrite = in_array('mod_rewrite', apache_get_modules());
-  }
-else
-  {
-  $mod_rewrite = getenv('HTTP_MOD_REWRITE') == 'On' ? true : false;
-  }
+  if(function_exists('apache_get_modules'))
+    {
+    $mod_rewrite = in_array('mod_rewrite', apache_get_modules());
+    }
+  else
+    {
+    $mod_rewrite = getenv('HTTP_MOD_REWRITE') == 'On' ? true : false;
+    }
 
-if(!$mod_rewrite)
-  {
-  echo "Please install/enable the module rewrite";
-  exit();
-  }
-
-if(!is_writable(BASE_PATH . '/core/configs') || !is_writable(BASE_PATH . '/data') || !is_writable(BASE_PATH . '/tmp'))
-  {
-  echo 'To use Midas Platform, the following folders must be writable by your web server:
-        <ul>
-          <li>' . BASE_PATH . '/core/configs</li>
-          <li>' . BASE_PATH . '/data</li>
-          <li>' . BASE_PATH . '/tmp</li>
-        </ul>';
-  exit();
+  if(!$mod_rewrite)
+    {
+    echo "Please install/enable the Apache rewrite module";
+    exit();
+    }
   }
 
 define('START_TIME', microtime(true));
@@ -60,6 +52,12 @@ $loader = Zend_Loader_Autoloader::getInstance();
 $loader->registerNamespace('App_');
 
 require_once(BASE_PATH . '/core/include.php');
+
+if(!is_writable(LOCAL_CONFIGS_PATH))
+  {
+  echo '<p>To use Midas Platform, the folder "' . LOCAL_CONFIGS_PATH . '" must be writable by your web server.</p>';
+  exit();
+  }
 
 $application = new Zend_Application('global', CORE_CONFIG);
 $application->bootstrap()->run();

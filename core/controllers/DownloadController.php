@@ -173,10 +173,6 @@ class DownloadController extends AppController
         }
       else
         {
-        while(ob_get_level() > 0)
-          {
-          ob_end_clean();
-          }
         ob_start();
         Zend_Loader::loadClass('ZipStream', BASE_PATH.'/library/ZipStream/');
         $this->_helper->viewRenderer->setNoRender();
@@ -227,10 +223,6 @@ class DownloadController extends AppController
         }
 
       session_write_close(); //unlock session writing for concurrent access
-      while(ob_get_level() > 0)
-        {
-        ob_end_clean();
-        }
       ob_start();
       $zip = new ZipStream($name.'.zip');
       UtilityComponent::disableMemoryLimit();
@@ -521,10 +513,6 @@ class DownloadController extends AppController
    */
   private function _downloadEmptyItem($item)
     {
-    while(ob_get_level() > 0)
-      {
-      ob_end_clean();
-      }
     ob_start();
     Zend_Loader::loadClass('ZipStream', BASE_PATH.'/library/ZipStream/');
     $this->disableView();

@@ -53,7 +53,7 @@ class Packages_ApiComponent extends AppComponent
     {
     set_time_limit(0);
     $inputfile = 'php://input';
-    $tmpfile = tempnam(BASE_PATH.'/tmp/misc', $prefix);
+    $tmpfile = tempnam(UtilityComponent::getTempDirectory('misc'), $prefix);
     $in = fopen($inputfile, 'rb');
     $out = fopen($tmpfile, 'wb');
 

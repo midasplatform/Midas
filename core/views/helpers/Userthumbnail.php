@@ -23,7 +23,7 @@ class Zend_View_Helper_Userthumbnail
     /** translation helper */
     function userthumbnail($thumbnail, $id = '')
     {
-    if(empty($thumbnail)) 
+    if(empty($thumbnail))
       {
       echo "<img id='{$id}' class='thumbnailSmall' " .
            "src='{$this->view->coreWebroot}/public/images/icons/unknownUser.png'" .

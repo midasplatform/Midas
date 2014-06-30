@@ -2,7 +2,7 @@
 /**
  * PHP_CodeCoverage
  *
- * Copyright (c) 2009-2011, Sebastian Bergmann <sb@sebastian-bergmann.de>.
+ * Copyright (c) 2009-2014, Sebastian Bergmann <sebastian@phpunit.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,42 +36,50 @@
  *
  * @category   PHP
  * @package    CodeCoverage
- * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
+ * @author     Sebastian Bergmann <sebastian@phpunit.de>
+ * @copyright  2009-2014 Sebastian Bergmann <sebastian@phpunit.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      File available since Release 1.0.0
  */
-
-require_once 'PHP/CodeCoverage/Driver.php';
-
-if (version_compare(phpversion('xdebug'), '2.2.0-dev', '>=') &&
-    !ini_get('xdebug.coverage_enable')) {
-    die("You need to set xdebug.coverage_enable=On in your php.ini.\n");
-}
 
 /**
  * Driver for Xdebug's code coverage functionality.
  *
  * @category   PHP
  * @package    CodeCoverage
- * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @copyright  2009-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    Release: 1.0.5
+ * @author     Sebastian Bergmann <sebastian@phpunit.de>
+ * @copyright  2009-2014 Sebastian Bergmann <sebastian@phpunit.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      Class available since Release 1.0.0
+ * @codeCoverageIgnore
  */
 class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
 {
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        if (!extension_loaded('xdebug')) {
+            throw new PHP_CodeCoverage_Exception('Xdebug is not loaded.');
+        }
+
+        if (version_compare(phpversion('xdebug'), '2.2.0-dev', '>=') &&
+            !ini_get('xdebug.coverage_enable')) {
+            throw new PHP_CodeCoverage_Exception(
+              'You need to set xdebug.coverage_enable=On in your php.ini.'
+            );
+        }
+    }
+
     /**
      * Start collection of code coverage information.
      */
     public function start()
     {
-        // @codeCoverageIgnoreStart
         xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
-        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -81,11 +89,9 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
      */
     public function stop()
     {
-        // @codeCoverageIgnoreStart
         $codeCoverage = xdebug_get_code_coverage();
         xdebug_stop_code_coverage();
 
         return $codeCoverage;
-        // @codeCoverageIgnoreEnd
     }
 }

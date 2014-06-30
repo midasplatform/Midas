@@ -16,9 +16,9 @@
  * @category   Zend
  * @package    Zend_Service
  * @subpackage Amazon
- * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Item.php 24594 2012-01-05 21:27:01Z matthew $
+ * @version    $Id$
  */
 
 
@@ -26,7 +26,7 @@
  * @category   Zend
  * @package    Zend_Service
  * @subpackage Amazon
- * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Service_Amazon_Item
@@ -114,7 +114,7 @@ class Zend_Service_Amazon_Item
      *
      * @param  null|DOMElement $dom
      * @return void
-     * @throws Zend_Service_Amazon_Exception
+     * @throws    Zend_Service_Amazon_Exception
      *
      * @group ZF-9547
      */
@@ -129,7 +129,7 @@ class Zend_Service_Amazon_Item
             throw new Zend_Service_Amazon_Exception('Item is not a valid DOM element');
         }
         $xpath = new DOMXPath($dom->ownerDocument);
-        $xpath->registerNamespace('az', 'http://webservices.amazon.com/AWSECommerceService/2005-10-05');
+        $xpath->registerNamespace('az', 'http://webservices.amazon.com/AWSECommerceService/2011-08-01');
         $this->ASIN = $xpath->query('./az:ASIN/text()', $dom)->item(0)->data;
 
         $result = $xpath->query('./az:DetailPageURL/text()', $dom);

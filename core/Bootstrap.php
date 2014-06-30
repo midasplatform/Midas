@@ -140,26 +140,31 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     if(is_writable(LOGS_PATH))
       {
       $stream = LOGS_PATH . '/' . $configGlobal->environment . '.log';
+      $logger = Zend_Log::factory(array(
+        array(
+          'writerName' => 'Stream',
+          'writerParams' => array('stream' => $stream),
+          'formatterName' => 'Simple',
+          'filterName' => 'Priority',
+          'filterParams' => array('priority' => $priority))));
       }
     else
       {
-      $stream = 'php://output';
+      $logger = Zend_Log::factory(array(
+        array(
+          'writerName' => 'Syslog',
+          'formatterName' => 'Simple',
+          'filterName' => 'Priority',
+          'filterParams' => array('priority' => $priority))));
       }
-    $logger = Zend_Log::factory(array(
-      array(
-        'writerName' => 'Stream',
-        'writerParams' => array('stream' => $stream),
-        'formatterName' => 'Simple',
-        'filterName' => 'Priority',
-        'filterParams' => array('priority' => $priority))));
-    if($configDatabase->database->type == 'pdo' && $configDatabase->database->params->password != 'set_your_password')
+    if(file_exists(LOCAL_CONFIGS_PATH . '/database.local.ini'))
       {
       $columnMapping = array(
         'priority' => 'priority',
         'message' => 'message',
         'module'   => 'module');
       $writer = new Zend_Log_Writer_Db($db, 'errorlog', $columnMapping);
-      $filter = new Zend_Log_Filter_Priority(Zend_Log::INFO);
+      $filter = new Zend_Log_Filter_Priority(Zend_Log::DEBUG);
       $writer->addFilter($filter);
       $logger->addWriter($writer);
       }
@@ -182,7 +187,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     $this->bootstrap('frontController');
     $front = $this->getResource('frontController');
     $front->addModuleDirectory(BASE_PATH.'/modules');
-    $front->addModuleDirectory(BASE_PATH.'/privateModules');
+    if(file_exists(BASE_PATH.'/privateModules'))
+      {
+      $front->addModuleDirectory(BASE_PATH.'/privateModules');
+      }
     }
 
   /** init routes*/

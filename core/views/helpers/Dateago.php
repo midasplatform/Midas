@@ -27,7 +27,7 @@ class  Zend_View_Helper_Dateago
     $component=new DateComponent();
     return $component->ago($timestamp);
     }
-    
+   
 
     /** Set view*/
     public function setView(Zend_View_Interface $view)

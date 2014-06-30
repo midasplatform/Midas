@@ -122,10 +122,10 @@ abstract class ItemRevisionModelBase extends AppModel
 
       if($createThumb)
         {
-        $tmpPath = BASE_PATH.'/data/thumbnail';
+        $tmpPath = UtilityComponent::getDataDirectory('thumbnail');
         if(!file_exists($tmpPath))
           {
-          throw new Zend_Exception("Problem thumbnail path: ".BASE_PATH.'/data/thumbnail/');
+          throw new Zend_Exception("Problem thumbnail path: ".UtilityComponent::getDataDirectory('thumbnail'));
           }
         $destination = $tmpPath.'/'.rand(1, 10000).'.jpeg';
         while(file_exists($destination))

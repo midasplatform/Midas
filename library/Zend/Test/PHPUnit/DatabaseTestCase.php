@@ -15,15 +15,10 @@
  * @category   Zend
  * @package    Zend_Test
  * @subpackage PHPUnit
- * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: DatabaseTestCase.php 24594 2012-01-05 21:27:01Z matthew $
+ * @version    $Id$
  */
-
-/**
- * @see PHPUnit_Extensions_Database_TestCase
- */
-// require_once "PHPUnit/Extensions/Database/TestCase.php";
 
 /**
  * @see Zend_Test_PHPUnit_Db_Operation_Truncate
@@ -57,7 +52,7 @@
  * @category   Zend
  * @package    Zend_Test
  * @subpackage PHPUnit
- * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_Test_PHPUnit_DatabaseTestCase extends PHPUnit_Extensions_Database_TestCase

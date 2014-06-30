@@ -15,9 +15,9 @@
  * @category   Zend
  * @package    Zend_View
  * @subpackage Helper
- * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: FormCheckbox.php 24751 2012-05-05 01:32:30Z adamlundrigan $
+ * @version    $Id$
  */
 
 
@@ -33,7 +33,7 @@
  * @category   Zend
  * @package    Zend_View
  * @subpackage Helper
- * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_View_Helper_FormCheckbox extends Zend_View_Helper_FormElement
@@ -83,9 +83,16 @@ class Zend_View_Helper_FormCheckbox extends Zend_View_Helper_FormElement
 
         // build the element
         $xhtml = '';
-        if (!$disable && !strstr($name, '[]')) {
+        if ((!$disable && !strstr($name, '[]'))
+            && (empty($attribs['disableHidden']) || !$attribs['disableHidden'])
+        ) {
             $xhtml = $this->_hidden($name, $checkedOptions['uncheckedValue']);
         }
+
+        if (array_key_exists('disableHidden', $attribs)) {
+            unset($attribs['disableHidden']);
+        }
+
         $xhtml .= '<input type="checkbox"'
                 . ' name="' . $this->view->escape($name) . '"'
                 . ' id="' . $this->view->escape($id) . '"'

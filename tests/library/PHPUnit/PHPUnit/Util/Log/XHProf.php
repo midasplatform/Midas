@@ -2,7 +2,7 @@
 /**
  * PHPUnit
  *
- * Copyright (c) 2002-2011, Sebastian Bergmann <sebastian@phpunit.de>.
+ * Copyright (c) 2011-2012, Sebastian Bergmann <sebastian@phpunit.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,10 +38,10 @@
  * @subpackage Util_Log
  * @author     Benjamin Eberlei <kontakt@beberlei.de>
  * @author     Sebastian Bergmann <sebastian@phpunit.de>
- * @copyright  2002-2011 Sebastian Bergmann <sebastian@phpunit.de>
+ * @copyright  2011-2012 Sebastian Bergmann <sebastian@phpunit.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://www.phpunit.de/
- * @since      File available since Release 3.5.0
+ * @since      File available since Release 1.0.0
  */
 
 /**
@@ -79,11 +79,11 @@
  * @subpackage Util_Log
  * @author     Benjamin Eberlei <kontakt@beberlei.de>
  * @author     Sebastian Bergmann <sebastian@phpunit.de>
- * @copyright  2002-2011 Sebastian Bergmann <sebastian@phpunit.de>
+ * @copyright  2011-2012 Sebastian Bergmann <sebastian@phpunit.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    Release: 3.5.15
+ * @version    Release: 1.0.0
  * @link       http://www.phpunit.de/
- * @since      Class available since Release 3.5.0
+ * @since      Class available since Release 1.0.0
  */
 class PHPUnit_Util_Log_XHProf implements PHPUnit_Framework_TestListener
 {
@@ -109,12 +109,6 @@ class PHPUnit_Util_Log_XHProf implements PHPUnit_Framework_TestListener
      */
     public function __construct(array $options = array())
     {
-        if (!extension_loaded('xhprof')) {
-            throw new RuntimeException(
-              'The XHProf extension is required for this listener to work.'
-            );
-        }
-
         if (!isset($options['appNamespace'])) {
             throw new InvalidArgumentException(
               'The "appNamespace" option is not set.'
@@ -216,8 +210,8 @@ class PHPUnit_Util_Log_XHProf implements PHPUnit_Framework_TestListener
         $data         = xhprof_disable();
         $runs         = new XHProfRuns_Default;
         $run          = $runs->save_run($data, $this->options['appNamespace']);
-        $this->runs[] = $this->options['xhprofWeb'] . '?run=' . $run .
-                        '&source=' . $this->options['appNamespace'];
+        $this->runs[$test->getName()] = $this->options['xhprofWeb'] . '?run=' . $run .
+                                        '&source=' . $this->options['appNamespace'];
     }
 
     /**
@@ -242,8 +236,8 @@ class PHPUnit_Util_Log_XHProf implements PHPUnit_Framework_TestListener
         if ($this->suites == 0) {
             print "\n\nXHProf runs: " . count($this->runs) . "\n";
 
-            foreach ($this->runs as $run) {
-                print ' * ' . $run . "\n";
+            foreach ($this->runs as $test => $run) {
+                print ' * ' . $test . "\n   " . $run . "\n\n";
             }
 
             print "\n";

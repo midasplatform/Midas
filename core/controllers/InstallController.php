@@ -154,7 +154,7 @@ class InstallController extends AppController
             $databaseConfig['development']['database.params.port'] = $form->getValue('port');
             $databaseConfig['production']['database.params.port'] = $form->getValue('port');
 
-            $db = Zend_Db::factory('Pdo_Mysql', $params);
+            $db = Zend_Db::factory('PDO_MYSQL', $params);
             Zend_Db_Table::setDefaultAdapter($db);
             Zend_Registry::set('dbAdapter', $db);
 
@@ -186,7 +186,7 @@ class InstallController extends AppController
             $databaseConfig['development']['database.params.port'] = $form->getValue('port');
             $databaseConfig['production']['database.params.port'] = $form->getValue('port');
 
-            $db = Zend_Db::factory('Pdo_Pgsql', $params);
+            $db = Zend_Db::factory('PDO_PGSQL', $params);
             Zend_Db_Table::setDefaultAdapter($db);
             Zend_Registry::set('dbAdapter', $db);
             $dbtype = 'PDO_PGSQL';
@@ -226,7 +226,7 @@ class InstallController extends AppController
         // create default assetstore
         $assetstoreDao = new AssetstoreDao();
         $assetstoreDao->setName('Local');
-        $assetstoreDao->setPath(BASE_PATH . '/data/assetstore');
+        $assetstoreDao->setPath($this->getDataDirectory('assetstore'));
         $assetstoreDao->setType(MIDAS_ASSETSTORE_LOCAL);
         $this->Assetstore = new AssetstoreModel(); //reset Database adapter
         $this->Assetstore->save($assetstoreDao);
@@ -301,7 +301,7 @@ class InstallController extends AppController
     $this->_helper->viewRenderer->setNoRender();
     try
       {
-      $db = Zend_Db::factory('Pdo_' . ucfirst($this->_getParam('type')), array(
+      $db = Zend_Db::factory('PDO_' . strtoupper($this->_getParam('type')), array(
         'host' => $this->_getParam('host'),
         'port' => $this->_getParam('port'),
         'username' => $this->_getParam('username'),

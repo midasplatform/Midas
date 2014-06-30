@@ -38,7 +38,7 @@ class DemoComponent extends AppComponent
       $db->query("DELETE FROM `".$row['TABLE_NAME']."`");
       }
 
-    $path = BASE_PATH.'/data/assetstore';
+    $path = UtilityComponent::getDataDirectory('assetstore');
     $dir = opendir($path);
     while($entry = readdir($dir))
       {
@@ -48,7 +48,7 @@ class DemoComponent extends AppComponent
         }
       }
 
-    $path = BASE_PATH.'/data/thumbnail';
+    $path = UtilityComponent::getDataDirectory('thumbnail');
     $dir = opendir($path);
     while($entry = readdir($dir))
       {
@@ -73,7 +73,7 @@ class DemoComponent extends AppComponent
 
     $assetstoreDao = new AssetstoreDao();
     $assetstoreDao->setName('Default');
-    $assetstoreDao->setPath(BASE_PATH.'/data/assetstore');
+    $assetstoreDao->setPath(UtilityComponent::getDataDirectory('assetstore'));
     $assetstoreDao->setType(MIDAS_ASSETSTORE_LOCAL);
     $assetstoreModel->save($assetstoreDao);
 

@@ -2,7 +2,7 @@
 /**
  * PHPUnit
  *
- * Copyright (c) 2002-2011, Sebastian Bergmann <sb@sebastian-bergmann.de>.
+ * Copyright (c) 2002-2014, Sebastian Bergmann <sebastian@phpunit.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,24 +36,22 @@
  *
  * @package    DbUnit
  * @author     Mike Lively <m@digitalsandwich.com>
- * @copyright  2002-2011 Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
+ * @copyright  2002-2014 Sebastian Bergmann <sebastian@phpunit.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://www.phpunit.de/
  * @since      File available since Release 1.0.0
  */
 
-require_once 'SymfonyComponents/YAML/sfYaml.php';
-
 /**
- * Creates CsvDataSets.
+ * Creates YamlDataSets.
  *
- * You can incrementally add CSV files as tables to your datasets
+ * You can incrementally add YAML files as tables to your datasets
  *
  * @package    DbUnit
  * @author     Mike Lively <m@digitalsandwich.com>
- * @copyright  2010 Mike Lively <m@digitalsandwich.com>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    Release: 1.0.3
+ * @copyright  2010-2014 Mike Lively <m@digitalsandwich.com>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ * @version    Release: 1.3.1
  * @link       http://www.phpunit.de/
  * @since      Class available since Release 1.0.0
  */
@@ -65,14 +63,22 @@ class PHPUnit_Extensions_Database_DataSet_YamlDataSet extends PHPUnit_Extensions
     protected $tables = array();
 
     /**
+     * @var PHPUnit_Extensions_Database_DataSet_IYamlParser
+     */
+    protected $parser;
+
+    /**
      * Creates a new YAML dataset
      *
      * @param string $yamlFile
-     * @param string $enclosure
-     * @param string $escape
+     * @param PHPUnit_Extensions_Database_DataSet_IYamlParser $parser
      */
-    public function __construct($yamlFile)
+    public function __construct($yamlFile, $parser = NULL)
     {
+        if ($parser == NULL) {
+            $parser = new PHPUnit_Extensions_Database_DataSet_SymfonyYamlParser();
+        }
+        $this->parser = $parser;
         $this->addYamlFile($yamlFile);
     }
 
@@ -82,7 +88,7 @@ class PHPUnit_Extensions_Database_DataSet_YamlDataSet extends PHPUnit_Extensions
      */
     public function addYamlFile($yamlFile)
     {
-        $data = sfYaml::load($yamlFile);
+        $data = $this->parser->parseYaml($yamlFile);
 
         foreach ($data as $tableName => $rows) {
             if (!isset($rows)) {
