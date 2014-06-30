@@ -131,7 +131,7 @@ class UtilityComponent extends AppComponent
     $modules = array();
     while(false !== ($file = readdir($handle)))
       {
-      if(file_exists($dir.$file.'/configs/module.ini'))
+      if(is_dir($dir.$file) && file_exists($dir.$file.'/configs/module.ini'))
         {
         $config = new Zend_Config_Ini($dir.$file.'/configs/module.ini', 'global', true);
         $config->db = array();
