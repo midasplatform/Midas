@@ -700,7 +700,7 @@ class UtilityComponent extends AppComponent
     $max = strlen($alphabet) - 1;
     for($i = 0; $i < $length; $i++)
       {
-      $salt .= substr($alphabet, rand(0, $max), 1);
+      $salt .= substr($alphabet, mt_rand(0, $max), 1);
       }
     return $salt;
     }

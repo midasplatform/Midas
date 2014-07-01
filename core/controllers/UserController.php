@@ -874,7 +874,7 @@ class UserController extends AppController
             return;
             }
 
-          $tmpPath = $this->getDataDirectory('thumbnail').'/'.rand(1, 1000);
+          $tmpPath = $this->getDataDirectory('thumbnail').'/'.mt_rand(1, 1000);
           if(!file_exists($this->getDataDirectory('thumbnail')))
             {
             throw new Zend_Exception("Thumbnail path does not exist: ".$this->getDataDirectory('thumbnail'));
@@ -883,15 +883,15 @@ class UserController extends AppController
             {
             mkdir($tmpPath);
             }
-          $tmpPath .= '/'.rand(1, 1000);
+          $tmpPath .= '/'.mt_rand(1, 1000);
           if(!file_exists($tmpPath))
             {
             mkdir($tmpPath);
             }
-          $destionation = $tmpPath."/".rand(1, 1000).'.jpeg';
+          $destionation = $tmpPath."/".mt_rand(1, 1000).'.jpeg';
           while(file_exists($destionation))
             {
-            $destionation = $tmpPath."/".rand(1, 1000).'.jpeg';
+            $destionation = $tmpPath."/".mt_rand(1, 1000).'.jpeg';
             }
           $pathThumbnail = $destionation;
 

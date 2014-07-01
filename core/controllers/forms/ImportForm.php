@@ -32,9 +32,7 @@ class ImportForm extends AppForm
     $form->setAttrib('class', 'importForm');
 
     // Hidden upload id
-    srand(time());
-
-    $uploadId = new Zend_Form_Element_Hidden('uploadid', array('value' => rand()));
+    $uploadId = new Zend_Form_Element_Hidden('uploadid', array('value' => mt_rand()));
     $uploadId->setDecorators(array(
         'ViewHelper',
         array('HtmlTag', array('style' => 'display:none')),

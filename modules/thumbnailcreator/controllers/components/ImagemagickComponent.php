@@ -115,10 +115,10 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       {
       throw new Zend_Exception('Temporary thumbnail dir does not exist: '.UtilityComponent::getDataDirectory('thumbnail'));
       }
-    $destination = $tmpPath.'/'.rand(1, 10000).'.jpeg';
+    $destination = $tmpPath.'/'.mt_rand(1, 10000).'.jpeg';
     while(file_exists($destination))
       {
-      $destination = $tmpPath.'/'.rand(1, 10000).'.jpeg';
+      $destination = $tmpPath.'/'.mt_rand(1, 10000).'.jpeg';
       }
     $pathThumbnail = $destination;
 
@@ -198,7 +198,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
     $jpegDestination = $tmpPath.'/'.$name.'.jpeg';
     while(file_exists($jpegDestination))
       {
-      $jpegDestination = $tmpPath.'/'.$name.rand(1, 10000).'.jpeg';
+      $jpegDestination = $tmpPath.'/'.$name.mt_rand(1, 10000).'.jpeg';
       }
     $modulesConfig = Zend_Registry::get('configsModules');
     $thumbnailerPath = $modulesConfig['thumbnailcreator']->thumbnailer;

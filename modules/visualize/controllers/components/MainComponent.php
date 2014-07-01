@@ -451,7 +451,7 @@ class Visualize_MainComponent extends AppComponent
       return;
       }
 
-    $thumbnailPath = UtilityComponent::getDataDirectory('thumbnail').'/'.rand(1, 1000);
+    $thumbnailPath = UtilityComponent::getDataDirectory('thumbnail').'/'.mt_rand(1, 1000);
     if(!file_exists(UtilityComponent::getDataDirectory('thumbnail')))
       {
       throw new Zend_Exception("Problem thumbnail path: ".UtilityComponent::getDataDirectory('thumbnail'));
@@ -460,15 +460,15 @@ class Visualize_MainComponent extends AppComponent
       {
       mkdir($thumbnailPath);
       }
-    $thumbnailPath .= '/'.rand(1, 1000);
+    $thumbnailPath .= '/'.mt_rand(1, 1000);
     if(!file_exists($thumbnailPath))
       {
       mkdir($thumbnailPath);
       }
-    $destionation = $thumbnailPath."/".rand(1, 1000).'.jpeg';
+    $destionation = $thumbnailPath."/".mt_rand(1, 1000).'.jpeg';
     while(file_exists($destionation))
       {
-      $destionation = $thumbnailPath."/".rand(1, 1000).'.jpeg';
+      $destionation = $thumbnailPath."/".mt_rand(1, 1000).'.jpeg';
       }
     $pathThumbnail = $destionation;
 

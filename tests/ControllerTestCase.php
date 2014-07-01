@@ -53,7 +53,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       xdebug_stop_code_coverage();
 
       $file = CMAKE_BINARY_DIR.'/xdebugCoverage/'.md5($_SERVER['SCRIPT_FILENAME']);
-      file_put_contents($file.'.'.md5(uniqid(rand(), true)).'.'.get_class($this), serialize($data));
+      file_put_contents($file.'.'.md5(uniqid(mt_rand(), true)).'.'.get_class($this), serialize($data));
       }
     }
 

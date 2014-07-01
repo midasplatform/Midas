@@ -166,7 +166,7 @@ class ExportComponent extends AppComponent
               // have the same file name, add a '.new' suffix to distinguish them
               if(file_exists($dest))
                 {
-                $dest .= '.'.rand().'.new';
+                $dest .= '.'.mt_rand().'.new';
                 }
               if(!symlink($source, $dest))
                 {
