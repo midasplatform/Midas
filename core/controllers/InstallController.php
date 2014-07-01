@@ -114,8 +114,8 @@ class InstallController extends AppController
       $form = $this->Form->Install->createDBForm($type);
       if($form->isValid($this->getRequest()->getPost()))
         {
-        $configDatabase = parse_ini_file(CORE_CONFIGS_PATH . '/database.ini', true);
         require_once BASE_PATH . '/core/controllers/components/UpgradeComponent.php';
+
         $upgradeComponent = new UpgradeComponent();
         $upgradeComponent->dir = BASE_PATH . '/core/database/'.$type;
         $upgradeComponent->init = true;
@@ -130,25 +130,33 @@ class InstallController extends AppController
         $dbtype = 'PDO_' . strtoupper($type);
         $version = str_replace('.sql', '', basename($sqlFile));
 
-        $configDatabase['production']['database.type'] = 'pdo';
-        $configDatabase['production']['database.adapter'] = $dbtype;
-        $configDatabase['production']['database.params.host'] = $form->getValue('host');
-        $configDatabase['production']['database.params.port'] = $form->getValue('port');
-        $configDatabase['production']['database.params.unix_socket'] = $form->getValue('unix_socket');
-        $configDatabase['production']['database.params.dbname'] = $form->getValue('dbname');
-        $configDatabase['production']['database.params.username'] = $form->getValue('username');
-        $configDatabase['production']['database.params.password'] = $form->getValue('password');
-        $configDatabase['production']['version'] = $version;
+        $options = array('allowModifications' => true);
+        $databaseConfig = new Zend_Config_Ini(CORE_CONFIGS_PATH . '/database.ini', null, $options);
 
-        $configDatabase['development']['database.type'] = 'pdo';
-        $configDatabase['development']['database.adapter'] = $dbtype;
-        $configDatabase['development']['database.params.host'] = $form->getValue('host');
-        $configDatabase['development']['database.params.port'] = $form->getValue('port');
-        $configDatabase['development']['database.params.unix_socket'] = $form->getValue('unix_socket');
-        $configDatabase['development']['database.params.dbname'] = $form->getValue('dbname');
-        $configDatabase['development']['database.params.username'] = $form->getValue('username');
-        $configDatabase['development']['database.params.password'] = $form->getValue('password');
-        $configDatabase['development']['version'] = $version;
+        $databaseConfig->production->database->type = 'pdo';
+        $databaseConfig->production->database->adapter = $dbtype;
+        $databaseConfig->production->database->params->host = $form->getValue('host');
+        $databaseConfig->production->database->params->port = $form->getValue('port');
+        $databaseConfig->production->database->params->unix_socket = $form->getValue('unix_socket');
+        $databaseConfig->production->database->params->dbname = $form->getValue('dbname');
+        $databaseConfig->production->database->params->username = $form->getValue('username');
+        $databaseConfig->production->database->params->password = $form->getValue('password');
+        $databaseConfig->production->version = $version;
+
+        $databaseConfig->development->database->type = 'pdo';
+        $databaseConfig->development->database->adapter = $dbtype;
+        $databaseConfig->development->database->params->host = $form->getValue('host');
+        $databaseConfig->development->database->params->port = $form->getValue('port');
+        $databaseConfig->development->database->params->unix_socket = $form->getValue('unix_socket');
+        $databaseConfig->development->database->params->dbname = $form->getValue('dbname');
+        $databaseConfig->development->database->params->username = $form->getValue('username');
+        $databaseConfig->development->database->params->password = $form->getValue('password');
+        $databaseConfig->development->version = $version;
+
+        $writer = new Zend_Config_Writer_Ini();
+        $writer->setConfig($databaseConfig);
+        $writer->setFilename(LOCAL_CONFIGS_PATH . '/database.local.ini');
+        $writer->write();
 
         $driverOptions = array();
         $params = array(
@@ -173,18 +181,18 @@ class InstallController extends AppController
         Zend_Db_Table::setDefaultAdapter($db);
         Zend_Registry::set('dbAdapter', $db);
 
-        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH . '/database.local.ini', $configDatabase);
-
         // Must generate and store our password salt before we create our first user
-        $configApplication = parse_ini_file(CORE_CONFIGS_PATH . '/application.ini', true);
-        $configApplication['global']['password.prefix'] = UtilityComponent::generateRandomString(32);
+        $options = array('allowModifications' => true);
+        $applicationConfig = new Zend_Config_Ini(CORE_CONFIGS_PATH . '/application.ini', null, $options);
+        $applicationConfig->global->password->prefix = UtilityComponent::generateRandomString(32);
+        $applicationConfig->global->gravatar = $form->getValue('gravatar');
 
-        // Verify whether the user wants to use gravatars or not
-        $configApplication['global']['gravatar'] = $form->getValue('gravatar');
+        $writer = new Zend_Config_Writer_Ini();
+        $writer->setConfig($applicationConfig);
+        $writer->setFilename(LOCAL_CONFIGS_PATH . '/application.local.ini');
+        $writer->write();
 
-        // Save the new config
-        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH . '/application.local.ini', $configApplication);
-        $configGlobal = new Zend_Config_Ini(LOCAL_CONFIGS_PATH . '/application.local.ini', 'global', true);
+        $configGlobal = new Zend_Config_Ini(LOCAL_CONFIGS_PATH . '/application.local.ini', 'global');
         Zend_Registry::set('configGlobal', $configGlobal);
 
         require_once BASE_PATH . '/core/controllers/components/UpgradeComponent.php';
@@ -217,10 +225,12 @@ class InstallController extends AppController
   function step3Action()
     {
     $this->requireAdminPrivileges();
+
     if(!file_exists(LOCAL_CONFIGS_PATH . '/database.local.ini'))
       {
       $this->_redirect('/install/index');
       }
+
     $this->view->header = 'Step 3: Midas Server Configuration';
     $userDao = $this->userSession->Dao;
     if(!isset($userDao) || !$userDao->isAdmin())
@@ -228,22 +238,22 @@ class InstallController extends AppController
       unlink(LOCAL_CONFIGS_PATH . '/database.local.ini');
       $this->_redirect('/install/index');
       }
-    $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH . '/application.local.ini', true);
+
+    $options = array('allowModifications' => true);
+    $config = new Zend_Config_Ini(APPLICATION_CONFIG, null, $options);
 
     $form = $this->Form->Install->createConfigForm();
     $formArray = $this->getFormAsArray($form);
-    $formArray['name']->setValue($applicationConfig['global']['application.name']);
-    $formArray['keywords']->setValue($applicationConfig['global']['application.keywords']);
-    $formArray['environment']->setValue($applicationConfig['global']['environment']);
-    $formArray['lang']->setValue($applicationConfig['global']['application.lang']);
-    $formArray['description']->setValue($applicationConfig['global']['application.description']);
-    $formArray['smartoptimizer']->setValue($applicationConfig['global']['smartoptimizer']);
-    $formArray['timezone']->setValue($applicationConfig['global']['default.timezone']);
-
-    $assetstrores = $this->Assetstore->getAll();
-
+    $formArray['description']->setValue($config->global->application->description);
+    $formArray['environment']->setValue($config->global->environment);
+    $formArray['keywords']->setValue($config->global->application->keywords);
+    $formArray['lang']->setValue($config->global->application->lang);
+    $formArray['name']->setValue($config->global->application->name);
+    $formArray['smartoptimizer']->setValue($config->global->smartoptimizer);
+    $formArray['timezone']->setValue($config->global->default->timezone);
     $this->view->form = $formArray;
     $this->view->databaseType = Zend_Registry::get('configDatabase')->database->adapter;
+    $assetstores = $this->Assetstore->getAll();
 
     if($this->_request->isPost() && $form->isValid($this->getRequest()->getPost()))
       {
@@ -257,16 +267,20 @@ class InstallController extends AppController
           }
         }
 
-      $applicationConfig['global']['application.name'] = $form->getValue('name');
-      $applicationConfig['global']['application.description'] = $form->getValue('description');
-      $applicationConfig['global']['application.keywords'] = $form->getValue('keywords');
-      $applicationConfig['global']['application.lang'] = $form->getValue('lang');
-      $applicationConfig['global']['environment'] = $form->getValue('environment');
-      $applicationConfig['global']['defaultassetstore.id'] = $assetstrores[0]->getKey();
-      $applicationConfig['global']['smartoptimizer'] = $form->getValue('smartoptimizer');
-      $applicationConfig['global']['default.timezone'] = $form->getValue('timezone');
+      $config->global->application->description = $form->getValue('description');
+      $config->global->application->keywords = $form->getValue('keywords');
+      $config->global->application->lang = $form->getValue('lang');
+      $config->global->application->name = $form->getValue('name');
+      $config->global->default->timezone = $form->getValue('timezone');
+      $config->global->defaultassetstore->id = $assetstores[0]->getKey();
+      $config->global->environment = $form->getValue('environment');
+      $config->global->smartoptimizer = $form->getValue('smartoptimizer');
 
-      $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH . '/application.local.ini', $applicationConfig);
+      $writer = new Zend_Config_Writer_Ini();
+      $writer->setConfig($config);
+      $writer->setFilename(APPLICATION_CONFIG);
+      $writer->write();
+
       $this->_redirect('/admin#tabs-modules');
       }
     }

@@ -67,7 +67,7 @@ class DemoComponent extends AppComponent
     $communityModel = MidasLoader::loadModel('Community');
     $assetstoreModel = MidasLoader::loadModel('Assetstore');
     $admin = $userModel->createUser('admin@kitware.com', 'admin', 'Demo', 'Administrator', 1);
-    $user = $userModel->createUser('user@kitware.com', 'user', 'Demo', 'User', 0);
+    $userModel->createUser('user@kitware.com', 'user', 'Demo', 'User', 0);
 
     $communityDao = $communityModel->createCommunity('Demo', "This is a Demo Community", MIDAS_COMMUNITY_PUBLIC, $admin, MIDAS_COMMUNITY_CAN_JOIN);
 
@@ -77,24 +77,25 @@ class DemoComponent extends AppComponent
     $assetstoreDao->setType(MIDAS_ASSETSTORE_LOCAL);
     $assetstoreModel->save($assetstoreDao);
 
-    $applicationConfig = parse_ini_file(CORE_CONFIGS_PATH.'/application.ini', true);
-    $applicationConfig['global']['defaultassetstore.id'] = $assetstoreDao->getKey();
-    $applicationConfig['global']['demomode'] = true;
-    $applicationConfig['global']['dynamichelp'] = true;
-    $applicationConfig['global']['environment'] = 'development';
-    $applicationConfig['global']['application.name'] = 'MIDAS - Demo';
-    $applicationConfig['global']['application.description'] = 'MIDAS integrates multimedia server technology with Kitware?s open-source ';
-    $applicationConfig['global']['application.description'] .= 'data analysis and visualization clients. The server follows open standards for data storage, access and harvesting';
-    $applicationConfig['global']['application.keywords'] = 'demonstration, data management, visualization';
+    $options = array('allowModifications' => true);
+    $config = new Zend_Config_Ini(CORE_CONFIGS_PATH.'/application.ini', null, $options);
+    $config->global->defaultassetstore->id = $assetstoreDao->getKey();
+    $config->global->demomode = 1;
+    $config->global->dynamichelp = 1;
+    $config->global->environment = 'development';
+    $config->global->application->name = 'MIDAS - Demo';
+    $description = 'MIDAS integrates multimedia server technology with Kitware\'s open-source data analysis and';
+    $description .= ' visualization clients. The server follows open standards for data storage, access and harvesting';
+    $config->global->application->description = $description;
+    $config->global->application->keywords = 'demonstration, data management, visualization';
 
     $enabledModules = array('visualize', 'oai', 'metadataextractor', 'api', 'scheduler', 'thumbnailcreator', 'statistics');
-
     foreach($enabledModules as $module)
       {
       if(file_exists(LOCAL_CONFIGS_PATH.'/'.$module.'.demo.local.ini'))
         {
         copy(LOCAL_CONFIGS_PATH.'/'.$module.'.demo.local.ini', LOCAL_CONFIGS_PATH.'/'.$module.'.local.ini');
-        $applicationConfig['module'][$module] = true;
+        $config->module->$module = 1;
         }
       else
         {
@@ -102,17 +103,18 @@ class DemoComponent extends AppComponent
         }
       }
 
-    require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
-    $utilityComponent = new UtilityComponent();
-    $utilityComponent->createInitFile(LOCAL_CONFIGS_PATH.'/application.local.ini', $applicationConfig);
+    $writer = new Zend_Config_Writer_Ini();
+    $writer->setConfig($config);
+    $writer->setFilename((LOCAL_CONFIGS_PATH.'/application.local.ini'));
+    $writer->write();
 
     $configGlobal = new Zend_Config_Ini(APPLICATION_CONFIG, 'global', true);
     Zend_Registry::set('configGlobal', $configGlobal);
 
     require_once BASE_PATH.'/core/controllers/components/UploadComponent.php';
-    $uploadCompoenent = new UploadComponent();
-    $item = $uploadCompoenent->createUploadedItem($admin, 'midasLogo.gif', BASE_PATH.'/core/public/images/midasLogo.gif', $communityDao->getPublicFolder(), null, '', true);
-    $item = $uploadCompoenent->createUploadedItem($admin, 'cow.vtp', BASE_PATH.'/core/public/demo/cow.vtp', $communityDao->getPublicFolder(), null, '', true);
+    $uploadComponent = new UploadComponent();
+    $uploadComponent->createUploadedItem($admin, 'midasLogo.gif', BASE_PATH.'/core/public/images/midasLogo.gif', $communityDao->getPublicFolder(), null, '', true);
+    $uploadComponent->createUploadedItem($admin, 'cow.vtp', BASE_PATH.'/core/public/demo/cow.vtp', $communityDao->getPublicFolder(), null, '', true);
     }
 
   /** recursively delete a folder*/

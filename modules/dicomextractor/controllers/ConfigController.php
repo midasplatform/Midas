@@ -29,30 +29,29 @@ class Dicomextractor_ConfigController extends Dicomextractor_AppController
     {
     $this->requireAdminPrivileges();
 
-    if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini"))
+    $options = array('allowModifications' => true);
+    if(file_exists(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini'))
       {
-      $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", true);
+      $config = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini', 'global', $options);
       }
     else
       {
-      $applicationConfig = parse_ini_file(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', true);
+      $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', 'global', $options);
       }
+
     $configForm = $this->ModuleForm->Config->createConfigForm();
-
     $formArray = $this->getFormAsArray($configForm);
-    $formArray['dcm2xml']->setValue($applicationConfig['global']['dcm2xml']);
-    $formArray['dcmj2pnm']->setValue($applicationConfig['global']['dcmj2pnm']);
-    $formArray['dcmftest']->setValue($applicationConfig['global']['dcmftest']);
-    if(isset($applicationConfig['global']['dcmdictpath']))
+    $formArray['dcmftest']->setValue($config->dcmftest);
+    $formArray['dcmj2pnm']->setValue($config->dcmj2pnm);
+    $formArray['dcm2xml']->setValue($config->dcm2xml);
+    if(isset($config->dcmdictpath))
       {
-      $formArray['dcmdictpath']->setValue(
-        $applicationConfig['global']['dcmdictpath']);
+      $formArray['dcmdictpath']->setValue($config->dcmdictpath);
       }
     else
       {
-      $formArray['dcmdictpath']->setValue("");
+      $formArray['dcmdictpath']->setValue('');
       }
-
     $this->view->configForm = $formArray;
 
     if($this->_request->isPost())
@@ -62,19 +61,15 @@ class Dicomextractor_ConfigController extends Dicomextractor_AppController
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
         {
-        if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old"))
-          {
-          unlink(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old");
-          }
-        if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini"))
-          {
-          rename(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old");
-          }
-        $applicationConfig['global']['dcm2xml'] = $this->_getParam('dcm2xml');
-        $applicationConfig['global']['dcmj2pnm'] = $this->_getParam('dcmj2pnm');
-        $applicationConfig['global']['dcmftest'] = $this->_getParam('dcmftest');
-        $applicationConfig['global']['dcmdictpath'] = $this->_getParam('dcmdictpath');
-        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", $applicationConfig);
+        $config->dcmdictpath = $this->_getParam('dcmdictpath');
+        $config->dcmftest = $this->_getParam('dcmftest');
+        $config->dcmj2pnm = $this->_getParam('dcmj2pnm');
+        $config->dcm2xml = $this->_getParam('dcm2xml');
+
+        $writer = new Zend_Config_Writer_Ini();
+        $writer->setConfig($config);
+        $writer->setFilename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini');
+        $writer->write();
         echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       }

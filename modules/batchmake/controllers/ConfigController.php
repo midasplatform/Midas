@@ -38,23 +38,6 @@ class Batchmake_ConfigController extends Batchmake_AppController
   public $_moduleComponents = array('KWBatchmake');
 
   /**
-   * @method archiveOldModuleLocal()
-   * will archive the current module.local config file
-   * written in the hope of being reusable
-   */
-  protected function archiveOldModuleLocal()
-    {
-    if(file_exists(MIDAS_BATCHMAKE_MODULE_LOCAL_OLD_CONFIG))
-      {
-      unlink(MIDAS_BATCHMAKE_MODULE_LOCAL_OLD_CONFIG);
-      }
-    if(file_exists(MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG))
-      {
-      rename(MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG, MIDAS_BATCHMAKE_MODULE_LOCAL_OLD_CONFIG);
-      }
-    }
-
-  /**
    * will create default paths in the midas temp directory
    * for any properties not already set, except for the
    * condor bin dir; imposing a firmer hand on the user
@@ -113,8 +96,6 @@ class Batchmake_ConfigController extends Batchmake_AppController
 
       if(isset($submitConfig))
         {
-        // user wants to save config
-        $this->archiveOldModuleLocal();
         // save only those properties we are interested for local configuration
         foreach($configPropertiesRequirements as $configProperty => $configPropertyRequirement)
           {

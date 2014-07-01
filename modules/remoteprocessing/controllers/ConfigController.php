@@ -63,32 +63,36 @@ class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
     {
     $this->requireAdminPrivileges();
 
-    if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini"))
+    $options = array('allowModifications' => true);
+    if(file_exists(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini'))
       {
-      $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", true);
+      $config = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini', 'global', $options);
       }
     else
       {
-      $applicationConfig = parse_ini_file(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', true);
+      $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', 'global', $options);
       }
-    $configForm = $this->ModuleForm->Config->createConfigForm();
 
+    $configForm = $this->ModuleForm->Config->createConfigForm();
     $formArray = $this->getFormAsArray($configForm);
-    if(empty($applicationConfig['global']['securitykey']))
+    if(empty($config->securitykey))
       {
-      $applicationConfig['global']['securitykey'] = uniqid();
-      $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", $applicationConfig);
+      $config->securitykey = uniqid();
+
+      $writer = new Zend_Config_Writer_Ini();
+      $writer->setConfig($config);
+      $writer->setFilename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini');
+      $writer->write();
       }
-    $formArray['securitykey']->setValue($applicationConfig['global']['securitykey']);
-    if(isset($applicationConfig['global']['showbutton']))
-      {
-      $formArray['showbutton']->setValue($applicationConfig['global']['showbutton']);
-      }
-    else
+    $formArray['securitykey']->setValue($config->securitykey);
+    if(empty($config->showbutton))
       {
       $formArray['showbutton']->setValue(true);
       }
-
+    else
+      {
+      $formArray['showbutton']->setValue($config->showbutton);
+      }
     $this->view->configForm = $formArray;
 
     if($this->_request->isPost())
@@ -99,20 +103,14 @@ class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
         {
-        if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old"))
-          {
-          unlink(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old");
-          }
-        if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini"))
-          {
-          rename(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old");
-          }
-        $applicationConfig['global']['securitykey'] = $this->_getParam('securitykey');
-        $applicationConfig['global']['showbutton'] = $this->_getParam('showbutton');
-
-        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", $applicationConfig);
+        $config->securitykey = $this->_getParam('securitykey');
+        $config->showbutton = $this->_getParam('showbutton');
+        $writer = new Zend_Config_Writer_Ini();
+        $writer->setConfig($config);
+        $writer->setFilename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini');
+        $writer->write();
         echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       }
     }
-  } // end class
+  }

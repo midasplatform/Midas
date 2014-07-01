@@ -86,51 +86,46 @@ class AdminController extends AppController
     {
     $this->requireAdminPrivileges();
     $this->view->header = "Administration";
+
+    $options = array('allowModifications' => true);
+    $config = new Zend_Config_Ini(APPLICATION_CONFIG, null, $options);
+
     $configForm = $this->Form->Admin->createConfigForm();
-
-    if(file_exists(LOCAL_CONFIGS_PATH.'/application.local.ini'))
-      {
-      $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH.'/application.local.ini', true);
-      }
-    else
-      {
-      $applicationConfig = parse_ini_file(CORE_CONFIGS_PATH.'/application.ini', true);
-      }
     $formArray = $this->getFormAsArray($configForm);
+    $formArray['description']->setValue($config->global->application->description);
+    $formArray['environment']->setValue($config->global->environment);
+    $formArray['keywords']->setValue($config->global->application->keywords);
+    $formArray['lang']->setValue($config->global->application->lang);
+    $formArray['name']->setValue($config->global->application->name);
+    $formArray['smartoptimizer']->setValue($config->global->smartoptimizer);
+    $formArray['timezone']->setValue($config->global->default->timezone);
+    if(isset($config->global->closeregistration))
+      {
+      $formArray['closeregistration']->setValue($config->global->closeregistration);
+      }
+    if(isset($config->global->dynamichelp))
+      {
+      $formArray['dynamichelp']->setValue($config->global->dynamichelp);
+      }
+    if(isset($config->global->gravatar))
+      {
+      $formArray['gravatar']->setValue($config->global->gravatar);
+      }
+    if(isset($config->global->httpproxy))
+      {
+      $formArray['httpProxy']->setValue($config->global->httpproxy);
+      }
+    if(isset($config->global->logtrace))
+      {
+      $formArray['logtrace']->setValue($config->global->logtrace);
+      }
+    if(isset($config->global->verifyemail))
+      {
+      $formArray['verifyemail']->setValue($config->global->verifyemail);
+      }
+    $this->view->configForm = $formArray;
 
-    $formArray['name']->setValue($applicationConfig['global']['application.name']);
-    $formArray['keywords']->setValue($applicationConfig['global']['application.keywords']);
-    $formArray['description']->setValue($applicationConfig['global']['application.description']);
-    $formArray['environment']->setValue($applicationConfig['global']['environment']);
-    $formArray['lang']->setValue($applicationConfig['global']['application.lang']);
-    $formArray['smartoptimizer']->setValue($applicationConfig['global']['smartoptimizer']);
-    $formArray['timezone']->setValue($applicationConfig['global']['default.timezone']);
-    if(isset($applicationConfig['global']['httpproxy']))
-      {
-      $formArray['httpProxy']->setValue($applicationConfig['global']['httpproxy']);
-      }
-    if(isset($applicationConfig['global']['closeregistration']))
-      {
-      $formArray['closeregistration']->setValue($applicationConfig['global']['closeregistration']);
-      }
-    if(isset($applicationConfig['global']['dynamichelp']))
-      {
-      $formArray['dynamichelp']->setValue($applicationConfig['global']['dynamichelp']);
-      }
-    if(isset($applicationConfig['global']['logtrace']))
-      {
-      $formArray['logtrace']->setValue($applicationConfig['global']['logtrace']);
-      }
-    if(isset($applicationConfig['global']['gravatar']))
-      {
-      $formArray['gravatar']->setValue($applicationConfig['global']['gravatar']);
-      }
-    if(isset($applicationConfig['global']['verifyemail']))
-      {
-      $formArray['verifyemail']->setValue($applicationConfig['global']['verifyemail']);
-      }
-    $this->view->selectedLicense = $applicationConfig['global']['defaultlicense'];
-
+    $this->view->selectedLicense = $config->global->defaultlicense;
     try
       {
       $this->view->allLicenses = $this->License->getAll();
@@ -139,7 +134,6 @@ class AdminController extends AppController
       {
       $this->view->allLicenses = array();
       }
-    $this->view->configForm = $formArray;
 
     $allModules = $this->Component->Utility->getAllModules();
     $this->view->extraTabs = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ADMIN_TABS');
@@ -152,39 +146,31 @@ class AdminController extends AppController
       $submitModule = $this->_getParam('submitModule');
       if(isset($submitConfig))
         {
-        $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH.'/application.local.ini', true);
-        if(file_exists(LOCAL_CONFIGS_PATH.'/application.local.ini.old'))
-          {
-          unlink(LOCAL_CONFIGS_PATH.'/application.local.ini.old');
-          }
-        rename(LOCAL_CONFIGS_PATH.'/application.local.ini', LOCAL_CONFIGS_PATH.'/application.local.ini.old');
-        $applicationConfig['global']['application.name'] = $this->_getParam('name');
-        $applicationConfig['global']['application.description'] = $this->_getParam('description');
-        $applicationConfig['global']['application.keywords'] = $this->_getParam('keywords');
-        $applicationConfig['global']['application.lang'] = $this->_getParam('lang');
-        $applicationConfig['global']['environment'] = $this->_getParam('environment');
-        $applicationConfig['global']['smartoptimizer'] = $this->_getParam('smartoptimizer');
-        $applicationConfig['global']['default.timezone'] = $this->_getParam('timezone');
-        $applicationConfig['global']['defaultlicense'] = $this->_getParam('licenseSelect');
-        $applicationConfig['global']['dynamichelp'] = $this->_getParam('dynamichelp');
-        $applicationConfig['global']['closeregistration'] = $this->_getParam('closeregistration');
-        $applicationConfig['global']['logtrace'] = $this->_getParam('logtrace');
-        $applicationConfig['global']['httpproxy'] = $this->_getParam('httpProxy');
-        $applicationConfig['global']['gravatar'] = $this->_getParam('gravatar');
-        $applicationConfig['global']['verifyemail'] = $this->_getParam('verifyemail');
-        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH.'/application.local.ini', $applicationConfig);
+        $config->global->application->name = $this->_getParam('name');
+        $config->global->application->description = $this->_getParam('description');
+        $config->global->application->keywords = $this->_getParam('keywords');
+        $config->global->application->lang = $this->_getParam('lang');
+        $config->global->environment = $this->_getParam('environment');
+        $config->global->smartoptimizer = $this->_getParam('smartoptimizer');
+        $config->global->default->timezone = $this->_getParam('timezone');
+        $config->global->defaultlicense = $this->_getParam('licenseSelect');
+        $config->global->dynamichelp = $this->_getParam('dynamichelp');
+        $config->global->closeregistration = $this->_getParam('closeregistration');
+        $config->global->logtrace = $this->_getParam('logtrace');
+        $config->global->httpproxy = $this->_getParam('httpProxy');
+        $config->global->gravatar = $this->_getParam('gravatar');
+        $config->global->verifyemail = $this->_getParam('verifyemail');
+
+        $writer = new Zend_Config_Writer_Ini();
+        $writer->setConfig($config);
+        $writer->setFilename(APPLICATION_CONFIG);
+        $writer->write();
         echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       if(isset($submitModule))
         {
         $moduleName = $this->_getParam('modulename');
         $modulevalue = $this->_getParam('modulevalue');
-        $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH.'/application.local.ini', true);
-        if(file_exists(LOCAL_CONFIGS_PATH.'/application.local.ini.old'))
-          {
-          unlink(LOCAL_CONFIGS_PATH.'/application.local.ini.old');
-          }
-
         $moduleConfigLocalFile = LOCAL_CONFIGS_PATH."/".$moduleName.".local.ini";
         $moduleConfigFile = BASE_PATH."/modules/".$moduleName."/configs/module.ini";
         $moduleConfigPrivateFile = BASE_PATH."/privateModules/".$moduleName."/configs/module.ini";
@@ -203,9 +189,12 @@ class AdminController extends AppController
           throw new Zend_Exception("Unable to find config file");
           }
 
-        rename(LOCAL_CONFIGS_PATH.'/application.local.ini', LOCAL_CONFIGS_PATH.'/application.local.ini.old');
-        $applicationConfig['module'][$moduleName] = $modulevalue;
-        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH.'/application.local.ini', $applicationConfig);
+        $config->module->$moduleName = $modulevalue;
+
+        $writer = new Zend_Config_Writer_Ini();
+        $writer->setConfig($config);
+        $writer->setFilename(APPLICATION_CONFIG);
+        $writer->write();
         echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       }
@@ -246,9 +235,12 @@ class AdminController extends AppController
       foreach($assetstores as $key => $assetstore)
         {
         $assetstores[$key]->default = true;
-        $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH.'/application.local.ini', true);
-        $applicationConfig['global']['defaultassetstore.id'] = $assetstores[$key]->getKey();
-        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH.'/application.local.ini', $applicationConfig);
+        $config->global->defaultassetstore->id = $assetstores[$key]->getKey();
+
+        $writer = new Zend_Config_Writer_Ini();
+        $writer->setConfig($config);
+        $writer->setFilename(APPLICATION_CONFIG);
+        $writer->write();
         break;
         }
       }
@@ -336,7 +328,7 @@ class AdminController extends AppController
     $this->view->modulesList = $modulesList;
     $this->view->modulesEnable = $modulesEnable;
     $this->view->databaseType = Zend_Registry::get('configDatabase')->database->adapter;
-    }//end indexAction
+    }
 
   /**
    * Used to display and filter the list of log messages
@@ -682,7 +674,7 @@ class AdminController extends AppController
         return false;
         }
 
-      // Remove the last slashe if any
+      // Remove the last slash if any
       if($midas2_assetstore[strlen($midas2_assetstore) - 1] == '\\'
          || $midas2_assetstore[strlen($midas2_assetstore) - 1] == '/')
         {
@@ -710,6 +702,6 @@ class AdminController extends AppController
       echo json_encode(array('message' => $this->t('Migration sucessful.')));
       }
 
-    // Display the form
+    return true;
     }
   } // end class

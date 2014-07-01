@@ -52,8 +52,7 @@ class ConfigControllerTest extends ControllerTestCase
       {
       $this->fail('Unable to find config file');
       }
-    $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH."/remoteprocessing.local.ini", true);
-
-    $this->assertEquals($securityKey, $applicationConfig['global']['securitykey']);
+    $config = Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/remoteprocessing.local.ini', 'global');
+    $this->assertEquals($securityKey, $config->securitykey);
     }
   }

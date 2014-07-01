@@ -86,21 +86,21 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
    */
   public function createThumbnailFromPath($name, $fullPath, $width, $height, $exact = true)
     {
-    $ext = strtolower(substr(strrchr($name, '.'), 1));
-    if(file_exists(LOCAL_CONFIGS_PATH."/thumbnailcreator.local.ini"))
+    if(file_exists(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini'))
       {
-      $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH."/thumbnailcreator.local.ini", true);
+      $config = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini', 'global');
       }
     else
       {
-      $applicationConfig = parse_ini_file(BASE_PATH.'/modules/thumbnailcreator/configs/module.ini', true);
+      $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', 'global');
       }
-    $useThumbnailer = $applicationConfig['global']['useThumbnailer'];
-    // get image formats which require thumbnailer to do pre-processing
-    $preprocessedFormats = array_map('trim', explode(',', $applicationConfig['global']['imageFormats']));
+    $useThumbnailer = $config->useThumbnailer;
+    $preprocessedFormats = array_map('trim', explode(',', $config->imageFormats));
+
+    $ext = strtolower(substr(strrchr($name, '.'), 1));
     if(($useThumbnailer == "1") && in_array($ext, $preprocessedFormats))
       {
-      // pre-process the file to get a temporary jpeg file and then feed it to image magick later.
+      // pre-process the file to get a temporary JPEG file and then feed it to imagemagick later.
       $preprecessedJpeg = $this->preprocessByThumbnailer($name, $fullPath);
       if(isset($preprecessedJpeg) && file_exists($preprecessedJpeg))
         {

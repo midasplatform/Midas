@@ -168,8 +168,6 @@ class UpgradeComponent extends AppComponent
         }
       }
 
-    require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
-    $utility = new UtilityComponent();
     if($this->module == 'core')
       {
       if(isset($migration))
@@ -186,15 +184,9 @@ class UpgradeComponent extends AppComponent
             $path = BASE_PATH.'/tests/configs/lock.mysql.ini';
             }
           }
-        $data = parse_ini_file($path, true);
-        if(file_exists($path.'.old'))
-          {
-          unlink($path.'.old');
-          }
-        rename($path, $path.'.old');
+        $options = array('allowModifications' => true);
         if($testing || Zend_Registry::get('configGlobal')->environment == 'testing')
           {
-          $data['testing']['version'] = $migration['versionText'];
           if(file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini'))
             {
             $path = BASE_PATH.'/tests/configs/lock.pgsql.ini';
@@ -203,13 +195,20 @@ class UpgradeComponent extends AppComponent
             {
             $path = BASE_PATH.'/tests/configs/lock.mysql.ini';
             }
+          $config = new Zend_Config_Ini($path, null, $options);
+          $config->testing->version = $migration['versionText'];
           }
         else
           {
-          $data['development']['version'] = $migration['versionText'];
-          $data['production']['version'] = $migration['versionText'];
+          $config = new Zend_Config_Ini($path, null, $options);
+          $config->development->version = $migration['versionText'];
+          $config->production->version = $migration['versionText'];
           }
-        $utility->createInitFile($path, $data);
+
+        $writer = new Zend_Config_Writer_Ini();
+        $writer->setConfig($config);
+        $writer->setFilename($path);
+        $writer->write();
         }
       }
     else
@@ -217,14 +216,14 @@ class UpgradeComponent extends AppComponent
       $path = LOCAL_CONFIGS_PATH."/".$this->module.".local.ini";
       if(file_exists($path))
         {
-        $data = parse_ini_file($path, true);
-        if(file_exists($path.'.old'))
-          {
-          unlink($path.'.old');
-          }
-        rename($path, $path.'.old');
-        $data['global']['version'] = $migration['versionText'];
-        $utility->createInitFile($path, $data);
+        $options = array('allowModifications' => true);
+        $config = new Zend_Config_Ini($path, null, $options);
+        $config->global->version = $migration['versionText'];
+
+        $writer = new Zend_Config_Writer_Ini();
+        $writer->setConfig($config);
+        $writer->setFilename($path);
+        $writer->write();
         }
       }
     return true;

@@ -192,7 +192,7 @@ $(document).ready(function() {
 
     $('input.moduleCheckbox').change(function () {
         if($(this).is(':checked')) {
-            modulevalue = 'true';
+            modulevalue = 1;
             var dependencies = $(this).attr('dependencies');
             dependencies = dependencies.split(',');
             $.each(dependencies, function(i, l) {
@@ -206,7 +206,7 @@ $(document).ready(function() {
             });
         }
         else {
-            modulevalue='false';
+            modulevalue = 0;
             var moduleDependencies = new Array();
             $.each($('input[dependencies='+$(this).attr('module')+']:checked'), function () {
                 moduleDependencies.push($(this).attr('module'));

@@ -29,17 +29,19 @@ class Cleanup_ConfigController extends Cleanup_AppController
     {
     $this->requireAdminPrivileges();
 
+    $options = array('allowModifications' => true);
     if(file_exists(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini'))
       {
-      $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini', true);
+      $config = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini', 'global', $options);
       }
     else
       {
-      $applicationConfig = parse_ini_file(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', true);
+      $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', 'global', $options);
       }
+
     $configForm = $this->ModuleForm->Config->createConfigForm();
     $formArray = $this->getFormAsArray($configForm);
-    $formArray['olderThan']->setValue($applicationConfig['global']['days']);
+    $formArray['olderThan']->setValue($config->days);
     $this->view->configForm = $formArray;
 
     if($this->_request->isPost())
@@ -49,14 +51,6 @@ class Cleanup_ConfigController extends Cleanup_AppController
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
         {
-        if(file_exists(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini.old'))
-          {
-          unlink(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini.old');
-          }
-        if(file_exists(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini'))
-          {
-          rename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini', LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini.old');
-          }
         $jobModel = MidasLoader::loadModel('Job', 'scheduler');
         $jobs = $jobModel->getJobsByTask('TASK_CLEANUP_PERFORM_CLEANUP');
         $jobReport = false;
@@ -88,8 +82,13 @@ class Cleanup_ConfigController extends Cleanup_AppController
                                                             'days' => $this->_getParam('olderThan'))));
           $jobModel->save($jobReport);
           }
-        $applicationConfig['global']['days'] = $this->_getParam('olderThan');
-        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini', $applicationConfig);
+
+        $config->days = $this->_getParam('olderThan');
+
+        $writer = new Zend_Config_Writer_Ini();
+        $writer->setConfig($config);
+        $writer->setFilename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini');
+        $writer->write();
         echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       }
