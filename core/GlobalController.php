@@ -117,13 +117,13 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     if(!$this->isDebug())
       {
       $frontendOptions = array('automatic_serialization' => true, 'lifetime' => 86400);
-      if(extension_loaded('memcache') || session_save_path() === 'Memcache')
-        {
-        $cache = Zend_Cache::factory('Core', 'Memcached', $frontendOptions, array());
-        }
-      else if(extension_loaded('memcached'))
+      if(extension_loaded('memcached') || session_save_path() === 'Memcache')
         {
         $cache = Zend_Cache::factory('Core', 'Libmemcached', $frontendOptions, array());
+        }
+      else if(extension_loaded('memcache'))
+        {
+        $cache = Zend_Cache::factory('Core', 'Memcached', $frontendOptions, array());
         }
       else
         {
