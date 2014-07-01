@@ -296,7 +296,6 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       $error = $this->request->getParam('error_handler');
       Zend_Loader::loadClass('NotifyErrorComponent', BASE_PATH.'/core/controllers/components');
       $errorComponent = new NotifyErrorComponent();
-      $mailer = new Zend_Mail();
       $session = new Zend_Session_Namespace('Auth_User');
       $db = Zend_Registry::get('dbAdapter');
       $profiler = $db->getProfiler();
@@ -304,7 +303,6 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       $errorComponent->initNotifier(
           $environment,
           $error,
-          $mailer,
           $session,
           $profiler,
           $_SERVER

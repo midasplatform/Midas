@@ -84,22 +84,17 @@ class Statistics_ReportComponent extends AppComponent
     $reportContent .=  '<br/>Average time on the website: '.$piwik->avg_time_on_site;
     $this->report = $reportContent;
     return $reportContent;
-    }//end generate
+    }
 
   /** send the report to admins */
   public function send()
     {
+    $subject = 'Statistics Report';
     $userModel = MidasLoader::loadModel('User');
-    $mail = new Zend_Mail();
-    $mail->setBodyHtml($this->report);
-    $mail->setFrom('admin@foo.com', 'MIDAS');
-    $mail->setSubject('MIDAS Report');
-
     $admins = $userModel->getAdmins();
     foreach($admins as $admin)
       {
-      $mail->addTo($admin->getEmail(), $admin->getFullName());
-      $mail->send();
+      UtilityComponent::sendEmail($admin->getEmail(), $subject, $this->report);
       }
-    } //end send
-  } // end class
+    }
+  }

@@ -638,23 +638,62 @@ class UtilityComponent extends AppComponent
     rmdir($dir);
     }
 
-  /**
-   * Send an email.  This wraps the mail() function and adds our default headers and puts the
-   * text into a template.
-   */
-  public static function sendEmail($email, $subject, $text)
+  /** Send mail. */
+  public static function sendEmail($to, $subject, $body)
     {
-    $headers = "From: Midas\nReply-To: no-reply\nX-Mailer: PHP/".phpversion()."\nMIME-Version: 1.0\nContent-type: text/html; charset = UTF-8";
-    $text .= '<br/><br/>--<br/>This is an auto-generated message from the Midas system. Please do not reply to this email.';
-
-    if(Zend_Registry::get('configGlobal')->environment == 'testing' || mail($email, $subject, $text, $headers))
+    $validator = new Zend_Validate_EmailAddress();
+    if(getenv('midas_email_sender') && $validator->isValid(getenv('midas_email_sender')))
       {
-      self::getLogger()->info('Sent email to '.$email.' with subject '.$subject);
+      $sender = getenv('midas_email_sender');
+      }
+    else if(ini_get('sendmail_from') && $validator->isValid(ini_get('sendmail_from')))
+      {
+      $sender = ini_get('sendmail_from');
       }
     else
       {
-      self::getLogger()->crit('Error sending email to '.$email.' with subject '.$subject);
+      $sender = 'no-reply@example.org'; // RFC2606
       }
+    if(!$validator->isValid($to))
+      {
+      Zend_Registry::get('logger')->err('Unable to send email to invalid email address "'.$to.'"');
+      return false;
+      }
+    $subject = 'Midas Platform: '.$subject;
+    $body .= '<br/><br/><i>This is an auto-generated message from <a href="'.self::getServerURL().'">Midas Platform</a>. Please do not reply to this email.</i>';
+    try
+      {
+      UtilityComponent::beginIgnoreWarnings();
+      include_once 'google/appengine/api/mail/Message.php';
+      UtilityComponent::endIgnoreWarnings();
+      if(class_exists('google\appengine\api\mail\Message', false))
+        {
+        $message = new \google\appengine\api\mail\Message();
+        $message->setSender($sender);
+        $message->addTo($to);
+        $message->setSubject($subject);
+        $message->setHtmlBody($body);
+        }
+      else
+        {
+        $message = new Zend_Mail();
+        $message->setFrom($sender);
+        $message->addTo($to);
+        $message->setSubject($subject);
+        $message->setBodyHtml($body);
+        }
+      if(Zend_Registry::get('configGlobal')->environment != 'testing')
+        {
+        $message->send();
+        }
+      }
+    catch(Exception $exception)
+      {
+      Zend_Registry::get('logger')->err('Unable to send email to "'.$to.'" with subject "'.$subject.'": '.$exception->getMessage());
+      return false;
+      }
+    Zend_Registry::get('logger')->info('Sent email to "'.$to.'" with subject "'.$subject.'"');
+    return true;
     }
 
   /**

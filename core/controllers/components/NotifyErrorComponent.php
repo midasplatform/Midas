@@ -22,7 +22,6 @@
 class NotifyErrorComponent extends AppComponent
   {
   protected $_environment;
-  protected $_mailer;
   protected $_session;
   protected $_error;
   protected $_profiler;
@@ -33,10 +32,9 @@ class NotifyErrorComponent extends AppComponent
     }
 
   /** Init*/
-  public function initNotifier($environment, ArrayObject $error, Zend_Mail $mailer, Zend_Session_Namespace $session, Zend_Db_Profiler $profiler, Array $server)
+  public function initNotifier($environment, ArrayObject $error, Zend_Session_Namespace $session, Zend_Db_Profiler $profiler, Array $server)
     {
     $this->_environment = $environment;
-    $this->_mailer = $mailer;
     $this->_error = $error;
     $this->_session = $session;
     $this->_profiler = $profiler;
@@ -44,7 +42,7 @@ class NotifyErrorComponent extends AppComponent
     }
 
   /** Handle fatal errors */
-  public function fatalError($logger, $mailer)
+  public function fatalError($logger)
     {
     if(!is_null(error_get_last()))
       {
@@ -96,7 +94,6 @@ class NotifyErrorComponent extends AppComponent
             ob_clean();
             }
           echo $message;
-          $this->_mailer = $mailer;
           $this->_environment = $environment;
           break;
         default:

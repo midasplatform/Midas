@@ -176,7 +176,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     require_once BASE_PATH . '/core/controllers/components/NotifyErrorComponent.php';
     $notifyErrorComponent = new NotifyErrorComponent();
     ini_set('display_errors', 0);
-    register_shutdown_function(array($notifyErrorComponent, 'fatalError'), $logger, new Zend_Mail());
+    register_shutdown_function(array($notifyErrorComponent, 'fatalError'), $logger);
     set_error_handler(array($notifyErrorComponent, 'warningError'), E_NOTICE | E_WARNING);
 
     return $config;
