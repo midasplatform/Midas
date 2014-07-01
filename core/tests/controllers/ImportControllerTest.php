@@ -168,7 +168,7 @@ class ImportControllerTest extends ControllerTestCase
     $this->getRequest()->setMethod('POST');
     $this->params = array();
     $this->params['uploadid'] = "1109853050";
-    $this->params['inputdirectory'] = $this->getTempDirectory().'test/A';
+    $this->params['inputdirectory'] = $this->getTempDirectory().'/test/A';
     $this->params['importassetstoretype'] = '0';
     $this->params['assetstore'] = $this->Assetstore->getDefault()->getKey();
     $this->params['importemptydirectories'] = '1';
@@ -185,7 +185,7 @@ class ImportControllerTest extends ControllerTestCase
     $this->getRequest()->setMethod('POST');
     $this->params = array();
     $this->params['uploadid'] = "1109853050";
-    $this->params['inputdirectory'] = $this->getTempDirectory().'test/A';
+    $this->params['inputdirectory'] = $this->getTempDirectory().'/test/A';
     $this->params['importassetstoretype'] = '0';
     $this->params['assetstore'] = $this->Assetstore->getDefault()->getKey();
     $this->params['importemptydirectories'] = '1';
@@ -204,7 +204,7 @@ class ImportControllerTest extends ControllerTestCase
     $this->getRequest()->setMethod('POST');
     $this->params = array();
     $this->params['uploadid'] = "1109853050";
-    $this->params['inputdirectory'] = $this->getTempDirectory().'test/A';
+    $this->params['inputdirectory'] = $this->getTempDirectory().'/test/A';
     $this->params['importassetstoretype'] = '0';
     $this->params['assetstore'] = $this->Assetstore->getDefault()->getKey();
     $this->params['importemptydirectories'] = '1';
@@ -219,14 +219,14 @@ class ImportControllerTest extends ControllerTestCase
     $subFolders = $folder->getFolders();
     $subItems = $folder->getItems();
     $subFoldersMap = array();
-    foreach( $subFolders as $sub )
+    foreach($subFolders as $sub)
       {
       $subFoldersMap[$sub->getName()] = $sub;
       }
     $subSubFolders = $subFoldersMap['1']->getFolders();
     $subSubItems = $subSubFolders[0]->getItems();
     $subSubItemsMap = array();
-    foreach( $subSubItems as $sub )
+    foreach($subSubItems as $sub)
       {
       $subSubItemsMap[$sub->getName()] = $sub;
       }

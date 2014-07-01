@@ -515,7 +515,7 @@ class ItemController extends AppController
         {
         $bitstreamDao->setName($name);
         }
-      $bitstreamDao->setMimetype( $mimetype);
+      $bitstreamDao->setMimetype($mimetype);
       $this->Bitstream->save($bitstreamDao);
       $this->_redirect('/item/'.$itemDao->getKey());
       }

@@ -55,7 +55,7 @@ class ExecuteComponentTest extends BatchmakeControllerTest
       }
 
     // upload a file for testing of the exports
-    $tmpDir = $this->getTempDirectory() . $this->testTmpDir;
+    $tmpDir = $this->getTempDirectory() . '/' .$this->testTmpDir;
     // use UploadComponent
     require_once BASE_PATH.'/core/controllers/components/UploadComponent.php';
     $uploadComponent = new UploadComponent();
@@ -97,7 +97,7 @@ class ExecuteComponentTest extends BatchmakeControllerTest
   public function tearDown()
     {
     // remove the temporary tests dir
-    $tmpDir = $this->getTempDirectory() . $this->testTmpDir;
+    $tmpDir = $this->getTempDirectory() . '/' . $this->testTmpDir;
 
     KWUtils::recursiveRemoveDirectory($tmpDir);
     $this->Item->delete($this->tmpItem);

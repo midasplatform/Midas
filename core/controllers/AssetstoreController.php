@@ -186,7 +186,7 @@ class AssetstoreController extends AppController
         'totalSpace' => $totalSpace,
         'totalSpaceText' => $this->Component->Utility->formatSize($totalSpace),
         'freeSpace' => $freeSpace,
-        'freeSpaceText' => $this->Component->Utility->formatSize($freeSpace);
+        'freeSpaceText' => $this->Component->Utility->formatSize($freeSpace)));
       return true;
       }
 

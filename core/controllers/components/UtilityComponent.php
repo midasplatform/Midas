@@ -457,7 +457,7 @@ class UtilityComponent extends AppComponent
         $tempDirectory = BASE_PATH.'/tmp';
         }
       }
-    return $tempDirectory .'/'.$subdir.'/';
+    return $tempDirectory .'/'.$subdir;
     }
 
   /**

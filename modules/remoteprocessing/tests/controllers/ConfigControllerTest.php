@@ -52,7 +52,7 @@ class ConfigControllerTest extends ControllerTestCase
       {
       $this->fail('Unable to find config file');
       }
-    $config = Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/remoteprocessing.local.ini', 'global');
+    $config = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/remoteprocessing.local.ini', 'global');
     $this->assertEquals($securityKey, $config->securitykey);
     }
   }

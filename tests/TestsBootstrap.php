@@ -22,7 +22,7 @@ error_reporting(E_ALL | E_STRICT);
 ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
 
-define('APPLICATION_PATH', realpath(dirname(__FILE__).'/../application'));
+define('APPLICATION_PATH', realpath(dirname(__FILE__).'/../core'));
 define('APPLICATION_ENV', 'testing');
 define('LIBRARY_PATH', realpath(dirname(__FILE__).'/../library'));
 define('TESTS_PATH', realpath(dirname(__FILE__)));

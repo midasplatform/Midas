@@ -40,9 +40,9 @@ class KWUtilsTest extends ControllerTestCase
     // test creating directories, do this in the tmp dir
     //
     // create a nested set of directories
-    $tmpDir = UtilityComponent::getTempDirectory() . '/';
+    $tmpDir = UtilityComponent::getTempDirectory();
     $subDirs = array("KWUtilsTest", "1", "2", "3");
-    $outDir = KWUtils::createSubDirectories($tmpDir, $subDirs);
+    $outDir = KWUtils::createSubDirectories($tmpDir.'/', $subDirs);
 
     // now check that all the subdirs have been created
 

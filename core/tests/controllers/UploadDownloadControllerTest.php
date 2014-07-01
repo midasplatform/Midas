@@ -37,7 +37,7 @@ class UploadDownloadControllerTest extends ControllerTestCase
 
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $dir = $this->getTempDirectory().$userDao->getUserId().'/1002'; //private folder
+    $dir = $this->getTempDirectory().'/'.$userDao->getUserId().'/1002'; //private folder
     $identifier = $dir.'/httpupload.png';
     if(!file_exists($dir))
       {
@@ -69,7 +69,7 @@ class UploadDownloadControllerTest extends ControllerTestCase
 
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $identifier = $this->getTempDirectory().'httpupload.png';
+    $identifier = $this->getTempDirectory().'/httpupload.png';
     if(file_exists($identifier))
       {
       unlink($identifier);
@@ -103,9 +103,9 @@ class UploadDownloadControllerTest extends ControllerTestCase
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
     $subdir = $userDao->getUserId().'/1002'; // private folder
-    $dir = $this->getTempDirectory().$subdir;
+    $dir = $this->getTempDirectory().'/'.$subdir;
     $fileBase = BASE_PATH.'/tests/testfiles/search.png';
-    $file = $this->getTempDirectory().'testing_file.png';
+    $file = $this->getTempDirectory().'/testing_file.png';
     $identifier = $dir.'/httpupload.png';
 
     if(file_exists($identifier))
@@ -237,7 +237,7 @@ class UploadDownloadControllerTest extends ControllerTestCase
     {
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $actualMd5 = md5_file($this->getTempDirectory().'testing_file.png');
+    $actualMd5 = md5_file($this->getTempDirectory().'/testing_file.png');
 
     $search = $this->Item->getItemsFromSearch('search.png', $userDao);
     $this->assertTrue(count($search) > 0);
