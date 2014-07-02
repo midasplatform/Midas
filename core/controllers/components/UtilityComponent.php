@@ -18,12 +18,12 @@
  limitations under the License.
 =========================================================================*/
 
-/** Utility componenet */
+/** Utility component */
 class UtilityComponent extends AppComponent
   {
   /**
    * The main function for converting to an XML document.
-   * Pass in a multi dimensional array and this recrusively loops through and builds up an XML document.
+   * Pass in a multi dimensional array and this recursively loops through and builds up an XML document.
    *
    * @param array $data
    * @param string $rootNodeName - what you want the root node to be - defaultsto data.
@@ -487,7 +487,7 @@ class UtilityComponent extends AppComponent
       $classname = ucfirst($moduleName).'_InstallScript';
       if(!class_exists($classname, false))
         {
-        throw new Zend_Exception('Could not find class "'.$classname.'" in file "'.$filename.'"');
+        throw new Zend_Exception('Could not find class "'.$classname.'" in file "'.$installScript.'"');
         }
 
       $class = new $classname();
@@ -614,15 +614,12 @@ class UtilityComponent extends AppComponent
   /** Recursively delete a directory on disk */
   public static function rrmdir($dir)
     {
-    if(!file_exists($dir))
+    if(!file_exists($dir) || !is_dir($dir))
       {
       return;
       }
-    if(is_dir($dir))
-      {
-      $objects = scandir($dir);
-      }
 
+    $objects = scandir($dir);
     foreach($objects as $object)
       {
       if($object != '.' && $object != '..')
@@ -672,11 +669,11 @@ class UtilityComponent extends AppComponent
     $currentPort = "";
     $prefix = "http://";
 
-    if($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443)
+    if(isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443)
       {
       $currentPort = ":".$_SERVER['SERVER_PORT'];
       }
-    if($_SERVER['SERVER_PORT'] == 443 || (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])))
+    if((isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) || (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])))
       {
       $prefix = "https://";
       }
