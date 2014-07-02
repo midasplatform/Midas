@@ -24,6 +24,15 @@ class ApiControllerTest extends ControllerTestCase
   /** set up tests */
   public function setUp()
     {
+    $db = Zend_Registry::get('dbAdapter');
+    $configDatabase = Zend_Registry::get('configDatabase');
+    if($configDatabase->database->adapter == 'PDO_PGSQL')
+      {
+      $db->query("SELECT setval('validation_dashboard_dashboard_id_seq', (SELECT MAX(dashboard_id) FROM validation_dashboard)+1);");
+      $db->query("SELECT setval('validation_dashboard2folder_dashboard2folder_id_seq', (SELECT MAX(dashboard2folder_id) FROM validation_dashboard2folder)+1);");
+      $db->query("SELECT setval('validation_dashboard2scalarresult_dashboard2scalarresult_id_seq', (SELECT MAX(dashboard2scalarresult_id) FROM  validation_dashboard2scalarresult)+1);");
+      $db->query("SELECT setval('validation_scalarresult_scalarresult_id_seq', (SELECT MAX(scalarresult_id) FROM validation_scalarresult)+1);");
+      }
     $this->setupDatabase(array('default')); //core dataset
     $this->setupDatabase(array('default'), 'validation'); // module dataset
     $this->enabledModules = array('api', 'validation');

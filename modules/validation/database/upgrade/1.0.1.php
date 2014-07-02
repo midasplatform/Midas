@@ -18,10 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Adds revision URL as a configuration parameter on producers
- */
-class Tracker_Upgrade_1_0_2 extends MIDASUpgrade
+class Validation_Upgrade_1_0_1 extends MIDASUpgrade
   {
   public function preUpgrade()
     {
@@ -29,12 +26,11 @@ class Tracker_Upgrade_1_0_2 extends MIDASUpgrade
 
   public function mysql()
     {
-    $this->db->query("ALTER TABLE `tracker_producer` ADD COLUMN `revision_url` text NOT NULL");
     }
 
   public function pgsql()
     {
-    $this->db->query("ALTER TABLE tracker_producer ADD COLUMN revision_url text NOT NULL DEFAULT ''");
+    $this->db->query("ALTER TABLE validation_dashboard ALTER COLUMN owner_id SET DEFAULT 0;");
     }
 
   public function postUpgrade()

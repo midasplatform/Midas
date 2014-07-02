@@ -23,7 +23,7 @@ to_titlecase( ${module_name} module_name_titlecase )
 add_subdirectory( controllers )
 add_subdirectory( models )
 
-add_midas_mysql_test( ${module_name_titlecase}Api ApiTest.php )
+add_midas_test( ${module_name_titlecase}Api ApiTest.php )
 
 add_midas_style_test( Style${module_name_titlecase}AppController ${CMAKE_SOURCE_DIR}/modules/${module_name}/AppController.php )
 add_midas_style_test( Style${module_name_titlecase}Constant ${CMAKE_SOURCE_DIR}/modules/${module_name}/constant )
