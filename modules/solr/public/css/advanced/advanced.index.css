@@ -1,44 +1,45 @@
-/* Remove the sidebar padding */
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 div.viewWrapper {
-  padding-right: 30px !important;
+    padding-right: 30px !important;
 }
 
 div.queryArea {
-  margin-top: 10px;
+    margin-top: 10px;
 }
 
 div.topText {
-  margin-top: 8px;
+    margin-top: 8px;
 }
 
 #advancedQueryField {
-  width: 600px;
-  height: 36px;
-  max-width: 800px;
+    height: 36px;
+    max-width: 800px;
+    width: 600px;
 }
 
 #advancedSearchButton {
-  margin-left: 0px !important;
-  padding: 4px 13px 4px 13px;
+    margin-left: 0px !important;
+    padding: 4px 13px 4px 13px;
 }
 
 #resultsArea {
-  width: 100%;
-  margin-top: 10px;
-  border-top: 1px solid #d0d0d0;
+    border-top: 1px solid #D0D0D0;
+    margin-top: 10px;
+    width: 100%;
 }
 
 img.resultsLoading {
-  margin-top: 10px;
+    margin-top: 10px;
 }
 
 div.itemResult {
-  border-bottom: 1px dotted #bbbbbb;
-  padding-bottom: 10px;
-  padding-top: 10px;
+    border-bottom: 1px dotted #BBB;
+    padding-bottom: 10px;
+    padding-top: 10px;
 }
 
 div.pageItrButtons {
-  margin-top: 15px;
-  float: right;
+    float: right;
+    margin-top: 15px;
 }

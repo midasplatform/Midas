@@ -1,23 +1,23 @@
-div.communityList{
-  
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+div.communityList {}
+
+div.communityList div {
+    border-bottom: 1px dotted gray;
+    padding-bottom: 5px;
+    padding-top: 5px;
 }
 
-div.communityList div{
-  border-bottom: 1px dotted grey;
-  padding-top: 5px;
-  padding-bottom: 5px;
+div.communityList a.communityTitle {
+    font-size: 14px;
+    font-weight: bold;
 }
 
-div.communityList a.communityTitle{
-  font-weight: bold;
-  font-size: 14px;
+div.communityList span {
+    padding-left: 15px;
 }
 
-div.communityList span{
-  padding-left: 15px;
-}
-
-div.communityBlock:hover{
-  background-color: #F6F9FE;
-  cursor: pointer;
+div.communityBlock:hover {
+    background-color: #F6F9FE;
+    cursor: pointer;
 }

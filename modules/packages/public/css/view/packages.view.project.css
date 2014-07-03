@@ -1,43 +1,45 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 div.introText {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 div.applicationList a.applicationLink {
-  font-size: 18px;
-  font-weight: bold;
-  text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
 }
 
-div.applicationList a.applicationLink:hover{
-  text-decoration: underline;
-  text-transform
+div.applicationList a.applicationLink:hover {
+    text-decoration: underline;
+    text-transform;
 }
 
 div.noApplications {
-  font-style: italic;
+    font-style: italic;
 }
 
 div.applicationDescription {
-  margin-top: 6px;
+    margin-top: 6px;
 }
 
 div.applicationContainer {
-  margin-top: 20px;
-  padding-top: 8px;
-  border-top: 1px solid #d7d7d7;
+    border-top: 1px solid #D7D7D7;
+    margin-top: 20px;
+    padding-top: 8px;
 }
 
 div.createApplicationContainer {
-  border-top: 1px solid #d7d7d7;
-  padding-top: 10px;
-  margin-top: 20px;
+    border-top: 1px solid #D7D7D7;
+    margin-top: 20px;
+    padding-top: 10px;
 }
 
 form.createApplication input[type=text] {
-  width: 300px;
+    width: 300px;
 }
 
 form.createApplication textarea {
-  width: 298px;
-  resize: none;
+    resize: none;
+    width: 298px;
 }

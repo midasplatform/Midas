@@ -1,104 +1,106 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 div.itemsContainer {
-  margin-top: 6px;
-  margin-bottom: 10px;
+    margin-bottom: 10px;
+    margin-top: 6px;
 }
 
 div.dateControlContainer {
-  padding-bottom: 4px;
-  margin-bottom: 8px;
-  border-bottom: 1px solid #d7d7d7;
+    border-bottom: 1px solid #D7D7D7;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
 }
 
 input.dateSelect {
-  background: white url(../../../../statistics/public/images/calendar.png) no-repeat scroll 2px 1px;
-  border: 1px solid grey;
-  box-sizing: border-box;
-  height: 20px;
-  padding-left: 20px;
-  width: 120px;
+    background: white url(../../../../statistics/public/images/calendar.png) no-repeat scroll 2px 1px;
+    border: 1px solid gray;
+    box-sizing: border-box;
+    height: 20px;
+    padding-left: 20px;
+    width: 120px;
 }
 
 #branchfilter {
-  box-sizing: border-box;
-  border: 1px solid grey;
-  height: 20px;
-  width: 120px;
+    border: 1px solid gray;
+    box-sizing: border-box;
+    height: 20px;
+    width: 120px;
 }
 
 #filterButton, #branchFilterButton {
-  margin-left: 2px !important;
+    margin-left: 2px !important;
 }
 
 div.chartContainer {
-  width: 100%;
-  height: 360px;
+    height: 360px;
+    width: 100%;
 }
 
 span.infoItem {
-  color: #979797;
+    color: #979797;
 }
 
 span.itemLinkNone {
-  color: #a5a5a5;
-  font-style: italic;
+    color: #A5A5A5;
+    font-style: italic;
 }
 
 span.noPoints {
-  color: #909090;
-  display: inline-block;
-  margin-top: 10px;
+    color: #909090;
+    display: inline-block;
+    margin-top: 10px;
 }
 
-.yMin,.yMax,.y2Min,.y2Max {
-  width: 70px;
-  margin-left: 10px;
-  margin-right: 10px;
+.yMin, .yMax, .y2Min, .y2Max {
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 70px;
 }
 
 div.bottomButtons {
-  margin-top: 15px;
-  float: right;
+    float: right;
+    margin-top: 15px;
 }
 
 div.deleteProgressBar {
-  margin-top: 10px;
-  margin-bottom: 6px;
+    margin-bottom: 6px;
+    margin-top: 10px;
 }
 
 div.bottomButtonsDelete {
-  margin-top: 20px;
-  float: right;
+    float: right;
+    margin-top: 20px;
 }
 
-input.deleteYes,input.deleteNo {
-  margin-left: 10px !important;
+input.deleteYes, input.deleteNo {
+    margin-left: 10px !important;
 }
 
 div.belowChartText {
-  margin-top: 20px;
-  font-style: italic;
-  color: #707070;
+    color: #707070;
+    font-style: italic;
+    margin-top: 20px;
 }
 
 span.redText {
-  font-weight: bold;
-  color: red;
+    color: red;
+    font-weight: bold;
 }
 
 div.toggleUnofficialIcon {
-  position: relative;
-  top: 2px;
-  display: inline-block;
-  box-sizing: border-box;
-  border-radius: 50%;
-  height: 16px;
-  width: 16px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    display: inline-block;
+    height: 16px;
+    position: relative;
+    top: 2px;
+    width: 16px;
 }
 
 div.toggleUnofficialIcon.toHide {
-  border: 1px dashed #f22;
+    border: 1px dashed #F22;
 }
 
 div.toggleUnofficialIcon.toShow {
-  background-color: #f22;
+    background-color: #F22;
 }

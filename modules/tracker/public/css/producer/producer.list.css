@@ -1,43 +1,45 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 div.introText {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 div.producerList a.producerLink {
-  font-size: 18px;
-  font-weight: bold;
-  text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
 }
 
-div.producerList a.producerLink:hover{
-  text-decoration: underline;
-  text-transform
+div.producerList a.producerLink:hover {
+    text-decoration: underline;
+    text-transform;
 }
 
 div.noProducers {
-  font-style: italic;
+    font-style: italic;
 }
 
 div.producerDescription {
-  margin-top: 6px;
+    margin-top: 6px;
 }
 
 div.producerContainer {
-  margin-top: 20px;
-  padding-top: 8px;
-  border-top: 1px solid #d7d7d7;
+    border-top: 1px solid #D7D7D7;
+    margin-top: 20px;
+    padding-top: 8px;
 }
 
 div.createProducerContainer {
-  border-top: 1px solid #d7d7d7;
-  padding-top: 10px;
-  margin-top: 20px;
+    border-top: 1px solid #D7D7D7;
+    margin-top: 20px;
+    padding-top: 10px;
 }
 
 form.createProducer input[type=text] {
-  width: 300px;
+    width: 300px;
 }
 
 form.createProducer textarea {
-  width: 298px;
-  resize: none;
+    resize: none;
+    width: 298px;
 }

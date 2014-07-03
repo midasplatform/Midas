@@ -1,16 +1,18 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 div.viewMain {
-  width: 820px !important;
+    width: 820px !important;
 }
 
 #registerForm {
-  margin-top: 20px;
+    margin-top: 20px;
 }
 
 div.emailLabelContainer {
-  height: 22px;
+    height: 22px;
 }
 
 div.tosContainer {
-  margin-top: 12px;
-  margin-bottom: 10px;
+    margin-bottom: 10px;
+    margin-top: 12px;
 }

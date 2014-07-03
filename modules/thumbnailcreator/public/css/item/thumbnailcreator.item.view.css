@@ -1,10 +1,12 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 img.makeThumbnailIcon {
-  cursor: pointer;
-  float: right;
-  padding-left: 2px;
-  padding-right: 2px;
+    cursor: pointer;
+    float: right;
+    padding-left: 2px;
+    padding-right: 2px;
 }
 
 img.largeImage {
-  padding-top: 10px;
+    padding-top: 10px;
 }

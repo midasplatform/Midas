@@ -1,39 +1,57 @@
-div.helpContent{
-  font-size: 10px;
-  margin-bottom: 5px;
-  margin-top: 5px;
-  background-color: #DDD;
-  display:none;
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+div.helpContent {
+    background-color: #DDD;
+    display: none;
+    font-size: 10px;
+    margin-bottom: 5px;
+    margin-top: 5px;
 }
 
-li.methodListElement{
-  margin-bottom: 3px;
+li.methodListElement {
+    margin-bottom: 3px;
 }
 
-img.toolButton{
-  z-index: 100;
-  position: absolute; 
-  top: 5px;
-  cursor:pointer;
+img.toolButton {
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    z-index: 100;
 }
 
-#renderercontainer{
-  z-index: 2; overflow: hidden; position: absolute; top: -30px; right: 0px; left: 0px; bottom: 0px;
-  display: none;
+#renderercontainer {
+    bottom: 0px;
+    display: none;
+    left: 0px;
+    overflow: hidden;
+    position: absolute;
+    right: 0px;
+    top: -30px;
+    z-index: 2;
 }
 
-img.visuLoading{
-  z-index: 100;
-  position: absolute; 
-  top: 30px;
-  left: 20px;
+img.visuLoading {
+    left: 20px;
+    position: absolute;
+    top: 30px;
+    z-index: 100;
 }
 
-#renderer-type{
-  z-index: 5;width: 100px; position: absolute; right: 60px; top: 8px;
+#renderer-type {
+    position: absolute;
+    right: 60px;
+    top: 8px;
+    width: 100px;
+    z-index: 5;
 }
 
-#controlPanel{
-  z-index: 1; overflow: hidden; position: absolute; top: 40px; left: 0px; width: 200px; bottom: 0px;
-  display:none;
+#controlPanel {
+    bottom: 0px;
+    display: none;
+    left: 0px;
+    overflow: hidden;
+    position: absolute;
+    top: 40px;
+    width: 200px;
+    z-index: 1;
 }

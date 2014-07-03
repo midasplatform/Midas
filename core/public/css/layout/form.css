@@ -1,137 +1,116 @@
-/*-------------------------------------------------
-GENERIC
--------------------------------------------------*/
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
-form.genericForm{
-  
+form.genericForm {}
+
+form.genericForm dt label {
+    display: block;
+    float: left;
+    margin-right: 5px;
+    text-align: right;
+    width: 200px;
 }
 
-form.genericForm dt label{
-display: block;
-float: left;
-margin-right: 5px;
-text-align: right;
-width: 200px;
+form.genericForm input[type=submit], form.genericForm input[type=button] {
+
+    background: #F6F9FE url(images/ui-bg_glass_85_f6f9fe_1x400.png) repeat-x 50% 50%;
+    border: 1px solid gray;
+    -webkit-box-align: center;
+    -webkit-box-sizing: border-box;
+    color: #2E6E9E;
+    cursor: pointer;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: bold;
+    line-height: 1.4;
+    margin-left: 116px;
+    margin-right: 0.1em;
+    overflow: visible;
+    position: relative;
+    text-align: center;
+    text-decoration: none !important;
+    zoom: 1;
 }
 
-
-form.genericForm input[type=submit],form.genericForm input[type=button]
-{
-margin-left: 116px;
-background: #F6F9FE url(images/ui-bg_glass_85_f6f9fe_1x400.png) repeat-x 50% 50%;
-border: 1px solid grey;
-color: #2E6E9E;
-font-weight: bold;
-cursor: pointer;
-cursor: pointer;
-display: inline-block;
-margin-right: 0.1em;
-overflow: visible;
-position: relative;
-text-align: center;
-text-decoration: none !important;
-zoom: 1;
--webkit-box-align: center;
--webkit-box-sizing: border-box;
-line-height: 1.4;
+form.genericForm input[type=submit]:hover, form.genericForm input[type=button]:hover {
+    background-image: none;
+    background: #CBD9E3;
+    color: #1D5987;
+    text-decoration: none;
 }
 
-form.genericForm input[type=submit]:hover,form.genericForm input[type=button]:hover
-{
-color: #1d5987; text-decoration: none;
-background: #cbd9e3;
-background-image: none;
+form.genericForm input[type=submit][disabled], form.genericForm input[type=button][disabled], .globalButton[disabled] {
+    background-image: none;
+    background: #DBDBDB;
+    color: gray;
+    cursor: default;
+    text-decoration: none;
 }
 
-
-form.genericForm input[type=submit][disabled],form.genericForm input[type=button][disabled],.globalButton[disabled]
-{
-color: grey; text-decoration: none;
-background: #dbdbdb;
-background-image: none;
-cursor: default;
+form.genericForm input[type=submit][disabled]:hover, form.genericForm input[type=button][disabled]:hover, .globalButton[disabled]:hover {
+    background-image: none;
+    background: #DBDBDB !important;
+    color: gray !important;
+    cursor: default;
+    text-decoration: none;
 }
 
-form.genericForm input[type=submit][disabled]:hover,form.genericForm input[type=button][disabled]:hover,.globalButton[disabled]:hover
-{
-color: grey!important; text-decoration: none;
-background: #dbdbdb!important;
-background-image: none;
-cursor: default;
+form.genericForm {}
+
+form.genericForm div {}
+
+form.genericForm div label {
+    display: block;
+    float: left;
+    margin-right: 5px;
+    text-align: left;
+    text-align: right;
+    width: 200px;
 }
 
-
-
-/*-------------------------------------------------
-GENERIC DIV
--------------------------------------------------*/
-
-form.genericForm{
-  
+form.genericForm input[type=text], form.genericForm input[type=password], form.genericForm textarea {
+    background: #F3F1EC;
+    border: 1px solid gray;
+    color: black;
+    height: 18px;
+    margin-right: 10px;
 }
 
-form.genericForm div{
+form.genericForm input[type=text], form.genericForm input[type=password] {
+    width: 250px;
 }
 
-form.genericForm div label{
-display: block;
-float: left;
-margin-right: 5px;
-text-align: right;
-width: 200px;
-text-align: left;
+form.genericForm textarea {
+    width: 247px;
+    height: 35px;
 }
 
-form.genericForm input[type=text],form.genericForm input[type=password] ,form.genericForm textarea{
-  margin-right: 10px;
-  background: #F3F1EC;
-  border: 1px solid grey;
-  color: black;
-  height: 18px;
+form.genericForm input[type=text]:hover, form.genericForm input[type=password]:hover, form.genericForm textarea:hover {
+    background: white;
 }
 
-form.genericForm input[type=text],form.genericForm input[type=password] {
-  width:250px;
+form.genericForm div input[type=submit], input.globalButton, form.genericForm input[type=button] {
+    background: #F6F9FE url(images/ui-bg_glass_85_f6f9fe_1x400.png) repeat-x 50% 50%;
+    border: 1px solid gray;
+    -webkit-box-align: center;
+    -webkit-box-sizing: border-box;
+    color: #2E6E9E;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', helvetica, arial, verdana, sans-serif;
+    font-weight: bold;
+    line-height: 1.4;
+    margin-left: 208px;
+    margin-right: 0.1em;
+    overflow: visible;
+    position: relative;
+    text-align: center;
+    text-decoration: none !important;
+    zoom: 1;
 }
 
-form.genericForm textarea{
-  width:247px;
-  height:35px;
+form.genericForm input[type=submit]:hover, input.globalButton:hover {
+    background-image: none;
+    background: #CBD9E3;
+    color: #1D5987;
+    text-decoration: none;
 }
-
-form.genericForm input[type=text]:hover,form.genericForm input[type=password]:hover, form.genericForm textarea:hover{
-  background: white;
-}
-
-
-form.genericForm div input[type=submit], input.globalButton ,form.genericForm input[type=button]
-{
-margin-left: 208px;
-background: #F6F9FE url(images/ui-bg_glass_85_f6f9fe_1x400.png) repeat-x 50% 50%;
-border: 1px solid grey;
-color: #2E6E9E;
-font-weight: bold;
-cursor: pointer;
-display: inline-block;
-margin-right: 0.1em;
-overflow: visible;
-position: relative;
-text-align: center;
-text-decoration: none !important;
-zoom: 1;
--webkit-box-align: center;
--webkit-box-sizing: border-box;
-line-height: 1.4;
-font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', helvetica, arial, verdana, sans-serif;
-}
-
-form.genericForm input[type=submit]:hover ,input.globalButton:hover
-{
-color: #1d5987; text-decoration: none;
-background: #cbd9e3;
-background-image: none;
-
-}
-
-
-

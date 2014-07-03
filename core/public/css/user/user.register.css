@@ -1,110 +1,107 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 div.registerContent {
-  margin-left: auto;
-  margin-right: auto;
-  width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 900px;
 }
 
 div.registerInfo {
-  float: left;
-  color: white;
-  width: 250px;
-  border: 1px solid grey;
-  margin-top: 15px;
-  margin-bottom: 7px;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  -khtml-border-radius: 4px;
-  border-radius: 4px;
-  background-color: #363535;
-  padding: 8px;
+    background-color: #363535;
+    border-radius: 4px;
+    -khtml-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border: 1px solid gray;
+    color: white;
+    float: left;
+    margin-bottom: 7px;
+    margin-top: 15px;
+    padding: 8px;
+    width: 250px;
 }
 
-div.registerInfo h4{
-  margin-top: 2px;
-  margin-left: 5px;
-  color: #84acc8; 
-  margin-bottom: 3px;
-}
-div.registerInfo h3{
-  margin-top: 0px;
-  margin-bottom: 0px;
-
-}
-div.registerInfo ul{
-  list-style: circle;
-  padding-left: 20px;
-  padding-top: 3px;
-  margin-top: 0px;
-}
-div.registerInfo li{
-  color: #ddd;
-}
-div.registerInfo a{
-  color: #84acc8;
-  text-decoration: underline;
-  font-size: 13px;
-  font-weight: bold;
+div.registerInfo h4 {
+    color: #84ACC8;
+    margin-bottom: 3px;
+    margin-left: 5px;
+    margin-top: 2px;
 }
 
-div.register {
-  
+div.registerInfo h3 {
+    margin-bottom: 0px;
+    margin-top: 0px;
 }
+
+div.registerInfo ul {
+    list-style: circle;
+    margin-top: 0px;
+    padding-left: 20px;
+    padding-top: 3px;
+}
+
+div.registerInfo li {
+    color: #DDD;
+}
+
+div.registerInfo a {
+    color: #84ACC8;
+    font-size: 13px;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+div.register {}
 
 /*-------------------------------------------------
 Register Form
 -------------------------------------------------*/
 form#registerForm {
-  color: white;
-  margin-left: 280px;
-  padding-top: 19px;
+    color: white;
+    margin-left: 280px;
+    padding-top: 19px;
 }
 
-form#registerForm div {
-  
+form#registerForm div {}
+
+form#registerForm input[type=text], form#registerForm input[type=password] {
+    background: #F3F1EC !important;
+    border: 1px solid gray;
+    color: black;
+    height: 18px;
+    width: 185px;
 }
 
-form#registerForm input[type=text],form#registerForm input[type=password]
-  {
-  background: #F3F1EC !important;
-  border: 1px solid grey;
-  color: black;
-  height: 18px;
-  width: 185px;
+form#registerForm input[type=text]:hover, form#registerForm input[type=password]:hover {
+    background: white !important;
 }
 
-form#registerForm input[type=text]:hover,form#registerForm input[type=password]:hover
-  {
-  background: white !important;
-}
-
-form#registerForm input[type=submit] {
-  
-}
+form#registerForm input[type=submit] {}
 
 form#registerForm div span img {
-  position: relative;
-  top: 3px;
+    position: relative;
+    top: 3px;
 }
 
 form#registerForm .termLabel {
-  display: block;
+    display: block;
 }
 
 form#registerForm div.registerError {
-  position: absolute;
-  color: #57BB7D;
+    color: #57BB7D;
+    position: absolute;
 }
 
 form#registerForm div.registerError span {
-  position: relative;
-  top: -15px;
-  display: none;
+    display: none;
+    position: relative;
+    top: -15px;
 }
 
 a.termOfService {
-  color: #F3F1EC;
+    color: #F3F1EC;
 }
 
 a.termOfService:hover {
-  color: #F3F1EC;
+    color: #F3F1EC;
 }

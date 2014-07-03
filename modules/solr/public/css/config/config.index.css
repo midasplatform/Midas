@@ -1,17 +1,19 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 div.notSavedWarning {
-  color: red;
-  font-weight: bold;
-  margin-top: 15px;
+    color: red;
+    font-weight: bold;
+    margin-top: 15px;
 }
 
 div.rebuildIndexContainer {
-  margin-top: 20px;
+    margin-top: 20px;
 }
 
 #rebuildIndexButton {
-  margin: 10px 0px 10px 0px !important;
+    margin: 10px 0px 10px 0px !important;
 }
 
 #rebuildProgressMessage {
-  margin-top: 5px;
+    margin-top: 5px;
 }

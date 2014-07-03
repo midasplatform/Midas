@@ -1,24 +1,25 @@
-form#createCommunityForm label{
-  width: 100px !important;
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+form#createCommunityForm label {
+    width: 100px !important;
 }
 
-form#createCommunityForm div.radioElement label{
-  float: inherit!important;
-  width: 400px!important;
+form#createCommunityForm div.radioElement label {
+    float: inherit !important;
+    width: 400px !important;
 }
 
-form#createCommunityForm div.radioElement ul{
-  list-style: none;
-  margin: 0px 0px 0px 100px;
-  padding: 0px 0px 0px 0px;
-  width: 300px!important;
-}
-form#createCommunityForm div.radioElement br{
-  display:none;
-}
-form#createCommunityForm div.radioElement h4{
-  margin-bottom: 4px;
+form#createCommunityForm div.radioElement ul {
+    list-style: none;
+    margin: 0px 0px 0px 100px;
+    padding: 0px 0px 0px 0px;
+    width: 300px !important;
 }
 
+form#createCommunityForm div.radioElement br {
+    display: none;
+}
 
-
+form#createCommunityForm div.radioElement h4 {
+    margin-bottom: 4px;
+}

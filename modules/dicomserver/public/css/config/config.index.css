@@ -1,22 +1,24 @@
-span.running_status{
-  font-weight: bold;
-  color: #009900;
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+span.running_status {
+    color: #090;
+    font-weight: bold;
 }
 
-span.not_running_status, span.only_storescp_running_status, span.only_dcmqrscp_running_status, span.not_supported_status, textarea#apicall_failure_reason{
-  font-weight: bold;
-  color: #C80000;
+span.not_running_status, span.only_storescp_running_status, span.only_dcmqrscp_running_status, span.not_supported_status, textarea#apicall_failure_reason {
+    color: #C80000;
+    font-weight: bold;
 }
 
 div.manualCommandsWrapper li {
-  margin: 10px 0px;
+    margin: 10px 0px;
 }
 
-span.set_bold{
-  font-weight: bold;
+span.set_bold {
+    font-weight: bold;
 }
 
 textarea#peer_aes {
-  width: 460px;
-  height: 50px;
+    height: 50px;
+    width: 460px;
 }

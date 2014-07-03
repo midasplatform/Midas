@@ -1,18 +1,20 @@
-input#urlInput{
-  width: 300px;
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+input#urlInput {
+    width: 300px;
 }
 
-div#permissionsContent a{
-  cursor: pointer;
-  color: #56758B;
-  text-decoration: none;
-  font-weight: 500;
+div#permissionsContent a {
+    color: #56758B;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
 }
 
-div#permissionsContent a:hover{
-  text-decoration: underline;
+div#permissionsContent a:hover {
+    text-decoration: underline;
 }
 
 #live_invitation_search {
-  width: 100%;
+    width: 100%;
 }

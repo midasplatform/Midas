@@ -1,30 +1,30 @@
-#resourceViewDisplay,#resourceDownloadDisplay {
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
-  width: 360px;
-  height: 16px;
+#resourceViewDisplay, #resourceDownloadDisplay {
+    height: 16px;
+    width: 360px;
 }
 
-.viewLinkContainer,.downloadLinkContainer {
-  margin-bottom: 20px;
+.viewLinkContainer, .downloadLinkContainer {
+    margin-bottom: 20px;
 }
 
-#selectViewUrl,#selectDownloadUrl {
-  width: 22px;
-  height: 22px;
-  background-repeat: no-repeat;
-  background-image: url(../../images/icons/paste_plain.png);
-  background-position: 2px 2px;
-  border: 1px solid #777777;
-  position: relative;
-  top: -2px;
+#selectViewUrl, #selectDownloadUrl {
+    background-image: url(../../images/icons/paste_plain.png);
+    background-position: 2px 2px;
+    background-repeat: no-repeat;
+    border: 1px solid #777;
+    height: 22px;
+    position: relative;
+    top: -2px;
+    width: 22px;
 }
 
-#selectViewUrl:hover,#selectDownloadUrl:hover {
-  background-color: #aaddaa;
-  cursor: pointer;
+#selectViewUrl:hover, #selectDownloadUrl:hover {
+    background-color: #ADA;
+    cursor: pointer;
 }
 
 .dialogQtip {
-  z-index: 15200 !important;
+    z-index: 15200 !important;
 }
-

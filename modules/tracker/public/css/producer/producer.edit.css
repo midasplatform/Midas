@@ -1,8 +1,10 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 div.submitButtonContainer {
-  float: right;
-  margin-top: 20px;
+    float: right;
+    margin-top: 20px;
 }
 
 textarea.description {
-  resize: none;
+    resize: none;
 }

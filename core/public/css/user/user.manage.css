@@ -1,49 +1,70 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
- div.radioElement label{
-  float: inherit!important;
-  width: 600px!important;
+div.radioElement label {
+    float: inherit !important;
+    width: 600px !important;
 }
 
- div.radioElement ul{
-  list-style: none;
-  margin: 0px 0px 0px 100px;
-  padding: 0px 0px 0px 0px;
-  width: 600px!important;
+div.radioElement ul {
+    list-style: none;
+    margin: 0px 0px 0px 100px;
+    padding: 0px 0px 0px 0px;
+    width: 600px !important;
 }
 
- div.radioElement h4{
-  margin-bottom: 4px;
+div.radioElement h4 {
+    margin-bottom: 4px;
 }
 
-
- div.radioElement br{
-  display:none;
+div.radioElement br {
+    display: none;
 }
 
-img.folderLoading{
-  display:none;
+img.folderLoading {
+    display: none;
 }
 
-	h1 { padding: .2em; margin: 0; }
-	#products { float:left; width: 500px; margin-right: 2em; }
-	#cart { width: 200px; float: left; }
-	/* style the list to maximize the droppable hitarea */
-	#cart ol { margin: 0; padding: 1em 0 1em 3em; }
-  
-span.communityTitle{
-  font-size: 14px;
-  text-shadow: white 0px 1px 1px;
-  font-weight: bold;
-  line-height:150%;
-  }
-
-.notdraggable { cursor: default; }
-.draggable { cursor: pointer; }
-
-div.communityList{
-  opacity: .90;
+h1 {
+    margin: 0;
+    padding: .2em;
 }
 
-div.communityList span.communityShortDescription{
-  padding-left: 15px;
+#products {
+    float: left;
+    margin-right: 2em;
+    width: 500px;
+}
+
+#cart {
+    float: left;
+    width: 200px;
+}
+
+/* style the list to maximize the droppable hitarea */
+#cart ol {
+    margin: 0;
+    padding: 1em 0 1em 3em;
+}
+
+span.communityTitle {
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 150%;
+    text-shadow: white 0px 1px 1px;
+}
+
+.notdraggable {
+    cursor: default;
+}
+
+.draggable {
+    cursor: pointer;
+}
+
+div.communityList {
+    opacity: .90;
+}
+
+div.communityList span.communityShortDescription {
+    padding-left: 15px;
 }

@@ -1,57 +1,58 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 div.viewWrapper {
-  padding-right: 40px !important;
+    padding-right: 40px !important;
 }
 
-table#tableResults, table#tableXml{
-  width:100%;
-
+table#tableResults, table#tableXml {
+    width: 100%;
 }
 
-.dataTables_wrapper{
-  border: 1px solid grey;
-  border: #354856 1px solid;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
-  -khtml-border-radius: 6px;
-  border-radius: 6px;
-  -webkit-box-shadow: #666 0 0 5px;
-  box-shadow: #666 0 0 5px;
-  -moz-box-shadow: 0px 0px 5px #666;
-  padding: 5px 10px 25px 10px;
+.dataTables_wrapper {
+    border: 1px solid gray;
+    border: #354856 1px solid;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -khtml-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-box-shadow: #666 0 0 5px;
+    box-shadow: #666 0 0 5px;
+    -moz-box-shadow: 0px 0px 5px #666;
+    padding: 5px 10px 25px 10px;
 }
 
-table#tableResults td{
-  border-bottom: 1px solid grey;
+table#tableResults td {
+    border-bottom: 1px solid gray;
 }
 
-#hiddenLog{
-  overflow: scroll;
-  height: 400px;
-  display: none;
-  border: 1px solid grey;
-  margin-bottom: 2px;
-  border: #354856 1px solid;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
-  -khtml-border-radius: 6px;
-  border-radius: 6px;
-  -webkit-box-shadow: #666 0 0 5px;
-  box-shadow: #666 0 0 5px;
-  -moz-box-shadow: 0px 0px 5px #666;
-  padding: 0px 5px 6px 5px;
+#hiddenLog {
+    border-radius: 6px;
+    -khtml-border-radius: 6px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border: #354856 1px solid;
+    border: 1px solid gray;
+    box-shadow: #666 0 0 5px;
+    -moz-box-shadow: 0px 0px 5px #666;
+    -webkit-box-shadow: #666 0 0 5px;
+    display: none;
+    height: 400px;
+    margin-bottom: 2px;
+    overflow: scroll;
+    padding: 0px 5px 6px 5px;
 }
 
-#metricsWrapper{
-  display: none;
-  border: 1px solid grey;
-  margin-bottom: 2px;
-  border: #354856 1px solid;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
-  -khtml-border-radius: 6px;
-  border-radius: 6px;
-  -webkit-box-shadow: #666 0 0 5px;
-  box-shadow: #666 0 0 5px;
-  -moz-box-shadow: 0px 0px 5px #666;
-  padding: 0px 5px 6px 5px;
+#metricsWrapper {
+    border-radius: 6px;
+    -khtml-border-radius: 6px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border: #354856 1px solid;
+    border: 1px solid gray;
+    box-shadow: #666 0 0 5px;
+    -moz-box-shadow: 0px 0px 5px #666;
+    -webkit-box-shadow: #666 0 0 5px;
+    display: none;
+    margin-bottom: 2px;
+    padding: 0px 5px 6px 5px;
 }

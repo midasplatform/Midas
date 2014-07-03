@@ -1,72 +1,74 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 div.TopDynamicContent {
-  font-family: Verdana,'Lucida Grande','Lucida Sans Unicode',helvetica,arial,verdana,sans-serif !important;
-  font-size: 13px !important;
-  text-align: left !important;
+    font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', helvetica, arial, verdana, sans-serif !important;
+    font-size: 13px !important;
+    text-align: left !important;
 }
 
 form#loginForm table {
-  border-collapse: separate !important;
-  border-spacing: 2px !important;
-  border-color: gray !important;
+    border-collapse: separate !important;
+    border-color: gray !important;
+    border-spacing: 2px !important;
 }
 
 form#loginForm table tbody tr td {
-  border-collapse: separate !important;
-  border-spacing: 2px !important;
-  border-color: gray !important;
-  border-bottom: none !important;
-  padding: 0 !important;
-  line-height: normal !important;
+    border-bottom: none !important;
+    border-collapse: separate !important;
+    border-color: gray !important;
+    border-spacing: 2px !important;
+    line-height: normal !important;
+    padding: 0 !important;
 }
 
 form#loginForm td, th {
-  display: table-cell !important;
-  vertical-align: inherit !important;
+    display: table-cell !important;
+    vertical-align: inherit !important;
 }
 
 strong, b {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 div.SideBar ul li {
- color: #354856 !important;
- border-bottom: white 1px dotted !important;
- padding-top: 3px  !important;
- cursor: pointer !important;
+    border-bottom: white 1px dotted !important;
+    color: #354856 !important;
+    cursor: pointer !important;
+    padding-top: 3px !important;
 }
 
 div.viewMain {
-  width: 820px !important;
+    width: 820px !important;
 }
 
 div.footer {
-  display: none !important;
+    display: none !important;
 }
 
-li.resource{
-  padding: 5px !important;
+li.resource {
+    padding: 5px !important;
 }
 
 .swagger-ui-wrap {
-  max-width: auto;
-  margin-left: auto;
-  margin-right: auto;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: auto;
 }
 
 .icon-btn {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 #message-bar {
-  min-height: 30px;
-  text-align: center;
-  padding-top: 10px;
+    min-height: 30px;
+    padding-top: 10px;
+    text-align: center;
 }
 
 .message-success {
-  color: #89BF04;
+    color: #89BF04;
 }
 
 .message-fail {
-  color: #cc0000;
+    color: #C00;
 }
