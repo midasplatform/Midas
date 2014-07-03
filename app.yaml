@@ -8,9 +8,16 @@ handlers:
 - url: /(.*\.(css|gif|ico|jpg|js|png))$
   static_files: \1
   upload: .*\.(css|gif|ico|jpg|js|png)$
+  secure: always
+
+- url: /scheduler/run
+  script: index.php
+  login: admin
+  secure: always
 
 - url: /.*
   script: index.php
+  secure: always
 
 env_variables:
   midas_data_path: gs://your-cloudstorage-bucket/data
