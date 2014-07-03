@@ -1,3 +1,5 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.archive = midas.archive || {};
 
@@ -7,7 +9,7 @@ midas.archive.validateForm = function () {
 
 midas.archive.submitSuccess = function (responseText) {
     var retVal = $.parseJSON(responseText);
-    if(!retVal) {
+    if (!retVal) {
         midas.createNotice('An error occurred, check the admin logs', 2500, 'error');
     }
     else {

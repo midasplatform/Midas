@@ -1,3 +1,5 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.upload = midas.upload || {};
 midas.upload.simpleupload = {};
@@ -13,15 +15,15 @@ midas.upload.simpleupload.initSwfupload = function () {
         });
     }
     var settings = {
-        flash_url: json.global.coreWebroot+"/public/js/swfupload/swfupload_fp10/swfupload.swf",
-        flash9_url: json.global.coreWebroot+"/public/js/swfupload/swfupload_fp9/swfupload_fp9.swf",
-        upload_url: json.global.webroot+"/upload/saveuploaded",
+        flash_url: json.global.coreWebroot + "/public/js/swfupload/swfupload_fp10/swfupload.swf",
+        flash9_url: json.global.coreWebroot + "/public/js/swfupload/swfupload_fp9/swfupload_fp9.swf",
+        upload_url: json.global.webroot + "/upload/saveuploaded",
         post_params: {
             'sid': $('.sessionId').val(),
             'parent': $('#destinationId').val(),
             'license': $('select[name=licenseSelect]').val()
         },
-        file_size_limit: $('.maxSizeFile').val()+" MB",
+        file_size_limit: $('.maxSizeFile').val() + " MB",
         file_types: "*.*",
         file_types_description: "All Files",
         file_upload_limit: 100,
@@ -34,11 +36,11 @@ midas.upload.simpleupload.initSwfupload = function () {
         debug: false,
 
         // Button settings
-        button_image_url: json.global.coreWebroot+"/public/js/swfupload/images/Button_65x29.png",
+        button_image_url: json.global.coreWebroot + "/public/js/swfupload/images/Button_65x29.png",
         button_width: "65",
         button_height: "20",
         button_placeholder_id: "spanButtonPlaceHolder",
-        button_text: '<span class="theFont">'+$('.buttonBrowse').val()+'</span>',
+        button_text: '<span class="theFont">' + $('.buttonBrowse').val() + '</span>',
         button_text_style: ".theFont { font-size: 12; }",
         button_text_left_padding: 5,
         button_text_top_padding: 0,
@@ -54,14 +56,14 @@ midas.upload.simpleupload.initSwfupload = function () {
         upload_error_handler: uploadError,
         upload_success_handler: uploadSuccess,
         upload_complete_handler: uploadComplete,
-        queue_complete_handler: queueComplete  // Queue plugin event
+        queue_complete_handler: queueComplete // Queue plugin event
     };
 
     $('#swfuploadContent').show();
     midas.upload.simpleupload.swfu = new SWFUpload(settings);
 
     $('#startUploadLink').click(function () {
-        if($('#destinationId').val() == undefined || $('#destinationId').val().length == 0) {
+        if ($('#destinationId').val() == undefined || $('#destinationId').val().length == 0) {
             midas.createNotice("Please select where you want to upload your files.", 4000, 'warning');
             return false;
         }
@@ -73,8 +75,12 @@ $('img#uploadAFile').show();
 $('img#uploadAFileLoading').hide();
 
 midas.upload.simpleupload.initHtml5FileUpload = function () {
-    $('.progress-current').progressbar({value: 0});
-    $('.progress-overall').progressbar({value: 0});
+    $('.progress-current').progressbar({
+        value: 0
+    });
+    $('.progress-overall').progressbar({
+        value: 0
+    });
 
     var files = [],
         totalSize = 0,
@@ -98,7 +104,7 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
         if (currentIndex >= files.length) {
             // All files have finished
             $('.drop-zone').show();
-            window.location.href = json.global.webroot+'/folder/' + $('.destinationId').val();
+            window.location.href = json.global.webroot + '/folder/' + $('.destinationId').val();
             return;
         }
         var file = files[currentIndex];
@@ -106,7 +112,7 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
         $.ajax({
             dataType: 'json',
             type: 'GET',
-            url: json.global.webroot+'/rest/system/uploadtoken?useSession=true' +
+            url: json.global.webroot + '/rest/system/uploadtoken?useSession=true' +
                 '&filename=' + file.name + '&folderid=' + $('#destinationId').val()
         }).success(function (resp) {
             if (file.size > 0) {
@@ -146,7 +152,7 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
         $('.progress-overall').progressbar('option', 'value',
             Math.ceil(100 * (overallProgress + e.loaded) / totalSize));
         $('.current-progress-message').html(
-            'File ' + (currentIndex + 1) +' of ' +
+            'File ' + (currentIndex + 1) + ' of ' +
             files.length + ' - <b>' + file.name + '</b>: ' +
             midas.formatBytes(lastProgress) + ' / ' +
             midas.formatBytes(file.size));
@@ -211,8 +217,8 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
             files: files
         });
         var ok = true;
-        $.each(retVal, function(module, resp) {
-            if(resp.status === false) {
+        $.each(retVal, function (module, resp) {
+            if (resp.status === false) {
                 $('div.uploadValidationError b').html(resp.message);
                 $('div.uploadValidationError').show();
                 ok = false;
@@ -246,13 +252,13 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
     $('.drop-zone').click(function () {
         $('#upload-files').click();
     }).on('dragover', _eatEvent)
-      .on('dragenter', _eatEvent)
-      .on('drop', function (e) {
-        _eatEvent(e);
+        .on('dragenter', _eatEvent)
+        .on('drop', function (e) {
+            _eatEvent(e);
 
-        files = e.originalEvent.dataTransfer.files;
-        filesChanged();
-    });
+            files = e.originalEvent.dataTransfer.files;
+            filesChanged();
+        });
 
     $('#upload-files').change(function (e) {
         _eatEvent(e);
@@ -265,7 +271,7 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
             return;
         }
 
-        if($('#destinationId').val() == undefined || $('#destinationId').val().length == 0) {
+        if ($('#destinationId').val() == undefined || $('#destinationId').val().length == 0) {
             midas.createNotice("Please select where you want to upload your files.", 4000, 'warning');
             return false;
         }
@@ -327,7 +333,7 @@ $('#linkForm').ajaxForm(function () {
     $('.uploadedLinks').val(parseInt($('.uploadedLinks').val()) + 1);
 });
 
-if($.browser.msie) {
+if ($.browser.msie) {
     $('#swfuploadContent').show();
     $('#jqueryFileUploadContent').hide();
     midas.upload.simpleupload.initSwfupload();
@@ -343,7 +349,7 @@ $('.browseMIDASLink').click(function () {
     midas.showDialog('Select upload destination');
 });
 
-if($('#destinationId').val()) {
+if ($('#destinationId').val()) {
     $('#startUploadLink').removeClass('disabled');
 }
 
@@ -352,4 +358,3 @@ midas.registerCallback('CALLBACK_CORE_UPLOAD_FOLDER_CHANGED', 'core', function (
 });
 
 midas.doCallback('CALLBACK_CORE_SIMPLEUPLOAD_LOADED');
-

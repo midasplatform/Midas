@@ -1,3 +1,5 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.batchmake = midas.batchmake || {};
 
@@ -18,29 +20,29 @@ midas.batchmake.checkConfig = function (obj) {
     $('#testNok').hide();
     $('#testError').html('');
 
-    var tmp_dir_val  = $(document).find('#tmp_dir').val();
-    var bin_dir_val  = $(document).find('#bin_dir').val();
-    var script_dir_val  = $(document).find('#script_dir').val();
-    var app_dir_val  = $(document).find('#app_dir').val();
-    var data_dir_val  = $(document).find('#data_dir').val();
-    var condor_bin_dir_val  = $(document).find('#condor_bin_dir').val();
+    var tmp_dir_val = $(document).find('#tmp_dir').val();
+    var bin_dir_val = $(document).find('#bin_dir').val();
+    var script_dir_val = $(document).find('#script_dir').val();
+    var app_dir_val = $(document).find('#app_dir').val();
+    var data_dir_val = $(document).find('#data_dir').val();
+    var condor_bin_dir_val = $(document).find('#condor_bin_dir').val();
 
     ajaxWebApi.ajax({
         method: 'midas.batchmake.testconfig',
         args: 'tmp_dir=' + tmp_dir_val +
-              '&bin_dir=' + bin_dir_val +
-              '&script_dir=' + script_dir_val +
-              '&app_dir=' + app_dir_val +
-              '&data_dir=' + data_dir_val +
-              '&condor_bin_dir=' + condor_bin_dir_val,
+            '&bin_dir=' + bin_dir_val +
+            '&script_dir=' + script_dir_val +
+            '&app_dir=' + app_dir_val +
+            '&data_dir=' + data_dir_val +
+            '&condor_bin_dir=' + condor_bin_dir_val,
         log: $('#testError'),
-        success: function(retVal) {
+        success: function (retVal) {
             midas.batchmake.handleValidationResponse(retVal);
         },
-        error: function(retVal) {
+        error: function (retVal) {
             alert(retVal.responseText);
         },
-        complete: function() {
+        complete: function () {
             $('#testLoading').hide();
         }
     });
@@ -56,32 +58,30 @@ midas.batchmake.handleValidationResponse = function (retVal) {
     var config_properties = testConfig[1];
 
     // handle global config value
-    if(global_config_correct == true)
-      {
-      $(document).find('#testOk').show();
-      $(document).find('#testError').html(midas.batchmake.global_config_correct_msg).removeClass().addClass(midas.batchmake.info_class);
-      }
-    else
-      {
-      $(document).find('#testNok').show();
-      $(document).find('#testError').html(midas.batchmake.global_config_error_msg).removeClass().addClass(midas.batchmake.error_class);
-      }
+    if (global_config_correct == true) {
+        $(document).find('#testOk').show();
+        $(document).find('#testError').html(midas.batchmake.global_config_correct_msg).removeClass().addClass(midas.batchmake.info_class);
+    }
+    else {
+        $(document).find('#testNok').show();
+        $(document).find('#testError').html(midas.batchmake.global_config_error_msg).removeClass().addClass(midas.batchmake.error_class);
+    }
 
-    $(document).find('div #'+midas.batchmake.application_div).children().remove();
-    $(document).find('div #'+midas.batchmake.php_div).children().remove();
+    $(document).find('div #' + midas.batchmake.application_div).children().remove();
+    $(document).find('div #' + midas.batchmake.php_div).children().remove();
 
     // now look at all of the individual config values, print out statuses
     for (configVarInd in config_properties) {
         var property = config_properties[configVarInd]['property'];
         var status = config_properties[configVarInd]['status'];
         var type = config_properties[configVarInd]['type'];
-        if(property.search(midas.batchmake.application_entry) > -1) {
-            spanString = '<div class="'+type+'">'+property+' '+status+'</div>';
-            $(document).find('div #'+midas.batchmake.application_div).append(spanString);
+        if (property.search(midas.batchmake.application_entry) > -1) {
+            spanString = '<div class="' + type + '">' + property + ' ' + status + '</div>';
+            $(document).find('div #' + midas.batchmake.application_div).append(spanString);
         }
-        else if(property.search(midas.batchmake.php_entry) > -1) {
-            spanString = '<div class="'+type+'">'+property+' '+status+'</div>';
-            $(document).find('div #'+midas.batchmake.php_div).append(spanString);
+        else if (property.search(midas.batchmake.php_entry) > -1) {
+            spanString = '<div class="' + type + '">' + property + ' ' + status + '</div>';
+            $(document).find('div #' + midas.batchmake.php_div).append(spanString);
         }
         else {
             configVarStatusSpan_selector = '#' + property + 'Status';
@@ -90,21 +90,21 @@ midas.batchmake.handleValidationResponse = function (retVal) {
     }
 }
 
-midas.batchmake.validateConfig = function (formData, jqForm, options) {
-}
+midas.batchmake.validateConfig = function (formData, jqForm, options) {}
 
-midas.batchmake.successConfig = function(responseText, statusText, xhr, form) {
+midas.batchmake.successConfig = function (responseText, statusText, xhr, form) {
     try {
         var jsonResponse = jQuery.parseJSON(responseText);
-    } catch (e) {
+    }
+    catch (e) {
         midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
         return false;
     }
-    if(jsonResponse == null) {
+    if (jsonResponse == null) {
         midas.createNotice('Error', 4000, 'error');
         return;
     }
-    if(jsonResponse[0]) {
+    if (jsonResponse[0]) {
         midas.createNotice(jsonResponse[1], 4000);
     }
     else {
@@ -112,16 +112,16 @@ midas.batchmake.successConfig = function(responseText, statusText, xhr, form) {
     }
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
     $('#configForm').ajaxForm({
         beforeSubmit: midas.batchmake.validateConfig,
         success: midas.batchmake.successConfig
     });
 
-    $('#configForm input').each(function() {
+    $('#configForm input').each(function () {
         // add a span after each input for displaying any errors related to that input
         var inputID = $(this).attr("id")
-        $(this).after('<span id="'+inputID+'Status'+'"></span>');
+        $(this).after('<span id="' + inputID + 'Status' + '"></span>');
     });
 
     $('#configForm').focusout(function () {

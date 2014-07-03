@@ -1,37 +1,39 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.browse = midas.browse || {};
 
-//dependance: common/browser.js
-midas.ajaxSelectRequest='';
+// dependance: common/browser.js
+midas.ajaxSelectRequest = '';
 midas.browse.moveCopyCallbackSelect = function (node) {
     var selectedElement = node.find('span:eq(1)').html();
     var parent = true;
     var current = node;
 
-    while(parent != null) {
+    while (parent != null) {
         parent = null;
         var classNames = current[0].className.split(' ');
-        for(key in classNames) {
-            if(classNames[key].match("child-of-")) {
+        for (key in classNames) {
+            if (classNames[key].match("child-of-")) {
                 parent = $("#moveCopyTable #" + classNames[key].substring(9));
             }
         }
-        if(parent != null) {
-            selectedElement = parent.find('span:eq(1)').html()+'/'+selectedElement;
+        if (parent != null) {
+            selectedElement = parent.find('span:eq(1)').html() + '/' + selectedElement;
             current = parent;
         }
     }
 
     midas.browse.moveCopyToggleButton(false);
-    if(node.attr('type') == 'folder' || node.attr('type') == 'item') {
+    if (node.attr('type') == 'folder' || node.attr('type') == 'item') {
         $('#selectedDestinationHidden').val(node.attr('element'));
         $('#selectedDestination').html(sliceFileName(selectedElement, 40));
-        if(typeof node.attr('policy') == 'undefined') {
+        if (typeof node.attr('policy') == 'undefined') {
             var params = {
                 type: node.attr('type'),
                 id: node.attr('element')
             };
-            $.post(json.global.webroot+'/browse/getmaxpolicy', params, function (retVal) {
+            $.post(json.global.webroot + '/browse/getmaxpolicy', params, function (retVal) {
                 var resp = $.parseJSON(retVal);
                 node.attr('policy', resp.policy);
                 midas.browse.checkMoveDestinationValid(node, resp.policy);
@@ -44,13 +46,13 @@ midas.browse.moveCopyCallbackSelect = function (node) {
 };
 
 midas.browse.checkMoveDestinationValid = function (node, policy) {
-    if(node.attr('valid') != 'false' && policy >= 1) {
+    if (node.attr('valid') != 'false' && policy >= 1) {
         midas.browse.moveCopyToggleButton(true);
     }
 };
 
 midas.browse.moveCopyToggleButton = function (on) {
-    if(on) {
+    if (on) {
         $('#selectElement').removeAttr('disabled');
         $('#shareElement').removeAttr('disabled');
         $('#duplicateElement').removeAttr('disabled');
@@ -64,22 +66,20 @@ midas.browse.moveCopyToggleButton = function (on) {
     }
 };
 
-midas.browse.moveCopyCallbackDblClick = function (node) {
-};
+midas.browse.moveCopyCallbackDblClick = function (node) {};
 
-midas.browse.moveCopyCallbackCheckboxes = function (node) {
-};
+midas.browse.moveCopyCallbackCheckboxes = function (node) {};
 
-midas.browse.moveCopyCallbackCustomElements = function (node,elements,first) {
+midas.browse.moveCopyCallbackCustomElements = function (node, elements, first) {
     var i = 1;
     var id = node.attr('id');
     elements['folders'] = jQuery.makeArray(elements['folders']);
     var padding = parseInt(node.find('td:first').css('padding-left').slice(0, -2));
     var html = '';
-    $.each(elements.folders, function(index, value) {
-        html+= "<tr id='"+id+"-"+i+"' class='parent child-of-"+id+"' ajax='"+value.folder_id+"'type='folder' element='"+value.folder_id+"'>";
-        html+= "  <td><span class='folder'>"+trimName(value.name, padding)+"</span></td>";
-        html+= "</tr>";
+    $.each(elements.folders, function (index, value) {
+        html += "<tr id='" + id + "-" + i + "' class='parent child-of-" + id + "' ajax='" + value.folder_id + "'type='folder' element='" + value.folder_id + "'>";
+        html += "  <td><span class='folder'>" + trimName(value.name, padding) + "</span></td>";
+        html += "</tr>";
         i++;
     });
     return html;
@@ -103,7 +103,7 @@ $(document).ready(function () {
 
     $('.uploadApplet').hide();
 
-    if($('#selectElement') != undefined) {
+    if ($('#selectElement') != undefined) {
         $('#selectElement').click(function () {
             var destHtml = $('#selectedDestination').html();
             var destValue = $('#selectedDestinationHidden').val();
@@ -111,7 +111,7 @@ $(document).ready(function () {
             $('#destinationId').val(destValue);
             $('.destinationUpload').html(destHtml);
             $('.destinationId').val(destValue);
-            $( "div.MainDialog" ).dialog('close');
+            $("div.MainDialog").dialog('close');
             $('.uploadApplet').show();
             return false;
         });

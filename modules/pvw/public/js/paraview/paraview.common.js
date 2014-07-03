@@ -1,13 +1,19 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.pvw = midas.pvw || {};
 
 midas.pvw.IDLE_TIMEOUT = 10 * 60 * 1000; // 10 minute idle timeout
-midas.pvw.bgColor = {r: 255, g: 255, b: 255};
+midas.pvw.bgColor = {
+    r: 255,
+    g: 255,
+    b: 255
+};
 
 midas.pvw.instructionsContent = '<h4>Camera Interaction</h4>' +
-  '<p><b>Left-click and drag</b> to rotate.</p>' +
-  '<p><b>Right-click and drag</b> to zoom.</p>' +
-  '<p><b>Alt+click and drag</b> to pan.</p>';
+    '<p><b>Left-click and drag</b> to rotate.</p>' +
+    '<p><b>Right-click and drag</b> to zoom.</p>' +
+    '<p><b>Alt+click and drag</b> to pan.</p>';
 
 /**
  * Binds the action of selecting a background color
@@ -16,16 +22,19 @@ midas.pvw.setupBgColor = function () {
     $('#bgColor').click(function () {
         var html = '<div class="bgColorPicker"></div>';
         midas.showDialogWithContent('Change background color',
-          html, false, {modal: false, width: 380});
+            html, false, {
+                modal: false,
+                width: 380
+            });
         var container = $('div.MainDialog');
         container.find('div.bgColorPicker').ColorPicker({
             flat: true,
             color: midas.pvw.bgColor,
-            onSubmit: function(hsb, hex, rgb, el) {
+            onSubmit: function (hsb, hex, rgb, el) {
                 midas.pvw.bgColor = rgb;
                 container.dialog('close');
                 pv.connection.session.call('vtk:changeBgColor', [rgb.r / 255.0, rgb.g / 255.0, rgb.b / 255.0])
-                                     .then(pv.viewport.render);
+                    .then(pv.viewport.render);
             }
         });
     });
@@ -42,15 +51,15 @@ midas.pvw._commonStart = function (text) {
     try {
         var resp = $.parseJSON(text);
     }
-    catch(e) {
+    catch (e) {
         midas.createNotice('An error occurred, please check the logs', 4000, 'error');
         return;
     }
-    if(resp && resp.status == 'ok' && resp.instance) {
+    if (resp && resp.status == 'ok' && resp.instance) {
         midas.pvw.instance = resp.instance;
         pv = {};
         pv.connection = {
-            sessionURL: 'ws://'+location.hostname+':'+midas.pvw.instance.port+'/ws',
+            sessionURL: 'ws://' + location.hostname + ':' + midas.pvw.instance.port + '/ws',
             id: midas.pvw.instance.instance_id,
             sessionManagerURL: json.global.webroot + '/pvw/paraview/instance',
             secret: midas.pvw.instance.secret,
@@ -77,7 +86,7 @@ midas.pvw._commonStart = function (text) {
  * This function also sets up the
  */
 midas.pvw.loadData = function () {
-    vtkWeb.connect(pv.connection, function(conn) {
+    vtkWeb.connect(pv.connection, function (conn) {
         pv.connection = conn;
         pv.viewport = vtkWeb.createViewport(pv.connection);
         pv.viewport.bind('#renderercontainer');
@@ -86,9 +95,9 @@ midas.pvw.loadData = function () {
 
         midas.pvw.waitingDialog('Loading data into scene...');
         pv.connection.session.call('vtk:loadData')
-                             .then(midas.pvw.dataLoaded)
-                             .otherwise(midas.pvw.rpcFailure);
-    }, function(code, msg) {
+            .then(midas.pvw.dataLoaded)
+            .otherwise(midas.pvw.rpcFailure);
+    }, function (code, msg) {
         $('#renderercontainer').hide();
         midas.createNotice('Error: ' + msg, 3000, 'error');
         midas.pvw.showStatus('ParaView session closed: ' + msg)
@@ -101,7 +110,7 @@ midas.pvw.loadData = function () {
  */
 midas.pvw.testIdle = function () {
     var curr = new Date().getTime();
-    if(curr - midas.pvw.lastAction > midas.pvw.IDLE_TIMEOUT) {
+    if (curr - midas.pvw.lastAction > midas.pvw.IDLE_TIMEOUT) {
         midas.pvw.stopSession();
     }
 };
@@ -111,16 +120,15 @@ midas.pvw.testIdle = function () {
  * to the view.
  */
 midas.pvw.stopSession = function () {
-    if(pv.connection) {
+    if (pv.connection) {
         vtkWeb.stop(pv.connection);
         pv.connection = null;
     }
-    if(midas.pvw.idleInterval) {
+    if (midas.pvw.idleInterval) {
         clearInterval(midas.pvw.idleInterval);
         midas.pvw.idleInterval = null;
     }
-    var html = 'Your ParaViewWeb session was ended, either due to an error or because you went idle '
-             + 'for more than ' + (midas.pvw.IDLE_TIMEOUT / 60000) + ' minutes.';
+    var html = 'Your ParaViewWeb session was ended, either due to an error or because you went idle ' + 'for more than ' + (midas.pvw.IDLE_TIMEOUT / 60000) + ' minutes.';
     $('#loadingStatus').html(html).show();
     $('#renderercontainer').hide();
 };
@@ -130,7 +138,7 @@ midas.pvw.stopSession = function () {
  */
 midas.pvw.showStatus = function (statusText) {
     $('.midas-pvw-status').remove();
-    $('div.viewMain').append('<div class="midas-pvw-status">'+statusText+'</div>');
+    $('div.viewMain').append('<div class="midas-pvw-status">' + statusText + '</div>');
 };
 
 /**
@@ -150,16 +158,16 @@ midas.pvw.rpcFailure = function (err) {
 };
 
 /** Show an indeterminate loading dialog with a message */
-midas.pvw.waitingDialog = function(text) {
-    var html = '<img alt="" style="margin-right: 9px;" '+
-               'src="'+json.global.coreWebroot+'/public/images/icons/loading.gif" /> ' + text;
+midas.pvw.waitingDialog = function (text) {
+    var html = '<img alt="" style="margin-right: 9px;" ' +
+        'src="' + json.global.coreWebroot + '/public/images/icons/loading.gif" /> ' + text;
 
     midas.showDialogWithContent('Please wait', html);
 };
 
 $(window).load(function () {
-    if(vtkWeb) {
-        if(!json.pvw.meshIds) {
+    if (vtkWeb) {
+        if (!json.pvw.meshIds) {
             json.pvw.meshIds = [];
         }
         // Add some logic to check for idle and close the pvw session after IDLE_TIMEOUT expires
@@ -173,18 +181,15 @@ $(window).load(function () {
         html += '<div id="pvwProgressMessage"></div>';
         midas.showDialogWithContent('Starting ParaViewWeb instance', html);
         midas.ajaxWithProgress($('#pvwProgressBar'),
-                               $('#pvwProgressMessage'),
-        json.global.webroot+'/pvw/paraview/startinstance',
-        {
-            itemId: json.pvw.item.item_id,
-            meshes: json.pvw.meshIds.join(';')
-        },
-        midas.pvw._commonStart);
+            $('#pvwProgressMessage'),
+            json.global.webroot + '/pvw/paraview/startinstance', {
+                itemId: json.pvw.item.item_id,
+                meshes: json.pvw.meshIds.join(';')
+            },
+            midas.pvw._commonStart);
     }
     else {
-        midas.pvw.showStatus('Error: paraview-all.js was not loaded correctly. '
-          + 'Make sure you symlink to the <b>www</b> directory in your ParaView build directory '
-          + 'as <b>modules/pvw/public/import</b>.');
+        midas.pvw.showStatus('Error: paraview-all.js was not loaded correctly. ' + 'Make sure you symlink to the <b>www</b> directory in your ParaView build directory ' + 'as <b>modules/pvw/public/import</b>.');
     }
     $('a.pvwInstructions').click(function () {
         midas.showDialogWithContent('Instructions', midas.pvw.instructionsContent, false);
@@ -192,7 +197,7 @@ $(window).load(function () {
 });
 
 window.onunload = function () {
-    if(midas.pvw.instance && pv.connection) {
+    if (midas.pvw.instance && pv.connection) {
         // Sadly we have to do this synchronously so the browser fulfills the request before leaving
         $.ajax({
             url: json.global.webroot + '/pvw/paraview/instance/' + midas.pvw.instance.instance_id,

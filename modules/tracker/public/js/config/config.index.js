@@ -1,3 +1,5 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 $(window).load(function () {
     $('#configForm').ajaxForm({
         beforeSubmit: function () {
@@ -5,7 +7,7 @@ $(window).load(function () {
         },
         success: function (text) {
             var resp = $.parseJSON(text);
-            if(!resp) {
+            if (!resp) {
                 midas.createNotice('An error occurred, check the log', 3000, 'error');
             }
             else {

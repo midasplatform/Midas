@@ -1,3 +1,5 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.statistics = midas.statistics || {};
 midas.statistics.mapMarkers = [];
@@ -5,36 +7,38 @@ midas.statistics.mapMarkers = [];
 /**
  * Remove all current markers from the map
  */
-midas.statistics.clearMap = function() {
-  if (midas.statistics.mapMarkers) {
-    for (var i = 0; i < midas.statistics.mapMarkers.length; i++) {
-      midas.statistics.mapMarkers[i].setMap(null);
+midas.statistics.clearMap = function () {
+    if (midas.statistics.mapMarkers) {
+        for (var i = 0; i < midas.statistics.mapMarkers.length; i++) {
+            midas.statistics.mapMarkers[i].setMap(null);
+        }
+        midas.statistics.mapMarkers = [];
     }
-    midas.statistics.mapMarkers = [];
-  }
 }
 
 /**
  * Parses the response from itemstatistics and populates the map with markers
  */
-midas.statistics.populateMap = function(responseText, statusText, xhr, form) {
+midas.statistics.populateMap = function (responseText, statusText, xhr, form) {
     try {
         var response = jQuery.parseJSON(responseText);
         midas.statistics.clearMap();
 
         for (var i = 0; i < response.downloads.length; i++) {
             var myLatlng = new google.maps.LatLng(response.downloads[i].latitude, response.downloads[i].longitude);
-            var marker = new google.maps.Marker({position: myLatlng});
+            var marker = new google.maps.Marker({
+                position: myLatlng
+            });
             midas.statistics.mapMarkers.push(marker);
         }
         midas.statistics.clusterer.clearMarkers();
         midas.statistics.clusterer.addMarkers(midas.statistics.mapMarkers);
 
-        if(typeof window.history.replaceState == 'function') {
-            var params = '?id='+json.itemId;
-            params += '&startDate='+$('#startdate').val();
-            params += '&endDate='+$('#enddate').val();
-            params += '&limit='+$('#downloadResultLimit').val();
+        if (typeof window.history.replaceState == 'function') {
+            var params = '?id=' + json.itemId;
+            params += '&startDate=' + $('#startdate').val();
+            params += '&endDate=' + $('#enddate').val();
+            params += '&limit=' + $('#downloadResultLimit').val();
 
             window.history.replaceState({}, '', params);
         }
@@ -42,7 +46,8 @@ midas.statistics.populateMap = function(responseText, statusText, xhr, form) {
         var html = response.count + ' downloads in the selected period (';
         html += (response.count - response.downloads.length) + ' from unknown locations)';
         $('#filteredCount').html(html);
-    } catch (e) {
+    }
+    catch (e) {
         alert("An error occured. Please check the logs.");
         return false;
     } finally {
@@ -51,33 +56,42 @@ midas.statistics.populateMap = function(responseText, statusText, xhr, form) {
     }
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
     var tabs = $("#tabsGeneric").tabs({
-        select: function(event, ui) { }
+        select: function (event, ui) {}
     });
     $('#tabsGeneric').show();
     $('img.tabsLoading').hide();
-    $('#tabsGeneric').bind('tabsshow', function(event, ui) {
-        if(plotErrors._drawCount == 0) {
+    $('#tabsGeneric').bind('tabsshow', function (event, ui) {
+        if (plotErrors._drawCount == 0) {
             plotErrors.replot();
         }
     });
     var errors = json.stats.downloads;
-    $.each(errors, function(i, val) {
+    $.each(errors, function (i, val) {
         errors[i][1] = parseInt(errors[i][1]);
     });
 
     var plotErrors = $.jqplot('chartDownloads', [errors], {
-        title:'Number of downloads',
-        gridPadding:{right:35},
-        axes:{
-            xaxis:{
-                renderer:$.jqplot.DateAxisRenderer,
-                tickOptions:{formatString:'%b %#d'},
-                tickInterval:'1 day'
+        title: 'Number of downloads',
+        gridPadding: {
+            right: 35
+        },
+        axes: {
+            xaxis: {
+                renderer: $.jqplot.DateAxisRenderer,
+                tickOptions: {
+                    formatString: '%b %#d'
+                },
+                tickInterval: '1 day'
             }
         },
-        series:[{lineWidth:4, markerOptions:{style:'square'}}]
+        series: [{
+            lineWidth: 4,
+            markerOptions: {
+                style: 'square'
+            }
+        }]
     });
 
     var latlng = new google.maps.LatLng(0, 0);
@@ -94,14 +108,14 @@ $(document).ready(function() {
         defaultDate: "today",
         changeMonth: true,
         numberOfMonths: 1,
-        onSelect: function(selectedDate) {
-          var option = this.id == "startdate" ? "minDate" : "maxDate";
-          var instance = $(this).data("datepicker");
-          var date = $.datepicker.parseDate(
-            instance.settings.dateFormat || $.datepicker._defaults.dateFormat,
-            selectedDate, instance.settings);
-          dates.not(this).datepicker("option", option, date);
-          },
+        onSelect: function (selectedDate) {
+            var option = this.id == "startdate" ? "minDate" : "maxDate";
+            var instance = $(this).data("datepicker");
+            var date = $.datepicker.parseDate(
+                instance.settings.dateFormat || $.datepicker._defaults.dateFormat,
+                selectedDate, instance.settings);
+            dates.not(this).datepicker("option", option, date);
+        },
         dayNamesMin: ["S", "M", "T", "W", "T", "F", "S"]
     });
 
@@ -111,7 +125,7 @@ $(document).ready(function() {
     });
 
     $('#filterForm').ajaxForm({
-        beforeSubmit: function(formData, jqForm, options) {
+        beforeSubmit: function (formData, jqForm, options) {
             $('input.filterButton').attr('disabled', 'disabled');
             $('img#loadingStatistics').show();
             return true;

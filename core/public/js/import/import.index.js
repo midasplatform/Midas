@@ -1,6 +1,8 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 /**
  * import.index.js
- * 
+ *
  * Page javascript for <midas>/import
  *
  */
@@ -24,7 +26,9 @@ midas.import.uploadid = null;
 midas.import.importSerialize = function (form, options) {
     'use strict';
     if (midas.import.stage === 'validate') {
-        options.data = {validate: '1'};
+        options.data = {
+            validate: '1'
+        };
     }
 };
 
@@ -44,20 +48,27 @@ midas.import.importCallback = function (responseText, statusText, xhr, form) {
     if (responseText.stage === 'validate') {
         midas.import.stage = 'initialize';
         $("#progress_status").html('Counting files (this could take some time)');
-        midas.import.formSubmitOptions.data = {initialize: '1'};
+        midas.import.formSubmitOptions.data = {
+            initialize: '1'
+        };
         $("#importsubmit").html($("#importstop").val());
         $('#importForm').ajaxSubmit(midas.import.formSubmitOptions);
-    } else if (responseText.stage === 'initialize') {
+    }
+    else if (responseText.stage === 'initialize') {
         midas.import.stage = 'upload';
-        midas.import.formSubmitOptions.data = {totalfiles: responseText.totalfiles};
+        midas.import.formSubmitOptions.data = {
+            totalfiles: responseText.totalfiles
+        };
         $('#importForm').ajaxSubmit(midas.import.formSubmitOptions);
-    } else if (responseText.error) {
-        midas.import.stage = 'validate';  // goes back to the validate stage
+    }
+    else if (responseText.error) {
+        midas.import.stage = 'validate'; // goes back to the validate stage
         $("#importsubmit").html(midas.import.importSubmitButtonValue);
         $(".viewNotice").html(responseText.error);
         $(".viewNotice").fadeIn(100).delay(2000).fadeOut(300);
-    } else if (responseText.message) {
-        midas.import.stage = 'validate';    // goes back to the validate stage
+    }
+    else if (responseText.message) {
+        midas.import.stage = 'validate'; // goes back to the validate stage
         $("#progress_status").html('Import done');
         $("#progress").progressbar("value", 100);
         $(".viewNotice").html(responseText.message);
@@ -80,16 +91,17 @@ midas.import.startImport = function () {
     'use strict';
     if (midas.import.stage === 'validate') {
         midas.import.formSubmitOptions = {
-            success : midas.import.importCallback,
+            success: midas.import.importCallback,
             beforeSerialize: midas.import.importSerialize,
             beforeSubmit: midas.import.importSubmit,
-            dataType : 'json'
+            dataType: 'json'
         };
         $('#importForm').ajaxSubmit(midas.import.formSubmitOptions);
-    } else { // stop the import
+    }
+    else { // stop the import
         midas.import.stage = 'validate'; // goes back to the validate stage
         $.get($('.webroot').val() + '/import/stop?id=' + midas.import.uploadId,
-              midas.import.displayStopMessage);
+            midas.import.displayStopMessage);
     }
 };
 
@@ -114,13 +126,14 @@ midas.import.assetstoreAddCallback = function (responseText, statusText, xhr, fo
     if (responseText.error) {
         $(".viewNotice").html(responseText.error);
         $(".viewNotice").fadeIn(100).delay(2000).fadeOut(100);
-    } else if (responseText.msg) {
+    }
+    else if (responseText.msg) {
         $(document).trigger('hideCluetip');
         if (responseText.assetstore_id) {
             $("#assetstore").append($("<option></option>")
-                                    .attr("value", responseText.assetstore_id)
-                                    .text(responseText.assetstore_name)
-                                    .attr("selected", "selected"));
+                .attr("value", responseText.assetstore_id)
+                .text(responseText.assetstore_name)
+                .attr("selected", "selected"));
 
             // Add to JSON
             newassetstore.assetstore_id = responseText.assetstore_id;
@@ -181,8 +194,7 @@ midas.import.assetstoretypeChanged = function () {
     for (i = 0; i < midas.import.assetstores.length; i += 1) {
         if (midas.import.assetstores[i].type === assetstoretype) {
             $("select#assetstore").append($("<option></option>")
-                                          .attr("value", midas.import.assetstores[i].assetstore_id).
-                                          text(midas.import.assetstores[i].name));
+                .attr("value", midas.import.assetstores[i].assetstore_id).text(midas.import.assetstores[i].name));
         }
     }
 };
@@ -200,7 +212,7 @@ midas.import.makeProgressSuccessCallback = function (id) {
                 $("#progress_status").show();
 
                 $("#progress_status").html('Importing files ' + html.current +
-                                           '/' + html.max + ' (' + html.percent + '%)');
+                    '/' + html.max + ' (' + html.percent + '%)');
                 $("#progress").progressbar("value", html.percent);
             }
         }
@@ -223,13 +235,14 @@ midas.import.checkProgress = function (id) {
         return false;
     }
 
-    $.ajax({ type: "GET",
-             url: $('.webroot').val() + '/import/getprogress?id=' + id,
-             dataType: 'json',
-             timeout: 10000000000,
-             success: midas.import.makeProgressSuccessCallback(id),
-             error: midas.import.progressFailureCallback
-           });
+    $.ajax({
+        type: "GET",
+        url: $('.webroot').val() + '/import/getprogress?id=' + id,
+        dataType: 'json',
+        timeout: 10000000000,
+        success: midas.import.makeProgressSuccessCallback(id),
+        error: midas.import.progressFailureCallback
+    });
 
 };
 
@@ -248,20 +261,22 @@ $(document).ready(function () {
     $('#inputdirectory').change(midas.import.inputDirectoryChanged);
 
     // Form for the new assetstore
-    $('#assetstoreForm').ajaxForm({ success: midas.import.assetstoreAddCallback,
-                                    beforeSubmit: midas.import.assetstoreSubmit,
-                                    dataType: 'json'
-                                  });
+    $('#assetstoreForm').ajaxForm({
+        success: midas.import.assetstoreAddCallback,
+        beforeSubmit: midas.import.assetstoreSubmit,
+        dataType: 'json'
+    });
 
     // Load the window for the new assetstore
-    $('a.load-newassetstore').cluetip({ cluetipClass: 'jtip',
-                                        activation: 'click',
-                                        local: true,
-                                        cursor: 'pointer',
-                                        arrows: true,
-                                        clickOutClose: true,
-                                        onShow: midas.import.newAssetstoreShow
-                                      });
+    $('a.load-newassetstore').cluetip({
+        cluetipClass: 'jtip',
+        activation: 'click',
+        local: true,
+        cursor: 'pointer',
+        arrows: true,
+        clickOutClose: true,
+        onShow: midas.import.newAssetstoreShow
+    });
 
     $("#progress").progressbar();
 
@@ -271,7 +286,7 @@ $(document).ready(function () {
 
     midas.import.importSubmitButtonValue = $("#importsubmit").html();
 
-    //Init Browser
+    // Init Browser
     $('input[name=importFolder]').val('');
     $('input[name=importFolder]').attr('id', 'destinationId');
     $('input[name=importFolder]').hide();

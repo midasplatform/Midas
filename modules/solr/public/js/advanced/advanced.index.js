@@ -1,3 +1,5 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.solr = midas.solr || {};
 
@@ -10,13 +12,13 @@ midas.solr.PAGE_LIMIT = 10;
 /**
  * Renders the item result list and counters in the DOM, as well as the counters and prev/next buttons if needed
  */
-midas.solr.displayResults = function(items) {
-    for(var idx in items) {
+midas.solr.displayResults = function (items) {
+    for (var idx in items) {
         var item = items[idx];
         var result = $('#itemResultTemplate').clone().show().removeAttr('id');
         result.find('a.itemLink')
-          .attr('href', json.global.webroot+'/item/'+item.id)
-          .html(item.name);
+            .attr('href', json.global.webroot + '/item/' + item.id)
+            .html(item.name);
         result.appendTo('#resultsArea');
     }
 };
@@ -24,7 +26,7 @@ midas.solr.displayResults = function(items) {
 /**
  * Fetch a page of search results based on the current shared variable state
  */
-midas.solr.fetchPage = function() {
+midas.solr.fetchPage = function () {
     $('.nextPageSearch').hide();
     $('#resultsArea').html('');
     $('img.resultsLoading').show();
@@ -34,24 +36,25 @@ midas.solr.fetchPage = function() {
         solrOffset: midas.solr.solrOffset,
         limit: midas.solr.PAGE_LIMIT
     };
-    $.post(json.global.webroot+'/solr/advanced/submit', params, function (responseText) {
+    $.post(json.global.webroot + '/solr/advanced/submit', params, function (responseText) {
         $('img.resultsLoading').hide();
         try {
             var resp = $.parseJSON(responseText);
-        } catch(e) {
+        }
+        catch (e) {
             midas.createNotice('Internal error occurred, contact an administrator');
             return;
         }
-        if(resp.status == 'error') {
+        if (resp.status == 'error') {
             midas.createNotice(resp.message, 3000, resp.status);
         }
         else {
             midas.solr.displayOffset = resp.displayOffset;
             midas.solr.total = resp.totalResults;
             midas.solr.displayResults(resp.items);
-            midas.solr.solrOffset = resp.solrOffset; //iterate
+            midas.solr.solrOffset = resp.solrOffset; // iterate
 
-            if(midas.solr.solrOffset < midas.solr.total) {
+            if (midas.solr.solrOffset < midas.solr.total) {
                 $('.nextPageSearch').show();
             }
         }
@@ -66,17 +69,18 @@ midas.solr.fetchTypes = function () {
             var typeArray = retVal.data;
             var curType;
             var i;
-            for(i = 0; i < typeArray.length; ++i) {
+            for (i = 0; i < typeArray.length; ++i) {
                 curType = typeArray[i];
                 typeCombo.append($('<option></option>').attr("value", curType).text(curType));
             }
-            typeCombo.change(function() { midas.solr.fetchElements($(this).val()); });
+            typeCombo.change(function () {
+                midas.solr.fetchElements($(this).val());
+            });
         },
         error: function (retVal) {
             midas.createNotice(retVal.message, 3000, 'error');
         },
-        complete: function () {
-        },
+        complete: function () {},
         log: $('<p></p>')
     });
 };
@@ -99,17 +103,18 @@ midas.solr.fetchElements = function (type) {
             var i;
             elementCombo.empty();
             elementCombo.append($('<option></option>').attr("value", "element").text("Element"));
-            for(i = 0; i < elementArray.length; ++i) {
+            for (i = 0; i < elementArray.length; ++i) {
                 curElement = elementArray[i];
                 elementCombo.append($('<option></option>').attr("value", curElement).text(curElement));
             }
-            elementCombo.change(function () { midas.solr.fetchQualifiers(type, $(this).val()); });
+            elementCombo.change(function () {
+                midas.solr.fetchQualifiers(type, $(this).val());
+            });
         },
         error: function (retVal) {
             midas.createNotice(retVal.message, 3000, 'error');
         },
-        complete: function () {
-        },
+        complete: function () {},
         log: $('<p></p>')
     });
 };
@@ -132,7 +137,7 @@ midas.solr.fetchQualifiers = function (type, element) {
             var i;
             qualifierCombo.empty();
             qualifierCombo.append($('<option></option>').attr("value", "qualifier").text("Qualifier"));
-            for(i = 0; i < qualifierArray.length; ++i) {
+            for (i = 0; i < qualifierArray.length; ++i) {
                 curQualifier = qualifierArray[i];
                 qualifierCombo.append($('<option></option>').attr("value", curQualifier).text(curQualifier));
             }
@@ -140,22 +145,22 @@ midas.solr.fetchQualifiers = function (type, element) {
         error: function (retVal) {
             midas.createNotice(retVal.message, 3000, 'error');
         },
-        complete: function () {
-        },
+        complete: function () {},
         log: $('<p></p>')
     });
 };
 
-$(document).ready(function() {
+$(document).ready(function () {
     $('#advancedQueryField').autogrow();
     $('#advancedQueryField').focus();
 
     $('#showAdvancedSearchHelp').click(function () {
         midas.showDialogWithContent(
-          'Advanced Search Instructions',
-          $('#instructionsContent').html(),
-          false,
-          {width: 700});
+            'Advanced Search Instructions',
+            $('#instructionsContent').html(),
+            false, {
+                width: 700
+            });
     });
 
     $('#advancedSearchButton').click(function () {
@@ -165,7 +170,7 @@ $(document).ready(function() {
         midas.solr.fetchPage();
     });
 
-    $('.nextPageSearch').click(function() {
+    $('.nextPageSearch').click(function () {
         midas.solr.fetchPage();
     });
 

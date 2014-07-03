@@ -1,29 +1,31 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.visualize = midas.visualize || {};
 
-midas.visualize.validateConfig = function (formData, jqForm, options) {
-}
+midas.visualize.validateConfig = function (formData, jqForm, options) {}
 
 midas.visualize.successConfig = function (responseText, statusText, xhr, form) {
-  try {
-      var jsonResponse = jQuery.parseJSON(responseText);
-  } catch (e) {
-      midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
-      return false;
-  }
-  if(jsonResponse == null) {
-      midas.createNotice('Error', 4000, 'error');
-      return;
-  }
-  if(jsonResponse[0]) {
-      midas.createNotice(jsonResponse[1], 4000);
-  }
-  else {
-      midas.createNotice(jsonResponse[1], 4000, 'error');
-  }
+    try {
+        var jsonResponse = jQuery.parseJSON(responseText);
+    }
+    catch (e) {
+        midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
+        return false;
+    }
+    if (jsonResponse == null) {
+        midas.createNotice('Error', 4000, 'error');
+        return;
+    }
+    if (jsonResponse[0]) {
+        midas.createNotice(jsonResponse[1], 4000);
+    }
+    else {
+        midas.createNotice(jsonResponse[1], 4000, 'error');
+    }
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
     $('#customtmp').qtip({
         content: 'Temp directory for the module to use. If you leave this empty, it will use the Midas temporary directory.'
     });
@@ -41,7 +43,7 @@ $(document).ready(function() {
     });
 
     $('#pwapp').qtip({
-        content: 'Set this to the parent URL under which the ParaViewWeb server is running. Example: http://localhost:8080/'
+        content: 'Set this to the parent URL under which the ParaViewWeb server is running. Example: http:// localhost:8080/'
     });
 
     $('#pvbatch').qtip({

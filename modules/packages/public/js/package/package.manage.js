@@ -1,6 +1,7 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.packages = midas.packages || {};
-
 
 midas.packages.successConfig = function (responseText, statusText, xhr, form) {
     var resp = $.parseJSON(responseText);

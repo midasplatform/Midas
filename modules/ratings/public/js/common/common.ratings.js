@@ -1,15 +1,18 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.ratings = midas.ratings || {};
 
 /**
  * Create the jqPlot of ratings distribution
  */
-midas.ratings.createChart = function(distribution) {
-  midas.ratings.chart = $.jqplot('ratingsChart', [distribution], {
+midas.ratings.createChart = function (distribution) {
+    midas.ratings.chart = $.jqplot('ratingsChart', [distribution], {
         seriesDefaults: {
-            renderer:$.jqplot.BarRenderer,
+            renderer: $.jqplot.BarRenderer,
             pointLabels: {
-                show: true, location: 'e',
+                show: true,
+                location: 'e',
                 edgeTolerance: -15,
                 formatString: '%d'
             },
@@ -18,7 +21,7 @@ midas.ratings.createChart = function(distribution) {
             shadowDepth: 3,
             rendererOptions: {
                 barDirection: 'horizontal',
-                varyBarColor : true,
+                varyBarColor: true,
                 barMargin: 3,
                 highlightMouseOver: false,
                 highlightMouseDown: false
@@ -53,8 +56,8 @@ midas.ratings.createChart = function(distribution) {
 /**
  * Display the aggregate rating information including star visualization
  */
-midas.ratings.renderAggregate = function(average, total, distribution) {
-    if(average != null && average != '') {
+midas.ratings.renderAggregate = function (average, total, distribution) {
+    if (average != null && average != '') {
         average = Math.round(average * 100) / 100;
         $('#averageValue').html(average);
         var starSelect = Math.round(average * 2) - 1;
@@ -64,7 +67,7 @@ midas.ratings.renderAggregate = function(average, total, distribution) {
         $('#averageValue').html('0');
         $('#ratingsAverage').stars('selectID', -1);
     }
-    for(var key in distribution) {
+    for (var key in distribution) {
         distribution[key] = parseInt(distribution[key]);
     }
     midas.ratings.createChart(distribution);
@@ -77,11 +80,11 @@ midas.ratings.renderAggregate = function(average, total, distribution) {
  * to the given value, which should be a number 0-5. Passing 0 means
  * the existing rating should be removed for the user.
  */
-midas.ratings.setRating = function(value) {
-    $.post(json.global.webroot+'/ratings/rating/rateitem', {
+midas.ratings.setRating = function (value) {
+    $.post(json.global.webroot + '/ratings/rating/rateitem', {
         itemId: json.item.item_id,
         rating: value
-    }, function(data) {
+    }, function (data) {
         var resp = $.parseJSON(data);
         midas.createNotice(resp.message, 3000, resp.status);
         midas.ratings.renderAggregate(resp.average, resp.total, resp.distribution);
@@ -89,7 +92,7 @@ midas.ratings.setRating = function(value) {
 
 }
 
-$(window).load(function() {
+$(window).load(function () {
     midas.doCallback('CALLBACK_RATINGS_BEFORE_LOAD');
     $('#ratingsAverage').stars({
         disabled: true,
@@ -97,20 +100,21 @@ $(window).load(function() {
     });
 
     midas.ratings.renderAggregate(json.modules.ratings.average,
-                                  json.modules.ratings.total,
-                                  json.modules.ratings.distribution);
+        json.modules.ratings.total,
+        json.modules.ratings.distribution);
     $('#ratingsAverage').show();
 
-    if(json.global.logged == '1') {
-      $('#ratingsUser').stars({
-          disabled: false,
-          callback: function(ui, type, value) {
-              midas.ratings.setRating(value);
-          }
-      });
-      $('#ratingsUser').stars('selectID', json.modules.ratings.userRating - 1);
-      $('#ratingsUser').show();
-    } else {
+    if (json.global.logged == '1') {
+        $('#ratingsUser').stars({
+            disabled: false,
+            callback: function (ui, type, value) {
+                midas.ratings.setRating(value);
+            }
+        });
+        $('#ratingsUser').stars('selectID', json.modules.ratings.userRating - 1);
+        $('#ratingsUser').show();
+    }
+    else {
         $('div.loginToRate').show();
         $('#loginToRate').click(function () {
             midas.showOrHideDynamicBar('login');
@@ -118,7 +122,7 @@ $(window).load(function() {
         });
         $('#registerToRate').click(function () {
             midas.showOrHideDynamicBar('register');
-            midas.loadAjaxDynamicBar('register','/user/register');
+            midas.loadAjaxDynamicBar('register', '/user/register');
         });
     }
     midas.doCallback('CALLBACK_RATINGS_AFTER_LOAD');

@@ -1,9 +1,11 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.user = midas.user || {};
 
 $(document).ready(function () {
-    $( "#tabsGeneric" ).tabs({
-        select: function(event, ui) {
+    $("#tabsGeneric").tabs({
+        select: function (event, ui) {
             $('div.genericAction').show();
             $('div.genericCommunities').show();
             $('div.genericStats').show();
@@ -28,9 +30,9 @@ $(document).ready(function () {
     $("table#browseTable").show();
 });
 
+// dependance: common/browser.js
+var ajaxSelectRequest = '';
 
-//dependance: common/browser.js
-var ajaxSelectRequest='';
 function callbackSelect(node) {
     $('div.genericAction').show();
     $('div.genericCommunities').hide();
@@ -54,7 +56,7 @@ function callbackCheckboxes(node) {
 /**
  * Will render the delete user dialog for the specified user
  */
-midas.user.showDeleteDialog = function(userId) {
-    midas.loadDialog('userId'+userId, '/user/deletedialog?userId='+userId);
+midas.user.showDeleteDialog = function (userId) {
+    midas.loadDialog('userId' + userId, '/user/deletedialog?userId=' + userId);
     midas.showDialog('Delete User', false);
 };

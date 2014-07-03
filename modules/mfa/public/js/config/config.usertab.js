@@ -1,3 +1,5 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.mfa = midas.mfa || {};
 
@@ -8,11 +10,12 @@ midas.mfa.validateConfig = function (formData, jqForm, options) {
 midas.mfa.successConfig = function (responseText, statusText, xhr, form) {
     try {
         var jsonResponse = jQuery.parseJSON(responseText);
-    } catch (e) {
+    }
+    catch (e) {
         midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
         return false;
     }
-    if(jsonResponse == null) {
+    if (jsonResponse == null) {
         midas.createNotice('An internal error occurred, please contact an administrator', 4000, 'error');
         return;
     }
@@ -23,7 +26,7 @@ midas.mfa.successConfig = function (responseText, statusText, xhr, form) {
  * Enable/disable the form elements based on the top checkbox
  */
 midas.mfa.setEnabledState = function () {
-    if($('#useOtpCheckbox').is(':checked')) {
+    if ($('#useOtpCheckbox').is(':checked')) {
         $('#otpSecret').removeAttr('disabled');
         $('#otpAlgorithmSelect').removeAttr('disabled');
         $('#otpLength').removeAttr('disabled');
@@ -35,7 +38,7 @@ midas.mfa.setEnabledState = function () {
     }
 };
 
-$(document).ready(function() {
+$(document).ready(function () {
     $('#mfaConfigForm').ajaxForm({
         beforeSubmit: midas.mfa.validateConfig,
         success: midas.mfa.successConfig

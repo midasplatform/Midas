@@ -1,3 +1,5 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.fixedSidebar = false;
 
@@ -8,20 +10,20 @@ midas.fixedSidebar = false;
  * file corresponding to that layout (e.g. midas.layout.js).
  */
 
-$(document).ready(function() {
+$(document).ready(function () {
     // Right-sidebar view actions hover style (must be done in javascript due to parent refs)
     $('div.viewAction li a').hover(function () {
         $(this).parents('li').css('background-color', '#E5E5E5');
-        }, function() {
+    }, function () {
         $(this).parents('li').css('background-color', 'white');
     });
 
     // Render qtips
     $('[qtip]').qtip({
-      content: {
-          attr: 'qtip'
-      }
-  });
+        content: {
+            attr: 'qtip'
+        }
+    });
 });
 
 /**
@@ -30,24 +32,24 @@ $(document).ready(function() {
  */
 $(window).scroll(function () {
     var sidebar = $('div.viewSideBar');
-    if(sidebar.length === 0) {
-      return;
+    if (sidebar.length === 0) {
+        return;
     }
     var viewMain = $('div.viewMain');
     if (viewMain.length === 0) {
-      return;
+        return;
     }
     var topOffset = viewMain.length > 0 ? viewMain.offset().top : 0;
     var fixed = $(window).scrollTop() - topOffset > 0;
 
-    if(fixed && !midas.fixedSidebar && sidebar.height() + 45 < $(window).height()) {
+    if (fixed && !midas.fixedSidebar && sidebar.height() + 45 < $(window).height()) {
         var left = sidebar.offset().left;
         sidebar.css('position', 'fixed')
-               .css('top', '0px')
-               .css('left', left+'px');
+            .css('top', '0px')
+            .css('left', left + 'px');
         midas.fixedSidebar = true;
     }
-    else if(!fixed && midas.fixedSidebar) {
+    else if (!fixed && midas.fixedSidebar) {
         sidebar.css('position', 'static');
         midas.fixedSidebar = false;
     }
@@ -64,31 +66,30 @@ midas.formatBytes = function (sizeBytes) {
         sizeBytes /= 1024;
     }
 
-    return sizeBytes.toFixed(precision) + ' ' +
-        ['B', 'KB', 'MB', 'GB', 'TB'][i];
+    return sizeBytes.toFixed(precision) + ' ' + ['B', 'KB', 'MB', 'GB', 'TB'][i];
 };
 
 // trim name by the number of character
-function sliceFileName (name, nchar) {
-    if(name.length>nchar) {
+function sliceFileName(name, nchar) {
+    if (name.length > nchar) {
         var toremove = name.length - nchar;
-        if(toremove < 13) {
+        if (toremove < 13) {
             return name;
         }
-        name = name.substring(0, 10)+'...'+name.substring(13 + toremove);
+        name = name.substring(0, 10) + '...' + name.substring(13 + toremove);
         return name;
     }
-  return name;
+    return name;
 }
 
 // trim name by the number of pixel
-function trimName (name, padding) {
-    if(name.length * 7 + padding > 350) {
+function trimName(name, padding) {
+    if (name.length * 7 + padding > 350) {
         var toremove = (name.length * 7 + padding - 350) / 8;
-        if(toremove < 13) {
+        if (toremove < 13) {
             return 'error';
         }
-        name = name.substring(0, 10)+'...'+name.substring(name.length + 13 - toremove);
+        name = name.substring(0, 10) + '...' + name.substring(name.length + 13 - toremove);
         return name;
     }
     return name;

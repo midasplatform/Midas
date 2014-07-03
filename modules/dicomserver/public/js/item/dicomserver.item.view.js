@@ -1,3 +1,5 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 /*global $*/
 /*global document*/
 /*global ajaxWebApi*/
@@ -7,7 +9,7 @@ var midas = midas || {};
 midas.dicomserver = midas.dicomserver || {};
 
 midas.dicomserver.showLoadingImage = function () {
-    $('li#dicomRegisterListItem').append('<div id="registering-image"><img src="'+json.global.webroot+'/modules/dicomserver/public/images/registering.gif" alt=""/> Registering images ...</div>');
+    $('li#dicomRegisterListItem').append('<div id="registering-image"><img src="' + json.global.webroot + '/modules/dicomserver/public/images/registering.gif" alt=""/> Registering images ...</div>');
 }
 
 midas.dicomserver.hideLoadingImage = function () {
@@ -40,12 +42,12 @@ midas.dicomserver.registrationStatus = function () {
         method: 'midas.dicomserver.registration.status',
         args: 'item=' + json.item.item_id,
         success: function (retVal) {
-          if(retVal.data.status){
-            $("div#sideElementDicomRegistration").show();
-          }
-          else {
-            $("div#sideElementDicomRegistration").hide();
-          }
+            if (retVal.data.status) {
+                $("div#sideElementDicomRegistration").show();
+            }
+            else {
+                $("div#sideElementDicomRegistration").hide();
+            }
         },
         log: $('<p></p>')
     });

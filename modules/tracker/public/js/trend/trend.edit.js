@@ -1,15 +1,17 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.tracker = midas.tracker || {};
 
 itemSelectionCallback = function (name, id) {
-    var html = '<a href="'+json.global.webroot+'/item/'+id+'">'+name+'</a>';
-    $('span.'+midas.tracker.whichSelect+'DatasetContent').html(html);
-    $('input[name='+midas.tracker.whichSelect+'ItemId]').val(id);
+    var html = '<a href="' + json.global.webroot + '/item/' + id + '">' + name + '</a>';
+    $('span.' + midas.tracker.whichSelect + 'DatasetContent').html(html);
+    $('input[name=' + midas.tracker.whichSelect + 'ItemId]').val(id);
 };
 
 midas.tracker.removeItem = function (which) {
-    $('span.'+which+'DatasetContent').html('<span class="noItem">none</span>');
-    $('input[name='+which+'ItemId]').val('');
+    $('span.' + which + 'DatasetContent').html('<span class="noItem">none</span>');
+    $('input[name=' + which + 'ItemId]').val('');
 };
 
 midas.tracker.validateConfig = function () {

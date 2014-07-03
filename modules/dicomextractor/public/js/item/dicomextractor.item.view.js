@@ -1,3 +1,5 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 /*global $*/
 /*global document*/
 /*global ajaxWebApi*/
@@ -18,8 +20,7 @@ midas.dicomextractor.extractAction = function () {
         error: function (retVal) {
             midas.createNotice(retVal.message, 3000, 'error');
         },
-        complete: function () {
-        },
+        complete: function () {},
         log: $('<p></p>')
     });
 };

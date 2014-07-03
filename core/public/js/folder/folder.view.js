@@ -1,6 +1,8 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 
-$(document).ready(function() {
+$(document).ready(function () {
 
     $("#browseTable").treeTable({
         onFirstInit: midas.enableRangeSelect,
@@ -19,11 +21,11 @@ $(document).ready(function() {
     });
 
     $('a.sharingLink').click(function () {
-        midas.loadDialog("sharing"+$(this).attr('type')+$(this).attr('element'),"/share/dialog?type="+$(this).attr('type')+'&element='+$(this).attr('element'));
+        midas.loadDialog("sharing" + $(this).attr('type') + $(this).attr('element'), "/share/dialog?type=" + $(this).attr('type') + '&element=' + $(this).attr('element'));
         midas.showDialog(json.browse.share);
     });
     $('a.getResourceLinks').click(function () {
-        midas.loadDialog("links"+$(this).attr('type')+$(this).attr('element'),'/share/links?type='+$(this).attr('type')+'&id='+$(this).attr('element'));
+        midas.loadDialog("links" + $(this).attr('type') + $(this).attr('element'), '/share/links?type=' + $(this).attr('type') + '&id=' + $(this).attr('element'));
         midas.showDialog('Link to this item');
     });
     $('a.uploadInFolder').click(function () {
@@ -34,14 +36,14 @@ $(document).ready(function() {
     });
     $('a.downloadFolderLink').click(function () {
         var folderId = $(this).attr('element');
-        $.post(json.global.webroot+'/download/checksize', {
+        $.post(json.global.webroot + '/download/checksize', {
             folderIds: folderId
         }, function (text) {
             var retVal = $.parseJSON(text);
-            if(retVal.action == 'download') {
-                window.location = json.global.webroot+'/download?folders='+folderId;
+            if (retVal.action == 'download') {
+                window.location = json.global.webroot + '/download?folders=' + folderId;
             }
-            else if(retVal.action == 'promptApplet') {
+            else if (retVal.action == 'promptApplet') {
                 midas.promptDownloadApplet(folderId, '', retVal.sizeStr);
             }
         });
@@ -56,11 +58,11 @@ $(document).ready(function() {
     $("img.tableLoading").hide();
     $("table#browseTable").show();
 
-    $( "#tabsGeneric" ).tabs();
+    $("#tabsGeneric").tabs();
     $("#tabsGeneric").show();
 
-    if($('.pathBrowser li').length > 5) {
-        while($('.pathBrowser li').length > 5) {
+    if ($('.pathBrowser li').length > 5) {
+        while ($('.pathBrowser li').length > 5) {
             $('.pathBrowser li:first').remove();
         }
         $('.pathBrowser li:first').before('<li><span>...</span></li>');
@@ -68,22 +70,20 @@ $(document).ready(function() {
     $('.pathBrowser').show();
 });
 
-//dependance: common/browser.js
-midas.ajaxSelectRequest= '';
-function callbackSelect(node)
-  {
-  midas.genericCallbackSelect(node);
-  }
+// dependance: common/browser.js
+midas.ajaxSelectRequest = '';
 
-function callbackDblClick(node)
-  {
-  midas.genericCallbackDblClick(node);
-  }
+function callbackSelect(node) {
+    midas.genericCallbackSelect(node);
+}
 
-function callbackCheckboxes(node)
-  {
-  midas.genericCallbackCheckboxes(node);
-  }
+function callbackDblClick(node) {
+    midas.genericCallbackDblClick(node);
+}
+
+function callbackCheckboxes(node) {
+    midas.genericCallbackCheckboxes(node);
+}
 
 $(document).ready(function () {
     $('div.viewAction').show();
@@ -92,8 +92,11 @@ $(document).ready(function () {
 $(window).load(function () {
     $.ajax({
         type: 'POST',
-        url: json.global.webroot+'/browse/getelementinfo',
-        data: {type: 'folder', id: json.folder.folder_id},
+        url: json.global.webroot + '/browse/getelementinfo',
+        data: {
+            type: 'folder',
+            id: json.folder.folder_id
+        },
         success: function (jsonContent) {
             midas.createInfo(jsonContent);
             $('img.infoLoading').hide();

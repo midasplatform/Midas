@@ -1,3 +1,5 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.pvw = midas.pvw || {};
 
@@ -13,13 +15,13 @@ midas.pvw.startRefreshes = function () {
 $(window).load(function () {
     pv = {};
     pv.connection = {
-        sessionURL: 'ws://'+location.hostname+':'+json.pvw.instance.port+'/ws',
+        sessionURL: 'ws://' + location.hostname + ':' + json.pvw.instance.port + '/ws',
         id: json.pvw.instance.instance_id,
         enableInteractions: false,
         secret: json.pvw.instance.secret
     };
 
-    vtkWeb.connect(pv.connection, function(conn) {
+    vtkWeb.connect(pv.connection, function (conn) {
         pv.connection = conn;
         pv.viewport = vtkWeb.createViewport(pv.connection);
         pv.viewport.bind('#renderercontainer');
@@ -27,9 +29,9 @@ $(window).load(function () {
         $('#renderercontainer').show();
         midas.pvw.startRefreshes();
 
-    }, function(code, msg) {
+    }, function (code, msg) {
         midas.createNotice('Error: ' + msg, 3000, 'error');
         $('#renderercontainer').hide();
-        $('div.viewMain').html('').append('<div class="midas-pvw-status">Paraview session closed: '+msg+'</div>');
+        $('div.viewMain').html('').append('<div class="midas-pvw-status">Paraview session closed: ' + msg + '</div>');
     });
 });

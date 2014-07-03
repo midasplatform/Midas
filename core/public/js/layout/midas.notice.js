@@ -1,3 +1,5 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 
 /**
@@ -8,10 +10,10 @@ var midas = midas || {};
  */
 midas.createNotice = function (text, delay, state) {
     var extraClasses = '';
-    if(state == 'error') {
+    if (state == 'error') {
         extraClasses += ' growlError';
     }
-    else if(state == 'warning') {
+    else if (state == 'warning') {
         extraClasses += ' growlWarning';
     }
     else { // state is ok
@@ -24,8 +26,8 @@ midas.createNotice = function (text, delay, state) {
  * @deprecated use midas.createNotice
  */
 function createNotice(text, delay, state) {
-  console.log('WARNING: createNotice is deprecated, use midas.createNotice instead');
-  midas.createNotice(text, delay, state);
+    console.log('WARNING: createNotice is deprecated, use midas.createNotice instead');
+    midas.createNotice(text, delay, state);
 }
 
 midas.createGrowl = function (persistent, text, delay, extraClasses) {
@@ -36,7 +38,7 @@ midas.createGrowl = function (persistent, text, delay, extraClasses) {
     $(document.body).qtip({
         // Any content config you want here really.... go wild!
         content: {
-            text: '<span class="'+extraClasses+'">'+text+'</span>'
+            text: '<span class="' + extraClasses + '">' + text + '</span>'
         },
         position: {
             my: 'top right', // Not really important...
@@ -50,8 +52,8 @@ midas.createGrowl = function (persistent, text, delay, extraClasses) {
         show: {
             event: false, // Don't show it on a regular event
             ready: true, // Show it when ready (rendered)
-            effect: function() {
-                $(this).stop(0,1).fadeIn(400);
+            effect: function () {
+                $(this).stop(0, 1).fadeIn(400);
             }, // Matches the hide effect
             delay: 0, // Needed to prevent positioning issues
 
@@ -60,9 +62,9 @@ midas.createGrowl = function (persistent, text, delay, extraClasses) {
         },
         hide: {
             event: false, // Don't hide it on a regular event
-            effect: function(api) {
+            effect: function (api) {
                 // Do a regular fadeOut, but add some spice!
-                $(this).stop(0,1).fadeOut(400).queue(function() {
+                $(this).stop(0, 1).fadeOut(400).queue(function () {
                     // Destroy this tooltip after fading out
                     api.destroy();
                     // Update positions
@@ -75,43 +77,42 @@ midas.createGrowl = function (persistent, text, delay, extraClasses) {
             tip: false // No tips for this one (optional ofcourse)
         },
         events: {
-            render: function(event, api) {
+            render: function (event, api) {
                 // Trigger the timer (below) on render
                 timerGrowl.call(api.elements.tooltip, event, delay);
             }
         }
     })
-    .removeData('qtip');
+        .removeData('qtip');
 };
 
- // Make it a window property see we can call it outside via updateGrowls() at any point
+// Make it a window property see we can call it outside via updateGrowls() at any point
 midas.updateGrowls = function () {
     // Loop over each jGrowl qTip
     var each = $('.qtip.jgrowl:not(:animated)');
-    each.each(function(i) {
-       var api = $(this).data('qtip');
+    each.each(function (i) {
+        var api = $(this).data('qtip');
 
-       // Set the target option directly to prevent reposition() from being called twice.
-       api.options.position.target = !i ? $(document.body) : each.eq(i - 1);
-       api.set('position.at', (!i ? 'top' : 'bottom') + ' right');
+        // Set the target option directly to prevent reposition() from being called twice.
+        api.options.position.target = !i ? $(document.body) : each.eq(i - 1);
+        api.set('position.at', (!i ? 'top' : 'bottom') + ' right');
     });
- };
+};
 
-
-function timerGrowl (event, delay) {
+function timerGrowl(event, delay) {
     var api = $(this).data('qtip'),
-       lifespan = delay; // 5 second lifespan
+        lifespan = delay; // 5 second lifespan
 
     // If persistent is set to true, don't do anything.
-    if(api.get('show.persistent') === true) {
+    if (api.get('show.persistent') === true) {
         return;
     }
 
     // Otherwise, start/clear the timer depending on event type
     clearTimeout(api.timer);
-    if(event.type !== 'mouseover') {
+    if (event.type !== 'mouseover') {
         api.timerGrowl = setTimeout(api.hide, lifespan);
     }
-  }
+}
 
 $(document).delegate('.qtip.jgrowl', 'mouseover mouseout', timerGrowl);

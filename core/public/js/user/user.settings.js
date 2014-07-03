@@ -1,28 +1,29 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.user = midas.user || {};
 
 midas.user.validatePasswordChange = function (formData, jqForm, options) {
     var form = jqForm[0];
-    if(form.newPassword.value.length < 2) {
+    if (form.newPassword.value.length < 2) {
         midas.createNotice(jsonSettings.passwordErrorShort, 4000, 'error');
         return false;
     }
-    if(form.newPassword.value.length < 2 || form.newPassword.value != form.newPasswordConfirmation.value) {
+    if (form.newPassword.value.length < 2 || form.newPassword.value != form.newPasswordConfirmation.value) {
         midas.createNotice(jsonSettings.passwordErrorMatch, 4000, 'error');
         return false;
     }
 }
 
-midas.user.validatePictureChange = function (formData, jqForm, options) {
-}
+midas.user.validatePictureChange = function (formData, jqForm, options) {}
 
 midas.user.validateAccountChange = function (formData, jqForm, options) {
     var form = jqForm[0];
-    if(form.firstname.value.length < 1) {
+    if (form.firstname.value.length < 1) {
         midas.createNotice(jsonSettings.accountErrorFirstname, 4000, 'error');
         return false;
     }
-    if(form.lastname.value.length < 1) {
+    if (form.lastname.value.length < 1) {
         midas.createNotice(jsonSettings.accountErrorLastname, 4000, 'error');
         return false;
     }
@@ -30,11 +31,11 @@ midas.user.validateAccountChange = function (formData, jqForm, options) {
 
 midas.user.successPasswordChange = function (responseText, statusText, xhr, form) {
     var jsonResponse = $.parseJSON(responseText);
-    if(jsonResponse == null) {
+    if (jsonResponse == null) {
         midas.createNotice('Error', 4000, 'error');
         return;
     }
-    if(jsonResponse[0]) {
+    if (jsonResponse[0]) {
         midas.createNotice(jsonResponse[1], 4000);
     }
     else {
@@ -45,11 +46,11 @@ midas.user.successPasswordChange = function (responseText, statusText, xhr, form
 
 midas.user.successAccountChange = function (responseText, statusText, xhr, form) {
     var jsonResponse = $.parseJSON(responseText);
-    if(jsonResponse == null) {
+    if (jsonResponse == null) {
         midas.createNotice('Error', 4000);
         return;
     }
-    if(jsonResponse[0]) {
+    if (jsonResponse[0]) {
         midas.createNotice(jsonResponse[1], 4000);
     }
     else {
@@ -59,11 +60,11 @@ midas.user.successAccountChange = function (responseText, statusText, xhr, form)
 
 midas.user.successPictureChange = function (responseText, statusText, xhr, form) {
     var jsonResponse = jQuery.parseJSON(responseText);
-    if(jsonResponse == null) {
+    if (jsonResponse == null) {
         midas.createNotice('Error', 4000, 'error');
         return;
     }
-    if(jsonResponse[0]) {
+    if (jsonResponse[0]) {
         $('img#userTopThumbnail').attr('src', jsonResponse[2]);
         midas.createNotice(jsonResponse[1], 4000);
     }
@@ -73,13 +74,13 @@ midas.user.successPictureChange = function (responseText, statusText, xhr, form)
 }
 
 $(window).load(function () {
-    $( "#tabsSettings" ).tabs();
+    $("#tabsSettings").tabs();
 
-    $( "#tabsSettings" ).css('display','block');
-    $( "#tabsSettings" ).show();
+    $("#tabsSettings").css('display', 'block');
+    $("#tabsSettings").show();
 
     $('#modifyPassword').ajaxForm({
-        beforeSubmit: midas.user.validatePasswordChange, 
+        beforeSubmit: midas.user.validatePasswordChange,
         success: midas.user.successPasswordChange
     });
 
