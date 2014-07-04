@@ -1,23 +1,22 @@
-<IfModule mod_rewrite.c>
-# Zend rewrite rules
-RewriteEngine on
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule .* index.php
+# MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
-</IfModule>
-
-# Security: no folder fetching
 Options -Indexes
 
-# Configuration PHP
-php_flag magic_quotes_gpc off
-php_flag register_globals off
-php_flag short_open_tag on
+<IfModule deflate_module>
+    SetOutputFilter DEFLATE
+    BrowserMatch ^Mozilla/4 gzip-only-text/html
+    BrowserMatch ^Mozilla/4.0[678] no-gzip
+    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+</IfModule>
 
-<IfModule mod_deflate.c>
-  # Compress output
-  SetOutputFilter DEFLATE
-  BrowserMatch ^Mozilla/4 gzip-only-text/html
-  BrowserMatch ^Mozilla/4.0[678] no-gzip
-  BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+<IfModule php_module>
+    php_flag magic_quotes_gpc off
+    php_flag register_globals off
+    php_flag short_open_tag on
+</IfModule>
+
+<IfModule rewrite_module>
+    RewriteEngine on
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule .* index.php
 </IfModule>
