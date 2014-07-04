@@ -10,9 +10,9 @@ div.viewHeader {
     color: #333BA0;
     font-size: 14px;
     font-weight: bold;
-    margin: 0px;
+    margin: 0;
     min-height: 24px;
-    padding: 0px 0px 0px 10px;
+    padding: 0 0 0 10px;
 }
 
 span.headerSpan {
@@ -21,7 +21,7 @@ span.headerSpan {
 }
 
 div.viewWrapper {
-    margin-top: 0px;
+    margin-top: 0;
     padding-right: 245px;
     padding-right: 275px;
     position: relative;
@@ -29,9 +29,9 @@ div.viewWrapper {
 
 div.viewMain {
     float: left;
-    margin: 0px;
+    margin: 0;
     padding-bottom: 1em;
-    padding: 0px;
+    padding: 0;
     padding: 5px 15px;
     position: relative;
     width: 100%;
@@ -39,11 +39,11 @@ div.viewMain {
 
 div.viewSideBar {
     background-color: transparent;
-    border-bottom-left-radius: 0px 0px;
-    border-bottom-right-radius: 0px 0px;
+    border-bottom-left-radius: 0 0;
+    border-bottom-right-radius: 0 0;
     border-left: 1px solid #EFEFEF;
-    border-top-left-radius: 0px 0px;
-    border-top-right-radius: 0px 0px;
+    border-top-left-radius: 0 0;
+    border-top-right-radius: 0 0;
     border: none;
     float: left;
     height: 100%;
@@ -122,8 +122,8 @@ div.viewSideBar div.sideElement ul, div.viewSideBar div.sideElementFirst ul, div
 ul.pathBrowser {
     display: block;
     list-style-type: disc;
-    margin: 0px;
-    padding-left: 0px;
+    margin: 0;
+    padding-left: 0;
 }
 
 ul.pathBrowser li {
@@ -135,7 +135,7 @@ ul.pathBrowser li {
     list-style: none;
     margin: 0;
     min-height: 19px;
-    padding: 5px 16px 0px 3px;
+    padding: 5px 16px 0 3px;
 }
 
 ul.pathBrowser li img {
@@ -162,13 +162,13 @@ ul.pathBrowser li a:hover {
 
 /** Tabs*/
 div.ui-tabs {
-    border: 0px;
-    padding: 0px 0px 0px 0px !important;
+    border: 0;
+    padding: 0 0 0 0 !important;
 }
 
 div.tabs .ui-tabs-nav {
     background: none !important;
-    border: 0px !important;
+    border: 0 !important;
 }
 
 div.tabs .ui-tabs-nav {

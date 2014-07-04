@@ -65,7 +65,7 @@ div.tooBigUpload img {
     -webkit-border-top-left-radius: 5px;
     -webkit-border-top-right-radius: 5px;
     height: 90px;
-    margin: 10px 0px;
+    margin: 10px 0;
     overflow: auto;
     width: 375px;
 }
@@ -112,9 +112,9 @@ div.tooBigUpload img {
 #swfuploadContent .progressContainer {
     background-color: #F7F7F7;
     border: solid 1px #E8E8E8;
-    margin: 0px;
+    margin: 0;
     overflow: hidden;
-    padding: 0px;
+    padding: 0;
 }
 
 /* Message */
@@ -163,7 +163,7 @@ div.tooBigUpload img {
     font-size: 0;
     height: 2px;
     margin-top: 2px;
-    width: 0%;
+    width: 0;
 }
 
 #swfuploadContent .progressBarComplete {
@@ -191,7 +191,7 @@ div.tooBigUpload img {
 
 a.progressCancel {
     background-image: url(../../images/icons/cancelbutton.gif);
-    background-position: -14px 0px;
+    background-position: -14px 0;
     background-repeat: no-repeat;
     display: block;
     float: right;
@@ -201,7 +201,7 @@ a.progressCancel {
 }
 
 a.progressCancel:hover {
-    background-position: 0px 0px;
+    background-position: 0 0;
 }
 
 /*-- SWFUpload Object Styles -------------------------------*/

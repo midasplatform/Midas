@@ -19,7 +19,7 @@ div.userBlock:hover {
 
 .userSubTitle {
     margin-bottom: 5px;
-    margin-top: 0px;
+    margin-top: 0;
 }
 
 div.userStats {
@@ -51,7 +51,7 @@ input.validField {
 }
 
 .dialogForm {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 .dialogForm td, .dialogForm input {

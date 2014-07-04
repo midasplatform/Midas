@@ -74,14 +74,14 @@ form#loginForm input[type=text]:hover, form#loginForm input[type=password]:hover
 }
 
 form#loginForm input[type=submit] {
-    left: 0px;
-    margin-left: 0px;
+    left: 0;
+    margin-left: 0;
     position: relative;
-    top: 0px;
+    top: 0;
 }
 
 form#loginForm table {
-    border-spacing: 0px;
+    border-spacing: 0;
 }
 
 form#loginForm #rememberMeText {

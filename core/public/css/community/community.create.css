@@ -11,8 +11,8 @@ form#createCommunityForm div.radioElement label {
 
 form#createCommunityForm div.radioElement ul {
     list-style: none;
-    margin: 0px 0px 0px 100px;
-    padding: 0px 0px 0px 0px;
+    margin: 0 0 0 100px;
+    padding: 0 0 0 0;
     width: 300px !important;
 }
 

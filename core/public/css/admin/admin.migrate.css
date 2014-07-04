@@ -5,7 +5,7 @@ h2 {
 }
 
 form.migrateForm dl {
-    border: 0px;
+    border: 0;
     margin-top: 25px;
     width: 800px;
 }
@@ -26,7 +26,7 @@ form.migrateForm dl dd {
     display: inline;
     float: left;
     height: 25px;
-    margin-left: 0px;
+    margin-left: 0;
     margin-top: 5px;
     padding-bottom: 5px;
     padding-left: 20px;
@@ -35,11 +35,11 @@ form.migrateForm dl dd {
 }
 
 #submit-label {
-    border-bottom: 0px;
+    border-bottom: 0;
 }
 
 #submit-element {
-    border-bottom: 0px;
+    border-bottom: 0;
 }
 
 .browse-button {

@@ -5,7 +5,7 @@ form.assetstoreForm {
 }
 
 form.assetstoreForm dl {
-    margin-top: 0px;
+    margin-top: 0;
     width: 250px;
 }
 
@@ -18,7 +18,7 @@ form.assetstoreForm dl dt {
 
 form.assetstoreForm dl dd {
     border-bottom: 1px solid #EEE;
-    margin-left: 0px;
+    margin-left: 0;
     padding-bottom: 5px;
     padding-left: 5px;
     padding-top: 5px;
@@ -31,7 +31,7 @@ form.assetstoreForm dl dd {
 }
 
 dd.submit-element {
-    border-bottom: 0px;
+    border-bottom: 0;
 }
 
 #addassetstore-label {

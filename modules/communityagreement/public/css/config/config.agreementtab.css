@@ -15,5 +15,5 @@ div.formLabel {
 }
 
 #createAgreementForm input[type=submit] {
-    margin-left: 0px !important;
+    margin-left: 0 !important;
 }

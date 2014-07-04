@@ -8,7 +8,7 @@ div.agreementWarning {
     -webkit-border-radius: 3px;
     border: #3A3 1px solid;
     box-shadow: #666 0 0 2px;
-    -moz-box-shadow: 0px 0px 2px #666;
+    -moz-box-shadow: 0 0 2px #666;
     -webkit-box-shadow: #666 0 0 2px;
     color: black;
     display: block;
@@ -32,7 +32,7 @@ div.licenseDisplay {
 }
 
 div.agreementWarning img {
-    padding: 0px;
+    padding: 0;
     position: relative;
     top: 3px;
 }

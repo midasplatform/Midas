@@ -10,16 +10,16 @@
     border: #354856 1px solid;
     border: 1px solid gray;
     box-shadow: #666 0 0 5px;
-    -moz-box-shadow: 0px 0px 5px #666;
+    -moz-box-shadow: 0 0 5px #666;
     -webkit-box-shadow: #666 0 0 5px;
     margin-bottom: 2px;
-    padding: 0px 5px 6px 5px;
+    padding: 0 5px 6px 5px;
 }
 
 .optionWrapper h4, .nameWrapper h4 {
     border-bottom: 1px solid gray;
     font-size: 14px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     margin-top: 2px;
 }
 
@@ -31,7 +31,7 @@
     border: #354856 1px solid;
     border: 1px solid gray;
     box-shadow: #666 0 0 5px;
-    -moz-box-shadow: 0px 0px 5px #666;
+    -moz-box-shadow: 0 0 5px #666;
     -webkit-box-shadow: #666 0 0 5px;
     margin-bottom: 2px;
 }

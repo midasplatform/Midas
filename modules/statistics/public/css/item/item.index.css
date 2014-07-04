@@ -1,7 +1,7 @@
 /* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
 div.viewSideBar input.globalButton {
-    margin-left: 0px !important;
+    margin-left: 0 !important;
 }
 
 div.viewWrapper {
@@ -9,7 +9,7 @@ div.viewWrapper {
 }
 
 input.dateSelect {
-    background: white url(../../images/calendar.png) no-repeat scroll 2px 0px;
+    background: white url(../../images/calendar.png) no-repeat scroll 2px 0;
     border: 1px solid gray;
     padding-left: 20px;
 }

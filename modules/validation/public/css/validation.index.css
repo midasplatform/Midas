@@ -2,7 +2,7 @@
 
 div.viewMain h3 {
     margin-top: 2px;
-    padding-top: 0px;
+    padding-top: 0;
 }
 
 div.dashEntry {
@@ -20,7 +20,7 @@ div.grayEntry {
     color: #999;
     font-size: 11px;
     margin-left: 2ex;
-    text-shadow: white 0px 1px 1px;
+    text-shadow: white 0 1px 1px;
     vertical-align: middle;
 }
 
@@ -29,7 +29,7 @@ div.grayEntry {
     margin-bottom: 0.67em;
     margin-top: 0.67em;
     padding-left: 2ex;
-    text-shadow: white 0px 1px 1px;
+    text-shadow: white 0 1px 1px;
     vertical-align: middle;
 }
 

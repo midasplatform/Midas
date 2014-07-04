@@ -13,11 +13,11 @@ div.feedContainer div.feedUserImage {
 }
 
 div.feedContainer div.feedDate {
-    bottom: 0px;
+    bottom: 0;
     color: gray;
     font-size: 10px;
     position: absolute;
-    right: 0px;
+    right: 0;
 }
 
 img.feedDeleteLink {
@@ -32,8 +32,8 @@ img.feedDeleteLink {
 div.feedDelete {
     height: 10px;
     position: absolute;
-    right: 0px;
-    top: 0px;
+    right: 0;
+    top: 0;
     width: 10px;
 }
 

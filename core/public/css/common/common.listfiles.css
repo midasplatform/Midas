@@ -9,11 +9,11 @@ div.listFilesContainer div.fileElement {
 }
 
 div.listFilesContainer div.fileDate {
-    bottom: 0px;
+    bottom: 0;
     color: gray;
     font-size: 10px;
     position: absolute;
-    right: 0px;
+    right: 0;
 }
 
 div.listFilesContainer div.feedUserImage {

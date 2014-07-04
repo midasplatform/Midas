@@ -47,11 +47,11 @@ div#fullscreenPanel {
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
     border: 1px solid #D7D7D7;
-    box-shadow: 0px 0px 6px #CCC;
-    -moz-box-shadow: 0px 0px 6px #CCC;
-    -webkit-box-shadow: #CCC 0px 0px 3px;
+    box-shadow: 0 0 6px #CCC;
+    -moz-box-shadow: 0 0 6px #CCC;
+    -webkit-box-shadow: #CCC 0 0 3px;
     float: right;
-    padding: 0px 0px 7px;
+    padding: 0 0 7px;
     width: 380px;
 }
 
@@ -100,13 +100,13 @@ div.itemViewMainSection h4 {
     font-size: 11px;
     margin-bottom: 0.67em;
     margin-top: 0.67em;
-    text-shadow: white 0px 1px 1px;
+    text-shadow: white 0 1px 1px;
     text-transform: uppercase;
 }
 
 table.bitstreamList, table.metadataList {
     border-collapse: collapse;
-    border-spacing: 0px;
+    border-spacing: 0;
     width: 100%;
 }
 

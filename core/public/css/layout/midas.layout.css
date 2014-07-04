@@ -2,13 +2,13 @@
 
 body {
     background-color: #F3F1EC;
-    border: 0px;
+    border: 0;
     font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', helvetica, arial, verdana, sans-serif;
     font-size: 12px;
     height: 100%;
-    margin: 0px;
+    margin: 0;
     min-width: 800px;
-    padding: 0px;
+    padding: 0;
     text-align: left;
     width: 100%;
 }
@@ -17,7 +17,7 @@ body {
     clear: both;
     content: '.';
     display: block;
-    height: 0px;
+    height: 0;
     visibility: hidden;
 }
 
@@ -29,7 +29,7 @@ dl {
 dt {}
 
 img {
-    border: 0px;
+    border: 0;
 }
 
 a {
@@ -74,7 +74,7 @@ div.genericBigButton {
     -webkit-border-radius: 3px;
     border: #354856 1px solid;
     box-shadow: #666 0 0 2px;
-    -moz-box-shadow: 0px 0px 2px #666;
+    -moz-box-shadow: 0 0 2px #666;
     -webkit-box-shadow: #666 0 0 2px;
     color: black;
     cursor: pointer;
@@ -137,8 +137,8 @@ div.viewAction hr, div.genericAction hr {
     border: 0;
     color: #D7D7D7;
     height: 1px;
-    margin-bottom: 0px;
-    margin-left: 0px;
+    margin-bottom: 0;
+    margin-left: 0;
     margin-top: 3px;
     width: 130px;
 }
@@ -174,7 +174,7 @@ div.TopDynamicBar {
 
 div.TopDynamicClose {
     margin-right: 10px;
-    margin-top: 0px;
+    margin-top: 0;
 }
 
 div.TopDynamicClose a {
@@ -225,8 +225,8 @@ div.Topbar div.TopbarRight {
 div.Topbar ul {
     display: block;
     list-style-type: disc;
-    margin: 0px 25px 0px 15px;
-    padding: 0px;
+    margin: 0 25px 0 15px;
+    padding: 0;
     position: relative;
 }
 
@@ -269,7 +269,7 @@ div.Header {
     background-image: -moz-linear-gradient(center top, #63869F 0%, #56758B 100%);
     background-image: -webkit-gradient(linear, left top, left bottom, from(#63869F), to(#56758B));
     box-shadow: #666 0 0 3px;
-    -moz-box-shadow: 0px 0px 3px #666;
+    -moz-box-shadow: 0 0 3px #666;
     -webkit-box-shadow: #666 0 0 3px;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#63869f', endColorstr='#56758b');
     margin: 0 0 15px;
@@ -278,14 +278,14 @@ div.Header {
 
 div.Header div.HeaderContent {
     height: 45px;
-    margin: 0px auto;
+    margin: 0 auto;
     max-width: 1200px;
     min-width: 800px;
-    padding: 0px 0px 0px;
+    padding: 0 0 0;
 }
 
 div.Header div.HeaderLogo {
-    background: url(../../images/midasLogo.gif) no-repeat 0% 0%;
+    background: url(../../images/midasLogo.gif) no-repeat 0 0;
     cursor: pointer;
     float: left;
     height: 45px;
@@ -314,7 +314,7 @@ div.Header div.HeaderSearch input#live_search {
     -webkit-border-radius: 4px;
     border: 1px solid white;
     box-shadow: #666 0 0 15px;
-    -moz-box-shadow: 0px 0px 15px #666;
+    -moz-box-shadow: 0 0 15px #666;
     -webkit-box-shadow: #666 0 0 15px;
     font-size: 14px;
     opacity: 0.9;
@@ -354,8 +354,8 @@ div.Header div.HeaderAction {
 div.HeaderAction ul {
     display: block;
     list-style-type: disc;
-    margin: 0px 25px 0px 15px;
-    padding: 0px;
+    margin: 0 25px 0 15px;
+    padding: 0;
 }
 
 div.HeaderAction a {
@@ -364,8 +364,8 @@ div.HeaderAction a {
     font-size: 14px;
     font-weight: bold;
     list-style-type: disc;
-    margin: 0px 5px 0px 5px;
-    padding: 0px;
+    margin: 0 5px 0 5px;
+    padding: 0;
     text-decoration: none;
 }
 
@@ -378,7 +378,7 @@ div.HeaderAction a img {
 div.HeaderAction ul li {
     -khtml-border-radius: 6px;
     -moz-border-radius: 6px;
-    -moz-box-shadow: 0px 0px 5px #666;
+    -moz-box-shadow: 0 0 5px #666;
     -webkit-border-radius: 6px;
     -webkit-box-shadow: #666 0 0 5px;
     background-color: #57BB7D;
@@ -392,7 +392,7 @@ div.HeaderAction ul li {
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#57bb7d', endColorstr='#32724a');
     float: left;
     list-style-type: none;
-    padding: 0px 5px 6px 5px;
+    padding: 0 5px 6px 5px;
 }
 
 div.HeaderAction ul li:hover {
@@ -403,23 +403,23 @@ div.HeaderAction ul li:hover {
 }
 
 div.HeaderAction ul img {
-    padding: 5px 0px 0px 0px;
+    padding: 5px 0 0 0;
 }
 
 /*-------------------------------------------------
 WRAPPER
 -------------------------------------------------*/
 div.Wrapper {
-    margin: 0px auto;
+    margin: 0 auto;
     max-width: 1200px;
     min-width: 800px;
-    padding: 0px 30px 30px;
+    padding: 0 30px 30px;
 }
 
 div.SubWrapper {
     float: left;
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     position: relative;
     width: 100%;
     z-index: 1;
@@ -443,11 +443,11 @@ div.SubMainContent {
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
     border: 1px solid #D7D7D7;
-    box-shadow: 0px 0px 6px #CCC;
-    -moz-box-shadow: 0px 0px 6px #CCC;
-    -webkit-box-shadow: #CCC 0px 0px 3px;
+    box-shadow: 0 0 6px #CCC;
+    -moz-box-shadow: 0 0 6px #CCC;
+    -webkit-box-shadow: #CCC 0 0 3px;
     min-height: 500px;
-    padding: 0px 0px 7px;
+    padding: 0 0 7px;
     position: relative;
     width: 850px;
 }
@@ -524,7 +524,7 @@ div.SideBar ul li a span {
 div.SideBar hr {
     border-bottom: 1px solid white;
     border-top: 1px solid #DAD8D4;
-    margin: 5px -30px 5px 0px;
+    margin: 5px -30px 5px 0;
 }
 
 div.SideBar h1, div.viewSideBar h1 {
@@ -532,7 +532,7 @@ div.SideBar h1, div.viewSideBar h1 {
     font-size: 11px;
     margin-bottom: 0.67em;
     margin-top: 0.67em;
-    text-shadow: white 0px 1px 1px;
+    text-shadow: white 0 1px 1px;
     text-transform: uppercase;
 }
 
@@ -553,11 +553,11 @@ Menu
 -------------------------------------------------*/
 
 div.TopbarRight li ul {
-    border: 0px;
+    border: 0;
     display: none;
     height: auto;
-    margin: 0px;
-    padding: 4px 0px 0px 0px;
+    margin: 0;
+    padding: 4px 0 0 0;
     position: absolute;
     width: 120px;
 }
@@ -573,16 +573,16 @@ div.TopbarRight img.arrowUser {
 
 div.TopbarRight img.languageIcon {
     position: absolute;
-    right: 0px;
-    top: 0px;
+    right: 0;
+    top: 0;
 }
 
 div.TopbarRight li li {
     display: block;
     float: none;
     left: -3px;
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     position: relative;
     z-index: 200;
 }
@@ -595,7 +595,7 @@ div.TopbarRight li:hover li a {
 
 div.TopbarRight li ul a {
     box-shadow: #666 0 0 5px;
-    -moz-box-shadow: 0px 0px 5px #666;
+    -moz-box-shadow: 0 0 5px #666;
     -webkit-box-shadow: #666 0 0 5px;
     color: #DDD;
     display: block;
@@ -603,8 +603,8 @@ div.TopbarRight li ul a {
     font-style: normal;
     height: 20px;
     line-height: 17px;
-    margin: 0px;
-    padding: 0px 0px 0px 5px;
+    margin: 0;
+    padding: 0 0 0 5px;
     text-align: left;
     z-index: 200;
 }
@@ -639,7 +639,7 @@ Starting Guide
     box-shadow: 1px 2px 4px #B9B9B9;
     -moz-box-shadow: 1px 2px 4px #B9B9B9;
     -webkit-box-shadow: 1px 2px 4px #B9B9B9;
-    padding: 0px;
+    padding: 0;
 }
 
 #seperatorStartingGuide {

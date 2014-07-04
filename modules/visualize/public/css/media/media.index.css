@@ -20,12 +20,12 @@ img.toolButton {
 }
 
 #renderercontainer {
-    bottom: 0px;
+    bottom: 0;
     display: none;
-    left: 0px;
+    left: 0;
     overflow: hidden;
     position: absolute;
-    right: 0px;
+    right: 0;
     top: -30px;
     z-index: 2;
 }
@@ -46,9 +46,9 @@ img.visuLoading {
 }
 
 #controlPanel {
-    bottom: 0px;
+    bottom: 0;
     display: none;
-    left: 0px;
+    left: 0;
     overflow: hidden;
     position: absolute;
     top: 40px;

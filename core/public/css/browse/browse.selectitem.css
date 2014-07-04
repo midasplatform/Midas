@@ -34,7 +34,7 @@ input#live_search_item {
     -webkit-border-radius: 4px;
     border: 1px solid white;
     box-shadow: #666 0 0 3px;
-    -moz-box-shadow: 0px 0px 3px #666;
+    -moz-box-shadow: 0 0 3px #666;
     -webkit-box-shadow: #666 0 0 3px;
     font-size: 12px;
     opacity: 0.9;

@@ -16,7 +16,7 @@ root {
 
 /* redefine viewWrapper */
 div.viewWrapper {
-    margin-top: 0px;
+    margin-top: 0;
     padding-right: 50px;
     position: relative;
 }

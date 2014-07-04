@@ -11,7 +11,7 @@ span.not_running_status, span.only_storescp_running_status, span.only_dcmqrscp_r
 }
 
 div.manualCommandsWrapper li {
-    margin: 10px 0px;
+    margin: 10px 0;
 }
 
 span.set_bold {

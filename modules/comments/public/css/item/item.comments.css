@@ -33,7 +33,7 @@ div.loginToComment {
     font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', helvetica, arial, verdana, sans-serif;
     font-size: 13px;
     height: 25px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     outline: 0;
     padding: 2px;
     resize: none;
