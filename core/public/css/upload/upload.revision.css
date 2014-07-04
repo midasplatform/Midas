@@ -180,7 +180,7 @@ div.tooBigUpload img {
 
 #swfuploadContent .progressBarStatus {
     display: inline;
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     font-size: 7pt;
     margin-left: 5px;
     margin-top: 2px;

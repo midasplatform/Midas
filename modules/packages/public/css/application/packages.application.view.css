@@ -41,7 +41,7 @@ table.packagesTable {
 table.packagesTable th {
     background-color: #CCD7E0;
     border: 1px #888 solid;
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     padding-bottom: 5px;
     padding-left: 5px;
     padding-top: 5px;
@@ -61,7 +61,7 @@ th.type {
 
 table.packagesTable tbody td {
     border: 1px solid #A7A7A7;
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     padding-bottom: 3px;
     padding-left: 3px;
     padding-top: 3px;
