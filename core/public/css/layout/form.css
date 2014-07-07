@@ -18,7 +18,6 @@ form.genericForm input[type=submit], form.genericForm input[type=button] {
     -webkit-box-sizing: border-box;
     color: #2E6E9E;
     cursor: pointer;
-    cursor: pointer;
     display: inline-block;
     font-weight: bold;
     line-height: 1.4;
@@ -32,15 +31,13 @@ form.genericForm input[type=submit], form.genericForm input[type=button] {
 }
 
 form.genericForm input[type=submit]:hover, form.genericForm input[type=button]:hover {
-    background-image: none;
-    background: #CBD9E3;
+    background: #CBD9E3 none;
     color: #1D5987;
     text-decoration: none;
 }
 
 form.genericForm input[type=submit][disabled], form.genericForm input[type=button][disabled], .globalButton[disabled] {
-    background-image: none;
-    background: #DBDBDB;
+    background: #DBDBDB none;
     color: gray;
     cursor: default;
     text-decoration: none;
@@ -63,7 +60,6 @@ form.genericForm div label {
     float: left;
     margin-right: 5px;
     text-align: left;
-    text-align: right;
     width: 200px;
 }
 
@@ -109,8 +105,7 @@ form.genericForm div input[type=submit], input.globalButton, form.genericForm in
 }
 
 form.genericForm input[type=submit]:hover, input.globalButton:hover {
-    background-image: none;
-    background: #CBD9E3;
+    background: #CBD9E3 none;
     color: #1D5987;
     text-decoration: none;
 }

@@ -39,8 +39,7 @@ div.uploadValidationError img {
 }
 
 .drop-zone:hover {
-    background-color: #4CA84C;
-    background-image: linear-gradient(to bottom, #4CA84C 0%, #5CB85C 100%);
+    background: #4CA84C linear-gradient(to bottom, #4CA84C 0%, #5CB85C 100%);
     border: 1px solid #484;
     cursor: pointer;
 }
@@ -53,20 +52,17 @@ div.uploadValidationError img {
     cursor: pointer;
     display: inline-block;
     font-size: 13px;
-    margin 0;
-    margin-bottom: 8px;
+    margin: 0 0 8px;
     padding: 5px 10px;
 }
 
 #startUploadLink:hover {
-    background-color: #4C4CA8;
-    background-image: linear-gradient(to bottom, #4C4CA8 0%, #5C5CB8 100%);
+    background: #4C4CA8 linear-gradient(to bottom, #4C4CA8 0%, #5C5CB8 100%);
     border: 1px solid #448;
 }
 
 .disabled {
-    background-color: #DEDEDE !important;
-    background-image: none !important;
+    background: #DEDEDE none !important;
     border: 1px solid #D0D0D0 !important;
     color: #AAA;
     cursor: default;
@@ -113,14 +109,8 @@ div.uploadValidationError img {
 
 #swfuploadContent div.flash {
     border-color: #D9E4FF;
-    -moz-border-radius-bottomleft: 5px;
-    -moz-border-radius-bottomright: 5px;
-    -moz-border-radius-topleft: 5px;
-    -moz-border-radius-topright: 5px;
-    -webkit-border-bottom-left-radius: 5px;
-    -webkit-border-bottom-right-radius: 5px;
-    -webkit-border-top-left-radius: 5px;
-    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
     height: 90px;
     margin: 10px 0;
     overflow: auto;

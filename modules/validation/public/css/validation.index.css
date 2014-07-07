@@ -45,10 +45,7 @@ div.dashPanel {
 .dashButton {
     border: 1px dotted #999;
     margin-right: 2px;
-    padding-bottom: 2px;
-    padding-left: 1px;
-    padding-right: 1px;
-    padding-top: 6px;
+    padding: 6px 1px 2px;
 }
 
 .dashButton:hover {
@@ -56,14 +53,9 @@ div.dashPanel {
     border: 1px dotted #999;
     cursor: pointer;
     margin-right: 2px;
-    padding-bottom: 2px;
-    padding-left: 1px;
-    padding-right: 1px;
-    padding-top: 6px;
-    user-select: none;
+    padding: 6px 1px 2px;
     -khtml-user-select: none;
     -moz-user-select: none;
-    -o-user-select: none;
     -webkit-user-select: none;
 }
 
@@ -72,14 +64,9 @@ div.dashPanel {
     border: 1px dotted #999;
     cursor: pointer;
     margin-right: 2px;
-    padding-bottom: 2px;
-    padding-left: 1px;
-    padding-right: 1px;
-    padding-top: 6px;
-    user-select: none;
+    padding: 6px 1px 2px;
     -khtml-user-select: none;
     -moz-user-select: none;
-    -o-user-select: none;
     -webkit-user-select: none;
 }
 

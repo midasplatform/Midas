@@ -199,7 +199,6 @@ div.Topbar {
     background-color: #414141;
     background-image: -moz-linear-gradient(center top, #4B4B4B 0%, #414141 100%);
     background-image: -webkit-gradient(linear, left top, left bottom, from(#4B4B4B), to(#414141));
-    background: #000;
     border-bottom: 2px #354856 solid;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4b4b4b', endColorstr='#414141');
     font-family: 'Lucida Grande', Verdana, Arial, Helvetica, sans-serif;
@@ -376,17 +375,17 @@ div.HeaderAction a img {
 }
 
 div.HeaderAction ul li {
-    -khtml-border-radius: 6px;
-    -moz-border-radius: 6px;
-    -moz-box-shadow: 0 0 5px #666;
-    -webkit-border-radius: 6px;
-    -webkit-box-shadow: #666 0 0 5px;
     background-color: #57BB7D;
     background-image: -moz-linear-gradient(center top, #57BB7D 0%, #32724A 100%);
     background-image: -webkit-gradient(linear, left top, left bottom, from(#57BB7D), to(#32724A));
     border-radius: 6px;
+    -khtml-border-radius: 6px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
     border: #354856 1px solid;
     box-shadow: #666 0 0 5px;
+    -moz-box-shadow: 0 0 5px #666;
+    -webkit-box-shadow: #666 0 0 5px;
     cursor: pointer;
     display: block;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#57bb7d', endColorstr='#32724a');

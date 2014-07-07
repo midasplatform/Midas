@@ -12,7 +12,6 @@ div.producerList a.producerLink {
 
 div.producerList a.producerLink:hover {
     text-decoration: underline;
-    text-transform;
 }
 
 div.noProducers {

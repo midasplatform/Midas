@@ -59,8 +59,7 @@ div.windowControlContainer {
 }
 
 button.actionButton {
-    background-position: 2px 1px;
-    background-repeat: no-repeat;
+    background: no-repeat 2px 1px;
     height: 25px;
     margin-right: 10px;
     margin-top: 10px;

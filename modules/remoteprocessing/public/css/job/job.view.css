@@ -9,15 +9,14 @@ table#tableResults, table#tableXml {
 }
 
 .dataTables_wrapper {
-    border: 1px solid gray;
     border: #354856 1px solid;
+    border-radius: 6px;
+    -khtml-border-radius: 6px;
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
-    -khtml-border-radius: 6px;
-    border-radius: 6px;
-    -webkit-box-shadow: #666 0 0 5px;
     box-shadow: #666 0 0 5px;
     -moz-box-shadow: 0 0 5px #666;
+    -webkit-box-shadow: #666 0 0 5px;
     padding: 5px 10px 25px 10px;
 }
 
@@ -31,7 +30,6 @@ table#tableResults td {
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
     border: #354856 1px solid;
-    border: 1px solid gray;
     box-shadow: #666 0 0 5px;
     -moz-box-shadow: 0 0 5px #666;
     -webkit-box-shadow: #666 0 0 5px;
@@ -48,7 +46,6 @@ table#tableResults td {
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
     border: #354856 1px solid;
-    border: 1px solid gray;
     box-shadow: #666 0 0 5px;
     -moz-box-shadow: 0 0 5px #666;
     -webkit-box-shadow: #666 0 0 5px;

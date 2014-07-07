@@ -22,7 +22,6 @@ span.headerSpan {
 
 div.viewWrapper {
     margin-top: 0;
-    padding-right: 245px;
     padding-right: 275px;
     position: relative;
 }
@@ -30,8 +29,6 @@ div.viewWrapper {
 div.viewMain {
     float: left;
     margin: 0;
-    padding-bottom: 1em;
-    padding: 0;
     padding: 5px 15px;
     position: relative;
     width: 100%;
@@ -39,22 +36,20 @@ div.viewMain {
 
 div.viewSideBar {
     background-color: transparent;
-    border-bottom-left-radius: 0 0;
-    border-bottom-right-radius: 0 0;
+    border-bottom: none;
     border-left: 1px solid #EFEFEF;
-    border-top-left-radius: 0 0;
-    border-top-right-radius: 0 0;
-    border: none;
+    border-radius: 0 0;
+    border-right: none;
+    border-top: none;
     float: left;
-    height: 100%;
     height: auto !important;
+    height: 100%;
     margin-right: -300px;
     min-height: 500px;
     padding-left: 10px;
     padding-top: 5px;
     position: relative;
     width: 215px;
-    width: 245px;
     z-index: 2;
 }
 
@@ -67,10 +62,7 @@ div.viewNotice {
     border: 1px solid #168846;
     color: #012844;
     display: none;
-    padding-bottom: 2px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 2px;
+    padding: 2px 10px;
     position: absolute;
 }
 
@@ -127,9 +119,7 @@ ul.pathBrowser {
 }
 
 ul.pathBrowser li {
-    background-image: url("../../images/icons/path-divider.png");
-    background-position: right;
-    background-repeat: no-repeat;
+    background: url("../../images/icons/path-divider.png") no-repeat right;
     display: list-item;
     float: left;
     list-style: none;

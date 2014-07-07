@@ -24,8 +24,6 @@ div.licenseDisplay {
     border-top: #D7D7D7 1px solid;
     margin-bottom: 8px;
     max-height: 180px;
-    overflow-x: hidden;
-    overflow-y: auto;
     overflow: auto;
     padding-bottom: 8px;
     padding-top: 8px;

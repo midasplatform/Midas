@@ -46,8 +46,7 @@ img.visuLoading {
 }
 
 button.actionButton {
-    background-position: 2px 1px;
-    background-repeat: no-repeat;
+    background: no-repeat 2px 1px;
     height: 25px;
     width: 25px;
 }

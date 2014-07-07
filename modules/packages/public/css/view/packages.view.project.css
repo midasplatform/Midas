@@ -12,7 +12,6 @@ div.applicationList a.applicationLink {
 
 div.applicationList a.applicationLink:hover {
     text-decoration: underline;
-    text-transform;
 }
 
 div.noApplications {

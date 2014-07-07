@@ -1,14 +1,11 @@
 /* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
 .optionWrapper, .nameWrapper {
-
-
     border-radius: 6px;
     -khtml-border-radius: 6px;
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
     border: #354856 1px solid;
-    border: 1px solid gray;
     box-shadow: #666 0 0 5px;
     -moz-box-shadow: 0 0 5px #666;
     -webkit-box-shadow: #666 0 0 5px;
@@ -29,7 +26,6 @@
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
     border: #354856 1px solid;
-    border: 1px solid gray;
     box-shadow: #666 0 0 5px;
     -moz-box-shadow: 0 0 5px #666;
     -webkit-box-shadow: #666 0 0 5px;

@@ -56,14 +56,8 @@ div.tooBigUpload img {
 
 #swfuploadContent div.flash {
     border-color: #D9E4FF;
-    -moz-border-radius-bottomleft: 5px;
-    -moz-border-radius-bottomright: 5px;
-    -moz-border-radius-topleft: 5px;
-    -moz-border-radius-topright: 5px;
-    -webkit-border-bottom-left-radius: 5px;
-    -webkit-border-bottom-right-radius: 5px;
-    -webkit-border-top-left-radius: 5px;
-    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
     height: 90px;
     margin: 10px 0;
     overflow: auto;
@@ -190,9 +184,7 @@ div.tooBigUpload img {
 }
 
 a.progressCancel {
-    background-image: url(../../images/icons/cancelbutton.gif);
-    background-position: -14px 0;
-    background-repeat: no-repeat;
+    background: url(../../images/icons/cancelbutton.gif) no-repeat -14px 0;
     display: block;
     float: right;
     font-size: 0;

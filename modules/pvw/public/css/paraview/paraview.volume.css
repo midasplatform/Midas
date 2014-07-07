@@ -22,8 +22,7 @@ table.extractSubgridTable input.sb {
 }
 
 button.cameraPreset {
-    background-position: 3px 3px;
-    background-repeat: no-repeat;
+    background: no-repeat 3px 3px;
     border: 1px solid #AAA;
     height: 32px;
     margin-right: 10px;
@@ -80,8 +79,7 @@ input.scalarValueEdit, input.opacityValueEdit {
 }
 
 .scmColorPicker {
-    background-image: url(../../images/select2.png);
-    background-position: -3px -3px;
+    background: url(../../images/select2.png) -3px -3px;
     cursor: pointer;
     display: inline-block;
     height: 30px;

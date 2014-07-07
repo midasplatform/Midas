@@ -10,9 +10,7 @@
 }
 
 #selectViewUrl, #selectDownloadUrl {
-    background-image: url(../../images/icons/paste_plain.png);
-    background-position: 2px 2px;
-    background-repeat: no-repeat;
+    background: url(../../images/icons/paste_plain.png) no-repeat 2px 2px;
     border: 1px solid #777;
     height: 22px;
     position: relative;

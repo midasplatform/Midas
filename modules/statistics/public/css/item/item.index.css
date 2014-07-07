@@ -43,15 +43,13 @@ input.filterButton {
 }
 
 input.filterButton:hover {
-    background-image: none;
-    background: #CBD9E3;
+    background: #CBD9E3 none;
     color: #1D5987;
     text-decoration: none;
 }
 
 input.filterButton[disabled] {
-    background-image: none;
-    background: #DBDBDB;
+    background: #DBDBDB none;
     color: gray;
     cursor: default;
     text-decoration: none;
