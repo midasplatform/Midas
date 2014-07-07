@@ -142,7 +142,7 @@ class NotifyErrorComponent extends AppComponent
             {
             $fc = Zend_Controller_Front::getInstance();
             $webroot = $fc->getBaseUrl();
-            echo "MIDAS is not installed. <a href='".$webroot."/install?reset=true'>Click here to reset MIDAS and go to the installation page.</a>";
+            echo "Midas Platform is not installed. <a href='".$webroot."/install?reset=true'>Click here to reset MIDAS and go to the installation page.</a>";
             return;
             }
 

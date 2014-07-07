@@ -288,7 +288,7 @@ class AppController extends MIDAS_GlobalController
         }
       else
         {
-        $this->addDynamicHelp('.HeaderLogo', 'The <b>MIDAS Platform</b> integrates multimedia server technology with open-source data analysis and visualization clients.');
+        $this->addDynamicHelp('.HeaderLogo', 'The <b>Midas Platform</b> integrates multimedia server technology with open-source data analysis and visualization clients.');
         }
 
       $this->addDynamicHelp('.HeaderSearch', '<b>Quick search</b>. Use this tool to quickly find information and data.');

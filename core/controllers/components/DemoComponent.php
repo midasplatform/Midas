@@ -83,8 +83,8 @@ class DemoComponent extends AppComponent
     $config->global->demomode = 1;
     $config->global->dynamichelp = 1;
     $config->global->environment = 'development';
-    $config->global->application->name = 'MIDAS - Demo';
-    $description = 'MIDAS integrates multimedia server technology with Kitware\'s open-source data analysis and';
+    $config->global->application->name = 'Midas Platform - Demo';
+    $description = 'Midas Platform integrates multimedia server technology with Kitware\'s open-source data analysis and';
     $description .= ' visualization clients. The server follows open standards for data storage, access and harvesting';
     $config->global->application->description = $description;
     $config->global->application->keywords = 'demonstration, data management, visualization';
