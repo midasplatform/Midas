@@ -35,7 +35,7 @@ class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
 
     $this->disableLayout();
     $this->disableView();
-    Zend_Loader::loadClass('ZipStream', BASE_PATH.'/library/ZipStream/');
+    require_once 'ZipStream-PHP/zipstream.php';
     ob_start();
     $zip = new ZipStream('RemoteScript.zip');
 
