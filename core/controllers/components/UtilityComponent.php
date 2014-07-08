@@ -578,8 +578,8 @@ class UtilityComponent extends AppComponent
    */
   public static function markDown($text)
     {
-    require_once BASE_PATH.'/library/Markdown/markdown.php';
-    return Markdown($text);
+    require_once 'Michelf/MarkdownExtra.inc.php';
+    return Michelf\MarkdownExtra::defaultTransform($text);
     }
 
   /**
