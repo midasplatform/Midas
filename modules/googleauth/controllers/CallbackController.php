@@ -128,8 +128,21 @@ class Googleauth_CallbackController extends Googleauth_AppController
       $user = $this->User->getByEmail($info['email']);
       if(!$user)
         {
+        // Only create new user this way if registration is not closed.
+        if(isset(Zend_Registry::get('configGlobal')->closeregistration) &&
+           Zend_Registry::get('configGlobal')->closeregistration == "1")
+          {
+          throw new Zend_Exception('Access to this instance is by invitation '.
+                                   'only, please contact an administrator.');
+          }
         $user = $this->User->createUser(
           $info['email'], null, $info['firstName'], $info['lastName'], 0, '');
+        }
+      else
+        {
+        $user->setFirstname($info['firstName']);
+        $user->setLastname($info['lastName']);
+        $this->User->save($user);
         }
 
       $this->Googleauth_User->createGoogleUser($user, $personId);
@@ -137,6 +150,9 @@ class Googleauth_CallbackController extends Googleauth_AppController
     else
       {
       $user = $this->User->load($existing->getUserId());
+      $user->setFirstname($info['firstName']);
+      $user->setLastname($info['lastName']);
+      $this->User->save($user);
       }
 
     return $user;

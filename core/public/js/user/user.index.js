@@ -9,6 +9,18 @@ midas.user.doCreate = function () {
     content.find('form.registerForm').attr('id', 'registerForm');
     content.find('div.registerError').attr('id', 'registerError');
     midas.showDialogWithContent('Register', content.html(), false, { width: 380 });
+
+    $('.registerForm input[name=nopassword]').unbind('change').change(function () {
+        var disabled = $(this).is(':checked');
+
+        if (disabled) {
+            $('#registerForm input[type="password"]').val('').attr('disabled', 'disabled');
+        }
+        else {
+            $('#registerForm input[type="password"]').removeAttr('disabled');
+        }
+    });
+
     $('#registerForm').ajaxForm({
         success: function (responseText, statusText, xhr, form) {
             var resp = $.parseJSON(responseText);
@@ -52,7 +64,7 @@ midas.user.doCreate = function () {
     });
 }
 
-$(document).ready(function () { 
+$(document).ready(function () {
     $('.userBlock').click(function () {
         $(location).attr('href',($('> .userTitle', this).attr('href')));
     });
