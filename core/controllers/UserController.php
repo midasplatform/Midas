@@ -193,20 +193,20 @@ class UserController extends AppController
     if($this->_request->isPost())
       {
       $nopass = (bool)$this->_getParam('nopassword');
-      if ($adminCreate && $nopass)
+      if($adminCreate && $nopass)
         {
         $form->populate($this->getRequest()->getPost());
         $passwd = UtilityComponent::generateRandomString(32);
         $form->getElement('password1')->setValue($passwd);
         $form->getElement('password2')->setValue($passwd);
 
-        if (!$form->getValue('firstname') && !$form->getValue('lastname'))
+        if(!$form->getValue('firstname') && !$form->getValue('lastname'))
           {
           $form->getElement('firstname')->setValue('[Invited');
           $form->getElement('lastname')->setValue('User]');
           }
         }
-      else if (!$form->isValid($this->getRequest()->getPost()))
+      else if(!$form->isValid($this->getRequest()->getPost()))
         {
         echo JsonComponent::encode(array('status' => 'error',
                                          'message' => 'Registration failed',
@@ -234,7 +234,7 @@ class UserController extends AppController
           $body = "An administrator has created a user account for you at the following Midas instance:<br/><br/>";
           $body .= '<a href="'.$url.'">'.$url.'</a><br/><br/>';
 
-          if (!$nopass)
+          if(!$nopass)
             {
             $body .= "Log in using this email address (".$email.") and your initial password:<br/><br/>";
             $body .= '<b>'.$form->getValue('password1').'</b><br/><br/>';
