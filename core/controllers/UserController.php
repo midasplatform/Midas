@@ -190,13 +190,36 @@ class UserController extends AppController
       return;
       }
     $form = $this->Form->User->createRegisterForm();
-    if($this->_request->isPost() && $form->isValid($this->getRequest()->getPost()))
+    if($this->_request->isPost())
       {
+      $nopass = (bool)$this->_getParam('nopassword');
+      if ($adminCreate && $nopass)
+        {
+        $form->populate($this->getRequest()->getPost());
+        $passwd = UtilityComponent::generateRandomString(32);
+        $form->getElement('password1')->setValue($passwd);
+        $form->getElement('password2')->setValue($passwd);
+
+        if (!$form->getValue('firstname') && !$form->getValue('lastname'))
+          {
+          $form->getElement('firstname')->setValue('[Invited');
+          $form->getElement('lastname')->setValue('User]');
+          }
+        }
+      else if (!$form->isValid($this->getRequest()->getPost()))
+        {
+        echo JsonComponent::encode(array('status' => 'error',
+                                         'message' => 'Registration failed',
+                                         'validValues' => $form->getValidValues($this->getRequest()->getPost())));
+        return;
+        }
+
       if($this->User->getByEmail(strtolower($form->getValue('email'))) !== false)
         {
         echo JsonComponent::encode(array('status' => 'error', 'message' => 'That email is already registered', 'alreadyRegistered' => true));
         return;
         }
+
       $email = strtolower(trim($form->getValue('email')));
       if($adminCreate || !isset(Zend_Registry::get('configGlobal')->verifyemail) ||
          Zend_Registry::get('configGlobal')->verifyemail != '1')
@@ -210,8 +233,13 @@ class UserController extends AppController
           $url = $this->getServerURL().$this->view->webroot;
           $body = "An administrator has created a user account for you at the following Midas instance:<br/><br/>";
           $body .= '<a href="'.$url.'">'.$url.'</a><br/><br/>';
-          $body .= "Log in using this email address (".$email.") and your initial password:<br/><br/>";
-          $body .= '<b>'.$form->getValue('password1').'</b><br/><br/>';
+
+          if (!$nopass)
+            {
+            $body .= "Log in using this email address (".$email.") and your initial password:<br/><br/>";
+            $body .= '<b>'.$form->getValue('password1').'</b><br/><br/>';
+            }
+
           $body .= "-Midas administrators";
           if($this->isTestingEnv() || mail($email, $subject, $body, $headers))
             {
@@ -257,12 +285,6 @@ class UserController extends AppController
                                            'message' => 'Failed to send verification email'));
           }
         }
-      }
-    else
-      {
-      echo JsonComponent::encode(array('status' => 'error',
-                                       'message' => 'Registration failed',
-                                       'validValues' => $form->getValidValues($this->getRequest()->getPost())));
       }
     }
 

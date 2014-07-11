@@ -138,12 +138,21 @@ class Googleauth_CallbackController extends Googleauth_AppController
         $user = $this->User->createUser(
           $info['email'], null, $info['firstName'], $info['lastName'], 0, '');
         }
+      else
+        {
+        $user->setFirstname($info['firstName']);
+        $user->setLastname($info['lastName']);
+        $this->User->save($user);
+        }
 
       $this->Googleauth_User->createGoogleUser($user, $personId);
       }
     else
       {
       $user = $this->User->load($existing->getUserId());
+      $user->setFirstname($info['firstName']);
+      $user->setLastname($info['lastName']);
+      $this->User->save($user);
       }
 
     return $user;
