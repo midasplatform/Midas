@@ -21,7 +21,7 @@
 /**
  *  License controller
  */
-class LicenseController extends AppController
+class LicensesController extends AppController
   {
   public $_models = array('License');
   public $_daos = array('License');
@@ -38,7 +38,7 @@ class LicenseController extends AppController
   /**
    * Index action. Lists all licenses on the admin page
    */
-  function indexAction()
+  function allAction()
     {
     $this->requireAdminPrivileges();
     $this->disableLayout();

@@ -31,7 +31,7 @@
   foreach($this->licenses as $license)
     {
     echo '<div class="licenseContainer" element="'.$license->getKey().'">';
-    echo '<form class="genericForm existingLicense" action="'.$this->webroot.'/license/save" method="POST">';
+    echo '<form class="genericForm existingLicense" action="'.$this->webroot.'/licenses/save" method="POST">';
     echo '  <div><input class="licenseName" type="text" name="name" value="'.$license->getName().'" /></div>';
     echo '  <div><textarea class="licenseText" name="fulltext">'.htmlentities($license->getFulltext()).'</textarea></div>';
     echo '  <input type="hidden" name="licenseId" value="'.$license->getKey().'" />';
@@ -45,7 +45,7 @@
 
 <span class="headerText">CREATE NEW LICENSE</span>
 <div class="licenseContainer">
-  <form class="genericForm newLicense" action="<?php echo $this->webroot; ?>/license/create" method="POST">
+  <form class="genericForm newLicense" action="<?php echo $this->webroot; ?>/licenses/create" method="POST">
     <div><input class="licenseName" type="text" name="name" value="" /></div>
     <div><textarea class="licenseText" name="fulltext"></textarea></div>
     <div><input class="globalButton" style="margin-left: 0px;" type="submit" name="submit" value="Create" /></div>

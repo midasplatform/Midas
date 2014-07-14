@@ -45,7 +45,7 @@ $(document).ready(function () {
             $('div.MainDialog').dialog('close');
             midas.ajaxSelectRequest = $.ajax({
                 type: 'POST',
-                url: json.global.webroot + '/license/delete',
+                url: json.global.webroot + '/licenses/delete',
                 data: {
                     licenseId: id
                 },
