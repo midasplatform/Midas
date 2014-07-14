@@ -95,7 +95,7 @@ class CommunityModelTest extends DatabaseTestCase
     $this->assertNotEquals(false, $movedFolderDeletedCommunityMemberGroupPolicy, "Expected a folderpolicygroup exists, but it does not");
 
     // delete the community
-    $community = $this->Community->delete($communityForDeletion);
+    $this->Community->delete($communityForDeletion);
     // ensure that the count of communities has decreased
     $newCount = count($this->Community->getAll());
     $this->assertEquals($prevCount - 1, $newCount, 'Community count did not decrease');

@@ -268,6 +268,6 @@ class FeedModel extends FeedModelBase
       {
       $this->database->removeLink('communities', $feedDao, $c);
       }
-    return parent::delete($feedDao);
+    parent::delete($feedDao);
     } // end delete
   } // end class
