@@ -12,7 +12,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 class Googleauth_CallbackController extends Googleauth_AppController
 {
-  public $_models = array('Setting', 'User');
+  public $_models = array('Setting', 'User', 'Userapi');
   public $_moduleModels = array('User');
 
   /**
@@ -155,6 +155,8 @@ class Googleauth_CallbackController extends Googleauth_AppController
       $this->User->save($user);
       }
 
+    $userapi = $this->Userapi->getByAppAndUser('Default', $user);
+    setcookie('midasUtil','googleauth:'.$user->getKey().':'.md5($userapi->getApikey()), time() + 60 * 60 * 24 * 30, '/');
     return $user;
     }
 }//end class

@@ -22,7 +22,7 @@
 class Googleauth_Notification extends MIDAS_Notification
   {
   public $moduleName = 'googleauth';
-  public $_models = array('Setting');
+  public $_models = array('Setting', 'User', 'Userapi');
   public $_moduleModels = array('User');
 
   /** init notification process*/
@@ -30,6 +30,7 @@ class Googleauth_Notification extends MIDAS_Notification
     {
     $this->addCallBack('CALLBACK_CORE_LOGIN_EXTRA_HTML', 'googleAuthLink');
     $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
+    $this->addCallBack('CALLBACK_CORE_USER_COOKIE', 'checkUserCookie');
     }//end init
 
   /**
@@ -63,5 +64,40 @@ class Googleauth_Notification extends MIDAS_Notification
   public function handleUserDeleted($params)
     {
     $this->Googleauth_User->deleteByUser($params['userDao']);
+    }
+
+  public function checkUserCookie($args)
+    {
+    $cookie = $args['value'];
+
+    if(strpos($cookie, 'googleauth') === 0)
+      {
+      list(, $userId, $apikey) = split(':', $cookie);
+      $userDao = $this->User->load($userId);
+
+      if(!$userDao)
+        {
+        return false;
+        }
+
+      $userapi = $this->Userapi->getByAppAndUser('Default', $userDao);
+
+      if(!$userapi)
+        {
+        return false;
+        }
+      if(md5($userapi->getApikey()) === $apikey)
+        {
+        return $userDao;
+        }
+      else
+        {
+        return false;
+        }
+      }
+    else
+      {
+      return false;
+      }
     }
   } // end class
