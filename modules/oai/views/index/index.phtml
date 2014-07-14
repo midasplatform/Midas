@@ -23,12 +23,12 @@
 $this->headScript()->appendFile($this->moduleWebroot . '/public/js/index/index.index.js');
 ?>
 <div class="viewMain">
-  <h2>MIDAS Web API</h2>
+  <h2>Midas Platform Web API</h2>
 
-  The api will send you a REST response at the following URL:<br/>
+  The API will send you a REST response at the following URL:<br/>
   <pre><?php echo $this->serverURL.$this->webroot?>/api/rest?method=METHOD_NAME</pre>
   <br/>
-    The api will send you a JSON response at the following URL:<br/>
+    The API will send you a JSON response at the following URL:<br/>
   <pre><?php echo $this->serverURL.$this->webroot?>/api/json?method=METHOD_NAME</pre>
 
   <div class="api.listmethods" id="api.listmethods">

@@ -1,3 +1,5 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var paraview;
 var midas = midas || {};
 midas.visualize = midas.visualize || {};
@@ -11,7 +13,7 @@ midas.visualize.start = function () {
     var file = json.visualize.url;
     var container = $('#renderercontainer');
 
-    if(typeof Paraview != 'function') {
+    if (typeof Paraview != 'function') {
         alert('Paraview javascript was not fetched correctly from server.');
         return;
     }
@@ -19,8 +21,8 @@ midas.visualize.start = function () {
     $('#loadingStatus').html('Creating ParaView session on the server and loading plugins...');
     paraview = new Paraview("/PWService");
     paraview.errorListener = {
-        manageError: function(error) {
-            if(error) {
+        manageError: function (error) {
+            if (error) {
                 midas.createNotice('A ParaViewWeb error occurred; check the console for information', 4000, 'error');
                 console.log(error);
                 return false;
@@ -28,7 +30,7 @@ midas.visualize.start = function () {
         }
     };
 
-    paraview.createSessionAsync("midas", "slice view","default", function () {
+    paraview.createSessionAsync("midas", "slice view", "default", function () {
         $('#loadingStatus').html('Reading image data from files...');
         paraview.callPluginMethod('midascommon', 'OpenData', {
             filename: json.visualize.url,
@@ -44,8 +46,8 @@ midas.visualize._dataOpened = function (view, retVal) {
     midas.visualize.meshes = retVal.meshes;
 
     midas.visualize.maxDim = Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
-                                      midas.visualize.bounds[3] - midas.visualize.bounds[2],
-                                      midas.visualize.bounds[5] - midas.visualize.bounds[4]);
+        midas.visualize.bounds[3] - midas.visualize.bounds[2],
+        midas.visualize.bounds[5] - midas.visualize.bounds[4]);
     midas.visualize.minVal = retVal.imageData.PointData.Arrays[0].Ranges[0][0];
     midas.visualize.maxVal = retVal.imageData.PointData.Arrays[0].Ranges[0][1];
     midas.visualize.imageWindow = [midas.visualize.minVal, midas.visualize.maxVal];
@@ -54,24 +56,25 @@ midas.visualize._dataOpened = function (view, retVal) {
     midas.visualize.midJ = (midas.visualize.bounds[2] + midas.visualize.bounds[3]) / 2.0;
     midas.visualize.midK = Math.floor((midas.visualize.bounds[4] + midas.visualize.bounds[5]) / 2.0);
 
-    if(midas.visualize.bounds.length != 6) {
+    if (midas.visualize.bounds.length != 6) {
         console.log('Invalid image bounds:');
         console.log(midas.visualize.bounds);
         return;
     }
 
     midas.visualize.defaultColorMap = [
-       midas.visualize.minVal, 0.0, 0.0, 0.0,
-       midas.visualize.maxVal, 1.0, 1.0, 1.0];
+        midas.visualize.minVal, 0.0, 0.0, 0.0,
+        midas.visualize.maxVal, 1.0, 1.0, 1.0
+    ];
     midas.visualize.colorMap = midas.visualize.defaultColorMap;
     midas.visualize.currentSlice = midas.visualize.midK;
     midas.visualize.sliceMode = 'XY Plane';
     midas.visualize.cameraViewUp = [0.0, -1.0, 0.0];
     midas.visualize.cameraFocalPoint = [midas.visualize.midI, midas.visualize.midJ, midas.visualize.midK];
     midas.visualize.cameraPosition = [midas.visualize.midI, midas.visualize.midJ, midas.visualize.bounds[4] - 10];
-    midas.visualize.cameraParallelScale = 
-      Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
-               midas.visualize.bounds[3] - midas.visualize.bounds[2]) / 2.0;
+    midas.visualize.cameraParallelScale =
+        Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
+            midas.visualize.bounds[3] - midas.visualize.bounds[2]) / 2.0;
 
     var rw = $('#renderercontainer');
     var params = {
@@ -107,7 +110,7 @@ midas.visualize.initCallback = function (view, retVal) {
     midas.visualize.populateInfo();
     midas.visualize.disableMouseInteraction();
 
-    if(typeof midas.visualize.postInitCallback == 'function') {
+    if (typeof midas.visualize.postInitCallback == 'function') {
         midas.visualize.postInitCallback();
     }
 
@@ -122,10 +125,10 @@ midas.visualize.setupSliders = function () {
         min: midas.visualize.bounds[4],
         max: midas.visualize.bounds[5],
         value: midas.visualize.midK,
-        change: function(event, ui) {
+        change: function (event, ui) {
             midas.visualize.changeSlice(ui.value);
         },
-        slide: function(event, ui) {
+        slide: function (event, ui) {
             midas.visualize.updateSliceInfo(ui.value);
         }
     });
@@ -134,10 +137,10 @@ midas.visualize.setupSliders = function () {
         min: midas.visualize.minVal,
         max: midas.visualize.maxVal,
         values: [midas.visualize.minVal, midas.visualize.maxVal],
-        change: function(event, ui) {
+        change: function (event, ui) {
             midas.visualize.changeWindow(ui.values);
         },
-        slide: function(event, ui) {
+        slide: function (event, ui) {
             midas.visualize.updateWindowInfo(ui.values);
         }
     });
@@ -161,10 +164,10 @@ midas.visualize.disableMouseInteraction = function () {
  * Display information about the volume
  */
 midas.visualize.populateInfo = function () {
-    $('#boundsXInfo').html(midas.visualize.bounds[0]+' .. '+midas.visualize.bounds[1]);
-    $('#boundsYInfo').html(midas.visualize.bounds[2]+' .. '+midas.visualize.bounds[3]);
-    $('#boundsZInfo').html(midas.visualize.bounds[4]+' .. '+midas.visualize.bounds[5]);
-    $('#scalarRangeInfo').html(midas.visualize.minVal+' .. '+midas.visualize.maxVal);
+    $('#boundsXInfo').html(midas.visualize.bounds[0] + ' .. ' + midas.visualize.bounds[1]);
+    $('#boundsYInfo').html(midas.visualize.bounds[2] + ' .. ' + midas.visualize.bounds[3]);
+    $('#boundsZInfo').html(midas.visualize.bounds[4] + ' .. ' + midas.visualize.bounds[5]);
+    $('#scalarRangeInfo').html(midas.visualize.minVal + ' .. ' + midas.visualize.maxVal);
 };
 
 /**
@@ -172,18 +175,19 @@ midas.visualize.populateInfo = function () {
  * actually changing them in PVWeb
  */
 midas.visualize.updateWindowInfo = function (values) {
-    $('#windowLevelInfo').html('Window: '+values[0]+' - '+values[1]);
+    $('#windowLevelInfo').html('Window: ' + values[0] + ' - ' + values[1]);
 };
 
 /** Make the actual request to PVWeb to set the window */
 midas.visualize.changeWindow = function (values) {
-    paraview.callPluginMethod('midasslice', 'ChangeWindow', 
-      [[values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0],
-      json.visualize.colorArrayName], 
-      function (view, retVal) {
-          midas.visualize.lookupTable = retVal.lookupTable;
-          midas.visualize.forceRefreshView();
-    });
+    paraview.callPluginMethod('midasslice', 'ChangeWindow', [
+            [values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0],
+            json.visualize.colorArrayName
+        ],
+        function (view, retVal) {
+            midas.visualize.lookupTable = retVal.lookupTable;
+            midas.visualize.forceRefreshView();
+        });
     midas.visualize.imageWindow = values;
 };
 
@@ -191,7 +195,7 @@ midas.visualize.changeWindow = function (values) {
 midas.visualize.changeSlice = function (slice) {
     slice = parseInt(slice);
     midas.visualize.currentSlice = slice;
-    
+
     var params = {
         volume: midas.visualize.input,
         slice: slice,
@@ -200,9 +204,9 @@ midas.visualize.changeSlice = function (slice) {
         lineWidth: midas.visualize.maxDim / 100.0
     };
 
-    paraview.callPluginMethod('midasslice', 'ChangeSlice', params, function(view, retVal) {
+    paraview.callPluginMethod('midasslice', 'ChangeSlice', params, function (view, retVal) {
         midas.visualize.meshSlices = retVal.meshSlices;
-        if(typeof midas.visualize.changeSliceCallback == 'function') {
+        if (typeof midas.visualize.changeSliceCallback == 'function') {
             midas.visualize.changeSliceCallback(slice);
         }
         midas.visualize.forceRefreshView();
@@ -214,38 +218,37 @@ midas.visualize.changeSlice = function (slice) {
  */
 midas.visualize.updateSliceInfo = function (slice) {
     var max;
-    if(midas.visualize.sliceMode == 'XY Plane') {
+    if (midas.visualize.sliceMode == 'XY Plane') {
         max = midas.visualize.bounds[5];
     }
-    else if(midas.visualize.sliceMode == 'XZ Plane') {
+    else if (midas.visualize.sliceMode == 'XZ Plane') {
         max = midas.visualize.bounds[3];
     }
     else { // YZ Plane
         max = midas.visualize.bounds[1];
     }
-    $('#sliceInfo').html('Slice: ' + slice + ' of '+ max);
+    $('#sliceInfo').html('Slice: ' + slice + ' of ' + max);
 };
 
 /**
  * Initialize or re-initialize the renderer within the DOM
  */
 midas.visualize.switchRenderer = function (first) {
-    if(midas.visualize.renderers.js == undefined) {
+    if (midas.visualize.renderers.js == undefined) {
         midas.visualize.renderers.js = new JavaScriptRenderer("jsRenderer", "/PWService");
-        midas.visualize.renderers.js.enableWebSocket(paraview, 'ws://'+json.visualize.hostname
-          +':'+json.visualize.wsport+'/PWService/Websocket');
+        midas.visualize.renderers.js.enableWebSocket(paraview, 'ws://' + json.visualize.hostname + ':' + json.visualize.wsport + '/PWService/Websocket');
         midas.visualize.renderers.js.init(paraview.sessionId, midas.visualize.activeView.__selfid__);
         $('img.toolButton').show();
     }
 
-    if(!first) {
+    if (!first) {
         midas.visualize.renderers.current.unbindToElementId('renderercontainer');
     }
     midas.visualize.renderers.current = midas.visualize.renderers.js;
     midas.visualize.renderers.current.bindToElementId('renderercontainer');
     var el = $('#renderercontainer');
     midas.visualize.renderers.current.setSize(el.width(), el.height());
-    midas.visualize.renderers.current.start();  
+    midas.visualize.renderers.current.start();
 };
 
 /**
@@ -261,7 +264,7 @@ midas.visualize.pointSelectMode = function () {
         var pscale = midas.visualize.cameraParallelScale;
         var focus = midas.visualize.cameraFocalPoint;
 
-        if(midas.visualize.sliceMode == 'XY Plane') {
+        if (midas.visualize.sliceMode == 'XY Plane') {
             var top = focus[1] - pscale;
             var bottom = focus[1] + pscale;
             var left = focus[0] - pscale;
@@ -270,7 +273,7 @@ midas.visualize.pointSelectMode = function () {
             y = (e.offsetY / $(this).height()) * (bottom - top) + top;
             z = midas.visualize.currentSlice + midas.visualize.bounds[4] - midas.visualize.extent[4];
         }
-        else if(midas.visualize.sliceMode == 'XZ Plane') {
+        else if (midas.visualize.sliceMode == 'XZ Plane') {
             var top = focus[2] + pscale;
             var bottom = focus[2] - pscale;
             var left = focus[0] + pscale;
@@ -279,7 +282,7 @@ midas.visualize.pointSelectMode = function () {
             y = midas.visualize.currentSlice + midas.visualize.bounds[2] - midas.visualize.extent[2];
             z = (e.offsetY / $(this).height()) * (bottom - top) + top;
         }
-        else if(midas.visualize.sliceMode == 'YZ Plane') {
+        else if (midas.visualize.sliceMode == 'YZ Plane') {
             var top = focus[2] + pscale;
             var bottom = focus[2] - pscale;
             var left = focus[0] - pscale;
@@ -289,15 +292,15 @@ midas.visualize.pointSelectMode = function () {
             z = (e.offsetY / $(this).height()) * (bottom - top) + top;
         }
 
-        var html = 'You have selected the point:<p><b>('
-                 +x.toFixed(1)+', '+y.toFixed(1)+', '+z.toFixed(1)+')</b></p>'
-                 +'Click OK to proceed or Cancel to re-select a point';
+        var html = 'You have selected the point:<p><b>(' + x.toFixed(1) + ', ' + y.toFixed(1) + ', ' + z.toFixed(1) + ')</b></p>' + 'Click OK to proceed or Cancel to re-select a point';
         html += '<br/><br/><div style="float: right;"><button id="pointSelectOk">OK</button>';
         html += '<button style="margin-left: 15px" id="pointSelectCancel">Cancel</button></div>';
-        midas.showDialogWithContent('Confirm Point Selection', html, false, {modal: false});
+        midas.showDialogWithContent('Confirm Point Selection', html, false, {
+            modal: false
+        });
 
         $('#pointSelectOk').unbind('click').click(function () {
-            if(typeof midas.visualize.handlePointSelect == 'function') {
+            if (typeof midas.visualize.handlePointSelect == 'function') {
                 midas.visualize.handlePointSelect([x, y, z]);
             }
             else {
@@ -311,7 +314,7 @@ midas.visualize.pointSelectMode = function () {
         var params = {
             point: [x, y, z],
             color: [1.0, 0.0, 0.0],
-            radius: midas.visualize.maxDim / 100.0, //make the sphere some small fraction of the image size
+            radius: midas.visualize.maxDim / 100.0, // make the sphere some small fraction of the image size
             objectToDelete: midas.visualize.glyph ? midas.visualize.glyph : false,
             input: midas.visualize.input
         };
@@ -364,12 +367,12 @@ midas.visualize._enablePointSelect = function () {
  *   -pointSelect: select a single point in the image
  */
 midas.visualize.enableActions = function (operations) {
-    $.each(operations, function(k, operation) {
-        if(operation == 'pointSelect') {
+    $.each(operations, function (k, operation) {
+        if (operation == 'pointSelect') {
             midas.visualize._enablePointSelect();
         }
-        else if(operation != '') {
-            alert('Unsupported operation: '+operation);
+        else if (operation != '') {
+            alert('Unsupported operation: ' + operation);
         }
     });
 };
@@ -378,7 +381,7 @@ midas.visualize.enableActions = function (operations) {
  * Toggle the visibility of any controls overlaid on top of the render container
  */
 midas.visualize.toggleControlVisibility = function () {
-    if($('#sliceControlContainer').is(':visible')) {
+    if ($('#sliceControlContainer').is(':visible')) {
         $('#sliceControlContainer').hide();
         $('#windowLevelControlContainer').hide();
         $('#rendererOverlay').hide();
@@ -394,27 +397,26 @@ midas.visualize.toggleControlVisibility = function () {
  * Change the slice mode. Valid values are 'XY Plane', 'XZ Plane', 'YZ Plane'
  */
 midas.visualize.setSliceMode = function (sliceMode) {
-    if(midas.visualize.sliceMode == sliceMode) {
-        return; //nothing to do, already in this mode
+    if (midas.visualize.sliceMode == sliceMode) {
+        return; // nothing to do, already in this mode
     }
 
     var slice, min, max;
-    if(sliceMode == 'XY Plane') {
+    if (sliceMode == 'XY Plane') {
         slice = Math.floor(midas.visualize.midK);
-        midas.visualize.cameraParallelScale = 
-          Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
-                   midas.visualize.bounds[3] - midas.visualize.bounds[2]) / 2.0;
-        midas.visualize.cameraPosition = 
-          [midas.visualize.midI, midas.visualize.midJ, midas.visualize.bounds[4] - 10];
+        midas.visualize.cameraParallelScale =
+            Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
+                midas.visualize.bounds[3] - midas.visualize.bounds[2]) / 2.0;
+        midas.visualize.cameraPosition = [midas.visualize.midI, midas.visualize.midJ, midas.visualize.bounds[4] - 10];
         midas.visualize.cameraViewUp = [0.0, -1.0, 0.0];
         min = midas.visualize.bounds[4];
         max = midas.visualize.bounds[5];
     }
-    else if(sliceMode == 'XZ Plane') {
+    else if (sliceMode == 'XZ Plane') {
         slice = Math.floor(midas.visualize.midJ);
-        midas.visualize.cameraParallelScale = 
-          Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
-                   midas.visualize.bounds[5] - midas.visualize.bounds[4]) / 2.0;
+        midas.visualize.cameraParallelScale =
+            Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
+                midas.visualize.bounds[5] - midas.visualize.bounds[4]) / 2.0;
         midas.visualize.cameraPosition = [midas.visualize.midI, midas.visualize.bounds[3] + 10, midas.visualize.midK];
         midas.visualize.cameraViewUp = [0.0, 0.0, 1.0];
         min = midas.visualize.bounds[2];
@@ -423,8 +425,8 @@ midas.visualize.setSliceMode = function (sliceMode) {
     else { // YZ Plane
         slice = Math.floor(midas.visualize.midI);
         midas.visualize.cameraParallelScale =
-          Math.max(midas.visualize.bounds[3] - midas.visualize.bounds[2],
-                   midas.visualize.bounds[5] - midas.visualize.bounds[4]) / 2.0;
+            Math.max(midas.visualize.bounds[3] - midas.visualize.bounds[2],
+                midas.visualize.bounds[5] - midas.visualize.bounds[4]) / 2.0;
         midas.visualize.cameraPosition = [midas.visualize.bounds[1] + 10, midas.visualize.midJ, midas.visualize.midK];
         midas.visualize.cameraViewUp = [0.0, 0.0, 1.0];
         min = midas.visualize.bounds[0];
@@ -437,14 +439,14 @@ midas.visualize.setSliceMode = function (sliceMode) {
         min: min,
         max: max,
         value: slice,
-        change: function(event, ui) {
+        change: function (event, ui) {
             midas.visualize.changeSlice(ui.value);
         },
-        slide: function(event, ui) {
+        slide: function (event, ui) {
             midas.visualize.updateSliceInfo(ui.value);
         }
     });
-    
+
     var params = {
         volume: midas.visualize.input,
         slice: slice,
@@ -462,7 +464,7 @@ midas.visualize.setSliceMode = function (sliceMode) {
 };
 
 $(window).load(function () {
-    if(typeof midas.visualize.preInitCallback == 'function') {
+    if (typeof midas.visualize.preInitCallback == 'function') {
         midas.visualize.preInitCallback();
     }
 
@@ -470,7 +472,7 @@ $(window).load(function () {
     midas.visualize.start();
     midas.visualize.enableActions(json.visualize.operations.split(';'));
     $(document).unbind('keypress').keydown(function (event) {
-        if(event.which == 67) { // the 'c' key
+        if (event.which == 67) { // the 'c' key
             midas.visualize.toggleControlVisibility();
             event.preventDefault();
         }
@@ -480,4 +482,3 @@ $(window).load(function () {
 $(window).unload(function () {
     paraview.disconnect();
 });
-

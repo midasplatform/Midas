@@ -142,7 +142,7 @@ class Pvw_ParaviewComponent extends AppComponent
       exec('kill -9 '.$instance->getPid());
       }
 
-    UtilityComponent::rrmdir(UtilityComponent::getTempDirectory('pvw-data').$instance->getKey());
+    UtilityComponent::rrmdir(UtilityComponent::getTempDirectory('pvw-data').'/'.$instance->getKey());
 
     $instanceModel = MidasLoader::loadModel('Instance', 'pvw');
     $instanceModel->delete($instance);
@@ -208,7 +208,7 @@ class Pvw_ParaviewComponent extends AppComponent
       {
       mkdir(UtilityComponent::getTempDirectory('pvw-data'));
       }
-    $path = UtilityComponent::getTempDirectory('pvw-data').$instanceDao->getKey();
+    $path = UtilityComponent::getTempDirectory('pvw-data').'/'.$instanceDao->getKey();
     mkdir($path);
     mkdir($path.'/main');
     mkdir($path.'/surfaces');

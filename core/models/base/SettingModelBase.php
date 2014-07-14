@@ -84,7 +84,7 @@ abstract class SettingModelBase extends AppModel
       }
     else
       {
-      $dao = new SettingDao ();
+      $dao = new SettingDao();
       $dao->setName($name);
       $dao->setModule($module);
       $dao->setValue($value);

@@ -1,47 +1,47 @@
-div.viewSideBar input.globalButton{
-  margin-left: 0px!important;
-}
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
+div.viewSideBar input.globalButton {
+    margin-left: 0 !important;
+}
 
 div.viewWrapper {
-  padding-right: 40px !important;
+    padding-right: 40px !important;
 }
 
-div.assetstoreElement{
-  margin-bottom: 10px;
-  border-bottom: 1px solid #d0d0d0;
-  padding-bottom: 8px;
+div.assetstoreElement {
+    border-bottom: 1px solid #D0D0D0;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
 }
 
 div.assetstoreNameContainer {
-  font-size: 14px;
-  margin-bottom: 4px;
-  font-weight: bold;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 4px;
 }
 
 div.assetstoreActions {
-  margin-top: 5px;
+    margin-top: 5px;
 }
 
-.errorText,.freeSpaceWarning {
-  color: red;
+.errorText, .freeSpaceWarning {
+    color: red;
 }
 
-tr.moduleElementError td{
-  color:grey;
-  font-size: 11px;
+tr.moduleElementError td {
+    color: gray;
+    font-size: 11px;
 }
 
-a.moduleVisibleCategoryLink, a.moduleHiddenCategoryLink{
-  font-weight: bold!important;
-  font-size: 13px!important;
+a.moduleVisibleCategoryLink, a.moduleHiddenCategoryLink {
+    font-size: 13px !important;
+    font-weight: bold !important;
 }
 
 #newassetstore-form {
-  padding: 10px;
+    padding: 10px;
 }
 
 div.addAssetstoreFormError {
-  margin-bottom: 9px;
+    margin-bottom: 9px;
 }
-

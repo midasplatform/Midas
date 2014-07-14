@@ -1,3 +1,5 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.archive = midas.archive || {};
 midas.archive.extract = {};
@@ -14,12 +16,12 @@ midas.archive.extract.success = function (responseText) {
     $('input#declineArchiveExtract').removeAttr('disabled');
     $('input#deleteArchiveWhenDone').removeAttr('disabled');
     var jsonResponse = $.parseJSON(responseText);
-    
-    if(jsonResponse == null) {
+
+    if (jsonResponse == null) {
         midas.createNotice('An error occurred, please contact an administrator', 4000, 'error');
         return;
     }
-    if(jsonResponse.status == 'ok') {
+    if (jsonResponse.status == 'ok') {
         window.location.replace(jsonResponse.redirect);
     }
     else {
@@ -34,10 +36,10 @@ $('#beginArchiveExtract').click(function () {
     };
     midas.archive.extract.submitClicked();
     midas.ajaxWithProgress($('#extractArchiveProgressBar'),
-      $('#extractArchiveProgressMessage'),
-      json.global.webroot+'/archive/extract/perform',
-      params,
-      midas.archive.extract.success
+        $('#extractArchiveProgressMessage'),
+        json.global.webroot + '/archive/extract/perform',
+        params,
+        midas.archive.extract.success
     );
 });
 

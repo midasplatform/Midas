@@ -1,17 +1,19 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 textarea#agreement {
-  height: 160px;
-  width: 100% !important;
+    height: 160px;
+    width: 100% !important;
 }
 
 div.formLabel {
-  color: #999;
-  font-size: 11px;
-  text-transform: uppercase;
-  margin-top: 0.67em;
-  margin-bottom: 0.67em;
-  font-weight: bold;
+    color: #999;
+    font-size: 11px;
+    font-weight: bold;
+    margin-bottom: 0.67em;
+    margin-top: 0.67em;
+    text-transform: uppercase;
 }
 
-#createAgreementForm input[type=submit]{
-  margin-left: 0px !important;
+#createAgreementForm input[type=submit] {
+    margin-left: 0 !important;
 }

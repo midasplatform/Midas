@@ -23,6 +23,12 @@ class JobModelTest extends DatabaseTestCase
   /** set up tests*/
   public function setUp()
     {
+    $db = Zend_Registry::get('dbAdapter');
+    $configDatabase = Zend_Registry::get('configDatabase');
+    if($configDatabase->database->adapter == 'PDO_PGSQL')
+      {
+      $db->query("SELECT setval('remoteprocessing_job_job_id_seq', (SELECT MAX(job_id) FROM remoteprocessing_job)+1);");
+      }
     $this->setupDatabase(array('default')); //core dataset
     $this->setupDatabase(array('default'), 'remoteprocessing'); // module dataset
     $this->enabledModules = array('remoteprocessing');

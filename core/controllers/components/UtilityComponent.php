@@ -18,12 +18,12 @@
  limitations under the License.
 =========================================================================*/
 
-/** Utility componenet */
+/** Utility component */
 class UtilityComponent extends AppComponent
   {
   /**
    * The main function for converting to an XML document.
-   * Pass in a multi dimensional array and this recrusively loops through and builds up an XML document.
+   * Pass in a multi dimensional array and this recursively loops through and builds up an XML document.
    *
    * @param array $data
    * @param string $rootNodeName - what you want the root node to be - defaultsto data.
@@ -131,7 +131,7 @@ class UtilityComponent extends AppComponent
     $modules = array();
     while(false !== ($file = readdir($handle)))
       {
-      if(file_exists($dir.$file.'/configs/module.ini'))
+      if(is_dir($dir.$file) && file_exists($dir.$file.'/configs/module.ini'))
         {
         $config = new Zend_Config_Ini($dir.$file.'/configs/module.ini', 'global', true);
         $config->db = array();
@@ -457,7 +457,7 @@ class UtilityComponent extends AppComponent
         $tempDirectory = BASE_PATH.'/tmp';
         }
       }
-    return $tempDirectory .'/'.$subdir.'/';
+    return $tempDirectory .'/'.$subdir;
     }
 
   /**
@@ -487,7 +487,7 @@ class UtilityComponent extends AppComponent
       $classname = ucfirst($moduleName).'_InstallScript';
       if(!class_exists($classname, false))
         {
-        throw new Zend_Exception('Could not find class "'.$classname.'" in file "'.$filename.'"');
+        throw new Zend_Exception('Could not find class "'.$classname.'" in file "'.$installScript.'"');
         }
 
       $class = new $classname();
@@ -578,8 +578,8 @@ class UtilityComponent extends AppComponent
    */
   public static function markDown($text)
     {
-    require_once BASE_PATH.'/library/Markdown/markdown.php';
-    return Markdown($text);
+    require_once 'Michelf/MarkdownExtra.inc.php';
+    return Michelf\MarkdownExtra::defaultTransform($text);
     }
 
   /**
@@ -614,15 +614,12 @@ class UtilityComponent extends AppComponent
   /** Recursively delete a directory on disk */
   public static function rrmdir($dir)
     {
-    if(!file_exists($dir))
+    if(!file_exists($dir) || !is_dir($dir))
       {
       return;
       }
-    if(is_dir($dir))
-      {
-      $objects = scandir($dir);
-      }
 
+    $objects = scandir($dir);
     foreach($objects as $object)
       {
       if($object != '.' && $object != '..')
@@ -641,23 +638,62 @@ class UtilityComponent extends AppComponent
     rmdir($dir);
     }
 
-  /**
-   * Send an email.  This wraps the mail() function and adds our default headers and puts the
-   * text into a template.
-   */
-  public static function sendEmail($email, $subject, $text)
+  /** Send mail. */
+  public static function sendEmail($to, $subject, $body)
     {
-    $headers = "From: Midas\nReply-To: no-reply\nX-Mailer: PHP/".phpversion()."\nMIME-Version: 1.0\nContent-type: text/html; charset = UTF-8";
-    $text .= '<br/><br/>--<br/>This is an auto-generated message from the Midas system. Please do not reply to this email.';
-
-    if(Zend_Registry::get('configGlobal')->environment == 'testing' || mail($email, $subject, $text, $headers))
+    $validator = new Zend_Validate_EmailAddress();
+    if(getenv('midas_email_sender') && $validator->isValid(getenv('midas_email_sender')))
       {
-      self::getLogger()->info('Sent email to '.$email.' with subject '.$subject);
+      $sender = getenv('midas_email_sender');
+      }
+    else if(ini_get('sendmail_from') && $validator->isValid(ini_get('sendmail_from')))
+      {
+      $sender = ini_get('sendmail_from');
       }
     else
       {
-      self::getLogger()->crit('Error sending email to '.$email.' with subject '.$subject);
+      $sender = 'no-reply@example.org'; // RFC2606
       }
+    if(!$validator->isValid($to))
+      {
+      Zend_Registry::get('logger')->err('Unable to send email to invalid email address "'.$to.'"');
+      return false;
+      }
+    $subject = 'Midas Platform: '.$subject;
+    $body .= '<br/><br/><i>This is an auto-generated message from <a href="'.self::getServerURL().'">Midas Platform</a>. Please do not reply to this email.</i>';
+    try
+      {
+      UtilityComponent::beginIgnoreWarnings();
+      include_once 'google/appengine/api/mail/Message.php';
+      UtilityComponent::endIgnoreWarnings();
+      if(class_exists('google\appengine\api\mail\Message', false))
+        {
+        $message = new \google\appengine\api\mail\Message();
+        $message->setSender($sender);
+        $message->addTo($to);
+        $message->setSubject($subject);
+        $message->setHtmlBody($body);
+        }
+      else
+        {
+        $message = new Zend_Mail();
+        $message->setFrom($sender);
+        $message->addTo($to);
+        $message->setSubject($subject);
+        $message->setBodyHtml($body);
+        }
+      if(Zend_Registry::get('configGlobal')->environment != 'testing')
+        {
+        $message->send();
+        }
+      }
+    catch(Exception $exception)
+      {
+      Zend_Registry::get('logger')->err('Unable to send email to "'.$to.'" with subject "'.$subject.'": '.$exception->getMessage());
+      return false;
+      }
+    Zend_Registry::get('logger')->info('Sent email to "'.$to.'" with subject "'.$subject.'"');
+    return true;
     }
 
   /**
@@ -672,11 +708,11 @@ class UtilityComponent extends AppComponent
     $currentPort = "";
     $prefix = "http://";
 
-    if($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443)
+    if(isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443)
       {
       $currentPort = ":".$_SERVER['SERVER_PORT'];
       }
-    if($_SERVER['SERVER_PORT'] == 443 || (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])))
+    if((isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) || (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])))
       {
       $prefix = "https://";
       }
@@ -703,7 +739,7 @@ class UtilityComponent extends AppComponent
     $max = strlen($alphabet) - 1;
     for($i = 0; $i < $length; $i++)
       {
-      $salt .= substr($alphabet, rand(0, $max), 1);
+      $salt .= substr($alphabet, mt_rand(0, $max), 1);
       }
     return $salt;
     }
@@ -742,5 +778,23 @@ class UtilityComponent extends AppComponent
     UtilityComponent::beginIgnoreWarnings();
     set_time_limit($seconds);
     UtilityComponent::endIgnoreWarnings();
+    }
+
+  /** Returns available space on filesystem or disk partition. */
+  public static function diskFreeSpace($directory)
+    {
+    UtilityComponent::beginIgnoreWarnings();
+    $result = disk_free_space($directory);
+    UtilityComponent::endIgnoreWarnings();
+    return $result;
+    }
+
+  /** Returns the total size of a filesystem or disk partition.  */
+  public static function diskTotalSpace($directory)
+    {
+    UtilityComponent::beginIgnoreWarnings();
+    $result = disk_total_space($directory);
+    UtilityComponent::endIgnoreWarnings();
+    return $result;
     }
   }

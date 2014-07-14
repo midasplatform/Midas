@@ -1,73 +1,72 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
 #sliceSlider, #windowLevelSlider {
-  margin: 8px 14px 8px 10px;
-  width: 551px;
+    margin: 8px 14px 8px 10px;
+    width: 551px;
 }
 
 #sliceInfo, #windowLevelInfo {
-  margin-left: 10px;
-  color: white;
-  z-index: 3;
+    color: white;
+    margin-left: 10px;
+    z-index: 3;
 }
 
 #renderercontainer {
-  z-index: 2;
-  overflow: hidden;
-  width: 575px;
-  height: 575px;
-  display: none;
-  position: relative;
+    display: none;
+    height: 575px;
+    overflow: hidden;
+    position: relative;
+    width: 575px;
+    z-index: 2;
 }
 
 img.visuLoading {
-  z-index: 100;
-  margin-top: 10px;
-  margin-left: 10px;
+    margin-left: 10px;
+    margin-top: 10px;
+    z-index: 100;
 }
 
 #rendererOverlay {
-  position: absolute;
-  top: 40px;
-  right: 15px;
-  z-index: 5;
+    position: absolute;
+    right: 15px;
+    top: 40px;
+    z-index: 5;
 }
 
 #sliceControlContainer {
-  position: absolute;
-  top: 5px;
-  z-index: 5;
+    position: absolute;
+    top: 5px;
+    z-index: 5;
 }
 
 #windowLevelControlContainer {
-  position: absolute;
-  bottom: 5px;
-  z-index: 5;
+    bottom: 5px;
+    position: absolute;
+    z-index: 5;
 }
 
 button.actionButton {
-  width: 25px;
-  height: 25px;
-  background-repeat: no-repeat;
-  background-position: 2px 1px;
+    background: no-repeat 2px 1px;
+    height: 25px;
+    width: 25px;
 }
 
 button.actionActive {
-  background-color: #99cc99;
+    background-color: #9C9;
 }
 
 button.actionInactive {
-  background-color: #cccccc;
+    background-color: #CCC;
 }
 
 button.pointSelectButton {
-  background-image: url(../../images/pointSelect.png);
+    background-image: url(../../images/pointSelect.png);
 }
 
 #loadingStatus {
-  margin-left: 10px;
+    margin-left: 10px;
 }
 
 span.infoValue {
-  color: #7a7a7a;
+    color: #7A7A7A;
 }
-

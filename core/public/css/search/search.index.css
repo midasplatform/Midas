@@ -1,36 +1,38 @@
-ul#searchResults{
-  display:none;
-  list-style: none;
-  margin: 0px 0px 0px 0px;
-  padding: 0px 0px 0px 0px;
-  position:relative;
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+ul#searchResults {
+    display: none;
+    list-style: none;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    position: relative;
 }
 
-ul#searchResults li.searchElement{
-  margin-top: 3px;
-  min-height: 40px;
-  border-bottom: 1px dotted grey;
-  position:relative;
+ul#searchResults li.searchElement {
+    border-bottom: 1px dotted gray;
+    margin-top: 3px;
+    min-height: 40px;
+    position: relative;
 }
 
-img.imageSearchResult{
-  position:relative;
-  top:2px;
+img.imageSearchResult {
+    position: relative;
+    top: 2px;
 }
 
-a.nameSearchResult{
-  font-weight: bold!important;
-  margin-left: 3px;
+a.nameSearchResult {
+    font-weight: bold !important;
+    margin-left: 3px;
 }
 
-span.dateSearchResult{
-  font-size: 10px;
-  position:absolute;
-  color: grey;
-  right: 10px;
-  bottom: 5px;
+span.dateSearchResult {
+    bottom: 5px;
+    color: gray;
+    font-size: 10px;
+    position: absolute;
+    right: 10px;
 }
 
-span.descriptionSearchResult{
-  margin-left: 20px;
+span.descriptionSearchResult {
+    margin-left: 20px;
 }

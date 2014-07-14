@@ -1,6 +1,8 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.pvw = midas.pvw || {};
-midas.pvw.sliceMode = 'XY Plane'; //Initial slice plane
+midas.pvw.sliceMode = 'XY Plane'; // Initial slice plane
 midas.pvw.updateLock = false; // Lock for RPC calls to make sure we just do one at a time
 midas.pvw.UPDATE_TIMEOUT_SECONDS = 5; // Max time the update lock can be held in seconds
 
@@ -9,7 +11,7 @@ midas.pvw.UPDATE_TIMEOUT_SECONDS = 5; // Max time the update lock can be held in
  * and your operation should not run.  If it can, returns true.
  */
 midas.pvw.acquireUpdateLock = function () {
-    if(midas.pvw.updateLock) {
+    if (midas.pvw.updateLock) {
         return false;
     }
     else {
@@ -22,14 +24,14 @@ midas.pvw.acquireUpdateLock = function () {
 };
 
 midas.pvw.releaseUpdateLock = function () {
-    if(midas.pvw.lockExpireTimeout) {
+    if (midas.pvw.lockExpireTimeout) {
         window.clearTimeout(midas.pvw.lockExpireTimeout);
     }
     midas.pvw.updateLock = false;
 };
 
 midas.pvw.start = function () {
-    if(typeof midas.pvw.preInitCallback == 'function') {
+    if (typeof midas.pvw.preInitCallback == 'function') {
         midas.pvw.preInitCallback();
     }
     pv.connection.enableInteractions = false;
@@ -42,8 +44,8 @@ midas.pvw.dataLoaded = function (resp) {
     pv.viewport.render();
     midas.pvw.waitingDialog('Starting slice rendering...');
     pv.connection.session.call('vtk:sliceRender', midas.pvw.sliceMode)
-                         .then(midas.pvw.sliceRenderStarted)
-                         .otherwise(midas.pvw.rpcFailure);
+        .then(midas.pvw.sliceRenderStarted)
+        .otherwise(midas.pvw.rpcFailure);
 };
 
 /** Callback from sliceRender rpc success */
@@ -76,11 +78,11 @@ midas.pvw.setupSliders = function () {
         min: 0,
         max: midas.pvw.maxSlices,
         value: midas.pvw.slice,
-        slide: function(event, ui) {
+        slide: function (event, ui) {
             midas.pvw.changeSlice(ui.value, true);
             midas.pvw.updateSliceInfo(ui.value);
         },
-        change: function(event, ui) {
+        change: function (event, ui) {
             midas.pvw.changeSlice(ui.value);
         }
     });
@@ -89,14 +91,14 @@ midas.pvw.setupSliders = function () {
         min: midas.pvw.scalarRange[0],
         max: midas.pvw.scalarRange[1],
         values: [midas.pvw.scalarRange[0], midas.pvw.scalarRange[1]],
-        slide: function(event, ui) {
-            if(midas.pvw.acquireUpdateLock()) {
+        slide: function (event, ui) {
+            if (midas.pvw.acquireUpdateLock()) {
                 // TODO degrade quality for intermediate updates
                 midas.pvw.changeWindow(ui.values);
             }
             midas.pvw.updateWindowInfo(ui.values);
         },
-        change: function(event, ui) {
+        change: function (event, ui) {
             midas.pvw.changeWindow(ui.values);
         }
     });
@@ -106,10 +108,10 @@ midas.pvw.setupSliders = function () {
  * Display information about the volume
  */
 midas.pvw.populateInfo = function () {
-    $('#boundsXInfo').html(midas.pvw.bounds[0]+' .. '+midas.pvw.bounds[1]);
-    $('#boundsYInfo').html(midas.pvw.bounds[2]+' .. '+midas.pvw.bounds[3]);
-    $('#boundsZInfo').html(midas.pvw.bounds[4]+' .. '+midas.pvw.bounds[5]);
-    $('#scalarRangeInfo').html(midas.pvw.scalarRange[0]+' .. '+midas.pvw.scalarRange[1]);
+    $('#boundsXInfo').html(midas.pvw.bounds[0] + ' .. ' + midas.pvw.bounds[1]);
+    $('#boundsYInfo').html(midas.pvw.bounds[2] + ' .. ' + midas.pvw.bounds[3]);
+    $('#boundsZInfo').html(midas.pvw.bounds[4] + ' .. ' + midas.pvw.bounds[5]);
+    $('#scalarRangeInfo').html(midas.pvw.scalarRange[0] + ' .. ' + midas.pvw.scalarRange[1]);
 };
 
 /**
@@ -117,17 +119,17 @@ midas.pvw.populateInfo = function () {
  * actually changing them in PVWeb
  */
 midas.pvw.updateWindowInfo = function (values) {
-    $('#windowLevelInfo').html('Window: '+values[0]+' - '+values[1]);
+    $('#windowLevelInfo').html('Window: ' + values[0] + ' - ' + values[1]);
 };
 
 /** Make the actual request to PVWeb to set the window */
 midas.pvw.changeWindow = function (values) {
     pv.connection.session.call('vtk:changeWindow', [values[0], 0.0, 0.0, 0.0, values[1], 1.0, 1.0, 1.0])
-                        .then(function () {
-                            pv.viewport.render();
-                            midas.pvw.releaseUpdateLock();
-                        })
-                        .otherwise(midas.pvw.rpcFailure);
+        .then(function () {
+            pv.viewport.render();
+            midas.pvw.releaseUpdateLock();
+        })
+        .otherwise(midas.pvw.rpcFailure);
 };
 
 /** Change the slice and run appropriate slice filter on any meshes in the scene */
@@ -135,20 +137,22 @@ midas.pvw.changeSlice = function (slice, degradeQuality) {
     slice = parseInt(slice);
     midas.pvw.slice = slice;
 
-    if(midas.pvw.acquireUpdateLock()) {
+    if (midas.pvw.acquireUpdateLock()) {
         pv.connection.session.call('vtk:changeSlice', slice)
-                            .then(function (resp) {
-                                if(degradeQuality) {
-                                    pv.viewport.render(null, {quality: 50});
-                                }
-                                else {
-                                    pv.viewport.render();
-                                }
-                                midas.pvw.releaseUpdateLock();
-                            })
-                            .otherwise(midas.pvw.rpcFailure)
+            .then(function (resp) {
+                if (degradeQuality) {
+                    pv.viewport.render(null, {
+                        quality: 50
+                    });
+                }
+                else {
+                    pv.viewport.render();
+                }
+                midas.pvw.releaseUpdateLock();
+            })
+            .otherwise(midas.pvw.rpcFailure)
     }
-    else if(!degradeQuality) {
+    else if (!degradeQuality) {
         // If this is a non-interactive fetch, we should poll the lock until it unlocks and then
         // fetch a full-res frame.  This will happens after sliding stops.
         window.setTimeout(midas.pvw.changeSlice, 20, slice);
@@ -159,7 +163,7 @@ midas.pvw.changeSlice = function (slice, degradeQuality) {
  * Update the value of the current slice, without rendering the slice.
  */
 midas.pvw.updateSliceInfo = function (slice) {
-    $('#sliceInfo').html('Slice: ' + slice + ' of '+ midas.pvw.maxSlices);
+    $('#sliceInfo').html('Slice: ' + slice + ' of ' + midas.pvw.maxSlices);
 };
 
 /**
@@ -175,7 +179,7 @@ midas.pvw.pointSelectMode = function () {
         var pscale = midas.pvw.cameraParallelScale;
         var focus = midas.pvw.center;
 
-        if(midas.pvw.sliceMode == 'XY Plane') {
+        if (midas.pvw.sliceMode == 'XY Plane') {
             var top = focus[1] - pscale;
             var bottom = focus[1] + pscale;
             var left = focus[0] - pscale;
@@ -185,7 +189,7 @@ midas.pvw.pointSelectMode = function () {
             var a = (midas.pvw.slice + midas.pvw.extent[4]) / (midas.pvw.extent[5] - midas.pvw.extent[4]);
             z = a * (midas.pvw.bounds[5] - midas.pvw.bounds[4]) + midas.pvw.bounds[4];
         }
-        else if(midas.pvw.sliceMode == 'XZ Plane') {
+        else if (midas.pvw.sliceMode == 'XZ Plane') {
             var top = focus[2] + pscale;
             var bottom = focus[2] - pscale;
             var left = focus[0] + pscale;
@@ -195,7 +199,7 @@ midas.pvw.pointSelectMode = function () {
             y = a * (midas.pvw.bounds[3] - midas.pvw.bounds[2]) + midas.pvw.bounds[2];
             z = (e.offsetY / $(this).height()) * (bottom - top) + top;
         }
-        else if(midas.pvw.sliceMode == 'YZ Plane') {
+        else if (midas.pvw.sliceMode == 'YZ Plane') {
             var top = focus[2] + pscale;
             var bottom = focus[2] - pscale;
             var left = focus[0] - pscale;
@@ -206,15 +210,15 @@ midas.pvw.pointSelectMode = function () {
             z = (e.offsetY / $(this).height()) * (bottom - top) + top;
         }
 
-        var html = 'You have selected the point:<p><b>('
-                 +x.toFixed(2)+', '+y.toFixed(2)+', '+z.toFixed(2)+')</b></p>'
-                 +'Click OK to proceed or Cancel to re-select a point';
+        var html = 'You have selected the point:<p><b>(' + x.toFixed(2) + ', ' + y.toFixed(2) + ', ' + z.toFixed(2) + ')</b></p>' + 'Click OK to proceed or Cancel to re-select a point';
         html += '<br/><br/><div style="float: right;"><button id="pointSelectOk">OK</button>';
         html += '<button style="margin-left: 15px" id="pointSelectCancel">Cancel</button></div>';
-        midas.showDialogWithContent('Confirm Point Selection', html, false, {modal: false});
+        midas.showDialogWithContent('Confirm Point Selection', html, false, {
+            modal: false
+        });
 
         $('#pointSelectOk').unbind('click').click(function () {
-            if(typeof midas.pvw.handlePointSelect == 'function') {
+            if (typeof midas.pvw.handlePointSelect == 'function') {
                 midas.pvw.handlePointSelect([x, y, z]);
             }
             else {
@@ -230,8 +234,8 @@ midas.pvw.pointSelectMode = function () {
             color: [1.0, 0.0, 0.0]
         };
         pv.connection.session.call('vtk:showSphere', params)
-                             .then(pv.viewport.render)
-                             .otherwise(midas.pvw.rpcFailure);
+            .then(pv.viewport.render)
+            .otherwise(midas.pvw.rpcFailure);
     });
 };
 
@@ -270,12 +274,12 @@ midas.pvw._enablePointSelect = function () {
  *   -pointSelect: select a single point in the image
  */
 midas.pvw.enableActions = function (operations) {
-    $.each(operations, function(k, operation) {
-        if(operation == 'pointSelect') {
+    $.each(operations, function (k, operation) {
+        if (operation == 'pointSelect') {
             midas.pvw._enablePointSelect();
         }
-        else if(operation != '') {
-            alert('Unsupported operation: '+operation);
+        else if (operation != '') {
+            alert('Unsupported operation: ' + operation);
         }
     });
 };
@@ -284,7 +288,7 @@ midas.pvw.enableActions = function (operations) {
  * Toggle the visibility of any controls overlaid on top of the render container
  */
 midas.pvw.toggleControlVisibility = function () {
-    if($('#sliceControlContainer').is(':visible')) {
+    if ($('#sliceControlContainer').is(':visible')) {
         $('#sliceControlContainer').hide();
         $('#windowLevelControlContainer').hide();
         $('#rendererOverlay').hide();
@@ -300,13 +304,13 @@ midas.pvw.toggleControlVisibility = function () {
  * Change the slice mode. Valid values are 'XY Plane', 'XZ Plane', 'YZ Plane'
  */
 midas.pvw.setSliceMode = function (sliceMode) {
-    if(midas.pvw.sliceMode == sliceMode) {
-        return; //nothing to do, already in this mode
+    if (midas.pvw.sliceMode == sliceMode) {
+        return; // nothing to do, already in this mode
     }
     midas.pvw.sliceMode = sliceMode;
     pv.connection.session.call('vtk:setSliceMode', midas.pvw.sliceMode)
-                         .then(midas.pvw.sliceModeChanged)
-                         .otherwise(midas.pvw.rpcFailure);
+        .then(midas.pvw.sliceModeChanged)
+        .otherwise(midas.pvw.rpcFailure);
 };
 
 /** Callback from setSliceMode rpc */
@@ -320,11 +324,11 @@ midas.pvw.sliceModeChanged = function (resp) {
         min: 0,
         max: midas.pvw.maxSlices,
         value: resp.slice,
-        slide: function(event, ui) {
+        slide: function (event, ui) {
             midas.pvw.changeSlice(ui.value, true);
             midas.pvw.updateSliceInfo(ui.value);
         },
-        change: function(event, ui) {
+        change: function (event, ui) {
             midas.pvw.changeSlice(ui.value);
         }
     });

@@ -1,88 +1,75 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 div.viewMain h3 {
-  padding-top: 0px;
-  margin-top: 2px;
+    margin-top: 2px;
+    padding-top: 0;
 }
 
 div.dashEntry {
-  border-top: 1px solid #DAD8D4;
-  padding-bottom: 10px;
-  padding-top: 10px;
-  cursor: pointer;
+    border-top: 1px solid #DAD8D4;
+    cursor: pointer;
+    padding-bottom: 10px;
+    padding-top: 10px;
 }
 
 div.grayEntry {
-  background-color: #EEE;
+    background-color: #EEE;
 }
 
 .dashDescription {
-  color: #999;
-  font-size: 11px;
-  text-shadow: white 0px 1px 1px;
-  margin-left: 2ex;
-  vertical-align: middle;
+    color: #999;
+    font-size: 11px;
+    margin-left: 2ex;
+    text-shadow: white 0 1px 1px;
+    vertical-align: middle;
 }
 
 .dashTitle {
-  font-size: 13px;
-  text-shadow: white 0px 1px 1px;
-  margin-top: 0.67em;
-  margin-bottom: 0.67em;
-  padding-left: 2ex;
-  vertical-align: middle;
+    font-size: 13px;
+    margin-bottom: 0.67em;
+    margin-top: 0.67em;
+    padding-left: 2ex;
+    text-shadow: white 0 1px 1px;
+    vertical-align: middle;
 }
 
 div.dashPanel {
-  border-top: 1px solid #DAD8D4;
-  padding-top: 2ex;
-  /*visibility: hidden;*/
+    border-top: 1px solid #DAD8D4;
+    padding-top: 2ex;
 }
 
 .dashIcon {
-  float: left;
+    float: left;
 }
 
 .dashButton {
-  border: 1px dotted #999;
-  margin-right: 2px;
-  padding-top: 6px;
-  padding-bottom: 2px;
-  padding-left: 1px;
-  padding-right: 1px;
+    border: 1px dotted #999;
+    margin-right: 2px;
+    padding: 6px 1px 2px;
 }
 
 .dashButton:hover {
-  border: 1px dotted #999;
-  background-color: #EEE;
-  margin-right: 2px;
-  padding-top: 6px;
-  padding-bottom: 2px;
-  padding-left: 1px;
-  padding-right: 1px;
-  cursor: pointer;
-  user-select: none;
-  -moz-user-select: none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  -o-user-select: none;
+    background-color: #EEE;
+    border: 1px dotted #999;
+    cursor: pointer;
+    margin-right: 2px;
+    padding: 6px 1px 2px;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
 }
 
 .dashButton:active {
-  border: 1px dotted #999;
-  background-color: #AAA;
-  margin-right: 2px;
-  padding-top: 6px;
-  padding-bottom: 2px;
-  padding-left: 1px;
-  padding-right: 1px;
-  cursor: pointer;
-  user-select: none;
-  -moz-user-select: none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  -o-user-select: none;
+    background-color: #AAA;
+    border: 1px dotted #999;
+    cursor: pointer;
+    margin-right: 2px;
+    padding: 6px 1px 2px;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
 }
 
 .dashDeleteIcon {
-  float: right;
-  /*visibility: hidden;*/
+    float: right;
 }

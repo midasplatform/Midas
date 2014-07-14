@@ -48,7 +48,7 @@ class ReadmesApiTest extends RestCallMethodsTest
     $adminUser = $this->User->load($usersFile[2]->getKey());
 
     $oldPath = BASE_PATH.'/modules/readmes/tests/data/readme.md';
-    $dir = $this->getTempDirectory().$adminUser->getUserId().'/1002'; //private folder
+    $dir = $this->getTempDirectory().'/'.$adminUser->getUserId().'/1002'; //private folder
     $newPath = $dir.'/readme.md';
     if(!file_exists($dir))
       {
@@ -87,7 +87,7 @@ class ReadmesApiTest extends RestCallMethodsTest
     $adminUser = $this->User->load($usersFile[2]->getKey());
 
     $oldPath = BASE_PATH.'/modules/readmes/tests/data/readme.md';
-    $dir = $this->getTempDirectory().$adminUser->getUserId().'/1002'; //private folder
+    $dir = $this->getTempDirectory().'/'.$adminUser->getUserId().'/1002'; //private folder
     $newPath = $dir.'/readme.md';
     if(!file_exists($dir))
       {

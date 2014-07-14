@@ -105,10 +105,10 @@ echo $this->doctype()
         <div class="TopbarLeft">
           <ul>
             <li class="first">
-              <a target="_blank" href="http://midasplatform.org" >MIDAS</a>
+              <a target="_blank" href="http://www.midasplatform.org/">Midas Platform</a>
             </li>
             <li>
-              <a target="_blank" href="http://www.kitware.com" >Kitware</a>
+              <a target="_blank" href="http://www.kitware.com/">Kitware</a>
             </li>
             <?php
             if($this->logged)
@@ -270,11 +270,11 @@ echo $this->doctype()
       <?php
       if($this->needUpgrade)
         {
-        echo '<span style="color:red;">MIDAS need to be upgraded. <a href="'.$this->webroot.'/admin/#ui-tabs-2">Upgrade</a></span><br/><br/>';
+        echo '<span style="color:red;">Midas Platform needs to be upgraded. <a href="'.$this->webroot.'/admin/#ui-tabs-2">Upgrade</a></span><br/><br/>';
         }
       if($this->highNumberError)
         {
-        echo '<span style="color:red;">More than 5 errors occured in the last 24 hours. <a href="'.$this->webroot.'/admin/#ui-tabs-4">Check the logs</a></span><br/><br/>';
+        echo '<span style="color:red;">More than 5 errors have occured in the last 24 hours. <a href="'.$this->webroot.'/admin/#ui-tabs-4">Check the logs</a></span><br/><br/>';
         }
       ?>
       <div class="SubWrapper">
@@ -356,11 +356,11 @@ echo $this->doctype()
               }
           ?>
         </div>
-        <div class="Footer"><a href="http://www.kitware.com/products/midas.html">MIDAS</a> <?php echo $this->version ?> by <a href="http://www.kitware.com">Kitware</a> © <?php echo date("Y") ?> -
+        <div class="Footer"><a href="http://www.midasplatform.org/">Midas Platform</a> <?php echo $this->version ?> by <a href="http://www.kitware.com">Kitware</a> © <?php echo date("Y") ?> -
          <?php
          echo $this->t('Generated in').' '.$this->generatedTimer." s";
          ?>
-        - <a href="http://public.kitware.com/MidasBT/my_view_page.php"><?php echo $this->t('Report bug');?></a>
+        - <a href="https://github.com/midasplatform/Midas/issues"><?php echo $this->t('Report bug');?></a>
         </div>
       </div>
       <hr style="display: none;"/>

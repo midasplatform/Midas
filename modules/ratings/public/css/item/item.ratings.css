@@ -1,46 +1,45 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 #ratingsAverage {
-  width: 200px;
-  float: left;
+    float: left;
+    width: 200px;
 }
 
-
 #ratingsUser {
-  width: 200px;
-  float: right;
+    float: right;
+    width: 200px;
 }
 
 div.ratingsVSpacer {
-  height: 30px;
+    height: 30px;
 }
 
-div.ratingCountWrapper {
-
-}
+div.ratingCountWrapper {}
 
 span.averageStats {
-  margin-left: 7px;
-  color: #676767;
+    color: #676767;
+    margin-left: 7px;
 }
 
 span.addRating {
-  margin-right: 7px;
-  color: #676767;
-  float: left;
+    color: #676767;
+    float: left;
+    margin-right: 7px;
 }
 
 div.loginToRate {
-  padding-bottom: 8px;
-  font-size: 12px;
-  float: right;
+    float: right;
+    font-size: 12px;
+    padding-bottom: 8px;
 }
 
-#registerToRate,#loginToRate {
-  font-weight: bold;
-  text-decoration: none;
-  color: #56758B;
+#registerToRate, #loginToRate {
+    color: #56758B;
+    font-weight: bold;
+    text-decoration: none;
 }
 
-#registerToRate:hover,#loginToRate:hover {
-  text-decoration: underline;
-  cursor: pointer;
+#registerToRate:hover, #loginToRate:hover {
+    cursor: pointer;
+    text-decoration: underline;
 }

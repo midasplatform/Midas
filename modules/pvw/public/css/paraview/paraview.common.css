@@ -1,22 +1,23 @@
-div.midas-pvw-status{
-  font-size: 14px;
-  margin-top: 10px;
-  margin-bottom: 10px;
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+div.midas-pvw-status {
+    font-size: 14px;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 #renderercontainer {
-  z-index: 2;
-  overflow: hidden;
-  width: 575px;
-  height: 575px;
-  display: none;
-  position: relative;
+    display: none;
+    height: 575px;
+    overflow: hidden;
+    position: relative;
+    width: 575px;
+    z-index: 2;
 }
 
-
 #rendererOverlay {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  z-index: 1005; /* must be over 1000 */
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    z-index: 1005; /* must be over 1000 */
 }

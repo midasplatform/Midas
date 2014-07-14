@@ -30,27 +30,25 @@ class Visualize_ConfigController extends Visualize_AppController
     {
     $this->requireAdminPrivileges();
 
-    $module = 'visualize';
-
-    if(file_exists(LOCAL_CONFIGS_PATH."/".$module.".local.ini"))
+    $options = array('allowModifications' => true);
+    if(file_exists(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini'))
       {
-      $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH."/".$module.".local.ini", true);
+      $config = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini', 'global', $options);
       }
     else
       {
-      $applicationConfig = parse_ini_file(BASE_PATH.'/modules/'.$module.'/configs/module.ini', true);
+      $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', 'global', $options);
       }
+
     $configForm = $this->ModuleForm->Config->createConfigForm();
-
     $formArray = $this->getFormAsArray($configForm);
-    $formArray['useparaview']->setValue($applicationConfig['global']['useparaview']);
-    $formArray['userwebgl']->setValue($applicationConfig['global']['userwebgl']);
-    $formArray['pwapp']->setValue($applicationConfig['global']['pwapp']);
-    $formArray['customtmp']->setValue($applicationConfig['global']['customtmp']);
-    $formArray['usesymlinks']->setValue($applicationConfig['global']['usesymlinks']);
-    $formArray['pvbatch']->setValue($applicationConfig['global']['pvbatch']);
-    $formArray['paraviewworkdir']->setValue($applicationConfig['global']['paraviewworkdir']);
-
+    $formArray['customtmp']->setValue($config->customtmp);
+    $formArray['paraviewworkdir']->setValue($config->paraviewworkdir);
+    $formArray['pvbatch']->setValue($config->pvbatch);
+    $formArray['pwapp']->setValue($config->pwapp);
+    $formArray['useparaview']->setValue($config->useparaview);
+    $formArray['userwebgl']->setValue($config->userwebgl);
+    $formArray['usesymlinks']->setValue($config->usesymlinks);
     $this->view->configForm = $formArray;
 
     if($this->_request->isPost())
@@ -60,24 +58,20 @@ class Visualize_ConfigController extends Visualize_AppController
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
         {
-        if(file_exists(LOCAL_CONFIGS_PATH."/".$module.".local.ini.old"))
-          {
-          unlink(LOCAL_CONFIGS_PATH."/".$module.".local.ini.old");
-          }
-        if(file_exists(LOCAL_CONFIGS_PATH."/".$module.".local.ini"))
-          {
-          rename(LOCAL_CONFIGS_PATH."/".$module.".local.ini", LOCAL_CONFIGS_PATH."/".$module.".local.ini.old");
-          }
-        $applicationConfig['global']['useparaview'] = $this->_getParam('useparaview');
-        $applicationConfig['global']['customtmp'] = $this->_getParam('customtmp');
-        $applicationConfig['global']['userwebgl'] = $this->_getParam('userwebgl');
-        $applicationConfig['global']['usesymlinks'] = $this->_getParam('usesymlinks');
-        $applicationConfig['global']['pwapp'] = $this->_getParam('pwapp');
-        $applicationConfig['global']['pvbatch'] = $this->_getParam('pvbatch');
-        $applicationConfig['global']['paraviewworkdir'] = $this->_getParam('paraviewworkdir');
-        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH."/".$module.".local.ini", $applicationConfig);
+        $config->customtmp = $this->_getParam('customtmp');
+        $config->paraviewworkdir = $this->_getParam('paraviewworkdir');
+        $config->pvbatch = $this->_getParam('pvbatch');
+        $config->pwapp = $this->_getParam('pwapp');
+        $config->useparaview = $this->_getParam('useparaview');
+        $config->userwebgl = $this->_getParam('userwebgl');
+        $config->usesymlinks = $this->_getParam('usesymlinks');
+
+        $writer = new Zend_Config_Writer_Ini();
+        $writer->setConfig($config);
+        $writer->setFilename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini');
+        $writer->write();
         echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       }
     }
-  } // end class
+  }

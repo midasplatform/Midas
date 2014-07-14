@@ -1,161 +1,162 @@
-div.viewAction{
-  display:block!important;
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+div.viewAction {
+    display: block !important;
 }
 
-div.viewInfo{
-  display:block!important;
+div.viewInfo {
+    display: block !important;
 }
 
-table.bitstreamList{
-  display: table!important;
+table.bitstreamList {
+    display: table !important;
 }
 
 table#metadataTable {
-  display: table!important;
-  table-layout: fixed;
+    display: table !important;
+    table-layout: fixed;
 }
 
 table#metadataTable th.elementHeader {
-  width: 6em;
+    width: 6em;
 }
 
 table#metadataTable td {
-  overflow: hidden;
-  -o-text-overflow: ellipsis; /* Opera */
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 div.genericInfo {
-  position: relative;
+    position: relative;
 }
 
 div.genericInfo .genericSubtitle {
-  font-size: 10px;
+    font-size: 10px;
 }
 
-iframe#fullscreenVisualizeIframe{
-  border:0;
+iframe#fullscreenVisualizeIframe {
+    border: 0;
 }
 
-div#fullscreenPanel{
-  float:right;
-  width:380px;
-  -webkit-box-shadow: #CCC 0px 0px 3px;
-  -moz-box-shadow: 0px 0px 6px #CCC;
-  background-color: white;
-  border: 1px solid #D7D7D7;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
-  -khtml-border-radius: 6px;
-  border-radius: 6px;
-  padding: 0px 0px 7px;
+div#fullscreenPanel {
+    background-color: white;
+    border-radius: 6px;
+    -khtml-border-radius: 6px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border: 1px solid #D7D7D7;
+    box-shadow: 0 0 6px #CCC;
+    -moz-box-shadow: 0 0 6px #CCC;
+    -webkit-box-shadow: #CCC 0 0 3px;
+    float: right;
+    padding: 0 0 7px;
+    width: 380px;
 }
 
-div#fullscreenPanel h1{
-  font-size: 14px;
+div#fullscreenPanel h1 {
+    font-size: 14px;
 }
 
-div#fullscreenPanel ul{
-  list-style: none;
-  margin: 0;
-  padding: 0;
+div#fullscreenPanel ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
-img.closeVisuButton{
-  float:right;
+img.closeVisuButton {
+    float: right;
 }
 
-span.manageMetadata{
-  float:right;
-  display: inline;
+span.manageMetadata {
+    display: inline;
+    float: right;
 }
 
 #revisionList h3 a {
-  text-decoration: none;
+    text-decoration: none;
 }
 
 #revisionList a img {
-  float: left;
-  margin-right: 2px;
+    float: left;
+    margin-right: 2px;
 }
 
 #parentList a img {
-  position: relative;
-  top: 3px;
+    position: relative;
+    top: 3px;
 }
 
-#licenseDiv {
-
-}
+#licenseDiv {}
 
 div.itemViewMainSection {
-  border-top: 1px solid #D7D7D7;
-  margin-bottom: 14px;
+    border-top: 1px solid #D7D7D7;
+    margin-bottom: 14px;
 }
 
 div.itemViewMainSection h4 {
-  color: #999;
-  font-size: 11px;
-  text-shadow: white 0px 1px 1px;
-  text-transform: uppercase;
-  margin-top: 0.67em;
-  margin-bottom: 0.67em;
+    color: #999;
+    font-size: 11px;
+    margin-bottom: 0.67em;
+    margin-top: 0.67em;
+    text-shadow: white 0 1px 1px;
+    text-transform: uppercase;
 }
 
 table.bitstreamList, table.metadataList {
-  width: 100%;
-  border-spacing: 0px;
-  border-collapse: collapse;
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
 }
 
 table.bitstreamList th, table.metadataList th {
-  border: 1px solid gray;
-  background-color: #D0D0F6;
+    background-color: #D0D0F6;
+    border: 1px solid gray;
 }
 
 table.bitstreamList td, table.metadataList td {
-  border: 1px solid #B5B5B5;
+    border: 1px solid #B5B5B5;
 }
 
 div.revisionEntry {
-  padding-left: 13px !important;
-  padding-right: 13px !important;
-  border-top: 1px solid #A7A7A7 !important;
+    border-top: 1px solid #A7A7A7 !important;
+    padding-left: 13px !important;
+    padding-right: 13px !important;
 }
 
 img.editBitstreamIcon {
-  cursor: pointer;
-  float: none;
+    cursor: pointer;
+    float: none;
 }
 
 img.deleteBitstreamIcon {
-  cursor: pointer;
-  float: right;
+    cursor: pointer;
+    float: right;
 }
 
 img.bitstreamInfoIcon {
-  cursor: pointer;
-  float: right;
+    cursor: pointer;
+    float: right;
 }
 
 button.topDownloadButton {
-  width: 100px;
-  height: 35px;
-  border-radius: 6px;
-  border: #354856 1px solid;
-  color: white;
-  background-color: #ffffff;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 14px;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#4499cc), to(#4466aa));
-  background-image: -moz-linear-gradient(center top, #4499cc 0%, #4466aa 100% );
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4499cc', endColorstr='#4466aa');
+    background-color: #FFF;
+    background-image: -moz-linear-gradient(center top, #49C 0%, #46A 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#49C), to(#46A));
+    border-radius: 6px;
+    border: #354856 1px solid;
+    color: white;
+    cursor: pointer;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4499cc', endColorstr='#4466aa');
+    font-size: 14px;
+    font-weight: bold;
+    height: 35px;
+    width: 100px;
 }
 
 button.topDownloadButton:hover {
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#227777), to(#224444));
-  background-image: -moz-linear-gradient(center top, #227777 0%, #224444 100% );
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#227777', endColorstr='#224444');
+    background-image: -moz-linear-gradient(center top, #277 0%, #244 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#277), to(#244));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#227777', endColorstr='#224444');
 }

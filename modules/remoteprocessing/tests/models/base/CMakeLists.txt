@@ -17,4 +17,4 @@
 # limitations under the License.
 #=============================================================================
 
-add_midas_mysql_test( RemoteprocessingJobModel JobModelTest.php )
+add_midas_test( RemoteprocessingJobModel JobModelTest.php )

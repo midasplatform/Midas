@@ -1,239 +1,225 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 div.viewHeader {
-  background-color: #F6F9FE;
-  border-bottom: 1px solid #DADEE5;
-  -moz-border-radius-topright:6px;
-  -moz-border-radius-topleft:6px;
-  -webkit-border-top-left-radius:6px;
-  -webkit-border-top-right-radius:6px;
-  margin: 0px;
-  padding: 0px 0px 0px 10px;
-  min-height: 24px;
-  font-size: 14px;
-  color:#333ba0;
-  font-weight: bold;
+    background-color: #F6F9FE;
+    border-bottom: 1px solid #DADEE5;
+    -moz-border-radius-topleft: 6px;
+    -moz-border-radius-topright: 6px;
+    -webkit-border-top-left-radius: 6px;
+    -webkit-border-top-right-radius: 6px;
+    color: #333BA0;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0;
+    min-height: 24px;
+    padding: 0 0 0 10px;
 }
 
 span.headerSpan {
-  display: inline-block;
-  vertical-align: middle;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 div.viewWrapper {
-  margin-top: 0px;
-  padding-right: 245px;
-  position: relative;
-  padding-right: 275px;
+    margin-top: 0;
+    padding-right: 275px;
+    position: relative;
 }
 
 div.viewMain {
-  margin: 0px;
-  padding: 0px;
-  float: left;
-  position: relative;
-  padding-bottom: 1em;
-  padding: 5px 15px;
-  width: 100%;
+    float: left;
+    margin: 0;
+    padding: 5px 15px;
+    position: relative;
+    width: 100%;
 }
 
-div.viewSideBar{
-  margin-right: -300px;
-  padding-left: 10px;
-  padding-top: 5px;
-  width: 245px;
-  width: 215px;
-  z-index: 2;
-  float: left;
-  position: relative;
-  background-color: transparent;
-  border-bottom-left-radius: 0px 0px;
-  border-bottom-right-radius: 0px 0px;
-  border: none;
-  border-left: 1px solid #EFEFEF;
-  border-top-left-radius: 0px 0px;
-  border-top-right-radius: 0px 0px;
-  height: auto !important;
-  height: 100%;
-  min-height: 500px;
+div.viewSideBar {
+    background-color: transparent;
+    border-bottom: none;
+    border-left: 1px solid #EFEFEF;
+    border-radius: 0 0;
+    border-right: none;
+    border-top: none;
+    float: left;
+    height: auto !important;
+    height: 100%;
+    margin-right: -300px;
+    min-height: 500px;
+    padding-left: 10px;
+    padding-top: 5px;
+    position: relative;
+    width: 215px;
+    z-index: 2;
 }
 
-div.viewSelected{
-  display:none;
+div.viewSelected {
+    display: none;
 }
 
-div.viewNotice{
-  display: none;
-  position: absolute;
-  background-color: #45b775;
-  color: #012844;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 2px;
-  padding-bottom: 2px;
-  border: 1px solid #168846;
+div.viewNotice {
+    background-color: #45B775;
+    border: 1px solid #168846;
+    color: #012844;
+    display: none;
+    padding: 2px 10px;
+    position: absolute;
 }
 
-div.viewNoticeWrapper{
-  position: relative;
-  left: 145px;
-  top:4px;
+div.viewNoticeWrapper {
+    left: 145px;
+    position: relative;
+    top: 4px;
 }
 
-div.viewSideBar div.sideElement{
-  border-bottom: 1px solid white;
-  padding-bottom: 10px;
-  border-top: 1px solid #DAD8D4;
+div.viewSideBar div.sideElement {
+    border-bottom: 1px solid white;
+    border-top: 1px solid #DAD8D4;
+    padding-bottom: 10px;
 }
 
-div.viewSideBar div.sideElementFirst{
-  border-top:none !important;
-
-  padding-bottom: 5px;
+div.viewSideBar div.sideElementFirst {
+    border-top: none !important;
+    padding-bottom: 5px;
 }
 
-div.viewSideBar div.sideElementActions{
-  border-top:1px solid #DAD8D4;
-  border-bottom: 1px solid white;
-  padding-top: 5px;
+div.viewSideBar div.sideElementActions {
+    border-bottom: 1px solid white;
+    border-top: 1px solid #DAD8D4;
+    padding-top: 5px;
 }
 
-div.viewSideBar div.sideElement,div.viewSideBar div.sideElementActions,div.viewSideBar div.sideElementFirst {
-  padding-top: 3px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #DAD8D4;
-  border-top: none !important;
+div.viewSideBar div.sideElement, div.viewSideBar div.sideElementActions, div.viewSideBar div.sideElementFirst {
+    border-bottom: 1px solid #DAD8D4;
+    border-top: none !important;
+    padding-bottom: 10px;
+    padding-top: 3px;
 }
 
-div.viewSideBar div.sideElementLast{
-  border-bottom:none !important;
-  border-top: none !important;
-  padding-top: 5px;
-  padding-bottom: 10px;
+div.viewSideBar div.sideElementLast {
+    border-bottom: none !important;
+    border-top: none !important;
+    padding-bottom: 10px;
+    padding-top: 5px;
 }
 
-div.viewSideBar div.sideElement ul,div.viewSideBar div.sideElementFirst ul, div.viewSideBar div.sideElementActions ul, div.viewSideBar div.sideElementLast ul{
-  list-style:none;
-  margin:0;
-  padding: 0;
+div.viewSideBar div.sideElement ul, div.viewSideBar div.sideElementFirst ul, div.viewSideBar div.sideElementActions ul, div.viewSideBar div.sideElementLast ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 /** Breadcrumb list in header */
 
 ul.pathBrowser {
-  display: block;
-  list-style-type: disc;
-  margin: 0px;
-  padding-left: 0px;
+    display: block;
+    list-style-type: disc;
+    margin: 0;
+    padding-left: 0;
 }
 
 ul.pathBrowser li {
-  margin: 0;
-  list-style: none;
-  float: left;
-  background-repeat: no-repeat;
-  background-position: right;
-  display: list-item;
-  padding: 5px 16px 0px 3px;
-  background-image: url("../../images/icons/path-divider.png");
-  min-height: 19px;
+    background: url("../../images/icons/path-divider.png") no-repeat right;
+    display: list-item;
+    float: left;
+    list-style: none;
+    margin: 0;
+    min-height: 19px;
+    padding: 5px 16px 0 3px;
 }
 
 ul.pathBrowser li img {
-  position:relative;
-  top: -2px;
-  margin-right: 2px;
+    margin-right: 2px;
+    position: relative;
+    top: -2px;
 }
-
 
 ul.pathBrowser li span {
-  position:relative;
-  top: -4px;
+    position: relative;
+    top: -4px;
 }
 
-
 ul.pathBrowser li a {
-  font-size: 14px;
-  color: #333B80;
-  font-weight: bold;
+    color: #333B80;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 ul.pathBrowser li a:hover {
-  text-decoration: none;
-  color: #337755;
+    color: #375;
+    text-decoration: none;
 }
 
 /** Tabs*/
-div.ui-tabs{
-  padding: 0px 0px 0px 0px !important;
-  border: 0px;
+div.ui-tabs {
+    border: 0;
+    padding: 0 0 0 0 !important;
 }
 
-
-div.tabs .ui-tabs-nav{
-  border:0px !important;
-  background: none !important;
+div.tabs .ui-tabs-nav {
+    background: none !important;
+    border: 0 !important;
 }
 
-div.tabs .ui-tabs-nav{
-  border-bottom: 1px dotted grey;
+div.tabs .ui-tabs-nav {
+    border-bottom: 1px dotted gray;
 }
 
-div.tabs .ui-state-default{
-}
+div.tabs .ui-state-default {}
 
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
-border: 1px solid #C5DBEC!important;
+    border: 1px solid #C5DBEC !important;
 }
-
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
-border: 1px solid #F3F1EC;
+    border: 1px solid #F3F1EC;
 }
 
-.ui-widget-content{
-  background: white!important;
-}
-div.tabs .ui-tabs .ui-tabs-nav li a{
-  padding: 3px 10px!important;
-}
-.ui-tabs .ui-tabs-nav li a{
-  padding: 3px 10px!important;
+.ui-widget-content {
+    background: white !important;
 }
 
-div.tabs .ui-tabs-selected,div.tabs .ui-tabs-selected a{
-  color:#1D5987 !important;
-  font-weight: bold;
-  height:19px!important;
+div.tabs .ui-tabs .ui-tabs-nav li a {
+    padding: 3px 10px !important;
 }
 
-div.tabs .ui-state-default{
-  height: 20px;
+.ui-tabs .ui-tabs-nav li a {
+    padding: 3px 10px !important;
 }
 
+div.tabs .ui-tabs-selected, div.tabs .ui-tabs-selected a {
+    color: #1D5987 !important;
+    font-weight: bold;
+    height: 19px !important;
+}
+
+div.tabs .ui-state-default {
+    height: 20px;
+}
 
 div.tabs .ui-tabs-panel {
-  position: relative !important;
-  left: -15px!important;
-  border-top: 1px solid #F3F1EC;
-  width: 99%;
+    border-top: 1px solid #F3F1EC;
+    left: -15px !important;
+    position: relative !important;
+    width: 99%;
 }
 
-
-div.tabs{
-  display: none;
+div.tabs {
+    display: none;
 }
 
 img.progressIndeterminate {
-  display: block;
-  margin-top: 13px;
-  margin-bottom: 13px;
+    display: block;
+    margin-top: 13px;
+    margin-bottom: 13px;
 }
 
 div.MainDialog h4 {
-  border-bottom: 1px solid #d7d7d7;
-  margin-top: 0;
-  margin-bottom: 5px;
-  padding-top: 3px;
-  padding-bottom: 3px;
-  font-size: 14px;
-  color: #555;
+    border-bottom: 1px solid #D7D7D7;
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 5px;
+    margin-top: 0;
+    padding-bottom: 3px;
+    padding-top: 3px;
 }

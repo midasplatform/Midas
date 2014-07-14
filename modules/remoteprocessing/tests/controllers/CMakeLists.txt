@@ -17,6 +17,6 @@
 # limitations under the License.
 #=============================================================================
 
-#add_midas_mysql_test( RemoteprocessingJobController JobControllerTest.php )
-#add_midas_mysql_test( RemoteprocessingExecutableController ExecutableControllerTest.php )
-add_midas_mysql_test( RemoteprocessingConfigController ConfigControllerTest.php )
+#add_midas_test( RemoteprocessingJobController JobControllerTest.php )
+#add_midas_test( RemoteprocessingExecutableController ExecutableControllerTest.php )
+add_midas_test( RemoteprocessingConfigController ConfigControllerTest.php )

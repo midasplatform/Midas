@@ -89,11 +89,11 @@ class Visualize_Notification extends MIDAS_Notification
     $currentPort = "";
     $prefix = "http://";
 
-    if($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443)
+    if(isset($_SERVER["SERVER_PORT"]) && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443)
       {
       $currentPort = ":".$_SERVER['SERVER_PORT'];
       }
-    if($_SERVER['SERVER_PORT'] == 443 || (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])))
+    if((isset($_SERVER["SERVER_PORT"]) && $_SERVER['SERVER_PORT'] == 443) || (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])))
       {
       $prefix = "https://";
       }

@@ -87,7 +87,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       ?>
   </ul>
   <div id="tabs-1">
-     <?
+     <?php
       echo $this->element('feed');
       ?>
   </div>
@@ -147,13 +147,13 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       {
       ?>
   <div id="tabs-4">
-     <?
+     <?php
       $this->listFiles=$this->ownedItems;
       echo $this->element('listfiles');
       ?>
   </div>
   <div id="tabs-5">
-     <?
+     <?php
       $this->listFiles=$this->shareItems;
       echo $this->element('listfiles');
       ?>

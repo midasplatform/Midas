@@ -29,23 +29,23 @@ class Statistics_ConfigController extends Statistics_AppController
     {
     $this->requireAdminPrivileges();
 
+    $options = array('allowModifications' => true);
     if(file_exists(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini'))
       {
-      $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini', true);
+      $config = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini', 'global', $options);
       }
     else
       {
-      $applicationConfig = parse_ini_file(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', true);
+      $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', 'global', $options);
       }
+
     $configForm = $this->ModuleForm->Config->createConfigForm();
-
     $formArray = $this->getFormAsArray($configForm);
-    $formArray['piwikurl']->setValue($applicationConfig['global']['piwik.url']);
-    $formArray['piwikapikey']->setValue($applicationConfig['global']['piwik.apikey']);
-    $formArray['piwikid']->setValue($applicationConfig['global']['piwik.id']);
-    $formArray['ipinfodbapikey']->setValue($applicationConfig['global']['ipinfodb.apikey']);
-    $formArray['report']->setValue($applicationConfig['global']['report']);
-
+    $formArray['ipinfodbapikey']->setValue($config->ipinfodb->apikey);
+    $formArray['piwikapikey']->setValue($config->piwik->apikey);
+    $formArray['piwikid']->setValue($config->piwik->id);
+    $formArray['piwikurl']->setValue($config->piwik->url);
+    $formArray['report']->setValue($config->report);
     $this->view->configForm = $formArray;
 
     if($this->_request->isPost())
@@ -55,17 +55,6 @@ class Statistics_ConfigController extends Statistics_AppController
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
         {
-        if(file_exists(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini.old'))
-          {
-          unlink(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini.old');
-          }
-        if(file_exists(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini'))
-          {
-          rename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini', LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini.old');
-          }
-        $applicationConfig['global']['piwik.url'] = $this->_getParam('piwikurl');
-        $applicationConfig['global']['report'] = $this->_getParam('report');
-
         $jobModel = MidasLoader::loadModel('Job', 'scheduler');
         $jobs = $jobModel->getJobsByTask('TASK_STATISTICS_SEND_REPORT');
         $jobReport = false;
@@ -74,7 +63,7 @@ class Statistics_ConfigController extends Statistics_AppController
           $jobReport = $job;
           break;
           }
-        if($applicationConfig['global']['report'] == 1)
+        if($config->report == 1)
           {
           if($jobReport == false)
             {
@@ -119,12 +108,18 @@ class Statistics_ConfigController extends Statistics_AppController
         $jobLocation->setStatus(SCHEDULER_JOB_STATUS_TORUN);
         $jobModel->save($jobLocation);
 
-        $applicationConfig['global']['piwik.id'] = $this->_getParam('piwikid');
-        $applicationConfig['global']['piwik.apikey'] = $this->_getParam('piwikapikey');
-        $applicationConfig['global']['ipinfodb.apikey'] = $this->_getParam('ipinfodbapikey');
-        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini', $applicationConfig);
+        $config->piwik->apikey = $this->_getParam('piwikapikey');
+        $config->piwik->id = $this->_getParam('piwikid');
+        $config->piwik->url = $this->_getParam('piwikurl');
+        $config->ipinfodb->apikey = $this->_getParam('ipinfodbapikey');
+        $config->report = $this->_getParam('report');
+
+        $writer = new Zend_Config_Writer_Ini();
+        $writer->setConfig($config);
+        $writer->setFilename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini');
+        $writer->write();
         echo JsonComponent::encode(array(true, 'Changes saved'));
         }
       }
     }
-  } // end class
+  }

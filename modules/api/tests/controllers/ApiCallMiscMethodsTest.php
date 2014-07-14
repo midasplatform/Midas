@@ -17,35 +17,34 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 require_once BASE_PATH . '/modules/api/tests/controllers/ApiCallMethodsTest.php';
-/** Tests the functionality of miscellaneous web API methods */
+
+/** Tests the functionality of miscellaneous web API methods. */
 class ApiCallMiscMethodsTest extends ApiCallMethodsTest
   {
-  /** set up tests */
-  public function setUp()
+  /** Test the midas.version method. */
+  public function testVersion()
     {
-    parent::setUp();
-    }
-
-  /** Test the server info reporting methods */
-  public function testInfoMethods()
-    {
-    // Test midas.version
     $this->params['method'] = 'midas.version';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
     $this->assertEquals($resp->data->version, Zend_Registry::get('configDatabase')->version);
+    }
 
-    // Test midas.modules.list
-    $this->resetAll();
+  /** Test the midas.modules.list method. */
+  public function testModulesList()
+    {
     $this->params['method'] = 'midas.modules.list';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
     $this->assertNotEmpty($resp->data->modules);
     $this->assertTrue(in_array('api', $resp->data->modules));
+    }
 
-    // Test midas.methods.list
-    $this->resetAll();
+  /** Test the midas.methods.list method. */
+  public function testMethodsList()
+    {
     $this->params['method'] = 'midas.methods.list';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
@@ -67,9 +66,11 @@ class ApiCallMiscMethodsTest extends ApiCallMethodsTest
         $this->assertNotEmpty($method->help->params->email);
         }
       }
+    }
 
-    // Test midas.info
-    $this->resetAll();
+  /** Test the midas.info method. */
+  public function testInfo()
+    {
     $this->params['method'] = 'midas.info';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
@@ -81,32 +82,21 @@ class ApiCallMiscMethodsTest extends ApiCallMethodsTest
     $this->assertNotEmpty($resp->data->modules);
     $this->assertTrue(in_array('api', $resp->data->modules));
 
-    // We should get methods list
-    $this->assertNotEmpty($resp->data->methods);
-    foreach($resp->data->methods as $method)
-      {
-      $this->assertNotEmpty($method->name);
-      $this->assertNotEmpty($method->help);
-      $this->assertTrue(isset($method->help->description));
-      $this->assertTrue(isset($method->help->params));
-      $this->assertTrue(isset($method->help->example));
-      $this->assertTrue(isset($method->help->return));
-      }
+    // We should get resources list
+    $this->assertNotEmpty($resp->data->resources);
     }
 
-  /**
-   * Test the admin database cleanup method
-   */
+  /** Test the midas.admin.database.cleanup method. */
   public function testAdminDatabaseCleanup()
     {
-    $this->params['method'] = 'midas.admin.database.cleanup';
     $this->params['token'] = $this->_loginAsNormalUser();
+    $this->params['method'] = 'midas.admin.database.cleanup';
     $resp = $this->_callJsonApi();
     $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
 
     $this->resetAll();
-    $this->params['method'] = 'midas.admin.database.cleanup';
     $this->params['token'] = $this->_loginAsAdministrator();
+    $this->params['method'] = 'midas.admin.database.cleanup';
     $resp = $this->_callJsonApi();
     $this->_assertStatusOk($resp);
     }

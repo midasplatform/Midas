@@ -1,91 +1,89 @@
-/*-------------------------------------------------
-Login
--------------------------------------------------*/
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
-form#loginForm{
-  color: white;
-  margin-left: auto; 
-  margin-right: auto; 
-  position:relative;
-  top:13px;
-  width: 600px;
+form#loginForm {
+    color: white;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    top: 13px;
+    width: 600px;
 }
 
-
-form#loginForm div.loginError{
-  position:absolute;
-  color:#57BB7D;
-  top:-15px;
+form#loginForm div.loginError {
+    color: #57BB7D;
+    position: absolute;
+    top: -15px;
 }
 
-
-form#loginForm div.loginError span{
-  position:relative;
-  display:none;
+form#loginForm div.loginError span {
+    display: none;
+    position: relative;
 }
 
-form#loginForm div.loginError img{
-  position:relative;
-  display:none;
+form#loginForm div.loginError img {
+    display: none;
+    position: relative;
 }
 
-form#loginForm div{
-  display: inline;
+form#loginForm div {
+    display: inline;
 }
 
-form#loginForm div.rememberMe{
-  float:right;
-  position: relative;
-  top:20px;
-  left:-453px;
+form#loginForm div.rememberMe {
+    float: right;
+    left: -453px;
+    position: relative;
+    top: 20px;
 }
 
-form#loginForm div.links{
-  float:right;
-  position: relative;
-  top:1px;
-  left:-100px;
-}
-form#loginForm a{
-  color:white;
-  text-decoration: none;
+form#loginForm div.links {
+    float: right;
+    left: -100px;
+    position: relative;
+    top: 1px;
 }
 
-form#loginForm div.links a:hover{
-  color:grey;
+form#loginForm a {
+    color: white;
+    text-decoration: none;
 }
 
-form#loginForm input[type=text],form#loginForm input[type=password]{
-  margin-right: 10px;
-  background: #F3F1EC !important;
-  border: 1px solid grey;
-  color: black;
-  height: 18px;
-  width: 150px;
+form#loginForm div.links a:hover {
+    color: gray;
 }
 
-form#loginForm input[type=text]{
-  width: 200px;
-}
-form#loginForm input[type=password]{
-  width: 200px;
-}
-
-form#loginForm input[type=text]:hover,form#loginForm input[type=password]:hover{
-  background: white !important;
+form#loginForm input[type=text], form#loginForm input[type=password] {
+    background: #F3F1EC !important;
+    border: 1px solid gray;
+    color: black;
+    height: 18px;
+    margin-right: 10px;
+    width: 150px;
 }
 
-form#loginForm input[type=submit]{
-  margin-left: 0px;
-  position:relative;
-  left:0px;
-  top:0px;
+form#loginForm input[type=text] {
+    width: 200px;
 }
 
-form#loginForm table{
-  border-spacing: 0px;
+form#loginForm input[type=password] {
+    width: 200px;
 }
 
-form#loginForm #rememberMeText{
-  cursor: pointer;
+form#loginForm input[type=text]:hover, form#loginForm input[type=password]:hover {
+    background: white !important;
+}
+
+form#loginForm input[type=submit] {
+    left: 0;
+    margin-left: 0;
+    position: relative;
+    top: 0;
+}
+
+form#loginForm table {
+    border-spacing: 0;
+}
+
+form#loginForm #rememberMeText {
+    cursor: pointer;
 }

@@ -30,21 +30,21 @@ class Oai_ConfigController extends Oai_AppController
     {
     $this->requireAdminPrivileges();
 
-    if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini"))
+    $options = array('allowModifications' => true);
+    if(file_exists(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini'))
       {
-      $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", true);
+      $config = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini', 'global', $options);
       }
     else
       {
-      $applicationConfig = parse_ini_file(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', true);
+      $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', 'global', $options);
       }
+
     $configForm = $this->ModuleForm->Config->createConfigForm();
-
     $formArray = $this->getFormAsArray($configForm);
-    $formArray['repositoryname']->setValue($applicationConfig['global']['repositoryname']);
-    $formArray['adminemail']->setValue($applicationConfig['global']['adminemail']);
-    $formArray['repositoryidentifier']->setValue($applicationConfig['global']['repositoryidentifier']);
-
+    $formArray['adminemail']->setValue($config->adminemail);
+    $formArray['repositoryidentifier']->setValue($config->repositoryidentifier);
+    $formArray['repositoryname']->setValue($config->repositoryname);
     $this->view->configForm = $formArray;
 
     if($this->_request->isPost())
@@ -54,18 +54,14 @@ class Oai_ConfigController extends Oai_AppController
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
         {
-        if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old"))
-          {
-          unlink(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old");
-          }
-        if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini"))
-          {
-          rename(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old");
-          }
-        $applicationConfig['global']['repositoryname'] = $this->_getParam('repositoryname');
-        $applicationConfig['global']['adminemail'] = $this->_getParam('adminemail');
-        $applicationConfig['global']['repositoryidentifier'] = $this->_getParam('repositoryidentifier');
-        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", $applicationConfig);
+        $config->adminemail = $this->_getParam('adminemail');
+        $config->repositoryidentifier = $this->_getParam('repositoryidentifier');
+        $config->repositoryname = $this->_getParam('repositoryname');
+
+        $writer = new Zend_Config_Writer_Ini();
+        $writer->setConfig($config);
+        $writer->setFilename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini');
+        $writer->write();
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
       }

@@ -38,8 +38,13 @@ class Statistics_ReportComponent extends AppComponent
     $assetstores = $assetstoreModel->getAll();
     foreach($assetstores as $key => $assetstore)
       {
-      $freeSpace = round((disk_free_space($assetstore->getPath()) / disk_total_space($assetstore->getPath())) * 100, 2);
-      $reportContent .= '<br/>Assetstore '.$assetstore->getName().', Free space: '.$freeSpace.'%';
+      $totalSpace = UtilityComponent::diskTotalSpace($assetstore->getPath());
+      $freeSpace = UtilityComponent::diskFreeSpace($assetstore->getPath());
+      $reportContent .= '<br/>Assetstore '.$assetstore->getName();
+      if($totalSpace > 0)
+        {
+        $reportContent .= ', Free space: '.round(($freeSpace / $totalSpace) * 100, 2).'%';
+        }
       }
 
     $reportContent .= '<br/><br/><b>Dashboard</b><br/>';
@@ -79,22 +84,17 @@ class Statistics_ReportComponent extends AppComponent
     $reportContent .=  '<br/>Average time on the website: '.$piwik->avg_time_on_site;
     $this->report = $reportContent;
     return $reportContent;
-    }//end generate
+    }
 
   /** send the report to admins */
   public function send()
     {
+    $subject = 'Statistics Report';
     $userModel = MidasLoader::loadModel('User');
-    $mail = new Zend_Mail();
-    $mail->setBodyHtml($this->report);
-    $mail->setFrom('admin@foo.com', 'MIDAS');
-    $mail->setSubject('MIDAS Report');
-
     $admins = $userModel->getAdmins();
     foreach($admins as $admin)
       {
-      $mail->addTo($admin->getEmail(), $admin->getFullName());
-      $mail->send();
+      UtilityComponent::sendEmail($admin->getEmail(), $subject, $this->report);
       }
-    } //end send
-  } // end class
+    }
+  }

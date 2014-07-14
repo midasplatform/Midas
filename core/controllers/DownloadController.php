@@ -174,7 +174,7 @@ class DownloadController extends AppController
       else
         {
         ob_start();
-        Zend_Loader::loadClass('ZipStream', BASE_PATH.'/library/ZipStream/');
+        require_once 'ZipStream-PHP/zipstream.php';
         $this->_helper->viewRenderer->setNoRender();
         $name = $revision->getItem()->getName();
         $name = substr($name, 0, 50);
@@ -194,7 +194,7 @@ class DownloadController extends AppController
       }
     else
       {
-      Zend_Loader::loadClass('ZipStream', BASE_PATH.'/library/ZipStream/');
+      require_once 'ZipStream-PHP/zipstream.php';
       $this->_helper->viewRenderer->setNoRender();
       if(count($folders) == 1 && empty($revisions))
         {
@@ -514,7 +514,7 @@ class DownloadController extends AppController
   private function _downloadEmptyItem($item)
     {
     ob_start();
-    Zend_Loader::loadClass('ZipStream', BASE_PATH.'/library/ZipStream/');
+    require_once 'ZipStream-PHP/zipstream.php';
     $this->disableView();
     if(isset($item) && $item instanceof ItemDao)
       {

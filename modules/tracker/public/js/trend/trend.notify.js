@@ -1,3 +1,5 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.tracker = midas.tracker || {};
 
@@ -11,7 +13,7 @@ midas.tracker.successNotificationConfig = function (text) {
 };
 
 midas.tracker.toggleForm = function () {
-    if($('#noNotify').is(':checked')) {
+    if ($('#noNotify').is(':checked')) {
         $('#operatorSelect').attr('disabled', 'disabled');
         $('input.thresholdValue').val('').attr('disabled', 'disabled');
     }
@@ -24,7 +26,7 @@ midas.tracker.toggleForm = function () {
 $(document).ready(function () {
     $('input[name=doNotify]').change(midas.tracker.toggleForm);
     var html = $.trim($('#settingInfo').html());
-    if(html == '') {
+    if (html == '') {
         $('#noNotify').click();
     }
     else {

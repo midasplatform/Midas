@@ -234,10 +234,10 @@ class Remoteprocessing_ApiComponent extends AppComponent
       mkdir(UtilityComponent::getTempDirectory().'/remoteprocessing');
       }
 
-    $destionation = UtilityComponent::getTempDirectory().'/remoteprocessing/'.rand(1, 1000).time();
+    $destionation = UtilityComponent::getTempDirectory().'/remoteprocessing/'.mt_rand(1, 1000).time();
     while(file_exists($destionation))
       {
-      $destionation = UtilityComponent::getTempDirectory().'/remoteprocessing/'.rand(1, 1000).time();
+      $destionation = UtilityComponent::getTempDirectory().'/remoteprocessing/'.mt_rand(1, 1000).time();
       }
     mkdir($destionation);
 

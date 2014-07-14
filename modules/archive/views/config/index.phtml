@@ -22,6 +22,15 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.for
 ?>
 
 <div class="viewMain">
+  <div class ="genericWrapperTopRight">
+    <?php
+    echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
+    echo "<a  href='{$this->webroot}/admin#tabs-modules'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+    echo $this->t('Back');
+    echo "</a>";
+    echo '</div>';
+    ?>
+  </div>
   <div class="unzipCommandDescription">
     <p>
     If you want to use this module for extracting zip archives over 2GB, you will need to enter

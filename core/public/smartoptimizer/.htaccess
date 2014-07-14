@@ -1,2 +1,6 @@
-php_flag zlib.output_compression Off
-php_flag output_buffering Off
+# MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
+<IfModule php_module>
+    php_flag output_buffering Off
+    php_flag zlib.output_compression Off
+</IfModule>

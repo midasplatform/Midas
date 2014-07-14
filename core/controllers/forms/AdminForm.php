@@ -40,8 +40,15 @@ class AdminForm extends AppForm
 
     $timezone = new Zend_Form_Element_Select('timezone');
     $timezone->addMultiOptions(array(
-      'America/New_York' => 'America/New_York',
-      'Europe/Paris' => 'Europe/Paris'));
+      'America/Anchorage' => 'America/Anchorage',
+      'America/Chicago' => 'America/Chicago',
+      'America/Denver' => 'America/Denver',
+      'America/Los_Angeles' => 'America/Los Angeles',
+      'America/New_York' => 'America/New York',
+      'America/Phoenix' => 'America/Phoenix',
+      'Europe/London' => 'Europe/London',
+      'Europe/Paris' => 'Europe/Paris',
+      'Pacific/Honolulu' => 'Pacific/Honolulu'));
 
     $environment = new Zend_Form_Element_Select('environment');
     $environment->addMultiOptions(array(

@@ -111,13 +111,13 @@ class UserapiModel extends UserapiModelBase
 
     // seed with microseconds
     list($usec, $sec) = explode(' ', microtime());
-    srand((float) $sec + ((float) $usec * 100000));
+    mt_srand((float) $sec + ((float) $usec * 100000));
 
     $token = "";
     $max = strlen($keychars) - 1;
     for($i = 0; $i < $length; $i++)
       {
-      $token .= substr($keychars, rand(0, $max), 1);
+      $token .= substr($keychars, mt_rand(0, $max), 1);
       }
 
     // Find the api id

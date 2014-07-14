@@ -1,144 +1,144 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 div.addCommentWrapper {
-  padding-bottom: 5px;
-  border-bottom: 1px dashed #c0c0c0;
+    border-bottom: 1px dashed #C0C0C0;
+    padding-bottom: 5px;
 }
 
 div.loginToComment {
-  padding-bottom: 8px;
-  border-bottom: 1px dashed #c0c0c0;
+    border-bottom: 1px dashed #C0C0C0;
+    padding-bottom: 8px;
 }
 
-#registerToComment,#loginToComment {
-  font-weight: bold;
-  text-decoration: none;
-  color: #56758B;
+#registerToComment, #loginToComment {
+    color: #56758B;
+    font-weight: bold;
+    text-decoration: none;
 }
 
-#registerToComment:hover,#loginToComment:hover {
-  text-decoration: underline;
-  cursor: pointer;
+#registerToComment:hover, #loginToComment:hover {
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 #addCommentDiv {
-  width: 100%;
-  border: 1px solid #bdc7d8;
-  border-spacing: 0;
-  border-collapse: separate;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid #BDC7D8;
+    width: 100%;
 }
 
 #commentText {
-  width: 99%;
-  height: 25px;
-  resize: none;
-  font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', helvetica, arial, verdana, sans-serif;
-  font-size: 13px;
-  padding: 2px;
-  margin-bottom: 0px;
-  border: 0;
-  outline: 0;
+    border: 0;
+    font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', helvetica, arial, verdana, sans-serif;
+    font-size: 13px;
+    height: 25px;
+    margin-bottom: 0;
+    outline: 0;
+    padding: 2px;
+    resize: none;
+    width: 99%;
 }
 
-.commentLimit,.commentAs{
-  color: #777777;
-  font-size: 11px;
-  float: left;
-  height: 100%;
-  border-right: 1px solid #e2e2e2;
-  padding-right: 5px;
-  padding-left: 5px;
+.commentLimit, .commentAs {
+    border-right: 1px solid #E2E2E2;
+    color: #777;
+    float: left;
+    font-size: 11px;
+    height: 100%;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
-.commentLimitString ,.postingAsString{
-  margin-top: 5px;
+.commentLimitString, .postingAsString {
+    margin-top: 5px;
 }
 
 div.addCommentFooter {
-  background-color: #f2f2f2;
-  border-top: 1px solid #e2e2e2;
-  height: 26px;
-  margin: 0;
+    background-color: #F2F2F2;
+    border-top: 1px solid #E2E2E2;
+    height: 26px;
+    margin: 0;
 }
 
 #postingAsUsername {
-  color: #555555;
+    color: #555;
 }
 
 #addCommentButton {
-  float: right;
-  margin-right: 4px;
+    float: right;
+    margin-right: 4px;
 }
 
 #existingCommentsList {
-  width: 100%;
+    width: 100%;
 }
 
 .aComment {
-  width: 100%;
-  border-bottom: 1px solid #c0c0c0;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  min-height: 32px;
+    border-bottom: 1px solid #C0C0C0;
+    min-height: 32px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    width: 100%;
 }
 
-a.commentUserName,a.commentUserName:visited {
-  margin-left: 8px;
-  font-weight: bold !important;
-  text-decoration: none;
-  color: #56758B;
+a.commentUserName, a.commentUserName:visited {
+    color: #56758B;
+    font-weight: bold !important;
+    margin-left: 8px;
+    text-decoration: none;
 }
 
 a.commentUserName:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 .commentTextDiv {
-  margin-top: 8px;
-  margin-left: 40px;
+    margin-left: 40px;
+    margin-top: 8px;
 }
 
-.commentText {
-
-}
+.commentText {}
 
 .commentDate {
-  color: #969696;
+    color: #969696;
 }
 
 .commentThumbnail {
-  float: left;
+    float: left;
 }
 
 img.deleteCommentIcon {
-  float: right;
-  cursor: pointer;
+    cursor: pointer;
+    float: right;
 }
 
 div.commentsBottomMessage {
-  margin-top: 8px;
-  color: #969696;
+    color: #969696;
+    margin-top: 8px;
 }
 
 #refreshingCommentDiv {
-  margin-top: 5px;
+    margin-top: 5px;
 }
 
 span.loadingCommentsMessage {
-  color: #969696;
+    color: #969696;
 }
 
 div.commentPaginateWrapper {
-  margin-top: 8px;
+    margin-top: 8px;
 }
 
-a.commentItrLink,a.commentItrLink:visited {
-  font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', helvetica, arial, verdana, sans-serif;
-  text-decoration: none;
-  font-weight: bold;
-  color: #56758B;
-  font-size: 13px;
+a.commentItrLink, a.commentItrLink:visited {
+    color: #56758B;
+    font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', helvetica, arial, verdana, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    text-decoration: none;
 }
 
 a.commentItrLink:hover {
-  color: #b85541;
-  text-decoration: underline;
+    color: #B85541;
+    text-decoration: underline;
 }

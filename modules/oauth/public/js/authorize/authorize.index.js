@@ -1,7 +1,9 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.oauth = midas.oauth || {};
 
-midas.oauth.validateLogin = function() {
+midas.oauth.validateLogin = function () {
     'use strict';
     $('.form-login input').attr('disabled', 'disabled');
     $('.loginErrorMessage').html('').hide();
@@ -13,13 +15,14 @@ midas.oauth.loginCallback = function (response) {
 
     try {
         var ret = $.parseJSON(response);
-    } catch(e) {
+    }
+    catch (e) {
         $('.form-login input').removeAttr('disabled');
         $('.loginErrorMessage').html('An internal error occurred. Please contact an administrator.').show();
         return;
     }
 
-    if(ret.status == 'ok' && ret.redirect) {
+    if (ret.status == 'ok' && ret.redirect) {
         window.location = ret.redirect;
     }
     else {

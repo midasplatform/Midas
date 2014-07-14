@@ -1,80 +1,82 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 div.titleWrapper {
-  border-bottom: 1px solid #d7d7d7;
+    border-bottom: 1px solid #D7D7D7;
 }
 
 div.applicationName {
-  color: #525252;
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 5px;
+    color: #525252;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 5px;
 }
 
 div.applicationDescription {
-  color: #6d6d6d;
-  margin-bottom:8px;
+    color: #6D6D6D;
+    margin-bottom: 8px;
 }
 
 #packageList {
-  margin-top: 15px;
+    margin-top: 15px;
 }
 
 #packageList h3 a {
-  text-decoration: none;
+    text-decoration: none;
 }
 
-div.releaseEntry{
-  border-top: 1px solid #A7A7A7 !important;
-  padding-left: 13px !important;
-  padding-right: 13px !important;
+div.releaseEntry {
+    border-top: 1px solid #A7A7A7 !important;
+    padding-left: 13px !important;
+    padding-right: 13px !important;
 }
 
-table.packagesTable{
-  width:550px;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select:none;
-  border-collapse:collapse;
+table.packagesTable {
+    border-collapse: collapse;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    width: 550px;
 }
 
-table.packagesTable th{
-  padding-left: 5px;
-  background-color: #CCD7E0;
-  border: 1px #888888 solid;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  font-family: Arial;
+table.packagesTable th {
+    background-color: #CCD7E0;
+    border: 1px #888 solid;
+    font-family: Arial, sans-serif;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    padding-top: 5px;
 }
 
 th.actions {
-  width: 40%;
+    width: 40%;
 }
 
 th.platform {
-  width: 30%;
+    width: 30%;
 }
 
 th.type {
-  width: 30%;
+    width: 30%;
 }
 
 table.packagesTable tbody td {
-  padding-left: 3px;
-  border: 1px solid #a7a7a7;
-  padding-top: 3px;
-  padding-bottom: 3px;
-  font-family: Arial;
+    border: 1px solid #A7A7A7;
+    font-family: Arial, sans-serif;
+    padding-bottom: 3px;
+    padding-left: 3px;
+    padding-top: 3px;
 }
 
 table.packagesTable tbody td img {
-  position: relative;
-  top: 2px;
+    position: relative;
+    top: 2px;
 }
 
 form.editApplication input[type=text] {
-  width: 300px;
+    width: 300px;
 }
 
 form.editApplication textarea {
-  width: 298px;
-  resize: none;
+    resize: none;
+    width: 298px;
 }

@@ -17,16 +17,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 require_once BASE_PATH . '/modules/api/tests/controllers/ApiCallMethodsTest.php';
+
 /** Tests the functionality of the web API User methods */
 class ApiCallUserMethodsTest extends ApiCallMethodsTest
   {
-  /** set up tests */
-  public function setUp()
-    {
-    parent::setUp();
-    }
-
   /** Get the folders corresponding to the user */
   public function testUserFolders()
     {

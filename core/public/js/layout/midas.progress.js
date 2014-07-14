@@ -1,3 +1,5 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 
 /**
@@ -9,16 +11,20 @@ var midas = midas || {};
  * @param success The success function
  */
 midas.ajaxWithProgress = function (widget, messageContainer, url, params, onSuccess) {
-    $(widget).progressbar({ value: 0 });
+    $(widget).progressbar({
+        value: 0
+    });
     // First we have to create a new progress record on the server
     $.ajax({
         type: 'POST',
-        url: json.global.webroot+'/progress/create',
+        url: json.global.webroot + '/progress/create',
         success: function (data) {
             var progress = $.parseJSON(data);
             params.progressId = progress.progress_id;
             $.post(url, params, function (data) {
-                $(widget).progressbar({ value: 100 });
+                $(widget).progressbar({
+                    value: 100
+                });
                 $(messageContainer).html('');
                 onSuccess(data);
             });
@@ -32,10 +38,10 @@ midas.ajaxWithProgress = function (widget, messageContainer, url, params, onSucc
  */
 midas._pollProgress = function (widget, messageContainer, progressId) {
     $.ajax({
-        url: json.global.webroot+'/progress/get?progressId='+progressId,
+        url: json.global.webroot + '/progress/get?progressId=' + progressId,
         success: function (data) {
             var progress = $.parseJSON(data);
-            if(progress.progress_id) {
+            if (progress.progress_id) {
                 midas._updateProgress(widget, messageContainer, progress);
                 var delayedCall = function () { // scope closure
                     midas._pollProgress(widget, messageContainer, progressId);
@@ -52,15 +58,18 @@ midas._pollProgress = function (widget, messageContainer, progressId) {
 midas._updateProgress = function (widget, messageContainer, progress) {
     $(messageContainer).html(progress.message);
 
-    if(progress.maximum > 0) {
+    if (progress.maximum > 0) {
         var percent = Math.round(100 * (progress.current / progress.maximum));
         $('img.progressIndeterminate').remove();
-        $(widget).show().progressbar({ value: percent });
-    } else {
+        $(widget).show().progressbar({
+            value: percent
+        });
+    }
+    else {
         $(widget).hide();
-        if($('img.progressIndeterminate').length == 0) {
+        if ($('img.progressIndeterminate').length == 0) {
             $(messageContainer).before(
-              ' <img class="progressIndeterminate" alt="" src="'+json.global.coreWebroot+'/public/images/icons/loading.gif" /> ');
+                ' <img class="progressIndeterminate" alt="" src="' + json.global.coreWebroot + '/public/images/icons/loading.gif" /> ');
         }
     }
 };

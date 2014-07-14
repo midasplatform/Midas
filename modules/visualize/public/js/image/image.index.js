@@ -1,7 +1,8 @@
-$(document).ready(function(){
-  $("#viewer").iviewer(
-      {
-      src: $('div#urlImage').html(),
-      update_on_resize: false
-      });
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
+$(document).ready(function () {
+    $("#viewer").iviewer({
+        src: $('div#urlImage').html(),
+        update_on_resize: false
+    });
 });

@@ -1,62 +1,64 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 div.producerInfoContainer {
-  border-bottom: 1px solid #d7d7d7;
-  margin-bottom: 6px;
-  padding-bottom: 4px;
+    border-bottom: 1px solid #D7D7D7;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
 }
 
 div.producerData, div.datasetHeader {
-  color: #777777;
-  margin-bottom: 6px;
+    color: #777;
+    margin-bottom: 6px;
 }
 
 div.sectionTitle {
-  margin-bottom: 8px;
-  color: #707070;
-  font-size: 18px;
+    color: #707070;
+    font-size: 18px;
+    margin-bottom: 8px;
 }
 
 div.trendGroupContainer {
-  border-radius: 5px;
-  border: 1px solid #a7a7a7;
-  padding: 6px;
-  margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #A7A7A7;
+    margin-bottom: 15px;
+    padding: 6px;
 }
 
 div.headerSeparator {
-  margin-top: 8px;
-  margin-bottom: 5px;
-  height: 1px;
-  background-color: #d7d7d7;
-  width: 100%;
+    background-color: #D7D7D7;
+    height: 1px;
+    margin-bottom: 5px;
+    margin-top: 8px;
+    width: 100%;
 }
 
 div.trendContainer {
-  font-size: 14px;
-  color: #56758b;
-  margin-bottom: 2px;
+    color: #56758B;
+    font-size: 14px;
+    margin-bottom: 2px;
 }
 
 div.trendContainer input[type="checkbox"] {
-  position: relative;
-  top: 1px;
+    position: relative;
+    top: 1px;
 }
 
 a.trendLink {
-  color: #56758b !important;
-  font-weight: bold !important;
-  display: inline-block;
-  width: 90%;
-  padding-top: 3px;
-  padding-bottom: 3px;
-  padding-left: 3px;
+    color: #56758B !important;
+    display: inline-block;
+    font-weight: bold !important;
+    padding-bottom: 3px;
+    padding-left: 3px;
+    padding-top: 3px;
+    width: 90%;
 }
 
 a.trendLink:hover {
-  text-decoration: none !important;
-  color: #16354b;
-  background-color: #e5e5e5;
+    background-color: #E5E5E5;
+    color: #16354B;
+    text-decoration: none !important;
 }
 
 input.selectTrend {
-  display: inline;
+    display: inline;
 }

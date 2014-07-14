@@ -1,4 +1,4 @@
-application: your-appengine-project
+application: your-appengine-project-id
 version: 1
 runtime: php
 api_version: 1
@@ -8,20 +8,28 @@ handlers:
 - url: /(.*\.(css|gif|ico|jpg|js|png))$
   static_files: \1
   upload: .*\.(css|gif|ico|jpg|js|png)$
+  secure: always
+
+- url: /scheduler/run
+  script: index.php
+  login: admin
+  secure: always
 
 - url: /.*
   script: index.php
+  secure: always
 
 env_variables:
   midas_data_path: gs://your-cloudstorage-bucket/data
+  midas_email_sender: no-reply@your-appengine-project-id.appspotmail.com
   midas_local_configs_path: gs://your-cloudstorage-bucket/configs
   midas_temp_path: gs://your-cloudstorage-bucket/tmp
 
 skip_files:
-- ^(.*/)?.*/(.htaccess|CMakeLists\.txt)$
-- ^(.*/)?(\.gitignore|\.travis.yml|composer\.json|COPYRIGHT|CTestConfig\.cmake|LICENSE|README\.md|Vagrantfile)$
+- ^(.*/)?.*/(\.DS_Store|\.htaccess|\.gitignore|CMakeLists\.txt|.*\.java)$
+- ^(.*/)?(\.project|\.travis.yml|\.zfproject\.xml|composer\.json|COPYRIGHT|CTestConfig\.cmake|LICENSE|README\.md|Vagrantfile)$
 - ^(.*/)?core/configs/.*\.local\.ini$
-- ^(.*/)?(\.git|\.vagrant|data|log|provisioning|tests|tmp|utils)/.*
+- ^(.*/)?(\.git|\.idea|\.vagrant|data|log|nbproject|provisioning|tests|tmp|utils)/.*
 - ^(.*/)?(core|modules/.*)/(database/(mongo|pgsql)|tests)/.*
 - ^(.*/)?library/(CMake|Executable)/.*
-- ^(.*/)?modules/(batchmake|cleanup|dicom.*|example|metadataextractor|pvw|remoteprocessing|scheduler|solr|statistics|thumbnailcreator|tracker|visualize)/.*
+- ^(.*/)?modules/(batchmake|dicom.*|example|metadataextractor|pvw|remoteprocessing|solr|statistics|thumbnailcreator|visualize)/.*

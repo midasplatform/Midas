@@ -1,179 +1,177 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 body {
-  border: 0px;
-  font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', helvetica, arial, verdana, sans-serif;
-  font-size: 12px;
-  margin: 0px;
-  padding: 0px;
-  text-align: left;
-  width: 100%;
-  height: 100%;
+    border: 0;
+    font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', helvetica, arial, verdana, sans-serif;
+    font-size: 12px;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    width: 100%;
 }
 
-img{
-  border:0px;
+img {
+    border: 0;
 }
 
 a {
-  cursor:pointer;
+    cursor: pointer;
 }
 
 a:visited {
-  text-decoration: none;
-  border:none;
+    border: none;
+    text-decoration: none;
 }
 
-a:active, li:active
-{
-  outline: none;
+a:active, li:active {
+    outline: none;
 }
 
-a:focus, li:focus
-{
-  -moz-outline-style: none;
+a:focus, li:focus {
+    -moz-outline-style: none;
 }
 
-img.thumbnailSmall{
-  width: 32px;
-  height: 32px;
-  margin-right: 3px;
+img.thumbnailSmall {
+    height: 32px;
+    margin-right: 3px;
+    width: 32px;
 }
 
 .ui-widget {
-
-  font-family: 'Lucida Grande', Verdana, Arial, Helvetica, sans-serif !important;
-  font-size: 12px!important;
+    font-family: 'Lucida Grande', Verdana, Arial, Helvetica, sans-serif !important;
+    font-size: 12px !important;
 }
 
-div#guideRobot{
-  display:none;
+div#guideRobot {
+    display: none;
 }
 
-div.genericBigButton{
-  font-size: 12px;
-  font-weight: normal;
-  color:black;
-  cursor:pointer;
-  display: block;
-  float: left;
-  border: #354856 1px solid;
-  list-style-type: none;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  -khtml-border-radius: 3px;
-  border-radius: 3px;
-  background-color: #ffffff;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#c4c4c4));
-  background-image: -moz-linear-gradient(center top, #ffffff 0%, #c4c4c4 100% );
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#c4c4c4');
-  -webkit-box-shadow: #666 0 0 2px;
-  box-shadow: #666 0 0 2px;
-  -moz-box-shadow: 0px 0px 2px #666;
-  padding: 1px 3px 2px 3px;
+div.genericBigButton {
+    background-color: #FFF;
+    background-image: -moz-linear-gradient(center top, #FFF 0%, #C4C4C4 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#C4C4C4));
+    border-radius: 3px;
+    -khtml-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border: #354856 1px solid;
+    box-shadow: #666 0 0 2px;
+    -moz-box-shadow: 0 0 2px #666;
+    -webkit-box-shadow: #666 0 0 2px;
+    color: black;
+    cursor: pointer;
+    display: block;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#c4c4c4');
+    float: left;
+    font-size: 12px;
+    font-weight: normal;
+    list-style-type: none;
+    padding: 1px 3px 2px 3px;
 }
 
-div.genericBigButton a{
-  font-size: 12px!important;
-  font-weight: normal!important;
-  color:black!important;
+div.genericBigButton a {
+    color: black !important;
+    font-size: 12px !important;
+    font-weight: normal !important;
 }
 
-div.genericBigButton a:hover{
-  text-decoration: none!important;
+div.genericBigButton a:hover {
+    text-decoration: none !important;
 }
 
-
-div.genericBigButton:hover{
-  background-color: #bddcc9;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#bddcc9), to(#8ab79b));
-  background-image: -moz-linear-gradient(center top, #bddcc9 0%, #8ab79b 100% );
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#bddcc9', endColorstr='#8ab79b');
+div.genericBigButton:hover {
+    background-color: #BDDCC9;
+    background-image: -moz-linear-gradient(center top, #BDDCC9 0%, #8AB79B 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#BDDCC9), to(#8AB79B));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#bddcc9', endColorstr='#8ab79b');
 }
 
-div.genericWrapperTopRight{
-  float:right;
+div.genericWrapperTopRight {
+    float: right;
 }
 
-div.viewAction li a:hover, div.genericAction li a:hover, div.viewSelected li a:hover{
-  text-decoration: none;
+div.viewAction li a:hover, div.genericAction li a:hover, div.viewSelected li a:hover {
+    text-decoration: none;
 }
 
-div.viewAction li img, div.genericAction li img, div.viewSelected li img{
-  position:relative;
-  top:3px;
+div.viewAction li img, div.genericAction li img, div.viewSelected li img {
+    position: relative;
+    top: 3px;
 }
 
-div.viewAction hr, div.genericAction hr{
-  margin-bottom: 0px;
-  margin-top: 3px;
-  color: #D7D7D7;
-  background-color: #D7D7D7;
-  height: 1px;
-  border: 0;
-  width: 130px;
-  margin-left: 0px;
+div.viewAction hr, div.genericAction hr {
+    background-color: #D7D7D7;
+    border: 0;
+    color: #D7D7D7;
+    height: 1px;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-top: 3px;
+    width: 130px;
 }
 
 div.viewSideBar h1 {
-  color: #999;
-  font-size: 11px;
-  text-shadow: white 0px 1px 1px;
-  text-transform: uppercase;
-  margin-top: 0.67em;
-  margin-bottom: 0.67em;
+    color: #999;
+    font-size: 11px;
+    margin-bottom: 0.67em;
+    margin-top: 0.67em;
+    text-shadow: white 0 1px 1px;
+    text-transform: uppercase;
 }
 
-.jgrowl{
-  min-width: 300px !important;
-  z-index: 15102 !important;
-  font-size: 13px !important;
-  font-weight: bold !important;
-  padding-top: 2px !important;
-  padding-bottom: 2px !important;
+.jgrowl {
+    font-size: 13px !important;
+    font-weight: bold !important;
+    min-width: 300px !important;
+    padding-bottom: 2px !important;
+    padding-top: 2px !important;
+    z-index: 15102 !important;
 }
 
-.uploadqtip{
-  min-width: 600px!important;
-  border: 1px solid grey!important;
-  background-color: white !important;
+.uploadqtip {
+    background-color: white !important;
+    border: 1px solid gray !important;
+    min-width: 600px !important;
 }
 
-.qtip-titlebar{
-  background-color: #d7d7d7 !important;
+.qtip-titlebar {
+    background-color: #D7D7D7 !important;
 }
 
 .growlError {
-  background: url(../../images/icons/nok.png) no-repeat;
-  padding-left: 18px;
+    background: url(../../images/icons/nok.png) no-repeat;
+    padding-left: 18px;
 }
 
 .growlWarning {
-  background: url(../../images/icons/warning.png) no-repeat;
-  padding-left: 18px;
+    background: url(../../images/icons/warning.png) no-repeat;
+    padding-left: 18px;
 }
 
 .growlOk {
-  background: url(../../images/icons/ok.png) no-repeat;
-  padding-left: 18px;
+    background: url(../../images/icons/ok.png) no-repeat;
+    padding-left: 18px;
 }
 
 .recentItem {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  -o-text-overflow: ellipsis;
-  white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-div.viewWrapper a{
-  cursor: pointer;
-  color: #56758B;
-  text-decoration: none;
-  font-weight: 500;
+div.viewWrapper a {
+    color: #56758B;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
 }
 
-div.viewWrapper a:hover{
-  text-decoration: underline;
+div.viewWrapper a:hover {
+    text-decoration: underline;
 }
 
-div.errorText,span.errorText {
-  color: red;
+div.errorText, span.errorText {
+    color: red;
 }

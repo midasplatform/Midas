@@ -1,3 +1,5 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.tracker = midas.tracker || {};
 
@@ -11,19 +13,19 @@ midas.tracker.unofficialVisible = true;
  * permalinking easy.
  */
 midas.tracker.updateUrlBar = function () {
-    if(typeof window.history.replaceState == 'function') {
-        var params = '?trendId='+json.tracker.trendIds;
-        params += '&startDate='+$('#startdate').val();
-        params += '&endDate='+$('#enddate').val();
+    if (typeof window.history.replaceState == 'function') {
+        var params = '?trendId=' + json.tracker.trendIds;
+        params += '&startDate=' + $('#startdate').val();
+        params += '&endDate=' + $('#enddate').val();
 
-        if(json.tracker.rightTrend) {
-            params += '&rightTrendId='+json.tracker.rightTrend.trend_id;
-            if(typeof json.tracker.y2Min != 'undefined' && typeof json.tracker.y2Max != 'undefined') {
-                params += '&y2Min='+json.tracker.y2Min+'&y2Max='+json.tracker.y2Max;
+        if (json.tracker.rightTrend) {
+            params += '&rightTrendId=' + json.tracker.rightTrend.trend_id;
+            if (typeof json.tracker.y2Min != 'undefined' && typeof json.tracker.y2Max != 'undefined') {
+                params += '&y2Min=' + json.tracker.y2Min + '&y2Max=' + json.tracker.y2Max;
             }
         }
-        if(typeof json.tracker.yMin != 'undefined' && typeof json.tracker.yMax != 'undefined') {
-            params += '&yMin='+json.tracker.yMin+'&yMax='+json.tracker.yMax;
+        if (typeof json.tracker.yMin != 'undefined' && typeof json.tracker.yMax != 'undefined') {
+            params += '&yMin=' + json.tracker.yMin + '&yMax=' + json.tracker.yMax;
         }
         window.history.replaceState({}, '', params);
     }
@@ -33,14 +35,16 @@ midas.tracker.updateUrlBar = function () {
  * Extract the jqplot curve data from the scalar daos passed to us
  */
 midas.tracker.extractCurveData = function (curves) {
-    var allPoints = [], allColors = [], minVal, maxVal;
-    $.each(curves, function(idx, scalars) {
-        if(!scalars) {
+    var allPoints = [],
+        allColors = [],
+        minVal, maxVal;
+    $.each(curves, function (idx, scalars) {
+        if (!scalars) {
             return;
         }
         var points = [];
         var colors = [];
-        $.each(scalars, function(idx, scalar) {
+        $.each(scalars, function (idx, scalar) {
             if (!midas.tracker.unofficialVisible && scalar.official == 0) {
                 return;
             }
@@ -49,13 +53,13 @@ midas.tracker.extractCurveData = function (curves) {
                 points.push([scalar.submit_time, value]);
             }
 
-            if(typeof minVal == 'undefined' || value < minVal) {
+            if (typeof minVal == 'undefined' || value < minVal) {
                 minVal = value;
             }
-            if(typeof maxVal == 'undefined' || value > maxVal) {
+            if (typeof maxVal == 'undefined' || value > maxVal) {
                 maxVal = value;
             }
-            if(scalar.official == 1) {
+            if (scalar.official == 1) {
                 colors.push(midas.tracker.OFFICIAL_COLOR_KEY);
             }
             else {
@@ -78,7 +82,7 @@ midas.tracker.extractCurveData = function (curves) {
  */
 midas.tracker.populateInfo = function (curveData) {
     var count = curveData.points[0].length;
-    if(json.tracker.rightTrend) {
+    if (json.tracker.rightTrend) {
         count += curveData.points[1].length;
     }
     $('#pointCount').html(count);
@@ -88,26 +92,29 @@ midas.tracker.populateInfo = function (curveData) {
 
 midas.tracker.bindPlotEvents = function () {
     $('#chartDiv').unbind('jqplotDataClick').bind('jqplotClick', function (ev, gridpos, datapos, dataPoint, plot) {
-        if(dataPoint == null || typeof dataPoint.seriesIndex == 'undefined') {
+        if (dataPoint == null || typeof dataPoint.seriesIndex == 'undefined') {
             return;
         }
         var scalarId;
-        if(!json.tracker.rightTrend || dataPoint.seriesIndex == 0) {
+        if (!json.tracker.rightTrend || dataPoint.seriesIndex == 0) {
             scalarId = json.tracker.scalars[dataPoint.seriesIndex][dataPoint.pointIndex].scalar_id;
-        } else {
+        }
+        else {
             scalarId = json.tracker.rightScalars[dataPoint.pointIndex].scalar_id;
         }
         $('.webroot').val(json.global.webroot);
-        midas.loadDialog('scalarPoint'+scalarId, '/tracker/scalar/details?scalarId='+scalarId);
-        midas.showDialog('Scalar details', false, {width: 500});
+        midas.loadDialog('scalarPoint' + scalarId, '/tracker/scalar/details?scalarId=' + scalarId);
+        midas.showDialog('Scalar details', false, {
+            width: 500
+        });
     });
 };
 
 midas.tracker.renderChartArea = function (curveData, first) {
-    if(midas.tracker.plot) {
+    if (midas.tracker.plot) {
         midas.tracker.plot.destroy();
     }
-    if(curveData.points[0].length > 0) {
+    if (curveData.points[0].length > 0) {
         $('#chartDiv').html('');
         var opts = {
             axes: {
@@ -145,7 +152,7 @@ midas.tracker.renderChartArea = function (curveData, first) {
             series: []
         };
         // Now assign official/unofficial color to each marker
-        $.each(curveData.colors, function(idx, trendColors) {
+        $.each(curveData.colors, function (idx, trendColors) {
             opts.series[idx] = {
                 renderer: $.jqplot.DifferentColorMarkerLineRenderer,
                 rendererOptions: {
@@ -155,7 +162,7 @@ midas.tracker.renderChartArea = function (curveData, first) {
                 }
             };
         });
-        if(json.tracker.rightTrend) {
+        if (json.tracker.rightTrend) {
             opts.legend = {
                 show: true,
                 labels: [json.tracker.trends[0].display_name, json.tracker.rightTrend.display_name],
@@ -175,18 +182,18 @@ midas.tracker.renderChartArea = function (curveData, first) {
             opts.series[0].yaxis = 'yaxis';
             opts.series[1].yaxis = 'y2axis';
 
-            if(typeof json.tracker.y2Min != 'undefined' && typeof json.tracker.y2Max != 'undefined') {
+            if (typeof json.tracker.y2Min != 'undefined' && typeof json.tracker.y2Max != 'undefined') {
                 opts.axes.y2axis.min = parseFloat(json.tracker.y2Min);
                 opts.axes.y2axis.max = parseFloat(json.tracker.y2Max);
                 opts.axes.y2axis.pad = 1.0;
             }
         }
-        else if(json.tracker.trends.length > 1) {
+        else if (json.tracker.trends.length > 1) {
             var labels = [];
-            $.each(json.tracker.trends, function(key, trend) {
+            $.each(json.tracker.trends, function (key, trend) {
                 var label = trend.display_name;
-                if(trend.unit != '') {
-                    label+=' ('+trend.unit+')';
+                if (trend.unit != '') {
+                    label += ' (' + trend.unit + ')';
                 }
                 labels.push(label);
             });
@@ -197,7 +204,7 @@ midas.tracker.renderChartArea = function (curveData, first) {
             };
         }
 
-        if(typeof json.tracker.yMin != 'undefined' && typeof json.tracker.yMax != 'undefined') {
+        if (typeof json.tracker.yMin != 'undefined' && typeof json.tracker.yMax != 'undefined') {
             opts.axes.yaxis.min = parseFloat(json.tracker.yMin);
             opts.axes.yaxis.max = parseFloat(json.tracker.yMax);
             opts.axes.yaxis.pad = 1.0;
@@ -213,32 +220,32 @@ midas.tracker.renderChartArea = function (curveData, first) {
     else {
         $('#chartDiv').html('<span class="noPoints">There are no values for this trend in the specified date range.</span>');
     }
-    if(first) {
-        $.jqplot.postDrawHooks.push(midas.tracker.bindPlotEvents); //must re-bind data click each time we redraw
+    if (first) {
+        $.jqplot.postDrawHooks.push(midas.tracker.bindPlotEvents); // must re-bind data click each time we redraw
     }
     midas.tracker.populateInfo(curveData);
 };
 
 $(window).load(function () {
     var inputCurves = json.tracker.scalars;
-    if(json.tracker.rightTrend) {
+    if (json.tracker.rightTrend) {
         inputCurves.push(json.tracker.rightScalars);
     }
     var curveData = midas.tracker.extractCurveData(inputCurves);
 
-    if(json.tracker.trends.length == 1) {
+    if (json.tracker.trends.length == 1) {
         midas.tracker.yaxisLabel = json.tracker.trends[0].display_name;
-        if(json.tracker.trends[0].unit) {
-            midas.tracker.yaxisLabel += ' ('+json.tracker.trends[0].unit+')';
+        if (json.tracker.trends[0].unit) {
+            midas.tracker.yaxisLabel += ' (' + json.tracker.trends[0].unit + ')';
         }
     }
     else {
         midas.tracker.yaxisLabel = '';
     }
-    if(json.tracker.rightTrend) {
+    if (json.tracker.rightTrend) {
         midas.tracker.yaxis2Label = json.tracker.rightTrend.display_name;
-        if(json.tracker.rightTrend.unit) {
-            midas.tracker.yaxis2Label += ' ('+json.tracker.rightTrend.unit+')';
+        if (json.tracker.rightTrend.unit) {
+            midas.tracker.yaxis2Label += ' (' + json.tracker.rightTrend.unit + ')';
         }
     }
 
@@ -246,14 +253,14 @@ $(window).load(function () {
         defaultDate: "today",
         changeMonth: true,
         numberOfMonths: 1,
-        onSelect: function(selectedDate) {
-          var option = this.id == "startdate" ? "minDate" : "maxDate";
-          var instance = $(this).data("datepicker");
-          var date = $.datepicker.parseDate(
-            instance.settings.dateFormat || $.datepicker._defaults.dateFormat,
-            selectedDate, instance.settings);
-          dates.not(this).datepicker("option", option, date);
-          },
+        onSelect: function (selectedDate) {
+            var option = this.id == "startdate" ? "minDate" : "maxDate";
+            var instance = $(this).data("datepicker");
+            var date = $.datepicker.parseDate(
+                instance.settings.dateFormat || $.datepicker._defaults.dateFormat,
+                selectedDate, instance.settings);
+            dates.not(this).datepicker("option", option, date);
+        },
         dayNamesMin: ["S", "M", "T", "W", "T", "F", "S"]
     });
     $('#startdate').val(json.tracker.initialStartDate);
@@ -266,15 +273,15 @@ $(window).load(function () {
             startDate: $('#startdate').val(),
             endDate: $('#enddate').val()
         };
-        if(json.tracker.rightTrend) {
-          params.rightTrendId = json.tracker.rightTrend.trend_id;
+        if (json.tracker.rightTrend) {
+            params.rightTrendId = json.tracker.rightTrend.trend_id;
         }
-        $.post(json.global.webroot+'/tracker/trend/scalars', params, function (retVal) {
+        $.post(json.global.webroot + '/tracker/trend/scalars', params, function (retVal) {
             var resp = $.parseJSON(retVal);
             json.tracker.scalars = resp.scalars;
             json.tracker.rightScalars = resp.rightScalars;
             var inputCurves = json.tracker.scalars;
-            if(json.tracker.rightTrend) {
+            if (json.tracker.rightTrend) {
                 inputCurves.push(json.tracker.rightScalars);
             }
             midas.tracker.updateUrlBar();
@@ -292,11 +299,13 @@ $(window).load(function () {
     midas.tracker.renderChartArea(curveData, true);
 
     $('a.thresholdAction').click(function () {
-        midas.loadDialog('thresholdNotification', '/tracker/trend/notify?trendId='+json.tracker.trends[0].trend_id);
+        midas.loadDialog('thresholdNotification', '/tracker/trend/notify?trendId=' + json.tracker.trends[0].trend_id);
         midas.showDialog('Email notification settings', false);
     });
     $('a.axesControl').click(function () {
-        midas.showDialogWithContent('Axes Controls', $('#axesControlTemplate').html(), false, {width: 380});
+        midas.showDialogWithContent('Axes Controls', $('#axesControlTemplate').html(), false, {
+            width: 380
+        });
         var container = $('div.MainDialog');
         container.find('input.yMin').val(json.tracker.yMin);
         container.find('input.yMax').val(json.tracker.yMax);
@@ -305,7 +314,7 @@ $(window).load(function () {
         container.find('input.updateAxes').unbind('click').click(function () {
             json.tracker.yMin = container.find('input.yMin').val();
             json.tracker.yMax = container.find('input.yMax').val();
-            if(json.tracker.rightTrend) {
+            if (json.tracker.rightTrend) {
                 json.tracker.y2Min = container.find('input.y2Min').val();
                 json.tracker.y2Max = container.find('input.y2Max').val();
             }
@@ -315,7 +324,9 @@ $(window).load(function () {
         });
     });
     $('a.deleteTrend').click(function () {
-        midas.showDialogWithContent('Confirm Delete Trend', $('#deleteTrendTemplate').html(), false, {width: 420});
+        midas.showDialogWithContent('Confirm Delete Trend', $('#deleteTrendTemplate').html(), false, {
+            width: 420
+        });
         var container = $('div.MainDialog');
         container.find('input.deleteYes').unbind('click').click(function () {
             $(this).attr('disabled', 'disabled');
@@ -323,8 +334,9 @@ $(window).load(function () {
 
             midas.ajaxWithProgress(container.find('div.deleteProgressBar'),
                 container.find('div.deleteProgressMessage'),
-                json.global.webroot+'/tracker/trend/delete',
-                {trendId: json.tracker.trendIds},
+                json.global.webroot + '/tracker/trend/delete', {
+                    trendId: json.tracker.trendIds
+                },
                 midas.tracker.trendDeleted
             );
         });
@@ -349,5 +361,5 @@ $(window).load(function () {
 });
 
 midas.tracker.trendDeleted = function (resp) {
-    window.location = json.global.webroot+'/tracker/producer/view?producerId='+json.tracker.producerId;
+    window.location = json.global.webroot + '/tracker/producer/view?producerId=' + json.tracker.producerId;
 };

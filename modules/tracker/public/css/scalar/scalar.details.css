@@ -1,45 +1,47 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 div.sectionDivider {
-  height: 1px;
-  background-color: #c7c7c7;
-  margin-top: 8px;
-  margin-bottom: 10px;
-  font-size: 12px;
+    background-color: #C7C7C7;
+    font-size: 12px;
+    height: 1px;
+    margin-bottom: 10px;
+    margin-top: 8px;
 }
 
 span.sectionTitle {
-  background-color: white;
-  position: relative;
-  top: -7px;
-  left: 12px;
-  padding-left: 3px;
-  padding-right: 3px;
-  color: #707070;
+    background-color: white;
+    color: #707070;
+    left: 12px;
+    padding-left: 3px;
+    padding-right: 3px;
+    position: relative;
+    top: -7px;
 }
 
 div.thisScalarInfo {
-  margin-bottom: 13px;
+    margin-bottom: 13px;
 }
 
 div.otherScalars {
-  margin-bottom: 15px;
+    margin-bottom: 15px;
 }
 
 span.resultItemLabel {
-  color: #555555;
-  font-weight: bold;
+    color: #555;
+    font-weight: bold;
 }
 
 table.scalarInfoTable th, table.otherScalarTable th {
-  padding-right: 6px;
-  color: #555555;
-  font-weight: bold;
+    color: #555;
+    font-weight: bold;
+    padding-right: 6px;
 }
 
 div.resultItemContainer {
-  margin-top: 3px;
+    margin-top: 3px;
 }
 
 div.bottomButtons {
-  float: right;
-  margin-top: 10px;
+    float: right;
+    margin-top: 10px;
 }

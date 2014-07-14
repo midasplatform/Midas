@@ -1,17 +1,5 @@
-/* 
-    Document   : config.index
-    Created on : 10 mai 2011, 17:08:55
-    Author     : Charles
-    Description:
-        Purpose of the stylesheet follows.
-*/
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
-/* 
-   TODO customize this sample style
-   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
-*/
-
-root { 
-  display: block;
+root {
+    display: block;
 }
-

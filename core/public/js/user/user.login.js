@@ -1,3 +1,5 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 /*global $*/
 /*global document*/
 /*global json*/
@@ -8,7 +10,7 @@ midas.user.login = midas.user.login || {};
 
 midas.user.login.validateLoginForm = function () {
     $('input[name=previousuri]').val(json.global.currentUri);
-    if($('#password').val() == '') {
+    if ($('#password').val() == '') {
         midas.createNotice('Password field must not be empty', 3500, 'error');
         return false;
     }
@@ -22,19 +24,20 @@ midas.user.login.loginResult = function (responseText) {
     $('#loginForm input[type=submit]').removeAttr('disabled');
     try {
         var resp = $.parseJSON(responseText);
-        if(resp.status && resp.redirect) {
+        if (resp.status && resp.redirect) {
             window.location.href = resp.redirect;
         }
-        else if(resp.dialog) {
+        else if (resp.dialog) {
             midas.loadDialog('loginOverride', resp.dialog);
             midas.showDialog(resp.title, false, resp.options);
         }
         else {
             midas.createNotice(resp.message, 5000, 'error');
         }
-    } catch(e) {
+    }
+    catch (e) {
         midas.createNotice('An internal error occured, please contact your administrator',
-                           5000, 'error');
+            5000, 'error');
     }
 };
 

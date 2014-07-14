@@ -1,16 +1,44 @@
-#jsonMetadataContent{
-  display: none;
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+#jsonMetadataContent {
+    display: none;
 }
 
-	.column { width: 530px; float: left;}
-	.portlet { margin: 0 1em 1em 0; }
-	.portlet-header { margin: 0.3em; padding-bottom: 4px; padding-left: 0.2em; cursor: move ; }
-	.portlet-header .ui-icon { float: right; }
-	.portlet-content { padding: 0.4em; }
-	.ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
-	.ui-sortable-placeholder * { visibility: hidden; }
+.column {
+    float: left;
+    width: 530px;
+}
 
+.portlet {
+    margin: 0 1em 1em 0;
+}
 
-  .deleteOptionLink{
-    float:right;cursor:pointer!important;
-  }
+.portlet-header {
+    cursor: move;
+    margin: 0.3em;
+    padding-bottom: 4px;
+    padding-left: 0.2em;
+}
+
+.portlet-header .ui-icon {
+    float: right;
+}
+
+.portlet-content {
+    padding: 0.4em;
+}
+
+.ui-sortable-placeholder {
+    border: 1px dotted black;
+    height: 50px !important;
+    visibility: visible !important;
+}
+
+.ui-sortable-placeholder * {
+    visibility: hidden;
+}
+
+.deleteOptionLink {
+    cursor: pointer !important;
+    float: right;
+}

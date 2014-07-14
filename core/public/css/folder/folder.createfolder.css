@@ -1,5 +1,5 @@
-form#editFolderForm input[type="text"], form#editFolderForm  input[type="password"] ,form#editFolderForm textarea
-{
-  width: 350px!important;
-}
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
+form#editFolderForm input[type="text"], form#editFolderForm input[type="password"], form#editFolderForm textarea {
+    width: 350px !important;
+}

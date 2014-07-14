@@ -1,22 +1,21 @@
-div.listFilesContainer {
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
+div.listFilesContainer {}
+
+div.listFilesContainer div.fileElement {
+    border-bottom: 1px dotted #E4E4E4;
+    min-height: 30px;
+    position: relative;
 }
 
-div.listFilesContainer div.fileElement{
-  min-height: 30px;
-  border-bottom: 1px dotted #e4e4e4;
-  position: relative;
+div.listFilesContainer div.fileDate {
+    bottom: 0;
+    color: gray;
+    font-size: 10px;
+    position: absolute;
+    right: 0;
 }
 
-
-div.listFilesContainer div.fileDate{
-  position: absolute;
-  bottom: 0px;
-  right:0px;
-  color: grey;
-  font-size: 10px;
-}
-
-div.listFilesContainer div.feedUserImage{
-  float:left;
+div.listFilesContainer div.feedUserImage {
+    float: left;
 }

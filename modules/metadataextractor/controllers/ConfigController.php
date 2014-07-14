@@ -29,19 +29,19 @@ class Metadataextractor_ConfigController extends Metadataextractor_AppController
     {
     $this->requireAdminPrivileges();
 
-    if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini"))
+    $options = array('allowModifications' => true);
+    if(file_exists(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini'))
       {
-      $applicationConfig = parse_ini_file(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", true);
+      $config = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini', 'global', $options);
       }
     else
       {
-      $applicationConfig = parse_ini_file(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', true);
+      $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', 'global', $options);
       }
+
     $configForm = $this->ModuleForm->Config->createConfigForm();
-
     $formArray = $this->getFormAsArray($configForm);
-    $formArray['hachoir']->setValue($applicationConfig['global']['hachoir']);
-
+    $formArray['hachoir']->setValue($config->hachoir);
     $this->view->configForm = $formArray;
 
     if($this->_request->isPost())
@@ -51,16 +51,11 @@ class Metadataextractor_ConfigController extends Metadataextractor_AppController
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
         {
-        if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old"))
-          {
-          unlink(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old");
-          }
-        if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini"))
-          {
-          rename(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old");
-          }
-        $applicationConfig['global']['hachoir'] = $this->_getParam('hachoir');
-        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", $applicationConfig);
+        $config->hachoir = $this->_getParam('hachoir');
+        $writer = new Zend_Config_Writer_Ini();
+        $writer->setConfig($config);
+        $writer->setFilename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini');
+        $writer->write();
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
       }

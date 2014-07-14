@@ -1,6 +1,8 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 $(document).ready(function () {
     $("#tabsGeneric").tabs({
-        select: function(event, ui) {
+        select: function (event, ui) {
             $('div.genericAction').show();
             $('div.genericCommunities').show();
             $('div.genericStats').show();
@@ -37,9 +39,10 @@ $(document).ready(function () {
     });
 });
 
-//dependency: common.browser.js
+// dependency: common.browser.js
 var ajaxSelectRequest = '';
-function callbackSelect (node) {
+
+function callbackSelect(node) {
     $('div.genericAction').show();
     $('div.genericCommunities').hide();
     $('div.genericStats').hide();
@@ -48,10 +51,10 @@ function callbackSelect (node) {
     midas.genericCallbackSelect(node);
 }
 
-function callbackDblClick (node) {
+function callbackDblClick(node) {
     midas.genericCallbackDblClick(node);
 }
 
-function callbackCheckboxes (node) {
+function callbackCheckboxes(node) {
     midas.genericCallbackCheckboxes(node);
 }

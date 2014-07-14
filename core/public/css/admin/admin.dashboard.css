@@ -1,13 +1,15 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
 .databaseIntegrityWrapper {
-  margin-top: 5px;
-  padding-top: 10px;
-  border-top: 1px solid #d7d7d7;
+    border-top: 1px solid #D7D7D7;
+    margin-top: 5px;
+    padding-top: 10px;
 }
 
 .databaseIntegrityWrapper ul {
-  list-style-type: none;
-  margin-left: 0px;
-  padding-left: 0px;
+    list-style-type: none;
+    margin-left: 0;
+    padding-left: 0;
 }
 
 .sectionHeader {
@@ -20,7 +22,7 @@
 }
 
 #cleanupProgressMessage {
-  margin-top: 10px;
+    margin-top: 10px;
 }
 
 .integrityItem {

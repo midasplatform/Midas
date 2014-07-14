@@ -1,45 +1,44 @@
-form.quotaConfigForm div label{
-  display: inline;
-  margin-right: 5px;
-  text-align: left;
-  line-height: 2em;
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+form.quotaConfigForm div label {
+    display: inline;
+    line-height: 2em;
+    margin-right: 5px;
+    text-align: left;
 }
 
-form.quotaConfigForm input[type=text],form.quotaConfigForm input[type=password] ,form.quotaConfigForm textarea{
-  margin-right: 10px;
-  background: #F3F1EC;
-  border: 1px solid grey;
-  color: black;
-  height: 18px;
+form.quotaConfigForm input[type=text], form.quotaConfigForm input[type=password], form.quotaConfigForm textarea {
+    background: #F3F1EC;
+    border: 1px solid gray;
+    color: black;
+    height: 18px;
+    margin-right: 10px;
 }
 
-form.quotaConfigForm input[type=text]:hover,form.quotaConfigForm input[type=password]:hover, form.quotaConfigForm textarea:hover{
-  background: white;
+form.quotaConfigForm input[type=text]:hover, form.quotaConfigForm input[type=password]:hover, form.quotaConfigForm textarea:hover {
+    background: white;
 }
 
-form.quotaConfigForm div input[type=submit], input.globalButton ,form.quotaConfigForm input[type=button]
-{
-  border: 1px solid grey;
-  color: #2E6E9E;
-  font-weight: bold;
-  cursor: pointer;
-  cursor: pointer;
-  display: inline-block;
-  margin-right: 0.1em;
-  overflow: visible;
-  position: relative;
-  text-align: center;
-  text-decoration: none !important;
-  zoom: 1;
-  -webkit-box-align: center;
-  -webkit-box-sizing: border-box;
-  line-height: 1.4;
+form.quotaConfigForm div input[type=submit], input.globalButton, form.quotaConfigForm input[type=button] {
+
+    border: 1px solid gray;
+    -webkit-box-align: center;
+    -webkit-box-sizing: border-box;
+    color: #2E6E9E;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: bold;
+    line-height: 1.4;
+    margin-right: 0.1em;
+    overflow: visible;
+    position: relative;
+    text-align: center;
+    text-decoration: none !important;
+    zoom: 1;
 }
 
-form.quotaConfigForm input[type=submit]:hover ,input.globalButton:hover
-{
-  color: #1d5987;
-  text-decoration: none;
-  background: #cbd9e3;
-  background-image: none;
+form.quotaConfigForm input[type=submit]:hover, input.globalButton:hover {
+    background: #CBD9E3 none;
+    color: #1D5987;
+    text-decoration: none;
 }

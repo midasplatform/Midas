@@ -38,7 +38,6 @@ class ErrorController extends AppController
       {
       return;
       }
-    $mailer = new Zend_Mail();
     $session = new Zend_Session_Namespace('Auth_User');
     $db = Zend_Registry::get('dbAdapter');
 
@@ -55,7 +54,6 @@ class ErrorController extends AppController
     $this->Component->NotifyError->initNotifier(
         $environment,
         $error,
-        $mailer,
         $session,
         $profiler,
         $_SERVER

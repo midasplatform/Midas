@@ -111,12 +111,13 @@ class Tracker_Notification extends ApiEnabled_Notification
       }
     $baseUrl = UtilityComponent::getServerURL().$this->webroot;
 
-    $text = 'Hello,<br/><br/>This email was sent because a submitted scalar value violates a threshold that you specified.<br/><br/>';
-    $text .= '<b>Community:</b> <a href="'.$baseUrl.'/community/'.$producer->getCommunityId().'">'.$producer->getCommunity()->getName().'</a><br/>';
-    $text .= '<b>Producer:</b> <a href="'.$baseUrl.'/tracker/producer/view?producerId='.$producer->getKey().'">'.$producer->getDisplayName().'</a><br/>';
-    $text .= '<b>Trend:</b> <a href="'.$baseUrl.'/tracker/trend/view?trendId='.$trend->getKey().'">'.$trend->getDisplayName().'</a><br/>';
-    $text .= '<b>Value:</b> '.$scalar['value'];
+    $subject = 'Tracker Threshold Notification';
+    $body = 'Hello,<br/><br/>This email was sent because a submitted scalar value violates a threshold that you specified.<br/><br/>';
+    $body .= '<b>Community:</b> <a href="'.$baseUrl.'/community/'.$producer->getCommunityId().'">'.$producer->getCommunity()->getName().'</a><br/>';
+    $body .= '<b>Producer:</b> <a href="'.$baseUrl.'/tracker/producer/view?producerId='.$producer->getKey().'">'.$producer->getDisplayName().'</a><br/>';
+    $body .= '<b>Trend:</b> <a href="'.$baseUrl.'/tracker/trend/view?trendId='.$trend->getKey().'">'.$trend->getDisplayName().'</a><br/>';
+    $body .= '<b>Value:</b> '.$scalar['value'];
 
-    UtilityComponent::sendEmail($user->getEmail(), 'Tracker Threshold Notification', $text);
+    UtilityComponent::sendEmail($user->getEmail(), $subject, $body);
     }
-  } // end class
+  }

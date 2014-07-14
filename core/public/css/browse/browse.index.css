@@ -1,45 +1,45 @@
-div.viewAction, div.viewInfo, div.ajaxInfoElement{
-  display:none;
-}
-div.feedThumbnail img{
-  width: 31px;
-  height: 31px;
-  display:none;
-  margin-right: 4px;
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+div.viewAction, div.viewInfo, div.ajaxInfoElement {
+    display: none;
 }
 
-.itemSubTitle{
-  margin-top: 0px;
-  margin-bottom: 5px;
+div.feedThumbnail img {
+    display: none;
+    height: 31px;
+    margin-right: 4px;
+    width: 31px;
 }
 
-
-div.feedThumbnail a{
-  border: 0px;
+.itemSubTitle {
+    margin-bottom: 5px;
+    margin-top: 0;
 }
 
-div.itemList{
-  
+div.feedThumbnail a {
+    border: 0;
 }
 
-div.itemList span{
-  padding-left: 15px;
+div.itemList {}
+
+div.itemList span {
+    padding-left: 15px;
 }
 
 div.itemBlock {
-	padding-top: 5px;
-  padding-bottom: 5px;
-  border-bottom: 1px dotted grey;
+    border-bottom: 1px dotted gray;
+    padding-bottom: 5px;
+    padding-top: 5px;
 }
 
-div.itemBlock:hover{
-  background-color: #F6F9FE;
-  cursor: pointer;
+div.itemBlock:hover {
+    background-color: #F6F9FE;
+    cursor: pointer;
 }
 
 div.itemStats {
-	float: right;
-  font-size: 10px;
-  border: none;
-  color: #777777;
+    border: none;
+    color: #777;
+    float: right;
+    font-size: 10px;
 }

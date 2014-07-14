@@ -1,15 +1,17 @@
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 var midas = midas || {};
 midas.dcma = midas.dcma || {};
 
 midas.dcma.sendParentToJavaSession = function () {
-    $.post(json.global.webroot+'/upload/javaupload', {
+    $.post(json.global.webroot + '/upload/javaupload', {
         parent: $('#destinationId').val(),
         license: $('select[name=licenseSelect]:last').val()
     });
 }
 
 $('.browseMIDASLink').click(function () {
-    midas.loadDialog("select","/browse/selectfolder/?policy=write");
+    midas.loadDialog("select", "/browse/selectfolder/?policy=write");
     midas.showDialog('Browse', null, {
         close: function () {
             $('.uploadApplet').show();

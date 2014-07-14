@@ -28,47 +28,38 @@ class Dicomserver_ConfigController extends Dicomserver_AppController
   /** index action*/
   function indexAction()
     {
-    if(!$this->logged || !$this->userSession->Dao->getAdmin() == 1)
-      {
-      throw new Zend_Exception("You should be an administrator");
-      }
+    $this->requireAdminPrivileges();
 
-    if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini"))
+    $options = array('allowModifications' => true);
+    if(file_exists(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini'))
       {
-      $applicationConfig = parse_ini_file(
-        LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", true);
+      $config = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini', 'global', $options);
       }
     else
       {
-      $applicationConfig = parse_ini_file(
-        BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', true);
+      $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', 'global', $options);
       }
+
     $configForm = $this->ModuleForm->Config->createConfigForm();
-
     $formArray = $this->getFormAsArray($configForm);
-    $formArray['dcm2xml']->setValue($applicationConfig['global']['dcm2xml']);
-    $formArray['storescp']->setValue($applicationConfig['global']['storescp']);
-    $formArray['storescp_port']->setValue(
-      $applicationConfig['global']['storescp_port']);
-    $formArray['storescp_study_timeout']->setValue(
-      $applicationConfig['global']['storescp_study_timeout']);
-    $formArray['dcmqrscp']->setValue($applicationConfig['global']['dcmqrscp']);
-    $formArray['dcmqridx']->setValue($applicationConfig['global']['dcmqridx']);
-    $formArray['dcmqrscp_port']->setValue($applicationConfig['global']['dcmqrscp_port']);
-    $formArray['server_ae_title']->setValue($applicationConfig['global']['server_ae_title']);
-    $formArray['peer_aes']->setValue($applicationConfig['global']['peer_aes']);
-    if(!empty($applicationConfig['global']['receptiondir']))
+    $formArray['dcm2xml']->setValue($config->dcm2xml);
+    $formArray['dcmqridx']->setValue($config->dcmqridx);
+    $formArray['dcmqrscp_port']->setValue($config->dcmqrscp_port);
+    $formArray['dcmqrscp']->setValue($config->dcmqrscp);
+    $formArray['peer_aes']->setValue($config->peer_aes);
+    $formArray['pydas_dest_folder']->setValue($config->pydas_dest_folder);
+    $formArray['server_ae_title']->setValue($config->server_ae_title);
+    $formArray['storescp_port']->setValue($config->storescp_port);
+    $formArray['storescp_study_timeout']->setValue($config->storescp_study_timeout);
+    $formArray['storescp']->setValue($config->storescp);
+    if(empty($config->receptiondir))
       {
-      $formArray['receptiondir']->setValue(
-        $applicationConfig['global']['receptiondir']);
+      $formArray['receptiondir']->setValue($this->ModuleComponent->Server->getDefaultReceptionDir());
       }
     else
       {
-      $default_dir = $this->ModuleComponent->Server->getDefaultReceptionDir();
-      $formArray['receptiondir']->setValue($default_dir);
+      $formArray['receptiondir']->setValue($config->receptiondir);
       }
-    $formArray['pydas_dest_folder']->setValue(
-      $applicationConfig['global']['pydas_dest_folder']);
     $this->view->configForm = $formArray;
 
     if($this->_request->isPost())
@@ -78,31 +69,27 @@ class Dicomserver_ConfigController extends Dicomserver_AppController
       $submitConfig = $this->_getParam('submitConfig');
       if(isset($submitConfig))
         {
-        if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old"))
-          {
-          unlink(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old");
-          }
-        if(file_exists(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini"))
-          {
-          rename(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini.old");
-          }
-        $applicationConfig['global']['dcm2xml'] = $this->_getParam('dcm2xml');
-        $applicationConfig['global']['storescp'] = $this->_getParam('storescp');
-        $applicationConfig['global']['storescp_port'] = $this->_getParam('storescp_port');
-        $applicationConfig['global']['storescp_study_timeout'] = $this->_getParam('storescp_study_timeout');
-        $applicationConfig['global']['receptiondir'] = $this->_getParam('receptiondir');
-        $applicationConfig['global']['pydas_dest_folder'] = $this->_getParam('pydas_dest_folder');
-        $applicationConfig['global']['dcmqrscp'] = $this->_getParam('dcmqrscp');
-        $applicationConfig['global']['dcmqridx'] = $this->_getParam('dcmqridx');
-        $applicationConfig['global']['dcmqrscp_port'] = $this->_getParam('dcmqrscp_port');
-        $applicationConfig['global']['server_ae_title'] = $this->_getParam('server_ae_title');
-        $applicationConfig['global']['peer_aes'] = $this->_getParam('peer_aes');
-        $this->Component->Utility->createInitFile(LOCAL_CONFIGS_PATH."/".$this->moduleName.".local.ini", $applicationConfig);
+        $config->dcm2xml = $this->_getParam('dcm2xml');
+        $config->dcmqridx = $this->_getParam('dcmqridx');
+        $config->dcmqrscp_port = $this->_getParam('dcmqrscp_port');
+        $config->dcmqrscp = $this->_getParam('dcmqrscp');
+        $config->peer_aes = $this->_getParam('peer_aes');
+        $config->pydas_dest_folder = $this->_getParam('pydas_dest_folder');
+        $config->receptiondir = $this->_getParam('receptiondir');
+        $config->server_ae_title = $this->_getParam('server_ae_title');
+        $config->storescp_port = $this->_getParam('storescp_port');
+        $config->storescp_study_timeout = $this->_getParam('storescp_study_timeout');
+        $config->storescp = $this->_getParam('storescp');
+
+        $writer = new Zend_Config_Writer_Ini();
+        $writer->setConfig($config);
+        $writer->setFilename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini');
+        $writer->write();
         echo JsonComponent::encode(array(true, 'Changed saved'));
         }
       }
     $dashboard_array = $this->ModuleComponent->Server->isDICOMServerWorking();
-    // has shown status seperately; remove it from the dashboard to avoid redundancy
+    // has shown status separately; remove it from the dashboard to avoid redundancy
     unset($dashboard_array['Status']);
     $this->view->dashboard = $dashboard_array;
     }
