@@ -1,32 +1,32 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 var midas = midas || {};
-midas.license = midas.license || {};
+midas.licenses = midas.licenses || {};
 
-midas.license.newValidate = function (formData, jqForm, options) {}
+midas.licenses.newValidate = function (formData, jqForm, options) {}
 
-midas.license.newSuccess = function (responseText, statusText, xhr, form) {
+midas.licenses.newSuccess = function (responseText, statusText, xhr, form) {
     var resp = $.parseJSON(responseText);
     midas.createNotice(resp[1], 3000);
     window.location.replace(json.global.webroot + '/admin#ui-tabs-1');
     window.location.reload();
 }
 
-midas.license.existingValidate = function (formData, jqForm, options) {}
+midas.licenses.existingValidate = function (formData, jqForm, options) {}
 
-midas.license.existingSuccess = function (responseText, statusText, xhr, form) {
+midas.licenses.existingSuccess = function (responseText, statusText, xhr, form) {
     var resp = $.parseJSON(responseText);
     midas.createNotice(resp[1], 3000);
 }
 
 $(document).ready(function () {
     $('form.existingLicense').ajaxForm({
-        beforeSubmit: midas.license.existingValidate,
-        success: midas.license.existingSuccess
+        beforeSubmit: midas.licenses.existingValidate,
+        success: midas.licenses.existingSuccess
     });
     $('form.newLicense').ajaxForm({
-        beforeSubmit: midas.license.newValidate,
-        success: midas.license.newSuccess
+        beforeSubmit: midas.licenses.newValidate,
+        success: midas.licenses.newSuccess
     });
 
     $('input.deleteLicense').click(function () {

@@ -326,7 +326,7 @@ $(document).ready(function () {
 
     $('a.licenseLink').click(function () {
         var licenseId = $(this).attr('element');
-        midas.loadDialog('viewLicense' + licenseId, '/license/view?licenseId=' + licenseId);
+        midas.loadDialog('viewLicense' + licenseId, '/licenses/view?licenseId=' + licenseId);
         midas.showDialog($(this).attr('name'), false);
     });
 
