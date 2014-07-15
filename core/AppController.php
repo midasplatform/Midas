@@ -102,28 +102,45 @@ class AppController extends MIDAS_GlobalController
         {
         $userModel = MidasLoader::loadModel('User');
         $cookieData = $this->getRequest()->getCookie('midasUtil');
+
         if(!empty($cookieData))
           {
-          $tmp = explode('-', $cookieData);
-          if(count($tmp) == 2)
+          $notifier = new MIDAS_Notifier(false, null);
+          $notifications = $notifier->callback('CALLBACK_CORE_USER_COOKIE', array('value' => $cookieData));
+          $userOverride = false;
+          foreach($notifications as $module => $result)
             {
-            $userDao = $userModel->load($tmp[0]);
-            if($userDao != false)
+            if($result)
               {
-              // authenticate valid users in the appropriate method for the
-              // current application version
-              if(version_compare(Zend_Registry::get('configDatabase')->version, '3.2.12', '>='))
+              $cookieOverride = true;
+              $userDao = $result;
+              $user->Dao = $userDao;
+              break;
+              }
+            }
+          if(!$cookieOverride)
+            {
+            $tmp = explode('-', $cookieData);
+            if(count($tmp) == 2)
+              {
+              $userDao = $userModel->load($tmp[0]);
+              if($userDao != false)
                 {
-                $auth = $userModel->hashExists($tmp[1]);
-                }
-              else
-                {
-                $auth = $userModel->legacyAuthenticate($userDao, '', '', $tmp[1]);
-                }
-              // if authenticated, set the session user to be this user
-              if($auth)
-                {
-                $user->Dao = $userDao;
+                // authenticate valid users in the appropriate method for the
+                // current application version
+                if(version_compare(Zend_Registry::get('configDatabase')->version, '3.2.12', '>='))
+                  {
+                  $auth = $userModel->hashExists($tmp[1]);
+                  }
+                else
+                  {
+                  $auth = $userModel->legacyAuthenticate($userDao, '', '', $tmp[1]);
+                  }
+                // if authenticated, set the session user to be this user
+                if($auth)
+                  {
+                  $user->Dao = $userDao;
+                  }
                 }
               }
             }
