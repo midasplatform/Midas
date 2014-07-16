@@ -26,8 +26,9 @@ class Googleauth_CallbackController extends Googleauth_AppController
     $this->disableView();
 
     $code = $this->_getParam('code');
+    $redirect = $this->_getParam('state');
 
-    if (!$code)
+    if(!$code)
       {
       $error = $this->_getParam('error');
       throw new Zend_Exception('Failed to log in with Google OAuth: '.$error);
@@ -41,7 +42,14 @@ class Googleauth_CallbackController extends Googleauth_AppController
     $this->userSession->Dao = $user;
     session_write_close();
 
-    $this->_redirect('/');
+    if($redirect)
+      {
+      $this->_redirect($redirect);
+      }
+    else
+      {
+      $this->_redirect('/');
+      }
     }
 
   /**
