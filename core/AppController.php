@@ -107,7 +107,7 @@ class AppController extends MIDAS_GlobalController
           {
           $notifier = new MIDAS_Notifier(false, null);
           $notifications = $notifier->callback('CALLBACK_CORE_USER_COOKIE', array('value' => $cookieData));
-          $userOverride = false;
+          $cookieOverride = false;
           foreach($notifications as $module => $result)
             {
             if($result)
