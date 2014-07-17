@@ -105,4 +105,19 @@ class Tracker_ScalarModel extends Tracker_ScalarModelBase
       }
     return $this->initDao('Scalar', $this->database->fetchRow($sql), $this->moduleName);
     }
+
+  public function getDistinctBranches()
+    {
+    $sql = $this->database->select()
+                ->setIntegrityCheck(false)
+                ->from(array('s' => 'tracker_scalar'), 'branch')
+                ->distinct();
+    $rows = $this->database->fetchAll($sql);
+    $branches = array();
+    foreach($rows as $row)
+      {
+      $branches[] = $row['branch'];
+      }
+    return $branches;
+    }
   }

@@ -291,8 +291,8 @@ $(window).load(function () {
         });
     });
 
-    $('#branchFilterButton').click(function () {
-        midas.tracker.branchFilter = $('#branchfilter').val();
+    $('#branchfilter').change(function () {
+        midas.tracker.branchFilter = $(this).val();
         midas.tracker.renderChartArea(midas.tracker.extractCurveData(json.tracker.scalars), false);
     });
 

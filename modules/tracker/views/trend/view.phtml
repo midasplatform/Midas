@@ -89,8 +89,13 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
   </div>
   <div class="branchFilterContainer">
     <label for="branchfilter">Filter by branch:</label>
-    <input id="branchfilter" type="text" name="branchfilter" />
-    <input type="button" class="globalButton" id="branchFilterButton" value="Filter" />
+    <select id="branchfilter">
+      <option></option>
+      <?php foreach($this->allBranches as $branch)
+        {
+        echo '<option>'.$branch.'</option>';
+        } ?>
+    </select>
   </div>
   <div id="chartDiv" class="chartContainer"></div>
   <?php if($this->logged)

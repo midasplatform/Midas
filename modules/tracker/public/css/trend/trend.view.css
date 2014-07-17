@@ -24,7 +24,6 @@ input.dateSelect {
     border: 1px solid gray;
     box-sizing: border-box;
     height: 20px;
-    width: 120px;
 }
 
 #filterButton, #branchFilterButton {
