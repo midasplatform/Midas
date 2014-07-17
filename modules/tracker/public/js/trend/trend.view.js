@@ -35,6 +35,10 @@ midas.tracker.updateUrlBar = function () {
  * Extract the jqplot curve data from the scalar daos passed to us
  */
 midas.tracker.extractCurveData = function (curves) {
+    // TODO remove duplicates from branchFilters
+    if (!midas.tracker.branchFilters) {
+        midas.tracker.branchFilters = [''];
+    }
     var allPoints = [],
         allColors = [],
         minVal, maxVal;
@@ -42,32 +46,34 @@ midas.tracker.extractCurveData = function (curves) {
         if (!scalars) {
             return;
         }
-        var points = [];
-        var colors = [];
-        $.each(scalars, function (idx, scalar) {
-            if (!midas.tracker.unofficialVisible && scalar.official == 0) {
-                return;
-            }
-            var value = parseFloat(scalar.value);
-            if (!midas.tracker.branchFilter || midas.tracker.branchFilter === scalar.branch) {
-                points.push([scalar.submit_time, value]);
-            }
+        $.each(midas.tracker.branchFilters, function (idx, branchFilter) {
+            var points = [];
+            var colors = [];
+            $.each(scalars, function (idx, scalar) {
+                if (!midas.tracker.unofficialVisible && scalar.official == 0) {
+                    return;
+                }
+                var value = parseFloat(scalar.value);
+                if (!branchFilter || branchFilter === scalar.branch) {
+                    points.push([scalar.submit_time, value]);
+                }
 
-            if (typeof minVal == 'undefined' || value < minVal) {
-                minVal = value;
-            }
-            if (typeof maxVal == 'undefined' || value > maxVal) {
-                maxVal = value;
-            }
-            if (scalar.official == 1) {
-                colors.push(midas.tracker.OFFICIAL_COLOR_KEY);
-            }
-            else {
-                colors.push(midas.tracker.UNOFFICIAL_COLOR_KEY);
-            }
+                if (typeof minVal == 'undefined' || value < minVal) {
+                    minVal = value;
+                }
+                if (typeof maxVal == 'undefined' || value > maxVal) {
+                    maxVal = value;
+                }
+                if (scalar.official == 1) {
+                    colors.push(midas.tracker.OFFICIAL_COLOR_KEY);
+                }
+                else {
+                    colors.push(midas.tracker.UNOFFICIAL_COLOR_KEY);
+                }
+            });
+            allPoints.push(points);
+            allColors.push(colors);
         });
-        allPoints.push(points);
-        allColors.push(colors);
     });
     return {
         points: allPoints,
@@ -188,14 +194,20 @@ midas.tracker.renderChartArea = function (curveData, first) {
                 opts.axes.y2axis.pad = 1.0;
             }
         }
-        else if (json.tracker.trends.length > 1) {
+        else if (json.tracker.trends.length > 1 || midas.tracker.branchFilters.length > 1) {
             var labels = [];
             $.each(json.tracker.trends, function (key, trend) {
                 var label = trend.display_name;
                 if (trend.unit != '') {
                     label += ' (' + trend.unit + ')';
                 }
-                labels.push(label);
+                $.each(midas.tracker.branchFilters, function (idx, branchFilter) {
+                    if (!branchFilter) {
+                        branchFilter = '[all branches]'
+                    }
+                    var branchLabel = label + ': ' + branchFilter;
+                    labels.push(branchLabel);
+                });
             });
             opts.legend = {
                 show: true,
@@ -291,9 +303,18 @@ $(window).load(function () {
         });
     });
 
-    $('#branchfilter').change(function () {
-        midas.tracker.branchFilter = $(this).val();
-        midas.tracker.renderChartArea(midas.tracker.extractCurveData(json.tracker.scalars), false);
+    $('.branchFilterContainer').on('change', '.branchfilter', null, function () {
+        midas.tracker.updateBranchFilters();
+    });
+
+    $('.add-branchfilter').click(function () {
+        var div = $('<div class="otherBranchFilter">Other Trend: </div>');
+        var removeLink = $('<a class="removeBranchFilter">Remove</a>').click(function () {
+            div.remove();
+        });
+        div.append($($('.branchfilter')[0]).clone()).append(removeLink);
+
+        $('.branchFilterContainer').append(div);
     });
 
     midas.tracker.renderChartArea(curveData, true);
@@ -362,4 +383,13 @@ $(window).load(function () {
 
 midas.tracker.trendDeleted = function (resp) {
     window.location = json.global.webroot + '/tracker/producer/view?producerId=' + json.tracker.producerId;
+};
+
+midas.tracker.updateBranchFilters = function () {
+    midas.tracker.branchFilters = [];
+    $.each($('.branchfilter'), function () {
+        midas.tracker.branchFilters.push($(this).val());
+    });
+    //midas.tracker.branchFilter = $('.branchfilter:first').val();
+    midas.tracker.renderChartArea(midas.tracker.extractCurveData(json.tracker.scalars), false);
 };
