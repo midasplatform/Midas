@@ -23,7 +23,7 @@ include_once BASE_PATH . '/library/KWUtils.php';
 class Thumbnailcreator_ImagemagickComponent extends AppComponent
   {
   public $moduleName = 'thumbnailcreator';
-  
+
   /**
    * Create a 100x100 thumbnail from an item.
    * Echoes an error message if a problem occurs (for the scheduler log)
