@@ -22,6 +22,8 @@ include_once BASE_PATH . '/library/KWUtils.php';
 /** Component used to create thumbnails using phMagick library (on top of ImageMagick) */
 class Thumbnailcreator_ImagemagickComponent extends AppComponent
   {
+  public $moduleName = 'thumbnailcreator';
+  
   /**
    * Create a 100x100 thumbnail from an item.
    * Echoes an error message if a problem occurs (for the scheduler log)
