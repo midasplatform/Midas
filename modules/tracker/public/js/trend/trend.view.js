@@ -155,16 +155,20 @@ midas.tracker.renderChartArea = function (curveData, first) {
                 zoom: true,
                 showTooltip: false
             },
+            grid: {
+                backgroundColor: 'white',
+                shadow: false
+            },
             series: []
         };
         // Now assign official/unofficial color to each marker
         $.each(curveData.colors, function (idx, trendColors) {
             opts.series[idx] = {
                 renderer: $.jqplot.DifferentColorMarkerLineRenderer,
+                shadow: false,
                 rendererOptions: {
                     markerColors: curveData.colors[idx],
-                    shapeRenderer: $.jqplot.ShapeRenderer,
-                    shadowRenderer: $.jqplot.ShadowRenderer
+                    shapeRenderer: $.jqplot.ShapeRenderer
                 }
             };
         });
