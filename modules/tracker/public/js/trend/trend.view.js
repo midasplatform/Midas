@@ -132,7 +132,8 @@ midas.tracker.renderChartArea = function (curveData, first) {
                         formatString: "%Y-%m-%d",
                         angle: 270,
                         fontSize: '11px',
-                        labelPosition: 'middle'
+                        labelPosition: 'middle',
+                        showGridline: false
                     }
 
                 },
@@ -141,8 +142,8 @@ midas.tracker.renderChartArea = function (curveData, first) {
                     label: midas.tracker.yaxisLabel,
                     labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
                     labelOptions: {
-                        angle: 270,
-                        fontSize: '12px'
+                        fontSize: '12px',
+                        angle: 270
                     }
                 }
             },
@@ -157,6 +158,7 @@ midas.tracker.renderChartArea = function (curveData, first) {
             },
             grid: {
                 backgroundColor: 'white',
+                borderWidth: 0,
                 shadow: false
             },
             series: []
