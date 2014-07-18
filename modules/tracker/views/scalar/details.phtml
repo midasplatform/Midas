@@ -67,12 +67,14 @@
       </tr>
     <?php
       }
-
-      foreach($this->extraUrls as $linkInfo)
+      if ($this->extraUrls)
         {
-        echo '<tr><th>'.$linkInfo['label'].':</th><td>';
-        echo '<a target="_blank" href="'.$linkInfo['href'].'">'.$linkInfo['text'].'</a>';
-        echo '</td></tr>';
+        foreach($this->extraUrls as $linkInfo)
+          {
+          echo '<tr><th>'.$linkInfo['label'].':</th><td>';
+          echo '<a target="_blank" href="'.$linkInfo['href'].'">'.$linkInfo['text'].'</a>';
+          echo '</td></tr>';
+          }
         }
     ?>
   </tbody></table>
