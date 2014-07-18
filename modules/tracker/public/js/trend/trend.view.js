@@ -39,40 +39,51 @@ midas.tracker.extractCurveData = function (curves) {
     if (!midas.tracker.branchFilters) {
         midas.tracker.branchFilters = [''];
     }
+    midas.tracker.scalarIdMap = {};
+
     var allPoints = [],
         allColors = [],
+        seriesIndex = 0,
         minVal, maxVal;
-    $.each(curves, function (idx, scalars) {
+    $.each(curves, function (curveIdx, scalars) {
         if (!scalars) {
             return;
         }
+
         $.each(midas.tracker.branchFilters, function (idx, branchFilter) {
             var points = [];
             var colors = [];
+            midas.tracker.scalarIdMap[seriesIndex] = [];
+
             $.each(scalars, function (idx, scalar) {
                 if (!midas.tracker.unofficialVisible && scalar.official == 0) {
                     return;
                 }
-                var value = parseFloat(scalar.value);
-                if (!branchFilter || branchFilter === scalar.branch) {
-                    points.push([scalar.submit_time, value]);
-                }
 
-                if (typeof minVal == 'undefined' || value < minVal) {
-                    minVal = value;
-                }
-                if (typeof maxVal == 'undefined' || value > maxVal) {
-                    maxVal = value;
-                }
-                if (scalar.official == 1) {
-                    colors.push(midas.tracker.OFFICIAL_COLOR_KEY);
-                }
-                else {
-                    colors.push(midas.tracker.UNOFFICIAL_COLOR_KEY);
+                if (!branchFilter || branchFilter === scalar.branch) {
+                    var value = parseFloat(scalar.value);
+
+                    points.push([scalar.submit_time, value]);
+                    midas.tracker.scalarIdMap[seriesIndex].push(scalar.scalar_id);
+
+                    if (scalar.official == 1) {
+                        colors.push(midas.tracker.OFFICIAL_COLOR_KEY);
+                    }
+                    else {
+                        colors.push(midas.tracker.UNOFFICIAL_COLOR_KEY);
+                    }
+
+                    if (typeof minVal == 'undefined' || value < minVal) {
+                        minVal = value;
+                    }
+                    if (typeof maxVal == 'undefined' || value > maxVal) {
+                        maxVal = value;
+                    }
                 }
             });
             allPoints.push(points);
             allColors.push(colors);
+            seriesIndex += 1;
         });
     });
     return {
@@ -103,7 +114,7 @@ midas.tracker.bindPlotEvents = function () {
         }
         var scalarId;
         if (!json.tracker.rightTrend || dataPoint.seriesIndex == 0) {
-            scalarId = json.tracker.scalars[dataPoint.seriesIndex][dataPoint.pointIndex].scalar_id;
+            scalarId = midas.tracker.scalarIdMap[dataPoint.seriesIndex][dataPoint.pointIndex];
         }
         else {
             scalarId = json.tracker.rightScalars[dataPoint.pointIndex].scalar_id;
