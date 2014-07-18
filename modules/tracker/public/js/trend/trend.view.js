@@ -396,6 +396,5 @@ midas.tracker.updateBranchFilters = function () {
     $.each($('.branchfilter'), function () {
         midas.tracker.branchFilters.push($(this).val());
     });
-    //midas.tracker.branchFilter = $('.branchfilter:first').val();
     midas.tracker.renderChartArea(midas.tracker.extractCurveData(json.tracker.scalars), false);
 };

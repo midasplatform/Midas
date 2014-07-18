@@ -88,8 +88,8 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
     <img alt="" style="display: none;" id="dateRangeUpdating" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
   </div>
   <div class="branchFilterContainer">
-    <label>Filter by branch:</label>
-    <select class="branchfilter">
+    <label for="branchfilter">Filter by branch:</label>
+    <select id="branchfilter" class="branchfilter">
       <option value="">[all branches]</option>
       <?php foreach($this->allBranches as $branch)
         {
