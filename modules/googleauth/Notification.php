@@ -43,9 +43,8 @@ class Googleauth_Notification extends MIDAS_Notification
     {
     $clientId = $this->Setting->getValueByName('client_id', $this->moduleName);
     $scheme = (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS']) ? 'https://' : 'http://';
-    $redirectUri = $scheme.$_SERVER['HTTP_HOST'].
-                   Zend_Controller_Front::getInstance()->getBaseUrl().
-                   '/'.$this->moduleName.'/callback';
+    $fc = Zend_Controller_Front::getInstance();
+    $redirectUri = $scheme.$_SERVER['HTTP_HOST'].$fc->getBaseUrl().'/'.$this->moduleName.'/callback';
     $scopes = array('profile', 'email');
 
     $href = 'https://accounts.google.com/o/oauth2/auth?response_type=code'.
@@ -54,8 +53,10 @@ class Googleauth_Notification extends MIDAS_Notification
             '&scope='.urlencode(join(' ', $scopes));
 
     return '<div style="margin-top: 10px; display: inline-block;">Or '.
-           '<a style="text-decoration: underline;" href="'.$href.'">'.
-           'Login with your Google account</a></div>';
+           '<a class="googleauth-login" style="text-decoration: underline;" href="'.$href.'">'.
+           'Login with your Google account</a></div><script type="text/javascript"'.
+           ' src="'.$fc->getBaseUrl().'/modules/'.$this->moduleName.
+           '/public/js/login/googleauth.login.js"></script>';
     }
 
   /**
