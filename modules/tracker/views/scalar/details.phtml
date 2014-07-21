@@ -67,9 +67,32 @@
       </tr>
     <?php
       }
+      if ($this->extraUrls)
+        {
+        foreach($this->extraUrls as $linkInfo)
+          {
+          echo '<tr><th>'.$linkInfo['label'].':</th><td>';
+          echo '<a target="_blank" href="'.$linkInfo['href'].'">'.$linkInfo['text'].'</a>';
+          echo '</td></tr>';
+          }
+        }
     ?>
   </tbody></table>
 </div>
+
+<?php if(count($this->extraParams))
+  { ?>
+  <div class="extraParams">
+    <div class="sectionDivider"><span class="sectionTitle">Other Information</span></div>
+    <table class="scalarInfoTable"><tbody>
+    <?php foreach($this->extraParams as $key => $value)
+      {
+      echo '<tr><th>'.$key.':</th><td>'.$value.'</td></tr>';
+      }
+    ?>
+  </tbody></table>
+  </div>
+<?php } ?>
 
 <div class="otherScalars">
   <div class="sectionDivider"><span class="sectionTitle">All values for this submission</span></div>

@@ -35,6 +35,8 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
         'user_id' => array('type' => MIDAS_DATA),
         'official' => array('type' => MIDAS_DATA),
         'build_results_url' => array('type' => MIDAS_DATA),
+        'params' => array('type' => MIDAS_DATA),
+        'extra_urls' => array('type' => MIDAS_DATA),
         'branch' => array('type' => MIDAS_DATA),
         'submit_time' => array('type' => MIDAS_DATA),
         'value' => array('type' => MIDAS_DATA),
@@ -63,7 +65,8 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
    * already exists on the trend with the same submit time and user, this will replace that scalar value.
    */
   public function addToTrend($trend, $submitTime, $producerRevision, $value, $user,
-                             $overwrite = true, $official = true, $buildResultsUrl = '', $branch = '')
+                             $overwrite = true, $official = true, $buildResultsUrl = '', $branch = '',
+                             $params = null, $extraUrls = null)
     {
     if($overwrite)
       {
@@ -72,6 +75,15 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
         {
         $this->delete($dao);
         }
+      }
+
+    if(is_array($params))
+      {
+      $params = json_encode($params);
+      }
+    if(is_array($extraUrls))
+      {
+      $extraUrls = json_encode($extraUrls);
       }
 
     $scalar = MidasLoader::newDao('ScalarDao', $this->moduleName);
@@ -83,6 +95,8 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
     $scalar->setOfficial($official ? 1 : 0);
     $scalar->setBuildResultsUrl($buildResultsUrl);
     $scalar->setBranch(trim($branch));
+    $scalar->setParams($params);
+    $scalar->setExtraUrls($extraUrls);
 
     $this->save($scalar);
     return $scalar;
