@@ -109,7 +109,8 @@ class InstallForm extends AppForm
                     'America/Phoenix' => 'America/Phoenix',
                     'Europe/London' => 'Europe/London',
                     'Europe/Paris' => 'Europe/Paris',
-                    'Pacific/Honolulu' => 'Pacific/Honolulu'
+                    'Pacific/Honolulu' => 'Pacific/Honolulu',
+                    'UTC' => 'UTC'
                         ));
 
     $environment = new Zend_Form_Element_Select('environment');

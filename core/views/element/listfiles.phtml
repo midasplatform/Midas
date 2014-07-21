@@ -62,7 +62,7 @@
   foreach($this->listFiles as $key => $file)
     {
     echo "<div class='fileElement'  element='{$file->getKey()}'>";
-    echo createFileElement($this, $file);
+    createFileElement($this, $file);
     echo "</div>";
     }
   echo "</div>";
