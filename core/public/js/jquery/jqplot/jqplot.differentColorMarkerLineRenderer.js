@@ -25,7 +25,7 @@
             fillStyle:this.fillColor,
             lineWidth:this.lineWidth,
             closePath:this.fill
-            
+
         };
         this.renderer.shapeRenderer.init(opts);
         // set the shadow renderer options
@@ -251,9 +251,10 @@
             // now draw the markers
             if (this.markerRenderer.show && !fill) {
                 for (i=0; i<gd.length; i++) {
-                    // Grab each color and send it to a new markerRenderer. 
+                    // Grab each color and send it to a new markerRenderer.
                     opts.markerOptions = {
-                        color: this.markerColors[i] || this.color
+                        color: this.markerColors[i] || this.color,
+                        shadow: false
                     };
                     this.markerRenderer = new $.jqplot.MarkerRenderer;
                     this.markerRenderer.init(opts.markerOptions);

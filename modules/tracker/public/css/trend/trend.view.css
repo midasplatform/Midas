@@ -20,11 +20,10 @@ input.dateSelect {
     width: 120px;
 }
 
-#branchfilter {
+.branchfilter {
     border: 1px solid gray;
     box-sizing: border-box;
     height: 20px;
-    width: 120px;
 }
 
 #filterButton, #branchFilterButton {
@@ -103,4 +102,27 @@ div.toggleUnofficialIcon.toHide {
 
 div.toggleUnofficialIcon.toShow {
     background-color: #F22;
+}
+
+button.add-branchfilter {
+    marign-left: 15px;
+    background-color: #6263aa;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 2px;
+    padding: 4px 11px;
+    cursor: pointer;
+}
+
+button.add-branchfilter:hover {
+    background-color: #525399;
+}
+
+.otherBranchFilter {
+    margin: 5px 0;
+}
+
+a.removeBranchFilter {
+    margin-left: 10px;
 }

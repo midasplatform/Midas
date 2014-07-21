@@ -23,7 +23,7 @@ class Tracker_TrendController extends Tracker_AppController
   {
   public $_components = array('Breadcrumb');
   public $_models = array('Community');
-  public $_moduleModels = array('Producer', 'ThresholdNotification', 'Trend');
+  public $_moduleModels = array('Producer', 'Scalar', 'ThresholdNotification', 'Trend');
 
   /**
    * View a given trend
@@ -75,6 +75,7 @@ class Tracker_TrendController extends Tracker_AppController
 
     $trendIds = explode(' ', trim(str_replace(',', ' ', $trendId)));
     $this->view->trends = array();
+    $this->view->allBranches = $this->Tracker_Scalar->getDistinctBranches();
     foreach($trendIds as $trendId)
       {
       $trend = $this->Tracker_Trend->load($trendId);
