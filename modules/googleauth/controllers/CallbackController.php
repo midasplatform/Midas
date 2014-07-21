@@ -34,7 +34,16 @@ class Googleauth_CallbackController extends Googleauth_AppController
     $this->disableView();
 
     $code = $this->_getParam('code');
-    $redirect = $this->_getParam('state');
+    $state = $this->_getParam('state');
+
+    if(strpos($state, ' ') !== false)
+      {
+      list($csrfToken, $redirect) = split(' ', $state);
+      }
+    else
+      {
+      $redirect = null;
+      }
 
     if(!$code)
       {
@@ -48,9 +57,12 @@ class Googleauth_CallbackController extends Googleauth_AppController
 
     session_start();
     $this->userSession->Dao = $user;
+
+    $userNs = new Zend_Session_Namespace('Auth_User');
+    $sessionToken = $userNs->oauthToken;
     session_write_close();
 
-    if($redirect)
+    if($redirect && $csrfToken === $sessionToken)
       {
       $this->_redirect($redirect);
       }
