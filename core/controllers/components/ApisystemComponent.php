@@ -247,7 +247,7 @@ class ApisystemComponent extends AppComponent
       throw new Exception('Invalid URL', MIDAS_INVALID_PARAMETER);
       }
     $itemname = isset($args['itemname']) ? $args['itemname'] : $args['url'];
-    if(isset($args['length']) && !filter_var($args['length'], FILTER_VALIDATE_INT, array('options' => array('min_range' => 0))))
+    if(isset($args['length']) && filter_var($args['length'], FILTER_VALIDATE_INT, array('options' => array('min_range' => 0))) === false)
       {
       throw new Exception('Invalid length', MIDAS_INVALID_PARAMETER);
       }
