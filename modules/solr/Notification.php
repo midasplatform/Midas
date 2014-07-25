@@ -106,6 +106,7 @@ class Solr_Notification extends ApiEnabled_Notification
             {
             $fieldName .= '.'.$m->getQualifier();
             }
+          $fieldName = str_replace(' ', '__', $fieldName);
           $doc->addField($fieldName, $m->getValue());
           if(!is_numeric($m->getValue()))
             {
