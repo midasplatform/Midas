@@ -33,6 +33,12 @@ class Solr_AdvancedController extends Solr_AppController
     $this->view->header = 'Advanced Search';
     }
 
+  /** Callback for the preg_replace_callback in submitAction */
+  function strReplaceSpaces($matches)
+    {
+    return str_replace(' ', '__', $matches[0]);
+    }
+
   /**
    * Submit an advanced search query.  Responds with JSON results.
    * @param query The Lucene query to perform
@@ -46,6 +52,8 @@ class Solr_AdvancedController extends Solr_AppController
     $this->disableView();
 
     $query = $this->_getParam('query');
+    // Extract <element>.<qualifier> from between '-' and ':' in '<type>-<element>.<qualifier>: <value>'
+    $query = preg_replace_callback('/(?<=-)[\w. ]*(?=:)/', array(&$this, 'strReplaceSpaces'), $query);
     $limit = (int)$this->_getParam('limit');
     $solrOffset = (int)$this->_getParam('solrOffset');
     $displayOffset = (int)$this->_getParam('displayOffset');
