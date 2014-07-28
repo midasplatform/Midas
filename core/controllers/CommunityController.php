@@ -417,6 +417,10 @@ class CommunityController extends AppController
     $this->disableLayout();
 
     $communityId = $this->_getParam('communityId');
+    $directAdd = $this->_getParam('directadd');
+    if(isset($directAdd) && $directAdd == "true") $directAdd = 1;
+    else $directAdd = 0;
+    
     if(!isset($communityId))
       {
       throw new Zend_Exception('Must pass a communityId parameter');
@@ -429,6 +433,45 @@ class CommunityController extends AppController
     if(!$this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_WRITE))
       {
       throw new Zend_Exception('Write permission required on the community', 403);
+      }
+      
+    $this->view->directAdd = $directAdd;
+    }
+    
+  /**
+   * Ajax method for add an user to a community group
+   * @param communityId Id of the community to invite into
+   * @param [groupId] Id of the group to invite into.  If none is passed, uses the members group
+   * @param [userId] Id of the user to invite. If not passed, must pass email parameter
+   * @param [email] Email of the user to invite.  If not passed, must pass userId parameter.
+                    If no such user exists, sends an email inviting the user to register and join the group.
+   */
+  function addusertogroupAction()
+    {
+    $this->disableLayout();
+    $this->disableView();
+
+    $communityId = $this->_getParam('communityId');    
+    $userId = $this->_getParam('userId');
+
+    $community = $this->Community->load($communityId);
+    if(!$community || !$this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+      {
+      throw new Zend_Exception('Admin permission required on the community', 403);
+      }
+
+    $group = $this->Group->load($this->_getParam('groupId'));
+    $user = $this->User->load($userId);
+    if($group && $user)
+      {
+      $member_group = $community->getMemberGroup();
+      $this->Group->addUser($member_group, $user);
+      $this->Group->addUser($group, $user);
+      echo JsonComponent::encode(array(true, 'User added.'));
+      }
+    else
+      {
+      echo JsonComponent::encode(array(false, 'Unable to add user.'));
       }
     }
 
@@ -445,9 +488,10 @@ class CommunityController extends AppController
     $this->disableLayout();
     $this->disableView();
 
-    $communityId = $this->_getParam('communityId');
+    $communityId = $this->_getParam('communityId');    
     $userId = $this->_getParam('userId');
     $email = $this->_getParam('email');
+    $directAdd = $this->_getParam('directAdd');
 
     $community = $this->Community->load($communityId);
     if(!$community)

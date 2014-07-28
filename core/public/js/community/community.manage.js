@@ -20,6 +20,12 @@ midas.community.manage.init = function () {
             success: midas.community.manage.successGroupChange
         });
     });
+    
+    $('a#addUserToGroupLink').click(function () {
+        midas.loadDialog("invitationCommunity", "/community/invitation?directadd=true&communityId=" + json.community.community_id);
+        midas.showDialog(json.community.sendInvitation, false);
+    });
+
 
     $('a.editGroupLink').click(function () {
         mainDialogContentDiv.html('');

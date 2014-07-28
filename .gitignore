@@ -7,3 +7,5 @@
 .zfproject.xml
 nbproject/
 vendor/
+core/public/java/nbproject/
+sitemap.xml

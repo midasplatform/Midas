@@ -319,6 +319,33 @@ class CommunityControllerTest extends ControllerTestCase
     $this->assertQuery('option[value="'.$comm->getModeratorgroupId().'"]');
     $this->assertQuery('option[value="'.$comm->getAdmingroupId().'"]');
     }
+    
+  /**
+   * Test sendinvitation action
+   */
+  public function testAddusertogroupAction()
+    {
+    $commFile = $this->loadData('Community', 'default');
+    $userFile = $this->loadData('User', 'default');
+    $comm = $this->Community->load($commFile[0]->getKey());
+    $user1 = $this->User->load($userFile[0]->getKey());
+    $user2 = $this->User->load($userFile[1]->getKey());
+
+    // Anonymous users should get exception
+    $this->dispatchUrI('/community/addusertogroup?communityId='.$comm->getKey(), null, true);
+
+    // Have user 1 join the community as a member; should not be able to see dialog
+    $this->Group->removeUser($comm->getMemberGroup(), $user2);
+    $this->Group->removeUser($comm->getAdminGroup(), $user2);
+    $this->Group->addUser($comm->getMemberGroup(), $user1);
+    $this->Group->addUser($comm->getAdminGroup(), $user1);
+    $this->resetAll();
+    $this->dispatchUrI('/community/sendinvitation?communityId='.$comm->getKey()
+            .'&group_id='.$comm->getAdminGroup()->getKey()
+            .'&user_id='.$user2->getKey(), $user1);
+
+    $this->assertTrue($this->Group->userInGroup($user2, $comm->getAdminGroup()));
+    }
 
   /**
    * Test sendinvitation action
