@@ -319,7 +319,7 @@ class CommunityControllerTest extends ControllerTestCase
     $this->assertQuery('option[value="'.$comm->getModeratorgroupId().'"]');
     $this->assertQuery('option[value="'.$comm->getAdmingroupId().'"]');
     }
-    
+
   /**
    * Test sendinvitation action
    */
@@ -340,7 +340,7 @@ class CommunityControllerTest extends ControllerTestCase
     $this->Group->addUser($comm->getMemberGroup(), $user1);
     $this->Group->addUser($comm->getAdminGroup(), $user1);
     $this->resetAll();
-    $this->dispatchUrI('/community/sendinvitation?communityId='.$comm->getKey()
+    $this->dispatchUrI('/community/addusertogroup?communityId='.$comm->getKey()
             .'&group_id='.$comm->getAdminGroup()->getKey()
             .'&user_id='.$user2->getKey(), $user1);
 

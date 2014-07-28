@@ -418,9 +418,15 @@ class CommunityController extends AppController
 
     $communityId = $this->_getParam('communityId');
     $directAdd = $this->_getParam('directadd');
-    if(isset($directAdd) && $directAdd == "true") $directAdd = 1;
-    else $directAdd = 0;
-    
+    if(isset($directAdd) && $directAdd == "true")
+      {
+      $directAdd = 1;
+      }
+    else
+      {
+      $directAdd = 0;
+      }
+
     if(!isset($communityId))
       {
       throw new Zend_Exception('Must pass a communityId parameter');
@@ -434,10 +440,10 @@ class CommunityController extends AppController
       {
       throw new Zend_Exception('Write permission required on the community', 403);
       }
-      
+
     $this->view->directAdd = $directAdd;
     }
-    
+
   /**
    * Ajax method for add an user to a community group
    * @param communityId Id of the community to invite into
@@ -451,7 +457,7 @@ class CommunityController extends AppController
     $this->disableLayout();
     $this->disableView();
 
-    $communityId = $this->_getParam('communityId');    
+    $communityId = $this->_getParam('communityId');
     $userId = $this->_getParam('userId');
 
     $community = $this->Community->load($communityId);
@@ -488,7 +494,7 @@ class CommunityController extends AppController
     $this->disableLayout();
     $this->disableView();
 
-    $communityId = $this->_getParam('communityId');    
+    $communityId = $this->_getParam('communityId');
     $userId = $this->_getParam('userId');
     $email = $this->_getParam('email');
     $directAdd = $this->_getParam('directAdd');

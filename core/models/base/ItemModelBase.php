@@ -65,7 +65,7 @@ abstract class ItemModelBase extends AppModel
   abstract function getMaxPolicy($itemId, $user);
   abstract function existsInFolder($name, $folder);
   abstract function updateItemName($name, $parent);
-  
+
   /** copy an other item policies*/
   function copyItemtPolicies($itemdao, $referenceItemdao, $feeddao = null)
     {
