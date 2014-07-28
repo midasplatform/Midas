@@ -34,7 +34,7 @@ class Batchmake_ExecuteComponent extends AppComponent
   public function exportSingleBitstreamItemsToWorkDataDir($userDao, $taskDao, $itemsForExport)
     {
     $itemIds = array();
-    foreach($itemsForExport as $itemName => $itemId)
+    foreach($itemsForExport as $itemId)
       {
       $itemIds[] = $itemId;
       }

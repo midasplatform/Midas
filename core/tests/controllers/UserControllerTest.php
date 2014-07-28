@@ -188,11 +188,6 @@ class UserControllerTest extends ControllerTestCase
   /** Test email verification endpoint */
   public function testVerifyemailAction()
     {
-    $commFile = $this->loadData('Community', 'default');
-    $userFile = $this->loadData('User', 'default');
-    $comm = $this->Community->load($commFile[0]->getKey());
-    $adminUser = $this->User->load($userFile[2]->getKey());
-
     // We should not be able to call this without an email or auth key
     $this->dispatchUri('/user/verifyemail?authKey=abcd', null, true);
     $this->resetAll();

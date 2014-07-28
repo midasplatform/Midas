@@ -348,7 +348,6 @@ class DashboardModelTest extends DatabaseTestCase
     $this->assertEquals(3, count($dao->getScores()));
     $scores = $dashboardModel->getScores($dao, $resultFolder);
     $this->assertEquals($values, $scores);
-    $allScores = $dashboardModel->getAllScores($dao);
     }
 
   /**

@@ -87,7 +87,6 @@ class ApikeyController extends AppController
       }
 
     // List the previously generated API keys
-    $apikeys = array();
     $userapiDaos = $this->Userapi->getByUser($user);
     $this->view->userapiDaos = $userapiDaos;
     $this->view->user = $user;

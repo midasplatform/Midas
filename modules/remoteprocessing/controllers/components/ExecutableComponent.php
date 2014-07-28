@@ -64,7 +64,6 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
   /** schedule Job (create script and set parameters).*/
   function initAndSchedule($userDao, $executableItemDao, $jobName, $cmdOptions, $parametersList, $fire_time = false, $time_interval = false)
     {
-    $itemModel = MidasLoader::loadModel('Item');
     $jobComponent = MidasLoader::loadComponent('Job', 'remoteprocessing');
 
     if($time_interval === false)
@@ -98,7 +97,7 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
       {
       $os = MIDAS_REMOTEPROCESSING_OS_LINUX;
       }
-    $jobParameters = $jobComponent->scheduleJob($parameters, '', $os, $fire_time, $time_interval, $only_once);
+    $jobComponent->scheduleJob($parameters, '', $os, $fire_time, $time_interval, $only_once);
     }
 
   /** init job */

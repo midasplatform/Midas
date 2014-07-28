@@ -50,7 +50,6 @@ class Solr_ApisearchComponent extends AppComponent
       $response = $index->search($args['query'], 0, $limit * 5, array('fl' => '*,score')); //extend limit to allow some room for policy filtering
       UtilityComponent::endIgnoreWarnings();
 
-      $totalResults = $response->response->numFound;
       foreach($response->response->docs as $doc)
         {
         $itemIds[] = $doc->key;

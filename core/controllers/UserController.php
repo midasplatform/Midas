@@ -93,7 +93,7 @@ class UserController extends AppController
         }
 
       $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_RESET_PASSWORD', array('user' => $user));
-      foreach($notifications as $module => $result)
+      foreach($notifications as $result)
         {
         if($result['status'] === true)
           {
@@ -408,7 +408,7 @@ class UserController extends AppController
     if($this->User->hashExists($passwordHash))
       {
       $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_AUTH_INTERCEPT', array('user' => $userDao));
-      foreach($notifications as $module => $value)
+      foreach($notifications as $value)
         {
         if($value['override'] && $value['response'])
           {
@@ -460,7 +460,7 @@ class UserController extends AppController
           $this->getLogger()->crit($exc->getMessage());
           }
         $authModule = false;
-        foreach($notifications as $module => $user)
+        foreach($notifications as $user)
           {
           if($user)
             {
@@ -498,7 +498,7 @@ class UserController extends AppController
         if($authModule || $coreAuth)
           {
           $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_AUTH_INTERCEPT', array('user' => $userDao));
-          foreach($notifications as $module => $value)
+          foreach($notifications as $value)
             {
             if($value['override'] && $value['response'])
               {
@@ -527,7 +527,6 @@ class UserController extends AppController
               $user = new Zend_Session_Namespace('Auth_User');
               $user->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
               $user->Dao = $userDao;
-              $url = $form->getValue('url');
               $user->lock();
               }
             }
@@ -588,7 +587,7 @@ class UserController extends AppController
 
     $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_CHECK_USER_EXISTS',
       array('entry' => $entry));
-    foreach($notifications as $module => $value)
+    foreach($notifications as $value)
       {
       if($value === true)
         {
@@ -640,7 +639,7 @@ class UserController extends AppController
       array('user' => $userDao, 'currentUser' => $this->userSession->Dao));
     $this->view->allowPasswordChange = true;
 
-    foreach($notifications as $module => $allow)
+    foreach($notifications as $allow)
       {
       if($allow['allow'] === false)
         {
@@ -666,7 +665,7 @@ class UserController extends AppController
 
     $moduleFields = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_USER_PROFILE_FIELDS',
       array('user' => $userDao, 'currentUser' => $this->userSession->Dao));
-    foreach($moduleFields as $module => $field)
+    foreach($moduleFields as $field)
       {
       if(isset($field['position']) && $field['position'] == 'top')
         {
@@ -695,7 +694,7 @@ class UserController extends AppController
         $oldPass = $this->getParam('oldPassword');
         if($userDao->getSalt() == '')
           {
-          $passwordHash = $this->User->convertLegacyPasswordHash($userDao, $oldPass);
+          $this->User->convertLegacyPasswordHash($userDao, $oldPass);
           }
         $newPass = $this->getParam('newPassword');
         $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
@@ -1114,7 +1113,6 @@ class UserController extends AppController
       }
 
     // Get all the communities this user can see
-    $communities = array();
     if($userDao->isAdmin())
       {
       $communities = $this->Community->getAll();

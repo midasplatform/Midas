@@ -57,9 +57,6 @@ class KeyfilesDownloadControllerTest extends ControllerTestCase
    */
   public function testDownloadZip()
     {
-    $usersFile = $this->loadData('User', 'default');
-    $userDao = $this->User->load($usersFile[2]->getKey());
-
     // Should throw an exception for no bitstream parameter
     $this->dispatchUrI('/keyfiles/download/batch', null, true);
 

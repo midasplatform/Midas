@@ -248,7 +248,7 @@ class Tracker_ApiComponent extends AppComponent
         {
         $nHours = 24; //default to 24 hours
         }
-      foreach($notifications as $notification)
+      while(each($notifications))
         {
         $job = MidasLoader::newDao('JobDao', 'scheduler');
         $job->setTask('TASK_TRACKER_DELETE_TEMP_SCALAR');
@@ -457,7 +457,7 @@ class Tracker_ApiComponent extends AppComponent
             }
           if(!$official)
             {
-            foreach($notifications as $notification)
+            while(each($notifications))
               {
               $job = MidasLoader::newDao('JobDao', 'scheduler');
               $job->setTask('TASK_TRACKER_DELETE_TEMP_SCALAR');

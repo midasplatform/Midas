@@ -32,7 +32,6 @@ class IndexControllerTest extends ControllerTestCase
   /** test index action*/
   public function testIndexAction()
     {
-    $itemModel = MidasLoader::loadModel('Item');
     $groupModel = MidasLoader::loadModel('Group');
     $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
     $userModel = MidasLoader::loadModel('User');

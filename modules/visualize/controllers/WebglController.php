@@ -45,7 +45,6 @@ class Visualize_WebglController extends Visualize_AppController
       }
 
     $data = array();
-    $xmlFile = false;
 
     foreach($items as $item)
       {

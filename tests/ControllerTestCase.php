@@ -116,7 +116,6 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
 
     $data = $this->getDataSet($file, $module);
     $dataUsers = $data->getTable($model->getName());
-    $rows = $dataUsers->getRowCount();
     $key = array();
     for($i = 0; $i < $dataUsers->getRowCount();$i++)
       {
@@ -183,8 +182,6 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       }
 
     require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
-    $utilityComponent = new UtilityComponent();
-    // get WebApi controller directory for core Apis
     require_once BASE_PATH.'/core/ApiController.php';
     $frontController->addControllerDirectory(BASE_PATH.'/core/controllers/api', 'rest');
     // add restful route for WebApis

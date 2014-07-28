@@ -108,11 +108,9 @@ class Ldap_Notification extends MIDAS_Notification
   public function getDashboard()
     {
     $config = Zend_Registry::get('configsModules');
-    $baseDn = $config['ldap']->ldap->basedn;
     $hostname = $config['ldap']->ldap->hostname;
     $port = (int)$config['ldap']->ldap->port;
     $proxybasedn = $config['ldap']->ldap->proxyBasedn;
-    $proxyPassword = $config['ldap']->ldap->proxyPassword;
     $protocolVersion = $config['ldap']->ldap->protocolVersion;
     $backupServer = $config['ldap']->ldap->backup;
     $bindn = $config['ldap']->ldap->bindn;
@@ -129,7 +127,7 @@ class Ldap_Notification extends MIDAS_Notification
       {
       if($proxybasedn != '')
         {
-        $proxybind = ldap_bind($ldap, $proxybasedn, $proxyPassword);
+        ldap_bind($ldap, $proxybasedn, $proxyPassword);
         }
 
       $ldapbind = ldap_bind($ldap, $bindn, $bindpw);
@@ -194,12 +192,10 @@ class Ldap_Notification extends MIDAS_Notification
     $searchTerm =  $config['ldap']->ldap->search;
     $useActiveDirectory = $config['ldap']->ldap->useActiveDirectory;
     $proxybasedn = $config['ldap']->ldap->proxyBasedn;
-    $proxyPassword = $config['ldap']->ldap->proxyPassword;
     $backup = $config['ldap']->ldap->backup;
     $bindn = $config['ldap']->ldap->bindn;
     $bindpw = $config['ldap']->ldap->bindpw;
     $proxyPassword = $config['ldap']->ldap->proxyPassword;
-    $passwordPrefix = Zend_Registry::get('configGlobal')->password->prefix;
 
     if($searchTerm == 'uid')
       {
@@ -240,7 +236,7 @@ class Ldap_Notification extends MIDAS_Notification
       if(!$ldapbind && $backup)
         {
         $ldap = ldap_connect($backup);
-        $ldapbind = ldap_bind($ldap, $bindn, $bindpw);
+        ldap_bind($ldap, $bindn, $bindpw);
         }
 
       // do an ldap search for the specified user
@@ -270,7 +266,6 @@ class Ldap_Notification extends MIDAS_Notification
             else if($autoAddUnknownUser)
               {
               // If the user doesn't exist we add it
-              $user = array();
               $givenname = $entries[0]['cn'][0];
               if(!isset($givenname))
                 {

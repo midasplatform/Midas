@@ -81,7 +81,6 @@ class ExecuteComponentTest extends BatchmakeControllerTest
     $user1_public_fh = fopen($user1_public_path, "a+");
     fwrite($user1_public_fh, "content:user1_public");
     fclose($user1_public_fh);
-    $user1_pulic_file_size = filesize($user1_public_path);
     $user1_public_filename = 'public.file';
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());

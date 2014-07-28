@@ -107,7 +107,7 @@ class SearchController extends AppController
           {
           continue;
           }
-        foreach($groups as $key => $group)
+        foreach($groups as $group)
           {
           $group->setName($communitieDao->getName().' ('.$group->getName().')');
           $group->community = $communitieDao;

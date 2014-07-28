@@ -37,8 +37,6 @@ class JobControllerTest extends ControllerTestCase
     $userDao = $this->User->load($usersFile[0]->getKey());
     $itemFile = $this->loadData('Item', 'default');
 
-    $revision = $this->Item->getLastRevision($itemFile[0]);
-
     $this->dispatchUrI('/remoteprocessing/job/manage?itemId='.$itemFile[0]->getKey(), null, true);
     $this->dispatchUrI('/remoteprocessing/job/manage?itemId='.$itemFile[0]->getKey(), $userDao, false);
 
@@ -62,7 +60,6 @@ class JobControllerTest extends ControllerTestCase
     $itemFile = $this->loadData('Item', 'default');
 
     $this->resetAll();
-    $revision = $this->Item->getLastRevision($itemFile[0]);
     $this->dispatchUrI('/remoteprocessing/job/init?itemId='.$itemFile[0]->getKey(), $userDao, false);
 
     // create definition file

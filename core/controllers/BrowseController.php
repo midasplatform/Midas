@@ -36,9 +36,6 @@ class BrowseController extends AppController
   /** Index Action*/
   public function indexAction()
     {
-    $items = array();
-    $header = "";
-
     $this->view->Date = $this->Component->Date;
 
     $this->view->header = $this->t('Explore');
@@ -63,14 +60,9 @@ class BrowseController extends AppController
       {
       $shareSubmit = true;
       }
-    else if(isset($copytype))
-      {
-      $duplicateSubmit = true;
-      }
     $duplicateSubmit = $this->getParam('duplicateElement');
     $moveSubmit = $this->getParam('moveElement');
 
-    $select = $this->getParam('selectElement');
     $share = $this->getParam('share');
     $duplicate = $this->getParam('duplicate');
     $move = $this->getParam('move');
@@ -364,14 +356,11 @@ class BrowseController extends AppController
     $folders = $this->Folder->getChildrenFoldersFiltered($parents, $this->userSession->Dao, MIDAS_POLICY_READ,
                                                          $foldersort, $foldersortdir, $limit + 1, $folderOffset);
     $folderCount = count($folders);
-    $itemCount = 0;
     $folderOffset += min($limit, $folderCount);
     if($limit > 0 && $folderCount > $limit) // If we have more folder children than the page allows, no need to fetch items this pass
       {
       array_pop($folders); //remove the last element since it is one over the limit
-      $folderCount--;
       $items = array();
-      $itemCount = 0;
       $showMoreLink = true;
       }
     else

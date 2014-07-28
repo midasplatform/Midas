@@ -48,12 +48,6 @@ class ApiTest extends ControllerTestCase
   /** test manage */
   public function testAllApiSubmissionProcess()
     {
-    $usersFile = $this->loadData('User', 'adminUser');
-    $userDao = $this->User->load($usersFile[0]->getKey());
-    $itemFile = $this->loadData('Item', 'default');
-
-    $revision = $this->Item->getLastRevision($itemFile[0]);
-
     // register (create user)
     $this->resetAll();
     $this->params = array();
@@ -71,7 +65,6 @@ class ApiTest extends ControllerTestCase
       }
     $results = JsonComponent::decode($jsonResults);
 
-    $token = $results['data']['token'];
     $email = $results['data']['email'];
     $apikey = $results['data']['apikey'];
 

@@ -191,8 +191,6 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
   /** Process results */
   public function processProcessingResults($params)
     {
-    $modulesConfig = Zend_Registry::get('configsModules');
-
     $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
     $userModel = MidasLoader::loadModel('User');
     $folderModel = MidasLoader::loadModel('Folder');

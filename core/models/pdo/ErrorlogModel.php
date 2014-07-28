@@ -38,7 +38,6 @@ class ErrorlogModel extends ErrorlogModelBase
    */
   function getLog($startDate, $endDate, $module = 'all', $priority = MIDAS_PRIORITY_WARNING, $limit = 99999, $offset = 0, $operator = '<=')
     {
-    $result = array();
     $sql = $this->database->select()
             ->setIntegrityCheck(false)
             ->from(array('e' => 'errorlog'))
@@ -61,7 +60,7 @@ class ErrorlogModel extends ErrorlogModelBase
 
     $rowset = $this->database->fetchAll($sql);
     $result = array('logs' => array());
-    foreach($rowset as $keyRow => $row)
+    foreach($rowset as $row)
       {
       $result['logs'][] = $this->initDao('Errorlog', $row);
       }

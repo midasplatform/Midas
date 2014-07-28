@@ -155,7 +155,6 @@ class UploadDownloadControllerTest extends ControllerTestCase
     $this->assertContains('id="destinationId" value="'.$folder->getKey(), $this->getBody());
 
     $this->resetAll();
-    $folder = $this->Folder->load(1002); //private folder
     $this->dispatchUrI('/upload/simpleupload', $userDao, false);
     $this->assertContains('id="destinationId" value=""', $this->getBody());
     }
@@ -183,9 +182,6 @@ class UploadDownloadControllerTest extends ControllerTestCase
 
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-
-    $itemsFile = $this->loadData('Item', 'default');
-    $itemDao = $this->Item->load($itemsFile[1]->getKey());
 
     $this->params = array();
     $this->params['parent'] = '1001'; //public folder

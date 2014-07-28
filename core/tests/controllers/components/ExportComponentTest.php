@@ -73,7 +73,6 @@ class ExportComponentTest extends ControllerTestCase
     $user1_public_fh = fopen($user1_public_path, "a+");
     fwrite($user1_public_fh, "content:user1_public");
     fclose($user1_public_fh);
-    $user1_pulic_file_size = filesize($user1_public_path);
     $user1_public_filename = 'public.file';
     $user1_public_parent = '1001';
     $license = 0;
@@ -86,7 +85,6 @@ class ExportComponentTest extends ControllerTestCase
     $user1_private_fh = fopen($user1_private_path, "a+");
     fwrite($user1_private_fh, "content:user1_private");
     fclose($user1_private_fh);
-    $user1_pulic_file_size = filesize($user1_private_path);
     $user1_private_filename = 'private.png';
     $user1_private_parent = '1002';
     $license = 0;
@@ -104,7 +102,6 @@ class ExportComponentTest extends ControllerTestCase
   public function getItemIds($fileNames)
     {
     // get all the itemDaos
-    $allItems = array();
     $allItems = $this->Item->getAll();
 
     $itemIds = array();

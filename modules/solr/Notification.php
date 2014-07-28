@@ -139,7 +139,6 @@ class Solr_Notification extends ApiEnabled_Notification
     {
     $query = $args['query'];
     $limit = $args['limit'];
-    $user = $args['user'];
 
     $solrQuery = 'name: '.$query.
                  ' OR description: '.$query.
@@ -261,7 +260,6 @@ class Solr_Notification extends ApiEnabled_Notification
     {
     $query = $args['query'];
     $limit = $args['limit'];
-    $user = $args['user'];
 
     $solrQuery = 'name: '.$query.' OR description: '.$query;
 

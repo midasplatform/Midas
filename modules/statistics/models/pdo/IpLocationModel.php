@@ -33,7 +33,7 @@ class Statistics_IpLocationModel extends Statistics_IpLocationModelBase
             ->from(array('e' => 'statistics_ip_location'))
             ->where('ip = ?', $ip);
     $rowset = $this->database->fetchAll($sql);
-    foreach($rowset as $keyRow => $row)
+    foreach($rowset as $row)
       {
       return $this->initDao('IpLocation', $row, 'statistics');
       }
@@ -51,7 +51,7 @@ class Statistics_IpLocationModel extends Statistics_IpLocationModelBase
             ->from(array('e' => 'statistics_ip_location'))
             ->where('latitude = ?', '');
     $rowset = $this->database->fetchAll($sql);
-    foreach($rowset as $keyRow => $row)
+    foreach($rowset as $row)
       {
       $result[] = $this->initDao('IpLocation', $row, 'statistics');
       }

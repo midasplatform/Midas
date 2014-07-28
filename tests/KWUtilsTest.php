@@ -165,11 +165,11 @@ class KWUtilsTest extends ControllerTestCase
       $app .= ".exe";
       }
 
-    $pathToApp = KWUtils::findApp($app, true);
+    KWUtils::findApp($app, true);
     // now try something that is unlikely to be in the path
     try
       {
-      $pathToApp = KWUtils::findApp('php_exe_that_is_vanishingly_likeley_to_be_in_the_path', true);
+      KWUtils::findApp('php_exe_that_is_vanishingly_likeley_to_be_in_the_path', true);
       $this->fail('Should have caught exception but did not, testFindApp');
       }
     catch(Zend_Exception $ze)

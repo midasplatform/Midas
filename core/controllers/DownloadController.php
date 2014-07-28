@@ -57,7 +57,7 @@ class DownloadController extends AppController
         {
         $responses = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_PARAMETER_AUTHENTICATION',
           array('authToken' => $authToken));
-        foreach($responses as $module => $user)
+        foreach($responses as $user)
           {
           $sessionUser = $user;
           break;

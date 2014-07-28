@@ -38,10 +38,7 @@ class ItemmetricModelTest extends DatabaseTestCase
   /** Test that ItemmetricModel::createTask($userDao) works */
   public function testCreateItemmetric()
     {
-    $usersFile = $this->loadData('User', 'default', '', 'batchmake');
-
     $itemmetricModel = MidasLoader::loadModel('Itemmetric', 'batchmake');
-    $user1Dao = $usersFile[0];
 
     // create an itemmetric
     $metricName = 'metrictest1';
@@ -61,7 +58,7 @@ class ItemmetricModelTest extends DatabaseTestCase
     // now try creating another one with the same name, see that it fails
     try
       {
-      $itemmetricDaoDup = $itemmetricModel->createItemmetric($metricName, $bmsName);
+      $itemmetricModel->createItemmetric($metricName, $bmsName);
       $this->fail('Expected an exception for '.$metricName.', but did not get one.');
       }
     catch(Zend_Exception $ze)

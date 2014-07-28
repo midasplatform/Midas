@@ -98,8 +98,6 @@ class UTF8Tools
             {
             continue;
             }
-          $fullPath = $src.'/'.$file;
-          $relPath = substr($fullPath, strlen($src) - strlen($dir) + 1);
           if(is_dir($src.'/'.$file))
             {
             if(array_search($file, $this->excludedDirs) !== false)

@@ -182,7 +182,6 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
           $path = '';
           }
         $filename = $path.$bitstream->getName().'.md5';
-        $fullpath = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
         Zend_Registry::get('dbAdapter')->closeConnection();
         $zip->add_file($filename, $bitstream->getChecksum());
         }

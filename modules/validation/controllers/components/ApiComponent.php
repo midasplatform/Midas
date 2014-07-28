@@ -340,9 +340,6 @@ class Validation_ApiComponent extends AppComponent
 
     // Load the necessary models
     $dashboardModel = MidasLoader::loadModel('Dashboard', 'validation');
-    $scalarResultModel = MidasLoader::loadModel('ScalarResult', 'validation');
-    $itemModel = MidasLoader::loadModel('Item');
-    $folderModel = MidasLoader::loadModel('Folder');
 
     // Verify that the dashboard exists
     $dashboardDao = $dashboardModel->load($value['dashboard_id']);
@@ -405,9 +402,6 @@ class Validation_ApiComponent extends AppComponent
 
     // Load the necessary models
     $dashboardModel = MidasLoader::loadModel('Dashboard', 'validation');
-    $scalarResultModel = MidasLoader::loadModel('ScalarResult', 'validation');
-    $itemModel = MidasLoader::loadModel('Item');
-    $folderModel = MidasLoader::loadModel('Folder');
 
     // Verify that the dashboard exists
     $dashboardDao = $dashboardModel->load($value['dashboard_id']);
@@ -456,7 +450,6 @@ class Validation_ApiComponent extends AppComponent
 
     // Load the necessary models
     $dashboardModel = MidasLoader::loadModel('Dashboard', 'validation');
-    $folderModel = MidasLoader::loadModel('Folder');
 
     // Verify that the dashboard exists
     $dashboardDao = $dashboardModel->load($value['dashboard_id']);

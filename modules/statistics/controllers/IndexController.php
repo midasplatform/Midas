@@ -31,7 +31,6 @@ class Statistics_IndexController extends Statistics_AppController
     $this->requireAdminPrivileges();
 
     $assetstores = $this->Assetstore->getAll();
-    $defaultSet = false;
     foreach($assetstores as $key => $assetstore)
       {
       // Check if we can access the path

@@ -54,9 +54,6 @@ class MIDAS_GlobalModule extends AppController
     $this->view->moduleFullName = $config->fullname;
     $this->view->moduleDescription = $config->description;
 
-    $stack = debug_backtrace();
-    $forward = $this->getParam('forwardModule');
-
     // Add variables to the view that allow the retrieval of any enabled module
     // webroots
     $allModules = Zend_Registry::get('modulesEnable');

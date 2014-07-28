@@ -47,7 +47,6 @@ class Visualize_ParaviewController extends Visualize_AppController
 
     $modulesConfig = Zend_Registry::get('configsModules');
     $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;
-    $customtmp = $modulesConfig['visualize']->customtmp;
     $useparaview = $modulesConfig['visualize']->useparaview;
     $userwebgl = $modulesConfig['visualize']->userwebgl;
     $usesymlinks = $modulesConfig['visualize']->usesymlinks;
@@ -163,7 +162,6 @@ class Visualize_ParaviewController extends Visualize_AppController
 
     $pathArray = $this->ModuleComponent->Main->createParaviewPath();
     $path = $pathArray['path'];
-    $tmpFolderName = $pathArray['foderName'];
 
     $items = array('left' => $left, 'right' => $right);
     foreach($items as $side => $item)

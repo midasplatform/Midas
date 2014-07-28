@@ -30,27 +30,15 @@ class ItemModel extends ItemModelBase
    * @return Array of ItemDao */
   function getItemsFromSearch($searchterm, $userDao, $limit = 14, $group = true, $order = 'view')
     {
-    if(Zend_Registry::get('configDatabase')->database->adapter == 'PDO_PGSQL')
-      {
-      $group = false; //Postgresql don't like the sql request with group by
-      }
-    if($userDao == null)
-      {
-      $userId = -1;
-      }
-    else if(!$userDao instanceof UserDao)
+    if($userDao != null && !$userDao instanceof UserDao)
       {
       throw new Zend_Exception("Should be a user.");
-      }
-    else
-      {
-      $userId = $userDao->getUserId();
       }
 
     // Allow modules to handle special search queries.  If any module accepts the query given its format,
     // its results are returned.
     $moduleSearch = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_ITEM_SEARCH', array('search' => $searchterm, 'user' => $userDao));
-    foreach($moduleSearch as $module => $results)
+    foreach($moduleSearch as $results)
       {
       if($results['status'] == 'accepted')
         {
@@ -65,7 +53,7 @@ class ItemModel extends ItemModelBase
                                                                'user' => $userDao,
                                                                'limit' => $limit));
     $override = false;
-    foreach($overrideSearch as $module => $results)
+    foreach($overrideSearch as $results)
       {
       $override = true;
       $queryResults = $results;
@@ -319,7 +307,6 @@ class ItemModel extends ItemModelBase
         }
       }
 
-    $folder_model = MidasLoader::loadModel('Folder');
     $folders = $itemdao->getFolders();
     foreach($folders as $folder)
       {
@@ -520,7 +507,7 @@ class ItemModel extends ItemModelBase
 
     $rowset = $this->database->fetchAll($sql);
     $rowsetAnalysed = array();
-    foreach($rowset as $keyRow => $row)
+    foreach($rowset as $row)
       {
       if($row['userpolicy'] == null)
         {

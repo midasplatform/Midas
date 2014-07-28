@@ -151,7 +151,6 @@ class ItemController extends AppController
         }
       if(isset($editMetadata) && !empty($editMetadata) && $this->view->isModerator) //add metadata field
         {
-        $metadataId = $this->getParam('metadataId');
         $metadatatype = $this->getParam('metadatatype');
         $element = $this->getParam('element');
         $qualifier = $this->getParam('qualifier');

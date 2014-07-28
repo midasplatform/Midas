@@ -29,7 +29,6 @@ class Remoteprocessing_JobComponent extends AppComponent
   /** Init Remote Params */
   public function initJobParameters($resultCallback, $inputArray = array(), $ouputArray = array(), $additionalParams = array())
     {
-    $return = array();
     $notifications = Zend_Registry::get('notifier')->getNotifications();
     if(!isset($notifications[$resultCallback]))
       {
@@ -101,7 +100,6 @@ class Remoteprocessing_JobComponent extends AppComponent
   public function computeLogs($job, $logs, $params)
     {
     unset($params['log']);
-    $utilityComponent = MidasLoader::loadComponent('Utility');
     $logs = str_replace("\r\n", "", $logs);
     $logs = str_replace("\r\r", "\r", $logs);
     $xml = "<?xml version='1.0'?>\n";

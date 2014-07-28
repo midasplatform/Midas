@@ -123,7 +123,6 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
               {
               throw new Zend_Exception('Unable to find folder or permission error');
               }
-            $items = $folder->getItems();
             $cmdOptions[$i] = array('type' => 'input', 'item' => array(), 'folder' => $folder->getKey());
             }
           else
@@ -362,7 +361,6 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
     {
     $this->disableLayout();
     $this->disableView();
-    $entry = $this->getParam("entry");
     $type = $this->getParam("type");
     if(!is_string($type))
       {

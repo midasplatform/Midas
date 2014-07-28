@@ -290,16 +290,14 @@ class UploadController extends AppController
 
     $this->disableLayout();
     $this->disableView();
-    $parent = $this->getParam('parent');
     $name = $this->getParam('name');
     $url = $this->getParam('url');
     $parent = $this->getParam('parent');
-    $license = $this->getParam('license');
     if(!empty($url) && !empty($name))
       {
-      $item = $this->Component->Upload->createLinkItem($this->userSession->Dao, $name, $url, $parent);
+      $this->Component->Upload->createLinkItem($this->userSession->Dao, $name, $url, $parent);
       }
-    }//end simple upload
+    } //end simple upload
 
   /**
    * Used to see how much of a file made it to the server during an interrupted upload attempt
@@ -760,10 +758,10 @@ class UploadController extends AppController
             throw new Zend_Exception($validation['message']);
             }
           }
-        $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $filename,
-                                                             $path, $parent, $license, '',
-                                                             (bool)$this->isTestingEnv(),
-                                                             $newRevision);
+        $this->Component->Upload->createUploadedItem($this->userSession->Dao, $filename,
+                                                     $path, $parent, $license, '',
+                                                     (bool)$this->isTestingEnv(),
+                                                     $newRevision);
         }
 
       $info = array();

@@ -50,7 +50,7 @@ class BatchmakeControllerTest extends ControllerTestCase
     // and initialize test data
     $tmpDir = $this->getTempDirectory();
     $subDirs = array("batchmake", "tests");
-    $testDir = KWUtils::createSubDirectories($tmpDir.'/', $subDirs);
+    KWUtils::createSubDirectories($tmpDir.'/', $subDirs);
     $configProps = array(MIDAS_BATCHMAKE_TMP_DIR_PROPERTY => $tmpDir.'/batchmake/tests/tmp',
     MIDAS_BATCHMAKE_BIN_DIR_PROPERTY => $tmpDir.'/batchmake/tests/bin',
     MIDAS_BATCHMAKE_SCRIPT_DIR_PROPERTY => $tmpDir.'/batchmake/tests/script',
@@ -59,7 +59,7 @@ class BatchmakeControllerTest extends ControllerTestCase
     MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY => $tmpDir.'/batchmake/tests/condorbin');
     // now make sure these dirs exist
     // later can actually add some stuff to these dirs
-    foreach($configProps as $prop => $dir)
+    foreach($configProps as $dir)
       {
       if(!file_exists($dir) && !KWUtils::mkDir($dir))
         {

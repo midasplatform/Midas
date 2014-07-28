@@ -66,8 +66,6 @@ class Dicomserver_ApiserverComponent extends AppComponent
       throw new Exception('At least one DICOM service is already running. Please stop all services first before start them again!', MIDAS_INVALID_POLICY);
       }
     // Get login information
-    $user_email = '';
-    $api_key = '';
     if(!empty($args['email']) && !empty($args['apikey']))
       {
       $user_email = $args['email'];
@@ -110,7 +108,6 @@ class Dicomserver_ApiserverComponent extends AppComponent
       {
       $storescp_timeout = $args['storescp_timeout'];
       }
-    $incoming_dir = '';
     if(!empty($args['incoming_dir']))
       {
       $incoming_dir = $args['incoming_dir'];
@@ -312,7 +309,6 @@ class Dicomserver_ApiserverComponent extends AppComponent
       {
       $dcmqrscp_cmd = $args['dcmqrscp_cmd'];
       }
-    $incoming_dir = '';
     if(!empty($args['incoming_dir']))
       {
       $incoming_dir = $args['incoming_dir'];
@@ -366,7 +362,6 @@ class Dicomserver_ApiserverComponent extends AppComponent
     $apihelperComponent->validateParams($args, array('item'));
 
     $itemModel = MidasLoader::loadModel("Item");
-    $itemRevisionModel = MidasLoader::loadModel("ItemRevision");
     $authComponent = MidasLoader::loadComponent('Authentication');
     $itemDao = $itemModel->load($args['item']);
     $userDao = $authComponent->getUser($args,

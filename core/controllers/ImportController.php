@@ -126,7 +126,6 @@ class ImportController extends AppController
   private function _recursiveParseDirectory($path, $currentdir)
     {
     $it = new DirectoryIterator($path);
-    $count = 0;
     foreach($it as $fileInfo)
       {
       if($fileInfo->isDot())

@@ -27,7 +27,6 @@ class Visualize_IndexController extends Visualize_AppController
   /** index*/
   function indexAction()
     {
-    $itemId = $this->getParam('itemId');
     $height = $this->getParam('height');
     $width = $this->getParam('width');
     $viewMode = $this->getParam('viewMode');

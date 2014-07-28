@@ -194,7 +194,7 @@ class FeedModel extends FeedModelBase
     $sql->order(array('f.date DESC'));
     $rowset = $this->database->fetchAll($sql);
     $rowsetAnalysed = array();
-    foreach($rowset as $keyRow => $row)
+    foreach($rowset as $row)
       {
       if(isset($row['userpolicy']) && $row['userpolicy'] == null)
         {

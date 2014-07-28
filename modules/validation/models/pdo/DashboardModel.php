@@ -34,7 +34,7 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
     $sql = $this->database->select();
     $rowset = $this->database->fetchAll($sql);
     $rowsetAnalysed = array();
-    foreach($rowset as $keyRow => $row)
+    foreach($rowset as $row)
       {
       $tmpDao = $this->initDao('Dashboard', $row, 'validation');
       $rowsetAnalysed[] = $tmpDao;
@@ -83,8 +83,7 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
       ->where('r.folder_id = '.$folder->getKey())
       ->where('d.dashboard_id = '.$dashboard->getKey());
     $rowset = $this->database->fetchAll($sql);
-    $results = array();
-    foreach($rowset as $keyRow => $row)
+    foreach($rowset as $row)
       {
       $tmpDao = $this->initDao('ScalarResult', $row, 'validation');
       $this->database->removeLink('scores', $dashboard, $tmpDao);
@@ -210,7 +209,7 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
       ->where('d.dashboard_id = '.$dashboard->getKey());
     $rowset = $this->database->fetchAll($sql);
     $results = array();
-    foreach($rowset as $keyRow => $row)
+    foreach($rowset as $row)
       {
       $results[$row["item_id"]] = $row["value"];
       }
@@ -241,7 +240,7 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
       ->where('d.dashboard_id = '.$dashboard->getKey());
     $rowset = $this->database->fetchAll($sql);
     $results = array();
-    foreach($rowset as $keyRow => $row)
+    foreach($rowset as $row)
       {
       if(isset($results[$row["folder_id"]]))
         {

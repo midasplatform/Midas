@@ -83,8 +83,6 @@ function getMatchingFilesRecursive($src, $dir = '')
           {
           continue;
           }
-        $fullPath = $src.'/'.$file;
-        $relPath = substr($fullPath, strlen($src) - strlen($dir) + 1);
         if(is_dir($src.'/'.$file))
           {
           $files = array_merge($files, getMatchingFilesRecursive($src.'/'.$file, $dir.'/'.$file));

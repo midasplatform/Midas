@@ -41,25 +41,20 @@ class Oai_IndexController extends Oai_AppController
       }
     }
 
-  /** Index function */
+  /**
+   * Index function
+   * @noinspection PhpUnusedLocalVariableInspection
+   */
   function indexAction()
     {
     // Need to define some variables global so they can
     // be accessed by the OAI classes
     global $output;
     global $xmlheader;
-    global $compression;
     global $errors;
-    global $SHOW_QUERY_ERROR;
-    global $setspecprefix;
-    global $MAXRECORDS;
-    global $oaiprefix;
     global $granularity;
-    global $tokenValid;
     global $SQL;
-    global $MidasTempDirectory;
     global $METADATAFORMATS;
-    global $MAXIDS;
     global $XMLSCHEMA;
 
     $output = '';
@@ -87,7 +82,6 @@ class Oai_IndexController extends Oai_AppController
     $xmlheader = $XMLHEADER .
             ' <responseDate>'.$responseDate."</responseDate>\n";
 
-    $SHOW_QUERY_ERROR = false;
     $repositoryName = $modulesConfig['oai']->repositoryname;
     $baseURL = $MY_URI;
     $protocolVersion = '2.0';
@@ -152,22 +146,13 @@ class Oai_IndexController extends Oai_AppController
       {
       unset($$val);
       }
-    $db = Zend_Registry::get('dbAdapter');
 
     $request = ' <request'.$reqattr.'>'.$MY_URI."</request>\n";
     $request_err = ' <request>'.$MY_URI."</request>\n";
 
     if(is_array($compression))
       {
-      if(in_array('gzip', $compression) && ini_get('output_buffering'))
-        {
-        //$compress = true;
-        $compress = false;
-        }
-      else
-        {
-        $compress = false;
-        }
+      $compress = false;
       }
 
     if(isset($args['verb']))

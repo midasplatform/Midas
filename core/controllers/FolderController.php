@@ -157,8 +157,6 @@ class FolderController extends AppController
     $this->view->Date = $this->Component->Date;
     $folder_id = $this->getParam('folderId');
     $folder = $this->Folder->load($folder_id);
-    $folders = array();
-    $items = array();
 
     if(!isset($folder_id))
       {
@@ -274,8 +272,6 @@ class FolderController extends AppController
       throw new Zend_Exception("Permissions error.");
       }
 
-    $parent = $folder->getParent();
-    $folderId = $folder->getFolderId();
     // User cannot delete community's root folder, the default 'Public' folder and the default 'Private' folder
     if($this->Folder->getCommunity($folder) != false)
       {

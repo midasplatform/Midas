@@ -33,7 +33,7 @@ class ActivedownloadModel extends ActivedownloadModelBase
             ->from(array('a' => 'activedownload'))
             ->where('ip = ?', $ip);
     $rowset = $this->database->fetchAll($sql);
-    foreach($rowset as $keyRow => $row)
+    foreach($rowset as $row)
       {
       return $this->initDao('Activedownload', $row);
       }

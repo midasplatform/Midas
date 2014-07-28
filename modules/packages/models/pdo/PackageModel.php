@@ -54,7 +54,7 @@ class Packages_PackageModel extends Packages_PackageModelBase
       }
     $rowset = $this->database->fetchAll($sql);
     $rowsetAnalysed = array();
-    foreach($rowset as $keyRow => $row)
+    foreach($rowset as $row)
       {
       $tmpDao = $this->initDao('Package', $row, 'packages');
       $rowsetAnalysed[] = $tmpDao;

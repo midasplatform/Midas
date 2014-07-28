@@ -115,7 +115,7 @@ class ApisystemComponent extends AppComponent
     $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_API_AUTH_INTERCEPT', array(
       'user' => $userDao,
       'tokenDao' => $tokenDao));
-    foreach($notifications as $module => $value)
+    foreach($notifications as $value)
       {
       if($value['response'])
         {
@@ -148,7 +148,6 @@ class ApisystemComponent extends AppComponent
 
     try
       {
-      $notifications = array();
       $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_AUTHENTICATION', array(
         'email' => $email,
         'password' => $password));
@@ -158,7 +157,7 @@ class ApisystemComponent extends AppComponent
       throw new Exception('Login failed', MIDAS_INVALID_PARAMETER);
       }
     $authModule = false;
-    foreach($notifications as $module => $user)
+    foreach($notifications as $user)
       {
       if($user)
         {
@@ -184,7 +183,7 @@ class ApisystemComponent extends AppComponent
       {
       if($userDao->getSalt() == '')
         {
-        $passwordHash = $userModel->convertLegacyPasswordHash($userDao, $password);
+        $userModel->convertLegacyPasswordHash($userDao, $password);
         }
       $defaultApiKey = $userApiModel->getByAppAndEmail('Default', $email)->getApikey();
       return array('apikey' => $defaultApiKey);

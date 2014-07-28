@@ -275,9 +275,6 @@ class ApiCallCommunityMethodsTest extends ApiCallMethodsTest
     {
     $validCommunityId = 2001;
     $invalidCommunityId = -10;
-
-    $communityModel = MidasLoader::loadModel('Community');
-    $comm2001 = $communityModel->load($validCommunityId);
     $userModel = MidasLoader::loadModel('User');
     $commMemberId = '4';
     $commModeratorId = '5';

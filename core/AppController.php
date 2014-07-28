@@ -108,7 +108,7 @@ class AppController extends MIDAS_GlobalController
           $notifier = new MIDAS_Notifier(false, null);
           $notifications = $notifier->callback('CALLBACK_CORE_USER_COOKIE', array('value' => $cookieData));
           $cookieOverride = false;
-          foreach($notifications as $module => $result)
+          foreach($notifications as $result)
             {
             if($result)
               {
@@ -148,8 +148,6 @@ class AppController extends MIDAS_GlobalController
         }
 
       session_write_close();
-      $controllerName = $fc->getRequest()->getControllerName();
-      $actionName = $fc->getRequest()->getActionName();
 
       $this->userSession = $user;
       $this->view->recentItems = array();
@@ -185,7 +183,7 @@ class AppController extends MIDAS_GlobalController
           $recentItems = array();
           if(!empty($tmpRecentItems) && is_array($tmpRecentItems))
             {
-            foreach($tmpRecentItems as $key => $t)
+            foreach($tmpRecentItems as $t)
               {
               if(is_numeric($t))
                 {
@@ -533,7 +531,6 @@ class AppController extends MIDAS_GlobalController
       {
       return true;
       }
-    $modules = array();
     $modulesConfig = Zend_Registry::get('configsModules');
     foreach($modulesConfig as $key => $module)
       {

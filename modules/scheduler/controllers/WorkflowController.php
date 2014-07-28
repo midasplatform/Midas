@@ -32,7 +32,7 @@ class Scheduler_WorkflowController extends Scheduler_AppController
   /** create workflow */
   function createAction()
     {
-    $definition = $this->ModuleComponent->Ezc->initWorkflowDefinitionStorage();
+    $this->ModuleComponent->Ezc->initWorkflowDefinitionStorage();
 
     // Load latest version of workflow named "Test".
     $workflow = new ezcWorkflow('Test');
@@ -58,9 +58,6 @@ class Scheduler_WorkflowController extends Scheduler_AppController
     $processB->addOutNode($workflow->endNode);
 
     $this->_createGraph($workflow);
-
-    // Save workflow definition to database.
-    // $definition->save( $workflow );
     }
 
   /** create graph */

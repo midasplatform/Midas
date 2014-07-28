@@ -134,7 +134,7 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
   /** Get the last 'limit' jobs that have failed. The default value for limit is 10. */
   public function getLastErrors($limit = 10)
     {
-    $load = $this->getServerLoad();
+    $this->getServerLoad();
     $sql = $this->database->select()
           ->setIntegrityCheck(false)
           ->where('status = ?', SCHEDULER_JOB_STATUS_FAILED)
