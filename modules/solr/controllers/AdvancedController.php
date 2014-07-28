@@ -77,7 +77,7 @@ class Solr_AdvancedController extends Solr_AppController
                 $itemIds[] = $doc->key;
             }
         } catch (Exception $e) {
-            echo JsonComponent::encode(array('status' => 'error', 'message' => 'Syntax error in query'));
+            echo JsonComponent::encode(array('status' => 'error', 'message' => 'Syntax error in query '.$e->getMessage()));
 
             return;
         }
