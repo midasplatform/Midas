@@ -17,8 +17,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-?>
-<?php
+
 include_once BASE_PATH . '/library/KWUtils.php';
 /**
  *  Batchmake_KWBatchmakeComponent
@@ -686,4 +685,3 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       }
     }
   } // end class
-?>

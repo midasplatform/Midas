@@ -59,7 +59,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.setting
   ?>
   <div id="tabs-account">
     <h3><?php echo $this->t('My Information')?>:</h3>
-    <form  class="genericForm" id="modifyAccount" method="<?php echo $this->accountForm['method']?>"  action="<?php echo $this->accountForm['action']?><?php echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>">
+    <form class="genericForm" id="modifyAccount" method="<?php echo $this->accountForm['method']?>"  action="<?php echo $this->accountForm['action']; echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>">
       <table>
         <?php
         foreach($this->prependFields as $field)
