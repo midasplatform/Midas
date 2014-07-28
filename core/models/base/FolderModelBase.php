@@ -74,6 +74,28 @@ abstract class FolderModelBase extends AppModel
   abstract function getMaxPolicy($folderId, $user);
   abstract function zipStream(&$zip, $path, $folder, &$userDao, &$overrideOutputFunction = null);
 
+  /** copy  folder policies*/
+  function copyFolderPolicies($folderdao, $referenceFolderdao)
+    {
+    if(!$folderdao instanceof FolderDao || !$referenceFolderdao instanceof FolderDao)
+      {
+      throw new Zend_Exception("Error in param folderdao or referenceFolderdao when copying parent policies.");
+      }
+    $groupPolicies = $referenceFolderdao->getFolderpolicygroup();
+    $userPolicies = $referenceFolderdao->getFolderpolicyuser();
+
+    $FolderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
+    foreach($groupPolicies as $key => $policy)
+      {
+      $FolderpolicygroupModel->createPolicy($policy->getGroup(), $folderdao, $policy->getPolicy());
+      }
+    $FolderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
+    foreach($userPolicies as $key => $policy)
+      {
+      $FolderpolicyuserModel->createPolicy($policy->getUser(), $folderdao, $policy->getPolicy());
+      }
+    }//end copyParentPolicies
+    
   /** Get the root folder */
   function getRoot($folder)
     {
