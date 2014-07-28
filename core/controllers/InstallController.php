@@ -48,7 +48,7 @@ class InstallController extends AppController
     {
     if(file_exists(LOCAL_CONFIGS_PATH . '/database.local.ini'))
       {
-      $this->_redirect('/install/step3');
+      $this->redirect('/install/step3');
       }
     $this->view->header = 'Step 1: Server Configuration';
     // Check PHP extensions / functions
@@ -60,7 +60,7 @@ class InstallController extends AppController
     $this->view->basePath = BASE_PATH;
     if(!empty($_POST) && $this->view->writable)
       {
-      $this->_redirect('/install/step2');
+      $this->redirect('/install/step2');
       }
     }
 
@@ -71,7 +71,7 @@ class InstallController extends AppController
     {
     if(file_exists(LOCAL_CONFIGS_PATH . '/database.local.ini'))
       {
-      $this->_redirect('/install/step3');
+      $this->redirect('/install/step3');
       }
     $this->view->header = 'Step 2: Database Configuration';
 
@@ -110,7 +110,7 @@ class InstallController extends AppController
 
     if($this->_request->isPost())
       {
-      $type = $this->_getParam('type');
+      $type = $this->getParam('type');
       $form = $this->Form->Install->createDBForm($type);
       if($form->isValid($this->getRequest()->getPost()))
         {
@@ -214,7 +214,7 @@ class InstallController extends AppController
         $assetstoreDao->setType(MIDAS_ASSETSTORE_LOCAL);
         $this->Assetstore = new AssetstoreModel(); //reset Database adapter
         $this->Assetstore->save($assetstoreDao);
-        $this->_redirect('/install/step3');
+        $this->redirect('/install/step3');
         }
       }
     }
@@ -228,7 +228,7 @@ class InstallController extends AppController
 
     if(!file_exists(LOCAL_CONFIGS_PATH . '/database.local.ini'))
       {
-      $this->_redirect('/install/index');
+      $this->redirect('/install/index');
       }
 
     $this->view->header = 'Step 3: Midas Server Configuration';
@@ -236,7 +236,7 @@ class InstallController extends AppController
     if(!isset($userDao) || !$userDao->isAdmin())
       {
       unlink(LOCAL_CONFIGS_PATH . '/database.local.ini');
-      $this->_redirect('/install/index');
+      $this->redirect('/install/index');
       }
 
     $options = array('allowModifications' => true);
@@ -281,7 +281,7 @@ class InstallController extends AppController
       $writer->setFilename(APPLICATION_CONFIG);
       $writer->write();
 
-      $this->_redirect('/admin#tabs-modules');
+      $this->redirect('/admin#tabs-modules');
       }
     }
 
@@ -295,21 +295,21 @@ class InstallController extends AppController
       {
       $driverOptions = array();
       $params = array(
-        'dbname' => $this->_getParam('dbname'),
-        'username' => $this->_getParam('username'),
-        'password' => $this->_getParam('password'),
+        'dbname' => $this->getParam('dbname'),
+        'username' => $this->getParam('username'),
+        'password' => $this->getParam('password'),
         'driver_options' => $driverOptions);
-      $unixsocket = $this->_getParam('unix_socket');
+      $unixsocket = $this->getParam('unix_socket');
       if($unixsocket)
         {
-        $params['unix_socket'] = $this->_getParam('unix_socket');
+        $params['unix_socket'] = $this->getParam('unix_socket');
         }
       else
         {
-        $params['host'] = $this->_getParam('host');
-        $params['port'] = $this->_getParam('port');
+        $params['host'] = $this->getParam('host');
+        $params['port'] = $this->getParam('port');
         }
-      $db = Zend_Db::factory('PDO_' . strtoupper($this->_getParam('type')), $params);
+      $db = Zend_Db::factory('PDO_' . strtoupper($this->getParam('type')), $params);
       $tables = $db->listTables();
       if(count($tables) > 0)
         {

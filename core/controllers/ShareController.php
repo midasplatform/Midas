@@ -35,8 +35,8 @@ class ShareController extends AppController
   function dialogAction()
     {
     $this->disableLayout();
-    $type = $this->_getParam('type');
-    $element = $this->_getParam('element');
+    $type = $this->getParam('type');
+    $element = $this->getParam('element');
     if(!isset($type) || !isset($element))
       {
       throw new Zend_Exception("Parameters problem, expecting type or element to be set.");
@@ -76,16 +76,16 @@ class ShareController extends AppController
     if($this->_request->isPost())
       {
       $this->_helper->viewRenderer->setNoRender();
-      $setPublic = $this->_getParam('setPublic');
-      $setPrivate = $this->_getParam('setPrivate');
-      $createPolicy = $this->_getParam('createPolicy');
-      $removePolicy = $this->_getParam('removePolicy');
-      $changePolicy = $this->_getParam('changePolicy');
+      $setPublic = $this->getParam('setPublic');
+      $setPrivate = $this->getParam('setPrivate');
+      $createPolicy = $this->getParam('createPolicy');
+      $removePolicy = $this->getParam('removePolicy');
+      $changePolicy = $this->getParam('changePolicy');
       if(isset($changePolicy))
         {
-        $changeVal = $this->_getParam('changeVal');
-        $changeType = $this->_getParam('changeType');
-        $changeId = $this->_getParam('changeId');
+        $changeVal = $this->getParam('changeVal');
+        $changeType = $this->getParam('changeType');
+        $changeId = $this->getParam('changeId');
         if($changeType == 'group')
           {
           $changePolicy = $this->Group->load($changeId);
@@ -134,8 +134,8 @@ class ShareController extends AppController
         }
       if(isset($removePolicy))
         {
-        $removeType = $this->_getParam('removeType');
-        $removeId = $this->_getParam('removeId');
+        $removeType = $this->getParam('removeType');
+        $removeId = $this->getParam('removeId');
         if($removeType == 'group')
           {
           $removePolicy = $this->Group->load($removeId);
@@ -176,8 +176,8 @@ class ShareController extends AppController
         }
       if(isset($createPolicy))
         {
-        $newPolicyType = $this->_getParam('newPolicyType');
-        $newPolicyId = $this->_getParam('newPolicyId');
+        $newPolicyType = $this->getParam('newPolicyType');
+        $newPolicyId = $this->getParam('newPolicyId');
         if($newPolicyType == 'community')
           {
           $newPolicy = $this->Community->load($newPolicyId)->getMemberGroup();
@@ -314,7 +314,7 @@ class ShareController extends AppController
   function applyrecursivedialogAction()
     {
     $this->disableLayout();
-    $folderId = $this->_getParam('folderId');
+    $folderId = $this->getParam('folderId');
     $this->view->folderId = $folderId;
 
     if($this->_request->isPost())
@@ -348,8 +348,8 @@ class ShareController extends AppController
   function linksAction()
     {
     $this->disableLayout();
-    $type = $this->_getParam('type');
-    $id = $this->_getParam('id');
+    $type = $this->getParam('type');
+    $id = $this->getParam('id');
 
     switch($type)
       {

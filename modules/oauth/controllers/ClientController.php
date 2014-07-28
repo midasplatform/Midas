@@ -33,7 +33,7 @@ class Oauth_ClientController extends Oauth_AppController
     {
     $this->disableLayout();
 
-    $userId = $this->_getParam('userId');
+    $userId = $this->getParam('userId');
     if(!isset($userId))
       {
       throw new Zend_Exception('Must pass a client_id parameter', 400);
@@ -67,8 +67,8 @@ class Oauth_ClientController extends Oauth_AppController
     $this->disableLayout();
     $this->disableView();
 
-    $name = $this->_getParam('name');
-    $userId = $this->_getParam('userId');
+    $name = $this->getParam('name');
+    $userId = $this->getParam('userId');
     if(!isset($userId))
       {
       throw new Zend_Exception('Must pass a userId parameter', 400);
@@ -105,7 +105,7 @@ class Oauth_ClientController extends Oauth_AppController
     $this->disableLayout();
     $this->disableView();
 
-    $clientId = $this->_getParam('clientId');
+    $clientId = $this->getParam('clientId');
     if(!isset($clientId))
       {
       throw new Zend_Exception('Must pass a clientId parameter', 400);

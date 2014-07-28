@@ -37,7 +37,7 @@ class ItemController extends AppController
     $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
     if(isset($actionName) && is_numeric($actionName))
       {
-      $this->_forward('view', null, null, array('itemId' => $actionName));
+      $this->forward('view', null, null, array('itemId' => $actionName));
       }
     }  // end init()
 
@@ -55,8 +55,8 @@ class ItemController extends AppController
       throw new Zend_Exception(MIDAS_LOGIN_REQUIRED);
       }
 
-    $itemId = $this->_getParam('itemId');
-    $metadataId = $this->_getParam('metadataId');
+    $itemId = $this->getParam('itemId');
+    $metadataId = $this->getParam('metadataId');
     $itemDao = $this->Item->load($itemId);
     if($itemDao === false)
       {
@@ -67,7 +67,7 @@ class ItemController extends AppController
       throw new Zend_Exception("Write permissions required", 403);
       }
 
-    $itemRevisionNumber = $this->_getParam("itemrevision");
+    $itemRevisionNumber = $this->getParam("itemrevision");
     if(isset($itemRevisionNumber))
       {
       $this->view->itemrevision = $itemRevisionNumber;
@@ -109,7 +109,7 @@ class ItemController extends AppController
   function viewAction()
     {
     $this->view->Date = $this->Component->Date;
-    $itemId = $this->_getParam("itemId");
+    $itemId = $this->getParam("itemId");
     if(!isset($itemId) || !is_numeric($itemId))
       {
       throw new Zend_Exception("itemId should be a number");
@@ -129,7 +129,7 @@ class ItemController extends AppController
     $itemRevision = $this->Item->getLastRevision($itemDao);
     if($this->_request->isPost())
       {
-      $itemRevisionNumber = $this->_getParam("itemrevision");
+      $itemRevisionNumber = $this->getParam("itemrevision");
       if(isset($itemRevisionNumber))
         {
         $metadataItemRevision = $this->Item->getRevision($itemDao, $itemRevisionNumber);
@@ -138,25 +138,25 @@ class ItemController extends AppController
         {
         $metadataItemRevision = $itemRevision;
         }
-      $deleteMetadata = $this->_getParam('deleteMetadata');
-      $editMetadata = $this->_getParam('editMetadata');
+      $deleteMetadata = $this->getParam('deleteMetadata');
+      $editMetadata = $this->getParam('editMetadata');
       if(isset($deleteMetadata) && !empty($deleteMetadata) && $this->view->isModerator) //delete metadata field
         {
         $this->disableView();
         $this->disableLayout();
-        $metadataId = $this->_getParam('element');
+        $metadataId = $this->getParam('element');
         $this->ItemRevision->deleteMetadata($metadataItemRevision, $metadataId);
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
         return;
         }
       if(isset($editMetadata) && !empty($editMetadata) && $this->view->isModerator) //add metadata field
         {
-        $metadataId = $this->_getParam('metadataId');
-        $metadatatype = $this->_getParam('metadatatype');
-        $element = $this->_getParam('element');
-        $qualifier = $this->_getParam('qualifier');
-        $value = $this->_getParam('value');
-        $updateMetadata = $this->_getParam('updateMetadata');
+        $metadataId = $this->getParam('metadataId');
+        $metadatatype = $this->getParam('metadatatype');
+        $element = $this->getParam('element');
+        $qualifier = $this->getParam('qualifier');
+        $value = $this->getParam('value');
+        $updateMetadata = $this->getParam('updateMetadata');
         $metadataDao = $this->Metadata->getMetadata($metadatatype, $element, $qualifier);
         if($metadataDao == false)
           {
@@ -337,7 +337,7 @@ class ItemController extends AppController
   function editAction()
     {
     $this->disableLayout();
-    $item_id = $this->_getParam('itemId');
+    $item_id = $this->getParam('itemId');
     $item = $this->Item->load($item_id);
     if(!isset($item_id))
       {
@@ -354,10 +354,10 @@ class ItemController extends AppController
 
     if($this->_request->isPost())
       {
-      $updateBitstream = $this->_getParam('updateBitstreamName');
-      $name = $this->_getParam('name');
-      $description = $this->_getParam('description');
-      $license = $this->_getParam('licenseSelect');
+      $updateBitstream = $this->getParam('updateBitstreamName');
+      $name = $this->getParam('name');
+      $description = $this->getParam('description');
+      $license = $this->getParam('licenseSelect');
 
       $revision = $this->ItemRevision->getLatestRevision($item);
 
@@ -382,7 +382,7 @@ class ItemController extends AppController
         }
       $item->setDescription($description);
       $this->Item->save($item, true);
-      $this->_redirect('/item/'.$item->getKey());
+      $this->redirect('/item/'.$item->getKey());
       }
 
     $this->view->itemDao = $item;
@@ -417,7 +417,7 @@ class ItemController extends AppController
     $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
-    $itemId = $this->_getParam('itemId');
+    $itemId = $this->getParam('itemId');
     if(!isset($itemId) || !is_numeric($itemId))
       {
       throw new Zend_Exception("itemId should be a number");
@@ -433,11 +433,11 @@ class ItemController extends AppController
 
     if(count($parents) > 0)
       {
-      $this->_redirect('/folder/'.$parents[0]->getKey());
+      $this->redirect('/folder/'.$parents[0]->getKey());
       }
     else
       {
-      $this->_redirect('/');
+      $this->redirect('/');
       }
     }//end delete
 
@@ -450,7 +450,7 @@ class ItemController extends AppController
   function deleteitemrevisionAction()
     {
     // load item and check permissions
-    $itemId = $this->_getParam('itemId');
+    $itemId = $this->getParam('itemId');
     if(!isset($itemId) || !is_numeric($itemId))
       {
       throw new Zend_Exception("itemId should be a number");
@@ -462,7 +462,7 @@ class ItemController extends AppController
       }
 
     // load itemrevision, ensure it exists
-    $itemRevisionId = $this->_getParam('itemrevisionId');
+    $itemRevisionId = $this->getParam('itemrevisionId');
     if(!isset($itemRevisionId) || !is_numeric($itemRevisionId))
       {
       throw new Zend_Exception("itemrevisionId should be a number");
@@ -476,7 +476,7 @@ class ItemController extends AppController
     $this->Item->removeRevision($itemDao, $itemRevisionDao);
 
     // redirect to item view action
-    $this->_redirect('/item/'.$itemId);
+    $this->redirect('/item/'.$itemId);
     }//end deleteitemrevisionAction
 
   /**
@@ -490,7 +490,7 @@ class ItemController extends AppController
     {
     $this->disableLayout();
     // load item and check permissions
-    $bitstreamId = $this->_getParam('bitstreamId');
+    $bitstreamId = $this->getParam('bitstreamId');
     if(!isset($bitstreamId) || !is_numeric($bitstreamId))
       {
       throw new Zend_Exception("bitstreamId should be a number");
@@ -508,8 +508,8 @@ class ItemController extends AppController
 
     if($this->_request->isPost())
       {
-      $name = $this->_getParam('name');
-      $mimetype = $this->_getParam('mimetype');
+      $name = $this->getParam('name');
+      $mimetype = $this->getParam('mimetype');
 
       if(strlen($name) > 0)
         {
@@ -517,7 +517,7 @@ class ItemController extends AppController
         }
       $bitstreamDao->setMimetype($mimetype);
       $this->Bitstream->save($bitstreamDao);
-      $this->_redirect('/item/'.$itemDao->getKey());
+      $this->redirect('/item/'.$itemDao->getKey());
       }
 
     $this->view->bitstreamDao = $bitstreamDao;
@@ -539,7 +539,7 @@ class ItemController extends AppController
     $this->disableLayout();
     $this->disableView();
     // load item and check permissions
-    $bitstreamId = $this->_getParam('bitstreamId');
+    $bitstreamId = $this->getParam('bitstreamId');
     if(!isset($bitstreamId) || !is_numeric($bitstreamId))
       {
       throw new Zend_Exception("bitstreamId should be a number");
@@ -559,7 +559,7 @@ class ItemController extends AppController
 
     if(!$this->_request->isXmlHttpRequest())
       {
-      $this->_redirect('/item/'.$itemDao->getKey());
+      $this->redirect('/item/'.$itemDao->getKey());
       }
     else
       {
@@ -578,9 +578,9 @@ class ItemController extends AppController
     $this->disableLayout();
     $this->disableView();
 
-    $itemIds = $this->_getParam('items');
-    $name = $this->_getParam('name');
-    $outputItemId = $this->_getParam('outputItemId');
+    $itemIds = $this->getParam('items');
+    $name = $this->getParam('name');
+    $outputItemId = $this->getParam('outputItemId');
     if(empty($name) && $name !== '0')
       {
       throw new Zend_Exception('Please set a name');
@@ -605,7 +605,7 @@ class ItemController extends AppController
       }
     else
       {
-      $this->_redirect('/item/'.$mainItem->getKey());
+      $this->redirect('/item/'.$mainItem->getKey());
       }
     }//end merge
 
@@ -621,7 +621,7 @@ class ItemController extends AppController
     {
     $this->disableLayout();
     $this->disableView();
-    $itemId = $this->_getParam("itemId");
+    $itemId = $this->getParam("itemId");
     $itemDao = $this->Item->load($itemId);
     $shareCount = count($itemDao->getFolders());
     $ifShared = false;
@@ -649,11 +649,11 @@ class ItemController extends AppController
     {
     $this->disableLayout();
     $this->disableView();
-    $itemId = $this->_getParam('itemId');
-    $itemRevisionNumber = $this->_getParam('$itemrevision');
-    $metadatatype = $this->_getParam('metadatatype');
-    $element = $this->_getParam('element');
-    $qualifier = $this->_getParam('qualifier');
+    $itemId = $this->getParam('itemId');
+    $itemRevisionNumber = $this->getParam('$itemrevision');
+    $metadatatype = $this->getParam('metadatatype');
+    $element = $this->getParam('element');
+    $qualifier = $this->getParam('qualifier');
     $metadataDao = $this->Metadata->getMetadata($metadatatype, $element, $qualifier);
     if($metadataDao == false)
       {
@@ -695,7 +695,7 @@ class ItemController extends AppController
    */
   public function thumbnailAction()
     {
-    $itemId = $this->_getParam('itemId');
+    $itemId = $this->getParam('itemId');
     if(!isset($itemId))
       {
       throw new Zend_Exception('Must pass an itemId parameter');

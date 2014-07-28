@@ -36,17 +36,17 @@ class Thumbnailcreator_ThumbnailController extends Thumbnailcreator_AppControlle
    */
   function createAction()
     {
-    $itemId = $this->_getParam('itemId');
+    $itemId = $this->getParam('itemId');
     if(!isset($itemId))
       {
       throw new Zend_Exception('itemId parameter required');
       }
-    $bitstreamId = $this->_getParam('bitstreamId');
+    $bitstreamId = $this->getParam('bitstreamId');
     if(!isset($bitstreamId))
       {
       throw new Zend_Exception('bitstreamId parameter required');
       }
-    $width = $this->_getParam('width');
+    $width = $this->getParam('width');
     if(!isset($width))
       {
       $width = 575;
@@ -103,7 +103,7 @@ class Thumbnailcreator_ThumbnailController extends Thumbnailcreator_AppControlle
    */
   public function itemAction()
     {
-    $itemthumbnailId = $this->_getParam('itemthumbnail');
+    $itemthumbnailId = $this->getParam('itemthumbnail');
     if(!isset($itemthumbnailId))
       {
       throw new Zend_Exception('Must pass an itemthumbnail parameter');

@@ -67,7 +67,7 @@ class Mfa_LoginController extends Mfa_AppController
       {
       throw new Zend_Exception('User does not have an OTP device');
       }
-    $token = $this->_getParam('token');
+    $token = $this->getParam('token');
     try
       {
       $valid = $this->ModuleComponent->Otp->authenticate($otpDevice, $token);

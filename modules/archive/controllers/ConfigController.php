@@ -39,7 +39,7 @@ class Archive_ConfigController extends Archive_AppController
     $this->disableLayout();
     $this->disableView();
 
-    $unzipCmd = $this->_getParam('unzipCommand');
+    $unzipCmd = $this->getParam('unzipCommand');
 
     if(!isset($unzipCmd))
       {

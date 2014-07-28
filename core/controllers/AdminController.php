@@ -58,8 +58,8 @@ class AdminController extends AppController
     {
     $this->requireAdminPrivileges();
 
-    $task = $this->_getParam("task");
-    $params = $this->_getParam("params");
+    $task = $this->getParam("task");
+    $params = $this->getParam("params");
     if(isset($params))
       {
       $params = JsonComponent::decode($params);
@@ -142,24 +142,24 @@ class AdminController extends AppController
       {
       $this->_helper->layout->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
-      $submitConfig = $this->_getParam('submitConfig');
-      $submitModule = $this->_getParam('submitModule');
+      $submitConfig = $this->getParam('submitConfig');
+      $submitModule = $this->getParam('submitModule');
       if(isset($submitConfig))
         {
-        $config->global->application->name = $this->_getParam('name');
-        $config->global->application->description = $this->_getParam('description');
-        $config->global->application->keywords = $this->_getParam('keywords');
-        $config->global->application->lang = $this->_getParam('lang');
-        $config->global->environment = $this->_getParam('environment');
-        $config->global->smartoptimizer = $this->_getParam('smartoptimizer');
-        $config->global->default->timezone = $this->_getParam('timezone');
-        $config->global->defaultlicense = $this->_getParam('licenseSelect');
-        $config->global->dynamichelp = $this->_getParam('dynamichelp');
-        $config->global->closeregistration = $this->_getParam('closeregistration');
-        $config->global->logtrace = $this->_getParam('logtrace');
-        $config->global->httpproxy = $this->_getParam('httpProxy');
-        $config->global->gravatar = $this->_getParam('gravatar');
-        $config->global->verifyemail = $this->_getParam('verifyemail');
+        $config->global->application->name = $this->getParam('name');
+        $config->global->application->description = $this->getParam('description');
+        $config->global->application->keywords = $this->getParam('keywords');
+        $config->global->application->lang = $this->getParam('lang');
+        $config->global->environment = $this->getParam('environment');
+        $config->global->smartoptimizer = $this->getParam('smartoptimizer');
+        $config->global->default->timezone = $this->getParam('timezone');
+        $config->global->defaultlicense = $this->getParam('licenseSelect');
+        $config->global->dynamichelp = $this->getParam('dynamichelp');
+        $config->global->closeregistration = $this->getParam('closeregistration');
+        $config->global->logtrace = $this->getParam('logtrace');
+        $config->global->httpproxy = $this->getParam('httpProxy');
+        $config->global->gravatar = $this->getParam('gravatar');
+        $config->global->verifyemail = $this->getParam('verifyemail');
 
         $writer = new Zend_Config_Writer_Ini();
         $writer->setConfig($config);
@@ -169,8 +169,8 @@ class AdminController extends AppController
         }
       if(isset($submitModule))
         {
-        $moduleName = $this->_getParam('modulename');
-        $modulevalue = $this->_getParam('modulevalue');
+        $moduleName = $this->getParam('modulename');
+        $modulevalue = $this->getParam('modulevalue');
         $moduleConfigLocalFile = LOCAL_CONFIGS_PATH."/".$moduleName.".local.ini";
         $moduleConfigFile = BASE_PATH."/modules/".$moduleName."/configs/module.ini";
         $moduleConfigPrivateFile = BASE_PATH."/privateModules/".$moduleName."/configs/module.ini";
@@ -345,13 +345,13 @@ class AdminController extends AppController
     $this->requireAdminPrivileges();
     $this->disableLayout();
 
-    $start = $this->_getParam('startlog');
-    $end = $this->_getParam('endlog');
-    $module = $this->_getParam('modulelog');
-    $priority = $this->_getParam('prioritylog');
-    $priorityOperator = $this->_getParam('priorityOperator');
-    $limit = $this->_getParam('limit');
-    $offset = $this->_getParam('offset');
+    $start = $this->getParam('startlog');
+    $end = $this->getParam('endlog');
+    $module = $this->getParam('modulelog');
+    $priority = $this->getParam('prioritylog');
+    $priorityOperator = $this->getParam('priorityOperator');
+    $limit = $this->getParam('limit');
+    $offset = $this->getParam('offset');
     if(!isset($start) || empty($start))
       {
       $start = date("Y-m-d H:i:s", strtotime('-24 hour'));
@@ -442,7 +442,7 @@ class AdminController extends AppController
     $this->requireAdminPrivileges();
     $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
-    $ids = $this->_getParam('idList');
+    $ids = $this->getParam('idList');
     $count = 0;
     foreach(explode(',', $ids) as $id)
       {
@@ -502,7 +502,7 @@ class AdminController extends AppController
     {
     $this->requireAdminPrivileges();
 
-    $model = $this->_getParam('model');
+    $model = $this->getParam('model');
 
     if(!isset($model) || !in_array($model, array('Bitstream', 'Item', 'ItemRevision', 'Folder')))
       {

@@ -34,13 +34,13 @@ class Packages_ApplicationController extends Packages_AppController
    */
   public function createAction()
     {
-    $projectId = $this->_getParam('projectId');
+    $projectId = $this->getParam('projectId');
     if(!isset($projectId))
       {
       throw new Zend_Exception('Must specify a projectId parameter');
       }
-    $name = $this->_getParam('name');
-    $description = $this->_getParam('description');
+    $name = $this->getParam('name');
+    $description = $this->getParam('description');
 
     if(!isset($name))
       {
@@ -68,7 +68,7 @@ class Packages_ApplicationController extends Packages_AppController
     $application->setDescription($description);
     $application->setProjectId($projectId);
     $this->Packages_Application->save($application);
-    $this->_redirect('/packages/application/view?applicationId='.$application->getKey());
+    $this->redirect('/packages/application/view?applicationId='.$application->getKey());
     }
 
   /**
@@ -76,13 +76,13 @@ class Packages_ApplicationController extends Packages_AppController
    */
   public function editAction()
     {
-    $applicationId = $this->_getParam('applicationId');
+    $applicationId = $this->getParam('applicationId');
     if(!isset($applicationId))
       {
       throw new Zend_Exception('Must specify an applicationId parameter');
       }
-    $name = $this->_getParam('name');
-    $description = $this->_getParam('description');
+    $name = $this->getParam('name');
+    $description = $this->getParam('description');
 
     if(!isset($name))
       {
@@ -121,7 +121,7 @@ class Packages_ApplicationController extends Packages_AppController
    */
   public function viewAction()
     {
-    $applicationId = $this->_getParam('applicationId');
+    $applicationId = $this->getParam('applicationId');
     if(!isset($applicationId))
       {
       throw new Zend_Exception('Must specify an applicationId parameter');
@@ -171,7 +171,7 @@ class Packages_ApplicationController extends Packages_AppController
    */
   public function deleteAction()
     {
-    $applicationId = $this->_getParam('applicationId');
+    $applicationId = $this->getParam('applicationId');
     if(!$applicationId)
       {
       throw new Zend_Exception('Must pass applicationId parameter');
@@ -185,7 +185,7 @@ class Packages_ApplicationController extends Packages_AppController
     $this->disableLayout();
     $this->disableView();
     $this->Packages_Application->delete($application);
-    $this->_redirect('/community/'.$community->getKey().'#Packages');
+    $this->redirect('/community/'.$community->getKey().'#Packages');
     }
 
   /**
@@ -193,7 +193,7 @@ class Packages_ApplicationController extends Packages_AppController
    */
   public function latestAction()
     {
-    $applicationId = $this->_getParam('applicationId');
+    $applicationId = $this->getParam('applicationId');
     if(!isset($applicationId))
       {
       throw new Zend_Exception('Must specify an applicationId parameter');
@@ -269,8 +269,8 @@ class Packages_ApplicationController extends Packages_AppController
     $this->disableLayout();
     $this->disableView();
     $releasePackages = $this->Packages_Package->get(array(
-        'application_id' => $this->_getParam('applicationId'),
-        'release' => $this->_getParam('release')));
+        'application_id' => $this->getParam('applicationId'),
+        'release' => $this->getParam('release')));
     echo JsonComponent::encode($releasePackages);
     }
   } // end class

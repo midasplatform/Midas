@@ -100,11 +100,11 @@ class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
       $this->disableLayout();
       $this->disableView();
 
-      $submitConfig = $this->_getParam('submitConfig');
+      $submitConfig = $this->getParam('submitConfig');
       if(isset($submitConfig))
         {
-        $config->securitykey = $this->_getParam('securitykey');
-        $config->showbutton = $this->_getParam('showbutton');
+        $config->securitykey = $this->getParam('securitykey');
+        $config->showbutton = $this->getParam('showbutton');
         $writer = new Zend_Config_Writer_Ini();
         $writer->setConfig($config);
         $writer->setFilename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini');

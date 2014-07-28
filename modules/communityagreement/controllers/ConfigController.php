@@ -49,7 +49,7 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
     {
     $this->disableLayout();
 
-    $communityId = $this->_getParam("communityId");
+    $communityId = $this->getParam("communityId");
     if(!isset($communityId) || !is_numeric($communityId))
       {
       throw new Zend_Exception("Community ID should be a number");
@@ -124,7 +124,7 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
       $this->_helper->layout->disableLayout();
       }
 
-    $communityId = $this->_getParam("communityId");
+    $communityId = $this->getParam("communityId");
     if(!isset($communityId) || !is_numeric($communityId))
       {
       throw new Zend_Exception("Community ID should be a number");

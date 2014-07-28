@@ -44,12 +44,12 @@ class Pvw_ParaviewController extends Pvw_AppController
 
     try
       {
-      $appname = $this->_getParam('appname');
+      $appname = $this->getParam('appname');
       if(!isset($appname))
         {
         $appname = 'midas';
         }
-      $itemId = $this->_getParam('itemId');
+      $itemId = $this->getParam('itemId');
       if(!isset($itemId))
         {
         throw new Zend_Exception('Must pass an itemId', 400);
@@ -64,7 +64,7 @@ class Pvw_ParaviewController extends Pvw_AppController
         throw new Zend_Exception('Read access required on item', 403);
         }
 
-      $meshes = $this->_getParam('meshes');
+      $meshes = $this->getParam('meshes');
       if(isset($meshes))
         {
         $meshes = explode(';', $meshes);
@@ -133,7 +133,7 @@ class Pvw_ParaviewController extends Pvw_AppController
    */
   public function surfaceAction()
     {
-    $itemId = $this->_getParam('itemId');
+    $itemId = $this->getParam('itemId');
     if(!isset($itemId))
       {
       throw new Zend_Exception('Must pass itemId param', 400);
@@ -165,7 +165,7 @@ class Pvw_ParaviewController extends Pvw_AppController
    */
   public function volumeAction()
     {
-    $jsImports = $this->_getParam('jsImports');
+    $jsImports = $this->getParam('jsImports');
     if(isset($jsImports))
       {
       $this->view->jsImports = explode(';', $jsImports);
@@ -174,7 +174,7 @@ class Pvw_ParaviewController extends Pvw_AppController
       {
       $this->view->jsImports = array();
       }
-    $meshes = $this->_getParam('meshes');
+    $meshes = $this->getParam('meshes');
     if(isset($meshes))
       {
       $meshes = explode(';', $meshes);
@@ -184,7 +184,7 @@ class Pvw_ParaviewController extends Pvw_AppController
       $meshes = array();
       }
 
-    $itemId = $this->_getParam('itemId');
+    $itemId = $this->getParam('itemId');
     if(!isset($itemId))
       {
       throw new Zend_Exception('Must pass itemId param', 400);
@@ -218,8 +218,8 @@ class Pvw_ParaviewController extends Pvw_AppController
    */
   public function sliceAction()
     {
-    $jsImports = $this->_getParam('jsImports');
-    $operations = $this->_getParam('operations');
+    $jsImports = $this->getParam('jsImports');
+    $operations = $this->getParam('operations');
     if(isset($jsImports))
       {
       $this->view->jsImports = explode(';', $jsImports);
@@ -237,7 +237,7 @@ class Pvw_ParaviewController extends Pvw_AppController
       $operations = array();
       }
 
-    $itemId = $this->_getParam('itemId');
+    $itemId = $this->getParam('itemId');
     if(!isset($itemId))
       {
       throw new Zend_Exception('Must pass itemId param', 400);
@@ -252,7 +252,7 @@ class Pvw_ParaviewController extends Pvw_AppController
       throw new Zend_Exception('Read permission required', 403);
       }
 
-    $meshes = $this->_getParam('meshes');
+    $meshes = $this->getParam('meshes');
     if(isset($meshes))
       {
       $meshes = explode(';', $meshes);
@@ -279,8 +279,8 @@ class Pvw_ParaviewController extends Pvw_AppController
    */
   public function shareAction()
     {
-    $instanceId = $this->_getParam('instanceId');
-    $authKey = $this->_getParam('authKey');
+    $instanceId = $this->getParam('instanceId');
+    $authKey = $this->getParam('authKey');
     if(!isset($instanceId))
       {
       throw new Zend_Exception('Must pass instanceId param', 400);

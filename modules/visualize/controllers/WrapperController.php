@@ -31,8 +31,8 @@ class Visualize_WrapperController extends Visualize_AppController
     $this->view->header = $this->t("Preview");
     $this->view->Date = $this->Component->Date;
     $this->view->Utility = $this->Component->Utility;
-    $itemId = $this->_getParam("itemId");
-    $viewMode = $this->_getParam('viewMode');
+    $itemId = $this->getParam("itemId");
+    $viewMode = $this->getParam('viewMode');
     if(!isset($viewMode))
       {
       $viewMode = 'volume';

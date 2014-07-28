@@ -46,7 +46,7 @@ class Googleauth_ConfigController extends Googleauth_AppController
     $params = array('client_id', 'client_secret');
     foreach($params as $param)
       {
-      $value = $this->_getParam($param);
+      $value = $this->getParam($param);
       $this->Setting->setConfig($param, $value, $this->moduleName);
       }
 

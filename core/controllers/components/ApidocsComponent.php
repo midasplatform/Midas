@@ -183,7 +183,7 @@ class ApidocsComponent extends AppComponent
       $swaggerDoc['resourcePath'] = '/'. $module . '/' . $resource; // module apis
       }
     $swaggerDoc['apis'] = array();
-    if(key_exists($module.'/'.$resource, $apiInfo))
+    if(array_key_exists($module.'/'.$resource, $apiInfo))
       {
       $resourceApiInfo = $apiInfo[$module.'/'.$resource];
       foreach($resourceApiInfo as $name => $docs)

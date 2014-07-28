@@ -36,7 +36,7 @@ class Comments_CommentController extends Comments_AppController
       throw new Zend_Exception('Must be logged in to comment on an item');
       }
 
-    $itemId = $this->_getParam('itemId');
+    $itemId = $this->getParam('itemId');
     if(!isset($itemId) || !$itemId)
       {
       throw new Zend_Exception('Must set itemId parameter');
@@ -46,7 +46,7 @@ class Comments_CommentController extends Comments_AppController
       {
       throw new Zend_Exception('Not a valid itemId');
       }
-    $comment = $this->_getParam('comment');
+    $comment = $this->getParam('comment');
 
     $this->disableView();
     $this->disableLayout();
@@ -65,7 +65,7 @@ class Comments_CommentController extends Comments_AppController
    */
   function getAction()
     {
-    $itemId = $this->_getParam('itemId');
+    $itemId = $this->getParam('itemId');
     if(!isset($itemId) || !$itemId)
       {
       throw new Zend_Exception('Must set itemId parameter');
@@ -75,8 +75,8 @@ class Comments_CommentController extends Comments_AppController
       {
       throw new Zend_Exception('Not a valid itemId');
       }
-    $limit = $this->_getParam('limit');
-    $offset = $this->_getParam('offset');
+    $limit = $this->getParam('limit');
+    $offset = $this->getParam('offset');
 
     $this->disableView();
     $this->disableLayout();
@@ -97,7 +97,7 @@ class Comments_CommentController extends Comments_AppController
       {
       throw new Zend_Exception('Must be logged in to delete an item');
       }
-    $commentId = $this->_getParam('commentId');
+    $commentId = $this->getParam('commentId');
     if(!isset($commentId) || !$commentId)
       {
       throw new Zend_Exception('Must set commentId parameter');

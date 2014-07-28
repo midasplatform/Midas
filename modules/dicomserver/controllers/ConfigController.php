@@ -66,20 +66,20 @@ class Dicomserver_ConfigController extends Dicomserver_AppController
       {
       $this->_helper->layout->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
-      $submitConfig = $this->_getParam('submitConfig');
+      $submitConfig = $this->getParam('submitConfig');
       if(isset($submitConfig))
         {
-        $config->dcm2xml = $this->_getParam('dcm2xml');
-        $config->dcmqridx = $this->_getParam('dcmqridx');
-        $config->dcmqrscp_port = $this->_getParam('dcmqrscp_port');
-        $config->dcmqrscp = $this->_getParam('dcmqrscp');
-        $config->peer_aes = $this->_getParam('peer_aes');
-        $config->pydas_dest_folder = $this->_getParam('pydas_dest_folder');
-        $config->receptiondir = $this->_getParam('receptiondir');
-        $config->server_ae_title = $this->_getParam('server_ae_title');
-        $config->storescp_port = $this->_getParam('storescp_port');
-        $config->storescp_study_timeout = $this->_getParam('storescp_study_timeout');
-        $config->storescp = $this->_getParam('storescp');
+        $config->dcm2xml = $this->getParam('dcm2xml');
+        $config->dcmqridx = $this->getParam('dcmqridx');
+        $config->dcmqrscp_port = $this->getParam('dcmqrscp_port');
+        $config->dcmqrscp = $this->getParam('dcmqrscp');
+        $config->peer_aes = $this->getParam('peer_aes');
+        $config->pydas_dest_folder = $this->getParam('pydas_dest_folder');
+        $config->receptiondir = $this->getParam('receptiondir');
+        $config->server_ae_title = $this->getParam('server_ae_title');
+        $config->storescp_port = $this->getParam('storescp_port');
+        $config->storescp_study_timeout = $this->getParam('storescp_study_timeout');
+        $config->storescp = $this->getParam('storescp');
 
         $writer = new Zend_Config_Writer_Ini();
         $writer->setConfig($config);

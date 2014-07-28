@@ -40,8 +40,8 @@ class Oauth_TokenController extends Oauth_AppController
     $this->disableLayout();
     $this->disableView();
 
-    $grantType = $this->_getParam('grant_type');
-    $secret = $this->_getParam('client_secret');
+    $grantType = $this->getParam('grant_type');
+    $secret = $this->getParam('client_secret');
 
     if(!isset($secret))
       {
@@ -85,7 +85,7 @@ class Oauth_TokenController extends Oauth_AppController
     $this->disableLayout();
     $this->disableView();
 
-    $tokenId = $this->_getParam('tokenId');
+    $tokenId = $this->getParam('tokenId');
     if(!isset($tokenId))
       {
       throw new Zend_Exception('Must pass a tokenId parameter', 400);
@@ -114,8 +114,8 @@ class Oauth_TokenController extends Oauth_AppController
    */
   private function _authorizationCode($secret)
     {
-    $code = $this->_getParam('code');
-    $clientId = $this->_getParam('client_id');
+    $code = $this->getParam('code');
+    $clientId = $this->getParam('client_id');
 
     if(!isset($clientId))
       {
@@ -184,7 +184,7 @@ class Oauth_TokenController extends Oauth_AppController
    */
   private function _refreshToken($secret)
     {
-    $refreshTokenValue = $this->_getParam('refresh_token');
+    $refreshTokenValue = $this->getParam('refresh_token');
     $refreshToken = $this->Oauth_Token->getByToken($refreshTokenValue);
 
     if(!$refreshToken || $refreshToken->getType() != MIDAS_OAUTH_TOKEN_TYPE_REFRESH)
@@ -225,7 +225,7 @@ class Oauth_TokenController extends Oauth_AppController
       if(array_key_exists('error', $array))
         {
         $this->getResponse()->setHttpResponseCode(400);
-        $this->getLogger()->crit('Access token denied ('.$array['error_description'].') '.print_r($this->_getAllParams(), true));
+        $this->getLogger()->crit('Access token denied ('.$array['error_description'].') '.print_r($this->getAllParams(), true));
         }
       else
         {

@@ -59,25 +59,25 @@ class Ldap_ConfigController extends Ldap_AppController
       {
       $this->_helper->layout->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
-      $submitConfig = $this->_getParam('submitConfig');
+      $submitConfig = $this->getParam('submitConfig');
       if(isset($submitConfig))
         {
-        $config->ldap->autoAddUnknownUser = $this->_getParam('autoAddUnknownUser');
-        $config->ldap->backup = $this->_getParam('backup');
-        $config->ldap->basedn = $this->_getParam('basedn');
-        $config->ldap->bindn = $this->_getParam('bindn');
-        $config->ldap->hostname = $this->_getParam('hostname');
-        $config->ldap->port = $this->_getParam('port');
-        $config->ldap->protocolVersion = $this->_getParam('protocolVersion');
-        $config->ldap->proxyBasedn = $this->_getParam('proxyBasedn');
-        $config->ldap->search = $this->_getParam('search');
-        $config->ldap->useActiveDirectory = $this->_getParam('useActiveDirectory');
-        $bindpw = $this->_getParam('bindpw');
+        $config->ldap->autoAddUnknownUser = $this->getParam('autoAddUnknownUser');
+        $config->ldap->backup = $this->getParam('backup');
+        $config->ldap->basedn = $this->getParam('basedn');
+        $config->ldap->bindn = $this->getParam('bindn');
+        $config->ldap->hostname = $this->getParam('hostname');
+        $config->ldap->port = $this->getParam('port');
+        $config->ldap->protocolVersion = $this->getParam('protocolVersion');
+        $config->ldap->proxyBasedn = $this->getParam('proxyBasedn');
+        $config->ldap->search = $this->getParam('search');
+        $config->ldap->useActiveDirectory = $this->getParam('useActiveDirectory');
+        $bindpw = $this->getParam('bindpw');
         if(!empty($bindpw))
           {
           $config->ldap->bindpw = $bindpw;
           }
-        $proxyPassword = $this->_getParam('proxyPassword');
+        $proxyPassword = $this->getParam('proxyPassword');
         if(!empty($proxyPassword))
           {
           $config->ldap->proxyPassword = $proxyPassword;

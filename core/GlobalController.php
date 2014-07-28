@@ -83,7 +83,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     Zend_Registry::set('translatersModules', $translaters);
     Zend_Registry::set('configsModules', $configs);
 
-    $forward = $this->_getParam("forwardModule");
+    $forward = $this->getParam("forwardModule");
     $request = $this->getRequest();
     $response = $this->getResponse();
 
@@ -98,7 +98,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
           $controller = new $name($request, $response);
           if(method_exists($controller, $request->getActionName().'Action'))
             {
-            $this->_forward($request->getActionName(), $request->getControllerName().'Core', $key, array('forwardModule' => true));
+            $this->forward($request->getActionName(), $request->getControllerName().'Core', $key, array('forwardModule' => true));
             }
           }
         else if(file_exists(BASE_PATH.'/privateModules/'.$key.'/controllers/'.  ucfirst($request->getControllerName()).'CoreController.php'))
@@ -108,7 +108,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
           $controller = new $name($request, $response);
           if(method_exists($controller, $request->getActionName().'Action'))
             {
-            $this->_forward($request->getActionName(), $request->getControllerName().'Core', $key, array('forwardModule' => true));
+            $this->forward($request->getActionName(), $request->getControllerName().'Core', $key, array('forwardModule' => true));
             }
           }
         }

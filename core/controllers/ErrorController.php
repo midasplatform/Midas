@@ -33,7 +33,7 @@ class ErrorController extends AppController
     {
     parent::init();
 
-    $error = $this->_getParam('error_handler');
+    $error = $this->getParam('error_handler');
     if(!isset($error) || empty($error))
       {
       return;
@@ -68,7 +68,7 @@ class ErrorController extends AppController
   /** Error Action */
   public function errorAction()
     {
-    $error = $this->_getParam('error_handler');
+    $error = $this->getParam('error_handler');
     if(!isset($error) || empty($error))
       {
       $this->view->message = 'Page not found';

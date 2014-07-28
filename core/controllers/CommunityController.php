@@ -35,14 +35,14 @@ class CommunityController extends AppController
     $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
     if(isset($actionName) && is_numeric($actionName))
       {
-      $this->_forward('view', null, null, array('communityId' => $actionName));
+      $this->forward('view', null, null, array('communityId' => $actionName));
       }
     }  // end init()
 
   /** Manage community*/
   function manageAction()
     {
-    $communityId = $this->_getParam("communityId");
+    $communityId = $this->getParam("communityId");
     if(!isset($communityId) || !is_numeric($communityId))
       {
       throw new Zend_Exception("Community ID should be a number");
@@ -62,26 +62,26 @@ class CommunityController extends AppController
       {
       $this->disableLayout();
       $this->disableView();
-      $modifyInfo = $this->_getParam('modifyInfo');
-      $modifyPrivacy = $this->_getParam('modifyPrivacy');
-      $editGroup = $this->_getParam('editGroup');
-      $deleteGroup = $this->_getParam('deleteGroup');
-      $addUser = $this->_getParam('addUser');
-      $removeUser = $this->_getParam('removeUser');
+      $modifyInfo = $this->getParam('modifyInfo');
+      $modifyPrivacy = $this->getParam('modifyPrivacy');
+      $editGroup = $this->getParam('editGroup');
+      $deleteGroup = $this->getParam('deleteGroup');
+      $addUser = $this->getParam('addUser');
+      $removeUser = $this->getParam('removeUser');
       if(isset($removeUser)) //remove users from group
         {
         if(!$this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
           {
           throw new Zend_Exception("Community Admin permissions required.", 403);
           }
-        $group = $this->Group->load($this->_getParam('groupId'));
+        $group = $this->Group->load($this->getParam('groupId'));
         if($group == false || $group->getCommunity()->getKey() != $communityDao->getKey())
           {
           echo JsonComponent::encode(array(false, $this->t('Error')));
           }
         else
           {
-          $users = explode('-', $this->_getParam('users'));
+          $users = explode('-', $this->getParam('users'));
           $usersDao = $this->User->load($users);
           foreach($usersDao as $userDao)
             {
@@ -96,14 +96,14 @@ class CommunityController extends AppController
           {
           throw new Zend_Exception("Community Admin permissions required.", 403);
           }
-        $group = $this->Group->load($this->_getParam('groupId'));
+        $group = $this->Group->load($this->getParam('groupId'));
         if($group == false || $group->getCommunity()->getKey() != $communityDao->getKey())
           {
           echo JsonComponent::encode(array(false, $this->t('Error')));
           }
         else
           {
-          $users = explode('-', $this->_getParam('users'));
+          $users = explode('-', $this->getParam('users'));
           $usersDao = $this->User->load($users);
           foreach($usersDao as $userDao)
             {
@@ -119,7 +119,7 @@ class CommunityController extends AppController
           $communityDao = $this->Community->load($communityDao->getKey());
           $communityDao->setName($infoForm->getValue('name'));
           $communityDao->setDescription($infoForm->getValue('description'));
-          Zend_Registry::get('notifier')->callback('CALLBACK_CORE_EDIT_COMMUNITY_INFO', array('community' => $communityDao, 'params' => $this->_getAllParams()));
+          Zend_Registry::get('notifier')->callback('CALLBACK_CORE_EDIT_COMMUNITY_INFO', array('community' => $communityDao, 'params' => $this->getAllParams()));
           $this->Community->save($communityDao);
           echo JsonComponent::encode(array(true, $this->t('Changes saved'), $infoForm->getValue('name')));
           }
@@ -156,14 +156,14 @@ class CommunityController extends AppController
           }
         if($formCreateGroup->isValid($_POST))
           {
-          if($this->_getParam('groupId') == 0)
+          if($this->getParam('groupId') == 0)
             {
             $new_group = $this->Group->createGroup($communityDao, $formCreateGroup->getValue('name'));
             echo JsonComponent::encode(array(true, $this->t('Changes saved'), $new_group->toArray()));
             }
           else
             {
-            $group = $this->Group->load($this->_getParam('groupId'));
+            $group = $this->Group->load($this->getParam('groupId'));
             if($group == false || $group->getCommunity()->getKey() != $communityDao->getKey())
               {
               echo JsonComponent::encode(array(false, $this->t('Error')));
@@ -185,7 +185,7 @@ class CommunityController extends AppController
           {
           throw new Zend_Exception("Community Admin permissions required.", 403);
           }
-        $group = $this->Group->load($this->_getParam('groupId'));
+        $group = $this->Group->load($this->getParam('groupId'));
         if($group == false || $group->getCommunity()->getKey() != $communityDao->getKey())
           {
           echo JsonComponent::encode(array(false, $this->t('Error')));
@@ -294,7 +294,7 @@ class CommunityController extends AppController
     {
     $this->view->Utility = $this->Component->Utility;
     $this->view->Date = $this->Component->Date;
-    $communityId = $this->_getParam("communityId");
+    $communityId = $this->getParam("communityId");
     if(!isset($communityId) || !is_numeric($communityId))
       {
       throw new Zend_Exception("Community ID should be a number");
@@ -304,8 +304,8 @@ class CommunityController extends AppController
       {
       throw new Zend_Exception("This community doesn't exist or you don't have the permissions.", 403);
       }
-    $joinCommunity = $this->_getParam('joinCommunity');
-    $leaveCommunity = $this->_getParam('leaveCommunity');
+    $joinCommunity = $this->getParam('joinCommunity');
+    $leaveCommunity = $this->getParam('leaveCommunity');
     $canJoin = $communityDao->getCanJoin() == MIDAS_COMMUNITY_CAN_JOIN;
 
     $this->view->isInvited = $this->CommunityInvitation->isInvited($communityDao, $this->userSession->Dao);
@@ -332,7 +332,7 @@ class CommunityController extends AppController
       {
       $member_group = $communityDao->getMemberGroup();
       $this->Group->removeUser($member_group, $this->userSession->Dao);
-      $this->_redirect('/community');
+      $this->redirect('/community');
       }
 
     $this->Community->incrementViewCount($communityDao);
@@ -392,7 +392,7 @@ class CommunityController extends AppController
     $this->disableLayout();
     $this->disableView();
 
-    $communityId = $this->_getParam("communityId");
+    $communityId = $this->getParam("communityId");
     if(!isset($communityId) || !is_numeric($communityId))
       {
       throw new Zend_Exception("Community ID should be a number");
@@ -405,7 +405,7 @@ class CommunityController extends AppController
     Zend_Registry::get('notifier')->callback('CALLBACK_CORE_COMMUNITY_DELETED', array('community' => $communityDao));
     $this->Community->delete($communityDao);
 
-    $this->_redirect('/');
+    $this->redirect('/');
     }//end delete
 
   /**
@@ -416,7 +416,7 @@ class CommunityController extends AppController
     {
     $this->disableLayout();
 
-    $communityId = $this->_getParam('communityId');
+    $communityId = $this->getParam('communityId');
     if(!isset($communityId))
       {
       throw new Zend_Exception('Must pass a communityId parameter');
@@ -445,9 +445,9 @@ class CommunityController extends AppController
     $this->disableLayout();
     $this->disableView();
 
-    $communityId = $this->_getParam('communityId');
-    $userId = $this->_getParam('userId');
-    $email = $this->_getParam('email');
+    $communityId = $this->getParam('communityId');
+    $userId = $this->getParam('userId');
+    $email = $this->getParam('email');
 
     $community = $this->Community->load($communityId);
     if(!$community)
@@ -460,7 +460,7 @@ class CommunityController extends AppController
       }
     $isAdmin = $this->Community->policyCheck($community, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
 
-    $groupId = $this->_getParam('groupId');
+    $groupId = $this->getParam('groupId');
     if(isset($groupId))
       {
       $group = $this->Group->load($groupId);
@@ -579,7 +579,7 @@ class CommunityController extends AppController
       $privacy = $form->getValue('privacy');
       $canJoin = $form->getValue('canJoin');
       $communityDao = $this->Community->createCommunity($name, $description, $privacy, $this->userSession->Dao, $canJoin);
-      $this->_redirect('/community/'.$communityDao->getKey());
+      $this->redirect('/community/'.$communityDao->getKey());
       }
     else
       {
@@ -594,8 +594,8 @@ class CommunityController extends AppController
     $this->requireAjaxRequest();
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
-    $entry = $this->_getParam("entry");
-    $type = $this->_getParam("type");
+    $entry = $this->getParam("entry");
+    $type = $this->getParam("type");
     if(!is_string($entry) || !is_string($type))
       {
       echo 'false';
@@ -630,8 +630,8 @@ class CommunityController extends AppController
       throw new Zend_Exception('Must be logged in');
       }
 
-    $commId = $this->_getParam('community');
-    $userId = $this->_getParam('user');
+    $commId = $this->getParam('community');
+    $userId = $this->getParam('user');
     if(!isset($commId))
       {
       throw new Zend_Exception('Must pass a community parameter');
@@ -682,8 +682,8 @@ class CommunityController extends AppController
       {
       throw new Zend_Exception('Must be logged in');
       }
-    $commId = $this->_getParam('communityId');
-    $userId = $this->_getParam('userId');
+    $commId = $this->getParam('communityId');
+    $userId = $this->getParam('userId');
     if(!isset($commId))
       {
       throw new Zend_Exception('Must pass a communityId parameter');
@@ -707,7 +707,7 @@ class CommunityController extends AppController
       {
       throw new Zend_Exception('Community Admin permissions required.', 403);
       }
-    $params = $this->_getAllParams();
+    $params = $this->getAllParams();
     foreach($params as $name => $value)
       {
       if(strpos($name, 'groupCheckbox') !== false && $value)
@@ -736,8 +736,8 @@ class CommunityController extends AppController
       {
       throw new Zend_Exception('Must be logged in');
       }
-    $groupId = $this->_getParam('groupId');
-    $userId = $this->_getParam('userId');
+    $groupId = $this->getParam('groupId');
+    $userId = $this->getParam('userId');
     if(!isset($groupId))
       {
       throw new Zend_Exception('Must pass a groupId parameter');
@@ -772,7 +772,7 @@ class CommunityController extends AppController
     {
     $this->disableLayout();
 
-    $communityId = $this->_getParam('communityId');
+    $communityId = $this->getParam('communityId');
 
     if(!isset($communityId))
       {

@@ -51,12 +51,12 @@ class Oai_ConfigController extends Oai_AppController
       {
       $this->_helper->layout->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
-      $submitConfig = $this->_getParam('submitConfig');
+      $submitConfig = $this->getParam('submitConfig');
       if(isset($submitConfig))
         {
-        $config->adminemail = $this->_getParam('adminemail');
-        $config->repositoryidentifier = $this->_getParam('repositoryidentifier');
-        $config->repositoryname = $this->_getParam('repositoryname');
+        $config->adminemail = $this->getParam('adminemail');
+        $config->repositoryidentifier = $this->getParam('repositoryidentifier');
+        $config->repositoryname = $this->getParam('repositoryname');
 
         $writer = new Zend_Config_Writer_Ini();
         $writer->setConfig($config);

@@ -29,7 +29,7 @@ class Rest_GroupController extends ApiController
    */
   public function indexAction()
     {
-    $this->_forward('get');
+    $this->forward('get');
     }
 
   /**

@@ -31,7 +31,7 @@ class Packages_ViewController extends Packages_AppController
   public function projectAction()
     {
     $this->disableLayout();
-    $projectId = $this->_getParam('projectId');
+    $projectId = $this->getParam('projectId');
     if(!isset($projectId))
       {
       throw new Zend_Exception('Must specify a projectId parameter');

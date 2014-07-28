@@ -92,14 +92,14 @@ class Batchmake_ConfigController extends Batchmake_AppController
       {
       $this->_helper->layout->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
-      $submitConfig = $this->_getParam(MIDAS_BATCHMAKE_SUBMIT_CONFIG);
+      $submitConfig = $this->getParam(MIDAS_BATCHMAKE_SUBMIT_CONFIG);
 
       if(isset($submitConfig))
         {
         // save only those properties we are interested for local configuration
         foreach($configPropertiesRequirements as $configProperty => $configPropertyRequirement)
           {
-          $fullConfig[MIDAS_BATCHMAKE_GLOBAL_CONFIG_NAME][$this->moduleName.'.'.$configProperty] = $this->_getParam($configProperty);
+          $fullConfig[MIDAS_BATCHMAKE_GLOBAL_CONFIG_NAME][$this->moduleName.'.'.$configProperty] = $this->getParam($configProperty);
           }
         $this->Component->Utility->createInitFile(MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG, $fullConfig);
         $msg = $this->t(MIDAS_BATCHMAKE_CHANGES_SAVED_STRING);

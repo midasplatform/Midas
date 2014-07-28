@@ -48,10 +48,10 @@ class Api_ConfigController extends Api_AppController
       {
       $this->_helper->layout->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
-      $submitConfig = $this->_getParam('submitConfig');
+      $submitConfig = $this->getParam('submitConfig');
       if(isset($submitConfig))
         {
-        $config->methodprefix = $this->_getParam('methodprefix');
+        $config->methodprefix = $this->getParam('methodprefix');
 
         $writer = new Zend_Config_Writer_Ini();
         $writer->setConfig($config);

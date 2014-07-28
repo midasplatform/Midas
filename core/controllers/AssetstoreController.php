@@ -52,8 +52,8 @@ class AssetstoreController extends AppController
     $this->requireAdminPrivileges();
     $this->disableLayout();
     $this->disableView();
-    $change = $this->_getParam("submitDefaultAssetstore");
-    $element = $this->_getParam("element");
+    $change = $this->getParam("submitDefaultAssetstore");
+    $element = $this->getParam("element");
     if(isset($change) && isset($element))
       {
       $assetstore = $this->Assetstore->load($element);
@@ -73,7 +73,7 @@ class AssetstoreController extends AppController
     $this->requireAdminPrivileges();
     $this->disableLayout();
     $this->disableView();
-    $assetstoreId = $this->_getParam("assetstoreId");
+    $assetstoreId = $this->getParam("assetstoreId");
     if(isset($assetstoreId))
       {
       $assetstore = $this->Assetstore->load($assetstoreId);
@@ -93,9 +93,9 @@ class AssetstoreController extends AppController
     $this->requireAdminPrivileges();
     $this->disableLayout();
     $this->disableView();
-    $assetstoreId = $this->_getParam("assetstoreId");
-    $assetstoreName = $this->_getParam("assetstoreName");
-    $assetstorePath = $this->_getParam("assetstorePath");
+    $assetstoreId = $this->getParam("assetstoreId");
+    $assetstoreName = $this->getParam("assetstoreName");
+    $assetstorePath = $this->getParam("assetstorePath");
     if(!is_dir($assetstorePath))
       {
       echo JsonComponent::encode(array(false, 'The path provided is not a valid directory'));
@@ -203,7 +203,7 @@ class AssetstoreController extends AppController
     $this->requireAdminPrivileges();
     $this->disableLayout();
 
-    $srcAssetstoreId = $this->_getParam('srcAssetstoreId');
+    $srcAssetstoreId = $this->getParam('srcAssetstoreId');
 
     if(!$srcAssetstoreId)
       {
@@ -231,8 +231,8 @@ class AssetstoreController extends AppController
     $this->disableView();
     $this->disableLayout();
 
-    $srcAssetstoreId = $this->_getParam('srcAssetstoreId');
-    $dstAssetstoreId = $this->_getParam('dstAssetstoreId');
+    $srcAssetstoreId = $this->getParam('srcAssetstoreId');
+    $dstAssetstoreId = $this->getParam('dstAssetstoreId');
 
     if(!$srcAssetstoreId || !$dstAssetstoreId)
       {

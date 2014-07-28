@@ -52,7 +52,7 @@ class Tracker_ConfigController extends Tracker_AppController
     $this->disableLayout();
     $this->disableView();
 
-    $tempScalarTtl = $this->_getParam('tempScalarTtl');
+    $tempScalarTtl = $this->getParam('tempScalarTtl');
 
     $this->Setting->setConfig('tempScalarTtl', $tempScalarTtl, $this->moduleName);
 

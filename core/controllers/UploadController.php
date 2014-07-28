@@ -91,7 +91,7 @@ class UploadController extends AppController
     $this->view->defaultUploadLocation = '';
     $this->view->defaultUploadLocationText = 'You must select a folder';
 
-    $parent = $this->_getParam('parent');
+    $parent = $this->getParam('parent');
     if(isset($parent))
       {
       $parent = $this->Folder->load($parent);
@@ -119,7 +119,7 @@ class UploadController extends AppController
     $this->requireAjaxRequest();
     $this->disableLayout();
 
-    $mode = $this->_getParam('mode');
+    $mode = $this->getParam('mode');
     $this->view->directoryMode = isset($mode) && $mode == 'folder';
 
     session_start();
@@ -146,8 +146,8 @@ class UploadController extends AppController
     $this->view->defaultUploadLocation = '';
     $this->view->defaultUploadLocationText = $this->t('You must select a folder');
 
-    $parent = $this->_getParam('parent');
-    $license = $this->_getParam('license');
+    $parent = $this->getParam('parent');
+    $license = $this->getParam('license');
     if(!empty($parent) && !empty($license))
       {
       $this->disableView();
@@ -189,9 +189,9 @@ class UploadController extends AppController
     $this->disableLayout();
     $this->disableView();
 
-    $changes = $this->_getParam('changes');
-    $license = $this->_getParam('license');
-    $itemId = $this->_getParam('itemId');
+    $changes = $this->getParam('changes');
+    $license = $this->getParam('license');
+    $itemId = $this->getParam('itemId');
     $item = $this->Item->load($itemId);
     if(!isset($itemId) || !$item)
       {
@@ -226,7 +226,7 @@ class UploadController extends AppController
       $this->requireAjaxRequest();
       }
     $this->disableLayout();
-    $itemId = $this->_getParam('itemId');
+    $itemId = $this->getParam('itemId');
     $item = $this->Item->load($itemId);
 
     if($item == false)
@@ -290,11 +290,11 @@ class UploadController extends AppController
 
     $this->disableLayout();
     $this->disableView();
-    $parent = $this->_getParam('parent');
-    $name = $this->_getParam('name');
-    $url = $this->_getParam('url');
-    $parent = $this->_getParam('parent');
-    $license = $this->_getParam('license');
+    $parent = $this->getParam('parent');
+    $name = $this->getParam('name');
+    $url = $this->getParam('url');
+    $parent = $this->getParam('parent');
+    $license = $this->getParam('license');
     if(!empty($url) && !empty($name))
       {
       $item = $this->Component->Upload->createLinkItem($this->userSession->Dao, $name, $url, $parent);
@@ -309,7 +309,7 @@ class UploadController extends AppController
     {
     $this->disableLayout();
     $this->disableView();
-    $params = $this->_getAllParams();
+    $params = $this->getAllParams();
 
     list($userId, , ) = explode('/', $params['uploadUniqueIdentifier']);
     if($userId != $this->userSession->Dao->getUserId())
@@ -349,7 +349,7 @@ class UploadController extends AppController
     {
     $this->disableLayout();
     $this->disableView();
-    $params = $this->_getAllParams();
+    $params = $this->getAllParams();
 
     if(!$this->logged)
       {
@@ -415,7 +415,7 @@ class UploadController extends AppController
     {
     $this->disableLayout();
     $this->disableView();
-    $params = $this->_getAllParams();
+    $params = $this->getAllParams();
 
     if(!$this->logged)
       {
@@ -494,7 +494,7 @@ class UploadController extends AppController
 
       try
         {
-        $newRevision = (bool)$this->_getParam('newRevision'); //on name collision, should we create new revision?
+        $newRevision = (bool)$this->getParam('newRevision'); //on name collision, should we create new revision?
         $item = $this->Component->Upload->createUploadedItem($this->userSession->Dao, $data['filename'], $data['path'],
         $parent, $license, $data['md5'], (bool)$testingMode, $newRevision);
         }
@@ -526,7 +526,7 @@ class UploadController extends AppController
     {
     $this->disableLayout();
     $this->disableView();
-    $params = $this->_getAllParams();
+    $params = $this->getAllParams();
 
     if(!$this->logged)
       {
@@ -625,12 +625,12 @@ class UploadController extends AppController
 
     $this->disableLayout();
     $this->disableView();
-    $pathClient = $this->_getParam('path');
+    $pathClient = $this->getParam('path');
 
     if($this->isTestingEnv())
       {
       //simulate file upload
-      $path = $this->_getParam('testpath');
+      $path = $this->getParam('testpath');
       $filename = basename($path);
       $file_size = filesize($path);
       }
@@ -680,15 +680,15 @@ class UploadController extends AppController
         }
       }
 
-    $parent = $this->_getParam('parent');
-    $license = $this->_getParam('license');
+    $parent = $this->getParam('parent');
+    $license = $this->getParam('license');
 
     if(!empty($path) && file_exists($path))
       {
       $itemId_itemRevisionNumber = explode('-', $parent);
       if(count($itemId_itemRevisionNumber) == 2) //means we upload a new revision
         {
-        $changes = $this->_getParam('changes');
+        $changes = $this->getParam('changes');
         $itemId = $itemId_itemRevisionNumber[0];
         $itemRevisionNumber = $itemId_itemRevisionNumber[1];
 
@@ -713,7 +713,7 @@ class UploadController extends AppController
         }
       else
         {
-        $newRevision = (bool)$this->_getParam('newRevision'); //on name collision, should we create new revision?
+        $newRevision = (bool)$this->getParam('newRevision'); //on name collision, should we create new revision?
         if(!empty($pathClient) && $pathClient != ";;")
           {
           $parentDao = $this->Folder->load($parent);
@@ -778,11 +778,11 @@ class UploadController extends AppController
     {
     if($this->userSession->JavaUpload->parent)
       {
-      $this->_redirect('/folder/'.$this->userSession->JavaUpload->parent);
+      $this->redirect('/folder/'.$this->userSession->JavaUpload->parent);
       }
     else
       {
-      $this->_redirect('/community/');
+      $this->redirect('/community/');
       }
     }
   } // end class

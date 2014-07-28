@@ -58,13 +58,13 @@ class Dicomextractor_ConfigController extends Dicomextractor_AppController
       {
       $this->_helper->layout->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
-      $submitConfig = $this->_getParam('submitConfig');
+      $submitConfig = $this->getParam('submitConfig');
       if(isset($submitConfig))
         {
-        $config->dcmdictpath = $this->_getParam('dcmdictpath');
-        $config->dcmftest = $this->_getParam('dcmftest');
-        $config->dcmj2pnm = $this->_getParam('dcmj2pnm');
-        $config->dcm2xml = $this->_getParam('dcm2xml');
+        $config->dcmdictpath = $this->getParam('dcmdictpath');
+        $config->dcmftest = $this->getParam('dcmftest');
+        $config->dcmj2pnm = $this->getParam('dcmj2pnm');
+        $config->dcm2xml = $this->getParam('dcm2xml');
 
         $writer = new Zend_Config_Writer_Ini();
         $writer->setConfig($config);

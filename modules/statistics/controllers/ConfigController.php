@@ -52,7 +52,7 @@ class Statistics_ConfigController extends Statistics_AppController
       {
       $this->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
-      $submitConfig = $this->_getParam('submitConfig');
+      $submitConfig = $this->getParam('submitConfig');
       if(isset($submitConfig))
         {
         $jobModel = MidasLoader::loadModel('Job', 'scheduler');
@@ -104,15 +104,15 @@ class Statistics_ConfigController extends Statistics_AppController
           $job->setTimeInterval(1 * 60 * 60);
           $jobLocation = $job;
           }
-        $jobLocation->setParams(JsonComponent::encode(array('apikey' => $this->_getParam('ipinfodbapikey'))));
+        $jobLocation->setParams(JsonComponent::encode(array('apikey' => $this->getParam('ipinfodbapikey'))));
         $jobLocation->setStatus(SCHEDULER_JOB_STATUS_TORUN);
         $jobModel->save($jobLocation);
 
-        $config->piwik->apikey = $this->_getParam('piwikapikey');
-        $config->piwik->id = $this->_getParam('piwikid');
-        $config->piwik->url = $this->_getParam('piwikurl');
-        $config->ipinfodb->apikey = $this->_getParam('ipinfodbapikey');
-        $config->report = $this->_getParam('report');
+        $config->piwik->apikey = $this->getParam('piwikapikey');
+        $config->piwik->id = $this->getParam('piwikid');
+        $config->piwik->url = $this->getParam('piwikurl');
+        $config->ipinfodb->apikey = $this->getParam('ipinfodbapikey');
+        $config->report = $this->getParam('report');
 
         $writer = new Zend_Config_Writer_Ini();
         $writer->setConfig($config);

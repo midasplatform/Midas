@@ -55,7 +55,7 @@ class MIDAS_GlobalModule extends AppController
     $this->view->moduleDescription = $config->description;
 
     $stack = debug_backtrace();
-    $forward = $this->_getParam('forwardModule');
+    $forward = $this->getParam('forwardModule');
 
     // Add variables to the view that allow the retrieval of any enabled module
     // webroots

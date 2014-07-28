@@ -55,16 +55,16 @@ class Visualize_ConfigController extends Visualize_AppController
       {
       $this->_helper->layout->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
-      $submitConfig = $this->_getParam('submitConfig');
+      $submitConfig = $this->getParam('submitConfig');
       if(isset($submitConfig))
         {
-        $config->customtmp = $this->_getParam('customtmp');
-        $config->paraviewworkdir = $this->_getParam('paraviewworkdir');
-        $config->pvbatch = $this->_getParam('pvbatch');
-        $config->pwapp = $this->_getParam('pwapp');
-        $config->useparaview = $this->_getParam('useparaview');
-        $config->userwebgl = $this->_getParam('userwebgl');
-        $config->usesymlinks = $this->_getParam('usesymlinks');
+        $config->customtmp = $this->getParam('customtmp');
+        $config->paraviewworkdir = $this->getParam('paraviewworkdir');
+        $config->pvbatch = $this->getParam('pvbatch');
+        $config->pwapp = $this->getParam('pwapp');
+        $config->useparaview = $this->getParam('useparaview');
+        $config->userwebgl = $this->getParam('userwebgl');
+        $config->usesymlinks = $this->getParam('usesymlinks');
 
         $writer = new Zend_Config_Writer_Ini();
         $writer->setConfig($config);

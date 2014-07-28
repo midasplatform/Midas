@@ -33,7 +33,7 @@ class FolderController extends AppController
     $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
     if(isset($actionName) && is_numeric($actionName))
       {
-      $this->_forward('view', null, null, array('folderId' => $actionName));
+      $this->forward('view', null, null, array('folderId' => $actionName));
       }
     $this->view->activemenu = 'browse'; // set the active menu
     }  // end init()
@@ -45,7 +45,7 @@ class FolderController extends AppController
     {
     $this->disableLayout();
     $this->disableView();
-    $folderId = $this->_getParam('id');
+    $folderId = $this->getParam('id');
     if(!isset($folderId))
       {
       throw new Zend_Exception('Must pass id parameter');
@@ -69,7 +69,7 @@ class FolderController extends AppController
     {
     $this->disableLayout();
     $this->disableView();
-    $folderId = $this->_getParam('id');
+    $folderId = $this->getParam('id');
     if(!isset($folderId))
       {
       throw new Zend_Exception('Must pass id parameter');
@@ -100,7 +100,7 @@ class FolderController extends AppController
   function editAction()
     {
     $this->disableLayout();
-    $folder_id = $this->_getParam('folderId');
+    $folder_id = $this->getParam('folderId');
     $folder = $this->Folder->load($folder_id);
     if(!isset($folder_id))
       {
@@ -117,7 +117,7 @@ class FolderController extends AppController
 
     if($this->_request->isPost())
       {
-      $name = $this->_getParam('name');
+      $name = $this->getParam('name');
 
       // Check if folder with the same name already exists for the same parent
       if($folder->getName() != $name && $this->Folder->getFolderExists($name, $folder->getParent()))
@@ -125,8 +125,8 @@ class FolderController extends AppController
         throw new Zend_Exception('This name is already used');
         }
 
-      $description = $this->_getParam('description');
-      $teaser = $this->_getParam('teaser');
+      $description = $this->getParam('description');
+      $teaser = $this->getParam('teaser');
 
       if(strlen($name) > 0)
         {
@@ -139,7 +139,7 @@ class FolderController extends AppController
         }
 
       $this->Folder->save($folder);
-      $this->_redirect('/folder/'.$folder->getKey());
+      $this->redirect('/folder/'.$folder->getKey());
       }
 
     $this->view->folderDao = $folder;
@@ -155,7 +155,7 @@ class FolderController extends AppController
   public function viewAction()
     {
     $this->view->Date = $this->Component->Date;
-    $folder_id = $this->_getParam('folderId');
+    $folder_id = $this->getParam('folderId');
     $folder = $this->Folder->load($folder_id);
     $folders = array();
     $items = array();
@@ -234,7 +234,7 @@ class FolderController extends AppController
   public function deletedialogAction()
     {
     $this->disableLayout();
-    $folderId = $this->_getParam('folderId');
+    $folderId = $this->getParam('folderId');
 
     if(!isset($folderId))
       {
@@ -259,7 +259,7 @@ class FolderController extends AppController
     {
     $this->disableLayout();
     $this->disableView();
-    $folder_id = $this->_getParam('folderId');
+    $folder_id = $this->getParam('folderId');
     $folder = $this->Folder->load($folder_id);
     if(!isset($folder_id))
       {
@@ -303,8 +303,8 @@ class FolderController extends AppController
   /** remove an item from a folder (dialog,ajax only)*/
   public function removeitemAction()
     {
-    $folder_id = $this->_getParam('folderId');
-    $item_id = $this->_getParam('itemId');
+    $folder_id = $this->getParam('folderId');
+    $item_id = $this->getParam('itemId');
     $folder = $this->Folder->load($folder_id);
     $item = $this->Item->load($item_id);
 
@@ -343,7 +343,7 @@ class FolderController extends AppController
   public function createfolderAction()
     {
     $this->disableLayout();
-    $folder_id = $this->_getParam('folderId');
+    $folder_id = $this->getParam('folderId');
     $folder = $this->Folder->load($folder_id);
     $form = $this->Form->Folder->createEditForm();
     $formArray = $this->getFormAsArray($form);
@@ -368,11 +368,11 @@ class FolderController extends AppController
     if($this->_request->isPost())
       {
       $this->disableView();
-      $createFolder = $this->_getParam('createFolder');
+      $createFolder = $this->getParam('createFolder');
       if(isset($createFolder))
         {
-        $name = $this->_getParam('name');
-        $description = $this->_getParam('description') ? $this->_getParam('description') : '';
+        $name = $this->getParam('name');
+        $description = $this->getParam('description') ? $this->getParam('description') : '';
         if(!isset($name))
           {
           echo JsonComponent::encode(array(false, $this->t('Error: name parameter required')));

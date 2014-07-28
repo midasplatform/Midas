@@ -37,7 +37,7 @@ class ApikeyController extends AppController
       throw new Zend_Exception('Please Log in');
       }
 
-    $userId = $this->_getParam('userId');
+    $userId = $this->getParam('userId');
     if($this->userSession->Dao->getKey() != $userId &&
        !$this->userSession->Dao->isAdmin())
       {
@@ -52,13 +52,13 @@ class ApikeyController extends AppController
     $formArray['expiration']->setValue('100');
     $this->view->form = $formArray;
     // Create a new API key
-    $createAPIKey = $this->_getParam('createAPIKey');
-    $deleteAPIKey = $this->_getParam('deleteAPIKey');
+    $createAPIKey = $this->getParam('createAPIKey');
+    $deleteAPIKey = $this->getParam('deleteAPIKey');
     if(isset($createAPIKey))
       {
       $this->disableView();
-      $applicationName      = $this->_getParam('appplication_name');
-      $tokenExperiationTime = $this->_getParam('expiration');
+      $applicationName      = $this->getParam('appplication_name');
+      $tokenExperiationTime = $this->getParam('expiration');
       $userapiDao = $this->Userapi->createKey($user, $applicationName, $tokenExperiationTime);
       if($userapiDao != false)
         {
@@ -72,7 +72,7 @@ class ApikeyController extends AppController
     else if(isset($deleteAPIKey))
       {
       $this->disableView();
-      $element = $this->_getParam('element');
+      $element = $this->getParam('element');
       $userapiDao = $this->Userapi->load($element);
       // Make sure the key belongs to the user
       if($userapiDao != false && ($userapiDao->getUserId() == $userId || $this->userSession->Dao->isAdmin()))
