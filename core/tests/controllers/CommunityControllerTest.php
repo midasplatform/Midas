@@ -341,8 +341,8 @@ class CommunityControllerTest extends ControllerTestCase
     $this->Group->addUser($comm->getAdminGroup(), $user1);
     $this->resetAll();
     $this->dispatchUrI('/community/addusertogroup?communityId='.$comm->getKey()
-            .'&group_id='.$comm->getAdminGroup()->getKey()
-            .'&user_id='.$user2->getKey(), $user1);
+            .'&groupId='.$comm->getAdminGroup()->getKey()
+            .'&userId='.$user2->getKey(), $user1);
 
     $this->assertTrue($this->Group->userInGroup($user2, $comm->getAdminGroup()));
     }
