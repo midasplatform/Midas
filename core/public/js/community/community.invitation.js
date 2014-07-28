@@ -2,9 +2,7 @@
 
 var midas = midas || {};
 midas.invite = midas.invite || {};
-
-var jsonShare = jQuery.parseJSON($('div.jsonShareContent').html());
-
+midas.invite.directAdd = $("#directAdd").val();
 /**
  * Render group selection dialog for the community
  * @param item The ui.item from the selected user or email node

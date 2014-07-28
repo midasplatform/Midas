@@ -7,3 +7,11 @@
 .zfproject.xml
 nbproject/
 vendor/
+core/public/java/nbproject/
+sitemap.xml
+modules/slicerappstore
+modules/pyslicer
+bin
+data/maps
+data/compiledCss/*
+*~
