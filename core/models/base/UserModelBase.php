@@ -263,9 +263,9 @@ abstract class UserModelBase extends AppModel
         }
       $userDao->setSalt($salt);
       }
-    $this->save($userDao); // save the record before gravatar lookup to shorten critical section
+    $this->save($userDao); // save the record before Gravatar lookup to shorten critical section
 
-    // check gravatar
+    // check Gravatar
     $useGravatar = Zend_Registry::get('configGlobal')->gravatar;
     if($useGravatar)
       {

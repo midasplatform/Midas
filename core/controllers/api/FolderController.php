@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- *  WebApi Controller for Folder Resource
+ *  Web API controller for the Folder resource
  */
 class Rest_FolderController extends ApiController
   {

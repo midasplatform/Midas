@@ -187,7 +187,7 @@ abstract class ItemModelBase extends AppModel
    * Create a new item (same as old one) in destination folder/community. The new item
    * have the same metadata and revisions with the old one, but its owner is set as the
    * input userDao parameter (who run this operation) and access policy is based on
-   * the input folderDao paramer (destination folder)
+   * the input folderDao parameter (destination folder)
    *
    * @method duplicateItem()
    * @param ItemDao $itemDao the item to be duplicated

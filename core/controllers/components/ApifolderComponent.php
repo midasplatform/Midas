@@ -342,7 +342,7 @@ class ApifolderComponent extends AppComponent
     // now push down the privacy recursively
     $policyComponent = MidasLoader::loadComponent('Policy');
     // send a null Progress since we aren't interested in progress
-    // prepopulate results with 1 success for the folder we have already changed
+    // pre-populate results with 1 success for the folder we have already changed
     $results = $policyComponent->applyPoliciesRecursive($folder, $userDao, null, $results = array('success' => 1, 'failure' => 0));
     return $results;
     }

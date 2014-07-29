@@ -33,7 +33,7 @@ class OauthAuthorizeControllerTest extends ControllerTestCase
     }
 
   /**
-   * Helper function to get test that each paramter in the array is required
+   * Helper function to get test that each parameter in the array is required
    */
   private function _testParamsRequired($uri, $params, $userDao = null)
     {

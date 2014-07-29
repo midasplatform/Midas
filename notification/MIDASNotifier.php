@@ -139,7 +139,7 @@ class MIDAS_Notifier
           }
         }
       }
-    }//end contruct()
+    }
 
   /**
    * notifyEvent is very similar to callback, with an important distinction.

@@ -109,7 +109,7 @@ class ImportController extends AppController
     return false;
     } // end _checkStopImport
 
-  /** Increment the number of files processed and write the progress ifneeded */
+  /** Increment the number of files processed and write the progress if needed */
   private function _incrementFileProcessed()
     {
     $this->nfilesprocessed++;
@@ -183,7 +183,7 @@ class ImportController extends AppController
                                                 $child, MIDAS_POLICY_ADMIN);
           }
 
-        // Keep decending
+        // Keep descending
         $this->_recursiveParseDirectory($fileInfo->getPathName(), $child);
         }
       else // We have a file
@@ -210,7 +210,7 @@ class ImportController extends AppController
           $this->Folder->addItem($currentdir, $item);
           } // end create item
 
-        // Check ifthe bistream has been updated based on the local date
+        // Check if the bistream has been updated based on the local date
         $revision = $this->ItemRevision->getLatestRevision($item);
         if($revision)
           {
@@ -254,7 +254,7 @@ class ImportController extends AppController
           } // end new revision
 
         } // end isFile
-      } // end foreachfiles/dirs in the directory
+      }
 
     unset($it);
     return true;

@@ -27,7 +27,7 @@ class MimeTypeComponent extends AppComponent
     // get base name of the filename provided by user
     $filename = basename($filename);
 
-    // break file into parts seperated by .
+    // break file into parts separated by .
     $filename = explode('.', $filename);
 
      // take the last part of the file to get the file extension
@@ -39,14 +39,14 @@ class MimeTypeComponent extends AppComponent
   /** privFindType*/
   function privFindType($ext)
     {
-    // create mimetypes array
+    // create MIME types array
     $mimetypes = $this->privBuildMimeArray();
 
     // return mime type for extension
     if(isset($mimetypes[$ext]))
       {
       return $mimetypes[$ext];
-      // ifthe extension wasn't found return octet-stream
+      // if the extension wasn't found return octet-stream
       }
     else
       {

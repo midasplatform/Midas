@@ -634,7 +634,7 @@ class UploadController extends AppController
       }
     else
       {
-      // bugfix: We added an adapter class (see issue 324) under Zend/File/Transfer/Adapter
+      // bug fix: We added an adapter class (see issue 324) under Zend/File/Transfer/Adapter
       ob_start();
       $upload = new Zend_File_Transfer('HttpFixed');
       $upload->receive();

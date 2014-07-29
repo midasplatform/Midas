@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- * Index Controller for WebApi
+ * Index controller for the web API
  **/
 class Rest_IndexController extends AppController
   {

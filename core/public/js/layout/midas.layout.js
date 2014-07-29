@@ -279,7 +279,7 @@ $(function () {
         });
 });
 
-// Javascript uilts ----------------------------------
+// Javascript utilities ----------------------------------
 
 // asks the user to authenticate
 function globalAuthAsk(url) {

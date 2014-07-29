@@ -28,7 +28,7 @@ class Thumbnailcreator_ApiitemComponent extends AppComponent
    * @param bitstreamId The bitstream to create the thumbnail from
    * @param id The item to set the thumbnail on
    * @param width (Optional) The width in pixels to resize to (aspect ratio will be preserved). Defaults to 575
-   * @return The ItemthumbnailDao obejct that was created
+   * @return The ItemthumbnailDao object that was created
    */
   public function createBigThumbnail($args)
     {
@@ -98,7 +98,7 @@ class Thumbnailcreator_ApiitemComponent extends AppComponent
    * @path /thumbnailcreator/item/smallthumbnail/{id}
    * @http PUT
    * @param id The item to set the thumbnail on
-   * @return The Item obejct (with the new thumbnail_id) and the path where the newly created thumbnail is stored
+   * @return The Item object (with the new thumbnail_id) and the path where the newly created thumbnail is stored
    */
 
   public function createSmallThumbnail($args)

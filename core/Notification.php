@@ -36,7 +36,7 @@ class Notification extends MIDAS_Notification
     $this->addCallBack('CALLBACK_CORE_PARAMETER_AUTHENTICATION', 'tokenAuth');
     }//end init
 
-  /** generate Dasboard information */
+  /** generate dashboard information */
   public function getDasboard()
     {
     $return = array();
@@ -48,7 +48,7 @@ class Notification extends MIDAS_Notification
     return $return;
     }//end _getDasboard
 
-  /** get Config Tabs */
+  /** get config Tabs */
   public function getConfigTabs($params)
     {
     $user = $params['user'];

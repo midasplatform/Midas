@@ -37,7 +37,7 @@ midas.item.initQualifierMetaData = function () {
 $(document).ready(function () {
     var text = $('div#jsonMetadata').html().trim();
     if (text == '') {
-        return; // no metadata fields, do not perform autocompletion
+        return; // no metadata fields, do not perform auto-completion
     }
     else {
         midas.item.jsonMetadata = $.parseJSON(text);

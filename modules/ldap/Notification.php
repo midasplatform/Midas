@@ -156,7 +156,7 @@ class Ldap_Notification extends MIDAS_Notification
       }
 
     return $return;
-    }//end _getDasboard
+    }
 
   /**
    * Look up whether the user exists in the ldap_user table

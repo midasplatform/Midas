@@ -104,7 +104,7 @@ class RestCallUserMethodsTest extends RestCallMethodsTest
     $this->assertEquals($resp['body']->data[1]->name, 'User 1 name Folder 3');
     }
 
-  /** Test getting user by id and email and firstname + lastname */
+  /** Test getting user by id and email and first name + last name */
   public function testUserGet()
     {
     // Test getting a user by id

@@ -434,7 +434,7 @@ class BrowseController extends AppController
     echo JsonComponent::encode($return);
     }
 
-  /** get element info (ajax function for the treetable) */
+  /** get element info (ajax function for the tree table) */
   public function getelementinfoAction()
     {
     $this->disableLayout();

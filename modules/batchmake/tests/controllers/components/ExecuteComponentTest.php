@@ -155,7 +155,7 @@ class ExecuteComponentTest extends BatchmakeControllerTest
     // need to falsify a webroot for this test
     $fakeWebroot = "fake_web_root";
     Zend_Registry::set('webroot', $fakeWebroot);
-    // need to falisfy a HTTP_HOST
+    // need to falsify a HTTP_HOST
     $_SERVER['HTTP_HOST'] = 'localhost';
     // need to create a web api-key for the user
     $userapiModel = MidasLoader::loadModel('Userapi');
@@ -169,7 +169,7 @@ class ExecuteComponentTest extends BatchmakeControllerTest
     $expectedConfigPath = $workDir.'/adminconfig.cfg';
     $this->assertTrue(file_exists($expectedConfigPath), "exported admin config file should exist");
 
-    // unfalsify.  retruth?
+    // un-falsify, re-truth?
     Zend_Registry::set('webroot', null);
     unset($_SERVER['HTTP_HOST']);
     }

@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- *  WebApi Controller for Group Resource
+ *  Web API controller for the Group resource
  */
 class Rest_GroupController extends ApiController
   {

@@ -67,7 +67,7 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
     $agreementDao = $this->Communityagreement_Agreement->getByCommunityId($communityId);
 
     // If cannot find any community agreement using the given communityID,
-    // initilize the community agreement using an empty string and then create an agreementDao
+    // initialize the community agreement using an empty string and then create an agreementDao
     if($agreementDao == false)
       {
       $agreement = '';

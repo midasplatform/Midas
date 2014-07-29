@@ -71,7 +71,7 @@ class Batchmake_BatchmakeMock
 
   /**
    * handler function with same interface as KWUtils.exec to simulate the
-   * -c functionity of the BatchMake executable
+   * -c functionality of the BatchMake executable
    * @param type $command
    * @param type $output
    * @param type $chdir
@@ -118,7 +118,7 @@ class Batchmake_BatchmakeMock
 
   /**
    * handler function with same interface as KWUtils.exec to simulate the
-   * --condor functionity of the BatchMake executable
+   * --condor functionality of the BatchMake executable
    * @param type $command
    * @param type $output
    * @param type $chdir

@@ -26,7 +26,7 @@ class UserDao extends AppDao
   {
   public $_model = 'User';
 
-  /**  is admin?*/
+  /**  is admin? */
   public function isAdmin()
     {
     if($this->getAdmin() == 1)
@@ -34,9 +34,9 @@ class UserDao extends AppDao
       return true;
       }
     return false;
-    }/// end isAmdin
+    }
 
-  /** get full name*/
+  /** get full name */
   public function getFullName()
     {
     return $this->getFirstname()." ".$this->getLastname();

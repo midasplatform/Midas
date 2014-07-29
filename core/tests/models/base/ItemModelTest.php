@@ -163,14 +163,14 @@ class ItemModelTest extends DatabaseTestCase
     $this->assertEquals($revision->getChanges(), $lastRev->getChanges());
 
     // we now have revision:changes 1:r1, 2:r2, 3:r3
-    // remove r3, check that lastrevision changes = r2
+    // remove r3, check that last revision changes = r2
     $this->Item->removeRevision($item, $lastRev);
     $lastRev = $this->Item->getLastRevision($item);
     $this->assertEquals($lastRev->getRevision(), "2");
     $this->assertEquals($lastRev->getChanges(), "r2");
 
     // now we have 1:r1, 2:r2
-    // remove r1, check that lastrevision changes = r2 and revision = 1
+    // remove r1, check that last revision changes = r2 and revision = 1
     $rev1 = $this->Item->getRevision($item, 1);
     $this->Item->removeRevision($item, $rev1);
     $lastRev = $this->Item->getLastRevision($item);

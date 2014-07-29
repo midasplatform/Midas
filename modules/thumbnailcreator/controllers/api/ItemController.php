@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- *  WebApi controller for Item Resource (in thumbnailcreator module)
+ *  Web API controller for the Item resource (in thumbnailcreator module)
  */
 class Apithumbnailcreator_ItemController extends ApiController
   {

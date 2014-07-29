@@ -20,7 +20,7 @@
 
 include_once BASE_PATH . '/library/KWUtils.php';
 
-/** Exract dicom metadata */
+/** Extract dicom metadata */
 class Dicomextractor_ExtractorComponent extends AppComponent
   {
 
@@ -112,8 +112,8 @@ class Dicomextractor_ExtractorComponent extends AppComponent
                                                    'dcmj2pnm');
     if($modulesConfig['dicomextractor']->dcmdictpath == "")
       {
-      if(is_readable('/usr/local/share/dcmtk/dicom.dic') ||  // default on osx
-        is_readable('/usr/share/dcmtk/dicom.dic'))  // default on ubuntu
+      if(is_readable('/usr/local/share/dcmtk/dicom.dic') ||  // default on OS X
+        is_readable('/usr/share/dcmtk/dicom.dic'))  // default on Ubuntu
         {
         $ret['dcmdatadict'] = array(true, 'DICOM Data Dictionary found at '.
           'default location.');
@@ -189,7 +189,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
 
   /** extract metadata
    *  HACK TODO FIXME Right now we only extract the metadata from the 0th
-   *  bistream of the item. We should really do some sort of validation on
+   *  bitstream of the item. We should really do some sort of validation on
    *  the n bitstreams to make sure their tags match.
    */
   public function extract($revision)

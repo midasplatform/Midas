@@ -272,7 +272,7 @@ class MIDAS2MigrationComponent extends AppComponent
             $UploadComponent = new UploadComponent();
             $UploadComponent->uploadBitstream($bitstreamDao, $assetstoreDao);
 
-            // Upload the bitstream ifnecessary (based on the assetstore type)
+            // Upload the bitstream if necessary (based on the assetstore type)
             $ItemRevision->addBitstream($itemRevisionDao, $bitstreamDao);
             unset($UploadComponent);
             }

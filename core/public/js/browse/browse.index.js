@@ -38,8 +38,8 @@ $(document).ready(
 
     });
 
-// dependance: common/browser.js
-// Treetable depends on some global functions. This is terrible. Our javascript
+// dependence: common/browser.js
+// Tree table depends on some global functions. This is terrible. Our javascript
 // is absolutely shameful. That's why I didn't namespace these functions.
 midas.ajaxSelectRequest = '';
 var callbackSelect = function (node) {

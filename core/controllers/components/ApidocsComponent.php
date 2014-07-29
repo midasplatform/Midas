@@ -22,8 +22,8 @@
 class ApidocsComponent extends AppComponent
   {
   /**
-   * This function is for getting the webapi methods information defined in
-   * all the API component of the implementing class.
+   * This function is for getting the web API methods information defined in
+   * all the API components of the implementing class.
    */
   public function getEnabledResources()
     {
@@ -57,7 +57,7 @@ class ApidocsComponent extends AppComponent
     }
 
   /**
-   * This function is for getting the webapi methods defined in the API
+   * This function is for getting the web API methods defined in the API
    * component (in given module) of the implementing class.
    */
   public function getWebApiDocs($resource, $module = '')

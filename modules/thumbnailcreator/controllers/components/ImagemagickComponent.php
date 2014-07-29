@@ -102,7 +102,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
     $ext = strtolower(substr(strrchr($name, '.'), 1));
     if(($useThumbnailer == "1") && in_array($ext, $preprocessedFormats))
       {
-      // pre-process the file to get a temporary JPEG file and then feed it to imagemagick later.
+      // pre-process the file to get a temporary JPEG file and then feed it to ImageMagick later.
       $preprecessedJpeg = $this->preprocessByThumbnailer($name, $fullPath);
       if(isset($preprecessedJpeg) && file_exists($preprecessedJpeg))
         {
@@ -172,7 +172,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
           }
         break;
       }
-    // delete temerary file generated in pre-process step
+    // delete temporary file generated in pre-process step
     if(isset($preprecessedJpeg) && file_exists($preprecessedJpeg))
       {
       unlink($preprecessedJpeg);

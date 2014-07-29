@@ -21,7 +21,7 @@
 /** FeedpolicyuserModelBase*/
 abstract class FeedpolicyuserModelBase extends AppModel
   {
-  /** Contructor*/
+  /** Constructor */
   public function __construct()
     {
     parent::__construct();

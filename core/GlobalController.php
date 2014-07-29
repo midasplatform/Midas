@@ -28,7 +28,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
   {
   protected $Models = array();
 
-  /** contructor*/
+  /** constructor */
   public function __construct(Zend_Controller_Request_Abstract $request, Zend_Controller_Response_Abstract $response, array $invokeArgs = array())
     {
 

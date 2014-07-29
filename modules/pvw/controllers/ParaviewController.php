@@ -105,12 +105,12 @@ class Pvw_ParaviewController extends Pvw_AppController
     }
 
   /**
-   * This should become a restful controller for instances
+   * This should become a RESTful controller for instances
    */
   public function instanceAction()
     {
     UtilityComponent::setTimeLimit(30); //in case an exec call hangs for some odd reason
-    // TODO just plug this into the restful stuff
+    // TODO just plug this into the RESTful stuff
     $this->disableLayout();
     $this->disableView();
     $pathParams = UtilityComponent::extractPathParams();

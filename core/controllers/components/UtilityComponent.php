@@ -26,7 +26,7 @@ class UtilityComponent extends AppComponent
    * Pass in a multi dimensional array and this recursively loops through and builds up an XML document.
    *
    * @param array $data
-   * @param string $rootNodeName - what you want the root node to be - defaultsto data.
+   * @param string $rootNodeName - what you want the root node to be - defaults to data.
    * @param SimpleXMLElement $xml - should only be used recursively
    * @return string XML
    */

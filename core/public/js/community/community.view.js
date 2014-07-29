@@ -18,7 +18,7 @@ $(document).ready(function () {
         onNodeShow: midas.enableRangeSelect,
         onNodeHide: midas.enableRangeSelect
     });
-    // Select/deslect all rows. If we are doing deselect all, we include hidden rows
+    // Select/deselect all rows. If we are doing deselect all, we include hidden rows
 
     midas.browser.enableSelectAll();
 

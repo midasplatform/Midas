@@ -172,7 +172,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
       if($module == 1 &&  file_exists(BASE_PATH.'/modules/'.$key))
         {
         $listeModule[] = $key;
-        // get WebApi controller directories and WebApi module names for enabled modules
+        // get web API controller directories and web API module names for enabled modules
         if(file_exists(BASE_PATH.'/modules/'.$key.'/controllers/api'))
           {
           $frontController->addControllerDirectory(BASE_PATH.'/modules/'.$key.'/controllers/api', 'api'.$key);
@@ -184,7 +184,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
     require_once BASE_PATH.'/core/ApiController.php';
     $frontController->addControllerDirectory(BASE_PATH.'/core/controllers/api', 'rest');
-    // add restful route for WebApis
+    // add RESTful route for web APIs
     $restRoute = new Zend_Rest_Route($frontController, array(), array('rest'));
     // add regular route for apikey configuration page
     $router->addRoute('rest-apikey',
@@ -249,7 +249,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
 
   /**
    *
-    The method dispatchUrl  fetchs the page.
+    The method dispatchUrl fetches the page.
     Parameters:
     - $uri: page you want to render
     - $userDao : user you want to log in with

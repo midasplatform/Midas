@@ -28,7 +28,7 @@ class UpgradeComponent extends AppComponent
   protected $dbtypeShort;
   public $init = false;
 
-  /** init upgrade Componenet*/
+  /** init upgrade Component */
   public function initUpgrade($module, $db, $dbtype)
     {
     if($module == 'core')

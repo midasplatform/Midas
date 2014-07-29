@@ -18,7 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/** Webgl controller*/
+/** WebGL controller*/
 class Visualize_WebglController extends Visualize_AppController
   {
   public $_moduleForms = array('Config');

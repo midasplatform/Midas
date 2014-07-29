@@ -18,7 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/** UuidComponent componenet */
+/** UuidComponent component */
 class UuidComponent extends AppComponent
   {
   /** Get using id*/

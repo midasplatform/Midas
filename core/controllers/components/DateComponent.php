@@ -18,7 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/** Data management Componenet */
+/** Data management Component */
 class DateComponent extends AppComponent
   {
   /** format date (ex: 01/14/2011 or 14/01/2011 (fr or en) */

@@ -52,7 +52,7 @@ midas.community.manage.init = function () {
     $('td.tdUser input').removeAttr('checked');
 };
 
-// dependance: common/browser.js
+// dependence: common/browser.js
 midas.ajaxSelectRequest = '';
 
 function callbackSelect(node) {

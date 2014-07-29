@@ -21,7 +21,7 @@
 /** FolderModelBase */
 abstract class FolderModelBase extends AppModel
   {
-  /** Contrcutor*/
+  /** Constrcutor */
   public function __construct()
     {
     parent::__construct();

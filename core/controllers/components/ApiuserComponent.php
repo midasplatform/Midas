@@ -62,7 +62,7 @@ class ApiuserComponent extends AppComponent
    * Returns a user either by id.
    * @path /user/{id}
    * @http GET
-   * @param id The id of the user desired (ignores firstname and lastname)
+   * @param id The id of the user desired (ignores first name and last name)
    * @return The user corresponding to the user_id
    */
   function userGet($args)

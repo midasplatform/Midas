@@ -103,7 +103,7 @@ class UserForm extends AppForm
     return $form;
     }
 
-  /** acount  form */
+  /** account  form */
   public function createAccountForm($defaultValue = array())
     {
     $form = new Zend_Form;

@@ -20,7 +20,7 @@
 
 require_once BASE_PATH . '/modules/api/tests/controllers/ApiCallMethodsTest.php';
 
-/** Tests the functionality of the web API Item and Bistream methods */
+/** Tests the functionality of the web API Item and Bitstream methods */
 class ApiCallItemMethodsTest extends ApiCallMethodsTest
   {
   /** Test the item.get method */
@@ -182,7 +182,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     // This method is quite complex, so here is a listing of all
     // the tests performed.  Also, the upload.generatetoken and
     // upload.perform have been reworked for 3.2.8, but the previous
-    // versions of the API are tested here for backwards compatability
+    // versions of the API are tested here for backwards compatibility
     // (the previous versions of the APIs should still work).
     // Each request gets a new count, related requests are grouped.
     /*
@@ -776,7 +776,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     // we expect that the item will create a new revision for the bitstream,
     // but pass back an empty upload token, since we have the bitstream content
     // already and do not need to actually upload it; also test passing in Public
-    // explictly
+    // explicitly
     $this->resetAll();
     $this->params['token'] = $this->_loginAsNormalUser();
     $this->params['method'] = 'midas.upload.generatetoken';
@@ -978,7 +978,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->assertEquals($itemDao->getName(), $changedName, 'Item name is not set correctly');
     $bitstreamDao = $this->Bitstream->load($bitstream_id);
     $this->assertNotEquals($bitstreamDao->getName(), $changedName, 'Bitstream name should not be updated');
-    // bitstreamname is also updated
+    // bitstream name is also updated
     $changedName = 'created_item_4_changed_name_also_update_bitstream';
     $this->resetAll();
     $this->params['token'] = $this->_loginAsAdministrator();

@@ -34,7 +34,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
   MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY => MIDAS_BATCHMAKE_CHECK_IF_READABLE);
 
   /**
-   * accessor function to return the names of the config propeties, and
+   * accessor function to return the names of the config properties, and
    * their filesystem requirements;
    */
   public static function getConfigPropertiesRequirements()
@@ -277,7 +277,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       }
 
     // Get permissions of the file
-    // TODO On CIFS filesytem, even if the function GetFilePermissions call clearstatcache(), the value returned can be wrong
+    // TODO On CIFS filesystem, even if the function GetFilePermissions call clearstatcache(), the value returned can be wrong
     $current_perms = KWUtils::DEFAULT_MKDIR_MODE;
     if($current_perms === false)
       {
@@ -440,7 +440,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
     }
 
   /**
-   * will createa  new batchmake task, along with a work directory
+   * will create a new batchmake task, along with a work directory
    * @param type $userDao
    * @return string the path to the workDir for this batchmake task
    */
@@ -459,7 +459,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
    * and for each of these additional scripts, will perform the same
    * operation (symlinking included batchmake scripts),
    * will throw a Zend_Exception if any symlink fails or if a target file
-   * doesn't exist.
+   * does not exist.
    * @param $workDir the temporary work dir
    * @param $scriptName the original batchmake script
    * @param $processed a list of those scripts already processed
@@ -528,7 +528,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
    * included in them using the SetApp Batchmake command, and sym link the
    * corresponding bmm file to the tmpDir, these bmm files are expected to be
    * in the $binDir, will throw a Zend_Exception if any symlink fails or if a
-   * bmm file doesn't exist, or if one of the batchmake scripts doesn't exist.
+   * bmm file does not exist, or if one of the batchmake scripts doesn't exist.
    * @param $workDir the temporary work dir
    * @param $bmScripts the array of Batchmake scripts in the $tmpDir to process
    * @return an array of [ bmmfile => bmScript where bmmfile first found ]

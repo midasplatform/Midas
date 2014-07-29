@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- *  WebApi controller for the Folder Resource (in readmes module)
+ *  Web API controller for the Folder resource (in readmes module)
  */
 class Apireadmes_FolderController extends ApiController
   {

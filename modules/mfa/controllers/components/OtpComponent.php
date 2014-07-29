@@ -32,7 +32,7 @@ class Mfa_OtpComponent extends AppComponent
   /**
    * Call this function to perform the authentication if a user has an OTP device.
    * It will determine which technology to use and switch to the appropriate method accordingly.
-   * @param otpDevice The Otpdevice_Dao correspoding to the user
+   * @param otpDevice The Otpdevice_Dao corresponding to the user
    * @param token The current one-time password displayed on the device
    * @return true If authentication is successful, false otherwise
    */

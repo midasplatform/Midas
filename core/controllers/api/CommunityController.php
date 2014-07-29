@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- *  WebApi Controller for Community Resource
+ *  Web API controller for the Community resource
  */
 class Rest_CommunityController extends ApiController
   {

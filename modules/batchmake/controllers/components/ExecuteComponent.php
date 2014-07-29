@@ -98,7 +98,7 @@ class Batchmake_ExecuteComponent extends AppComponent
   /**
    * creates a python config file in a work dir,
    * with all of the information needed for the given user to communicate back
-   * with this midas instance via the webapi, will be called config.cfg,
+   * with this midas instance via the web API, will be called config.cfg,
    * unless a prefix is supplied, then will be called prefixconfig.cfg.
    * @param type $taskDao
    * @param type $userDao

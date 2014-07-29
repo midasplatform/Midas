@@ -18,7 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/** Demo management Componenet */
+/** Demo management Component */
 class DemoComponent extends AppComponent
   {
   /** reset database (only works with mysql)*/

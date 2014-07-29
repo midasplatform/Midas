@@ -117,7 +117,7 @@ midas.import.assetstoreSubmit = function (formData, jqForm, options) {
     $(".assetstoreLoading").show();
 };
 
-/** On assetstore add sucess */
+/** On assetstore add success */
 midas.import.assetstoreAddCallback = function (responseText, statusText, xhr, form) {
     'use strict';
     var newassetstore = {};

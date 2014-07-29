@@ -111,5 +111,5 @@ class Thumbnailcreator_Notification extends ApiEnabled_Notification
     $return['Image Magick'] = $this->ModuleComponent->Imagemagick->isImageMagickWorking();
 
     return $return;
-    }//end _getDasboard
-  } // end class
+    }
+  }

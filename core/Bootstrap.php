@@ -194,7 +194,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       }
     }
 
-  /** init routes*/
+  /** init routes */
   protected function _initRouter()
     {
     $router = Zend_Controller_Front::getInstance()->getRouter();
@@ -212,7 +212,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       if($module == 1 &&  file_exists(BASE_PATH.'/modules/'.$key) && file_exists(BASE_PATH . "/modules/".$key."/AppController.php"))
         {
         $listeModule[] = $key;
-        // get WebApi controller directories and WebApi module names for enabled modules
+        // get web API controller directories and web API module names for enabled modules
         if(file_exists(BASE_PATH . "/modules/".$key."/controllers/api"))
           {
           $frontController->addControllerDirectory(BASE_PATH . "/modules/".$key."/controllers/api", "api".$key);
@@ -222,7 +222,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       else if($module == 1 &&  file_exists(BASE_PATH.'/privateModules/'.$key) && file_exists(BASE_PATH . "/privateModules/".$key."/AppController.php"))
         {
         $listeModule[] = $key;
-        // get WebApi controller directories and WebApi module names for enabled modules
+        // get web API controller directories and web API module names for enabled modules
         if(file_exists(BASE_PATH . "/privateModules/".$key."/controllers/api"))
           {
           $frontController->addControllerDirectory(BASE_PATH . "/privateModules/".$key."/controllers/api", "api".$key);
@@ -231,10 +231,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
       }
 
-    // get WebApi controller directory for core Apis
+    // get web API controller directory for core APIs
     require_once BASE_PATH . "/core/ApiController.php";
     $frontController->addControllerDirectory(BASE_PATH . '/core/controllers/api', 'rest');
-    // add restful route for WebApis
+    // add RESTful route for web APIs
     $restRoute = new Zend_Rest_Route($frontController, array(), array('rest'));
     $router->addRoute('api-core', $restRoute);
     // loading modules elements

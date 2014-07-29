@@ -60,7 +60,7 @@ abstract class ItemRevisionModelBase extends AppModel
 
     $bitstreamDao->setItemrevisionId($itemRevisionDao->getItemrevisionId());
 
-    // Save the bistream
+    // Save the bitstream
     $bitstreamDao->setDate(date("Y-m-d H:i:s"));
     $BitstreamModel->save($bitstreamDao);
 

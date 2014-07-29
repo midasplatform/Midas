@@ -51,7 +51,7 @@ if ($('div.MainDialogContent #selectElements') != undefined) {
     });
 }
 
-// dependance: common/browser.js
+// dependence: common/browser.js
 var ajaxSelectRequest = '';
 
 function selectFolderCallbackSelect(node) {

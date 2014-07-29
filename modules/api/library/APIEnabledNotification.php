@@ -26,7 +26,7 @@ class ApiEnabled_Notification extends MIDAS_Notification
   {
 
   /**
-   * This function is for getting the webapi methods defined in the API
+   * This function is for getting the web API methods defined in the API
    * component of the implementing class. To enable this add the following
    * line to your init function.
    *

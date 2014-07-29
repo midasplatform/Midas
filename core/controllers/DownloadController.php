@@ -28,11 +28,11 @@ class DownloadController extends AppController
   public $_components = array('DownloadBitstream');
 
   /** index
-   * @param folders = 12-13 (will download a zip of the folder 12 and 13 ,recusively)
-   * @param folders = 12, 1-13, 1 (will download a zip of the folder 12 and 13 ,recusively) //Need testing
+   * @param folders = 12-13 (will download a zip of the folder 12 and 13, recursively)
+   * @param folders = 12, 1-13, 1 (will download a zip of the folder 12 and 13, recursively) //Need testing
    * @param items = 12-13 (will download a zip containing the last revisions of the items 12 and 13)
    * @param items = 12, 1-13 (will download a zip containing the revision 1 of item 12 and last revision of item 13)
-   * @param items = 12, 1 (will download the revision 1 of the item 12, a zip ifthere are multiple bitstream or simply the file)
+   * @param items = 12, 1 (will download the revision 1 of the item 12, a zip if there are multiple bitstream or simply the file)
    * @param bitstream = 1 (will download related bitstream)
    * @param offset The offset in bytes if downloading a bitstream (defaults to 0)
    * @param name Alternate filename when downloading a bitstream (defaults to bitstream name)

@@ -193,7 +193,7 @@ class ApiControllerTest extends ControllerTestCase
     $this->assertEquals($dashboard->description, "testing456");
     }
 
-  /** test createDashboard (without admin creds)*/
+  /** test createDashboard (without admin credentials)*/
   public function testCreateDashboardFailure()
     {
 

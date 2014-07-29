@@ -375,7 +375,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
   /** getAllByKey() */
   public function getAllByKey($keys)
     {
-    // Make sure we have only numerics
+    // Make sure we have only numeric values
     foreach($keys as $k => $v)
       {
       if(!is_numeric($v))

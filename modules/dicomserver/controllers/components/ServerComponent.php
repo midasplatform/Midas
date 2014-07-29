@@ -20,7 +20,7 @@
 
 include_once BASE_PATH . '/library/KWUtils.php';
 
-/** Uploade dicom files */
+/** Upload dicom files */
 class Dicomserver_ServerComponent extends AppComponent
   {
   /**
@@ -106,7 +106,7 @@ class Dicomserver_ServerComponent extends AppComponent
     }
 
   /**
-   * Generate the configuaration file used for dcmqrscp
+   * Generate the configuration file used for dcmqrscp
    */
   public function generateDcmqrscpConfig()
     {
@@ -136,7 +136,7 @@ class Dicomserver_ServerComponent extends AppComponent
     }
 
   /**
-   * Register DICOM image files (bistreams)
+   * Register DICOM image files (bitstreams)
    */
   public function register($revision)
     {

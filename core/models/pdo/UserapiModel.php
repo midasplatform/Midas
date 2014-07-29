@@ -20,11 +20,11 @@
 //App::import("Vendor",'Sanitize');
 require_once BASE_PATH.'/core/models/base/UserapiModelBase.php';
 
-/** User api key model implementation */
+/** User API key model implementation */
 class UserapiModel extends UserapiModelBase
   {
   /**
-   * Get UserapiDao by
+   * Get userapi DAO by
    * @param string $appname Application Name
    * @param string $email
    * @return UserapiDao
@@ -48,7 +48,7 @@ class UserapiModel extends UserapiModelBase
     } // end getByApikey
 
   /**
-   * Get UserapiDao by
+   * Get userapi DAO by
    * @param string $appname Application Name
    * @param UserDao $userDao
    * @return UserapiDao
@@ -66,7 +66,7 @@ class UserapiModel extends UserapiModelBase
     } // end getByAppAndUser
 
   /**
-   * Return the tokendao
+   * Return the token DAO
    * @param type $email
    * @param type $apikey
    * @param type $appname
@@ -120,7 +120,7 @@ class UserapiModel extends UserapiModelBase
       $token .= substr($keychars, mt_rand(0, $max), 1);
       }
 
-    // Find the api id
+    // Find the API id
 
     $sql =  $this->database->select()
                   ->setIntegrityCheck(false)
