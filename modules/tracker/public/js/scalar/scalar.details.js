@@ -16,11 +16,9 @@ $('#deleteScalar').click(function () {
                 var jsonResponse = jQuery.parseJSON(data);
                 if (jsonResponse == null) {
                     midas.createNotice('Error', 2000, 'error');
-                    return;
                 }
-                if (jsonResponse.status == 'ok') {
+                else if (jsonResponse.status == 'ok') {
                     window.location.reload();
-                    return;
                 }
                 else {
                     midas.createNotice(jsonResponse.message, 3000, jsonResponse.status);

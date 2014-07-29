@@ -121,14 +121,7 @@ function init()
 
       $('#helpDialog1').append('<input type="checkbox" class="objectVisibility" objectid="'+i+'" name="object'+i+'" checked> <label for="object'+i+'">'+mesh.name+'</label><br/>');
       $('.objectVisibility').unbind('change').change(function(){
-        if($(this).is(':checked'))
-          {
-          objects3D[$(this).attr('objectid')].visible = true;
-          }
-        else
-          {
-          objects3D[$(this).attr('objectid')].visible = false;
-          }
+        objects3D[$(this).attr('objectid')].visible = $(this).is(':checked');
       });
 
       i++;
