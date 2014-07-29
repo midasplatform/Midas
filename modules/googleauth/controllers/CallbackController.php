@@ -38,7 +38,7 @@ class Googleauth_CallbackController extends Googleauth_AppController
 
     if(strpos($state, ' ') !== false)
       {
-      list($csrfToken, $redirect) = preg_split(' ', $state);
+      list($csrfToken, $redirect) = preg_split('/ /', $state);
       }
     else
       {
