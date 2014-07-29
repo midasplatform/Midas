@@ -62,13 +62,13 @@ class Sizequota_ConfigController extends Sizequota_AppController
       {
       $this->disableLayout();
       $this->disableView();
-      $submitConfig = $this->_getParam('submitConfig');
+      $submitConfig = $this->getParam('submitConfig');
       if(isset($submitConfig))
         {
-        $communityQuotaUnit = $this->_getParam('communityQuotaUnit');
-        $userQuotaUnit = $this->_getParam('userQuotaUnit');
-        $defaultUserQuota = $this->_getParam('defaultuserquota');
-        $defaultCommunityQuota = $this->_getParam('defaultcommunityquota');
+        $communityQuotaUnit = $this->getParam('communityQuotaUnit');
+        $userQuotaUnit = $this->getParam('userQuotaUnit');
+        $defaultUserQuota = $this->getParam('defaultuserquota');
+        $defaultCommunityQuota = $this->getParam('defaultcommunityquota');
         if(!$this->_isValidQuota(array($defaultUserQuota, $defaultCommunityQuota)))
           {
           echo JsonComponent::encode(array(false, 'Invalid quota value. Please enter a positive integer.'));
@@ -94,11 +94,11 @@ class Sizequota_ConfigController extends Sizequota_AppController
   public function folderAction()
     {
     $this->disableLayout();
-    if(!$this->_getParam('folderId'))
+    if(!$this->getParam('folderId'))
       {
       throw new Zend_Exception('Invalid parameters');
       }
-    $folder = $this->Folder->load($this->_getParam('folderId'));
+    $folder = $this->Folder->load($this->getParam('folderId'));
 
     if(!$folder)
       {
@@ -164,14 +164,14 @@ class Sizequota_ConfigController extends Sizequota_AppController
 
     $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
-    $quota = $this->_getParam('quota');
-    $multiplier = $this->_getParam('unit');
-    $useDefault = $this->_getParam('usedefault');
+    $quota = $this->getParam('quota');
+    $multiplier = $this->getParam('unit');
+    $useDefault = $this->getParam('usedefault');
     if($useDefault == MIDAS_USE_DEFAULT_QUOTA)
       {
       $quota = null;
       }
-    $folder = $this->Folder->load($this->_getParam('folderId'));
+    $folder = $this->Folder->load($this->getParam('folderId'));
     if(!$folder)
       {
       echo JsonComponent::encode(array(false, 'Invalid folderId parameter'));
@@ -197,7 +197,7 @@ class Sizequota_ConfigController extends Sizequota_AppController
     $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
-    $folderId = $this->_getParam('folderId');
+    $folderId = $this->getParam('folderId');
     if(!isset($folderId))
       {
       echo JsonComponent::encode(array('status' => false, 'message' => 'Missing folderId parameter'));

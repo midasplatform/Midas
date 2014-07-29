@@ -208,7 +208,6 @@ class FolderControllerTest extends ControllerTestCase
   /** Test the getname action used by the large downloader applet */
   public function testGetnameAction()
     {
-    $usersFile = $this->loadData('User', 'default');
     $userWithPermission = $this->User->load(1);
     $folderPub = $this->Folder->load(1001);
     $folderPriv = $this->Folder->load(1002);
@@ -230,7 +229,6 @@ class FolderControllerTest extends ControllerTestCase
   /** Test action used by the large download applet to list children info */
   public function testJavachildrenAction()
     {
-    $usersFile = $this->loadData('User', 'default');
     $userWithPermission = $this->User->load(1);
     $folderPub = $this->Folder->load(1001);
     $folderPriv = $this->Folder->load(1002);

@@ -32,7 +32,7 @@ class UserController extends AppController
     $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
     if(isset($actionName) && is_numeric($actionName))
       {
-      $this->_forward('userpage', null, null, array('user_id' => $actionName));
+      $this->forward('userpage', null, null, array('user_id' => $actionName));
       }
     } // end init()
 
@@ -42,8 +42,8 @@ class UserController extends AppController
     $this->view->header = $this->t("Users");
     $this->view->activemenu = 'user'; // set the active menu
 
-    $order = $this->_getParam('order');
-    $offset = $this->_getParam('offset');
+    $order = $this->getParam('order');
+    $offset = $this->getParam('offset');
 
     if(!isset($order))
       {
@@ -79,7 +79,7 @@ class UserController extends AppController
       throw new Zend_Exception('Shouldn\'t be logged in');
       }
     $this->disableLayout();
-    $email = $this->_getParam('email');
+    $email = $this->getParam('email');
     if(isset($email))
       {
       $this->disableView();
@@ -93,7 +93,7 @@ class UserController extends AppController
         }
 
       $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_RESET_PASSWORD', array('user' => $user));
-      foreach($notifications as $module => $result)
+      foreach($notifications as $result)
         {
         if($result['status'] === true)
           {
@@ -137,14 +137,14 @@ class UserController extends AppController
     $this->userSession->Dao = null;
     Zend_Session::ForgetMe();
     setcookie('midasUtil', null, time() + 60 * 60 * 24 * 30, '/'); //30 days
-    $noRedirect = $this->_getParam('noRedirect');
+    $noRedirect = $this->getParam('noRedirect');
     if(isset($noRedirect))
       {
       $this->disableView();
       $this->disableLayout();
       return;
       }
-    $this->_redirect('/');
+    $this->redirect('/');
     } //end logoutAction
 
   /** Set user's starting guide value */
@@ -172,7 +172,7 @@ class UserController extends AppController
    */
   function ajaxregisterAction()
     {
-    $adminCreate = $this->_getParam('adminCreate');
+    $adminCreate = $this->getParam('adminCreate');
     $adminCreate = isset($adminCreate);
 
     if($adminCreate)
@@ -191,7 +191,7 @@ class UserController extends AppController
     $form = $this->Form->User->createRegisterForm();
     if($this->_request->isPost())
       {
-      $nopass = (bool)$this->_getParam('nopassword');
+      $nopass = (bool)$this->getParam('nopassword');
       if($adminCreate && $nopass)
         {
         $form->populate($this->getRequest()->getPost());
@@ -307,7 +307,7 @@ class UserController extends AppController
         $this->userSession->Dao = $this->User->createUser(trim($form->getValue('email')), $form->getValue('password1'), trim($form->getValue('firstname')), trim($form->getValue('lastname')));
         session_write_close();
 
-        $this->_redirect('/feed?first=true');
+        $this->redirect('/feed?first=true');
         }
       else
         {
@@ -322,7 +322,7 @@ class UserController extends AppController
         $body .= 'If you did not initiate this registration, please disregard this email.<br/><br/>';
         if(UtilityComponent::sendEmail($email, $subject, $body))
           {
-          $this->_redirect('/user/emailsent');
+          $this->redirect('/user/emailsent');
           }
         }
       }
@@ -356,8 +356,8 @@ class UserController extends AppController
    */
   function verifyemailAction()
     {
-    $email = $this->_getParam('email');
-    $authKey = $this->_getParam('authKey');
+    $email = $this->getParam('email');
+    $authKey = $this->getParam('authKey');
     if(!isset($email) || !isset($authKey))
       {
       throw new Zend_Exception('Must pass email and authKey parameters');
@@ -377,7 +377,7 @@ class UserController extends AppController
     session_write_close();
 
     $this->PendingUser->delete($pendingUser);
-    $this->_redirect('/user/userpage');
+    $this->redirect('/user/userpage');
     }
 
   /**
@@ -408,7 +408,7 @@ class UserController extends AppController
     if($this->User->hashExists($passwordHash))
       {
       $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_AUTH_INTERCEPT', array('user' => $userDao));
-      foreach($notifications as $module => $value)
+      foreach($notifications as $value)
         {
         if($value['override'] && $value['response'])
           {
@@ -445,7 +445,7 @@ class UserController extends AppController
     if($this->_request->isPost())
       {
       $this->disableView();
-      $previousUri = $this->_getParam('previousuri');
+      $previousUri = $this->getParam('previousuri');
       if($form->isValid($this->getRequest()->getPost()))
         {
         try
@@ -460,7 +460,7 @@ class UserController extends AppController
           $this->getLogger()->crit($exc->getMessage());
           }
         $authModule = false;
-        foreach($notifications as $module => $user)
+        foreach($notifications as $user)
           {
           if($user)
             {
@@ -498,7 +498,7 @@ class UserController extends AppController
         if($authModule || $coreAuth)
           {
           $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_AUTH_INTERCEPT', array('user' => $userDao));
-          foreach($notifications as $module => $value)
+          foreach($notifications as $value)
             {
             if($value['override'] && $value['response'])
               {
@@ -527,7 +527,6 @@ class UserController extends AppController
               $user = new Zend_Session_Namespace('Auth_User');
               $user->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
               $user->Dao = $userDao;
-              $url = $form->getValue('url');
               $user->lock();
               }
             }
@@ -579,7 +578,7 @@ class UserController extends AppController
     {
     $this->disableLayout();
     $this->disableView();
-    $entry = $this->_getParam('entry');
+    $entry = $this->getParam('entry');
     if(!is_string($entry))
       {
       echo 'false';
@@ -588,7 +587,7 @@ class UserController extends AppController
 
     $notifications = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_CHECK_USER_EXISTS',
       array('entry' => $entry));
-    foreach($notifications as $module => $value)
+    foreach($notifications as $value)
       {
       if($value === true)
         {
@@ -617,7 +616,7 @@ class UserController extends AppController
       return false;
       }
 
-    $userId = $this->_getParam('userId');
+    $userId = $this->getParam('userId');
     if(isset($userId) && $userId != $this->userSession->Dao->getKey() && !$this->userSession->Dao->isAdmin())
       {
       throw new Zend_Exception(MIDAS_ADMIN_PRIVILEGES_REQUIRED);
@@ -640,7 +639,7 @@ class UserController extends AppController
       array('user' => $userDao, 'currentUser' => $this->userSession->Dao));
     $this->view->allowPasswordChange = true;
 
-    foreach($notifications as $module => $allow)
+    foreach($notifications as $allow)
       {
       if($allow['allow'] === false)
         {
@@ -666,7 +665,7 @@ class UserController extends AppController
 
     $moduleFields = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_USER_PROFILE_FIELDS',
       array('user' => $userDao, 'currentUser' => $this->userSession->Dao));
-    foreach($moduleFields as $module => $field)
+    foreach($moduleFields as $field)
       {
       if(isset($field['position']) && $field['position'] == 'top')
         {
@@ -682,22 +681,22 @@ class UserController extends AppController
       {
       $this->disableView();
       $this->disableLayout();
-      $submitPassword = $this->_getParam('modifyPassword');
-      $modifyAccount = $this->_getParam('modifyAccount');
-      $modifyPicture = $this->_getParam('modifyPicture');
-      $modifyPictureGravatar = $this->_getParam('modifyPictureGravatar');
+      $submitPassword = $this->getParam('modifyPassword');
+      $modifyAccount = $this->getParam('modifyAccount');
+      $modifyPicture = $this->getParam('modifyPicture');
+      $modifyPictureGravatar = $this->getParam('modifyPictureGravatar');
       if(isset($submitPassword) && $this->logged)
         {
         if(!$this->view->allowPasswordChange)
           {
           throw new Zend_Exception('Changing password is disallowed for this user');
           }
-        $oldPass = $this->_getParam('oldPassword');
+        $oldPass = $this->getParam('oldPassword');
         if($userDao->getSalt() == '')
           {
-          $passwordHash = $this->User->convertLegacyPasswordHash($userDao, $oldPass);
+          $this->User->convertLegacyPasswordHash($userDao, $oldPass);
           }
-        $newPass = $this->_getParam('newPassword');
+        $newPass = $this->getParam('newPassword');
         $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
         $hashedPasswordOld = hash($userDao->getHashAlg(), $instanceSalt.$userDao->getSalt().$oldPass);
 
@@ -720,15 +719,15 @@ class UserController extends AppController
 
       if(isset($modifyAccount) && $this->logged)
         {
-        $newEmail = trim($this->_getParam('email'));
-        $firtname = trim($this->_getParam('firstname'));
-        $lastname = trim($this->_getParam('lastname'));
-        $company = trim($this->_getParam('company'));
-        $privacy = $this->_getParam('privacy');
-        $city = $this->_getParam('city');
-        $country = $this->_getParam('country');
-        $website = $this->_getParam('website');
-        $biography = $this->_getParam('biography');
+        $newEmail = trim($this->getParam('email'));
+        $firtname = trim($this->getParam('firstname'));
+        $lastname = trim($this->getParam('lastname'));
+        $company = trim($this->getParam('company'));
+        $privacy = $this->getParam('privacy');
+        $city = $this->getParam('city');
+        $country = $this->getParam('country');
+        $website = $this->getParam('website');
+        $biography = $this->getParam('biography');
 
         if(!$accountForm->isValid($this->getRequest()->getPost()))
           {
@@ -783,7 +782,7 @@ class UserController extends AppController
         $userDao->setPrivacy($privacy);
         if($this->userSession->Dao->isAdmin() && $this->userSession->Dao->getKey() != $userDao->getKey())
           {
-          $adminStatus = (bool)$this->_getParam('adminStatus');
+          $adminStatus = (bool)$this->getParam('adminStatus');
           $userDao->setAdmin($adminStatus ? 1 : 0);
           }
         $this->User->save($userDao);
@@ -796,7 +795,7 @@ class UserController extends AppController
           Zend_Registry::get('notifier')->callback('CALLBACK_CORE_USER_SETTINGS_CHANGED', array(
             'user' => $userDao,
             'currentUser' => $this->userSession->Dao,
-            'fields' => $this->_getAllParams()));
+            'fields' => $this->getAllParams()));
           }
         catch(Exception $e)
           {
@@ -998,7 +997,7 @@ class UserController extends AppController
   public function userpageAction()
     {
     $this->view->Date = $this->Component->Date;
-    $user_id = $this->_getParam("user_id");
+    $user_id = $this->getParam("user_id");
 
     if(!isset($user_id) && !$this->logged)
       {
@@ -1086,7 +1085,7 @@ class UserController extends AppController
   public function manageAction()
     {
     $this->view->Date = $this->Component->Date;
-    $userId = $this->_getParam('userId');
+    $userId = $this->getParam('userId');
 
     if(!isset($userId) && !$this->logged)
       {
@@ -1114,7 +1113,6 @@ class UserController extends AppController
       }
 
     // Get all the communities this user can see
-    $communities = array();
     if($userDao->isAdmin())
       {
       $communities = $this->Community->getAll();
@@ -1144,7 +1142,7 @@ class UserController extends AppController
   public function deletedialogAction()
     {
     $this->disableLayout();
-    $userId = $this->_getParam('userId');
+    $userId = $this->getParam('userId');
 
     if(!$this->logged)
       {
@@ -1183,8 +1181,8 @@ class UserController extends AppController
    */
   public function emailregisterAction()
     {
-    $email = $this->_getParam('email');
-    $authKey = $this->_getParam('authKey');
+    $email = $this->getParam('email');
+    $authKey = $this->getParam('authKey');
 
     if(!isset($email) || !isset($authKey))
       {
@@ -1201,10 +1199,10 @@ class UserController extends AppController
       {
       $this->disableLayout();
       $this->disableView();
-      $firstName = trim($this->_getParam('firstName'));
-      $lastName = trim($this->_getParam('lastName'));
-      $password = $this->_getParam('password1');
-      $password2 = $this->_getParam('password2');
+      $firstName = trim($this->getParam('firstName'));
+      $lastName = trim($this->getParam('lastName'));
+      $password = $this->getParam('password1');
+      $password2 = $this->getParam('password2');
 
       if($password !== $password2)
         {
@@ -1258,7 +1256,7 @@ class UserController extends AppController
       {
       throw new Zend_Exception('Must be logged in');
       }
-    $userId = $this->_getParam('userId');
+    $userId = $this->getParam('userId');
 
     if(!isset($userId))
       {

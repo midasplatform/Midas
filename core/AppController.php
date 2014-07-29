@@ -81,7 +81,7 @@ class AppController extends MIDAS_GlobalController
       Zend_Session::start();
 
       // log in when testing
-      $testingUserId = $this->_getParam('testingUserId');
+      $testingUserId = $this->getParam('testingUserId');
       if(Zend_Registry::get('configGlobal')->environment == 'testing' && isset($testingUserId))
         {
         $user = new Zend_Session_Namespace('Auth_User_Testing');
@@ -108,7 +108,7 @@ class AppController extends MIDAS_GlobalController
           $notifier = new MIDAS_Notifier(false, null);
           $notifications = $notifier->callback('CALLBACK_CORE_USER_COOKIE', array('value' => $cookieData));
           $cookieOverride = false;
-          foreach($notifications as $module => $result)
+          foreach($notifications as $result)
             {
             if($result)
               {
@@ -148,8 +148,6 @@ class AppController extends MIDAS_GlobalController
         }
 
       session_write_close();
-      $controllerName = $fc->getRequest()->getControllerName();
-      $actionName = $fc->getRequest()->getActionName();
 
       $this->userSession = $user;
       $this->view->recentItems = array();
@@ -185,7 +183,7 @@ class AppController extends MIDAS_GlobalController
           $recentItems = array();
           if(!empty($tmpRecentItems) && is_array($tmpRecentItems))
             {
-            foreach($tmpRecentItems as $key => $t)
+            foreach($tmpRecentItems as $t)
               {
               if(is_numeric($t))
                 {
@@ -329,7 +327,7 @@ class AppController extends MIDAS_GlobalController
     if($this->_helper->hasHelper('layout'))
       {
       // layout explicitly declared as a parameter
-      $layoutParam = $this->_getParam('layout');
+      $layoutParam = $this->getParam('layout');
       if(isset($layoutParam) && file_exists($this->_helper->layout->getLayoutPath().'/'.$layoutParam.'.phtml'))
         {
         $this->_helper->layout->setLayout($layoutParam);
@@ -355,7 +353,7 @@ class AppController extends MIDAS_GlobalController
       }
 
     // Handle progress tracking if client specifies a progressId parameter
-    $progressId = $this->_getParam('progressId');
+    $progressId = $this->getParam('progressId');
     if(isset($progressId) && $fc->getRequest()->getControllerName() != 'progress')
       {
       $progressModel = MidasLoader::loadModel('Progress');
@@ -405,7 +403,7 @@ class AppController extends MIDAS_GlobalController
     $entry .= $fc->getRequest()->getMethod()."\n";
 
     $entry .= "Params=\n";
-    $params = $this->_getAllParams();
+    $params = $this->getAllParams();
     foreach($params as $key => $value)
       {
       if(strpos(strtolower($key), 'password') === false && is_scalar($value))
@@ -533,7 +531,6 @@ class AppController extends MIDAS_GlobalController
       {
       return true;
       }
-    $modules = array();
     $modulesConfig = Zend_Registry::get('configsModules');
     foreach($modulesConfig as $key => $module)
       {

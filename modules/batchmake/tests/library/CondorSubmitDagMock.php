@@ -50,7 +50,6 @@ class Batchmake_CondorSubmitDagMock
         }
       }
     // on Linux need to add redirection to handle stderr
-    $redirect_error = KWUtils::isLinux() ? " 2>&1" : "";
     $command = KWUtils::escapeCommand($command);
 
     // all test cases should have the proper syntax, verify this

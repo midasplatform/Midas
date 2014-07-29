@@ -51,12 +51,12 @@ class Solr_AdvancedController extends Solr_AppController
     $this->disableLayout();
     $this->disableView();
 
-    $query = $this->_getParam('query');
+    $query = $this->getParam('query');
     // Extract <element>.<qualifier> from between '-' and ':' in '<type>-<element>.<qualifier>: <value>'
     $query = preg_replace_callback('/(?<=-)[\w. ]*(?=:)/', array(&$this, 'strReplaceSpaces'), $query);
-    $limit = (int)$this->_getParam('limit');
-    $solrOffset = (int)$this->_getParam('solrOffset');
-    $displayOffset = (int)$this->_getParam('displayOffset');
+    $limit = (int)$this->getParam('limit');
+    $solrOffset = (int)$this->getParam('solrOffset');
+    $displayOffset = (int)$this->getParam('displayOffset');
 
     $itemIds = array();
     try

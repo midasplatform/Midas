@@ -34,7 +34,6 @@ class Dicomextractor_ApiitemComponent extends AppComponent
     $apihelperComponent->validateParams($args, array('id'));
 
     $itemModel = MidasLoader::loadModel("Item");
-    $itemRevisionModel = MidasLoader::loadModel("ItemRevision");
     $authComponent = MidasLoader::loadComponent('Authentication');
     $itemDao = $itemModel->load($args['id']);
     $userDao = $authComponent->getUser($args,

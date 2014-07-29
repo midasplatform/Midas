@@ -79,7 +79,7 @@ class Googleauth_Notification extends MIDAS_Notification
 
     if(strpos($cookie, 'googleauth') === 0)
       {
-      list(, $userId, $apikey) = split(':', $cookie);
+      list(, $userId, $apikey) = preg_split(':', $cookie);
       $userDao = $this->User->load($userId);
 
       if(!$userDao)

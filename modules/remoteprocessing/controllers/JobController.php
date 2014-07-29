@@ -44,7 +44,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
     {
     $this->view->header = $this->t("Create Job Wizard");
 
-    $scheduled = $this->_getParam("scheduled");
+    $scheduled = $this->getParam("scheduled");
     if(isset($scheduled))
       {
       $scheduled = true;
@@ -55,7 +55,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
       $scheduled = false;
       }
 
-    $itemId = $this->_getParam("itemId");
+    $itemId = $this->getParam("itemId");
     if(isset($itemId))
       {
       $itemDao = $this->Item->load($itemId);
@@ -70,7 +70,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
     $this->view->scheduled = $scheduled;
     if($this->_request->isPost())
       {
-      $itemId = $this->_getParam("itemId");
+      $itemId = $this->getParam("itemId");
       if(!isset($itemId) || !is_numeric($itemId))
         {
         throw new Zend_Exception("itemId  should be a number");
@@ -123,7 +123,6 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
               {
               throw new Zend_Exception('Unable to find folder or permission error');
               }
-            $items = $folder->getItems();
             $cmdOptions[$i] = array('type' => 'input', 'item' => array(), 'folder' => $folder->getKey());
             }
           else
@@ -196,8 +195,8 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
   function getinitexecutableAction()
     {
     $this->disableLayout();
-    $itemId = $this->_getParam("itemId");
-    $scheduled = $this->_getParam("scheduled");
+    $itemId = $this->getParam("itemId");
+    $scheduled = $this->getParam("scheduled");
     if(isset($scheduled) && $scheduled == 1)
       {
       $scheduled = true;
@@ -240,7 +239,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
   function viewAction()
     {
     $this->view->header = $this->t("Job");
-    $jobId = $this->_getParam("jobId");
+    $jobId = $this->getParam("jobId");
     $jobDao = $this->Remoteprocessing_Job->load($jobId);
     if(!$jobDao)
       {
@@ -320,8 +319,8 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
 
     $this->disableLayout();
     $this->disableView();
-    $entry = $this->_getParam("entry");
-    $type = $this->_getParam("type");
+    $entry = $this->getParam("entry");
+    $type = $this->getParam("type");
     if(!is_string($entry) || !is_string($type))
       {
       echo 'false';
@@ -362,8 +361,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
     {
     $this->disableLayout();
     $this->disableView();
-    $entry = $this->_getParam("entry");
-    $type = $this->_getParam("type");
+    $type = $this->getParam("type");
     if(!is_string($type))
       {
       echo JsonComponent::encode(false);

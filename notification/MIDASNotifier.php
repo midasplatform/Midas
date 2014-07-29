@@ -164,7 +164,7 @@ class MIDAS_Notifier
       {
       $moduleFilter = array($moduleFilter);
       }
-    foreach($this->notifications[$name] as $key => $notification)
+    foreach($this->notifications[$name] as $notification)
       {
       $module = $this->modules[$notification['module']];
       if(empty($moduleFilter) || in_array($module, $moduleFilter))
@@ -180,7 +180,6 @@ class MIDAS_Notifier
    */
   private function _setTask($name, $params, $priority)
     {
-    $modules = Zend_Registry::get('modulesEnable');
     if(!isset($this->tasks[$name]))
       {
       return;
@@ -220,7 +219,7 @@ class MIDAS_Notifier
       $moduleFilter = array($moduleFilter);
       }
     $return = array();
-    foreach($this->notifications[$name] as $key => $notification)
+    foreach($this->notifications[$name] as $notification)
       {
       $module = $this->modules[$notification['module']];
       if(empty($moduleFilter) || in_array($module, $moduleFilter))

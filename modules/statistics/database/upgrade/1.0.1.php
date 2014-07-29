@@ -50,7 +50,7 @@ class Statistics_Upgrade_1_0_1 extends MIDASUpgrade
             ->distinct();
     $rowSet = $this->db->fetchAll($sql);
     $ips = array();
-    foreach($rowSet as $keyRow => $row)
+    foreach($rowSet as $row)
       {
       // key by ip so we don't have duplicate ips (violates unique constraint)
       $ips[$row['ip']] = array('latitude' => $row['latitude'], 'longitude' => $row['longitude']);

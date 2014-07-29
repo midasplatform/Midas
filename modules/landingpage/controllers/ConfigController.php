@@ -54,10 +54,10 @@ class Landingpage_ConfigController extends Landingpage_AppController
       {
       $this->_helper->layout->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
-      $submitConfig = $this->_getParam('submit');
+      $submitConfig = $this->getParam('submit');
       if(isset($submitConfig))
         {
-        $landingpageText = $this->_getParam('text');
+        $landingpageText = $this->getParam('text');
         $textDao->setText($landingpageText);
         $this->Landingpage_Text->save($textDao);
         echo JsonComponent::encode(array(true, 'Changed saved'));

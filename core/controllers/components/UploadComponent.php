@@ -118,14 +118,9 @@ class UploadComponent extends AppComponent
   public function createLinkItem($userDao, $name, $url, $parent = null, $sizebytes = 0, $checksum = ' ')
     {
     $itemModel = MidasLoader::loadModel('Item');
-    $feedModel = MidasLoader::loadModel('Feed');
     $folderModel = MidasLoader::loadModel('Folder');
-    $bitstreamModel = MidasLoader::loadModel('Bitstream');
     $assetstoreModel = MidasLoader::loadModel('Assetstore');
-    $feedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
     $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
-    $feedpolicyuserModel = MidasLoader::loadModel('Feedpolicyuser');
-    $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
 
     if($userDao == null)
       {
@@ -199,13 +194,9 @@ class UploadComponent extends AppComponent
   public function createUploadedItem($userDao, $name, $path, $parent = null, $license = null, $filemd5 = '', $copy = false, $revOnCollision = false)
     {
     $itemModel = MidasLoader::loadModel('Item');
-    $feedModel = MidasLoader::loadModel('Feed');
     $folderModel = MidasLoader::loadModel('Folder');
-    $bitstreamModel = MidasLoader::loadModel('Bitstream');
     $assetstoreModel = MidasLoader::loadModel('Assetstore');
-    $feedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
     $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
-    $feedpolicyuserModel = MidasLoader::loadModel('Feedpolicyuser');
     $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
 
     if($userDao == null)
@@ -304,12 +295,9 @@ class UploadComponent extends AppComponent
       }
 
     $itemModel = MidasLoader::loadModel('Item');
-    $feedModel = MidasLoader::loadModel('Feed');
     $bitstreamModel = MidasLoader::loadModel('Bitstream');
     $assetstoreModel = MidasLoader::loadModel('Assetstore');
-    $feedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
     $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
-    $feedpolicyuserModel = MidasLoader::loadModel('Feedpolicyuser');
 
     $item = $itemModel->load($itemId);
 
@@ -346,24 +334,6 @@ class UploadComponent extends AppComponent
       $itemRevisionDao->setDate(date("Y-m-d H:i:s"));
       $itemRevisionDao->setLicenseId($license);
       $itemModel->addRevision($item, $itemRevisionDao);
-
-      //$feed = $feedModel->createFeed($userDao, MIDAS_FEED_CREATE_REVISION, $itemRevisionDao);
-
-      $groupPolicies = $item->getItempolicygroup();
-      $userPolicies = $item->getItempolicyuser();
-
-      //copy policies
-      /*if($feed != null && $feed instanceof FeedDao)
-        {
-        foreach($groupPolicies as $key => $policy)
-          {
-          $feedpolicygroupModel->createPolicy($policy->getGroup(), $feed, $policy->getPolicy());
-          }
-        foreach($userPolicies as $key => $policy)
-          {
-          $feedpolicyuserModel->createPolicy($policy->getUser(), $feed, $policy->getPolicy());
-          }
-        }*/
       }
     else
       {

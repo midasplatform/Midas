@@ -32,7 +32,7 @@ class Tracker_ProducerController extends Tracker_AppController
   public function listAction()
     {
     $this->disableLayout();
-    $commId = $this->_getParam('communityId');
+    $commId = $this->getParam('communityId');
     if(!isset($commId))
       {
       throw new Zend_Exception('Must pass communityId parameter');
@@ -52,7 +52,7 @@ class Tracker_ProducerController extends Tracker_AppController
    */
   public function viewAction()
     {
-    $producerId = $this->_getParam('producerId');
+    $producerId = $this->getParam('producerId');
     if(!isset($producerId))
       {
       throw new Zend_Exception('Must pass producerId parameter');
@@ -85,7 +85,7 @@ class Tracker_ProducerController extends Tracker_AppController
     {
     $this->disableLayout();
     $this->disableView();
-    $producerId = $this->_getParam('producerId');
+    $producerId = $this->getParam('producerId');
     if(!isset($producerId))
       {
       throw new Zend_Exception('Must pass producerId parameter');
@@ -104,7 +104,7 @@ class Tracker_ProducerController extends Tracker_AppController
    */
   public function editAction()
     {
-    $producerId = $this->_getParam('producerId');
+    $producerId = $this->getParam('producerId');
 
     if(!isset($producerId))
       {
@@ -131,7 +131,7 @@ class Tracker_ProducerController extends Tracker_AppController
     {
     $this->disableLayout();
     $this->disableView();
-    $producerId = $this->_getParam('producerId');
+    $producerId = $this->getParam('producerId');
 
     if(!isset($producerId))
       {
@@ -142,11 +142,11 @@ class Tracker_ProducerController extends Tracker_AppController
       {
       throw new Zend_Exception('Admin permission required on the community', 403);
       }
-    $displayName = $this->_getParam('displayName');
-    $description = $this->_getParam('description');
-    $repository = $this->_getParam('repository');
-    $revisionUrl = $this->_getParam('revisionUrl');
-    $executableName = $this->_getParam('executableName');
+    $displayName = $this->getParam('displayName');
+    $description = $this->getParam('description');
+    $repository = $this->getParam('repository');
+    $revisionUrl = $this->getParam('revisionUrl');
+    $executableName = $this->getParam('executableName');
 
     if(isset($displayName))
       {

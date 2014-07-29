@@ -393,7 +393,6 @@ class MIDASModel
           {
           return array();
           }
-        $cond = '';
 
         if(empty($key))
           {

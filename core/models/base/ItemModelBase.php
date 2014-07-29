@@ -118,12 +118,12 @@ abstract class ItemModelBase extends AppModel
     $userPolicies = $folderdao->getFolderpolicyuser();
 
     $ItempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
-    foreach($groupPolicies as $key => $policy)
+    foreach($groupPolicies as $policy)
       {
       $ItempolicygroupModel->createPolicy($policy->getGroup(), $itemdao, $policy->getPolicy());
       }
     $ItempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
-    foreach($userPolicies as $key => $policy)
+    foreach($userPolicies as $policy)
       {
       $ItempolicyuserModel->createPolicy($policy->getUser(), $itemdao, $policy->getPolicy());
       }
@@ -131,12 +131,12 @@ abstract class ItemModelBase extends AppModel
     if($feeddao != null && $feeddao instanceof FeedDao)
       {
       $FeedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
-      foreach($groupPolicies as $key => $policy)
+      foreach($groupPolicies as $policy)
         {
         $FeedpolicygroupModel->createPolicy($policy->getGroup(), $feeddao, $policy->getPolicy());
         }
       $FeedpolicyuserModel = MidasLoader::loadModel('Feedpolicyuser');
-      foreach($userPolicies as $key => $policy)
+      foreach($userPolicies as $policy)
         {
         $FeedpolicyuserModel->createPolicy($policy->getUser(), $feeddao, $policy->getPolicy());
         }
@@ -161,7 +161,7 @@ abstract class ItemModelBase extends AppModel
     $groupPolicies = $folderdao->getFolderpolicygroup();
     $existingGroupPolicies = $itemdao->getItempolicygroup();
     $existingGroups = array();
-    foreach($existingGroupPolicies as $key => $policy)
+    foreach($existingGroupPolicies as $policy)
       {
       $group = $policy->getGroup();
       if(in_array($group, $existingGroups))
@@ -171,7 +171,7 @@ abstract class ItemModelBase extends AppModel
       }
 
     $ItempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
-    foreach($groupPolicies as $key => $policy)
+    foreach($groupPolicies as $policy)
       {
       $newGroup = $policy->getGroup();
       if(!in_array($newGroup, $existingGroups))
@@ -205,9 +205,7 @@ abstract class ItemModelBase extends AppModel
       {
       throw new Zend_Exception("Should be an user.");
       }
-    $ItemRevisionModel = MidasLoader::loadModel('ItemRevision');
     $BitstreamModel = MidasLoader::loadModel('Bitstream');
-    $MetadataModel = MidasLoader::loadModel('Metadata');
 
     $name = $itemDao->getName();
     $description = $itemDao->getDescription();
@@ -251,7 +249,6 @@ abstract class ItemModelBase extends AppModel
       $dupItemRevision->setLicenseId($revision->getLicenseId());
       $ItemRevisionModel->save($dupItemRevision);
       // duplicate metadata value
-      $metadatavalues = array();
       $metadatavalues = $ItemRevisionModel->getMetadata($revision);
       foreach($metadatavalues as $metadata)
         {
@@ -421,11 +418,7 @@ abstract class ItemModelBase extends AppModel
       throw new Zend_Exception('Name cannot be empty.');
       }
 
-    if($parent instanceof FolderDao)
-      {
-      $parentId = $parent->getFolderId();
-      }
-    else
+    if(!$parent instanceof FolderDao)
       {
       $parentId = $parent;
       $parent = $this->load($parentId);

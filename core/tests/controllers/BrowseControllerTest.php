@@ -40,7 +40,6 @@ class BrowseControllerTest extends ControllerTestCase
     $this->dispatchUrI('/browse/delete', null, true);
 
     $usersFile = $this->loadData('User', 'default');
-    $foldersFile = $this->loadData('Folder', 'default');
     $itemsFile = $this->loadData('Item', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
 
@@ -244,8 +243,6 @@ class BrowseControllerTest extends ControllerTestCase
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
 
-    $folder1001 = $this->Folder->load(1001);
-    $folder1002 = $this->Folder->load(1002);
     $item = $this->Item->load(1001);
     $item->setSizebytes(1024000); //artificially set the item size for test purposes
     $this->Item->save($item);

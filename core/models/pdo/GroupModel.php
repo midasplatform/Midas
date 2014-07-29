@@ -101,8 +101,6 @@ class GroupModel extends GroupModelBase
   /** Return a list of group corresponding to the search */
   function getGroupFromSearch($search, $limit = 14)
     {
-    $groups = array();
-
     $sql = $this->database->select();
     $sql->from(array('g' => 'group'));
     $sql->where('g.name LIKE ?', '%'.$search.'%');

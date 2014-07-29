@@ -57,8 +57,6 @@ class CommunityModelTest extends DatabaseTestCase
     Zend_Registry::set('modulesEnable', array());
     Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
     $prevCount = count($this->Community->getAll());
-    $usersFile = $this->loadData('User', 'default');
-    $adminUser = $this->User->load($usersFile[2]->getKey());
     $communitiesFile = $this->loadData('Community', 'default');
     $communityForDeletion = $this->Community->load($communitiesFile[1]->getKey());
     $stableCommunity =  $this->Community->load($communitiesFile[0]->getKey());

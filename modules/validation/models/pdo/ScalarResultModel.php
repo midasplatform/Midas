@@ -34,7 +34,7 @@ class Validation_ScalarResultModel extends Validation_ScalarResultModelBase
     $sql = $this->database->select();
     $rowset = $this->database->fetchAll($sql);
     $rowsetAnalysed = array();
-    foreach($rowset as $keyRow => $row)
+    foreach($rowset as $row)
       {
       $tmpDao = $this->initDao('ScalarResult', $row, 'validation');
       $rowsetAnalysed[] = $tmpDao;

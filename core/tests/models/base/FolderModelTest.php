@@ -236,7 +236,6 @@ class FolderModelTest extends DatabaseTestCase
     $items = $folder->getItems();
     $this->assertEquals(1, count($items));
     $this->assertEquals($items[0]->getName(), 'subItem');
-    $folderid = $folder->getKey();
     $itemid = $items[0]->getKey();
 
     // Make sure item is deleted when it is removed from its only parent

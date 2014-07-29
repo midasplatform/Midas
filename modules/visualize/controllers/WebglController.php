@@ -30,7 +30,7 @@ class Visualize_WebglController extends Visualize_AppController
   public function indexAction()
     {
     $this->disableLayout();
-    $folderid = $this->_getParam('folder');
+    $folderid = $this->getParam('folder');
     $items = array();
     if(is_numeric($folderid))
       {
@@ -38,14 +38,13 @@ class Visualize_WebglController extends Visualize_AppController
       $items = $folder->getItems();
       }
 
-    $itemid = $this->_getParam('itemId');
+    $itemid = $this->getParam('itemId');
     if(is_numeric($itemid))
       {
       $items[] = $this->Item->load($itemid);
       }
 
     $data = array();
-    $xmlFile = false;
 
     foreach($items as $item)
       {

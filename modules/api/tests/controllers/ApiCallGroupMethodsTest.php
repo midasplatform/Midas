@@ -30,8 +30,6 @@ class ApiCallGroupMethodsTest extends ApiCallMethodsTest
     $removeMethod = "midas.group.remove.user";
     $methods = array($addMethod, $removeMethod);
 
-    $communityModel = MidasLoader::loadModel('Community');
-    $comm2001 = $communityModel->load('2001');
     $userModel = MidasLoader::loadModel('User');
     $commMember = $userModel->load('4');
     $commModerator = $userModel->load('5');
@@ -164,13 +162,9 @@ class ApiCallGroupMethodsTest extends ApiCallMethodsTest
   /** Test listing the users in a group */
   public function testGroupListUsers()
     {
-    $validCommunityId = 2001;
-    $invalidCommunityId = -10;
     $commAdminGroupId = 3003;
     $invalidGroupId = -10;
 
-    $communityModel = MidasLoader::loadModel('Community');
-    $comm2001 = $communityModel->load('2001');
     $userModel = MidasLoader::loadModel('User');
     $commMemberId = '4';
     $commModeratorId = '5';

@@ -38,7 +38,6 @@ class RestCallMethodsTest extends ControllerTestCase
     $this->request->setMethod($method);
     $this->dispatchUrI('/rest'.$path, $sessionUser, false, false);
     $responseStatus = $this->_response->getHttpResponseCode();
-    $body = $this->getBody();
     $responseBody = json_decode($this->getBody());
     $rtn = array('status' => $responseStatus, 'body' => $responseBody);
     return $rtn;
@@ -113,7 +112,7 @@ class RestCallMethodsTest extends ControllerTestCase
         {
         if($desiredPrivacyStatus == MIDAS_PRIVACY_PUBLIC)
           {
-          $policyDao = $folderpolicygroupModel->createPolicy($anonymousGroup, $folder, MIDAS_POLICY_READ);
+          $folderpolicygroupModel->createPolicy($anonymousGroup, $folder, MIDAS_POLICY_READ);
           }
         else
           {
@@ -130,7 +129,7 @@ class RestCallMethodsTest extends ControllerTestCase
         {
         if($desiredPrivacyStatus == MIDAS_PRIVACY_PUBLIC)
           {
-          $policyDao = $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
+          $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
           }
         else
           {

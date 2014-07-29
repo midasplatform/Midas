@@ -31,7 +31,7 @@ class Tracker_ScalarController extends Tracker_AppController
   public function detailsAction()
     {
     $this->disableLayout();
-    $scalarId = $this->_getParam('scalarId');
+    $scalarId = $this->getParam('scalarId');
     if(!isset($scalarId))
       {
       throw new Zend_Exception('Must set scalarId parameter');
@@ -83,7 +83,7 @@ class Tracker_ScalarController extends Tracker_AppController
     {
     $this->disableLayout();
     $this->disableView();
-    $scalarId = $this->_getParam('scalarId');
+    $scalarId = $this->getParam('scalarId');
     if(!isset($scalarId))
       {
       throw new Zend_Exception('Must set scalarId parameter');

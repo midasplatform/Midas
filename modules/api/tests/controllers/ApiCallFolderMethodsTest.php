@@ -26,8 +26,6 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
   /** Test creating a folder */
   public function testFolderCreate()
     {
-    $usersFile = $this->loadData('User', 'default');
-    $userDao = $this->User->load($usersFile[0]->getKey());
     $userModel = MidasLoader::loadModel('User');
     $folderModel = MidasLoader::loadModel('Folder');
 
@@ -306,9 +304,7 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $readFolder = $folderModel->load('1012');
     $writeFolder = $folderModel->load('1013');
     $adminFolder = $folderModel->load('1014');
-    $nonWrites = array($readFolder);
     $nonAdmins = array($readFolder, $writeFolder);
-    $writes = array($writeFolder, $adminFolder);
 
     $params = array('method' => 'midas.folder.list.permissions',
                     'token' => $this->_loginAsUser($userDao));
@@ -326,9 +322,7 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     // now with admin perms
 
     // first check both privacy statuses
-    $privacyCodes = array("Public" => MIDAS_PRIVACY_PUBLIC, "Private" => MIDAS_PRIVACY_PRIVATE);
     $privacyStatuses = array(MIDAS_PRIVACY_PUBLIC, MIDAS_PRIVACY_PRIVATE);
-    $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
 
     foreach($privacyStatuses as $privacyStatus)
       {
@@ -391,18 +385,14 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $itemModel = MidasLoader::loadModel('Item');
 
     $folderpolicyuserModel = MidasLoader::loadModel("Folderpolicyuser");
-    $folderpolicygroupModel = MidasLoader::loadModel("Folderpolicygroup");
     $itempolicyuserModel = MidasLoader::loadModel("Itempolicyuser");
-    $itempolicygroupModel = MidasLoader::loadModel("Itempolicygroup");
 
     $userDao = $userModel->load('1');
     $folderModel = MidasLoader::loadModel('Folder');
     $readFolder = $folderModel->load('1012');
     $writeFolder = $folderModel->load('1013');
     $adminFolder = $folderModel->load('1014');
-    $nonWrites = array($readFolder);
     $nonAdmins = array($readFolder, $writeFolder);
-    $writes = array($writeFolder, $adminFolder);
 
     $params = array('method' => 'midas.folder.set.privacy.recursive',
                     'token' => $this->_loginAsUser($userDao));
@@ -484,9 +474,7 @@ class ApiCallFolderMethodsTest extends ApiCallMethodsTest
     $groupModel = MidasLoader::loadModel('Group');
 
     $folderpolicyuserModel = MidasLoader::loadModel("Folderpolicyuser");
-    $folderpolicygroupModel = MidasLoader::loadModel("Folderpolicygroup");
     $itempolicyuserModel = MidasLoader::loadModel("Itempolicyuser");
-    $itempolicygroupModel = MidasLoader::loadModel("Itempolicygroup");
 
     $userDao = $userModel->load('1');
     $folderModel = MidasLoader::loadModel('Folder');

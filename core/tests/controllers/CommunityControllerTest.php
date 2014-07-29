@@ -286,7 +286,6 @@ class CommunityControllerTest extends ControllerTestCase
     $userFile = $this->loadData('User', 'default');
     $comm = $this->Community->load($commFile[0]->getKey());
     $user1 = $this->User->load($userFile[0]->getKey());
-    $user2 = $this->User->load($userFile[1]->getKey());
     $adminUser = $this->User->load($userFile[2]->getKey());
 
     // Not passing a communityId should throw exception

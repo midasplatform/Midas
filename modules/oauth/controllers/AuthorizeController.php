@@ -36,15 +36,15 @@ class Oauth_AuthorizeController extends Oauth_AppController
     {
     if(!array_key_exists('HTTPS', $_SERVER) || !$_SERVER['HTTPS'])
       {
-      $this->_redirect('https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+      $this->redirect('https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
       return;
       }
     $this->disableLayout();
 
-    $responseType = $this->_getParam('response_type');
-    $redirectUri = $this->_getParam('redirect_uri');
-    $scope = $this->_getParam('scope');
-    $clientId = $this->_getParam('client_id');
+    $responseType = $this->getParam('response_type');
+    $redirectUri = $this->getParam('redirect_uri');
+    $scope = $this->getParam('scope');
+    $clientId = $this->getParam('client_id');
 
     if(!isset($clientId))
       {
@@ -77,7 +77,7 @@ class Oauth_AuthorizeController extends Oauth_AppController
       $scopeStrings[] = $scopeRegistry[$scopeEntry];
       }
     $this->view->scopeStrings = $scopeStrings;
-    $this->view->state = $this->_getParam('state');
+    $this->view->state = $this->getParam('state');
     $this->view->scope = $scope;
     $this->view->redirectUri = $redirectUri;
     $this->view->client = $client;
@@ -96,13 +96,13 @@ class Oauth_AuthorizeController extends Oauth_AppController
     $this->disableLayout();
     $this->disableView();
 
-    $redirectUri = $this->_getParam('redirect_uri');
-    $scope = $this->_getParam('scope');
-    $clientId = $this->_getParam('client_id');
-    $state = $this->_getParam('state');
-    $login = $this->_getParam('login');
-    $password = $this->_getParam('password');
-    $allow = $this->_getParam('allowOrDeny');
+    $redirectUri = $this->getParam('redirect_uri');
+    $scope = $this->getParam('scope');
+    $clientId = $this->getParam('client_id');
+    $state = $this->getParam('state');
+    $login = $this->getParam('login');
+    $password = $this->getParam('password');
+    $allow = $this->getParam('allowOrDeny');
 
     if(!isset($clientId))
       {

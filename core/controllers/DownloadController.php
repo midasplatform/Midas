@@ -40,9 +40,9 @@ class DownloadController extends AppController
   public function indexAction()
     {
     $this->disableLayout();
-    $itemIds = $this->_getParam('items');
-    $folderIds = $this->_getParam('folders');
-    $bitsreamid = $this->_getParam('bitstream');
+    $itemIds = $this->getParam('items');
+    $folderIds = $this->getParam('folders');
+    $bitsreamid = $this->getParam('bitstream');
     $sessionUser = $this->userSession->Dao;
     $testingMode = Zend_Registry::get('configGlobal')->environment == 'testing';
     if($sessionUser != null)
@@ -52,19 +52,19 @@ class DownloadController extends AppController
       }
     else //see if module can authenticate with a special parameter
       {
-      $authToken = $this->_getParam('authToken');
+      $authToken = $this->getParam('authToken');
       if(isset($authToken))
         {
         $responses = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_PARAMETER_AUTHENTICATION',
           array('authToken' => $authToken));
-        foreach($responses as $module => $user)
+        foreach($responses as $user)
           {
           $sessionUser = $user;
           break;
           }
         }
       }
-    $offset = $this->_getParam('offset');
+    $offset = $this->getParam('offset');
     if(!isset($offset))
       {
       $offset = 0;
@@ -72,7 +72,7 @@ class DownloadController extends AppController
 
     if(isset($bitsreamid) && is_numeric($bitsreamid))
       {
-      $name = $this->_getParam('name');
+      $name = $this->getParam('name');
       $bitstream = $this->Bitstream->load($bitsreamid);
       if(!$bitstream)
         {
@@ -164,7 +164,7 @@ class DownloadController extends AppController
         {
         if(preg_match('/^https?:\/\//', $bitstreams[0]->getPath()))
           {
-          $this->_redirect($bitstreams[0]->getPath());
+          $this->redirect($bitstreams[0]->getPath());
           return;
           }
         $this->disableView();
@@ -271,8 +271,8 @@ class DownloadController extends AppController
     {
     $this->disableView();
     $this->disableLayout();
-    $itemIds = $this->_getParam('itemIds');
-    $folderIds = $this->_getParam('folderIds');
+    $itemIds = $this->getParam('itemIds');
+    $folderIds = $this->getParam('folderIds');
     if(isset($itemIds))
       {
       $itemIdArray = explode(',', $itemIds);
@@ -353,7 +353,7 @@ class DownloadController extends AppController
       throw new Zend_Exception('Must specify item id as a path parameter');
       }
 
-    $this->_forward('index', null, null, array('items' => $pathParams[0]));
+    $this->forward('index', null, null, array('items' => $pathParams[0]));
     }
 
   /**
@@ -370,7 +370,7 @@ class DownloadController extends AppController
       throw new Zend_Exception('Must specify folder id as a path parameter');
       }
 
-    $this->_forward('index', null, null, array('folders' => $pathParams[0]));
+    $this->forward('index', null, null, array('folders' => $pathParams[0]));
     }
 
   /**
@@ -387,7 +387,7 @@ class DownloadController extends AppController
       throw new Zend_Exception('Must specify bitstream id as a path parameter');
       }
 
-    $this->_forward('index', null, null, array('bitstream' => $pathParams[0]));
+    $this->forward('index', null, null, array('bitstream' => $pathParams[0]));
     }
 
   /**
@@ -397,7 +397,7 @@ class DownloadController extends AppController
    */
   public function appletAction()
     {
-    $folderIds = $this->_getParam('folderIds');
+    $folderIds = $this->getParam('folderIds');
     if(isset($folderIds) && $folderIds)
       {
       $folderIdArray = explode(',', $folderIds);
@@ -408,7 +408,7 @@ class DownloadController extends AppController
       $folderIdArray = array();
       $this->view->folderIds = '';
       }
-    $itemIds = $this->_getParam('itemIds');
+    $itemIds = $this->getParam('itemIds');
     if(isset($itemIds) && $itemIds)
       {
       $itemIdArray = explode(',', $itemIds);

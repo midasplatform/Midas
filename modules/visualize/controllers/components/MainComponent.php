@@ -315,7 +315,6 @@ class Visualize_MainComponent extends AppComponent
     $pvbatch = $modulesConfig['visualize']->pvbatch;
     $usesymlinks = $modulesConfig['visualize']->usesymlinks;
     $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;
-    $customtmp = $modulesConfig['visualize']->customtmp;
 
     if(empty($pwapp) || empty($pvbatch))
       {

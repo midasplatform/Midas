@@ -33,12 +33,12 @@ class Googleauth_CallbackController extends Googleauth_AppController
     $this->disableLayout();
     $this->disableView();
 
-    $code = $this->_getParam('code');
-    $state = $this->_getParam('state');
+    $code = $this->getParam('code');
+    $state = $this->getParam('state');
 
     if(strpos($state, ' ') !== false)
       {
-      list($csrfToken, $redirect) = split(' ', $state);
+      list($csrfToken, $redirect) = preg_split(' ', $state);
       }
     else
       {
@@ -47,7 +47,7 @@ class Googleauth_CallbackController extends Googleauth_AppController
 
     if(!$code)
       {
-      $error = $this->_getParam('error');
+      $error = $this->getParam('error');
       throw new Zend_Exception('Failed to log in with Google OAuth: '.$error);
       }
 
@@ -64,11 +64,11 @@ class Googleauth_CallbackController extends Googleauth_AppController
 
     if($redirect && $csrfToken === $sessionToken)
       {
-      $this->_redirect($redirect);
+      $this->redirect($redirect);
       }
     else
       {
-      $this->_redirect('/');
+      $this->redirect('/');
       }
     }
 

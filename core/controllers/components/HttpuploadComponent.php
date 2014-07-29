@@ -96,8 +96,6 @@ class HttpuploadComponent extends AppComponent
   /** Handle the upload */
   public function process($args)
     {
-    $uploadOffset = (float)0; // bytes received
-
     if(!array_key_exists('filename', $args))
       {
       throw new Exception('Parameter filename is not defined', MIDAS_HTTPUPLOAD_PARAM_UNDEFINED);

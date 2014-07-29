@@ -130,7 +130,7 @@ abstract class AssetstoreModelBase extends AppModel
       }
     $bitreams = $dao->getBitstreams();
     $items = array();
-    foreach($bitreams as $key => $bitstream)
+    foreach($bitreams as $bitstream)
       {
       $revision = $bitstream->getItemrevision();
       if(empty($revision))

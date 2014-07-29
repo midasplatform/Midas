@@ -228,7 +228,6 @@ class Remoteprocessing_ApiComponent extends AppComponent
       throw new Exception('Unable to authenticate as a server. Please check credentials.', MIDAS_INVALID_PARAMETER);
       }
 
-    $jobModel = MidasLoader::loadModel('Job', 'remoteprocessing');
     if(!file_exists(UtilityComponent::getTempDirectory().'/remoteprocessing'))
       {
       mkdir(UtilityComponent::getTempDirectory().'/remoteprocessing');

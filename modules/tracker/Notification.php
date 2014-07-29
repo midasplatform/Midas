@@ -61,7 +61,7 @@ class Tracker_Notification extends ApiEnabled_Notification
   public function communityDeleted($args)
     {
     // TODO
-    $comm = $args['community'];
+    // $comm = $args['community'];
     }
 
   /**
@@ -70,7 +70,7 @@ class Tracker_Notification extends ApiEnabled_Notification
   public function itemDeleted($args)
     {
     // TODO
-    $item = $args['item'];
+    // $item = $args['item'];
     }
 
   /**
@@ -79,7 +79,7 @@ class Tracker_Notification extends ApiEnabled_Notification
   public function userDeleted($args)
     {
     // TODO
-    $user = $args['userDao'];
+    // $user = $args['userDao'];
     }
 
   /**

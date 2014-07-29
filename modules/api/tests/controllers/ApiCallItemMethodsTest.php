@@ -177,7 +177,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
   public function testBitstreamUpload()
     {
     $this->resetAll();
-    $usersFile = $this->loadData('User', 'default');
     $itemsFile = $this->loadData('Item', 'default');
 
     // This method is quite complex, so here is a listing of all
@@ -528,7 +527,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params['revision'] = 'head'; //upload into head revision
     $this->params['testingmode'] = 'true';
     $this->params['DBG'] = 'true';
-    $resp = $this->_callJsonApi();
+    $this->_callJsonApi();
 
     // ensure that there is 1 revision with 1 bitstream
     $revisions = $itemDao->getRevisions();
@@ -549,7 +548,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params['revision'] = 'head'; //upload into head revision
     $this->params['testingmode'] = 'true';
     $this->params['DBG'] = 'true';
-    $resp = $this->_callJsonApi();
+    $this->_callJsonApi();
 
     // ensure that there is 1 revision with 1 bitstream, will be only one bitstream
     // since we are uploading the same file
@@ -654,7 +653,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params['length'] = $length;
     $this->params['testingmode'] = 'true';
     $this->params['DBG'] = 'true';
-    $resp = $this->_callJsonApi();
+    $this->_callJsonApi();
 
     // ensure that there is 1 revision with 1 bitstream
     $revisions = $itemDao->getRevisions();
@@ -686,7 +685,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params['length'] = $length;
     $this->params['testingmode'] = 'true';
     $this->params['DBG'] = 'true';
-    $resp = $this->_callJsonApi();
+    $this->_callJsonApi();
 
     // ensure that there are now 2 revisions with 1 bitstream each
     $revisions = $itemDao->getRevisions();
@@ -709,7 +708,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $revision->setUser_id($usersFile[0]->getKey());
     $revision->setChanges('revision 3');
     $this->Item->addRevision($itemDao, $revision);
-    $revisions = $itemDao->getRevisions();
     $revision = new ItemRevisionDao();
     $revision->setUser_id($usersFile[0]->getKey());
     $revision->setChanges('revision 4');
@@ -740,7 +738,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->params['revision'] = '3';
     $this->params['testingmode'] = 'true';
     $this->params['DBG'] = 'true';
-    $resp = $this->_callJsonApi();
+    $this->_callJsonApi();
 
     // ensure that there are now 4 revisions, the first 3 having 1 bitstream and the last having 0
     $revisions = $itemDao->getRevisions();
@@ -1350,7 +1348,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
   public function testItemMetadata()
     {
     $usersFile = $this->loadData('User', 'default');
-    $itemsFile = $this->loadData('Item', 'default');
 
     // add metadata to an invalid item, should be an error
     $element1 = "meta_element_1";
@@ -1425,7 +1422,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->Item->addRevision($itemDao, $revision);
 
     // add metadata to this item
-    $resp = $this->_callSetmetadata($generatedItemId, $element1, $value1);
+    $this->_callSetmetadata($generatedItemId, $element1, $value1);
 
     // check that the values are correct, at the same time check getmetadata
     $resp = $this->_callGetmetadata($generatedItemId);
@@ -1447,7 +1444,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $element2 = "meta_element_2";
     $value2 = "meta_value_2";
     $qualifier2 = "meta_qualifier_2";
-    $resp = $this->_callSetmetadata($generatedItemId, $element2, $value2, $qualifier2);
+    $this->_callSetmetadata($generatedItemId, $element2, $value2, $qualifier2);
 
      // check that the metadata was added
     $resp = $this->_callGetmetadata($generatedItemId, "1");
@@ -1480,7 +1477,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     // add metadata to rev 2
     $rev2element = "meta_element_rev_2";
     $rev2value = "meta_value_rev_2";
-    $resp = $this->_callSetmetadata($generatedItemId, $rev2element, $rev2value);
+    $this->_callSetmetadata($generatedItemId, $rev2element, $rev2value);
 
     // get the metadata from rev 2
     $resp = $this->_callGetmetadata($generatedItemId);
@@ -1526,7 +1523,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     // add metadata to rev 3
     $rev3element = "meta_element_rev_3";
     $rev3value = "meta_value_rev_3";
-    $resp = $this->_callSetmetadata($generatedItemId, $rev3element, $rev3value, null, null, '3');
+    $this->_callSetmetadata($generatedItemId, $rev3element, $rev3value, null, null, '3');
 
     // check that revision 3 has the metadata
     $resp = $this->_callGetmetadata($generatedItemId, "3");
@@ -1670,7 +1667,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
   public function testItemAddRemovePolicygroup()
     {
     $userModel = MidasLoader::loadModel('User');
-    $itemModel = MidasLoader::loadModel('Item');
     $groupModel = MidasLoader::loadModel('Group');
 
     $userDao = $userModel->load('1');
@@ -1683,7 +1679,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $params = array('method' => 'midas.item.add.policygroup',
                     'token' => $this->_loginAsUser($userDao));
 
-    $deletioncommModeratorGroup = $groupModel->load('3004');
     $deletioncommMemberGroup = $groupModel->load('3005');
 
     // try to add without admin, should fail
@@ -1764,7 +1759,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
   public function testItemAddRemovePolicyuser()
     {
     $userModel = MidasLoader::loadModel('User');
-    $itemModel = MidasLoader::loadModel('Item');
 
     $userDao = $userModel->load('1');
     $itemModel = MidasLoader::loadModel('Item');
@@ -1777,9 +1771,6 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
                     'token' => $this->_loginAsUser($userDao));
 
     $targetUser = $userModel->load('2');
-    $targetUser3 = $userModel->load('3');
-
-    $itempolicyuserModel = MidasLoader::loadModel("Itempolicyuser");
 
     // try to add without admin, should fail
     foreach($nonAdmins as $item)
@@ -1858,11 +1849,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     {
     $userModel = MidasLoader::loadModel('User');
     $userDao = $userModel->load('1');
-
-    $userDao = $userModel->load('1');
     $itemModel = MidasLoader::loadModel('Item');
-    $readItem = $itemModel->load('1004');
-    $writeItem = $itemModel->load('1005');
     $adminItem = $itemModel->load('1006');
 
     $params = array('method' => 'midas.item.list.permissions',
@@ -1894,9 +1881,7 @@ class ApiCallItemMethodsTest extends ApiCallMethodsTest
     $this->assertTrue($itemModel->policyCheck($adminItem, $userDao, MIDAS_POLICY_ADMIN), 'admin user should have admin access to admin item');
 
     // first check both privacy statuses
-    $privacyCodes = array("Public" => MIDAS_PRIVACY_PUBLIC, "Private" => MIDAS_PRIVACY_PRIVATE);
     $privacyStatuses = array(MIDAS_PRIVACY_PUBLIC, MIDAS_PRIVACY_PRIVATE);
-    $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
 
     foreach($privacyStatuses as $privacyStatus)
       {

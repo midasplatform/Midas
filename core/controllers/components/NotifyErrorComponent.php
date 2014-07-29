@@ -289,7 +289,6 @@ class NotifyErrorComponent extends AppComponent
     if($this->_profiler->getLastQueryProfile() !== false)
       {
       $query = $this->_profiler->getLastQueryProfile()->getQuery();
-      $queryParams = $this->_profiler->getLastQueryProfile()->getQueryParams();
       $message .= "Last database query: " . $query . "\n\n";
       }
     return $message;

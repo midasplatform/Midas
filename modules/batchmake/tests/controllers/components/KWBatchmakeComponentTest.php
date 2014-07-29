@@ -146,7 +146,7 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     try
       {
       // need to suppress error output to keep test from failing, despite exception being caught
-      $bmScripts = @$this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
+      @$this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
       $this->fail('Expected an exception for $scriptName, but did not get one.');
       }
     catch(Zend_Exception $ze)
@@ -209,7 +209,7 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
     try
       {
-      $bmms = $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
+      $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
       $this->fail('Expected an exception for '.$scriptName.', but did not get one.');
       }
     catch(Zend_Exception $ze)
@@ -260,7 +260,7 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     // a script that compiles
     $scriptName = 'Compiles.bms';
     $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
-    $bmms = $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
+    $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
 
     // this one should work
     $this->kwBatchmakeComponent->compileBatchMakeScript($workDir, $scriptName);
@@ -268,7 +268,7 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     // now try a script that doesn't compile but returns errors
     $scriptName = 'CompileErrors.bms';
     $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
-    $bmms = $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
+    $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
     try
       {
       $this->kwBatchmakeComponent->compileBatchMakeScript($workDir, $scriptName);
@@ -284,7 +284,7 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     // now try a script that returns a non-zero value from the compile step
     $scriptName = 'CompileReturnNonzero.bms';
     $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
-    $bmms = $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
+    $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
     try
       {
       $this->kwBatchmakeComponent->compileBatchMakeScript($workDir, $scriptName);
@@ -300,7 +300,7 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     //a script that returns a zero value but an empty output from the compile step
     $scriptName = 'CompileEmptyOutput.bms';
     $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
-    $bmms = $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
+    $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
     try
       {
       $this->kwBatchmakeComponent->compileBatchMakeScript($workDir, $scriptName);
@@ -325,10 +325,10 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     // try a script that returns a non-zero value
     $scriptName = 'CompileReturnNonzero.bms';
     $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
-    $bmms = $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
+    $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
     try
       {
-      $dagJobFile = $this->kwBatchmakeComponent->generateCondorDag($workDir, $scriptName);
+      $this->kwBatchmakeComponent->generateCondorDag($workDir, $scriptName);
       $this->fail('Should have had an error but did not, testGenerateCondorDag');
       }
     catch(Zend_Exception $ze)
@@ -341,7 +341,7 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     // a script that compiles
     $scriptName = 'Compiles.bms';
     $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
-    $bmms = $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
+    $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
 
     // try to generate the Condor script
     $dagJobFile = $this->kwBatchmakeComponent->generateCondorDag($workDir, $scriptName);
@@ -379,7 +379,7 @@ class KWBatchmakeComponentTest extends BatchmakeControllerTest
     // a script that compiles
     $scriptName = 'Compiles.bms';
     $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
-    $bmms = $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
+    $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
 
     $dagScript = $this->kwBatchmakeComponent->generateCondorDag($workDir, $scriptName);
     $this->kwBatchmakeComponent->condorSubmitDag($workDir, $dagScript);

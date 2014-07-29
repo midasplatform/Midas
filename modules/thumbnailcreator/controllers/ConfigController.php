@@ -56,18 +56,18 @@ class Thumbnailcreator_ConfigController extends Thumbnailcreator_AppController
       {
       $this->_helper->layout->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
-      $submitConfig = $this->_getParam('submitConfig');
-      $submitThumbnailer = $this->_getParam('submitThumbnailer');
+      $submitConfig = $this->getParam('submitConfig');
+      $submitThumbnailer = $this->getParam('submitThumbnailer');
       if(isset($submitConfig) || isset($submitThumbnailer))
         {
         if(isset($submitConfig))
           {
-          $config->imagemagick = $this->_getParam('imagemagick');
+          $config->imagemagick = $this->getParam('imagemagick');
           }
         if(isset($submitThumbnailer))
           {
-          $config->thumbnailer = $this->_getParam('thumbnailer');
-          $config->useThumbnailer = $this->_getParam('useThumbnailer');
+          $config->thumbnailer = $this->getParam('thumbnailer');
+          $config->useThumbnailer = $this->getParam('useThumbnailer');
           }
         $writer = new Zend_Config_Writer_Ini();
         $writer->setConfig($config);

@@ -54,7 +54,7 @@ class Dicomanonymize_UploadController extends Dicomanonymize_AppController
       }
 
     session_start();
-    $parent = $this->_getParam('parent');
+    $parent = $this->getParam('parent');
     if(!empty($parent))
       {
       $this->disableView();

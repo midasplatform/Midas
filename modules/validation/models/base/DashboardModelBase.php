@@ -167,7 +167,6 @@ abstract class Validation_DashboardModelBase extends Validation_AppModel
       $len = count($truthItems);
       for($i = 0; $i < $len; ++$i)
         {
-        $nameDifference = 0;
         if(strcmp($testingItems[$i]->getName(),
                   $trainingItems[$i]->getName() ) != 0 )
           {

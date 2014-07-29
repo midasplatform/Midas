@@ -80,9 +80,9 @@ class Solr_ConfigController extends Solr_AppController
     $this->disableLayout();
     $this->disableView();
 
-    $solrHost = $this->_getParam('host');
-    $solrPort = $this->_getParam('port');
-    $solrWebroot = $this->_getParam('webroot');
+    $solrHost = $this->getParam('host');
+    $solrPort = $this->getParam('port');
+    $solrWebroot = $this->getParam('webroot');
 
     $this->Setting->setConfig('solrHost', $solrHost, $this->moduleName);
     $this->Setting->setConfig('solrPort', $solrPort, $this->moduleName);

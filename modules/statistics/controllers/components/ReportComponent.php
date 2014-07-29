@@ -36,7 +36,7 @@ class Statistics_ReportComponent extends AppComponent
     $errors = $errorModel->getLog(date("Y-m-d H:i:s", strtotime('-1 day'.date('Y-m-j G:i:s'))), date("Y-m-d H:i:s"), 'all', 2);
     $reportContent .= "<br/>Yesterday Errors: ".count($errors);
     $assetstores = $assetstoreModel->getAll();
-    foreach($assetstores as $key => $assetstore)
+    foreach($assetstores as $assetstore)
       {
       $totalSpace = UtilityComponent::diskTotalSpace($assetstore->getPath());
       $freeSpace = UtilityComponent::diskFreeSpace($assetstore->getPath());

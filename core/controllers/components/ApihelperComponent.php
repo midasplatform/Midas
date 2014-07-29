@@ -176,7 +176,7 @@ class ApihelperComponent extends AppComponent
       }
     else if($privacyCode == MIDAS_PRIVACY_PUBLIC && $itempolicygroupDao == false)
       {
-      $itempolicygroupDao = $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
+      $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
       }
     else
       {
@@ -203,7 +203,7 @@ class ApihelperComponent extends AppComponent
                                                               'element' => $element,
                                                               'qualifier' => $qualifier,
                                                               'value' => $value));
-    foreach($modules as $name => $retval)
+    foreach($modules as $retval)
       {
       if($retval['status'] === true) //module has handled the event, so we don't have to
         {
@@ -286,7 +286,7 @@ class ApihelperComponent extends AppComponent
       }
     else if($privacyCode == MIDAS_PRIVACY_PUBLIC && $folderpolicygroupDao == false)
       {
-      $policyDao = $folderpolicygroupModel->createPolicy($anonymousGroup, $folder, MIDAS_POLICY_READ);
+      $folderpolicygroupModel->createPolicy($anonymousGroup, $folder, MIDAS_POLICY_READ);
       }
     else
       {

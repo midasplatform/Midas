@@ -379,10 +379,7 @@ abstract class CommunityModelBase extends AppModel
 
     $feedModel = MidasLoader::loadModel('Feed');
     $feedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
-    $folderModel = MidasLoader::loadModel('Folder');
-    $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
     $groupModel = MidasLoader::loadModel('Group');
-    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
 
     // update folderpolicygroup, itempolicygroup and feedpolicygroup tables when community privacy is changed between public and private
     // users in Midas_anonymouse_group can see community's public folder only if the community is set as public

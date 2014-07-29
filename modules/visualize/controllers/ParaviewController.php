@@ -30,7 +30,7 @@ class Visualize_ParaviewController extends Visualize_AppController
    */
   public function surfaceAction()
     {
-    $itemid = $this->_getParam('itemId');
+    $itemid = $this->getParam('itemId');
     if(!isset($itemid))
       {
       throw new Zend_Exception('Must specify an itemId parameter');
@@ -47,7 +47,6 @@ class Visualize_ParaviewController extends Visualize_AppController
 
     $modulesConfig = Zend_Registry::get('configsModules');
     $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;
-    $customtmp = $modulesConfig['visualize']->customtmp;
     $useparaview = $modulesConfig['visualize']->useparaview;
     $userwebgl = $modulesConfig['visualize']->userwebgl;
     $usesymlinks = $modulesConfig['visualize']->usesymlinks;
@@ -114,13 +113,13 @@ class Visualize_ParaviewController extends Visualize_AppController
    */
   public function dualAction()
     {
-    $operations = $this->_getParam('operations');
+    $operations = $this->getParam('operations');
     if(!isset($operations))
       {
       $operations = '';
       }
 
-    $jsImports = $this->_getParam('jsImports');
+    $jsImports = $this->getParam('jsImports');
     if(isset($jsImports))
       {
       $this->view->jsImports = explode(';', $jsImports);
@@ -130,8 +129,8 @@ class Visualize_ParaviewController extends Visualize_AppController
       $this->view->jsImports = array();
       }
 
-    $left = $this->Item->load($this->_getParam('left'));
-    $right = $this->Item->load($this->_getParam('right'));
+    $left = $this->Item->load($this->getParam('left'));
+    $right = $this->Item->load($this->getParam('right'));
 
     if($left === false || !$this->Item->policyCheck($left, $this->userSession->Dao, MIDAS_POLICY_READ))
       {
@@ -163,7 +162,6 @@ class Visualize_ParaviewController extends Visualize_AppController
 
     $pathArray = $this->ModuleComponent->Main->createParaviewPath();
     $path = $pathArray['path'];
-    $tmpFolderName = $pathArray['foderName'];
 
     $items = array('left' => $left, 'right' => $right);
     foreach($items as $side => $item)
@@ -221,7 +219,7 @@ class Visualize_ParaviewController extends Visualize_AppController
    */
   public function volumeAction()
     {
-    $jsImports = $this->_getParam('jsImports');
+    $jsImports = $this->getParam('jsImports');
     if(isset($jsImports))
       {
       $this->view->jsImports = explode(';', $jsImports);
@@ -231,7 +229,7 @@ class Visualize_ParaviewController extends Visualize_AppController
       $this->view->jsImports = array();
       }
 
-    $meshes = $this->_getParam('meshes');
+    $meshes = $this->getParam('meshes');
     if(isset($meshes))
       {
       $meshes = explode(';', $meshes);
@@ -241,7 +239,7 @@ class Visualize_ParaviewController extends Visualize_AppController
       $meshes = array();
       }
 
-    $itemid = $this->_getParam('itemId');
+    $itemid = $this->getParam('itemId');
     $item = $this->Item->load($itemid);
     if($item === false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
       {
@@ -383,13 +381,13 @@ class Visualize_ParaviewController extends Visualize_AppController
    */
   public function sliceAction()
     {
-    $operations = $this->_getParam('operations');
+    $operations = $this->getParam('operations');
     if(!isset($operations))
       {
       $operations = '';
       }
 
-    $jsImports = $this->_getParam('jsImports');
+    $jsImports = $this->getParam('jsImports');
     if(isset($jsImports))
       {
       $this->view->jsImports = explode(';', $jsImports);
@@ -399,7 +397,7 @@ class Visualize_ParaviewController extends Visualize_AppController
       $this->view->jsImports = array();
       }
 
-    $meshes = $this->_getParam('meshes');
+    $meshes = $this->getParam('meshes');
     if(isset($meshes))
       {
       $meshes = explode(';', $meshes);
@@ -409,7 +407,7 @@ class Visualize_ParaviewController extends Visualize_AppController
       $meshes = array();
       }
 
-    $itemid = $this->_getParam('itemId');
+    $itemid = $this->getParam('itemId');
     $item = $this->Item->load($itemid);
     if($item === false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
       {

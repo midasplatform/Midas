@@ -35,7 +35,7 @@ class Ratings_RatingController extends Ratings_AppController
       throw new Zend_Exception('Must be logged in to rate an item');
       }
 
-    $itemId = $this->_getParam('itemId');
+    $itemId = $this->getParam('itemId');
     if(!isset($itemId) || !$itemId)
       {
       throw new Zend_Exception('Must set itemId parameter');
@@ -45,7 +45,7 @@ class Ratings_RatingController extends Ratings_AppController
       {
       throw new Zend_Exception('Not a valid itemId');
       }
-    $rating = (int)$this->_getParam('rating');
+    $rating = (int)$this->getParam('rating');
     if($rating < 0 || $rating > 5)
       {
       throw new Zend_Exception('Rating must be 0-5');

@@ -55,7 +55,6 @@ class MIDAS2MigrationComponent extends AppComponent
   private function _createFolderForItem($collectionId, $parentFolderid)
     {
     $Folder = MidasLoader::loadModel("Folder");
-    $Bitstream = MidasLoader::loadModel("Bitstream");
     $Item = MidasLoader::loadModel("Item");
     $ItemRevision = MidasLoader::loadModel("ItemRevision");
     $Group = MidasLoader::loadModel("Group");
@@ -167,7 +166,6 @@ class MIDAS2MigrationComponent extends AppComponent
           // Just check if the group anonymous can access the item
           $policyquery = pg_query("SELECT policy_id FROM resourcepolicy WHERE resource_type_id=".MIDAS2_RESOURCE_ITEM.
                                 " AND resource_id=".$item_id." AND epersongroup_id=0");
-          $privacy = MIDAS_COMMUNITY_PRIVATE;
           if(pg_num_rows($policyquery) > 0)
             {
             $anonymousGroup = $Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
@@ -221,9 +219,6 @@ class MIDAS2MigrationComponent extends AppComponent
             $text_value = $metadata_array['text_value'];
             $metadata_field_id = $metadata_array['metadata_field_id'];
 
-            $element = "";
-            $qualifier = "";
-
             // Do not check 64 and 27 because they are stored as field and not metadata
             // in MIDAS3
             switch($metadata_field_id)
@@ -242,7 +237,7 @@ class MIDAS2MigrationComponent extends AppComponent
               case 68:  $element = 'subject'; $qualifier = 'ocis'; break;
               case 75:  $element = 'identifier'; $qualifier = 'pubmed'; break;
               case 74:  $element = 'identifier'; $qualifier = 'doi'; break;
-              default: $element = ""; $qualidfier = "";
+              default: $element = ""; $qualifier = "";
               }
 
             if($element != "")
@@ -304,7 +299,6 @@ class MIDAS2MigrationComponent extends AppComponent
       $collection_id = $colquery_array['collection_id'];
       $name = $colquery_array['name'];
       $short_description = $colquery_array['short_description'];
-      $introductory_text = $colquery_array['introductory_text'];
       $folderDao = false;
       try
         {
@@ -392,7 +386,6 @@ class MIDAS2MigrationComponent extends AppComponent
       $community_id = $comquery_array['community_id'];
       $name = $comquery_array['name'];
       $short_description = $comquery_array['short_description'];
-      $introductory_text = $comquery_array['introductory_text'];
       $folderDao = false;
       try
         {
@@ -521,7 +514,6 @@ class MIDAS2MigrationComponent extends AppComponent
       $community_id = $query_array['community_id'];
       $name = $query_array['name'];
       $short_description = $query_array['short_description'];
-      $introductory_text = $query_array['introductory_text'];
       $communityDao = false;
       try
         {

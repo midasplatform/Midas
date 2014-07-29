@@ -51,8 +51,6 @@ class Batchmake_BatchmakeMock
         throw new Zend_Exception("Failed to change directory: [".$chdir."]");
         }
       }
-    // on Linux need to add redirection to handle stderr
-    $redirect_error = KWUtils::isLinux() ? " 2>&1" : "";
     $command = KWUtils::escapeCommand($command);
 
     // now look for particular commands that this Mock object can service
@@ -139,7 +137,6 @@ class Batchmake_BatchmakeMock
     $interestedParts = $matches[5];
     $filenames = explode(' ', $interestedParts);
     $scriptName = $filenames[1];
-    $dagFile = $filenames[2];
 
     if(preg_match('/CompileReturnNonzero.bms/', $scriptName))
       {

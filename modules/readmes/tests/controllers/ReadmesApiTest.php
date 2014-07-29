@@ -60,7 +60,6 @@ class ReadmesApiTest extends RestCallMethodsTest
       }
     copy($oldPath, $newPath);
     $commFile = $this->loadData('Community', 'default');
-    $userFile = $this->loadData('User', 'default');
     $comm = $this->Community->load($commFile[0]->getKey());
 
     $rootFolder = $comm->getFolder();
@@ -99,7 +98,6 @@ class ReadmesApiTest extends RestCallMethodsTest
       }
     copy($oldPath, $newPath);
     $commFile = $this->loadData('Community', 'default');
-    $userFile = $this->loadData('User', 'default');
     $comm = $this->Community->load($commFile[0]->getKey());
 
     $rootFolder = $comm->getFolder();

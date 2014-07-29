@@ -40,7 +40,7 @@ class Communityagreement_AgreementModel extends Communityagreement_AgreementMode
     $sql = $this->database->select();
     $rowset = $this->database->fetchAll($sql);
     $rowsetAnalysed = array();
-    foreach($rowset as $keyRow => $row)
+    foreach($rowset as $row)
       {
       $tmpDao = $this->initDao('Agreement', $row, 'communityagreement');
       $rowsetAnalysed[] = $tmpDao;

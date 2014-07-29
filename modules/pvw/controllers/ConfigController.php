@@ -59,9 +59,9 @@ class Pvw_ConfigController extends Pvw_AppController
     $this->disableLayout();
     $this->disableView();
 
-    $pvpython = $this->_getParam('pvpython');
-    $ports = $this->_getParam('ports');
-    $displayEnv = $this->_getParam('displayEnv');
+    $pvpython = $this->getParam('pvpython');
+    $ports = $this->getParam('ports');
+    $displayEnv = $this->getParam('displayEnv');
     $this->Setting->setConfig('pvpython', $pvpython, $this->moduleName);
     $this->Setting->setConfig('ports', $ports, $this->moduleName);
     $this->Setting->setConfig('displayEnv', $displayEnv, $this->moduleName);

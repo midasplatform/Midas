@@ -49,7 +49,7 @@ class Scheduler_RunController extends Scheduler_AppController
 
     $this->Setting->setConfig('lastrun', ''.$startTime, $this->moduleName);
 
-    $id = $this->_getParam('id');
+    $id = $this->getParam('id');
     if(isset($id))
       {
       $jobs = $this->Scheduler_Job->load($id);

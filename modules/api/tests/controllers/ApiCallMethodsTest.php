@@ -115,7 +115,7 @@ class ApiCallMethodsTest extends ControllerTestCase
         {
         if($desiredPrivacyStatus == MIDAS_PRIVACY_PUBLIC)
           {
-          $policyDao = $folderpolicygroupModel->createPolicy($anonymousGroup, $folder, MIDAS_POLICY_READ);
+          $folderpolicygroupModel->createPolicy($anonymousGroup, $folder, MIDAS_POLICY_READ);
           }
         else
           {
@@ -132,7 +132,7 @@ class ApiCallMethodsTest extends ControllerTestCase
         {
         if($desiredPrivacyStatus == MIDAS_PRIVACY_PUBLIC)
           {
-          $policyDao = $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
+          $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
           }
         else
           {

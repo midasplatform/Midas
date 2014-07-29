@@ -28,7 +28,7 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
    */
   public function itemAction()
     {
-    $itemId = $this->_getParam('itemId');
+    $itemId = $this->getParam('itemId');
     if(!isset($itemId))
       {
       throw new Exception('Must pass an itemId parameter');
@@ -73,7 +73,7 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
    */
   public function bitstreamAction()
     {
-    $bitstreamId = $this->_getParam('bitstreamId');
+    $bitstreamId = $this->getParam('bitstreamId');
     if(!isset($bitstreamId))
       {
       throw new Exception('Must pass a bitstreamId parameter');
@@ -133,8 +133,8 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
   public function batchAction()
     {
     UtilityComponent::disableMemoryLimit();
-    $itemIds = $this->_getParam('items');
-    $folderIds = $this->_getParam('folders');
+    $itemIds = $this->getParam('items');
+    $folderIds = $this->getParam('folders');
     if(!isset($itemIds) && !isset($folderIds))
       {
       throw new Zend_Exception('No parameters');
@@ -182,7 +182,6 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
           $path = '';
           }
         $filename = $path.$bitstream->getName().'.md5';
-        $fullpath = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
         Zend_Registry::get('dbAdapter')->closeConnection();
         $zip->add_file($filename, $bitstream->getChecksum());
         }

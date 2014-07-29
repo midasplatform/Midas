@@ -116,7 +116,6 @@ class ApidocsComponent extends AppComponent
       if(!empty($path))
         {
         $tokens = preg_split('@/@', $path, null, PREG_SPLIT_NO_EMPTY);
-        $count = count($tokens);
         if(empty($module) & !empty($tokens)) // core
           {
           $resource = $module. '/' . $tokens[0];
@@ -183,7 +182,7 @@ class ApidocsComponent extends AppComponent
       $swaggerDoc['resourcePath'] = '/'. $module . '/' . $resource; // module apis
       }
     $swaggerDoc['apis'] = array();
-    if(key_exists($module.'/'.$resource, $apiInfo))
+    if(array_key_exists($module.'/'.$resource, $apiInfo))
       {
       $resourceApiInfo = $apiInfo[$module.'/'.$resource];
       foreach($resourceApiInfo as $name => $docs)

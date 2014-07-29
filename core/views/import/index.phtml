@@ -17,9 +17,16 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
+if(isset($this->errormessage))
+  {
+  echo $this->errormessage;
+  }
+if(isset($this->statusmessage))
+  {
+  echo $this->statusmessage;
+  }
 ?>
-<?php if(isset($this->errormessage)) { echo $this->errormessage; } ?>
-<?php if(isset($this->statusmessage)) { echo $this->statusmessage; } ?>
 
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.cluetip.css" />
     <div class ="genericWrapperTopRight">

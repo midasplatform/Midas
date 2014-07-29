@@ -38,14 +38,14 @@ class Tracker_TrendController extends Tracker_AppController
    */
   public function viewAction()
     {
-    $trendId = $this->_getParam('trendId');
-    $startDate = $this->_getParam('startDate');
-    $endDate = $this->_getParam('endDate');
-    $rightTrendId = $this->_getParam('rightTrendId');
-    $yMin = $this->_getParam('yMin');
-    $yMax = $this->_getParam('yMax');
-    $y2Min = $this->_getParam('y2Min');
-    $y2Max = $this->_getParam('y2Max');
+    $trendId = $this->getParam('trendId');
+    $startDate = $this->getParam('startDate');
+    $endDate = $this->getParam('endDate');
+    $rightTrendId = $this->getParam('rightTrendId');
+    $yMin = $this->getParam('yMin');
+    $yMax = $this->getParam('yMax');
+    $y2Min = $this->getParam('y2Min');
+    $y2Max = $this->getParam('y2Max');
 
     if(!isset($trendId))
       {
@@ -137,7 +137,7 @@ class Tracker_TrendController extends Tracker_AppController
       }
     $this->view->json['tracker']['initialStartDate'] = date('n/j/Y', strtotime($startDate));
     $this->view->json['tracker']['initialEndDate'] = date('n/j/Y', strtotime($endDate));
-    $this->view->json['tracker']['trendIds'] = $this->_getParam('trendId');
+    $this->view->json['tracker']['trendIds'] = $this->getParam('trendId');
 
     if(isset($yMin) && isset($yMax))
       {
@@ -161,10 +161,10 @@ class Tracker_TrendController extends Tracker_AppController
     {
     $this->disableView();
     $this->disableLayout();
-    $trendId = $this->_getParam('trendId');
-    $rightTrendId = $this->_getParam('rightTrendId');
-    $startDate = $this->_getParam('startDate');
-    $endDate = $this->_getParam('endDate');
+    $trendId = $this->getParam('trendId');
+    $rightTrendId = $this->getParam('rightTrendId');
+    $startDate = $this->getParam('startDate');
+    $endDate = $this->getParam('endDate');
 
     $userId = $this->userSession->Dao ? $this->userSession->Dao->getKey() : null;
 
@@ -210,7 +210,7 @@ class Tracker_TrendController extends Tracker_AppController
     $this->disableLayout();
     $this->disableView();
 
-    $trendId = $this->_getParam('trendId');
+    $trendId = $this->getParam('trendId');
 
     if(!isset($trendId))
       {
@@ -230,7 +230,7 @@ class Tracker_TrendController extends Tracker_AppController
    */
   public function editAction()
     {
-    $trendId = $this->_getParam('trendId');
+    $trendId = $this->getParam('trendId');
 
     if(!isset($trendId))
       {
@@ -260,7 +260,7 @@ class Tracker_TrendController extends Tracker_AppController
     {
     $this->disableLayout();
     $this->disableView();
-    $trendId = $this->_getParam('trendId');
+    $trendId = $this->getParam('trendId');
 
     if(!isset($trendId))
       {
@@ -271,12 +271,12 @@ class Tracker_TrendController extends Tracker_AppController
       {
       throw new Zend_Exception('Admin permission required on the community', 403);
       }
-    $metricName = $this->_getParam('metricName');
-    $displayName = $this->_getParam('displayName');
-    $unit = $this->_getParam('unit');
-    $configItemId = $this->_getParam('configItemId');
-    $testItemId = $this->_getParam('testItemId');
-    $truthItemId = $this->_getParam('truthItemId');
+    $metricName = $this->getParam('metricName');
+    $displayName = $this->getParam('displayName');
+    $unit = $this->getParam('unit');
+    $configItemId = $this->getParam('configItemId');
+    $testItemId = $this->getParam('testItemId');
+    $truthItemId = $this->getParam('truthItemId');
 
     if(isset($metricName))
       {
@@ -335,7 +335,7 @@ class Tracker_TrendController extends Tracker_AppController
   public function notifyAction()
     {
     $this->disableLayout();
-    $trendId = $this->_getParam('trendId');
+    $trendId = $this->getParam('trendId');
     if(!$this->logged)
       {
       throw new Zend_Exception('Must be logged in');
@@ -374,7 +374,7 @@ class Tracker_TrendController extends Tracker_AppController
       echo JsonComponent::encode(array('status' => 'error', 'message' => 'You are not logged in'));
       return;
       }
-    $trendId = $this->_getParam('trendId');
+    $trendId = $this->getParam('trendId');
     if(!isset($trendId))
       {
       throw new Zend_Exception('Must pass trendId parameter');
@@ -394,11 +394,11 @@ class Tracker_TrendController extends Tracker_AppController
       $this->Tracker_ThresholdNotification->delete($existing);
       }
 
-    $doNotify = $this->_getParam('doNotify');
+    $doNotify = $this->getParam('doNotify');
     if(isset($doNotify) && $doNotify == 'yes')
       {
-      $operator = $this->_getParam('operator');
-      $value = $this->_getParam('value');
+      $operator = $this->getParam('operator');
+      $value = $this->getParam('value');
       if(!is_numeric($value))
         {
         echo JsonComponent::encode(array('status' => 'error', 'message' => 'Threshold value must be numeric'));

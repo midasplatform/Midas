@@ -30,7 +30,7 @@ class Packages_PackageController extends Packages_AppController
    */
   public function manageAction()
     {
-    $packageId = $this->_getParam('id');
+    $packageId = $this->getParam('id');
     if(!isset($packageId))
       {
       throw new Zend_Exception('Must specify an id parameter');
@@ -53,7 +53,7 @@ class Packages_PackageController extends Packages_AppController
    */
   public function saveAction()
     {
-    $packageId = $this->_getParam('packageId');
+    $packageId = $this->getParam('packageId');
     if(!isset($packageId))
       {
       throw new Zend_Exception('Must set packageId parameter');
@@ -70,15 +70,15 @@ class Packages_PackageController extends Packages_AppController
     $this->disableLayout();
     $this->disableView();
 
-    $package->setOs($this->_getParam('os'));
-    $package->setArch($this->_getParam('arch'));
-    $package->setRevision($this->_getParam('revision'));
-    $package->setSubmissiontype($this->_getParam('submissiontype'));
-    $package->setPackagetype($this->_getParam('packagetype'));
-    $package->setProductname($this->_getParam('productname'));
-    $package->setCodebase($this->_getParam('codebase'));
-    $package->setCheckoutdate($this->_getParam('checkoutdate'));
-    $package->setRelease($this->_getParam('release'));
+    $package->setOs($this->getParam('os'));
+    $package->setArch($this->getParam('arch'));
+    $package->setRevision($this->getParam('revision'));
+    $package->setSubmissiontype($this->getParam('submissiontype'));
+    $package->setPackagetype($this->getParam('packagetype'));
+    $package->setProductname($this->getParam('productname'));
+    $package->setCodebase($this->getParam('codebase'));
+    $package->setCheckoutdate($this->getParam('checkoutdate'));
+    $package->setRelease($this->getParam('release'));
     $this->Packages_Package->save($package);
 
     echo JsonComponent::encode(array('message' => 'Changes saved', 'status' => 'ok'));
@@ -96,9 +96,9 @@ class Packages_PackageController extends Packages_AppController
     $this->disableLayout();
     $this->disableView();
 
-    $os = $this->_getParam('os');
-    $arch = $this->_getParam('arch');
-    $applicationId = $this->_getParam('applicationId');
+    $os = $this->getParam('os');
+    $arch = $this->getParam('arch');
+    $applicationId = $this->getParam('applicationId');
     if(!isset($applicationId))
       {
       throw new Zend_Exception('Must specify an applicationId parameter');

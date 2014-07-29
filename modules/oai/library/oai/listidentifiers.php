@@ -264,4 +264,3 @@ if (isset($restoken))
   }
 
 $output .= " </ListIdentifiers>\n";
-?>

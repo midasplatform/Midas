@@ -36,9 +36,6 @@ class BrowseController extends AppController
   /** Index Action*/
   public function indexAction()
     {
-    $items = array();
-    $header = "";
-
     $this->view->Date = $this->Component->Date;
 
     $this->view->header = $this->t('Explore');
@@ -58,29 +55,24 @@ class BrowseController extends AppController
   /** move or copy selected element*/
   public function movecopyAction()
     {
-    $copytype = $this->_getParam('copytype');
+    $copytype = $this->getParam('copytype');
     if(isset($copytype) && $copytype == 'reference')
       {
       $shareSubmit = true;
       }
-    else if(isset($copytype))
-      {
-      $duplicateSubmit = true;
-      }
-    $duplicateSubmit = $this->_getParam('duplicateElement');
-    $moveSubmit = $this->_getParam('moveElement');
+    $duplicateSubmit = $this->getParam('duplicateElement');
+    $moveSubmit = $this->getParam('moveElement');
 
-    $select = $this->_getParam('selectElement');
-    $share = $this->_getParam('share');
-    $duplicate = $this->_getParam('duplicate');
-    $move = $this->_getParam('move');
+    $share = $this->getParam('share');
+    $duplicate = $this->getParam('duplicate');
+    $move = $this->getParam('move');
 
     // used for movecopyAction
     if(isset($moveSubmit) || isset($shareSubmit) || isset($duplicateSubmit))
       {
-      $elements = explode(';', $this->_getParam('elements'));
-      $destination = $this->_getParam('destination');
-      $ajax = $this->_getParam('ajax');
+      $elements = explode(';', $this->getParam('elements'));
+      $destination = $this->getParam('destination');
+      $ajax = $this->getParam('ajax');
       $folderIds = explode('-', $elements[0]);
       $itemIds = explode('-', $elements[1]);
       $folders = $this->Folder->load($folderIds);
@@ -128,7 +120,7 @@ class BrowseController extends AppController
             }
           if(in_array($destinationFolder->getKey(), $sourceFolderIds))
             {
-            $this->_redirect('/item/'.$item->getKey());
+            $this->redirect('/item/'.$item->getKey());
             }
           else
             {
@@ -151,7 +143,7 @@ class BrowseController extends AppController
             {
             throw new Zend_Exception('You must own an item in order to move it');
             }
-          $from = $this->_getParam('from');
+          $from = $this->getParam('from');
           $fromFolder = $from ? $this->Folder->load($from) : null;
           if($destinationFolder == false)
             {
@@ -187,7 +179,7 @@ class BrowseController extends AppController
         echo JsonComponent::encode(array(true, $this->t('Changes saved')));
         return;
         }
-      $this->_redirect('/folder/'.$destinationFolder->getKey());
+      $this->redirect('/folder/'.$destinationFolder->getKey());
       return;
       }
 
@@ -196,8 +188,8 @@ class BrowseController extends AppController
     // Used for moveCopyForm (movecopy.phtml)
     if(isset($share) || isset($duplicate) || isset($move))
       {
-      $folderIds = $this->_getParam('folders');
-      $itemIds = $this->_getParam('items');
+      $folderIds = $this->getParam('folders');
+      $itemIds = $this->getParam('items');
       $this->view->folderIds = $folderIds;
       $this->view->itemIds = $itemIds;
       $folderIds = explode('-', $folderIds);
@@ -235,7 +227,7 @@ class BrowseController extends AppController
       else // isset($move)
         {
         $this->view->moveEnabled = true;
-        $from = $this->_getParam('from');
+        $from = $this->getParam('from');
         $this->view->from = $from;
         }
       }
@@ -281,7 +273,7 @@ class BrowseController extends AppController
   public function selectfolderAction()
     {
     $this->disableLayout();
-    $policy = $this->_getParam('policy');
+    $policy = $this->getParam('policy');
 
     $communities = $this->User->getUserCommunities($this->userSession->Dao);
 
@@ -324,9 +316,9 @@ class BrowseController extends AppController
     $this->disableLayout();
     $this->disableView();
 
-    $folderIds = $this->_getParam('folders');
-    $sort = $this->_getParam('sort', 'name');
-    $sortdir = $this->_getParam('sortdir', 'asc');
+    $folderIds = $this->getParam('folders');
+    $sort = $this->getParam('sort', 'name');
+    $sortdir = $this->getParam('sortdir', 'asc');
     $foldersort = 'name';
     $foldersortdir = $sortdir;
     $itemsort = 'name';
@@ -344,9 +336,9 @@ class BrowseController extends AppController
       $itemsortdir = $sortdir;
       }
 
-    $folderOffset = (int)$this->_getParam('folderOffset', 0);
-    $itemOffset = (int)$this->_getParam('itemOffset', 0);
-    $limit = (int)$this->_getParam('limit', -1);
+    $folderOffset = (int)$this->getParam('folderOffset', 0);
+    $itemOffset = (int)$this->getParam('itemOffset', 0);
+    $limit = (int)$this->getParam('limit', -1);
 
     if(!isset($folderIds))
       {
@@ -364,14 +356,11 @@ class BrowseController extends AppController
     $folders = $this->Folder->getChildrenFoldersFiltered($parents, $this->userSession->Dao, MIDAS_POLICY_READ,
                                                          $foldersort, $foldersortdir, $limit + 1, $folderOffset);
     $folderCount = count($folders);
-    $itemCount = 0;
     $folderOffset += min($limit, $folderCount);
     if($limit > 0 && $folderCount > $limit) // If we have more folder children than the page allows, no need to fetch items this pass
       {
       array_pop($folders); //remove the last element since it is one over the limit
-      $folderCount--;
       $items = array();
-      $itemCount = 0;
       $showMoreLink = true;
       }
     else
@@ -428,7 +417,7 @@ class BrowseController extends AppController
     {
     $this->disableLayout();
     $this->disableView();
-    $folderIds = $this->_getParam('folders');
+    $folderIds = $this->getParam('folders');
     if(!isset($folderIds))
       {
       echo "[]";
@@ -450,8 +439,8 @@ class BrowseController extends AppController
     {
     $this->disableLayout();
     $this->disableView();
-    $element = $this->_getParam('type');
-    $id = $this->_getParam('id');
+    $element = $this->getParam('type');
+    $id = $this->getParam('id');
     if(!isset($id) || !isset($element))
       {
       throw new Zend_Exception("Please double check the parameters");
@@ -541,8 +530,8 @@ class BrowseController extends AppController
     $this->disableLayout();
     $this->disableView();
 
-    $id = $this->_getParam('id');
-    $type = $this->_getParam('type');
+    $id = $this->getParam('id');
+    $type = $this->getParam('type');
 
     if(!isset($id) || !isset($type))
       {
@@ -586,8 +575,8 @@ class BrowseController extends AppController
     $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
-    $folderIds = $this->_getParam('folders');
-    $itemIds = $this->_getParam('items');
+    $folderIds = $this->getParam('folders');
+    $itemIds = $this->getParam('items');
 
     $resp = array('success' => array('folders' => array(), 'items' => array()),
                   'failure' => array('folders' => array(), 'items' => array()));

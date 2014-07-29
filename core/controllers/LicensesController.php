@@ -49,7 +49,7 @@ class LicensesController extends AppController
   function viewAction()
     {
     $this->disableLayout();
-    $licenseId = $this->_getParam('licenseId');
+    $licenseId = $this->getParam('licenseId');
 
     if(!isset($licenseId))
       {
@@ -69,7 +69,7 @@ class LicensesController extends AppController
     $this->requireAdminPrivileges();
     $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
-    $licenseId = $this->_getParam('licenseId');
+    $licenseId = $this->getParam('licenseId');
 
     $license = $this->License->load($licenseId);
     if($license == false)
@@ -87,7 +87,7 @@ class LicensesController extends AppController
     $this->requireAdminPrivileges();
     $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
-    $licenseId = $this->_getParam('licenseId');
+    $licenseId = $this->getParam('licenseId');
     if(!isset($licenseId))
       {
       throw new Zend_Exception('Must pass a licenseId parameter');
@@ -97,8 +97,8 @@ class LicensesController extends AppController
       {
       throw new Zend_Exception('Invalid licenseId');
       }
-    $name = $this->_getParam('name');
-    $fulltext = $this->_getParam('fulltext');
+    $name = $this->getParam('name');
+    $fulltext = $this->getParam('fulltext');
 
     $license->setName($name);
     $license->setFulltext($fulltext);
@@ -113,8 +113,8 @@ class LicensesController extends AppController
     $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
-    $name = $this->_getParam('name');
-    $fulltext = $this->_getParam('fulltext');
+    $name = $this->getParam('name');
+    $fulltext = $this->getParam('fulltext');
 
     $license = new LicenseDao();
     $license->setName($name);

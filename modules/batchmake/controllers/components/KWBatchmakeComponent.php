@@ -17,8 +17,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-?>
-<?php
+
 include_once BASE_PATH . '/library/KWUtils.php';
 /**
  *  Batchmake_KWBatchmakeComponent
@@ -97,7 +96,6 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
    */
   protected function loadConfig($processSections = false)
     {
-    $path = MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG;
     if(file_exists(MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG))
       {
       $config = parse_ini_file(MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG, $processSections);
@@ -504,7 +502,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       // the subpattern match is the name of the included file
       $subpatternMatches = $matches[1];
       // now that we have the matches, we only want the ones that are not .config.bms
-      foreach($subpatternMatches as $ind => $includeName)
+      foreach($subpatternMatches as $includeName)
         {
         // only want the includes that are not .config.bms scripts
         if(strpos($includeName, '.config.bms') === false)
@@ -559,7 +557,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
         // the subpattern match is the name of the included file
         $subpatternMatches = $matches[1];
         // now that we have the matches, get the app names to use for the bmm
-        foreach($subpatternMatches as $ind => $appName)
+        foreach($subpatternMatches as $appName)
           {
           if(!array_key_exists($appName, $processed))
             {
@@ -608,7 +606,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       }
 
     // if BatchMake reports errors, throw an exception
-    foreach($output as $ind => $val)
+    foreach($output as $val)
       {
       if(preg_match("/(\d+) error/", $val, $matches))
         {
@@ -687,4 +685,3 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
       }
     }
   } // end class
-?>

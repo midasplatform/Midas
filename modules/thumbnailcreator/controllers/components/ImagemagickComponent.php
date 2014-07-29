@@ -269,7 +269,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
     if(count($output) > 0)
       {
       // version line should look like: "Version: ImageMagick 6.4.7 2008-12-04 Q16 http://www.imagemagick.org"
-      list($version_line, $copyright_line) = $output;
+      list($version_line, ) = $output;
 
       // split version by spaces
       $version_chunks = explode(' ', $version_line);
@@ -278,7 +278,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
       $version = $version_chunks[2];
 
       // get major, minor and patch number
-      list($major, $minor, $patch) = explode('.', $version);
+      list($major, , ) = explode('.', $version);
 
       if($major < 6)
         {

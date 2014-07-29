@@ -70,7 +70,7 @@ class FeedController extends AppController
     $this->disableLayout();
     $this->disableView();
 
-    $feedId = $this->_getParam('feed');
+    $feedId = $this->getParam('feed');
     if(!isset($feedId) || !is_numeric($feedId))
       {
       throw new Zend_Exception("Please set the feed Id");

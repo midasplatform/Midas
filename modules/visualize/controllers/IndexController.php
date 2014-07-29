@@ -27,10 +27,9 @@ class Visualize_IndexController extends Visualize_AppController
   /** index*/
   function indexAction()
     {
-    $itemId = $this->_getParam('itemId');
-    $height = $this->_getParam('height');
-    $width = $this->_getParam('width');
-    $viewMode = $this->_getParam('viewMode');
+    $height = $this->getParam('height');
+    $width = $this->getParam('width');
+    $viewMode = $this->getParam('viewMode');
     if(!isset($viewMode))
       {
       $viewMode = 'volume';
@@ -43,39 +42,39 @@ class Visualize_IndexController extends Visualize_AppController
       {
       $width = 500;
       }
-    $itemId = $this->_getParam('itemId');
+    $itemId = $this->getParam('itemId');
     $itemDao = $this->Item->load($itemId);
 
     if($this->ModuleComponent->Main->canVisualizeWithParaview($itemDao))
       {
       if($viewMode == 'slice')
         {
-        $this->_redirect('/visualize/paraview/slice?itemId='.$itemId.'&height='.$height.'&width='.$width);
+        $this->redirect('/visualize/paraview/slice?itemId='.$itemId.'&height='.$height.'&width='.$width);
         }
       else //normal volume rendering
         {
-        $this->_redirect('/visualize/paraview/?itemId='.$itemId.'&height='.$height.'&width='.$width);
+        $this->redirect('/visualize/paraview/?itemId='.$itemId.'&height='.$height.'&width='.$width);
         }
       }
     else if($this->ModuleComponent->Main->canVisualizeMedia($itemDao))
       {
-      $this->_redirect('/visualize/media/?itemId='.$itemId.'&height='.$height.'&width='.$width);
+      $this->redirect('/visualize/media/?itemId='.$itemId.'&height='.$height.'&width='.$width);
       }
     else if($this->ModuleComponent->Main->canVisualizeTxt($itemDao))
       {
-      $this->_redirect('/visualize/txt/?itemId='.$itemId.'&height='.$height.'&width='.$width);
+      $this->redirect('/visualize/txt/?itemId='.$itemId.'&height='.$height.'&width='.$width);
       }
     else if($this->ModuleComponent->Main->canVisualizeImage($itemDao))
       {
-      $this->_redirect('/visualize/image/?itemId='.$itemId.'&height='.$height.'&width='.$width);
+      $this->redirect('/visualize/image/?itemId='.$itemId.'&height='.$height.'&width='.$width);
       }
     else if($this->ModuleComponent->Main->canVisualizePdf($itemDao))
       {
-      $this->_redirect('/visualize/pdf/?itemId='.$itemId.'&height='.$height.'&width='.$width);
+      $this->redirect('/visualize/pdf/?itemId='.$itemId.'&height='.$height.'&width='.$width);
       }
     else if($this->ModuleComponent->Main->canVisualizeWebgl($itemDao))
       {
-      $this->_redirect('/visualize/webgl/?itemId='.$itemId.'&height='.$height.'&width='.$width);
+      $this->redirect('/visualize/webgl/?itemId='.$itemId.'&height='.$height.'&width='.$width);
       }
     else
       {

@@ -50,7 +50,6 @@ class DownloadBitstreamComponent extends AppComponent
       throw new Zend_Exception('Unable to find file on the disk');
       }
     $chunkSize = 1024 * 64;
-    $buffer = '';
     $fileSize = UtilityComponent::fileSize($path);
     $handle = fopen($path, 'rb');
     if($handle === false)

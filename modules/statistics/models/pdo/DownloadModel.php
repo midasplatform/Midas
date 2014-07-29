@@ -39,7 +39,7 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
             ->order('date DESC')
             ->limit($limit);
     $rowset = $this->database->fetchAll($sql);
-    foreach($rowset as $keyRow => $row)
+    foreach($rowset as $row)
       {
       $result[] = $this->initDao('Download', $row, 'statistics');
       }
@@ -65,7 +65,7 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
             ->order('date DESC')
             ->limit($limit);
     $rowset = $this->database->fetchAll($sql);
-    foreach($rowset as $keyRow => $row)
+    foreach($rowset as $row)
       {
       $result[] = $this->initDao('Download', $row, 'statistics');
       }
@@ -78,7 +78,6 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
    */
   function getCountInRange($ids, $startDate, $endDate, $limit = 99999)
     {
-    $result = array();
     $sql = $this->database->select()
             ->setIntegrityCheck(false)
             ->from(array('d' => 'statistics_download'), array('count' => 'count(*)'))
@@ -102,7 +101,7 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
             ->from(array('e' => 'statistics_download'))
             ->where('latitude = ?', '');
     $rowset = $this->database->fetchAll($sql);
-    foreach($rowset as $keyRow => $row)
+    foreach($rowset as $row)
       {
       $result[] = $this->initDao('Download', $row, 'statistics');
       }
@@ -152,7 +151,7 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
       }
     $rowset = $this->database->fetchAll($sql);
     $results = array();
-    foreach($rowset as $keyRow => $row)
+    foreach($rowset as $row)
       {
       $key = date('Y-m-d', strtotime($row['day']));
       $results[$key] = $row['count'];

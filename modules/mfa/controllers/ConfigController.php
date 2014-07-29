@@ -58,14 +58,14 @@ class Mfa_ConfigController extends Mfa_AppController
     $this->disableLayout();
     $this->disableView();
 
-    $userOtpControl = $this->_getParam('userOtpControl');
+    $userOtpControl = $this->getParam('userOtpControl');
     $userOtpValue = $userOtpControl ? 'true' : 'false';
 
-    $radiusServer = $this->_getParam('radiusServer');
-    $radiusPort = $this->_getParam('radiusPort');
-    $radiusPassword = $this->_getParam('radiusPassword');
-    $radiusTimeout = $this->_getParam('radiusTimeout');
-    $radiusMaxTries = $this->_getParam('radiusMaxTries');
+    $radiusServer = $this->getParam('radiusServer');
+    $radiusPort = $this->getParam('radiusPort');
+    $radiusPassword = $this->getParam('radiusPassword');
+    $radiusTimeout = $this->getParam('radiusTimeout');
+    $radiusMaxTries = $this->getParam('radiusMaxTries');
 
     $this->Setting->setConfig('userOtpControl', $userOtpValue, 'mfa');
     $this->Setting->setConfig('radiusServer', $radiusServer, 'mfa');
@@ -84,7 +84,7 @@ class Mfa_ConfigController extends Mfa_AppController
   function usertabAction()
     {
     $this->disableLayout();
-    $userId = $this->_getParam('userId');
+    $userId = $this->getParam('userId');
     $userOtpSetting = $this->Setting->GetValueByName('userOtpControl', 'mfa');
     $userOtpControl = $userOtpSetting === 'true';
     if(!$userOtpControl && !$this->userSession->Dao->isAdmin())
@@ -148,7 +148,7 @@ class Mfa_ConfigController extends Mfa_AppController
       throw new Zend_Exception('Only administrators are allowed to manage OTP settings');
       }
 
-    $userId = $this->_getParam('userId');
+    $userId = $this->getParam('userId');
     if(!isset($userId))
       {
       throw new Zend_Exception('Must pass a userId parameter');
@@ -168,7 +168,7 @@ class Mfa_ConfigController extends Mfa_AppController
       throw new Zend_Exception('Permission denied');
       }
     $otpDevice = $this->Mfa_Otpdevice->getByUser($user);
-    $useOtp = $this->_getParam('useOtp');
+    $useOtp = $this->getParam('useOtp');
     if(!isset($useOtp))
       {
       if($otpDevice)
@@ -185,9 +185,9 @@ class Mfa_ConfigController extends Mfa_AppController
         $otpDevice->setUserId($user->getKey());
         $otpDevice->setCounter('0');
         }
-      $otpDevice->setAlgorithm($this->_getParam('algorithm'));
-      $otpDevice->setSecret($this->_getParam('secret'));
-      $otpDevice->setLength($this->_getParam('length'));
+      $otpDevice->setAlgorithm($this->getParam('algorithm'));
+      $otpDevice->setSecret($this->getParam('secret'));
+      $otpDevice->setLength($this->getParam('length'));
       $this->Mfa_Otpdevice->save($otpDevice);
       echo JsonComponent::encode(array('status' => 'ok', 'message' => 'OTP Authentication enabled'));
       }

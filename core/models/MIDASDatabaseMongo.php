@@ -154,7 +154,7 @@ class MIDASDatabaseMongo implements MIDASDatabaseInterface
       else
         {
         $collection = $this->_name;
-        $result = $this->_db->$collection->insert($dataarray);
+        $this->_db->$collection->insert($dataarray);
         $keyvalue = $dataarray['_id'];
         }
       }
@@ -173,8 +173,8 @@ class MIDASDatabaseMongo implements MIDASDatabaseInterface
    */
   public function delete($dao)
     {
-    $instanc .= ucfirst($this->_name)."Dao";
-    if(get_class($dao) !=  $instance)
+    $instance = ucfirst($this->_name)."Dao";
+    if(get_class($dao) != $instance)
       {
       throw new Zend_Exception("Should be an object (".$instance."). It was: ".get_class($dao) );
       }
@@ -189,7 +189,7 @@ class MIDASDatabaseMongo implements MIDASDatabaseInterface
       return false;
       }
 
-    $ke .= $dao->getKey();
+    $key = $dao->getKey();
     if(!isset($key))
       {
       throw new Zend_Exception("Unable to find the key" );
@@ -266,14 +266,11 @@ class MIDASDatabaseMongo implements MIDASDatabaseInterface
       }
     else if($this->_mainData[$var]['type'] == MIDAS_ONE_TO_MANY)
       {
-      $model = MidasLoader::loadModel($this->_mainData[$var]['model']);
       if(!$dao->get($this->_mainData[$var]['parent_column']))
         {
         throw new Zend_Exception($this->_mainData[$var]['parent_column']. " is not defined in the dao: ".get_class($dao));
         }
       throw new Zend_Exception('MIDASDatabaseMongo::getValue() MIDAS_ONE_TO_MANY not defined yet. You can implement it ifyou want :)');
-
-      //return $model->__call("findBy" . ucfirst($this->_mainData[$var]['child_column']), array($dao->get($this->_mainData[$var]['parent_column'])));
       }
     else if($this->_mainData[$var]['type'] == MIDAS_MANY_TO_ONE)
       {

@@ -97,7 +97,7 @@ class Api_IndexController extends Api_AppController
       $moduleName = array_shift($tokens);
       $moduleMethod = implode('', $tokens);
       $retVal = Zend_Registry::get('notifier')->callback('CALLBACK_API_METHOD_'.strtoupper($moduleName), array('methodName' => $moduleMethod));
-      foreach($retVal as $module => $method)
+      foreach($retVal as $method)
         {
         $this->apicallbacks[$method_name] = array($method['object'], $method['method']);
         break;
@@ -148,16 +148,14 @@ class Api_IndexController extends Api_AppController
     $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
-    $request_data = $this->_getAllParams();
-
-    $method_name = $this->_getParam('method');
+    $method_name = $this->getParam('method');
     if(!isset($method_name))
       {
       echo 'Inconsistent request: please set a method parameter';
       exit;
       }
 
-    $request_data = $this->_getAllParams();
+    $request_data = $this->getAllParams();
     $this->_computeApiCallback($method_name, $this->apiSetup['apiMethodPrefix']);
     // Handle XML-RPC request
     $this->kwWebApiCore = new KwWebApiRestCore($this->apiSetup, $this->apicallbacks, $request_data);
@@ -169,24 +167,16 @@ class Api_IndexController extends Api_AppController
     $this->disableLayout();
     $this->_helper->viewRenderer->setNoRender();
 
-    $request_data = $this->_getAllParams();
-
-    $method_name = $this->_getParam('method');
+    $method_name = $this->getParam('method');
     if(!isset($method_name))
       {
       echo 'Inconsistent request: please set a method parameter';
       exit;
       }
 
-    $request_data = $this->_getAllParams();
+    $request_data = $this->getAllParams();
     $this->_computeApiCallback($method_name, $this->apiSetup['apiMethodPrefix']);
     // Handle XML-RPC request
     $this->kwWebApiCore = new KwWebApiRestCore($this->apiSetup, $this->apicallbacks, array_merge($request_data, array('format' => 'json')));
-    }
-
-  /** Allows components to call redirect */
-  function redirect($url, array $options = array())
-    {
-    $this->_redirect($url, $options);
     }
   } // end class

@@ -48,7 +48,7 @@ class Cleanup_ConfigController extends Cleanup_AppController
       {
       $this->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
-      $submitConfig = $this->_getParam('submitConfig');
+      $submitConfig = $this->getParam('submitConfig');
       if(isset($submitConfig))
         {
         $jobModel = MidasLoader::loadModel('Job', 'scheduler');
@@ -73,17 +73,17 @@ class Cleanup_ConfigController extends Cleanup_AppController
           $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
           $job->setCreatorId($this->userSession->Dao->getKey());
           $job->setParams(JsonComponent::encode(array('tempDirectory' => $this->getTempDirectory(),
-                                                      'days' => $this->_getParam('olderThan'))));
+                                                      'days' => $this->getParam('olderThan'))));
           $jobModel->save($job);
           }
         else
           {
           $jobReport->setParams(JsonComponent::encode(array('tempDirectory' => $this->getTempDirectory(),
-                                                            'days' => $this->_getParam('olderThan'))));
+                                                            'days' => $this->getParam('olderThan'))));
           $jobModel->save($jobReport);
           }
 
-        $config->days = $this->_getParam('olderThan');
+        $config->days = $this->getParam('olderThan');
 
         $writer = new Zend_Config_Writer_Ini();
         $writer->setConfig($config);

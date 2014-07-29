@@ -31,7 +31,7 @@ class Archive_ExtractController extends Archive_AppController
   public function dialogAction()
     {
     $this->disableLayout();
-    $this->view->itemId = $this->_getParam('itemId');
+    $this->view->itemId = $this->getParam('itemId');
     }
 
   /**
@@ -42,8 +42,8 @@ class Archive_ExtractController extends Archive_AppController
     {
     $this->disableView();
     $this->disableLayout();
-    $itemId = $this->_getParam('itemId');
-    $deleteArchive = $this->_getParam('deleteArchive');
+    $itemId = $this->getParam('itemId');
+    $deleteArchive = $this->getParam('deleteArchive');
     $deleteArchive = $deleteArchive !== 'false'; //passed as a string
 
     if(!isset($itemId))

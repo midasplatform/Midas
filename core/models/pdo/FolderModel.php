@@ -539,10 +539,8 @@ class FolderModel extends FolderModelBase
       throw new Zend_Exception('This name is already used');
       }
 
-    $node_id = $folder->getKey();
     $node_pos_left = $folder->getLeftIndice();
     $node_pos_right = $folder->getRightIndice();
-    $parent_id = $parent->getKey();
 
     $parent_pos_right = $parent->getRightIndice();
     $node_size = $node_pos_right - $node_pos_left + 1;
@@ -993,7 +991,7 @@ class FolderModel extends FolderModelBase
                                                                'user' => $userDao,
                                                                'limit' => $limit));
     $override = false;
-    foreach($overrideSearch as $module => $results)
+    foreach($overrideSearch as $results)
       {
       $override = true;
       $queryResults = $results;

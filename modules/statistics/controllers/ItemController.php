@@ -33,7 +33,7 @@ class Statistics_ItemController extends Statistics_AppController
    */
   function indexAction()
     {
-    $itemIds = $this->_getParam('id');
+    $itemIds = $this->getParam('id');
     $ids = explode(',', $itemIds);
     $count = 0;
     $totalview = 0;
@@ -81,7 +81,7 @@ class Statistics_ItemController extends Statistics_AppController
         }
       }
 
-    $limit = $this->_getParam('limit');
+    $limit = $this->getParam('limit');
     if(isset($limit) && is_numeric($limit) && $limit > 0)
       {
       $limit = (int)$limit;
@@ -91,12 +91,12 @@ class Statistics_ItemController extends Statistics_AppController
       $limit = 1000;
       }
 
-    $startDate = $this->_getParam('startDate');
+    $startDate = $this->getParam('startDate');
     if(!isset($startDate))
       {
       $startDate = date('m/d/Y', strtotime('-1 month'));
       }
-    $endDate = $this->_getParam('endDate');
+    $endDate = $this->getParam('endDate');
     if(!isset($endDate))
       {
       $endDate = date('m/d/Y');
@@ -130,7 +130,7 @@ class Statistics_ItemController extends Statistics_AppController
     $this->disableLayout();
     $this->disableView();
 
-    $itemIds = $this->_getParam('itemId');
+    $itemIds = $this->getParam('itemId');
     $ids = explode(',', $itemIds);
     $idArray = array();
     foreach($ids as $id)
@@ -149,23 +149,23 @@ class Statistics_ItemController extends Statistics_AppController
         $idArray[] = $item->getKey();
         }
       }
-    if($this->_getParam('startdate') == '')
+    if($this->getParam('startdate') == '')
       {
       $startDate = date('Y-m-d');
       }
     else
       {
-      $startDate = date('Y-m-d', strtotime($this->_getParam('startdate')));
+      $startDate = date('Y-m-d', strtotime($this->getParam('startdate')));
       }
-    if($this->_getParam('enddate') == '')
+    if($this->getParam('enddate') == '')
       {
       $endDate = date('Y-m-d  23:59:59');
       }
     else
       {
-      $endDate = date('Y-m-d 23:59:59', strtotime($this->_getParam('enddate')));
+      $endDate = date('Y-m-d 23:59:59', strtotime($this->getParam('enddate')));
       }
-    $limit = $this->_getParam('limit');
+    $limit = $this->getParam('limit');
 
     if(!isset($limit) || $limit < 0)
       {

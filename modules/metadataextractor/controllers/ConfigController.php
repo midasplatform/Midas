@@ -48,10 +48,10 @@ class Metadataextractor_ConfigController extends Metadataextractor_AppController
       {
       $this->_helper->layout->disableLayout();
       $this->_helper->viewRenderer->setNoRender();
-      $submitConfig = $this->_getParam('submitConfig');
+      $submitConfig = $this->getParam('submitConfig');
       if(isset($submitConfig))
         {
-        $config->hachoir = $this->_getParam('hachoir');
+        $config->hachoir = $this->getParam('hachoir');
         $writer = new Zend_Config_Writer_Ini();
         $writer->setConfig($config);
         $writer->setFilename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini');

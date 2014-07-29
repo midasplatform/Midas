@@ -57,7 +57,7 @@ class ProgressController extends AppController
    */
   public function getAction()
     {
-    $progressId = $this->_getParam('progressId');
+    $progressId = $this->getParam('progressId');
     if(!isset($progressId))
       {
       throw new Zend_Exception('Must pass progressId parameter');

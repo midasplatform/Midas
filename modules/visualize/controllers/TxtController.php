@@ -26,7 +26,7 @@ class Visualize_TxtController extends Visualize_AppController
     {
     $this->disableLayout();
     $this->disableView();
-    $itemid = $this->_getParam('itemId');
+    $itemid = $this->getParam('itemId');
     $item = $this->Item->load($itemid);
 
     if($item === false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))

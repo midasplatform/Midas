@@ -33,10 +33,10 @@ class SearchController extends AppController
     $this->view->activemenu = 'feed'; // set the active menu
 
     // ifthe number of parameters is more than 3 then it's the liveAction or advanced search
-    if(count($this->_getAllParams()) == 3)
+    if(count($this->getAllParams()) == 3)
       {
       $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
-      $this->_forward('index', null, null, array('q' => $actionName));
+      $this->forward('index', null, null, array('q' => $actionName));
       }
     }  // end init()
 
@@ -48,8 +48,8 @@ class SearchController extends AppController
     // Pass the keyword to javascript
     $keyword = $this->getRequest()->getParam('q');
 
-    $ajax = $this->_getParam('ajax');
-    $order = $this->_getParam('order');
+    $ajax = $this->getParam('ajax');
+    $order = $this->getParam('order');
     if(!isset($order))
       {
       $order = 'relevance';
@@ -107,7 +107,7 @@ class SearchController extends AppController
           {
           continue;
           }
-        foreach($groups as $key => $group)
+        foreach($groups as $group)
           {
           $group->setName($communitieDao->getName().' ('.$group->getName().')');
           $group->community = $communitieDao;
@@ -127,7 +127,7 @@ class SearchController extends AppController
       $GroupsDao = array();
       // Search for the users
       $UsersDao = $this->User->getUsersFromSearch($search, $this->userSession->Dao);
-      $allowEmail = $this->_getParam('allowEmail');
+      $allowEmail = $this->getParam('allowEmail');
       if(isset($allowEmail))
         {
         $validator = new Zend_Validate_EmailAddress();
