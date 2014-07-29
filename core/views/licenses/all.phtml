@@ -35,7 +35,7 @@
     echo '  <div><input class="licenseName" type="text" name="name" value="'.$license->getName().'" /></div>';
     echo '  <div><textarea class="licenseText" name="fulltext">'.htmlentities($license->getFulltext()).'</textarea></div>';
     echo '  <input type="hidden" name="licenseId" value="'.$license->getKey().'" />';
-    echo '  <div><input class="globalButton" style="margin-left: 0px;" type="submit" name="submit" value="Save" /></form>';
+    echo '  <div><input class="globalButton" style="margin-left: 0;" type="submit" name="submit" value="Save" /></form>';
     echo '  <input element="'.$license->getKey().'" class="globalButton deleteLicense" style="margin-left: 10px;" type="button" value="Delete" />';
     echo '  </div>';
     echo '</div>';
@@ -48,6 +48,6 @@
   <form class="genericForm newLicense" action="<?php echo $this->webroot; ?>/licenses/create" method="POST">
     <div><input class="licenseName" type="text" name="name" value="" /></div>
     <div><textarea class="licenseText" name="fulltext"></textarea></div>
-    <div><input class="globalButton" style="margin-left: 0px;" type="submit" name="submit" value="Create" /></div>
+    <div><input class="globalButton" style="margin-left: 0;" type="submit" name="submit" value="Create" /></div>
   </form>
 </div>

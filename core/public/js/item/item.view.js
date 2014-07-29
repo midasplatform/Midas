@@ -15,7 +15,7 @@ $(document).ready(function () {
                     'Would you like to use the applet?';
 
                 html += '<div style="margin-top: 20px; float: right">';
-                html += '<input type="button" style="margin-left: 0px;" class="globalButton useLargeDataApplet" value="Yes, use large downloader"/>';
+                html += '<input type="button" style="margin-left: 0;" class="globalButton useLargeDataApplet" value="Yes, use large downloader"/>';
                 html += '<input type="button" style="margin-left: 10px;" class="globalButton useZipStream" value="No, use normal download"/>';
                 html += '</div>';
                 midas.showDialogWithContent('Large download requested', html, false, {

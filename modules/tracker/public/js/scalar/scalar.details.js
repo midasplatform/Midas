@@ -3,7 +3,7 @@
 $('#deleteScalar').click(function () {
     var html = "Are you sure you want to delete this scalar value?";
     html += '<div style="float: right; margin-top: 15px;">';
-    html += '<input type="button" style="margin-left: 0px;" class="globalButton" id="deleteScalarYes" value="Yes" />';
+    html += '<input type="button" style="margin-left: 0;" class="globalButton" id="deleteScalarYes" value="Yes" />';
     html += '<input type="button" style="margin-left: 10px;" class="globalButton" id="deleteScalarNo" value="Cancel" />';
     html += '<input type="hidden" class="scalarIdChild" value="' + $('input.scalarId').val() + '" />';
     html += '</div>';

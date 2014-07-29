@@ -290,7 +290,7 @@ $(document).ready(function () {
     $('input[name=importFolder]').val('');
     $('input[name=importFolder]').attr('id', 'destinationId');
     $('input[name=importFolder]').hide();
-    $('input[name=importFolder]').before('<input style="margin-left:0px;" id="browseMIDASLink" class="globalButton" type="button" value="Select location" />');
+    $('input[name=importFolder]').before('<input style="margin-left:0;" id="browseMIDASLink" class="globalButton" type="button" value="Select location" />');
     $('input[name=importFolder]').before('<span style="margin-left:5px;" id="destinationUpload"/>');
     $('#browseMIDASLink').click(function () {
         midas.loadDialog("select", "/browse/movecopy/?selectElement=true");
