@@ -107,8 +107,8 @@ class ImportControllerTest extends ControllerTestCase
     }
 
   /**
-   * Function for tearing down the test hiearchy. It is assumed that
-   * createTestHierarchy has been run befor it is called.
+   * Function for tearing down the test hierarchy. It is assumed that
+   * createTestHierarchy has been run before it is called.
    */
   protected function destroyTestHierarchy()
     {

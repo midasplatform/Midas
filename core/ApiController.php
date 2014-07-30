@@ -76,19 +76,19 @@ class ApiController extends REST_Controller
     }
 
   /**
-   * Generic wapper function called by restful actions.
+   * Generic wrapper function called by RESTful actions.
    * With the given arguments, it calls the related function in the corresponding
    * ApiComponent and then fill http status code and results in the response.
    *
    * @param array $args Parameters got from http request.
-   * @param string $restAction  Restful actions: get, index, post, put or delete.
+   * @param string $restAction  RESTful actions: get, index, post, put or delete.
    * @param array $apiFunctions An array of
-   *    method name in restful action  =>  function name in correspoding ApiComponent
+   *    method name in RESTful action  =>  function name in corresponding ApiComponent
    *  This array must have 'default' in its keys.
    * @param string $moduleName Which module to get the ApiComponent
    *
    * Example:
-   * _generacAction(array('id' => 2), 'get', $apiFunctionArray)  is called
+   * _genericAction(array('id' => 2), 'get', $apiFunctionArray)  is called
    *  and $apiFunctionArray is
    *   $apiFunctions = array(
    *     'default' => 'itemMove',
@@ -143,7 +143,7 @@ class ApiController extends REST_Controller
       list($apiResults['error'], $httpCode) = $this->_exceptionHandler($e);
       }
     $this->_response->setHttpResponseCode($httpCode);
-    // only the data assigned to '$this->view->apiresults' will be serilized
+    // only the data assigned to '$this->view->apiresults' will be serialized
     // in requested format (json, xml, etc) and filled in response body
     $this->view->apiresults = $apiResults;
     }

@@ -572,7 +572,7 @@ class ApisystemComponent extends AppComponent
 
   /**
    * Get the metadata qualifiers stored in the system for a given metadata type
-   * and element. If the typename is specified, it will be used instead of the
+   * and element. If the type name is specified, it will be used instead of the
    * type.
    * @path /system/metadataqualifiers
    * @http GET
@@ -603,7 +603,7 @@ class ApisystemComponent extends AppComponent
 
   /**
    * Get the metadata elements stored in the system for a given metadata type.
-   * If the typename is specified, it will be used instead of the index.
+   * If the type name is specified, it will be used instead of the index.
    * @path /system/metadaelements
    * @http GET
    * @param type the metadata type index

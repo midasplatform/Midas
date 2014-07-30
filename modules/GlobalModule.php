@@ -25,7 +25,7 @@ require_once BASE_PATH.'/core/AppController.php';
  */
 class MIDAS_GlobalModule extends AppController
   {
-  /** contructor*/
+  /** constructor */
   public function __construct(Zend_Controller_Request_Abstract $request, Zend_Controller_Response_Abstract $response, array $invokeArgs = array())
     {
     parent::__construct($request, $response, $invokeArgs);
@@ -94,7 +94,7 @@ class MIDAS_GlobalModule extends AppController
   /**
    * Post-dispatch routines
    *
-   * Common usages for postDispatch() include rendering content in a sitewide
+   * Common usages for postDispatch() include rendering content in a site-wide
    * template, link url correction, setting headers, etc.
    *
    * @return void

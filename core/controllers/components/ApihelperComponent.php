@@ -454,7 +454,7 @@ class ApihelperComponent extends AppComponent
     }
 
   /**
-   * Rename a request parameter's key to provide backward compatibility for existing WebAPIs .
+   * Rename a request parameter's key to provide backward compatibility for existing web APIs.
    */
   public function renameParamKey(&$args, $oldKey, $newKey, $oldKeyRequired = true)
     {

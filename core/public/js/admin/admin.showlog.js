@@ -172,7 +172,7 @@ $(document).ready(function () {
         $('input.logSelect').enableCheckboxRangeSelection();
     });
 
-    // Select/deslect all entries action
+    // Select/deselect all entries action
     $('#selectAllCheckbox').click(function () {
         $('input.logSelect').prop("checked", this.checked);
     });

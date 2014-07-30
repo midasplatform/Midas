@@ -30,7 +30,7 @@ $(document).ready(function () {
     $("table#browseTable").show();
 });
 
-// dependance: common/browser.js
+// dependence: common/browser.js
 var ajaxSelectRequest = '';
 
 function callbackSelect(node) {

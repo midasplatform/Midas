@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- *  WebApi controller for Search Resource (in solr module)
+ *  Web API controller for the Search resource (in solr module)
  */
 class Apisolr_SearchController extends ApiController
   {

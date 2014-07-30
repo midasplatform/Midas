@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- *  WebApi controller for Quota Resource (in sizequota module)
+ *  Web API controller for the Quota resource (in sizequota module)
  */
 class Apisizequota_QuotaController extends ApiController
   {

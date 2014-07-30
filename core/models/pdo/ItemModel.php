@@ -654,7 +654,7 @@ class ItemModel extends ItemModelBase
    * it exists, add appendix to the original file name.
    * The following naming convention is used:
    * Assumption: if an item's name is like "aaa.txt (1)", the name should not be this item's real name, but its modified name in Midas when it is created.
-   * This item's real name should be 'aaa.txt' which doesn't have / \(d+\)/ like appendix .
+   * This item's real name should be 'aaa.txt' which does not have / \(d+\)/ like appendix .
    * So when an item named "aaa.txt (1)" is duplicated, the newly created item will be called "aaa.txt (2)" instead of "aaa.txt (1) (1)"
    *
    * @method updateItemName()

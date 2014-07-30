@@ -56,7 +56,7 @@ function assetstoreSubmit(formData, jqForm, options) {
     $(".assetstoreLoading").show();
 } // end assetstoreBeforeSubmit
 
-/** On assetstore add sucess */
+/** On assetstore add success */
 function assetstoreAddCallback(responseText, statusText, xhr, $form) {
     $(".assetstoreLoading").hide();
     if (responseText.error) {

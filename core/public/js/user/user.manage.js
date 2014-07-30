@@ -27,7 +27,7 @@ $(document).ready(function () {
 
 });
 
-// dependance: common/browser.js
+// dependence: common/browser.js
 var ajaxSelectRequest = '';
 
 function callbackSelect(node) {

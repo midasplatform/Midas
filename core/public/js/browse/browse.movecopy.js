@@ -3,7 +3,7 @@
 var midas = midas || {};
 midas.browse = midas.browse || {};
 
-// dependance: common/browser.js
+// dependence: common/browser.js
 midas.ajaxSelectRequest = '';
 midas.browse.moveCopyCallbackSelect = function (node) {
     var selectedElement = node.find('span:eq(1)').html();

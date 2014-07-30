@@ -15,7 +15,7 @@
 
 		#info {
 			position: absolute;
-			bottom: 0px;
+			bottom: 0;
 			width: 100%;
 			padding: 5px;
 			z-index: 100;
@@ -42,7 +42,7 @@
       position:absolute!important;
       -webkit-box-shadow: #666 0 0 15px;
       box-shadow: #666 0 0 15px;
-      -moz-box-shadow: 0px 0px 15px #666;
+      -moz-box-shadow: 0 0 15px #666;
       border-image: initial;
     }
 
@@ -78,5 +78,5 @@
 
     div#axesContainer{
       position:absolute;
-      bottom:0px;
+      bottom:0;
     }

@@ -52,22 +52,6 @@ class Api_ApiComponent extends AppComponent
       }
     }
 
-  /**
-   * Rename a request parameter's key to provide backward compatibility for existing WebAPIs .
-   */
-  private function _renameParamKey(&$args, $oldKey, $newKey, $oldKeyRequired = true)
-    {
-    if($oldKeyRequired)
-      {
-      $this->_validateParams($args, array($oldKey));
-      }
-    if(isset($args[$oldKey]))
-      {
-      $args[$newKey] = $args[$oldKey];
-      unset($args[$oldKey]);
-      }
-    }
-
   /** Return the user dao */
   private function _getUser($args)
     {
@@ -770,7 +754,7 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
-   * Duplicate an item to the desination folder
+   * Duplicate an item to the destination folder
    * @param token Authentication token
    * @param id The id of the item
    * @param dstfolderid The id of destination folder where the item is duplicated to
@@ -928,9 +912,9 @@ class Api_ApiComponent extends AppComponent
    * Returns a user either by id or by email or by first name and last name.
    * @param user_id The id of the user desired (ignores firstname and lastname)
    * @param email The email of the user desired
-   * @param firstname The first name of the desired user (use with lastname)
-   * @param lastname The last name of the desired user (use with firstname)
-   * @return The user corresponding to the user_id or first and lastname
+   * @param firstname The first name of the desired user (use with last name)
+   * @param lastname The last name of the desired user (use with first name)
+   * @return The user corresponding to the user_id or first and last name
    */
   function userGet($args)
     {
@@ -1023,7 +1007,7 @@ class Api_ApiComponent extends AppComponent
 
   /**
    * Get the metadata elements stored in the system for a given metadata type.
-   * If the typename is specified, it will be used instead of the index.
+   * If the type name is specified, it will be used instead of the index.
    * @param type the metadata type index
    * @param typename (optional) the metadata type name
    */
@@ -1034,7 +1018,7 @@ class Api_ApiComponent extends AppComponent
 
   /**
    * Get the metadata qualifiers stored in the system for a given metadata type
-   * and element. If the typename is specified, it will be used instead of the
+   * and element. If the type name is specified, it will be used instead of the
    * type.
    * @param type the metadata type index
    * @param element the metadata element under which the qualifier is collated
@@ -1100,7 +1084,7 @@ class Api_ApiComponent extends AppComponent
 
   /**
    * list the users for a group, requires admin privileges on the community
-   * assiated with the group
+   * associated with the group
    * @param group_id id of group
    * @return array users => a list of user ids mapped to a two element list of
    * user firstname and lastname

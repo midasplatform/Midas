@@ -529,7 +529,7 @@ class CommunityController extends AppController
     }
 
   /**
-   * Helper method to create an invitaton record to the group and send an email to the existing user
+   * Helper method to create an invitation record to the group and send an email to the existing user
    */
   private function _sendUserInvitation($userDao, $groupDao)
     {

@@ -471,7 +471,7 @@ class AppController extends MIDAS_GlobalController
     return UtilityComponent::getServerURL();
     }
 
-  /** check if testing environement is set */
+  /** check if testing environment is set */
   public function isTestingEnv()
     {
     return Zend_Registry::get('configGlobal')->environment == 'testing';
@@ -596,7 +596,7 @@ class AppController extends MIDAS_GlobalController
 
   /**completion eclipse*/
   /**
-  * Assetstrore Model
+  * Assetstore Model
   * @var AssetstoreModelBase
   */
   var $Assetstore;

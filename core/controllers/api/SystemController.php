@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- *  WebApi Controller for System Resource
+ *  Web API controller for the System resource
  */
 class Rest_SystemController extends ApiController
   {

@@ -27,8 +27,8 @@
  *     - an element: ajax_web_api.thtml look in assetstore for usage
  *     - should need to put the "writing" of the auth token info in some common controller code
  *     - then include the element in any view
- *     - then the json .js wrapper will automaticially negotiate
- *     - change ajax callst o be through web api, and standard ajax
+ *     - then the json .js wrapper will automatically negotiate
+ *     - change ajax calls to be through web api, and standard ajax
  */
 class Batchmake_ConfigController extends Batchmake_AppController
   {

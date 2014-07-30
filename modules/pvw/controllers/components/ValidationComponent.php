@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- * This component conatins method for testing
+ * This component contains method for testing
  * whether a Midas item can be visualized using
  * various paraviewweb apps
  */

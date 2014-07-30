@@ -67,5 +67,5 @@ class Dicomextractor_Notification extends ApiEnabled_Notification
     {
     $return = $this->ModuleComponent->Extractor->isDCMTKWorking();
     return $return;
-    }//end _getDasboard
-  } // end class
+    }
+  }

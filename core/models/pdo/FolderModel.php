@@ -77,7 +77,7 @@ class FolderModel extends FolderModelBase
       }
     }
 
-  /** check ifthe policy is valid*/
+  /** check if the policy is valid*/
   function policyCheck($folderDao, $userDao = null, $policy = 0)
     {
     if(!$folderDao instanceof  FolderDao || !is_numeric($policy))

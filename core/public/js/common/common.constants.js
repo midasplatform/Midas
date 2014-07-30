@@ -7,7 +7,7 @@ var midas = midas || {}; // idiom for creating a namespace
 
 /**
  * Called when the folder is changed on the upload dialog. This callback is
- * envoked upon an object with 'folderName' and 'folderId' defined.
+ * invoked upon an object with 'folderName' and 'folderId' defined.
  */
 midas.CALLBACK_CORE_UPLOAD_FOLDER_CHANGED = 'CALLBACK_CORE_UPLOAD_FOLDER_CHANGED';
 

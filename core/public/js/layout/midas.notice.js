@@ -74,7 +74,7 @@ midas.createGrowl = function (persistent, text, delay, extraClasses) {
         },
         style: {
             classes: 'jgrowl ui-tooltip-dark ui-tooltip-rounded',
-            tip: false // No tips for this one (optional ofcourse)
+            tip: false // No tips for this one (optional of course)
         },
         events: {
             render: function (event, api) {

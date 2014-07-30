@@ -77,7 +77,7 @@ class UTF8Tools
 
   /**
    * gets a list of all files rooted at the src, excluding
-   * certain subdirs, extensions, and filenames.
+   * certain subdirectories, extensions, and filenames.
    */
   function getMatchingFilesRecursive($src, $dir = '')
     {

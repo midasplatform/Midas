@@ -85,7 +85,7 @@ class UserController extends AppController
       $this->disableView();
       $user = $this->User->getByEmail($email);
 
-       // Check ifthe email is already registered
+       // Check if the email is already registered
       if(!$user)
         {
         echo JsonComponent::encode(array(false, $this->t('No user registered with that email.')));

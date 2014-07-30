@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- *  WebApi controller for Item Resource (in dicomextractor module)
+ *  Web API controller for the Item resource (in dicomextractor module)
  */
 class Apidicomextractor_ItemController extends ApiController
   {

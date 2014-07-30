@@ -33,7 +33,7 @@ class MIDAS_Notification
     return InternationalizationComponent::translate($text);
     } //end method t
 
-  /** contructor*/
+  /** constructor*/
   public function __construct()
     {
     $this->loadElements();

@@ -562,7 +562,7 @@ class ApiitemComponent extends AppComponent
     }
 
   /**
-   * Move an item from the source folder to the desination folder
+   * Move an item from the source folder to the destination folder
    * @path /item/move/{id}
    * @http PUT
    * @param id The id of the item

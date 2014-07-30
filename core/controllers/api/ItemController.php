@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- *  WebApi Controller for Item Resource
+ *  Web API Controller for the Item resource
  */
 class Rest_ItemController extends ApiController
   {

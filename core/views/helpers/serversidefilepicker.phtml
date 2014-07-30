@@ -72,7 +72,7 @@
 .fp-container {
       }
 
-/* The fp-XXX-pannel is the div that gets lighted */
+/* The fp-XXX-panel is the div that gets lighted */
 #fp-<?php echo $fp_uuid?>-panel {
         display:none;
         position:fixed;
@@ -80,21 +80,21 @@
         left:50%;
         margin-left:-200px;
         width:<?php echo $width?>px;
-        background:#FFFFFF;
+        background:#FFF;
         padding:10px 15px 10px 15px;
-        border:2px solid #CCCCCC;
+        border:2px solid #CCC;
         z-index:1001;
         }
 
-/* The fp-XXX-pannel is the div that covers the rest of the page */
+/* The fp-XXX-panel is the div that covers the rest of the page */
 #fp-<?php echo $fp_uuid?>-background {
          display:none;
-         background:#000000;
+         background:#000;
          opacity:0.5;
          filter:alpha(opacity=90);
          position:absolute;
-         top:0px;
-         left:0px;
+         top:0;
+         left:0;
          min-width:100%;
          min-height:100%;
          z-index:1000;
@@ -103,10 +103,9 @@
 .fp-fileTree {
         width: <?php echo $width?>px;
         height: 300px;
-        border-top: solid 1px #BBB;
-        border-left: solid 1px #BBB;
-        border-bottom: solid 1px #FFF;
-        border-right: solid 1px #FFF;
+        border: 1px solid #BBB;
+        border-right-color: #FFF;
+        border-bottom-color: #FFF;
         background: #FFF;
         overflow: scroll;
         padding: 5px;

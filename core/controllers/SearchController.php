@@ -32,7 +32,7 @@ class SearchController extends AppController
     {
     $this->view->activemenu = 'feed'; // set the active menu
 
-    // ifthe number of parameters is more than 3 then it's the liveAction or advanced search
+    // if the number of parameters is more than 3 then it's the liveAction or advanced search
     if(count($this->getAllParams()) == 3)
       {
       $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();

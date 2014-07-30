@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- *  WebApi Controller for Bitstream Resource
+ *  Web API controller for the Bitstream resource
  */
 class Rest_BitstreamController extends ApiController
   {

@@ -100,7 +100,7 @@ class Tracker_ApiComponent extends AppComponent
    * @param configItemId (Optional) If this value pertains to a specific configuration item, pass its id here
    * @param testDatasetId (Optional) If this value pertains to a specific test dataset, pass its id here
    * @param truthDatasetId (Optional) If this value pertains to a specific ground truth dataset, pass its id here
-   * @param silent (Optional) If set, do not perform treshold-based email notifications for this scalar
+   * @param silent (Optional) If set, do not perform threshold-based email notifications for this scalar
    * @param unofficial (Optional) If passed, creates an unofficial scalar visible only to the user performing the submission
    * @return The scalar dao that was created
    */
@@ -279,7 +279,7 @@ class Tracker_ApiComponent extends AppComponent
    * @param testDatasetId (Optional) If this value pertains to a specific test dataset, pass its id here
    * @param truthDatasetId (Optional) If this value pertains to a specific ground truth dataset, pass its id here
    * @param parentKeys (Optional) Semicolon-separated list of parent keys to look for numeric results under.  Use '.' to denote nesting, like in normal javascript syntax.
-   * @param silent (Optional) If set, do not perform treshold-based email notifications for this scalar
+   * @param silent (Optional) If set, do not perform threshold-based email notifications for this scalar
    * @param unofficial (Optional) If passed, creates an unofficial scalar visible only to the user performing the submission
    * @return The list of scalars that were created.  Non-numeric values are ignored.
    */
@@ -500,7 +500,7 @@ class Tracker_ApiComponent extends AppComponent
     }
 
   /**
-   * Find an item by name within the community, or create it in the community's private folder if it doesn't exist
+   * Find an item by name within the community, or create it in the community's private folder if it does not exist
    */
   private function _createOrFindByName($itemName, $community)
     {

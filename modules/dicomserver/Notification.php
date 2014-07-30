@@ -69,7 +69,7 @@ class Dicomserver_Notification extends ApiEnabled_Notification
     {
     $return = $this->ModuleComponent->Server->isDICOMServerWorking();
     return $return;
-    }//end _getDasboard
+    }
 
   /** Some html to be appended to the item view sidebar */
   public function getItemInfo($params)

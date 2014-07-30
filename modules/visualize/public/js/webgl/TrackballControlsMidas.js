@@ -326,7 +326,7 @@ THREE.TrackballControlsMidas = function ( object, domElement ) {
 
 		if ( _state === STATE.NONE ) {
 
-			return;
+
 
 		} else if ( _state === STATE.ROTATE && !_this.noRotate ) {
 

@@ -18,7 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/** Image controler*/
+/** Image controller */
 class Visualize_ImageController extends Visualize_AppController
   {
   public $_models = array('Item', 'ItemRevision', 'Bitstream');

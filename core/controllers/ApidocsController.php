@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- * Apidocs Controller for WebApi
+ * Apidocs Controller for the web API
  **/
 class ApidocsController extends AppController
   {

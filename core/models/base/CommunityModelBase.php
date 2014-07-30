@@ -237,7 +237,7 @@ abstract class CommunityModelBase extends AppModel
     $communityDao->saved = false;
     }//end delete
 
-  /** check ifthe policy is valid
+  /** check if the policy is valid
   *
   * @param FolderDao $folderDao
   * @param UserDao $userDao

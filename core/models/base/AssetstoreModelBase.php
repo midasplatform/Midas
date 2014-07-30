@@ -73,7 +73,7 @@ abstract class AssetstoreModelBase extends AppModel
           if($existingAssetstoreDao->getKey() != $keyVal)
             {
             // if the current dao does exist and it is different than
-            // the existingAssestoreDao then
+            // the existingAssetstoreDao then
             // it is a collision with an existing other row
             return true;
             }
@@ -157,7 +157,7 @@ abstract class AssetstoreModelBase extends AppModel
 
   /**
    * Check if there is an assetstore in the database. If not look for one called Default.
-   * If Default doesn't exist, return the first assetstore found.
+   * If Default does not exist, return the first assetstore found.
    * @return the default assetstore
    */
   public function getDefault()

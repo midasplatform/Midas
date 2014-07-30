@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- *  WebApi controller for the Community Resource (in readmes module)
+ *  Web API controller for the Community resource (in readmes module)
  */
 class Apireadmes_CommunityController extends ApiController
   {

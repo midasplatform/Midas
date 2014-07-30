@@ -182,7 +182,7 @@ class ExportComponentTest extends ControllerTestCase
     } // end public function testCreateSymlinks
 
   /**
-   * Test ExportComponentTest::exportBitstreams 'copy' functiionality
+   * Test ExportComponentTest::exportBitstreams 'copy' functionality
    *
    * Because testCreateSymlinks function has covered most testing aspects,
    * this test only use a simple scenario
@@ -223,7 +223,7 @@ class ExportComponentTest extends ControllerTestCase
   /**
    * Test ExportComponentTest::exportBitstreams function using invalid input
    *
-   * test case 1) input paremeter itemIds is not an array; expect an exception
+   * test case 1) input parameter itemIds is not an array; expect an exception
    * test case 2) use valid item id with invalid revision number; expect an exception
    * test case 3) use invalid item id; expect an exception
    */

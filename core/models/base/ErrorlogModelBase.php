@@ -21,7 +21,7 @@
 /** Error log Model Base*/
 abstract class ErrorlogModelBase extends AppModel
   {
-  /** Contructor*/
+  /** Constructor */
   public function __construct()
     {
     parent::__construct();

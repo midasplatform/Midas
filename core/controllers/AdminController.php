@@ -699,7 +699,7 @@ class AdminController extends AppController
         return false;
         }
 
-      echo json_encode(array('message' => $this->t('Migration sucessful.')));
+      echo json_encode(array('message' => $this->t('Migration successful.')));
       }
 
     return true;

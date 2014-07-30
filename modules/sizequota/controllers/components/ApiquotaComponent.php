@@ -26,27 +26,6 @@ define('MIDAS_SIZEQUOTA_INVALID_PARAMETER', -150);
 class Sizequota_ApiquotaComponent extends AppComponent
   {
   /**
-   * Helper function for verifying keys in an input array
-   */
-  private function _checkKeys($keys, $values)
-    {
-    foreach($keys as $key)
-      {
-      if(!array_key_exists($key, $values))
-        {
-        throw new Exception('Parameter '.$key.' must be set.', MIDAS_SIZEQUOTA_INVALID_PARAMETER);
-        }
-      }
-    }
-
-  /** Authenticate via token or session */
-  private function _getUser($args)
-    {
-    $authComponent = MidasLoader::loadComponent('Authentication');
-    return $authComponent->getUser($args, Zend_Registry::get('userSession')->Dao);
-    }
-
-  /**
    * Get the size quota for a user.
    * @path /sizequota/quota/user
    * @http GET

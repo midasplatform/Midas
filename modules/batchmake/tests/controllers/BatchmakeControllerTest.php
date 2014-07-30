@@ -130,10 +130,10 @@ class BatchmakeControllerTest extends ControllerTestCase
     // and scan through the items inside
     while(false !== ($item = readdir($handle)))
       {
-      // make sure item matches extendsion
+      // make sure item matches extension
       if((strpos($item, $extension) == strlen($item) - 4))
         {
-        // link the file if it isn't already there
+        // link the file if it is not already there
         $scriptTarget = $srcDir . '/' . $item;
         $scriptLink = $targetDir . '/' . $item;
         if(!file_exists($scriptLink) && !symlink($scriptTarget, $scriptLink))

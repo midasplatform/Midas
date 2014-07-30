@@ -37,19 +37,19 @@ class UploadComponent extends AppComponent
   /** Upload local bitstream */
   private function _uploadLocalBitstream($bitstreamdao, $assetstoredao, $copy = false)
     {
-    // Check ifthe type of the assestore is suitable
+    // Check if the type of the assestore is suitable
     if($assetstoredao->getType() != MIDAS_ASSETSTORE_LOCAL)
       {
       throw new Zend_Exception("The assetstore type should be local to upload.");
       }
 
-    // Check ifthe path of the assetstore exists on the server
+    // Check if the path of the assetstore exists on the server
     if(!is_dir($assetstoredao->getPath()))
       {
       throw new Zend_Exception("The assetstore path doesn't exist.");
       }
 
-    // Check ifthe MD5 exists for the bitstream
+    // Check if the MD5 exists for the bitstream
     $checksum = $bitstreamdao->getChecksum();
     if(empty($checksum))
       {

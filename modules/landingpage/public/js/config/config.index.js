@@ -4,10 +4,7 @@ var midas = midas || {};
 midas.ldap = midas.ldap || {};
 midas.ldap.config = midas.ldap.config || {};
 
-midas.ldap.config.validateConfig = function (formData, jqForm, options) {
-    'use strict';
-    return;
-};
+midas.ldap.config.validateConfig = function (formData, jqForm, options) {};
 
 midas.ldap.config.successConfig = function (responseText,
     statusText,

@@ -107,7 +107,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
     $this->application->bootstrap();
     }
 
-  /** setup databse using xml files*/
+  /** setup database using xml files*/
   public function setupDatabase($files, $module = null)
     {
     $db = Zend_Registry::get('dbAdapter');
@@ -272,7 +272,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
 
   /** completion eclipse */
   /**
-   * Assetstrore Model
+   * Assetstore Model
    * @var AssetstoreModel
    */
   var $Assetstrore;

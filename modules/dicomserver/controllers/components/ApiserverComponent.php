@@ -82,7 +82,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
         }
       $api_key = $userApiDao->getApikey();
       }
-    // Seet default values of optional parameters
+    // Set default values of optional parameters
     $dest_folder = 'Public';
     if(!empty($args['dest_folder']))
       {

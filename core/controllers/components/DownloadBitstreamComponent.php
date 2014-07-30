@@ -64,7 +64,7 @@ class DownloadBitstreamComponent extends AppComponent
 
       header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
       header('Last-Modified: '.$modified);
-      // if pdf set the content-type acordingly
+      // if pdf set the content-type accordingly
       if(!isset($contentType) && pathinfo($name, PATHINFO_EXTENSION) == 'pdf')
         {
         $contentType = 'application/pdf';

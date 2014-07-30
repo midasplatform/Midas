@@ -210,7 +210,7 @@ class UserModel extends UserModelBase
     {
     if(Zend_Registry::get('configDatabase')->database->adapter == 'PDO_PGSQL')
       {
-      $group = false; //Postgresql don't like the sql request with group by
+      $group = false; //PostgreSQL does not like the SQL request with group by
       }
     $isAdmin = false;
     if($userDao == null)

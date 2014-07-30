@@ -64,7 +64,7 @@ class Visualize_Notification extends MIDAS_Notification
     return $this->ModuleComponent->Main->canVisualizeWithParaview($params['item']) || $this->ModuleComponent->Main->canVisualizeMedia($params['item']) || $this->ModuleComponent->Main->canVisualizeTxt($params['item']) || $this->ModuleComponent->Main->canVisualizeImage($params['item']) || $this->ModuleComponent->Main->canVisualizePdf($params['item']) || $this->ModuleComponent->Main->canVisualizeWebgl($params['item']);
     }
 
-  /** generate Dasboard information */
+  /** generate dashboard information */
   public function getDashboard()
     {
     $modulesConfig = Zend_Registry::get('configsModules');
@@ -81,7 +81,7 @@ class Visualize_Notification extends MIDAS_Notification
       return array('ParaviewWeb Server' => array(false, 'Could not connect to paraview web server'));
       }
     return array('ParaviewWeb Server' => array(true, ''));
-    }//end _getDasboard
+    }
 
   /** get server's url */
   function getServerURL()

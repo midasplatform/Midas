@@ -44,7 +44,7 @@ class Upgrade_3_2_14 extends MIDASUpgrade
 
   public function pgsql()
     {
-    // bug only existed in our mysql table defs, NOP for pgsql
+    // bug only existed in our mysql table definitions, NOP for pgsql
     }
 
   public function postUpgrade()

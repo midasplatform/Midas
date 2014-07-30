@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- *  WebApi controller for Server Resource (in dicomserver module)
+ *  Web API controller for the Server resource (in dicomserver module)
  */
 class Apidicomserver_ServerController extends ApiController
   {

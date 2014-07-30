@@ -26,8 +26,7 @@ function colorLines(checkHidden) {
         if (selectedJob == $(this).attr('element')) {
             $(this).css("background-color", "#C0D1FE");
             $(this).css("border", "1px solid grey");
-            if (grey) grey = false;
-            else grey = true;
+            grey = !grey;
             $(this).unbind('mouseenter mouseleave')
         }
         else {

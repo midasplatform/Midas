@@ -26,7 +26,7 @@ class FeedDao extends AppDao
   {
   public $_model = 'Feed';
 
-  /** overwite get Ressource method */
+  /** overwrite get Ressource method */
   public function getRessource()
     {
     $type = $this->getType();

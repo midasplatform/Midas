@@ -97,7 +97,7 @@ class CommunityModel extends CommunityModelBase
     {
     if(Zend_Registry::get('configDatabase')->database->adapter == 'PDO_PGSQL')
       {
-      $group = false; //Postgresql don't like the sql request with group by
+      $group = false; //PostgreSQL does not like the SQL request with group by
       }
     $communities = array();
     if($userDao == null)

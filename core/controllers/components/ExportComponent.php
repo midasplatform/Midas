@@ -54,10 +54,10 @@ class ExportComponent extends AppComponent
     } // end _createItemDirectory
 
   /**
-   * Export bistreams to target directory
+   * Export bitstreams to target directory
    *
    * Given itemIds, do policy check on these itemIds,
-   * then create symblic links to bitstreams (or copy the bitstreams)
+   * then create symbolic links to bitstreams (or copy the bitstreams)
    * in the "{targetDir}/{itemId}/" directories. If the {itemId} subdirectory
    * has been existed, delete the existing one first.
    * For policy check, we only check if the items are readable by the given user,
@@ -90,7 +90,7 @@ class ExportComponent extends AppComponent
       {
       foreach($itemIds as $itemId)
         {
-        // $itemId is a comma seperatd value,
+        // $itemId is a comma separated value,
         // the 1st column is the actual item_id, the 2nd is revision_num (optional)
         $tmpId = explode(',', $itemId);
         if(empty($tmpId[0]))
@@ -152,7 +152,7 @@ class ExportComponent extends AppComponent
           {
           foreach($bitstreams as $bitstream)
             {
-            // if the bitstream is not an actural file, such as url type, skip it
+            // if the bitstream is not an actual file, such as url type, skip it
             if($bitstream->getChecksum() == ' ')
               {
               continue;
@@ -162,7 +162,7 @@ class ExportComponent extends AppComponent
             // create symbolic links in target directory
             if($shouldSymLink)
               {
-              // for symbolic link option,if mutliple bitstreams (in a single itemrevision)
+              // for symbolic link option,if multiple bitstreams (in a single item revision)
               // have the same file name, add a '.new' suffix to distinguish them
               if(file_exists($dest))
                 {
@@ -176,7 +176,7 @@ class ExportComponent extends AppComponent
             // OR copy bitstreams to target directory
             else
               {
-              // for copy option, if mutliple bitstreams (in a single itemrevision)
+              // for copy option, if multiple bitstreams (in a single item revision)
               // have the same file name, new file(s) wil overwrite the existing file(s)
               if(!copy($source, $dest))
                 {

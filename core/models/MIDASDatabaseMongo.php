@@ -216,7 +216,7 @@ class MIDASDatabaseMongo implements MIDASDatabaseInterface
   public function getCountAll()
     {
     // The idea is to use Mongo's counter in the future (implemented in 0.8)
-    // We could also use memcached or redis or even a file lock mechanism (ifthe php
+    // We could also use memcached or redis or even a file lock mechanism (if the php
     // server is not fully distributed
     return 0;
     }//end getCountAll

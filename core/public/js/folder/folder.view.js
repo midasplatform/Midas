@@ -50,7 +50,7 @@ $(document).ready(function () {
     });
 
     /**
-     * Select/deslect all rows. If we are doing deselect all, we include hidden
+     * Select/deselect all rows. If we are doing deselect all, we include hidden
      * ones
      */
     midas.browser.enableSelectAll();
@@ -70,7 +70,7 @@ $(document).ready(function () {
     $('.pathBrowser').show();
 });
 
-// dependance: common/browser.js
+// dependence: common/browser.js
 midas.ajaxSelectRequest = '';
 
 function callbackSelect(node) {

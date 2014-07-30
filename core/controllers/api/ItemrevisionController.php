@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- *  WebApi Controller for ItemRevision Resource
+ *  Web API controller for the ItemRevision resource
  */
 class Rest_ItemrevisionController extends ApiController
   {

@@ -21,8 +21,6 @@
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.listfiles.css" />
 
 <?php
-  $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.listfiles.js');
-
    if(!function_exists('createFileElement'))
     {
     function createFileElement(&$view, $file)

@@ -52,7 +52,7 @@ class FeedModel extends FeedModelBase
     return $feeds;
     }
 
-  /** check ifthe policy is valid
+  /** check if the policy is valid
    *
    * @param FolderDao $folderDao
    * @param UserDao $userDao

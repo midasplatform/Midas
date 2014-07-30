@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- *  WebApi Controller for User Resource
+ *  Web API controller for the User resource
  */
 class Rest_UserController extends ApiController
   {
