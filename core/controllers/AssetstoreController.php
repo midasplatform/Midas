@@ -36,15 +36,7 @@ class AssetstoreController extends AppController
   function init()
     {
     $this->view->menu = "assetstore";
-    }  // end init()
-
-  /**
-   * \fn indexAction()
-   * \brief Index Action (first action when we access the application)
-   */
-  function indexAction()
-    {
-    }// end indexAction
+    }
 
   /** change default assetstore*/
   function defaultassetstoreAction()
