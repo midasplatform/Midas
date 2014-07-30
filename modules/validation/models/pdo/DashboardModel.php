@@ -161,7 +161,7 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
       }
     if(!$tgtItem)
       {
-      throw new ZendException('Target item not part of result set.');
+      throw new Zend_Exception('Target item not part of result set.');
       }
 
     // remove a previous scalar value if there is one.
