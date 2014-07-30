@@ -26,4 +26,4 @@ require_once BASE_PATH.'/core/models/base/CommunityInvitationModelBase.php';
  */
 class CommunityInvitationModel extends CommunityInvitationModelBase
   {
-  } // end class
+  }

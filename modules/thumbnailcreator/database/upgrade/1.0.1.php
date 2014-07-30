@@ -4,10 +4,6 @@
  */
 class Thumbnailcreator_Upgrade_1_0_1 extends MIDASUpgrade
   {
-  public function preUpgrade()
-    {
-    }
-
   /** Mysql upgrade */
   public function mysql()
     {
@@ -29,9 +25,5 @@ class Thumbnailcreator_Upgrade_1_0_1 extends MIDASUpgrade
       thumbnail character varying(255)
       )");
     $this->db->query("CREATE INDEX thumbnailcreator_itemthumbnail_item_id ON thumbnailcreator_itemthumbnail (item_id)");
-    }
-
-  public function postUpgrade()
-    {
     }
   }

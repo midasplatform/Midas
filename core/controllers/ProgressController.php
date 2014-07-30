@@ -29,13 +29,6 @@ class ProgressController extends AppController
   public $_forms = array();
 
   /**
-   * Init Controller
-   */
-  public function init()
-    {
-    }
-
-  /**
    * For any action that you intend to track progress on, you should call this first
    * to create and return your progress object.  You can then pass the progressId parameter
    * to the controller and it will update that progress object.

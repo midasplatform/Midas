@@ -23,10 +23,6 @@
  */
 class Upgrade_3_2_12 extends MIDASUpgrade
   {
-  public function preUpgrade()
-    {
-    }
-
   public function mysql()
     {
     $this->db->query("ALTER TABLE `user` ADD COLUMN `hash_alg` varchar(32) NOT NULL default ''");
@@ -60,10 +56,6 @@ class Upgrade_3_2_12 extends MIDASUpgrade
 
     $this->db->query("ALTER TABLE \"user\" DROP COLUMN password");
     $this->db->query("ALTER TABLE \"pendinguser\" DROP COLUMN password");
-    }
-
-  public function postUpgrade()
-    {
     }
 
   /**

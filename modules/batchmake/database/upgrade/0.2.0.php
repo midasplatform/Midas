@@ -20,10 +20,6 @@
 
 class Batchmake_Upgrade_0_2_0 extends MIDASUpgrade
   {
-  public function preUpgrade()
-    {
-    }
-
   public function mysql()
     {
     $sql = "ALTER TABLE condor_dag ADD COLUMN dag_filename text NOT NULL;";
@@ -38,9 +34,5 @@ class Batchmake_Upgrade_0_2_0 extends MIDASUpgrade
     $this->db->query($sql);
     $sql = "ALTER TABLE condor_job ADD COLUMN post_filename text NOT NULL;";
     $this->db->query($sql);
-    }
-
-  public function postUpgrade()
-    {
     }
   }

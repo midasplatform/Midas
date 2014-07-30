@@ -23,10 +23,6 @@
  */
 class Upgrade_3_2_14 extends MIDASUpgrade
   {
-  public function preUpgrade()
-    {
-    }
-
   public function mysql()
     {
     // Remove "on update current timestamp" qualifier from the date_update column
@@ -40,14 +36,5 @@ class Upgrade_3_2_14 extends MIDASUpgrade
       CHANGE `date` `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP");
     $this->db->query("ALTER TABLE `feed`
       CHANGE `date` `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP");
-    }
-
-  public function pgsql()
-    {
-    // bug only existed in our mysql table definitions, NOP for pgsql
-    }
-
-  public function postUpgrade()
-    {
     }
   }

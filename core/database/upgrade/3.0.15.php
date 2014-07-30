@@ -20,18 +20,6 @@
 
 class Upgrade_3_0_15 extends MIDASUpgrade
   {
-  public function preUpgrade()
-    {
-    }
-
-  public function mysql()
-    {
-    }
-
-  public function pgsql()
-    {
-    }
-
   public function postUpgrade()
     {
     $this->addTableField('user', 'city', 'varchar(100)', ' character varying(100)', null);

@@ -29,13 +29,6 @@ class LicensesController extends AppController
   public $_forms = array();
 
   /**
-   * Init Controller
-   */
-  function init()
-    {
-    }
-
-  /**
    * Index action. Lists all licenses on the admin page
    */
   function allAction()

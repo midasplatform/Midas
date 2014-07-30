@@ -21,11 +21,6 @@
 /** Web API Authentication Component */
 class AuthenticationComponent extends AppComponent
   {
-  /** Constructor */
-  function __construct()
-    {
-    }
-
   /**
    * Gets the user dao from either the session (if via ajax)
    * or using token-based authentication otherwise.

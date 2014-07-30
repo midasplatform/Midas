@@ -23,11 +23,6 @@ class InternationalizationComponent extends AppComponent
   {
   private static $_instance = null;
 
-  /** Constructor */
-  function __construct()
-    {
-    }
-
   /** Instance */
   public static function getInstance()
     {

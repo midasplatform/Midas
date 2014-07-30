@@ -20,10 +20,6 @@
 
 class Upgrade_3_0_12 extends MIDASUpgrade
   {
-  public function preUpgrade()
-    {
-    }
-
   public function mysql()
     {
     $sql = "DROP  TABLE uniqueidentifier ; ";

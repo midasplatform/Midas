@@ -202,8 +202,4 @@ class Upgrade_3_2_2 extends MIDASUpgrade
     // Remove the obsolete column from the item revision table
     $this->db->query("ALTER TABLE itemrevision DROP COLUMN license");
     }
-
-  public function postUpgrade()
-    {
-    }
   }

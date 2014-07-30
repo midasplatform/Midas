@@ -23,10 +23,6 @@
  */
 class Tracker_Upgrade_1_0_5 extends MIDASUpgrade
   {
-  public function preUpgrade()
-    {
-    }
-
   public function mysql()
     {
     $this->db->query("ALTER TABLE `tracker_scalar` ADD COLUMN `params` text NULL DEFAULT NULL");
@@ -38,9 +34,5 @@ class Tracker_Upgrade_1_0_5 extends MIDASUpgrade
     {
     $this->db->query("ALTER TABLE tracker_scalar ADD COLUMN params text NULL DEFAULT NULL");
     $this->db->query("ALTER TABLE tracker_scalar ADD COLUMN extra_urls text NULL DEFAULT NULL");
-    }
-
-  public function postUpgrade()
-    {
     }
   }

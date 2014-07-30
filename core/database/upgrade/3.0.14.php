@@ -38,16 +38,4 @@ class Upgrade_3_0_14 extends MIDASUpgrade
     $this->db->query("INSERT INTO metadata (metadatatype,element,qualifier,description) VALUES ('0','subject','keyword','Keyword')");
     $this->db->query("INSERT INTO metadata (metadatatype,element,qualifier,description) VALUES ('0','subject','ocis','OCIS subject')");
     }
-
-  public function mysql()
-    {
-    }
-
-  public function pgsql()
-    {
-    }
-
-  public function postUpgrade()
-    {
-    }
   }

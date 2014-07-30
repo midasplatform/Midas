@@ -20,10 +20,6 @@
 
 class Statistics_Upgrade_1_0_1 extends MIDASUpgrade
   {
-  public function preUpgrade()
-    {
-    }
-
   /**
    * Normalize the download table -- pull out ip to lat/long mapping
    * into its own table, and add an index on download.item_id field to make
@@ -76,9 +72,5 @@ class Statistics_Upgrade_1_0_1 extends MIDASUpgrade
     $this->db->query("ALTER TABLE `statistics_download` ADD INDEX (`item_id`)");
     // Add latitude index to the geolocation table for quick selection of blank entries
     $this->db->query("ALTER TABLE `statistics_ip_location` ADD INDEX (`latitude`)");
-    }
-
-  public function postUpgrade()
-    {
     }
   }

@@ -23,10 +23,6 @@
  */
 class Upgrade_3_2_10 extends MIDASUpgrade
   {
-  public function preUpgrade()
-    {
-    }
-
   public function mysql()
     {
     $this->db->query("CREATE TABLE IF NOT EXISTS `newuserinvitation` (
@@ -73,9 +69,5 @@ class Upgrade_3_2_10 extends MIDASUpgrade
       date_creation timestamp without time zone NOT NULL DEFAULT now()
       )");
     $this->db->query("ALTER TABLE communityinvitation ADD COLUMN group_id bigint NULL DEFAULT NULL");
-    }
-
-  public function postUpgrade()
-    {
     }
   }

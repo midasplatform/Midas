@@ -24,10 +24,6 @@
  */
 class Upgrade_3_2_4 extends MIDASUpgrade
   {
-  public function preUpgrade()
-    {
-    }
-
   public function mysql()
     {
     $this->db->query("CREATE TABLE IF NOT EXISTS `activedownload` (
@@ -49,9 +45,5 @@ class Upgrade_3_2_4 extends MIDASUpgrade
       last_update timestamp without time zone NOT NULL
       )");
     $this->db->query("CREATE INDEX activedownload_idx_ip ON activedownload (ip)");
-    }
-
-  public function postUpgrade()
-    {
     }
   }
