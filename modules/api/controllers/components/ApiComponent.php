@@ -52,22 +52,6 @@ class Api_ApiComponent extends AppComponent
       }
     }
 
-  /**
-   * Rename a request parameter's key to provide backward compatibility for existing web APIs.
-   */
-  private function _renameParamKey(&$args, $oldKey, $newKey, $oldKeyRequired = true)
-    {
-    if($oldKeyRequired)
-      {
-      $this->_validateParams($args, array($oldKey));
-      }
-    if(isset($args[$oldKey]))
-      {
-      $args[$newKey] = $args[$oldKey];
-      unset($args[$oldKey]);
-      }
-    }
-
   /** Return the user dao */
   private function _getUser($args)
     {
