@@ -23,10 +23,6 @@
  */
 class Upgrade_3_2_13 extends MIDASUpgrade
   {
-  public function preUpgrade()
-    {
-    }
-
   public function mysql()
     {
      $this->db->query("CREATE TABLE IF NOT EXISTS `api_userapi` (

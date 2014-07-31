@@ -35,12 +35,4 @@ class Upgrade_3_0_13 extends MIDASUpgrade
     $this->db->query("ALTER TABLE `metadatavalue` CHANGE `metadatavalue_id`
                       `metadatavalue_id` BIGINT( 20 ) NOT NULL AUTO_INCREMENT");
     }
-
-  public function pgsql()
-    {
-    }
-
-  public function postUpgrade()
-    {
-    }
   }

@@ -26,11 +26,6 @@ class ShareController extends AppController
   public $_components = array('Policy');
   public $_forms = array();
 
-  /** Init Controller */
-  function init()
-    {
-    } // end init()
-
   /** ajax dialog for managing permissions */
   function dialogAction()
     {

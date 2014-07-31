@@ -20,10 +20,6 @@
 
 class Upgrade_3_0_1 extends MIDASUpgrade
   {
-  public function preUpgrade()
-    {
-    }
-
   public function mysql()
     {
     $sql = "ALTER TABLE folderpolicygroup ADD COLUMN date timestamp DEFAULT CURRENT_TIMESTAMP(); ";
@@ -54,9 +50,5 @@ class Upgrade_3_0_1 extends MIDASUpgrade
     $this->db->query($sql);
     $sql = "ALTER TABLE feedpolicyuser ADD COLUMN date TIMESTAMP DEFAULT CURRENT_TIMESTAMP; ";
     $this->db->query($sql);
-    }
-
-  public function postUpgrade()
-    {
     }
   }

@@ -56,10 +56,6 @@ class Upgrade_3_2_6 extends MIDASUpgrade
     $this->db->query("ALTER TABLE item DROP COLUMN thumbnail");
     }
 
-  public function postUpgrade()
-    {
-    }
-
   private function _moveAllThumbnails()
     {
     // Iterate through all existing items that have thumbnails

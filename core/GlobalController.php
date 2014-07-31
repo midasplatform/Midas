@@ -48,25 +48,32 @@ class MIDAS_GlobalController extends Zend_Controller_Action
   public function preDispatch()
     {
     UtilityComponent::setTimeLimit(0);
-    // Init the translater
-
-    $translate = new Zend_Translate('csv', BASE_PATH.'/core/translation/fr-main.csv', 'en');
-    Zend_Registry::set('translater', $translate);
-
-    $translaters = array();
-    $configs = array();
     $modulesEnable =  Zend_Registry::get('modulesEnable');
+
+    if(Zend_Registry::get('configGlobal')->application->lang != 'en')
+      {
+      $translate = new Zend_Translate('csv', BASE_PATH.'/core/translation/fr-main.csv', 'en');
+      Zend_Registry::set('translator', $translate);
+      $translators = array();
+
+      foreach($modulesEnable as $module)
+        {
+        if(file_exists(BASE_PATH.'/modules/'.$module.'/translation/fr-main.csv'))
+          {
+          $translators[$module] = new Zend_Translate('csv', BASE_PATH.'/modules/'.$module.'/translation/fr-main.csv', 'en');
+          }
+        else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/translation/fr-main.csv'))
+          {
+          $translators[$module] = new Zend_Translate('csv', BASE_PATH.'/privateModules/'.$module.'/translation/fr-main.csv', 'en');
+          }
+
+        Zend_Registry::set('translatorsModules', $translators);
+        }
+      }
+
+    $configs = array();
     foreach($modulesEnable as $module)
       {
-      if(file_exists(BASE_PATH.'/modules/'.$module.'/translation/fr-main.csv'))
-        {
-        $translaters[$module] = new Zend_Translate('csv', BASE_PATH.'/modules/'.$module.'/translation/fr-main.csv', 'en');
-        }
-      else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/translation/fr-main.csv'))
-        {
-        $translaters[$module] = new Zend_Translate('csv', BASE_PATH.'/privateModules/'.$module.'/translation/fr-main.csv', 'en');
-        }
-
       if(file_exists(LOCAL_CONFIGS_PATH.'/'.$module.'.local.ini'))
         {
         $configs[$module] = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/'.$module.'.local.ini', 'global');
@@ -80,7 +87,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         $configs[$module] = new Zend_Config_Ini(BASE_PATH.'/modules/'.$module.'/configs/module.ini', 'global');
         }
       }
-    Zend_Registry::set('translatersModules', $translaters);
+
     Zend_Registry::set('configsModules', $configs);
 
     $forward = $this->getParam("forwardModule");
@@ -157,9 +164,9 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       $timeEnd = microtime(true);
       $writer = new Zend_Log_Writer_Firebug();
       $logger = new Zend_Log($writer);
-      $logger->info("---Timers--- Controller timer:" . round(1000 * ($timeEnd - $this->_controllerTimer), 3)." ms - Global timer:" . round(1000 * ($timeEnd - START_TIME), 3)." ms");
+      $logger->debug("---Timers--- Controller timer:" . round(1000 * ($timeEnd - $this->_controllerTimer), 3)." ms - Global timer:" . round(1000 * ($timeEnd - START_TIME), 3)." ms");
 
-      $logger->info("---Memory Usage---".round((memory_get_usage() / (1024 * 1024)), 3) . " MB");
+      $logger->debug("---Memory Usage---".round((memory_get_usage() / (1024 * 1024)), 3) . " MB");
       }
 
     if(Zend_Registry::get("configDatabase")->database->profiler == 1)

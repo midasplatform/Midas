@@ -20,10 +20,6 @@
 
 class Upgrade_3_1_4 extends MIDASUpgrade
   {
-  public function preUpgrade()
-    {
-    }
-
   public function mysql()
     {
     $sql = "CREATE TABLE IF NOT EXISTS `setting` (
@@ -45,9 +41,5 @@ class Upgrade_3_1_4 extends MIDASUpgrade
               value text NOT NULL
              )  ;";
     $this->db->query($sql);
-    }
-
-  public function postUpgrade()
-    {
     }
   }

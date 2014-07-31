@@ -30,14 +30,6 @@ class IndexController extends AppController
   public $_components = array();
 
   /**
-   * @method init()
-   *  Init Controller
-   */
-  function init()
-    {
-    } //end init
-
-  /**
    * @method indexAction()
    *  Index Action (first action when we access the application)
    */

@@ -20,10 +20,6 @@
 
 class Example_Upgrade_1_0_1 extends MIDASUpgrade
   {
-  public function preUpgrade()
-    {
-    }
-
   public function mysql()
     {
     $sql = "ALTER TABLE example_wallet ADD COLUMN credit_card_count int(10) NOT NULL;";
@@ -34,9 +30,5 @@ class Example_Upgrade_1_0_1 extends MIDASUpgrade
     {
     $sql = "ALTER TABLE example_wallet ADD COLUMN credit_card_count integer NOT NULL;";
     $this->db->query($sql);
-    }
-
-  public function postUpgrade()
-    {
     }
   }

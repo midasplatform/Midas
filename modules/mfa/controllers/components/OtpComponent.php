@@ -104,7 +104,7 @@ class Mfa_OtpComponent extends AppComponent
       throw new Zend_Exception('RADIUS is not enabled on the server');
       }
 
-    $this->getLogger()->info("MIDAS RADIUS trying to authenticate user: " .
+    $this->getLogger()->debug("MIDAS RADIUS trying to authenticate user: " .
       $otpDevice->getSecret());
 
     $rh = radius_auth_open();
@@ -130,7 +130,7 @@ class Mfa_OtpComponent extends AppComponent
     switch(radius_send_request($rh))
       {
       case RADIUS_ACCESS_ACCEPT:
-        $this->getLogger()->info("MIDAS RADIUS successful authentication " .
+        $this->getLogger()->debug("MIDAS RADIUS successful authentication " .
           "for " . $otpDevice->getSecret());
         return true;
       case RADIUS_ACCESS_REJECT:

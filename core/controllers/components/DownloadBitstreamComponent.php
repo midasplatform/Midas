@@ -24,11 +24,6 @@ class DownloadBitstreamComponent extends AppComponent
 
   public $testingmode;
 
-  /** Constructor */
-  function __construct()
-    {
-    }
-
   /**
    * Calling this will stream the file to the client.
    * The parameter is a bitstream dao.

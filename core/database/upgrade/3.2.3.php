@@ -24,10 +24,6 @@
  */
 class Upgrade_3_2_3 extends MIDASUpgrade
   {
-  public function preUpgrade()
-    {
-    }
-
   public function mysql()
     {
     $this->db->query("ALTER TABLE `bitstream` ADD INDEX (`checksum`)");
@@ -36,9 +32,5 @@ class Upgrade_3_2_3 extends MIDASUpgrade
   public function pgsql()
     {
     $this->db->query("CREATE INDEX bitstream_idx_checksum ON bitstream (checksum)");
-    }
-
-  public function postUpgrade()
-    {
     }
   }

@@ -23,10 +23,6 @@
  */
 class Upgrade_3_2_7 extends MIDASUpgrade
   {
-  public function preUpgrade()
-    {
-    }
-
   public function mysql()
     {
     $this->db->query("CREATE TABLE IF NOT EXISTS `progress` (
@@ -50,9 +46,5 @@ class Upgrade_3_2_7 extends MIDASUpgrade
       date_creation timestamp without time zone NOT NULL DEFAULT now(),
       last_update timestamp without time zone NOT NULL
       )");
-    }
-
-  public function postUpgrade()
-    {
     }
   }

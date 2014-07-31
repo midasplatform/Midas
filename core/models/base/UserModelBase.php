@@ -298,7 +298,7 @@ abstract class UserModelBase extends AppModel
     $userDao->setFolderId($folderGlobal->getKey());
 
     $this->save($userDao);
-    $this->getLogger()->info(__METHOD__ . " Registration: " . $userDao->getFullName() . " " . $userDao->getKey());
+    $this->getLogger()->debug(__METHOD__ . " Registration: " . $userDao->getFullName() . " " . $userDao->getKey());
 
     $feed = $feedModel->createFeed($userDao, MIDAS_FEED_CREATE_USER, $userDao);
     $feedpolicygroupModel->createPolicy($anonymousGroup, $feed, MIDAS_POLICY_READ);

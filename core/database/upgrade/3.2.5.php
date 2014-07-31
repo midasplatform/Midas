@@ -23,10 +23,6 @@
  */
 class Upgrade_3_2_5 extends MIDASUpgrade
   {
-  public function preUpgrade()
-    {
-    }
-
   public function mysql()
     {
     $this->db->query("ALTER TABLE `folder` ADD INDEX (`left_indice`)");
@@ -40,9 +36,5 @@ class Upgrade_3_2_5 extends MIDASUpgrade
     $this->db->query("CREATE INDEX folder_idx_left_indice ON folder (left_indice)");
     $this->db->query("CREATE INDEX folder_idx_right_indice ON folder (right_indice)");
     $this->db->query("CREATE INDEX item2folder_idx_folder_id ON folder (folder_id)");
-    }
-
-  public function postUpgrade()
-    {
     }
   }

@@ -4,10 +4,6 @@
  */
 class Ldap_Upgrade_1_0_1 extends MIDASUpgrade
   {
-  public function preUpgrade()
-    {
-    }
-
   /** Mysql upgrade */
   public function mysql()
     {
@@ -29,9 +25,5 @@ class Ldap_Upgrade_1_0_1 extends MIDASUpgrade
                       login character varying(255) NOT NULL)");
 
     $this->db->query("CREATE INDEX ldap_user_login_idx ON ldap_user (login)");
-    }
-
-  public function postUpgrade()
-    {
     }
   }

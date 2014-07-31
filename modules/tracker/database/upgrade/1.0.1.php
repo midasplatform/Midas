@@ -25,10 +25,6 @@
  */
 class Tracker_Upgrade_1_0_1 extends MIDASUpgrade
   {
-  public function preUpgrade()
-    {
-    }
-
   public function mysql()
     {
     $this->db->query("ALTER TABLE `tracker_scalar` ADD COLUMN `user_id` bigint(20) NOT NULL DEFAULT -1");
@@ -43,9 +39,5 @@ class Tracker_Upgrade_1_0_1 extends MIDASUpgrade
     $this->db->query("ALTER TABLE tracker_scalar ADD COLUMN official smallint NOT NULL DEFAULT 1");
 
     $this->db->query("CREATE INDEX tracker_scalar_idx_user_id ON tracker_scalar (user_id)");
-    }
-
-  public function postUpgrade()
-    {
     }
   }

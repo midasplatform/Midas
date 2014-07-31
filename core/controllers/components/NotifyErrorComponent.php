@@ -26,11 +26,6 @@ class NotifyErrorComponent extends AppComponent
   protected $_error;
   protected $_profiler;
 
-  /** Constructor */
-  public function __construct()
-    {
-    }
-
   /** Init*/
   public function initNotifier($environment, ArrayObject $error, Zend_Session_Namespace $session, Zend_Db_Profiler $profiler, Array $server)
     {

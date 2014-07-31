@@ -23,10 +23,6 @@
  */
 class Tracker_Upgrade_1_0_4 extends MIDASUpgrade
   {
-  public function preUpgrade()
-    {
-    }
-
   public function mysql()
     {
     $this->db->query("ALTER TABLE `tracker_scalar` ADD COLUMN `branch` varchar(255) NOT NULL DEFAULT ''");
@@ -39,9 +35,5 @@ class Tracker_Upgrade_1_0_4 extends MIDASUpgrade
     $this->db->query("ALTER TABLE tracker_scalar ADD COLUMN branch character varying(255) NOT NULL DEFAULT ''");
 
     $this->db->query("CREATE INDEX tracker_scalar_idx_branch ON tracker_scalar (branch)");
-    }
-
-  public function postUpgrade()
-    {
     }
   }

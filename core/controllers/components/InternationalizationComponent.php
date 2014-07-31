@@ -23,11 +23,6 @@ class InternationalizationComponent extends AppComponent
   {
   private static $_instance = null;
 
-  /** Constructor */
-  function __construct()
-    {
-    }
-
   /** Instance */
   public static function getInstance()
     {
@@ -41,14 +36,14 @@ class InternationalizationComponent extends AppComponent
   /** translate*/
   public static function translate($text)
     {
-    if(Zend_Registry::get('configGlobal')->application->lang == 'fr')
+    if(Zend_Registry::get('configGlobal')->application->lang != 'en')
       {
-      $translate = Zend_Registry::get('translater');
+      $translate = Zend_Registry::get('translator');
       $new_text = $translate->_($text);
       if($new_text == $text)
         {
-        $translaters = Zend_Registry::get('translatersModules');
-        foreach($translaters as $t)
+        $translators = Zend_Registry::get('translatorsModules');
+        foreach($translators as $t)
           {
           $new_text = $t->_($text);
           if($new_text != $text)

@@ -48,6 +48,12 @@
     <option value="2">critical</option>
     <option value="4" selected="selected">warning</option>
     <option value="6">info</option>
+    <?php
+    if(Zend_Registry::get('configGlobal')->environment == 'development')
+      {
+      echo '<option value="7">debug</option>';
+      }
+    ?>
   </select>
   <br/>
   <input type="hidden" id="errorlogOffset" name="offset" value="0" />
