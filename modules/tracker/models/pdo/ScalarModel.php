@@ -71,7 +71,8 @@ class Tracker_ScalarModel extends Tracker_ScalarModelBase
                 ->join(array('t' => 'tracker_trend'), 's.trend_id = t.trend_id')
                 ->where('s.submit_time = ?', $scalar->getSubmitTime())
                 ->where('s.user_id = ?', $scalar->getUserId())
-                ->where('t.producer_id = ?', $scalar->getTrend()->getProducerId());
+                ->where('t.producer_id = ?', $scalar->getTrend()->getProducerId())
+                ->order('metric_name ASC');
     $rows = $this->database->fetchAll($sql);
     $scalars = array();
     foreach($rows as $row)
