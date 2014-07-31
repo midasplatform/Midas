@@ -145,6 +145,7 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
         $sql->where($column.' = ?', $value);
         }
       }
+    $sql->order('display_name ASC');
     $rows = $this->database->fetchAll($sql);
     $trends = array();
     foreach($rows as $row)

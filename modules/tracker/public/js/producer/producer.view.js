@@ -41,7 +41,7 @@ $(document).ready(function () {
         else {
             $('a.visualizeDualAxis').unbind('click').hide();
         }
-        if (checked.length >= 2) {
+        if (checked.length >= 1) {
             $('a.visualizeSelected').show().unbind('click').click(function () {
                 var trends = '';
                 $.each(checked, function (idx, checkbox) {
