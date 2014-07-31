@@ -426,7 +426,7 @@ class UserController extends AppController
       $user->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
       $user->Dao = $userDao;
       $user->lock();
-      $this->getLogger()->info(__METHOD__ . " Log in : " . $userDao->getFullName());
+      $this->getLogger()->debug(__METHOD__ . " Log in : " . $userDao->getFullName());
       echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Login successful'));
       }
     else
@@ -530,7 +530,7 @@ class UserController extends AppController
               $user->lock();
               }
             }
-          $this->getLogger()->info(__METHOD__ . " Log in : " . $userDao->getFullName());
+          $this->getLogger()->debug(__METHOD__ . " Log in : " . $userDao->getFullName());
 
           if(isset($previousUri) && !empty($previousUri) && (!empty($this->view->webroot)) && strpos($previousUri, 'logout') === false)
             {
@@ -1292,7 +1292,7 @@ class UserController extends AppController
 
     $name = $user->getFirstname().' '.$user->getLastname();
     $this->User->delete($user);
-    $this->getLogger()->info('User '.$name.' successfully deleted');
+    $this->getLogger()->debug('User '.$name.' successfully deleted');
     echo JsonComponent::encode(array(true, 'User '.$name.' successfully deleted'));
     }
   } // end class

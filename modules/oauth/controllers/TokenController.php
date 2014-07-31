@@ -176,7 +176,7 @@ class Oauth_TokenController extends Oauth_AppController
     $obj['expires_in'] = 3600 * 24; // 24 hour token
 
     $this->_doOutput($obj);
-    $this->getLogger()->info('New tokens issued to client '.$clientId.' for user '.$accessToken->getUserId());
+    $this->getLogger()->debug('New tokens issued to client '.$clientId.' for user '.$accessToken->getUserId());
     }
 
   /**
@@ -209,7 +209,7 @@ class Oauth_TokenController extends Oauth_AppController
     $obj['expires_in'] = 3600 * 24; // 24 hour token
 
     $this->_doOutput($obj);
-    $this->getLogger()->info('Access token refreshed to client '.$accessToken->getClientId().' for user '.$accessToken->getUserId());
+    $this->getLogger()->debug('Access token refreshed to client '.$accessToken->getClientId().' for user '.$accessToken->getUserId());
     }
 
   /**

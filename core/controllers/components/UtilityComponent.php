@@ -692,7 +692,7 @@ class UtilityComponent extends AppComponent
       Zend_Registry::get('logger')->err('Unable to send email to "'.$to.'" with subject "'.$subject.'": '.$exception->getMessage());
       return false;
       }
-    Zend_Registry::get('logger')->info('Sent email to "'.$to.'" with subject "'.$subject.'"');
+    Zend_Registry::get('logger')->debug('Sent email to "'.$to.'" with subject "'.$subject.'"');
     return true;
     }
 

@@ -157,9 +157,9 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       $timeEnd = microtime(true);
       $writer = new Zend_Log_Writer_Firebug();
       $logger = new Zend_Log($writer);
-      $logger->info("---Timers--- Controller timer:" . round(1000 * ($timeEnd - $this->_controllerTimer), 3)." ms - Global timer:" . round(1000 * ($timeEnd - START_TIME), 3)." ms");
+      $logger->debug("---Timers--- Controller timer:" . round(1000 * ($timeEnd - $this->_controllerTimer), 3)." ms - Global timer:" . round(1000 * ($timeEnd - START_TIME), 3)." ms");
 
-      $logger->info("---Memory Usage---".round((memory_get_usage() / (1024 * 1024)), 3) . " MB");
+      $logger->debug("---Memory Usage---".round((memory_get_usage() / (1024 * 1024)), 3) . " MB");
       }
 
     if(Zend_Registry::get("configDatabase")->database->profiler == 1)

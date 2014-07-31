@@ -176,7 +176,7 @@ class UploadComponent extends AppComponent
 
     $itemRevisionModel->addBitstream($itemRevisionDao, $bitstreamDao);
 
-    $this->getLogger()->info('Link item created ('.$item->getName().', id='.$item->getKey().')');
+    $this->getLogger()->debug('Link item created ('.$item->getName().', id='.$item->getKey().')');
     return $item;
     }
 
@@ -240,7 +240,7 @@ class UploadComponent extends AppComponent
       $itemModel->copyParentPolicies($item, $parent /*, $feed*/);
       $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
       //$feedpolicyuserModel->createPolicy($userDao, $feed, MIDAS_POLICY_ADMIN);
-      $this->getLogger()->info('Item uploaded ('.$item->getName().', id='.$item->getKey().')');
+      $this->getLogger()->debug('Item uploaded ('.$item->getName().', id='.$item->getKey().')');
       }
 
     Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH.'/core/models/dao');
@@ -366,7 +366,7 @@ class UploadComponent extends AppComponent
     // now that we have updated the itemRevision, the item may be stale
     $item = $itemModel->load($itemId);
 
-    $this->getLogger()->info('Revision uploaded: ['.$bitstreamDao->getName().
+    $this->getLogger()->debug('Revision uploaded: ['.$bitstreamDao->getName().
                              '] into revision '.$itemRevisionDao->getKey().
                              ' (item '.$item->getKey().')');
     Zend_Registry::get('notifier')->notifyEvent('EVENT_CORE_UPLOAD_FILE', array($itemRevisionDao->getItem()->toArray(), $itemRevisionDao->toArray()));

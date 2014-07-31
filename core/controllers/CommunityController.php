@@ -511,7 +511,7 @@ class CommunityController extends AppController
                 'if you wish to join.';
         if(UtilityComponent::sendEmail($email, $subject, $body))
           {
-          $this->getLogger()->info('User '.$this->userSession->Dao->getEmail().' emailed '.$email.' to join '
+          $this->getLogger()->debug('User '.$this->userSession->Dao->getEmail().' emailed '.$email.' to join '
             .$community->getName().' ('.$group->getName().' group)');
           }
         else
@@ -556,7 +556,7 @@ class CommunityController extends AppController
               'if you wish to join.';
       if(UtilityComponent::sendEmail($userDao->getEmail(), $subject, $body))
         {
-        $this->getLogger()->info('User '.$this->userSession->Dao->getEmail().' invited user '.$userDao->getEmail().' to '
+        $this->getLogger()->debug('User '.$this->userSession->Dao->getEmail().' invited user '.$userDao->getEmail().' to '
           .$community->getName().' ('.$groupDao->getName().' group)');
         }
       else
