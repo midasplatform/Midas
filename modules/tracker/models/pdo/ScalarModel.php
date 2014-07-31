@@ -57,6 +57,9 @@ class Tracker_ScalarModel extends Tracker_ScalarModelBase
       $item = $itemModel->load($row['item_id']);
       $results[] = array('label' => $row['label'], 'item' => $item);
       }
+    usort($results, function($a, $b) {
+        return strcmp($a['label'], $b['label']);
+    });
     return $results;
     }
 
