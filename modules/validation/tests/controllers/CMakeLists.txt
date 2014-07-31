@@ -17,5 +17,4 @@
 # limitations under the License.
 #=============================================================================
 
-add_midas_test( ValidationIndexController IndexControllerTest.php )
 add_midas_test( ValidationApiComponentController ApiComponentControllerTest.php )
