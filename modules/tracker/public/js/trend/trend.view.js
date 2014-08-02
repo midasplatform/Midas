@@ -328,6 +328,7 @@ $(window).load(function () {
         var div = $('<div class="otherBranchFilter">Other Trend: </div>');
         var removeLink = $('<a class="removeBranchFilter">Remove</a>').click(function () {
             div.remove();
+            midas.tracker.updateBranchFilters();
         });
         div.append($($('.branchfilter')[0]).clone()).append(removeLink);
 
