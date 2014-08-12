@@ -76,6 +76,15 @@
           echo '</td></tr>';
           }
         }
+      $htmltArray = Zend_Registry::get('notifier')->callback('CALLBACK_TRACKER_SCALAR_DETAIL_INFO',
+                                                             array('scalar' => $this->scalar));
+      foreach($htmltArray as $html)
+        {
+        if(!empty($html))
+          {
+          echo $html;
+          }
+        }
     ?>
   </tbody></table>
 </div>
