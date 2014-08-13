@@ -57,7 +57,7 @@ abstract class Statistics_IpLocationModelBase extends Statistics_AppModel
 
     if(empty($apiKey))
       {
-      return 'Empty api key. No geolocations performed';
+      return 'Empty API key. No geolocations performed';
       }
 
     $log = '';

@@ -119,7 +119,7 @@ class Batchmake_ExecuteComponent extends AppComponent
     $userApiDao = $userApiModel->getByAppAndUser('Default', $userDao);
     if(!$userApiDao)
       {
-      throw new Zend_Exception('You need to create a web-api key for this user for application: Default');
+      throw new Zend_Exception('You need to create a web API key for this user for application: Default');
       }
     $configs[] = 'email '.$email;
     $configs[] = 'apikey '.$userApiDao->getApikey();

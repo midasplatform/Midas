@@ -29,7 +29,7 @@
 <?php
 if(count($apikeys)==0)
   {
-  echo "You don't have any API keys";
+  echo "You do not have any API keys";
   }
 else
   {
@@ -38,7 +38,7 @@ else
  <tr bgcolor="#999999">
    <td width="20%"><center><b>Application Name</b></center></td>
    <td width="40%"><center><b>API Key</b></center></td>
-   <td width="20%"><center><b>Default expiration</b></center></td>
+   <td width="20%"><center><b>Default Expiration</b></center></td>
    <td width="10%"><center><b>Date</b></center></td>
    <td width="10%"><center><b>Action</b></center></td>
  </tr>
@@ -62,22 +62,22 @@ else
 ?>
 
 <div class="separator"></div>
-<h3>Generate new API key</h3>
+<h3>Generate New API Key</h3>
 <form name="createKey" id="createKey" method="post" action="">
     <table width="100%"  border="0">
     <tr>
-      <td width="35%" valign="top"><div align="right"><strong>Application name: </strong></div></td>
+      <td width="35%" valign="top"><div align="right"><strong>Application Name: </strong></div></td>
       <td width="65%"><?php echo $form->input('API.applicationName', array('size'=>'40','label'=>''))?>
        </td>
     </tr>
     <tr>
-      <td width="35%" valign="top"><div align="right"><strong>Default token expiration time (min): </strong></div></td>
+      <td width="35%" valign="top"><div align="right"><strong>Default Token Expiration Time (min): </strong></div></td>
       <td width="65%"><?php echo $form->input('API.experiationtime', array('size'=>'5','label'=>'','value'=>'60'))?>
        </td>
     </tr>
     <tr>
       <td>&nbsp;</td>
-      <td><input type="submit" name="createAPIKey" value="Generate API key >>" /></td>
+      <td><input type="submit" name="createAPIKey" value="Generate New API Key >>" /></td>
     </tr>
   </table>
 </form>

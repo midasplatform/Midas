@@ -54,7 +54,7 @@ class Notification extends MIDAS_Notification
     $user = $params['user'];
     $fc = Zend_Controller_Front::getInstance();
     $webroot = $fc->getBaseUrl();
-    return array('Api' => $webroot.'/apikey/usertab?userId='.$user->getKey());
+    return array('API' => $webroot.'/apikey/usertab?userId='.$user->getKey());
     }
 
   /** Reset the user's default web API key */

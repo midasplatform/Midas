@@ -33,7 +33,7 @@ class ApikeyForm extends AppForm
     $expiration = new Zend_Form_Element_Text('expiration');
 
     $submit = new  Zend_Form_Element_Submit('createAPIKey');
-    $submit ->setLabel($this->t('Generate Key'));
+    $submit ->setLabel($this->t('Generate New API Key'));
 
     $form->addElements(array($appplication_name, $expiration, $submit));
     return $form;

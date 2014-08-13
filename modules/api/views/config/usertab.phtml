@@ -24,7 +24,7 @@ echo '<script type="text/javascript" src="' . $this->moduleWebroot . '/public/js
 <h3><?php echo $this->t('Generated API keys')?></h3>
 <?php if(count($this->userapiDaos)==0)
 {
- echo "You don't have any API keys.<br/>";
+ echo "You do not have any API keys.<br/>";
 }
 else
 {
@@ -33,7 +33,7 @@ else
  <tr bgcolor="#999999">
    <td><center><b><?php echo $this->t('Application Name')?></b></center></td>
    <td><center><b>API Key</b></center></td>
-   <td><center><b><?php echo $this->t('Default expiration')?></b></center></td>
+   <td><center><b><?php echo $this->t('Default Expiration')?></b></center></td>
    <td><center><b>Creation</b></center></td>
    <td><center><b>Action</b></center></td>
  </tr>
@@ -54,7 +54,7 @@ else
 <a href="<?php echo $this->webroot?>/api">Web API Information</a>
 
 <div class="separator"></div>
-<h3><?php echo $this->t('Generate new API key')?></h3>
+<h3><?php echo $this->t('Generate New API Key')?></h3>
 
 <form class="genericForm" id="generateKeyForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
   <input type="hidden" id="apiUserId" name="userId" value="<?php echo $this->user->getKey(); ?>" />
@@ -63,7 +63,7 @@ else
     <?php echo $this->form['appplication_name']?>
   </div>
   <div >
-    <label for="expiration"><?php echo $this->t('Default expiration')?> (min):</label>
+    <label for="expiration"><?php echo $this->t('Default Expiration')?> (minutes):</label>
     <?php echo $this->form['expiration']?>
   </div>
   <div>
