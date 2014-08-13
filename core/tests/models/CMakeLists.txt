@@ -28,7 +28,6 @@ add_midas_style_test( StyleCoreModelsAppDao ${CMAKE_SOURCE_DIR}/core/models/AppD
 add_midas_style_test( StyleCoreModelsAppModel ${CMAKE_SOURCE_DIR}/core/models/AppModel.php )
 
 add_midas_style_test( StyleCoreMIDASDatabasePdo ${CMAKE_SOURCE_DIR}/core/models/MIDASDatabasePdo.php )
-add_midas_style_test( StyleCoreMIDASDatabaseMongo ${CMAKE_SOURCE_DIR}/core/models/MIDASDatabaseMongo.php )
 add_midas_style_test( StyleCoreMIDASDatabaseInterface ${CMAKE_SOURCE_DIR}/core/models/MIDASDatabaseInterface.php )
 add_midas_style_test( StyleCoreMIDASModel ${CMAKE_SOURCE_DIR}/core/models/MIDASModel.php )
 add_midas_style_test( StyleCoreMIDASUpgrade ${CMAKE_SOURCE_DIR}/core/models/MIDASUpgrade.php )

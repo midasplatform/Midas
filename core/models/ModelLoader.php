@@ -48,7 +48,6 @@ class MIDAS_ModelLoader
    */
   public function loadModel($model, $module = '')
     {
-    $databaseType = Zend_Registry::get('configDatabase')->database->type;
     $models = Zend_Registry::get('models');
 
     if(!isset($models[$module.$model]))
@@ -59,7 +58,7 @@ class MIDAS_ModelLoader
           {
           include_once BASE_PATH.'/core/models/base/'.$model.'ModelBase.php';
           }
-        include_once BASE_PATH.'/core/models/'.$databaseType.'/'.$model.'Model.php';
+        include_once BASE_PATH.'/core/models/pdo/'.$model.'Model.php';
         $name = $model . 'Model';
         }
       else
@@ -73,13 +72,13 @@ class MIDAS_ModelLoader
           include_once BASE_PATH.'/privateModules/'.$module.'/models/base/'.$model.'ModelBase.php';
           }
 
-        if(file_exists(BASE_PATH.'/modules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php'))
+        if(file_exists(BASE_PATH.'/modules/'.$module.'/models/pdo/'.$model.'Model.php'))
           {
-          include_once BASE_PATH.'/modules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php';
+          include_once BASE_PATH.'/modules/'.$module.'/models/pdo/'.$model.'Model.php';
           }
-        else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php'))
+        else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/pdo/'.$model.'Model.php'))
           {
-          include_once BASE_PATH.'/privateModules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php';
+          include_once BASE_PATH.'/privateModules/'.$module.'/models/pdo/'.$model.'Model.php';
           }
         else
           {

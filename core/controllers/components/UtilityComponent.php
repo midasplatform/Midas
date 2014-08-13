@@ -139,11 +139,6 @@ class UtilityComponent extends AppComponent
           {
           $config->db->PDO_MYSQL = true;
           $config->db->PDO_PGSQL = true;
-          $config->db->PDO_IBM = true;
-          $config->db->PDO_OCI = true;
-          $config->db->PDO_SQLITE = true;
-          $config->db->CASSANDRA = true;
-          $config->db->MONGO = true;
           }
         else
           {
@@ -161,21 +156,6 @@ class UtilityComponent extends AppComponent
                     break;
                   case 'pgsql':
                     $config->db->PDO_PGSQL = true;
-                    break;
-                  case 'ibm':
-                    $config->db->PDO_IBM = true;
-                    break;
-                  case 'oci':
-                    $config->db->PDO_OCI = true;
-                    break;
-                  case 'sqlite':
-                    $config->db->PDO_SQLITE = true;
-                    break;
-                  case 'cassandra':
-                    $config->db->CASSANDRA = true;
-                    break;
-                  case 'mongo':
-                    $config->db->MONGO = true;
                     break;
                   default:
                     break;

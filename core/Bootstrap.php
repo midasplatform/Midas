@@ -75,55 +75,38 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
     // InitDatabase
     $configDatabase = new Zend_Config_Ini(DATABASE_CONFIG, $configGlobal->environment, true);
-    if($configDatabase->database->type == 'pdo')
+    if(empty($configDatabase->database->params->driver_options))
       {
-      if(empty($configDatabase->database->params->driver_options))
-        {
-        $driverOptions = array();
-        }
-      else
-        {
-        $driverOptions = $configDatabase->database->params->driver_options->toArray();
-        }
-      $driverOptions[PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = true;
-      $params = array(
-        'dbname' => $configDatabase->database->params->dbname,
-        'username' => $configDatabase->database->params->username,
-        'password' => $configDatabase->database->params->password,
-        'driver_options' => $driverOptions);
-      if(empty($configDatabase->database->params->unix_socket))
-        {
-        $params['host'] = $configDatabase->database->params->host;
-        $params['port'] = $configDatabase->database->params->port;
-        }
-      else
-        {
-        $params['unix_socket'] = $configDatabase->database->params->unix_socket;
-        }
-      if($configGlobal->environment == 'production')
-        {
-        Zend_Loader::loadClass('ProductionDbProfiler', BASE_PATH . '/core/models/profiler');
-        $params['profiler'] = new ProductionDbProfiler();
-        }
-      $db = Zend_Db::factory($configDatabase->database->adapter, $params);
-      $db->getProfiler()->setEnabled(true);
-      Zend_Db_Table::setDefaultAdapter($db);
-      Zend_Registry::set('dbAdapter', $db);
-      }
-    else if($configDatabase->database->type == 'mongo')
-      {
-      // The mongo driver should be a php extension
-      $db = new Mongo($configDatabase->database->params->host.":".
-                      $configDatabase->database->params->port);
-      $dbname = $configDatabase->database->params->dbname;
-      $database = $db->$dbname;
-      Zend_Registry::set('dbAdapter', $database);
+      $driverOptions = array();
       }
     else
       {
-      throw new Zend_Exception("Database type Error. Please check the environment config file.");
+      $driverOptions = $configDatabase->database->params->driver_options->toArray();
       }
-
+    $driverOptions[PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = true;
+    $params = array(
+      'dbname' => $configDatabase->database->params->dbname,
+      'username' => $configDatabase->database->params->username,
+      'password' => $configDatabase->database->params->password,
+      'driver_options' => $driverOptions);
+    if(empty($configDatabase->database->params->unix_socket))
+      {
+      $params['host'] = $configDatabase->database->params->host;
+      $params['port'] = $configDatabase->database->params->port;
+      }
+    else
+      {
+      $params['unix_socket'] = $configDatabase->database->params->unix_socket;
+      }
+    if($configGlobal->environment == 'production')
+      {
+      Zend_Loader::loadClass('ProductionDbProfiler', BASE_PATH . '/core/models/profiler');
+      $params['profiler'] = new ProductionDbProfiler();
+      }
+    $db = Zend_Db::factory($configDatabase->database->adapter, $params);
+    $db->getProfiler()->setEnabled(true);
+    Zend_Db_Table::setDefaultAdapter($db);
+    Zend_Registry::set('dbAdapter', $db);
     Zend_Registry::set('configDatabase', $configDatabase);
 
     // Init log

@@ -22,7 +22,7 @@
 class InstallForm extends AppForm
   {
   /** create  form */
-  public function createDBForm($type)
+  public function createDBForm()
     {
     $form = new Zend_Form;
 

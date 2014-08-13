@@ -34,20 +34,8 @@ class MIDASModel
    */
   public function __construct()
     {
-    // We should do the switch here
-    $configDatabase = Zend_Registry::get('configDatabase');
-    switch($configDatabase->database->type)
-      {
-      case 'pdo':
-        $this->database = new MIDASDatabasePdo();
-        break;
-      case 'mongo':
-        $this->database = new MIDASDatabaseMongo();
-        break;
-      default:
-        break;
-      }
-    } // end __construct()
+    $this->database = new MIDASDatabasePdo();
+    }
 
   /** Initializing */
   public function initialize()
