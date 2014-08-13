@@ -206,7 +206,7 @@ $strippedDescription = strip_tags($description);
       echo "
           <li><a id='sendInvitationLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/email.png'/> {$this->t('Send invitation')}</a></li>
           ";
-      echo "<li><a onclick='midas.createNewFolder(".$this->mainFolder->getKey().");'><img alt='' src='{$this->coreWebroot}/public/images/icons/folder_add.png'/> {$this->t('Create a top level Folder')}</a></li>
+      echo "<li><a onclick='midas.createNewFolder(".$this->mainFolder->getKey().");'><img alt='' src='{$this->coreWebroot}/public/images/icons/folder_add.png'/> {$this->t('Create a top-level folder')}</a></li>
           ";
       foreach($this->customManageActions as $actions)
         {
