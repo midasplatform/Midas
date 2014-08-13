@@ -41,7 +41,7 @@ class ApikeyController extends AppController
     if($this->userSession->Dao->getKey() != $userId &&
        !$this->userSession->Dao->isAdmin())
       {
-      throw new Zend_Exception('Only admins can view other user api keys');
+      throw new Zend_Exception('Only admins can view other user API keys');
       }
     $user = $this->User->load($userId);
 

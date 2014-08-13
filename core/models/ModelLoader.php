@@ -19,86 +19,25 @@
 =========================================================================*/
 
 /**
- * DEPRECATED: Use MidasLoader static methods loadModel() and loadModels() instead.
+ * @deprecated Use MidasLoader static methods loadModel() and loadModels() instead.
  */
 class MIDAS_ModelLoader
   {
   /**
-   * \fn public  loadModels()
-   * \brief Loads models (array or string)
+   * Loads models (array or string)
+   * @deprecated
    */
   public function loadModels($models, $module = '')
     {
-    if(is_string($models))
-      {
-      $this->loadModel($models, $module);
-      }
-    else if(is_array($models))
-      {
-      foreach($models as $model)
-        {
-        $this->loadModel($model, $module);
-        }
-      }
+    MidasLoader::loadModels($models, $module);
     }
 
   /**
-   * \fn public  loadModel()
-   * \brief Loads a model
+   * Loads a model
+   * @deprecated
    */
   public function loadModel($model, $module = '')
     {
-    $databaseType = Zend_Registry::get('configDatabase')->database->type;
-    $models = Zend_Registry::get('models');
-
-    if(!isset($models[$module.$model]))
-      {
-      if($module == '')
-        {
-        if(file_exists(BASE_PATH.'/core/models/base/'.$model.'ModelBase.php'))
-          {
-          include_once BASE_PATH.'/core/models/base/'.$model.'ModelBase.php';
-          }
-        include_once BASE_PATH.'/core/models/'.$databaseType.'/'.$model.'Model.php';
-        $name = $model . 'Model';
-        }
-      else
-        {
-        if(file_exists(BASE_PATH.'/modules/'.$module.'/models/base/'.$model.'ModelBase.php'))
-          {
-          include_once BASE_PATH.'/modules/'.$module.'/models/base/'.$model.'ModelBase.php';
-          }
-        else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/base/'.$model.'ModelBase.php'))
-          {
-          include_once BASE_PATH.'/privateModules/'.$module.'/models/base/'.$model.'ModelBase.php';
-          }
-
-        if(file_exists(BASE_PATH.'/modules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php'))
-          {
-          include_once BASE_PATH.'/modules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php';
-          }
-        else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php'))
-          {
-          include_once BASE_PATH.'/privateModules/'.$module.'/models/'.$databaseType.'/'.$model.'Model.php';
-          }
-        else
-          {
-          throw new Zend_Exception("Unable to find model file ".$model);
-          }
-
-        $name = ucfirst($module).'_'.$model.'Model';
-        }
-
-      if(class_exists($name))
-        {
-        $models[$module.$model] = new $name;
-        Zend_Registry::set('models', $models);
-        }
-      else
-        {
-        throw new Zend_Exception('Unable to load class '.$name);
-        }
-      }
-    return $models[$module.$model];
+    return MidasLoader::loadModel($model, $module);
     }
   }

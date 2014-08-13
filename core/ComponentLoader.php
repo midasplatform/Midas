@@ -19,69 +19,35 @@
 =========================================================================*/
 
 /**
- * DEPRECATED: Use MidasLoader static method loadComponent() instead.
+ * @deprecated Use MidasLoader static method loadComponent() instead.
  */
 class MIDAS_ComponentLoader
   {
   /**
-   * \fn public loadComponents()
-   * \brief Loads components (array or string)
+   * Loads components (array or string)
+   * @deprecated
    */
   public function loadComponents($components, $module = '')
     {
     if(is_string($components))
       {
-      $this->loadComponent($components, $module);
+      MidasLoader::loadComponent($components, $module);
       }
     else if(is_array($components))
       {
       foreach($components as $component)
         {
-        $this->loadComponent($component, $module);
+        MidasLoader::loadComponent($component, $module);
         }
       }
     }
 
   /**
-   * \fn public loadComponent()
-   * \brief Loads a component
+   * Loads a component
+   * @deprecated
    */
   public function loadComponent($component, $module = '')
     {
-    $components = Zend_Registry::get('components');
-    if(!isset($components[$module.$component]))
-      {
-      if($module == '')
-        {
-        include_once BASE_PATH.'/core/controllers/components/'.$component.'Component.php';
-        $name = $component . 'Component';
-        }
-      else
-        {
-        if(file_exists(BASE_PATH.'/modules/'.$module.'/controllers/components/'.$component.'Component.php'))
-          {
-          include_once BASE_PATH.'/modules/'.$module.'/controllers/components/'.$component.'Component.php';
-          }
-        else if(file_exists(BASE_PATH.'/privateModules/'.$module.'/controllers/components/'.$component.'Component.php'))
-          {
-          include_once BASE_PATH.'/privateModules/'.$module.'/controllers/components/'.$component.'Component.php';
-          }
-        else
-          {
-          throw new Zend_Exception("Component file doesn't exit");
-          }
-        $name = ucfirst($module).'_'.$component.'Component';
-        }
-      if(class_exists($name))
-        {
-        $components[$module.$component] = new $name;
-        Zend_Registry::set('components', $components);
-        }
-      else
-        {
-        throw new Zend_Exception('Unable to load class '.$name);
-        }
-      }
-    return $components[$module.$component];
+    return MidasLoader::loadComponent($component, $module);
     }
   }

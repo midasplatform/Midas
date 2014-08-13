@@ -151,8 +151,8 @@ function render()
   {
   defaultInitRenderer();
   defaultEndRenderer();
-	};
+  }
 
 function onDocumentMouseDown( event )
   {
-	}
+  }

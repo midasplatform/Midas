@@ -8,7 +8,7 @@ $('a.termOfService').click(function () {
     midas.showBigDialog("Terms of Service");
 });
 
-$('#registerForm input').each(function () {
+$('#registerForm').find('input').each(function () {
     $(this).after('<span></span>');
 })
 
@@ -17,7 +17,7 @@ var password = false;
 var firstname = false;
 var lastname = false;
 
-$('#registerForm input').focusout(function () {
+$('#registerForm').find('input').focusout(function () {
     var obj = $(this);
     checkAll(obj);
 });
@@ -89,7 +89,7 @@ function checkAll(obj) {
     }
 }
 
-$('#registerForm input').focusin(function () {
+$('#registerForm').find('input').focusin(function () {
     var obj = $(this);
     obj.parent('div').find('span').html('');
 });
@@ -98,7 +98,7 @@ $('form#registerForm').submit(function () {
     var valid = validRegisterForm();
     if (valid) {
         $('#registerWaiting').show();
-        $('#registerForm input[type=submit]').attr('disabled', 'disabled');
+        $('#registerForm').find('input[type=submit]').attr('disabled', 'disabled');
     }
     return valid;
 });
@@ -124,7 +124,7 @@ function validRegisterForm() {
     }
     else {
         $('form#registerForm div.registerError span').show();
-        $('#registerForm input').each(function () {
+        $('#registerForm').find('input').each(function () {
             checkAll($(this));
             if ($(this).attr('name') == 'conditions') {
                 if (!$(this).is(':checked')) {

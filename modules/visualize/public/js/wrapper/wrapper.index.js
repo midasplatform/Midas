@@ -1,8 +1,8 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 function highlightCurrentPreview(currentElement) {
-    $('#fullscreenVisualize a.linkedcontentLink').css('font-weight', 'normal');
-    $('#fullscreenVisualize a.linkedcontentLink[element=' + currentElement + ']').css('font-weight', 'bold');
+    $('#fullscreenVisualize').find('a.linkedcontentLink').css('font-weight', 'normal');
+    $('#fullscreenVisualize').find('a.linkedcontentLink[element=' + currentElement + ']').css('font-weight', 'bold');
 }
 
 function createInfoAjaxVisualize(itemId) {
@@ -53,13 +53,13 @@ $(document).ready(function () {
 
     $('.Wrapper').append(html);
 
-    $('#fullscreenVisualize a.linkedcontentLink[preview=false]').parents('li').remove();
-    $('#fullscreenVisualize a.linkedcontentLink[preview=true]').removeAttr('href');
+    $('#fullscreenVisualize').find('a.linkedcontentLink[preview=false]').parents('li').remove();
+    $('#fullscreenVisualize').find('a.linkedcontentLink[preview=true]').removeAttr('href');
 
     highlightCurrentPreview(currentElement);
     createInfoAjaxVisualize(json.item.item_id);
 
-    $('#fullscreenVisualize a.linkedcontentLink').click(function () {
+    $('#fullscreenVisualize').find('a.linkedcontentLink').click(function () {
         var height = $(window).height() - 100;
         var width = 900;
         var url = json.global.webroot + "/visualize/?height=" + height + '&width=' + width + '&itemId=' + $(this).attr('element');
@@ -68,7 +68,7 @@ $(document).ready(function () {
         highlightCurrentPreview(currentElement);
         createInfoAjaxVisualize(currentElement);
 
-        var obj = $('#fullscreenVisualize a.linkedcontentLink[element=' + currentElement + ']');
+        var obj = $('#fullscreenVisualize').find('a.linkedcontentLink[element=' + currentElement + ']');
         var objTmp = obj.parents('li').prev().find('a');
         $('a.nextVisu').show();
         $('a.previousVisu').show();
@@ -83,7 +83,7 @@ $(document).ready(function () {
     });
 
     $('a.previousVisu').click(function () {
-        var obj = $('#fullscreenVisualize a.linkedcontentLink[element=' + currentElement + ']').parents('li').prev().find('a');
+        var obj = $('#fullscreenVisualize').find('a.linkedcontentLink[element=' + currentElement + ']').parents('li').prev().find('a');
         var height = $(window).height() - 100;
         var width = 900;
         var url = json.global.webroot + "/visualize/?height=" + height + '&width=' + width + '&itemId=' + obj.attr('element');
@@ -100,7 +100,7 @@ $(document).ready(function () {
     });
     $('a.nextVisu').click(function () {
         $('a.previousVisu').show();
-        var obj = $('#fullscreenVisualize a.linkedcontentLink[element=' + currentElement + ']').parents('li').next().find('a');
+        var obj = $('#fullscreenVisualize').find('a.linkedcontentLink[element=' + currentElement + ']').parents('li').next().find('a');
         var height = $(window).height() - 100;
         var width = 900;
         var url = json.global.webroot + "/visualize/?height=" + height + '&width=' + width + '&itemId=' + obj.attr('element');
@@ -120,7 +120,7 @@ $(document).ready(function () {
     $('.Topbar').show();
     //$('.Header').hide();
     $('.SubWrapper').hide();
-    $('#fullscreenVisualize a.closeVisuButton').click(function () {
+    $('#fullscreenVisualize').find('a.closeVisuButton').click(function () {
         window.location.replace(json.global.webroot + "/item/" + json.item.item_id);
     });
 });

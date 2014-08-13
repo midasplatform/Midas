@@ -34,9 +34,8 @@ class Solr_ApisearchComponent extends AppComponent
     $apihelperComponent = MidasLoader::loadComponent('Apihelper');
     $apihelperComponent->validateParams($args, array('query'));
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $solrComponent = $componentLoader->loadComponent('Solr', 'solr');
-    $authComponent = $componentLoader->loadComponent('Authentication');
+    $solrComponent = MidasLoader::loadComponent('Solr', 'solr');
+    $authComponent = MidasLoader::loadComponent('Authentication');
     $userDao = $authComponent->getUser($args,
                                        Zend_Registry::get('userSession')->Dao);
 
@@ -60,8 +59,7 @@ class Solr_ApisearchComponent extends AppComponent
       throw new Exception('Syntax error in query', -1);
       }
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $itemModel = $modelLoader->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
     $items = array();
     $count = 0;
     foreach($itemIds as $itemId)

@@ -88,12 +88,12 @@ class ApisystemComponent extends AppComponent
     }
 
   /**
-   * Login as a user using a web api key
+   * Login as a user using a web API key
    * @path /system/login
    * @http GET
    * @param appname The application name
    * @param email The user email
-   * @param apikey The api key corresponding to the given application name
+   * @param apikey The API key corresponding to the given application name
    * @return A web api token that will be valid for a set duration
    */
   function login($args)

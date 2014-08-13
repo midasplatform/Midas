@@ -61,13 +61,13 @@ class ExportComponent extends AppComponent
    * in the "{targetDir}/{itemId}/" directories. If the {itemId} subdirectory
    * has been existed, delete the existing one first.
    * For policy check, we only check if the items are readable by the given user,
-   * and don't furtherly distinguish among "can_read", "can_write", and "owner"
+   * and don't further distinguish among "can_read", "can_write", and "owner"
    * levels.
    *
    * @param UserDao $userDao
    * @param string $targetDir Target directory to export bitstreams
    * @param array $itemIds  Array of itemIds.
-   *                        Each element is a comma seperatd value,
+   *                        Each element is a comma separated value,
                             the 1st column is the actual item_id,
    *                        the 2nd is revision_number (optional)
    * @param bool $shouldSymLink Should we create symbolic links?

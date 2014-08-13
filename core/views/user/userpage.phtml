@@ -172,19 +172,19 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
   <div class="sideElementFirst genericAction">
     <h1>User Actions</h1>
     <ul>
-      <li class="myAccountLink" userid="'.$this->user->getKey().'"><a href="'.$this->webroot.'/user/settings?userId='.$this->user->getKey().'"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/user.png"/> '.$this->t('Manage Profile').'</a></li>
-      <li><a href="'.$this->webroot.'/user/manage/?userId='.$this->user->getKey().'"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/data.png"/> '.$this->t('Manage Files').'</a></li>
-      <li><a onclick="midas.createNewFolder('.$this->mainFolder->getKey().');"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/folder_add.png"/> '.$this->t('Create a top level Folder').'</a></li>';
+      <li class="myAccountLink" userid="'.$this->user->getKey().'"><a href="'.$this->webroot.'/user/settings?userId='.$this->user->getKey().'"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/user.png"/> '.$this->t('Manage profile').'</a></li>
+      <li><a href="'.$this->webroot.'/user/manage/?userId='.$this->user->getKey().'"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/data.png"/> '.$this->t('Manage files').'</a></li>
+      <li><a onclick="midas.createNewFolder('.$this->mainFolder->getKey().');"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/folder_add.png"/> '.$this->t('Create a top-level folder').'</a></li>';
 
     if($this->isAdmin && !$this->user->isAdmin())
       {
       echo '
-      <li><a onclick="midas.user.showDeleteDialog('.$this->user->getKey().');"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png"/> '.$this->t('Delete User').'</a></li>';
+      <li><a onclick="midas.user.showDeleteDialog('.$this->user->getKey().');"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png"/> '.$this->t('Delete user').'</a></li>';
       }
     else if(!$this->user->isAdmin() && $this->user->getKey() == $this->currentUser->getKey())
       {
       echo '
-      <li><a onclick="midas.user.showDeleteDialog('.$this->user->getKey().');"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png"/> '.$this->t('Delete My Account').'</a></li>';
+      <li><a onclick="midas.user.showDeleteDialog('.$this->user->getKey().');"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png"/> '.$this->t('Delete my account').'</a></li>';
       }
     foreach($this->moduleActions as $module)
       {

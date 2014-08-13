@@ -239,8 +239,7 @@ class Api_ApiComponent extends AppComponent
       {
       $folder = $args['folder'];
       }
-    $componentLoader = new MIDAS_ComponentLoader();
-    $searchComponent = $componentLoader->loadComponent('Search');
+    $searchComponent = MidasLoader::loadComponent('Search');
     return $searchComponent->searchItems($userDao, $args['search'], $folder, $order);
     }
 

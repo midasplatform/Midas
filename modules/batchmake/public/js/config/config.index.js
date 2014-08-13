@@ -118,7 +118,7 @@ $(document).ready(function () {
         success: midas.batchmake.successConfig
     });
 
-    $('#configForm input').each(function () {
+    $('#configForm').find('input').each(function () {
         // add a span after each input for displaying any errors related to that input
         var inputID = $(this).attr("id")
         $(this).after('<span id="' + inputID + 'Status' + '"></span>');

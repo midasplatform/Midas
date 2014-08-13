@@ -103,7 +103,7 @@ function selectFolderCallbackSelect(node) {
     }
 }
 
-$('#moveTable ajaimg.infoLoading').show();
+$('#moveTable').find('img.infoLoading').show();
 $('div.MainDialogContent div.ajaxInfoElement').html('');
 
 $('div.MainDialogContent #createFolderButton').click(function () {
@@ -127,7 +127,7 @@ function successCreateFolderCallback(responseText, statusText, xhr, form) {
     }
     if (jsonResponse[0]) {
         midas.createNotice(jsonResponse[1], 4000);
-        var node = $('#moveTable tr[element=' + jsonResponse[2].folder_id + ']');
+        var node = $('#moveTable').find('tr[element=' + jsonResponse[2].folder_id + ']');
         node.reload();
 
         $('div.MainDialogContent #createFolderContent').hide();
@@ -141,7 +141,7 @@ function successCreateFolderCallback(responseText, statusText, xhr, form) {
 
 function selectFolderCallbackReloadNode(mainNode) {
     if (newFolder != false) {
-        callbackSelect($('#moveTable tr[element=' + newFolder + ']'));
+        callbackSelect($('#moveTable').find('tr[element=' + newFolder + ']'));
     }
 }
 

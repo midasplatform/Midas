@@ -56,11 +56,11 @@ class UtilityComponent extends AppComponent
       // replace anything not alpha numeric
       $key = preg_replace('/[^a-z]/i', '', $key);
 
-      // if there is another array found recrusively call this function
+      // if there is another array found recursively call this function
       if(is_array($value))
         {
         $node = $xml->addChild($key);
-        // recrusive call.
+        // recursive call.
         $this->toXml($value, $rootNodeName, $node);
         }
       else
@@ -139,11 +139,6 @@ class UtilityComponent extends AppComponent
           {
           $config->db->PDO_MYSQL = true;
           $config->db->PDO_PGSQL = true;
-          $config->db->PDO_IBM = true;
-          $config->db->PDO_OCI = true;
-          $config->db->PDO_SQLITE = true;
-          $config->db->CASSANDRA = true;
-          $config->db->MONGO = true;
           }
         else
           {
@@ -161,21 +156,6 @@ class UtilityComponent extends AppComponent
                     break;
                   case 'pgsql':
                     $config->db->PDO_PGSQL = true;
-                    break;
-                  case 'ibm':
-                    $config->db->PDO_IBM = true;
-                    break;
-                  case 'oci':
-                    $config->db->PDO_OCI = true;
-                    break;
-                  case 'sqlite':
-                    $config->db->PDO_SQLITE = true;
-                    break;
-                  case 'cassandra':
-                    $config->db->CASSANDRA = true;
-                    break;
-                  case 'mongo':
-                    $config->db->MONGO = true;
                     break;
                   default:
                     break;
@@ -267,7 +247,7 @@ class UtilityComponent extends AppComponent
    *     "ExtensionOrFunctionName" => array( EXT_CRITICAL , $message or EXT_DEFAULT_MSG ),
    *   );
    *
-   * The unavailable funtion/extension are returned (array of string)
+   * The unavailable function/extension are returned (array of string)
    */
   static function checkPhpExtensions($phpextensions)
     {
@@ -473,7 +453,7 @@ class UtilityComponent extends AppComponent
   /** install a module */
   public function installModule($moduleName)
     {
-    // TODO, The module installation process needs some improvment.
+    // TODO, The module installation process needs some improvement.
     $allModules = $this->getAllModules();
     $version = $allModules[$moduleName]->version;
 

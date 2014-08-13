@@ -85,7 +85,7 @@ class InstallController extends AppController
         }
       else
         {
-        $form = $this->Form->Install->createDBForm($database);
+        $form = $this->Form->Install->createDBForm();
         $port = $form->getElement('port');
         $username = $form->getElement('username');
         switch($database)
@@ -111,7 +111,7 @@ class InstallController extends AppController
     if($this->_request->isPost())
       {
       $type = $this->getParam('type');
-      $form = $this->Form->Install->createDBForm($type);
+      $form = $this->Form->Install->createDBForm();
       if($form->isValid($this->getRequest()->getPost()))
         {
         require_once BASE_PATH . '/core/controllers/components/UpgradeComponent.php';
@@ -133,7 +133,6 @@ class InstallController extends AppController
         $options = array('allowModifications' => true);
         $databaseConfig = new Zend_Config_Ini(CORE_CONFIGS_PATH . '/database.ini', null, $options);
 
-        $databaseConfig->production->database->type = 'pdo';
         $databaseConfig->production->database->adapter = $dbtype;
         $databaseConfig->production->database->params->host = $form->getValue('host');
         $databaseConfig->production->database->params->port = $form->getValue('port');
@@ -143,7 +142,6 @@ class InstallController extends AppController
         $databaseConfig->production->database->params->password = $form->getValue('password');
         $databaseConfig->production->version = $version;
 
-        $databaseConfig->development->database->type = 'pdo';
         $databaseConfig->development->database->adapter = $dbtype;
         $databaseConfig->development->database->params->host = $form->getValue('host');
         $databaseConfig->development->database->params->port = $form->getValue('port');

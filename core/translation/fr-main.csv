@@ -3,7 +3,7 @@ Register;S'enregistrer
 Login;Authentification
 Search...;Recherche...
 Close;Fermer
-E-mail;E-mail
+Email;E-mail
 Password;Mot de Passe
 Firstname;Prénom
 Lastname;Nom
@@ -61,12 +61,12 @@ Copy;Copier
 Invite collaborators;Inviter des collaborateurs
 Advanced properties;Propriétés avancées
 Forgot your password;Mot de passe oublié
-Your e-mail or password is invalid - please try again;Votre e-mail ou votre password est éroné
+Your email or password is invalid - please try again;Votre e-mail ou votre password est éroné
 Please set your lastname;Merci de renseigner votre nom
 Please set your firstname;Merci de renseigner votre prénom
 Please validate the terms of service;Merci de valider les conditions d'utilisation
-The e-mail is not valid;Cet e-mail n'est pas valide
-This e-mail is not available;Cet e-mail n'est pas disponible
+The email is not valid;Cet e-mail n'est pas valide
+This email is not available;Cet e-mail n'est pas disponible
 Password too short;Votre mot de passe est trop court
 Large Files;Fichiers Volumineux
 Links;Liens
@@ -96,7 +96,7 @@ Do you really want to remove the item?;Voulez-vous vraiment retirer le document?
 Yes;Oui
 No;Non
 Plugins;Plugins
-E-mail;E-mail
+Email;E-mail
 Remember Me;Se souvenir de moi
 Members;Membres
 Generated in;Généré en

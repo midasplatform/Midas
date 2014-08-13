@@ -117,7 +117,7 @@
       html += '</div>';
       html += '</div>';
 
-      $('#tableContainer .column').append(html);
+      $('#tableContainer').find('.column').append(html);
       $('.portlet:last .inputParameterForm').hide();
 
       $('.portlet:last .definitionName').keyup(function () {

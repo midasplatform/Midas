@@ -329,7 +329,7 @@ class UserController extends AppController
     $this->view->form = $this->getFormAsArray($form);
     $this->disableLayout();
     $this->view->jsonRegister = JsonComponent::encode(array(
-      'MessageNotValid' => $this->t('The e-mail is not valid'),
+      'MessageNotValid' => $this->t('The email is not valid'),
       'MessageNotAvailable' => $this->t('That email is already registered'),
       'MessagePassword' => $this->t('Password too short'),
       'MessagePasswords' => $this->t('The passwords are not the same'),

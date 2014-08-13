@@ -382,10 +382,10 @@ abstract class CommunityModelBase extends AppModel
     $groupModel = MidasLoader::loadModel('Group');
 
     // update folderpolicygroup, itempolicygroup and feedpolicygroup tables when community privacy is changed between public and private
-    // users in Midas_anonymouse_group can see community's public folder only if the community is set as public
+    // users in Midas_anonymous_group can see community's public folder only if the community is set as public
     $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
 
-    // users in Midas_anonymouse_group can see CREATE_COMMUNITY feed for this community only if the community is set as public
+    // users in Midas_anonymous_group can see CREATE_COMMUNITY feed for this community only if the community is set as public
     $feedcreatecommunityDaos = $feedModel->getFeedByResourceAndType(MIDAS_FEED_CREATE_COMMUNITY, $communityDao);
     foreach($feedcreatecommunityDaos as $feedcreatecommunityDao)
       {

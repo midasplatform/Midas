@@ -48,8 +48,7 @@ abstract class Mfa_ApitokenModelBase extends Mfa_AppModel
    */
   public function createTempToken($user, $tokenDao)
     {
-    $this->loadDaoClass('ApitokenDao', 'mfa');
-    $newToken = new Mfa_ApitokenDao();
+    $newToken = MidasLoader::newDao('ApitokenDao', 'mfa');
     $newToken->setUserId($user->getKey());
     $newToken->setTokenId($tokenDao->getKey());
     $newToken->setCreationDate(date("Y-m-d H:i:s"));

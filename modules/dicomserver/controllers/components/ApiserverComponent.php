@@ -78,7 +78,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
       $userApiDao = $userApiModel->getByAppAndUser('Default', $userDao);
       if(!$userApiDao)
         {
-        throw new Zend_Exception('You need to create a web-api key for this user for application: Default');
+        throw new Zend_Exception('You need to create a web API key for this user for application: Default');
         }
       $api_key = $userApiDao->getApikey();
       }
@@ -402,8 +402,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
         'permission for the given item.', MIDAS_INVALID_POLICY);
       }
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $registrationModel = $modelLoad->loadModel('Registration', 'dicomserver');
+    $registrationModel = MidasLoader::loadModel('Registration', 'dicomserver');
     if(!$registrationModel->checkByItemId($args['item']))
       {
       return array('status' => false);

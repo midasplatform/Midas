@@ -29,7 +29,7 @@ $(document).ready(function () {
 function startMigrate() {
     formSubmitOptions = {
         success: migrateCallback,
-        dataType: 'json',
+        dataType: 'json'
     };
     $('#migrateForm').ajaxSubmit(formSubmitOptions);
 }

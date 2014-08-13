@@ -53,7 +53,7 @@ abstract class UserapiModelBase extends AppModel
     {
     if(!$userDao instanceof UserDao)
       {
-      throw new Zend_Exception('Error parameter: must be a userDao object when creating default api key.');
+      throw new Zend_Exception('Error parameter: must be a userDao object when creating default API key.');
       }
     $key = UtilityComponent::generateRandomString(32);
 

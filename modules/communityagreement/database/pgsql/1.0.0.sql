@@ -1,4 +1,3 @@
-# DROP TABLE IF EXISTS communityagreement_agreement;
 --
 -- Structure of table `communityagreement_agreement`
 --

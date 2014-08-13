@@ -23,12 +23,12 @@ class ApigroupComponent extends AppComponent
   {
   /**
    * list the users for a group, requires admin privileges on the community
-   * assiated with the group
+   * associated with the group
    * @path /group/users/{id}
    * @http GET
    * @param id id of group
    * @return array users => a list of user ids mapped to a two element list of
-   * user firstname and lastname
+   * user first name and last name
    */
   function groupListUsers($args)
     {
