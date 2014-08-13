@@ -266,8 +266,7 @@ THREE.TrackballControlsMidas = function ( object, domElement ) {
 			_keyPressed = true;
 
 		}
-
-	};
+	}
 
 	function keyup( event ) {
 
@@ -278,8 +277,7 @@ THREE.TrackballControlsMidas = function ( object, domElement ) {
 			_state = STATE.NONE;
 
 		}
-
-	};
+	}
 
 	function mousedown( event ) {
 
@@ -307,8 +305,7 @@ THREE.TrackballControlsMidas = function ( object, domElement ) {
 			}
 
 		}
-
-	};
+	}
 
 	function mousemove( event ) {
 
@@ -341,8 +338,7 @@ THREE.TrackballControlsMidas = function ( object, domElement ) {
 			_panEnd = _this.getMouseOnScreen( event.clientX, event.clientY );
 
 		}
-
-	};
+	}
 
 	function mouseup( event ) {
 
@@ -352,8 +348,7 @@ THREE.TrackballControlsMidas = function ( object, domElement ) {
 		event.stopPropagation();
 
 		_state = STATE.NONE;
-
-	};
+	}
 
 	this.domElement.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
 

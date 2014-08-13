@@ -11,7 +11,7 @@ if (typeof callbackDblClick != 'function') {
             return null;
         }
         return $("table.treeTable tbody tr.child-of-" + node[0].id);
-    };
+    }
 }
 
 function validateCreateFolder(formData, jqForm, options) {
