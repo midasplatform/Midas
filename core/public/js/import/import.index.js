@@ -204,7 +204,7 @@ midas.import.assetstoretypeChanged = function () {
  */
 midas.import.makeProgressSuccessCallback = function (id) {
     'use strict';
-    var ret = function (html) {
+    return function (html) {
 
         if (html) {
             if (html.percent !== 'NA') {
@@ -218,7 +218,6 @@ midas.import.makeProgressSuccessCallback = function (id) {
         }
         window.setTimeout("midas.import.checkProgress(" + id + ")", 3000);
     };
-    return ret;
 };
 
 midas.import.progressFailureCallback = function (XMLHttpRequest, textStatus, errorThrown) {

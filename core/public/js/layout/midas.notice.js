@@ -100,8 +100,7 @@ midas.updateGrowls = function () {
 };
 
 function timerGrowl(event, delay) {
-    var api = $(this).data('qtip'),
-        lifespan = delay; // 5 second lifespan
+    var api = $(this).data('qtip');
 
     // If persistent is set to true, don't do anything.
     if (api.get('show.persistent') === true) {
@@ -111,7 +110,7 @@ function timerGrowl(event, delay) {
     // Otherwise, start/clear the timer depending on event type
     clearTimeout(api.timer);
     if (event.type !== 'mouseover') {
-        api.timerGrowl = setTimeout(api.hide, lifespan);
+        api.timerGrowl = setTimeout(api.hide, delay);
     }
 }
 

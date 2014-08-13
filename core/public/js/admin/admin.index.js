@@ -236,10 +236,9 @@ $(document).ready(function () {
             var mainModule = $(this).attr('module');
 
             $.each(moduleDependencies, function (i, l) {
-                var module = l;
-                if (module != '') {
+                if (l != '') {
                     found = true;
-                    midas.createNotice("Dependency: The module " + module + " requires " + mainModule + ". You must disable it first.", 4000, 'warning');
+                    midas.createNotice("Dependency: The module " + l + " requires " + mainModule + ". You must disable it first.", 4000, 'warning');
                 }
             });
             if (found) {
