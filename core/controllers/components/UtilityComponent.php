@@ -56,11 +56,11 @@ class UtilityComponent extends AppComponent
       // replace anything not alpha numeric
       $key = preg_replace('/[^a-z]/i', '', $key);
 
-      // if there is another array found recrusively call this function
+      // if there is another array found recursively call this function
       if(is_array($value))
         {
         $node = $xml->addChild($key);
-        // recrusive call.
+        // recursive call.
         $this->toXml($value, $rootNodeName, $node);
         }
       else
@@ -247,7 +247,7 @@ class UtilityComponent extends AppComponent
    *     "ExtensionOrFunctionName" => array( EXT_CRITICAL , $message or EXT_DEFAULT_MSG ),
    *   );
    *
-   * The unavailable funtion/extension are returned (array of string)
+   * The unavailable function/extension are returned (array of string)
    */
   static function checkPhpExtensions($phpextensions)
     {
@@ -453,7 +453,7 @@ class UtilityComponent extends AppComponent
   /** install a module */
   public function installModule($moduleName)
     {
-    // TODO, The module installation process needs some improvment.
+    // TODO, The module installation process needs some improvement.
     $allModules = $this->getAllModules();
     $version = $allModules[$moduleName]->version;
 

@@ -668,7 +668,7 @@ class ApiitemComponent extends AppComponent
     }
 
   /**
-   * Duplicate an item to the desination folder
+   * Duplicate an item to the destination folder
    * @path /item/duplicate/{id}
    * @http PUT
    * @param id The id of the item

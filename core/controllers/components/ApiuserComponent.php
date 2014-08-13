@@ -117,7 +117,7 @@ class ApiuserComponent extends AppComponent
    * @param email (Optional) The email of the user desired
    * @param firstname (Optional) The first name of the desired user (use with lastname)
    * @param lastname (Optional) The last name of the desired user (use with firstname)
-   * @return The user corresponding to the email or first and lastname
+   * @return The user corresponding to the email or first and last name
    */
   function userSearch($args)
     {

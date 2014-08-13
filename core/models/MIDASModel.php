@@ -211,7 +211,7 @@ class MIDASModel
 
   /**
    * @method public  __call($method, $params)
-   *  Catch if the method doesn't exists and create a method dynamically
+   *  Catch if the method does not exist and create a method dynamically
    * @param $method method name
    * @param $params array of param
    * @return return the result of the function dynamically created
@@ -432,7 +432,7 @@ class MIDASModel
 
   /**
    * @method public compareDao($dao1, $dao2)
-   *  Compare 2 dao (onlye the MIDAS_DATA
+   *  Compare 2 dao (only the MIDAS_DATA
    * @param $dao1
    * @param $dao2
    * @return True if they are the same one

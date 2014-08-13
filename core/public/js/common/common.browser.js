@@ -346,7 +346,7 @@ midas.moveSelected = function (folders, items) {
 
 /**
  * Helper method to remove all of a node's subtree from the treeTable view.
- * Expects a jquerified node object.
+ * Expects a jQuerified node object.
  */
 midas.removeChildren = function (node) {
     node.each(

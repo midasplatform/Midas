@@ -215,7 +215,7 @@ class MIDAS_GlobalDao
 
   /**
    * @method public  __call($method, $params)
-   *  Catch if the method doesn't exists and create a method dynamically
+   *  Catch if the method does not exist and create a method dynamically
    * @param $method method name
    * @param $params array of param
    * @return return the result of the function dynamically created

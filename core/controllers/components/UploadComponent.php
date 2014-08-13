@@ -37,7 +37,7 @@ class UploadComponent extends AppComponent
   /** Upload local bitstream */
   private function _uploadLocalBitstream($bitstreamdao, $assetstoredao, $copy = false)
     {
-    // Check if the type of the assestore is suitable
+    // Check if the type of the assetstore is suitable
     if($assetstoredao->getType() != MIDAS_ASSETSTORE_LOCAL)
       {
       throw new Zend_Exception("The assetstore type should be local to upload.");
