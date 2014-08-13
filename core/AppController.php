@@ -434,9 +434,13 @@ class AppController extends MIDAS_GlobalController
     try
       {
       $dynamichelp = Zend_Registry::get('configGlobal')->dynamichelp;
-      if($dynamichelp && $this->userSession != null && $this->userSession->Dao != null)
+      if($dynamichelp && $this->userSession != null)
         {
-        return $this->userSession->Dao->getDynamichelp() == 1;
+        $userDao = $this->userSession->Dao;
+        if($userDao != null && $userDao instanceof UserDao)
+          {
+          return $userDao->getDynamichelp() == 1;
+          }
         }
       return $dynamichelp == 1;
       }
