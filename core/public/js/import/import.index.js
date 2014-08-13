@@ -151,8 +151,8 @@ midas.import.assetstoreAddCallback = function (responseText, statusText, xhr, fo
 midas.import.newAssetstoreShow = function () {
     'use strict';
     var assetstoretype = $('select#importassetstoretype option:selected').val();
-    $('#assetstoretype option:selected').removeAttr("selected");
-    $('#assetstoretype option[value=' + assetstoretype + ']').attr("selected", "selected");
+    $('#assetstoretype').find('option:selected').removeAttr("selected");
+    $('#assetstoretype').find('option[value=' + assetstoretype + ']').attr("selected", "selected");
 };
 
 /** When the cancel is clicked in the new assetstore window */
@@ -185,8 +185,8 @@ midas.import.assetstoretypeChanged = function () {
         assetstoretype = $('select#importassetstoretype option:selected').val();
 
     // Set the same assetstore type for the new assetstore
-    $('#assetstoretype option:selected').removeAttr("selected");
-    $('#assetstoretype option[value=' + assetstoretype + ']').attr("selected", "selected");
+    $('#assetstoretype').find('option:selected').removeAttr("selected");
+    $('#assetstoretype').find('option[value=' + assetstoretype + ']').attr("selected", "selected");
 
     // Clean the assetstore list
     $("select#assetstore").find('option:not(:first)').remove();

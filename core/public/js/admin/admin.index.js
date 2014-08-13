@@ -45,8 +45,8 @@ midas.admin.assetstoreSubmit = function (formData, jqForm, options) {
 /** When the cancel is clicked in the new assetstore window */
 midas.admin.newAssetstoreShow = function () {
     var assetstoretype = $('select#importassetstoretype option:selected').val();
-    $('#assetstoretype option:selected').removeAttr("selected");
-    $('#assetstoretype option[value=' + assetstoretype + ']').attr("selected", "selected");
+    $('#assetstoretype').find('option:selected').removeAttr("selected");
+    $('#assetstoretype').find('option[value=' + assetstoretype + ']').attr("selected", "selected");
 } // end function newAssetstoreShow
 
 /** When the cancel is clicked in the new assetstore window */

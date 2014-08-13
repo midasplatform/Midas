@@ -18,10 +18,10 @@ midas.user.doCreate = function () {
         var disabled = $(this).is(':checked');
 
         if (disabled) {
-            $('#registerForm input[type="password"]').val('').attr('disabled', 'disabled');
+            $('#registerForm').find('input[type="password"]').val('').attr('disabled', 'disabled');
         }
         else {
-            $('#registerForm input[type="password"]').removeAttr('disabled');
+            $('#registerForm').find('input[type="password"]').removeAttr('disabled');
         }
     });
 

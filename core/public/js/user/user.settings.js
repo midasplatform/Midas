@@ -39,7 +39,7 @@ midas.user.successPasswordChange = function (responseText, statusText, xhr, form
         midas.createNotice(jsonResponse[1], 4000);
     }
     else {
-        $('#modifyPassword input[type=password]').val('');
+        $('#modifyPassword').find('input[type=password]').val('');
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
 }

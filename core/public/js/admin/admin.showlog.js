@@ -12,7 +12,7 @@ midas.errorlog.initLogs = function () {
     $('.logsLoading').show();
     $('table#listLogs tr.logSum').remove();
     $('table#listLogs tr.logDetail').remove();
-    $('#fullLogMessages div').remove();
+    $('#fullLogMessages').find('div').remove();
     $('#selectAllCheckbox').removeAttr('checked');
 
     var i = 0;

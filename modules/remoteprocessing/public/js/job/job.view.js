@@ -45,7 +45,7 @@ $(document).ready(function () {
 });
 
 function initMetrics() {
-    $('#tableXml thead .metric').each(function () {
+    $('#tableXml').find('thead .metric').each(function () {
         var html = '<label for="' + $(this).attr('name') + '">' + $(this).html() + ':</label>';
         html += '<div id="' + $(this).attr('name') + '" style="border:0; color:green; font-weight:bold;" />';
         html += '<div style="width:50%;" id="' + $(this).attr('name') + '-slider-range"></div>';
@@ -77,7 +77,7 @@ function initMetrics() {
 }
 
 function processXmlTableColors() {
-    $('#tableXml tbody tr').each(function () {
+    $('#tableXml').find('tbody tr').each(function () {
         var passed = true;
         if ($(this).find('.xmlStatus').html() != 'passed') {
             passed = false;
@@ -85,7 +85,7 @@ function processXmlTableColors() {
 
         var trObj = $(this);
 
-        $('#tableXml thead .metric').each(function () {
+        $('#tableXml').find('thead .metric').each(function () {
             var name = $(this).attr('name');
             var value = trObj.find('.' + name + '-value').html();
             if (value <= $('#' + name + ' .spanmin').html() || value >= $('#' + name + ' .spanmax').html()) {

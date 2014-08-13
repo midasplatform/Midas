@@ -58,7 +58,7 @@ midas.packages.transformArch = function (arch) {
 };
 
 $(document).ready(function () {
-    $('#platformList h3').each(function () {
+    $('#platformList').find('h3').each(function () {
         var el = $(this);
         el.find('a').html(midas.packages.transformOs(el.attr('os')) + ' ' +
             midas.packages.transformArch(el.attr('arch')));

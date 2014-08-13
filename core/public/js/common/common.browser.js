@@ -171,9 +171,9 @@ midas.genericCallbackDblClick = function (node) {
 midas.createNewFolder = function (id) {
     midas.loadDialog('folderId' + id, '/folder/createfolder?folderId=' + id);
     midas.showDialog(json.browse.createFolder, false);
-    $('#createFolderForm input[name=name]').val('');
-    $('#createFolderForm textarea[name=description]').val('');
-    $('#createFolderForm input[name=teaser]').val('');
+    $('#createFolderForm').find('input[name=name]').val('');
+    $('#createFolderForm').find('textarea[name=description]').val('');
+    $('#createFolderForm').find('input[name=teaser]').val('');
 };
 
 midas.removeNodeFromTree = function (node, recursive) {
