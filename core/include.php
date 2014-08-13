@@ -47,7 +47,6 @@ include_once BASE_PATH.'/core/constant/global.php';
 include_once BASE_PATH.'/core/constant/error.php';
 include_once BASE_PATH.'/core/constant/datatype.php';
 include_once BASE_PATH.'/core/constant/community.php';
-include_once BASE_PATH.'/core/constant/item.php';
 include_once BASE_PATH.'/core/constant/group.php';
 include_once BASE_PATH.'/core/constant/policy.php';
 include_once BASE_PATH.'/core/constant/folder.php';
