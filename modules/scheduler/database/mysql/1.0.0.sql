@@ -26,7 +26,7 @@ CREATE TABLE scheduler_workflow (
 
 DROP TABLE IF EXISTS scheduler_node;
 CREATE TABLE scheduler_node (
-  workflow_id        INTEGER      UNSIGNED NOT NULL REFERENCES workflow.workflow_id,
+  workflow_id        INTEGER      UNSIGNED NOT NULL,
   node_id            INTEGER      UNSIGNED NOT NULL AUTO_INCREMENT,
   node_class         VARCHAR(255)          NOT NULL,
   node_configuration BLOB                      NULL,
@@ -46,7 +46,7 @@ CREATE TABLE scheduler_node_connection (
 
 DROP TABLE IF EXISTS scheduler_variable_handler;
 CREATE TABLE scheduler_variable_handler (
-  workflow_id INTEGER      UNSIGNED NOT NULL REFERENCES workflow.workflow_id,
+  workflow_id INTEGER      UNSIGNED NOT NULL,
   variable    VARCHAR(255)          NOT NULL,
   class       VARCHAR(255)          NOT NULL,
 
@@ -55,9 +55,9 @@ CREATE TABLE scheduler_variable_handler (
 
 DROP TABLE IF EXISTS scheduler_execution;
 CREATE TABLE scheduler_execution (
-  workflow_id              INTEGER UNSIGNED NOT NULL REFERENCES workflow.workflow_id,
+  workflow_id              INTEGER UNSIGNED NOT NULL,
   execution_id             INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  execution_parent         INTEGER UNSIGNED     NULL REFERENCES execution.execution_id,
+  execution_parent         INTEGER UNSIGNED     NULL,
   execution_started        INTEGER          NOT NULL,
   execution_suspended      INTEGER              NULL,
   execution_variables      BLOB                 NULL,
@@ -71,8 +71,8 @@ CREATE TABLE scheduler_execution (
 
 DROP TABLE IF EXISTS scheduler_execution_state;
 CREATE TABLE scheduler_execution_state (
-  execution_id        INTEGER UNSIGNED NOT NULL REFERENCES execution.execution_id,
-  node_id             INTEGER UNSIGNED NOT NULL REFERENCES node.node_id,
+  execution_id        INTEGER UNSIGNED NOT NULL,
+  node_id             INTEGER UNSIGNED NOT NULL,
   node_state          BLOB                 NULL,
   node_activated_from BLOB                 NULL,
   node_thread_id      INTEGER UNSIGNED NOT NULL,
