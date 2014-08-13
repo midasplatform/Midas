@@ -402,8 +402,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
         'permission for the given item.', MIDAS_INVALID_POLICY);
       }
 
-    $modelLoad = new MIDAS_ModelLoader();
-    $registrationModel = $modelLoad->loadModel('Registration', 'dicomserver');
+    $registrationModel = MidasLoader::loadModel('Registration', 'dicomserver');
     if(!$registrationModel->checkByItemId($args['item']))
       {
       return array('status' => false);

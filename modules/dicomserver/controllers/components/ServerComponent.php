@@ -169,9 +169,7 @@ class Dicomserver_ServerComponent extends AppComponent
         throw new Zend_Exception(htmlspecialchars($exception_string, ENT_QUOTES), MIDAS_INVALID_POLICY);
         }
       }
-
-    $modelLoad = new MIDAS_ModelLoader();
-    $registrationModel = $modelLoad->loadModel('Registration', 'dicomserver');
+    $registrationModel = MidasLoader::loadModel('Registration', 'dicomserver');
     $itemId =  $revision->getItemId();
     if(!$registrationModel->checkByItemId($itemId))
       {

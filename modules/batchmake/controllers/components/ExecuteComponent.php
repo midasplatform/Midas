@@ -45,8 +45,7 @@ class Batchmake_ExecuteComponent extends AppComponent
       {
       throw new Zend_Exception("couldn't create data export dir: ". $datapath);
       }
-    $componentLoader = new MIDAS_ComponentLoader();
-    $exportComponent = $componentLoader->loadComponent('Export');
+    $exportComponent = MidasLoader::loadComponent('Export');
     $symlink = true;
     $exportComponent->exportBitstreams($userDao, $datapath, $itemIds, $symlink);
 
@@ -55,8 +54,7 @@ class Batchmake_ExecuteComponent extends AppComponent
     // get the bitstream path, assuming latest revision of item, with one bitstream
     // this seems somewhat wrong, as we are halfway recreating the export
     // and dependent upon the export to work in a certain way for this to work
-    $modelLoad = new MIDAS_ModelLoader();
-    $itemModel = $modelLoad->loadModel('Item');
+    $itemModel = MidasLoader::loadModel('Item');
 
     $itemNamesToBitstreamPaths = array();
     foreach($itemsForExport as $itemName => $itemId)
@@ -89,8 +87,7 @@ class Batchmake_ExecuteComponent extends AppComponent
       {
       throw new Zend_Exception("couldn't create data export dir: ". $datapath);
       }
-    $componentLoader = new MIDAS_ComponentLoader();
-    $exportComponent = $componentLoader->loadComponent('Export');
+    $exportComponent = MidasLoader::loadComponent('Export');
     $symlink = true;
     $exportComponent->exportBitstreams($userDao, $datapath, $itemIds, $symlink);
     }
@@ -114,8 +111,7 @@ class Batchmake_ExecuteComponent extends AppComponent
 
     $email = $userDao->getEmail();
     // get an api key for this user
-    $modelLoad = new MIDAS_ModelLoader();
-    $userApiModel = $modelLoad->loadModel('Userapi');
+    $userApiModel = MidasLoader::loadModel('Userapi');
     $userApiDao = $userApiModel->getByAppAndUser('Default', $userDao);
     if(!$userApiDao)
       {

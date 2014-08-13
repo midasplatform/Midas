@@ -44,10 +44,9 @@ class Mfa_ApiComponent extends AppComponent
   public function otpLogin($params)
     {
     $this->_checkKeys(array('otp', 'mfaTokenId'), $params);
-    $modelLoader = new MIDAS_ModelLoader();
-    $tempTokenModel = $modelLoader->loadModel('Apitoken', 'mfa');
-    $otpDeviceModel = $modelLoader->loadModel('Otpdevice', 'mfa');
-    $apiTokenModel = $modelLoader->loadModel('Token');
+    $tempTokenModel = MidasLoader::loadModel('Apitoken', 'mfa');
+    $otpDeviceModel = MidasLoader::loadModel('Otpdevice', 'mfa');
+    $apiTokenModel = MidasLoader::loadModel('Token');
 
     $tempToken = $tempTokenModel->load($params['mfaTokenId']);
     if(!$tempToken)
@@ -70,8 +69,7 @@ class Mfa_ApiComponent extends AppComponent
       }
     $tempTokenModel->delete($tempToken);
 
-    $componentLoader = new MIDAS_ComponentLoader();
-    $otpComponent = $componentLoader->loadComponent('Otp', 'mfa');
+    $otpComponent = MidasLoader::loadComponent('Otp', 'mfa');
 
     if(!$otpComponent->authenticate($otpDevice, $params['otp']))
       {

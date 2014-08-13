@@ -297,7 +297,7 @@ class MIDASModel
     } //end method findBy
 
   /**
-   * DEPRECATED: Use MidasLoader::newDao to load the class and instantiate a dao
+   * @deprecated Use MidasLoader::newDao to load the class and instantiate a dao
    */
   public function loadDaoClass($name, $module = 'core')
     {
@@ -354,68 +354,57 @@ class MIDASModel
       {
       $name = ucfirst($this->_name) . 'Dao';
       }
-
     if(isset($this->_daoName) && isset($this->moduleName))
       {
-      $this->loadDaoClass($name, $this->moduleName);
-      $name = ucfirst($this->moduleName).'_'.$name;
+      $dao = MidasLoader::newDao($name, $this->moduleName);
       }
     else if(isset($this->moduleName))
       {
-      $this->loadDaoClass(ucfirst(substr($name, strpos($name, '_') + 1)), $this->moduleName);
+      $dao = MidasLoader::newDao(ucfirst(substr($name, strpos($name, '_') + 1)), $this->moduleName);
       }
     else
       {
-      Zend_Loader::loadClass($name, BASE_PATH . '/core/models/dao');
+      $dao = MidasLoader::newDao($name);
       }
-
-    if(class_exists($name))
+    if(!isset($this->_key) && $key != null)
       {
-      if(!isset($this->_key) && $key != null)
+      throw new Zend_Exception("MIDASDatabasePDO " . $this->_name . ": key is not defined here. (you should write your own load method)");
+      }
+    if(is_array($key))
+      {
+      if(empty($key))
         {
-        throw new Zend_Exception("MIDASDatabasePDO " . $this->_name . ": key is not defined here. (you should write your own load method)");
+        return array();
         }
-      if(is_array($key))
+      if(empty($key))
         {
-        if(empty($key))
-          {
-          return array();
-          }
-
-        if(empty($key))
-          {
-          return array();
-          }
-        $rowset = $this->database->getAllByKey($key);
-        $return = array();
-        foreach($rowset as $row)
-          {
-          $tmpDao = $this->initDao(ucfirst($this->_name), $row);
-          $return[] = $tmpDao;
-          unset($tmpDao);
-          }
-        return $return;
+        return array();
         }
-      else
+      unset($dao);
+      $rowset = $this->database->getAllByKey($key);
+      $return = array();
+      foreach($rowset as $row)
         {
-        $obj = new $name();
-        if($key !== null && method_exists($obj, 'initValues'))
-          {
-          if(!$obj->initValues($key))
-            {
-            unset($obj);
-            return false;
-            }
-          $obj->saved = true;
-          }
-        return $obj;
+        $tmpDao = $this->initDao(ucfirst($this->_name), $row);
+        $return[] = $tmpDao;
+        unset($tmpDao);
         }
+      return $return;
       }
     else
       {
-      throw new Zend_Exception('Unable to load dao ' . $name);
+      if($key !== null && method_exists($dao, 'initValues'))
+        {
+        if(!$dao->initValues($key))
+          {
+          unset($dao);
+          return false;
+          }
+        $dao->saved = true;
+        }
+      return $dao;
       }
-    } //end load
+    }
 
   /**
    * @method public getValue()

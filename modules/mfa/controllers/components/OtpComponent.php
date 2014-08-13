@@ -90,8 +90,7 @@ class Mfa_OtpComponent extends AppComponent
    */
   protected function _radiusauth($otpDevice, $token)
     {
-    $modelLoader = new MIDAS_ModelLoader();
-    $settingModel = $modelLoader->loadModel('Setting');
+    $settingModel = MidasLoader::loadModel('Setting');
 
     $radiusserver = $settingModel->GetValueByName('radiusServer', 'mfa');
     $radiusport = $settingModel->GetValueByName('radiusPort', 'mfa');
