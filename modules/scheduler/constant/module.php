@@ -18,7 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-define("SCHEDULER_JOB_STATUS_TORUN", 0);
-define("SCHEDULER_JOB_STATUS_STARTED", 1);
-define("SCHEDULER_JOB_STATUS_DONE", 2);
-define("SCHEDULER_JOB_STATUS_FAILED", 3);
+define('SCHEDULER_JOB_STATUS_TORUN', 0);
+define('SCHEDULER_JOB_STATUS_STARTED', 1);
+define('SCHEDULER_JOB_STATUS_DONE', 2);
+define('SCHEDULER_JOB_STATUS_FAILED', 3);

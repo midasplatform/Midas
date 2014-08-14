@@ -21,15 +21,12 @@
 /** Config controller for the scheduler module */
 class Scheduler_ConfigController extends Scheduler_AppController
   {
-  public $_moduleForms = array('Config');
-  public $_components = array('Utility', 'Date');
   public $_moduleModels = array('Job', 'JobLog');
 
-  /** index action*/
+  /** Index action */
   function indexAction()
     {
     $this->requireAdminPrivileges();
-
     $this->view->jobs = $this->Scheduler_Job->getJobsToRun();
     $this->view->jobsErrors = $this->Scheduler_Job->getLastErrors();
     }
