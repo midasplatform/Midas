@@ -1,5 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 midas.errorlog = midas.errorlog || {};
 
@@ -8,6 +10,7 @@ midas.errorlog.PAGE_LIMIT = 100;
 
 // Fill the log table
 midas.errorlog.initLogs = function () {
+    'use strict';
     $('table#listLogs').hide();
     $('.logsLoading').show();
     $('table#listLogs tr.logSum').remove();
@@ -69,14 +72,16 @@ midas.errorlog.initLogs = function () {
             });
         });
     }
-}
+};
 
 midas.errorlog.validateShowlog = function (formData, jqForm, options) {
+    'use strict';
     $('table#listLogs').hide();
     $('.logsLoading').show();
-}
+};
 
 midas.errorlog.successShowlog = function (responseText, statusText, xhr, form) {
+    'use strict';
     try {
         var resp = $.parseJSON(responseText);
         midas.errorlog.jsonLogs = resp;
@@ -90,32 +95,36 @@ midas.errorlog.successShowlog = function (responseText, statusText, xhr, form) {
         return false;
     }
     midas.errorlog.initLogs();
-}
+};
 
 midas.errorlog.fetchNextPage = function () {
+    'use strict';
     if (midas.errorlog.pageOffset + midas.errorlog.PAGE_LIMIT < midas.errorlog.jsonLogs.total) {
         midas.errorlog.pageOffset += midas.errorlog.PAGE_LIMIT;
         $('#errorlogOffset').val(midas.errorlog.pageOffset);
         $('#logSelector').submit();
     }
-}
+};
 
 midas.errorlog.fetchPreviousPage = function () {
+    'use strict';
     if (midas.errorlog.pageOffset >= midas.errorlog.PAGE_LIMIT) {
         midas.errorlog.pageOffset -= midas.errorlog.PAGE_LIMIT;
         $('#errorlogOffset').val(midas.errorlog.pageOffset);
         $('#logSelector').submit();
     }
-}
+};
 
 midas.errorlog.applyFilter = function () {
+    'use strict';
     // reset offset to 0, as user has clicked apply and
     // desires a new result set, which should start at page 0
     midas.errorlog.pageOffset = 0;
     $('#errorlogOffset').val(0);
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     $('#errorlogOffset').val(midas.errorlog.pageOffset);
     $('#errorlogPageLimit').val(midas.errorlog.PAGE_LIMIT);
     $('#errorlogPreviousPage').click(midas.errorlog.fetchPreviousPage);

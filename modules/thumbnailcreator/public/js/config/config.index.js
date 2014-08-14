@@ -4,11 +4,13 @@ var midas = midas || {};
 midas.thumbnailcreator = midas.thumbnailcreator || {};
 midas.thumbnailcreator.config = midas.thumbnailcreator.config || {};
 
-midas.thumbnailcreator.config.validateConfig = function (formData, jqForm, options) {}
+midas.thumbnailcreator.config.validateConfig = function (formData, jqForm, options) {};
 
 midas.thumbnailcreator.config.successConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
+    var jsonResponse;
     try {
-        var jsonResponse = jQuery.parseJSON(responseText);
+        jsonResponse = $.parseJSON(responseText);
     }
     catch (e) {
         midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
@@ -24,9 +26,10 @@ midas.thumbnailcreator.config.successConfig = function (responseText, statusText
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 midas.thumbnailcreator.config.initUseThumbnailer = function () {
+    'use strict';
     var inputThumbnailer = $('input[name=thumbnailer]');
     var inputUseThumbnailer = $('input[name=useThumbnailer]');
     var thumbnailerDiv = $('div#thumbnailerDiv');
@@ -44,9 +47,10 @@ midas.thumbnailcreator.config.initUseThumbnailer = function () {
     inputUseThumbnailer.change(function () {
         midas.thumbnailcreator.config.initUseThumbnailer();
     });
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     midas.thumbnailcreator.config.initUseThumbnailer();
 
     $('#configForm').ajaxForm({

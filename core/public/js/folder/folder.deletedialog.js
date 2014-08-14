@@ -1,8 +1,11 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 
 $('input.deleteFolderYes').unbind('click').click(function () {
+    'use strict';
     $(this).attr('disabled', 'disabled');
     var id = $('#deleteFolderId').val();
     midas.ajaxWithProgress(
@@ -13,7 +16,7 @@ $('input.deleteFolderYes').unbind('click').click(function () {
         },
         function (data) {
             $('input.deleteFolderYes').removeAttr('disabled');
-            jsonResponse = jQuery.parseJSON(data);
+            var jsonResponse = $.parseJSON(data);
             if (jsonResponse == null) {
                 midas.createNotice('Error', 4000, 'error');
                 return;
@@ -33,5 +36,6 @@ $('input.deleteFolderYes').unbind('click').click(function () {
 });
 
 $('input.deleteFolderNo').unbind('click').click(function () {
+    'use strict';
     $('div.MainDialog').dialog('close');
 });

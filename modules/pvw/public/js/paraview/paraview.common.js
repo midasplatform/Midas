@@ -1,7 +1,10 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 midas.pvw = midas.pvw || {};
+var pv = pv || {};
 
 midas.pvw.IDLE_TIMEOUT = 10 * 60 * 1000; // 10 minute idle timeout
 midas.pvw.bgColor = {
@@ -19,6 +22,7 @@ midas.pvw.instructionsContent = '<h4>Camera Interaction</h4>' +
  * Binds the action of selecting a background color
  */
 midas.pvw.setupBgColor = function () {
+    'use strict';
     $('#bgColor').click(function () {
         var html = '<div class="bgColorPicker"></div>';
         midas.showDialogWithContent('Change background color',
@@ -45,18 +49,20 @@ midas.pvw.setupBgColor = function () {
  * It sets the instance in global scope and calls midas.pvw.start()
  */
 midas.pvw._commonStart = function (text) {
+    'use strict';
     midas.pvw.setupBgColor();
 
     $('div.MainDialog').dialog('close');
+    var jsonResponse;
     try {
-        var resp = $.parseJSON(text);
+        jsonResponse = $.parseJSON(text);
     }
     catch (e) {
         midas.createNotice('An error occurred, please check the logs', 4000, 'error');
         return;
     }
-    if (resp && resp.status == 'ok' && resp.instance) {
-        midas.pvw.instance = resp.instance;
+    if (jsonResponse && jsonResponse.status == 'ok' && jsonResponse.instance) {
+        midas.pvw.instance = jsonResponse.instance;
         pv = {};
         pv.connection = {
             sessionURL: 'ws://' + location.hostname + ':' + midas.pvw.instance.port + '/ws',
@@ -76,7 +82,7 @@ midas.pvw._commonStart = function (text) {
         midas.pvw.start();
     }
     else {
-        midas.pvw.showStatus('Instance creation failed: ' + resp.message);
+        midas.pvw.showStatus('Instance creation failed: ' + jsonResponse.message);
     }
 };
 
@@ -86,6 +92,7 @@ midas.pvw._commonStart = function (text) {
  * This function also sets up the
  */
 midas.pvw.loadData = function () {
+    'use strict';
     vtkWeb.connect(pv.connection, function (conn) {
         pv.connection = conn;
         pv.viewport = vtkWeb.createViewport(pv.connection);
@@ -100,7 +107,7 @@ midas.pvw.loadData = function () {
     }, function (code, msg) {
         $('#renderercontainer').hide();
         midas.createNotice('Error: ' + msg, 3000, 'error');
-        midas.pvw.showStatus('ParaView session closed: ' + msg)
+        midas.pvw.showStatus('ParaView session closed: ' + msg);
     });
 };
 
@@ -109,6 +116,7 @@ midas.pvw.loadData = function () {
  * user has been idle for too long, and if so, kill the pvw session
  */
 midas.pvw.testIdle = function () {
+    'use strict';
     var curr = new Date().getTime();
     if (curr - midas.pvw.lastAction > midas.pvw.IDLE_TIMEOUT) {
         midas.pvw.stopSession();
@@ -120,6 +128,7 @@ midas.pvw.testIdle = function () {
  * to the view.
  */
 midas.pvw.stopSession = function () {
+    'use strict';
     if (pv.connection) {
         vtkWeb.stop(pv.connection);
         pv.connection = null;
@@ -137,6 +146,7 @@ midas.pvw.stopSession = function () {
  * Display a status message on the screen
  */
 midas.pvw.showStatus = function (statusText) {
+    'use strict';
     $('.midas-pvw-status').remove();
     $('div.viewMain').append('<div class="midas-pvw-status">' + statusText + '</div>');
 };
@@ -145,6 +155,7 @@ midas.pvw.showStatus = function (statusText) {
  * Remove the status message from the screen
  */
 midas.pvw.hideStatus = function () {
+    'use strict';
     $('.midas-pvw-status').remove();
 };
 
@@ -152,6 +163,7 @@ midas.pvw.hideStatus = function () {
  * If an rpc failure occurs, this handles the error
  */
 midas.pvw.rpcFailure = function (err) {
+    'use strict';
     $('div.MainDialog').dialog('close');
     console.log(err);
     midas.createNotice('A ParaViewWeb exception occurred, check your browser console', 4000, 'error');
@@ -159,6 +171,7 @@ midas.pvw.rpcFailure = function (err) {
 
 /** Show an indeterminate loading dialog with a message */
 midas.pvw.waitingDialog = function (text) {
+    'use strict';
     var html = '<img alt="" style="margin-right: 9px;" ' +
         'src="' + json.global.coreWebroot + '/public/images/icons/loading.gif" /> ' + text;
 
@@ -166,6 +179,7 @@ midas.pvw.waitingDialog = function (text) {
 };
 
 $(window).load(function () {
+    'use strict';
     if (vtkWeb) {
         if (!json.pvw.meshIds) {
             json.pvw.meshIds = [];
@@ -197,6 +211,7 @@ $(window).load(function () {
 });
 
 window.onunload = function () {
+    'use strict';
     if (midas.pvw.instance && pv.connection) {
         // Sadly we have to do this synchronously so the browser fulfills the request before leaving
         $.ajax({

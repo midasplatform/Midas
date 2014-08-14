@@ -1,10 +1,15 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
+var midas = midas || {};
+
 /**
  * If the community has an agreement, we must not submit the join form.
  * Instead render the license dialog for them when they hit Join Community.
  */
 $(document).ready(function () {
+    'use strict';
     var hasAgreement = $('#hasAgreement').html();
 
     if (hasAgreement == 'true') {

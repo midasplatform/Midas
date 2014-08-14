@@ -1,6 +1,11 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
+var midas = midas || {};
+
 $('#deleteScalar').click(function () {
+    'use strict';
     var html = "Are you sure you want to delete this scalar value?";
     html += '<div style="float: right; margin-top: 15px;">';
     html += '<input type="button" style="margin-left: 0;" class="globalButton" id="deleteScalarYes" value="Yes" />';
@@ -13,7 +18,7 @@ $('#deleteScalar').click(function () {
                 scalarId: $('input.scalarIdChild').val()
             },
             function (data) {
-                var jsonResponse = jQuery.parseJSON(data);
+                var jsonResponse = $.parseJSON(data);
                 if (jsonResponse == null) {
                     midas.createNotice('Error', 2000, 'error');
                 }
@@ -32,6 +37,7 @@ $('#deleteScalar').click(function () {
 });
 
 $(document).ready(function () {
+    'use strict';
     $.fn.qtip.zindex = 16000; // must show qtips on top of the dialog
     $.each($('a.resultItemLink'), function (idx, link) {
         if ($(link).attr('thumbnail')) {

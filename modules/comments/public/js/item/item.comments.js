@@ -1,5 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 midas.comments = midas.comments || {};
 midas.comments.offset = 0;
@@ -11,6 +13,7 @@ midas.comments.PAGE_LIMIT = 10;
  * user is logged in.
  */
 midas.comments.initAddComment = function () {
+    'use strict';
     $('#commentText').val('');
     $('#commentLengthRemaining').html('1200');
     $('#commentText').focus(function () {
@@ -23,12 +26,13 @@ midas.comments.initAddComment = function () {
         var remaining = 1200 - this.value.length;
         $('#commentLengthRemaining').html(remaining);
     });
-}
+};
 
 /**
  * Init the comment list. Pass a list of comment dao objects to display
  */
 midas.comments.initCommentList = function (comments) {
+    'use strict';
     var isAdmin = false;
     var currentUser = 0;
     if (json.modules.comments.user) {
@@ -97,13 +101,13 @@ midas.comments.initCommentList = function (comments) {
     else {
         $('#nextPrevSeparator').hide();
     }
-
-}
+};
 
 /**
  * Requests a page of comments from the server using the current offset
  */
 midas.comments.refreshCommentList = function () {
+    'use strict';
     $('#refreshingCommentDiv').show();
     $.post(json.global.webroot + '/comments/comment/get', {
         itemId: json.item.item_id,
@@ -120,13 +124,14 @@ midas.comments.refreshCommentList = function () {
         }
         $('#refreshingCommentDiv').hide();
     });
-}
+};
 
 /**
  * When the user clicks the delete comment icon, this function is called
  * with the id of the comment that they requested to delete
  */
 midas.comments.deleteComment = function (commentId) {
+    'use strict';
     if (typeof midas.showDialogWithContent == 'function') {
         midas.showDialogWithContent('Delete comment', $('#deleteCommentConfirmation').html(), false);
         $('input.deleteCommentNo').click(function () {
@@ -163,31 +168,34 @@ midas.comments.deleteComment = function (commentId) {
             }
         });
     }
-}
+};
 
 /**
  * Render the next page of comments
  */
 midas.comments.nextPage = function () {
+    'use strict';
     if (midas.comments.offset + midas.comments.PAGE_LIMIT >= midas.comments.total) {
         return;
     }
     midas.comments.offset += midas.comments.PAGE_LIMIT;
     midas.comments.refreshCommentList();
-}
+};
 
 /**
  * Render the previous page of comments
  */
 midas.comments.previousPage = function () {
+    'use strict';
     if (midas.comments.offset <= 0) {
         return;
     }
     midas.comments.offset -= midas.comments.PAGE_LIMIT;
     midas.comments.refreshCommentList();
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     midas.comments.total = json.modules.comments.total;
     midas.comments.initCommentList(json.modules.comments.comments);
     $('#nextComments').click(midas.comments.nextPage);

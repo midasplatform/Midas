@@ -3,13 +3,13 @@
 var midas = midas || {};
 midas.mfa = midas.mfa || {};
 
-midas.mfa.validateSubmit = function (formData, jqForm, options) {
-
-};
+midas.mfa.validateSubmit = function (formData, jqForm, options) {};
 
 midas.mfa.successSubmit = function (responseText, statusText, xhr, form) {
+    'use strict';
+    var jsonResponse;
     try {
-        var jsonResponse = jQuery.parseJSON(responseText);
+        jsonResponse = $.parseJSON(responseText);
     }
     catch (e) {
         midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
@@ -24,6 +24,7 @@ midas.mfa.successSubmit = function (responseText, statusText, xhr, form) {
 };
 
 $(document).ready(function () {
+    'use strict';
     $('#mfaLoginForm').ajaxForm({
         beforeSubmit: midas.mfa.validateSubmit,
         success: midas.mfa.successSubmit

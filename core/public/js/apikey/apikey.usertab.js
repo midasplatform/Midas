@@ -1,13 +1,17 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 midas.apikey = midas.apikey || {};
 
-midas.apikey.validateApiConfig = function (formData, jqForm, options) {}
+midas.apikey.validateApiConfig = function (formData, jqForm, options) {};
 
 midas.apikey.successApiConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
+    var jsonResponse;
     try {
-        var jsonResponse = jQuery.parseJSON(responseText);
+        jsonResponse = $.parseJSON(responseText);
     }
     catch (e) {
         midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
@@ -24,9 +28,10 @@ midas.apikey.successApiConfig = function (responseText, statusText, xhr, form) {
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     $('#generateKeyForm').ajaxForm({
         beforeSubmit: midas.apikey.validateApiConfig,
         success: midas.apikey.successApiConfig
@@ -40,7 +45,7 @@ $(document).ready(function () {
                 userId: $('#apiUserId').val()
             },
             function (data) {
-                var jsonResponse = jQuery.parseJSON(data);
+                var jsonResponse = $.parseJSON(data);
                 if (jsonResponse == null) {
                     midas.createNotice('Error', 4000, 'error');
                     return;

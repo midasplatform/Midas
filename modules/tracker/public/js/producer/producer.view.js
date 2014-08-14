@@ -1,6 +1,11 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
+var midas = midas || {};
+
 $(document).ready(function () {
+    'use strict';
     $('a.editProducerInfo').click(function () {
         midas.loadDialog('editProducer', '/tracker/producer/edit?producerId=' + json.tracker.producer.producer_id);
         midas.showDialog('Edit Producer Information', false, {

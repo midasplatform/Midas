@@ -4,6 +4,7 @@ var midas = midas || {};
 
 // load a dialog (ajax)
 midas.loadDialog = function (name, url) {
+    'use strict';
     if ($('.DialogContentPage').val() != name) {
         $('.DialogContentPage').val(name);
         $('div.MainDialogContent').html("");
@@ -18,7 +19,7 @@ midas.loadDialog = function (name, url) {
             }
         });
     }
-}
+};
 
 /**
  * Show a static dialog.
@@ -28,6 +29,7 @@ midas.loadDialog = function (name, url) {
  * @param opts An object that will override any default options to jQuery dialog function
  */
 midas.showDialog = function (title, button, opts) {
+    'use strict';
     var options = {
         resizable: false,
         width: 450,
@@ -54,33 +56,37 @@ midas.showDialog = function (title, button, opts) {
     var y = Math.min(150, $(window).scrollTop() + 150);
     options.position = [x, y];
     $('div.MainDialog').dialog(options);
-}
+};
 
 // show a dialog with a width of 700px
 midas.showBigDialog = function (title, button) {
+    'use strict';
     midas.showDialog(title, button, {
         width: 700
     });
-}
+};
 
 // showDialogWithContent
 midas.showDialogWithContent = function (title, content, button, opts) {
+    'use strict';
     $('.DialogContentPage').val('');
     $('div.MainDialogContent').html(content);
     $('div.MainDialogLoading').hide();
     midas.showDialog(title, button, opts);
-}
+};
 
 // showBigDialogWithContent
 midas.showBigDialogWithContent = function (title, content, button) {
+    'use strict';
     $('.DialogContentPage').val('');
     $('div.MainDialogContent').html(content);
     $("div.MainDialogLoading").hide();
     midas.showBigDialog(title, button);
-}
+};
 
 // load the content of the black top bar
 midas.loadAjaxDynamicBar = function (name, url) {
+    'use strict';
     // If we don't have the top dynamic content div, just use a dialog
     if (!$('div.TopDynamicContent').length) {
         midas.loadDialog(name, url);
@@ -105,10 +111,11 @@ midas.loadAjaxDynamicBar = function (name, url) {
             });
         });
     }
-}
+};
 
 // show or hide the bar
 midas.showOrHideDynamicBar = function (name) {
+    'use strict';
     // If we don't have the top dynamic content div, just use a dialog
     if (!$('div.TopDynamicContent').length) {
         midas.showDialog(name);
@@ -122,4 +129,4 @@ midas.showOrHideDynamicBar = function (name) {
     else if ($('.DynamicContentPage').val() == name) {
         $("div.TopDynamicBar").hide('blind');
     }
-}
+};

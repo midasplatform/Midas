@@ -100,7 +100,7 @@ function uploadStart(file) {
     progress.toggleCancel(true, this);
   }
   catch (ex) {}
-  
+
   return true;
 }
 

@@ -1,5 +1,8 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
+var midas = midas || {};
 midas.sizequota = midas.sizequota || {};
 midas.sizequota.totalSize = 0;
 
@@ -9,6 +12,7 @@ midas.sizequota.totalSize = 0;
  * If status is false, caller should render the error message.
  */
 midas.sizequota.validateUpload = function (args) {
+    'use strict';
     $.each(args.files, function (index, file) {
         midas.sizequota.totalSize += file.size;
     });
@@ -39,6 +43,7 @@ midas.sizequota.validateUpload = function (args) {
  * Called when the upload is complete
  */
 midas.sizequota.resetTotal = function () {
+    'use strict';
     midas.sizequota.totalSize = 0;
 };
 
@@ -46,6 +51,7 @@ midas.sizequota.resetTotal = function () {
  * Call this to update the message
  */
 midas.sizequota.updateFreeSpaceMessage = function () {
+    'use strict';
     var hFreeSpace = $('#sizequotaHFreeSpace').html();
     $('.belowDestinationUpload').html('<b>Free space:</b> ' + hFreeSpace);
     $('.belowDestinationUpload').show();
@@ -55,6 +61,7 @@ midas.sizequota.updateFreeSpaceMessage = function () {
  * Called when a different upload location is selected
  */
 midas.sizequota.folderChanged = function (args) {
+    'use strict';
     $.ajax({
         type: 'POST',
         url: json.global.webroot + '/sizequota/config/getfreespace',
@@ -62,7 +69,7 @@ midas.sizequota.folderChanged = function (args) {
             folderId: args.folderId
         },
         success: function (jsonContent) {
-            var jsonResponse = jQuery.parseJSON(jsonContent);
+            var jsonResponse = $.parseJSON(jsonContent);
             $('#sizequotaFreeSpace').html(jsonResponse.freeSpace);
             $('#sizequotaHFreeSpace').html(jsonResponse.hFreeSpace);
 
@@ -91,6 +98,7 @@ midas.sizequota.folderChanged = function (args) {
  * Correctly initializes the free space message
  */
 midas.sizequota.onPageLoad = function () {
+    'use strict';
     var folderId = $('.destinationId').val();
     midas.sizequota.folderChanged({
         folderId: folderId

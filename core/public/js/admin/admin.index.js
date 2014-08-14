@@ -1,9 +1,12 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 midas.admin = midas.admin || {};
 
 midas.admin.initModulesConfigLinks = function () {
+    'use strict';
     $('input.moduleCheckbox').each(function () {
         if ($(this).is(':checked')) {
             $(this).parents('tr').find('td.configLink').show();
@@ -12,10 +15,11 @@ midas.admin.initModulesConfigLinks = function () {
             $(this).parents('tr').find('td.configLink').hide();
         }
     });
-}
+};
 
 /** On assetstore add response */
 midas.admin.assetstoreAddCallback = function (responseText, statusText, xhr, $form) {
+    'use strict';
     $(".assetstoreLoading").hide();
     if (responseText.error) {
         $(".addAssetstoreFormError").html('Error: ' + responseText.error).show();
@@ -29,36 +33,41 @@ midas.admin.assetstoreAddCallback = function (responseText, statusText, xhr, $fo
         }
         midas.createNotice(responseText.msg, 4000);
     }
-} // end assetstoreAddCallback
+}; // end assetstoreAddCallback
 
 /** On assetstore add submit */
 midas.admin.assetstoreSubmit = function (formData, jqForm, options) {
+    'use strict';
     // Add the type is the one in the main page (because it's hidden in the assetstore add page)
-    var assetstoretype = new Object();
+    var assetstoretype = {};
     assetstoretype.name = 'type';
     assetstoretype.value = $("#importassetstoretype").val();
     formData.push(assetstoretype);
     $(".assetstoreLoading").show();
     $(".addAssetstoreFormError").html('').hide();
-} // end assetstoreBeforeSubmit
+}; // end assetstoreBeforeSubmit
 
 /** When the cancel is clicked in the new assetstore window */
 midas.admin.newAssetstoreShow = function () {
+    'use strict';
     var assetstoretype = $('select#importassetstoretype option:selected').val();
     $('#assetstoretype').find('option:selected').removeAttr("selected");
     $('#assetstoretype').find('option[value=' + assetstoretype + ']').attr("selected", "selected");
-} // end function newAssetstoreShow
+}; // end function newAssetstoreShow
 
 /** When the cancel is clicked in the new assetstore window */
 midas.admin.newAssetstoreHide = function () {
+    'use strict';
     $(document).trigger('hideCluetip');
-} // end function newAssetstoreHide
+}; // end function newAssetstoreHide
 
-midas.admin.validateConfig = function (formData, jqForm, options) {}
+midas.admin.validateConfig = function (formData, jqForm, options) {};
 
 midas.admin.successConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
+    var jsonResponse;
     try {
-        var jsonResponse = jQuery.parseJSON(responseText);
+        jsonResponse = $.parseJSON(responseText);
     }
     catch (e) {
         midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
@@ -74,12 +83,13 @@ midas.admin.successConfig = function (responseText, statusText, xhr, form) {
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     midas.admin.tabs = $("#tabsGeneric").tabs({});
     $("#tabsGeneric").show();
-    $('img.tabsLoading').hide()
+    $('img.tabsLoading').hide();
 
     $('.defaultAssetstoreLink').click(function () {
         $.post(json.global.webroot + '/assetstore/defaultassetstore', {
@@ -87,7 +97,7 @@ $(document).ready(function () {
                 element: $(this).attr('element')
             },
             function (data) {
-                var jsonResponse = jQuery.parseJSON(data);
+                var jsonResponse = $.parseJSON(data);
                 if (jsonResponse == null) {
                     midas.createNotice('Error', 4000);
                     return;
@@ -124,7 +134,7 @@ $(document).ready(function () {
                     assetstoreId: element
                 },
                 success: function (jsonContent) {
-                    var jsonResponse = jQuery.parseJSON(jsonContent);
+                    var jsonResponse = $.parseJSON(jsonContent);
                     midas.createNotice(jsonResponse[1], 1500);
                     if (jsonResponse[0]) {
                         window.location = json.global.webroot + '/admin#tabs-assetstore';
@@ -161,7 +171,7 @@ $(document).ready(function () {
                     assetstorePath: $('input#assetstorePath').val()
                 },
                 success: function (jsonContent) {
-                    var jsonResponse = jQuery.parseJSON(jsonContent);
+                    var jsonResponse = $.parseJSON(jsonContent);
                     if (jsonResponse[0]) {
                         midas.createNotice(jsonResponse[1], 1500);
                         window.location.replace(json.global.webroot + '/admin#tabs-assetstore');
@@ -221,7 +231,7 @@ $(document).ready(function () {
             });
         }
         else {
-            modulevalue = 0;
+            var modulevalue = 0;
             var moduleDependencies = new Array();
             $.each($('input[dependencies=' + $(this).attr('module') + ']:checked'), function () {
                 moduleDependencies.push($(this).attr('module'));
@@ -253,7 +263,7 @@ $(document).ready(function () {
                 modulevalue: modulevalue
             },
             function (data) {
-                var jsonResponse = jQuery.parseJSON(data);
+                var jsonResponse = $.parseJSON(data);
                 if (jsonResponse == null) {
                     midas.createNotice('Error', 4000);
                     return;

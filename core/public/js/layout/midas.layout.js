@@ -1,8 +1,8 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
-var json;
-var itemselected = false;
+var json = json || {};
 var midas = midas || {};
+var itemselected = false;
 
 // Prevent error if console.log is called
 if (typeof console != "object") {
@@ -13,10 +13,10 @@ if (typeof console != "object") {
 
 // Main calls
 $(function () {
-
+    'use strict';
     // Parse json content
     // jQuery 1.8 has weird bugs when using .html() here, use the old-style innerHTML here
-    json = jQuery.parseJSON($('div.jsonContent')[0].innerHTML);
+    json = $.parseJSON($('div.jsonContent')[0].innerHTML);
 
     // Preload login page
     if (!json.global.logged) {
@@ -283,6 +283,7 @@ $(function () {
 
 // asks the user to authenticate
 function globalAuthAsk(url) {
+    'use strict';
     if (json.global.logged) {
         window.location = url;
     }
@@ -297,8 +298,13 @@ var qtipsHelp = new Array();
 var iQtips = 0;
 
 function InitHelpQtip() {
-    if (!json.global.dynamichelp) return;
-    if (json.dynamicHelp == undefined) return;
+    'use strict';
+    if (!json.global.dynamichelp) {
+        return;
+    }
+    if (json.dynamicHelp == undefined) {
+        return;
+    }
     $.each(json.dynamicHelp, function (index, value) {
         var text = value.text;
         text = text.replace(/&lt;/g, '<');
@@ -318,7 +324,10 @@ function InitHelpQtip() {
 
 // Dynamic help sequence
 function TimerQtip() {
-    if (!json.global.dynamichelp) return;
+    'use strict';
+    if (!json.global.dynamichelp) {
+        return;
+    }
 
     $.each(qtipsHelp, function (index, value) {
         value.qtip('hide');
@@ -346,7 +355,10 @@ function TimerQtip() {
 }
 
 function StopTimerQtip() {
-    if (!json.global.dynamichelp) return;
+    'use strict';
+    if (!json.global.dynamichelp) {
+        return;
+    }
     $.each(qtipsHelp, function (index, value) {
         value.qtip('hide');
         value.qtip('enable');

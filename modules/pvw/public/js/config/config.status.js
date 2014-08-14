@@ -1,6 +1,11 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
+var midas = midas || {};
+
 $(document).ready(function () {
+    'use strict';
     $('img.killInstance').qtip({
         content: 'Stop and delete this instance'
     }).click(function () {
@@ -16,6 +21,6 @@ $(document).ready(function () {
                     $('table.instances tr[key=' + id + ']').remove();
                 }
             }
-        })
+        });
     });
 });

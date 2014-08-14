@@ -1,5 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 midas.browser = midas.browser || {};
 
@@ -10,6 +12,7 @@ midas.ajaxSelectRequest = '';
  * Pass null if there is no selected row.
  */
 midas.genericCallbackSelect = function (node) {
+    'use strict';
     if (!node || !node.attr('type')) {
         $('div.ajaxInfoElement').html('');
         $('div.viewAction ul').html('');
@@ -38,6 +41,7 @@ midas.genericCallbackSelect = function (node) {
 };
 
 midas.genericCallbackCheckboxes = function (node) {
+    'use strict';
     var arraySelected = [];
     arraySelected['folders'] = [];
     arraySelected['items'] = [];
@@ -165,10 +169,12 @@ midas.genericCallbackCheckboxes = function (node) {
 };
 
 midas.genericCallbackDblClick = function (node) {
+    'use strict';
     // no-op currently
 };
 
 midas.createNewFolder = function (id) {
+    'use strict';
     midas.loadDialog('folderId' + id, '/folder/createfolder?folderId=' + id);
     midas.showDialog(json.browse.createFolder, false);
     $('#createFolderForm').find('input[name=name]').val('');
@@ -177,6 +183,7 @@ midas.createNewFolder = function (id) {
 };
 
 midas.removeNodeFromTree = function (node, recursive) {
+    'use strict';
     if (!node || node.length == 0) {
         return;
     }
@@ -197,6 +204,7 @@ midas.removeNodeFromTree = function (node, recursive) {
 };
 
 midas.removeItem = function (id) {
+    'use strict';
     var node = $('table.treeTable tr[type=item][element=' + id + ']');
     var itemName = node.find('td:first span').html();
 
@@ -249,6 +257,7 @@ midas.removeItem = function (id) {
 };
 
 midas.deleteFolder = function (id) {
+    'use strict';
     midas.loadDialog('deleteFolder' + id, '/folder/deletedialog?folderId=' + id);
     midas.showDialog('Confirm Delete Folder', false);
 };
@@ -259,6 +268,7 @@ midas.deleteFolder = function (id) {
  * ids will be ignored)
  */
 midas.deleteSelected = function (folders, items) {
+    'use strict';
     var html = '';
     html += json.browse['deleteSelectedMessage'];
     html += '<br/><br/><br/>';
@@ -280,7 +290,7 @@ midas.deleteSelected = function (folders, items) {
             $('input.deleteSelectedYes').removeAttr('disabled');
             $('input.deleteSelectedNo').removeAttr('disabled');
             $('#deleteSelectedLoadingGif').hide();
-            var resp = jQuery.parseJSON(data);
+            var resp = $.parseJSON(data);
             if (resp == null) {
                 midas.createNotice('Error during folder delete. Check the log.', 4000);
                 return;
@@ -318,6 +328,7 @@ midas.deleteSelected = function (folders, items) {
  * ids will be ignored)
  */
 midas.duplicateSelected = function (folders, items) {
+    'use strict';
     midas.loadDialog("duplicateItem", "/browse/movecopy/?duplicate=true&items=" + items);
     var title = 'Copy selected items';
     if (folders != '') {
@@ -330,6 +341,7 @@ midas.duplicateSelected = function (folders, items) {
  * Copy or symlink a single item
  */
 midas.duplicateItem = function (item) {
+    'use strict';
     midas.loadDialog("duplicateItem", "/browse/movecopy/?duplicate=true&items=" + item);
     midas.showDialog('Copy item');
 };
@@ -340,6 +352,7 @@ midas.duplicateItem = function (item) {
  * @param items The list of items to move (separated by -)
  */
 midas.moveSelected = function (folders, items) {
+    'use strict';
     midas.loadDialog("moveItem", "/browse/movecopy/?move=true&items=" + items + "&folders=" + folders);
     midas.showDialog('Move all selected resources');
 };
@@ -349,6 +362,7 @@ midas.moveSelected = function (folders, items) {
  * Expects a jQuerified node object.
  */
 midas.removeChildren = function (node) {
+    'use strict';
     node.each(
         function () {
             var children = $("table.treeTable tbody tr.child-of-" + this.id);
@@ -361,24 +375,28 @@ midas.removeChildren = function (node) {
 };
 
 midas.editFolder = function (id) {
+    'use strict';
     midas.loadDialog("editFolder" + id, "/folder/edit?folderId=" + id);
     midas.showDialog(json.browse.edit, false);
 };
 
 midas.moveFolder = function (id) {
+    'use strict';
     midas.loadDialog("moveFolder" + id, "/browse/movecopy?move=true&folders=" + id);
     midas.showDialog(json.browse.move);
 };
 
 midas.moveItem = function (itemId, fromFolderId) {
+    'use strict';
     midas.loadDialog("moveItem" + itemId, "/browse/movecopy?move=true&items=" + itemId + "&from=" + fromFolderId);
     midas.showDialog(json.browse.move);
 };
 
 midas.parentOf = function (node) {
+    'use strict';
     var classNames = node[0].className.split(' ');
 
-    for (key in classNames) {
+    for (var key in classNames) {
         if (classNames[key].match("child-of-")) {
             return $("#" + classNames[key].substring(9));
         }
@@ -386,6 +404,7 @@ midas.parentOf = function (node) {
 };
 
 midas.ancestorsOf = function (node) {
+    'use strict';
     var ancestors = [];
     while ((node = midas.parentOf(node))) {
         ancestors[ancestors.length] = node[0];
@@ -394,6 +413,7 @@ midas.ancestorsOf = function (node) {
 };
 
 midas.createAction = function (node) {
+    'use strict';
     $('div.viewAction ul').html('<img alt="" src="' + json.global.coreWebroot + '/public/images/icons/loading.gif" />');
     var type = node.attr('type');
     var element = node.attr('element');
@@ -435,11 +455,12 @@ midas.createAction = function (node) {
     }
     if (type == 'item') {
         var from = midas.parentOf(node);
+        var fromFolder;
         if (from) {
-            var fromFolder = from.attr('element');
+            fromFolder = from.attr('element');
         }
         else { // we are in a subfolder view and the parent is the current folder
-            var fromFolder = json.folder.folder_id;
+            fromFolder = json.folder.folder_id;
         }
         html += '<li><img alt="" src="' + json.global.coreWebroot + '/public/images/icons/view.png"/> <a href="' + json.global.webroot + '/item/' + element + '">' + json.browse.view + '</a></li>';
         html += '<li class="downloadObject"><img alt="" src="' + json.global.coreWebroot + '/public/images/icons/download.png"/> <a element="' + element + '" class="downloadItemLink">' + json.browse.download + '</a></li>';
@@ -519,6 +540,7 @@ midas.createAction = function (node) {
  * Called if the requested download is suitably large.
  */
 midas.promptDownloadApplet = function (folderIds, itemIds, sizeString) {
+    'use strict';
     var html = 'Warning: you have requested a large download (' + sizeString + ') that might take a very long time to complete.';
     html += ' It is recommended that you use the large data download applet in case your connection is interrupted. ' +
         'Would you like to use the applet?';
@@ -542,7 +564,8 @@ midas.promptDownloadApplet = function (folderIds, itemIds, sizeString) {
 };
 
 midas.createInfo = function (jsonContent) {
-    var arrayElement = jQuery.parseJSON(jsonContent);
+    'use strict';
+    var arrayElement = $.parseJSON(jsonContent);
     var html = '';
     if (arrayElement['type'] == 'community') {
         html += '<img class="infoLogo" alt="Data Type" src="' + json.global.coreWebroot + '/public/images/icons/community-big.png" />';
@@ -621,6 +644,7 @@ midas.createInfo = function (jsonContent) {
  * @param opts an object with an optional callback
  */
 midas.browser.enableSelectAll = function (opts) {
+    'use strict';
     var default_args = {
         callback: midas.genericCallbackCheckboxes
     };
@@ -637,6 +661,7 @@ midas.browser.enableSelectAll = function (opts) {
 };
 
 midas.enableRangeSelect = function (node) {
+    'use strict';
     $('input.treeCheckbox:visible').enableCheckboxRangeSelection({
         onRangeSelect: function () {
             midas.genericCallbackCheckboxes($('#browseTable'));
@@ -645,15 +670,17 @@ midas.enableRangeSelect = function (node) {
 };
 
 $(document).ready(function () {
+    'use strict';
     $('#browseTableHeaderCheckbox').qtip({
         content: 'Check/Uncheck All'
     });
 });
 
 midas.cutName = function (name, nchar) {
+    'use strict';
     if (name.length > nchar) {
         name = name.substring(0, nchar) + '...';
         return name;
     }
     return name;
-}
+};

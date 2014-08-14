@@ -1,6 +1,11 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
+var midas = midas || {};
+
  $(document).ready(function () {
+    'use strict';
      var uploadPageLoaded = false;
      $('div.HeaderAction li.processButton').click(function () {
          $('.uploadqtip').css('z-index', '800');
@@ -12,7 +17,7 @@
              }
          }
          else {
-             midas.createNotice(json.login.contentUploadLogin, 4000)
+             midas.createNotice(json.login.contentUploadLogin, 4000);
              $("div.TopDynamicBar").show('blind');
              midas.loadAjaxDynamicBar('login', '/user/login');
          }
@@ -47,7 +52,7 @@
              style: {
                  classes: 'uploadqtip ui-tooltip-light ui-tooltip-shadow ui-tooltip-rounded'
              }
-         })
+         });
          $('.uploadqtip').css('z-index:500');
      }
- })
+ });

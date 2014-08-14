@@ -4,6 +4,7 @@ var midas = midas || {};
 midas.user = midas.user || {};
 
 $(document).ready(function () {
+    'use strict';
     $("#tabsGeneric").tabs({
         select: function (event, ui) {
             $('div.genericAction').show();
@@ -34,6 +35,7 @@ $(document).ready(function () {
 var ajaxSelectRequest = '';
 
 function callbackSelect(node) {
+    'use strict';
     $('div.genericAction').show();
     $('div.genericCommunities').hide();
     $('div.genericStats').hide();
@@ -46,10 +48,12 @@ function callbackSelect(node) {
 }
 
 function callbackDblClick(node) {
+    'use strict';
     midas.genericCallbackDblClick(node);
 }
 
 function callbackCheckboxes(node) {
+    'use strict';
     midas.genericCallbackCheckboxes(node);
 }
 
@@ -57,6 +61,7 @@ function callbackCheckboxes(node) {
  * Will render the delete user dialog for the specified user
  */
 midas.user.showDeleteDialog = function (userId) {
+    'use strict';
     midas.loadDialog('userId' + userId, '/user/deletedialog?userId=' + userId);
     midas.showDialog('Delete User', false);
 };

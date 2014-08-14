@@ -6,14 +6,11 @@ midas.ldap.config = midas.ldap.config || {};
 
 midas.ldap.config.validateConfig = function (formData, jqForm, options) {};
 
-midas.ldap.config.successConfig = function (responseText,
-    statusText,
-    xhr,
-    form) {
+midas.ldap.config.successConfig = function (responseText, statusText, xhr, form) {
     'use strict';
     var jsonResponse;
     try {
-        jsonResponse = jQuery.parseJSON(responseText);
+        jsonResponse = $.parseJSON(responseText);
     }
     catch (e) {
         midas.createNotice("An error occured. Please check the logs.", 4000, 'error');

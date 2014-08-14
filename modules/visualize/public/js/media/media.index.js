@@ -1,8 +1,10 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
-$(document).ready(function () {
+/* global json */
 
-    json = jQuery.parseJSON($('div.jsonContent').html());
+$(document).ready(function () {
+    'use strict';
+    json = $.parseJSON($('div.jsonContent').html());
     if (json.type == 'mp3') {
         $("#jquery_jplayer_1").jPlayer({
             ready: function () {
@@ -10,7 +12,7 @@ $(document).ready(function () {
                     mp3: json.global.webroot + "/download?items=" + json.itemId
                 });
             }
-        })
+        });
     }
     if (json.type == 'm4a') {
         $("#jquery_jplayer_1").jPlayer({
@@ -26,7 +28,7 @@ $(document).ready(function () {
             },
             swfPath: json.global.moduleWebroot + "/public/js/jquery",
             supplied: "m4a, oga"
-        })
+        });
     }
     if (json.type == 'm4v') {
         $("#jquery_jplayer_1").jPlayer({

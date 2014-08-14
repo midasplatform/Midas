@@ -3,11 +3,13 @@
 var midas = midas || {};
 midas.statistics = midas.statistics || {};
 
-midas.statistics.validateConfig = function (formData, jqForm, options) {}
+midas.statistics.validateConfig = function (formData, jqForm, options) {};
 
 midas.statistics.successConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
+    var jsonResponse;
     try {
-        var jsonResponse = jQuery.parseJSON(responseText);
+        jsonResponse = $.parseJSON(responseText);
     }
     catch (e) {
         midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
@@ -23,9 +25,10 @@ midas.statistics.successConfig = function (responseText, statusText, xhr, form) 
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     $('#configForm').ajaxForm({
         beforeSubmit: midas.statistics.validateConfig,
         success: midas.statistics.successConfig

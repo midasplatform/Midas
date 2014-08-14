@@ -1,11 +1,12 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 midas.thumbnailcreator = midas.thumbnailcreator || {};
 
 midas.thumbnailcreator.setup = function () {
     'use strict';
-
     // If the user lacks the permissions to make a thumbnail, don't display the
     // icon
     if (json.item.isModerator !== '1') {
@@ -33,7 +34,7 @@ midas.thumbnailcreator.setup = function () {
             }
         });
     });
-}
+};
 
 /**
  * Call this to display the thumbnail set on the item
@@ -43,7 +44,7 @@ midas.thumbnailcreator.displayThumbnail = function (itemthumbnail) {
     $('#thumbnailcreatorLargeImageSection').show()
         .find('img.largeImage')
         .attr('src', json.global.webroot + '/thumbnailcreator/thumbnail/item?itemthumbnail=' + itemthumbnail.itemthumbnail_id);
-}
+};
 
 $(document).ready(function () {
     'use strict';

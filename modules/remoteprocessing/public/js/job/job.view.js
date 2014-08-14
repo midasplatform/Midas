@@ -1,6 +1,11 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
+var midas = midas || {};
+
 $(document).ready(function () {
+    'use strict';
     $('#showLogLink').click(function () {
         $('#hiddenLog').toggle();
     });
@@ -40,11 +45,11 @@ $(document).ready(function () {
             }
         });
     }, function () {
-
-    })
+    });
 });
 
 function initMetrics() {
+    'use strict';
     $('#tableXml').find('thead .metric').each(function () {
         var html = '<label for="' + $(this).attr('name') + '">' + $(this).html() + ':</label>';
         html += '<div id="' + $(this).attr('name') + '" style="border:0; color:green; font-weight:bold;" />';
@@ -73,10 +78,11 @@ function initMetrics() {
             }
         });
         $('#' + $(this).attr('name') + '').html("<span class='spanmin'>0.00</span> - <span class='spanmax'>" + max.toFixed(2) + "</span>");
-    })
+    });
 }
 
 function processXmlTableColors() {
+    'use strict';
     $('#tableXml').find('tbody tr').each(function () {
         var passed = true;
         if ($(this).find('.xmlStatus').html() != 'passed') {
@@ -103,7 +109,8 @@ function processXmlTableColors() {
 }
 
 function createInfoItem(jsonContent) {
-    arrayElement = jQuery.parseJSON(jsonContent);
+    'use strict';
+    var arrayElement = $.parseJSON(jsonContent);
     var html = '';
     if (arrayElement['type'] == 'community') {
         html += '<img class="infoLogo" alt="Data Type" src="' + json.global.coreWebroot + '/public/images/icons/community-big.png" />';

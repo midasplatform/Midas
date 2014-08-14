@@ -1,8 +1,11 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 $(document).ready(
     function () {
+        'use strict';
         $("#browseTable").treeTable();
         $("img.tableLoading").hide();
         $("table#browseTable").show();
@@ -43,6 +46,7 @@ $(document).ready(
 // is absolutely shameful. That's why I didn't namespace these functions.
 midas.ajaxSelectRequest = '';
 var callbackSelect = function (node) {
+    'use strict';
     $('div.defaultSide').hide();
     $('div.viewAction').show();
     $('div.viewInfo').show();
@@ -51,9 +55,11 @@ var callbackSelect = function (node) {
 };
 
 var callbackDblClick = function (node) {
+    'use strict';
     midas.genericCallbackDblClick(node);
 };
 
 var callbackCheckboxes = function (node) {
+    'use strict';
     midas.genericCallbackCheckboxes(node);
 };

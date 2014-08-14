@@ -1,12 +1,15 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+var midas = midas || {};
 var nameValid = false;
 
 $('form.createCommunityForm').submit(function () {
+    'use strict';
     return nameValid;
 });
 
 $('div.createNameElement input').focusout(function () {
+    'use strict';
     $.post($('.webroot').val() + "/community/validentry", {
             entry: $('input[name=name]').val(),
             type: "dbcommunityname"
@@ -25,6 +28,7 @@ $('div.createNameElement input').focusout(function () {
 initCommunityPrivacy();
 
 function initCommunityPrivacy() {
+    'use strict';
     if ($('input[name=privacy]:checked').val() == 1) // private
     {
         $('input[name=canJoin]').attr('disabled', 'disabled');

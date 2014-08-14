@@ -4,10 +4,12 @@ var midas = midas || {};
 midas.tracker = midas.tracker || {};
 
 midas.tracker.validateEditForm = function () {
+    'use strict';
     return true;
 };
 
 midas.tracker.editSuccess = function (retVal) {
+    'use strict';
     var resp = $.parseJSON(retVal);
     if (!resp) {
         midas.createNotice('An error occurred on the server', 3000, 'error');

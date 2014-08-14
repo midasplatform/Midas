@@ -1,9 +1,12 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 midas.packages = midas.packages || {};
 
 midas.packages.showPlatform = function (event, ui) {
+    'use strict';
     if (!ui.newContent.hasClass('packagesFetched')) {
         ui.newContent.addClass('packagesFetched');
         ui.newContent.html('<img alt="" src="' + json.global.coreWebroot + '/public/images/icons/loading.gif" />');
@@ -23,6 +26,7 @@ midas.packages.showPlatform = function (event, ui) {
  * Render the packages under the appropriate section using the package widget template
  */
 midas.packages.renderPackages = function (os, arch, packages) {
+    'use strict';
     var container = $('div.platformContainer[os="' + os + '"][arch="' + arch + '"]');
     container.html('<div class="platformContainerTitle">Available package types:</div>');
     var table = $('#packageListTemplate').clone();
@@ -48,16 +52,19 @@ midas.packages.renderPackages = function (os, arch, packages) {
  * Call with a simple os string; returns the html that should be rendered for that os
  */
 midas.packages.transformOs = function (os) {
+    'use strict';
     // todo transform os
     return os;
 };
 
 midas.packages.transformArch = function (arch) {
+    'use strict';
     // todo transform arch
     return arch;
 };
 
 $(document).ready(function () {
+    'use strict';
     $('#platformList').find('h3').each(function () {
         var el = $(this);
         el.find('a').html(midas.packages.transformOs(el.attr('os')) + ' ' +

@@ -1,5 +1,17 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global fileDialogComplete */
+/* global fileQueued */
+/* global fileQueueError */
+/* global json */
+/* global loadFailed */
+/* global preLoad */
+/* global queueComplete */
+/* global uploadComplete */
+/* global uploadError */
+/* global uploadProgress */
+/* global uploadSuccess */
+
 var midas = midas || {};
 midas.upload = midas.upload || {};
 midas.upload.revision = {};
@@ -10,22 +22,25 @@ midas.upload.revision = {};
  * is complete.
  */
 midas.upload.revision.sendFormToJavaSession = function () {
+    'use strict';
     $.post(json.global.webroot + '/upload/javarevisionsession', {
         changes: $('textarea[name=revisionChanges]:last').val(),
         license: $('select[name=licenseSelect]:last').val(),
         itemId: json.item.item_id
     });
-}
+};
 
 midas.upload.revision.updateUploadedCount = function () {
+    'use strict';
     var count = parseInt($('.uploadedSimple').val()) +
         parseInt($('.uploadedLinks').val()) +
         parseInt($('.uploadedJava').val());
     $('.globalUploadedCount').html(count);
-}
+};
 
 // Use jquery file upload for real browsers (no flash required)
 midas.upload.revision.initJqueryFileupload = function () {
+    'use strict';
     midas.upload.revision.updateUploadedCount();
     // see http:// aquantum-demo.appspot.com/file-upload
     $('.file_upload:visible').fileUploadUIX({
@@ -70,20 +85,22 @@ midas.upload.revision.initJqueryFileupload = function () {
         $('.file_upload_start button').click();
         return false;
     });
-}
+};
 
 // Callback hook for the flash uploader
 midas.upload.revision.uploadPreStart = function (file) {
+    'use strict';
     midas.upload.revision.swfu.setPostParams({
         'sid': $('.sessionId').val(),
         'parent': $('#destinationId').val(),
         'license': $('select[name=licenseSelect]').val(),
         'changes': $('textarea[name=revisionChanges]').val()
     });
-}
+};
 
 // We use shockwave flash uploader for IE (no multi-file upload support)
 midas.upload.revision.initSwfupload = function () {
+    'use strict';
     var settings = {
         flash_url: json.global.coreWebroot + "/public/js/swfupload/swfupload_fp10/swfupload.swf",
         flash9_url: json.global.coreWebroot + "/public/js/swfupload/swfupload_fp9/swfupload_fp9.swf",
@@ -139,18 +156,21 @@ midas.upload.revision.initSwfupload = function () {
         }
         midas.upload.revision.swfu.startUpload();
     });
-}
+};
 
 $(".uploadTabs").tabs({
     ajaxOptions: {
         beforeSend: function () {
+            'use strict';
             $('div.MainDialogLoading').show();
         },
         success: function () {
+            'use strict';
             $('div.MainDialogLoading').hide();
             $(".uploadTabs").show();
         },
         error: function (xhr, status, index, anchor) {
+            'use strict';
             $(anchor.hash).html("Couldn't load this tab. ");
         }
     }
@@ -158,6 +178,7 @@ $(".uploadTabs").tabs({
 $(".uploadTabs").show();
 
 $('#linkForm').ajaxForm(function () {
+    'use strict';
     $('.uploadedLinks').val(parseInt($('.uploadedLinks').val()) + 1);
     midas.upload.revision.updateUploadedCount();
 });
@@ -174,11 +195,13 @@ else {
 }
 
 $('#browseMIDASLink').click(function () {
+    'use strict';
     midas.loadDialog("select", "/browse/movecopy/?selectElement=true");
     midas.showDialog('Browse');
 });
 
 $(document).ready(function () {
+    'use strict';
     midas.upload.revision.sendFormToJavaSession();
 
     // Save license change to the session

@@ -1,11 +1,14 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 midas.browse = midas.browse || {};
 
 // dependence: common/browser.js
 midas.ajaxSelectRequest = '';
 midas.browse.moveCopyCallbackSelect = function (node) {
+    'use strict';
     var selectedElement = node.find('span:eq(1)').html();
     var parent = true;
     var current = node;
@@ -13,7 +16,7 @@ midas.browse.moveCopyCallbackSelect = function (node) {
     while (parent != null) {
         parent = null;
         var classNames = current[0].className.split(' ');
-        for (key in classNames) {
+        for (var key in classNames) {
             if (classNames[key].match("child-of-")) {
                 parent = $("#moveCopyTable #" + classNames[key].substring(9));
             }
@@ -46,12 +49,14 @@ midas.browse.moveCopyCallbackSelect = function (node) {
 };
 
 midas.browse.checkMoveDestinationValid = function (node, policy) {
+    'use strict';
     if (node.attr('valid') != 'false' && policy >= 1) {
         midas.browse.moveCopyToggleButton(true);
     }
 };
 
 midas.browse.moveCopyToggleButton = function (on) {
+    'use strict';
     if (on) {
         $('#selectElement').removeAttr('disabled');
         $('#shareElement').removeAttr('disabled');
@@ -71,9 +76,10 @@ midas.browse.moveCopyCallbackDblClick = function (node) {};
 midas.browse.moveCopyCallbackCheckboxes = function (node) {};
 
 midas.browse.moveCopyCallbackCustomElements = function (node, elements, first) {
+    'use strict';
     var i = 1;
     var id = node.attr('id');
-    elements['folders'] = jQuery.makeArray(elements['folders']);
+    elements['folders'] = $.makeArray(elements['folders']);
     var padding = parseInt(node.find('td:first').css('padding-left').slice(0, -2));
     var html = '';
     $.each(elements.folders, function (index, value) {
@@ -86,6 +92,7 @@ midas.browse.moveCopyCallbackCustomElements = function (node, elements, first) {
 };
 
 $(document).ready(function () {
+    'use strict';
     $('#moveCopyForm').submit(function () {
         $('img.submitWaiting').show();
         return true;

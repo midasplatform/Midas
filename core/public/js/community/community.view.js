@@ -1,6 +1,11 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
+var midas = midas || {};
+
 $(document).ready(function () {
+    'use strict';
     $("#tabsGeneric").tabs({
         select: function (event, ui) {
             $('div.genericAction').show();
@@ -43,6 +48,7 @@ $(document).ready(function () {
 var ajaxSelectRequest = '';
 
 function callbackSelect(node) {
+    'use strict';
     $('div.genericAction').show();
     $('div.genericCommunities').hide();
     $('div.genericStats').hide();
@@ -52,9 +58,11 @@ function callbackSelect(node) {
 }
 
 function callbackDblClick(node) {
+    'use strict';
     midas.genericCallbackDblClick(node);
 }
 
 function callbackCheckboxes(node) {
+    'use strict';
     midas.genericCallbackCheckboxes(node);
 }

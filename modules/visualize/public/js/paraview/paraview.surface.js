@@ -1,5 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 midas.visualize = midas.visualize || {};
 
@@ -8,6 +10,7 @@ midas.visualize.renderers = {};
 var paraview;
 
 midas.visualize.start = function () {
+    'use strict';
     // Create a paraview proxy
 
     if (typeof Paraview != 'function') {
@@ -37,6 +40,7 @@ midas.visualize.start = function () {
 };
 
 midas.visualize._dataOpened = function (view, retVal) {
+    'use strict';
     $('#loadingStatus').html('Initializing view state and renderer...');
     midas.visualize.imageData = retVal.imageData;
     midas.visualize.input = retVal.input;
@@ -49,6 +53,7 @@ midas.visualize._dataOpened = function (view, retVal) {
 };
 
 midas.visualize.populateInfo = function () {
+    'use strict';
     var bounds = midas.visualize.imageData.Bounds;
     $('#boundsXInfo').html(bounds[0].toFixed(3) + ' .. ' + bounds[1].toFixed(3));
     $('#boundsYInfo').html(bounds[2].toFixed(3) + ' .. ' + bounds[3].toFixed(3));
@@ -58,6 +63,7 @@ midas.visualize.populateInfo = function () {
 };
 
 midas.visualize.initCallback = function (view, retVal) {
+    'use strict';
     $('#loadingStatus').html('').hide();
     midas.visualize.activeView = retVal.activeView;
 
@@ -71,12 +77,14 @@ midas.visualize.initCallback = function (view, retVal) {
 };
 
 midas.visualize.resetCamera = function () {
+    'use strict';
     paraview.callPluginMethod('midassurface', 'ResetCamera', {}, function () {
         midas.visualize.forceRefreshView();
     });
 };
 
 midas.visualize.toggleEdges = function () {
+    'use strict';
     paraview.callPluginMethod('midassurface', 'ToggleEdges', {
         input: midas.visualize.input
     }, function () {
@@ -88,10 +96,12 @@ midas.visualize.toggleEdges = function () {
  * Force the renderer image to refresh from the server
  */
 midas.visualize.forceRefreshView = function () {
+    'use strict';
     midas.visualize.renderers.js.forceRefresh();
 };
 
 midas.visualize.switchRenderer = function (first, type) {
+    'use strict';
     if (type == 'js') {
         if (midas.visualize.renderers.js == undefined) {
             midas.visualize.renderers.js = new JavaScriptRenderer('jsRenderer', '/PWService');
@@ -125,10 +135,12 @@ midas.visualize.switchRenderer = function (first, type) {
 };
 
 $(window).load(function () {
+    'use strict';
     json = $.parseJSON($('div.jsonContent').html());
     midas.visualize.start();
 });
 
 $(window).unload(function () {
-    paraview.disconnect()
+    'use strict';
+    paraview.disconnect();
 });

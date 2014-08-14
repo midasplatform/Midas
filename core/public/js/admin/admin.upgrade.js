@@ -1,5 +1,9 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
+var midas = midas || {};
+
  $('#upgradeMIDAS').ajaxForm({
      beforeSubmit: validateUpgrade,
      success: successUpgrade
@@ -10,8 +14,10 @@
  }
 
  function successUpgrade(responseText, statusText, xhr, form) {
+     'use strict';
+     var jsonResponse;
      try {
-         jsonResponse = jQuery.parseJSON(responseText);
+         jsonResponse = $.parseJSON(responseText);
      }
      catch (e) {
          alert("An error occured. Please check the logs.");

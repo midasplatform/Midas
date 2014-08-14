@@ -1,9 +1,12 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 midas.rest = midas.rest || {};
 
 $(document).ready(function () {
+    'use strict';
     window.swaggerUi = new SwaggerUi({
         discoveryUrl: json.global.webroot + '/apidocs/',
         apiKey: null,
@@ -12,7 +15,7 @@ $(document).ready(function () {
         supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
         onComplete: function (swaggerApi, swaggerUi) {
             if (console) {
-                console.log("Loaded SwaggerUI")
+                console.log("Loaded SwaggerUI");
                 console.log(swaggerApi);
                 console.log(swaggerUi);
             }

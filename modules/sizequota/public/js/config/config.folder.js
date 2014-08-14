@@ -8,11 +8,13 @@ midas.sizequota.constant = {
     MIDAS_USE_SPECIFIC_QUOTA: "1"
 };
 
-midas.sizequota.folder.validateConfig = function (formData, jqForm, options) {}
+midas.sizequota.folder.validateConfig = function (formData, jqForm, options) {};
 
 midas.sizequota.folder.successConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
+    var jsonResponse;
     try {
-        var jsonResponse = jQuery.parseJSON(responseText);
+        jsonResponse = $.parseJSON(responseText);
     }
     catch (e) {
         midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
@@ -28,9 +30,10 @@ midas.sizequota.folder.successConfig = function (responseText, statusText, xhr, 
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 midas.sizequota.folder.radioButtonChanged = function () {
+    'use strict';
     var selected = $('input[name="usedefault"]:checked');
 
     if (selected.val() == midas.sizequota.constant.MIDAS_USE_DEFAULT_QUOTA) {
@@ -39,9 +42,10 @@ midas.sizequota.folder.radioButtonChanged = function () {
     else {
         $('input#quota').removeAttr('disabled');
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     $('#configForm').ajaxForm({
         beforeSubmit: midas.sizequota.folder.validateConfig,
         success: midas.sizequota.folder.successConfig

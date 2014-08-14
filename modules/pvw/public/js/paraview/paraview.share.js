@@ -1,18 +1,23 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 midas.pvw = midas.pvw || {};
+var pv = pv || {};
 
 /**
  * When called, will update the view every 200 ms
  */
 midas.pvw.startRefreshes = function () {
+    'use strict';
     pv.viewport.render(function () {
         window.setTimeout(midas.pvw.startRefreshes, 200);
     });
-}
+};
 
 $(window).load(function () {
+    'use strict';
     pv = {};
     pv.connection = {
         sessionURL: 'ws://' + location.hostname + ':' + json.pvw.instance.port + '/ws',

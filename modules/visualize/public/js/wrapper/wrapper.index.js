@@ -1,11 +1,17 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
+var midas = midas || {};
+
 function highlightCurrentPreview(currentElement) {
+    'use strict';
     $('#fullscreenVisualize').find('a.linkedcontentLink').css('font-weight', 'normal');
     $('#fullscreenVisualize').find('a.linkedcontentLink[element=' + currentElement + ']').css('font-weight', 'bold');
 }
 
 function createInfoAjaxVisualize(itemId) {
+    'use strict';
     $('img.infoLoading').show();
     $('div.ajaxInfoElement').html('');
     $.ajax({
@@ -23,6 +29,7 @@ function createInfoAjaxVisualize(itemId) {
 }
 
 $(document).ready(function () {
+    'use strict';
     var currentElement = json.item.item_id;
 
     /** create preview page */

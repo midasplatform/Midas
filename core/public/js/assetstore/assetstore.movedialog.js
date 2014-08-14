@@ -1,9 +1,12 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 midas.assetstore = midas.assetstore || {};
 
 $('#moveBitstreamsConfirm').click(function () {
+    'use strict';
     $(this).attr('disabled', 'disabled');
     var params = {
         srcAssetstoreId: $('#srcAssetstoreId').val(),

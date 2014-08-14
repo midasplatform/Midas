@@ -1,5 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 midas.solr = midas.solr || {};
 
@@ -13,6 +15,7 @@ midas.solr.PAGE_LIMIT = 10;
  * Renders the item result list and counters in the DOM, as well as the counters and prev/next buttons if needed
  */
 midas.solr.displayResults = function (items) {
+    'use strict';
     for (var idx in items) {
         var item = items[idx];
         var result = $('#itemResultTemplate').clone().show().removeAttr('id');
@@ -27,6 +30,7 @@ midas.solr.displayResults = function (items) {
  * Fetch a page of search results based on the current shared variable state
  */
 midas.solr.fetchPage = function () {
+    'use strict';
     $('.nextPageSearch').hide();
     $('#resultsArea').html('');
     $('img.resultsLoading').show();
@@ -38,21 +42,22 @@ midas.solr.fetchPage = function () {
     };
     $.post(json.global.webroot + '/solr/advanced/submit', params, function (responseText) {
         $('img.resultsLoading').hide();
+        var jsonResponse;
         try {
-            var resp = $.parseJSON(responseText);
+            jsonResponse = $.parseJSON(responseText);
         }
         catch (e) {
             midas.createNotice('Internal error occurred, contact an administrator');
             return;
         }
-        if (resp.status == 'error') {
-            midas.createNotice(resp.message, 3000, resp.status);
+        if (jsonResponse.status == 'error') {
+            midas.createNotice(jsonResponse.message, 3000, jsonResponse.status);
         }
         else {
-            midas.solr.displayOffset = resp.displayOffset;
-            midas.solr.total = resp.totalResults;
-            midas.solr.displayResults(resp.items);
-            midas.solr.solrOffset = resp.solrOffset; // iterate
+            midas.solr.displayOffset = jsonResponse.displayOffset;
+            midas.solr.total = jsonResponse.totalResults;
+            midas.solr.displayResults(jsonResponse.items);
+            midas.solr.solrOffset = jsonResponse.solrOffset; // iterate
 
             if (midas.solr.solrOffset < midas.solr.total) {
                 $('.nextPageSearch').show();
@@ -62,6 +67,7 @@ midas.solr.fetchPage = function () {
 };
 
 midas.solr.fetchTypes = function () {
+    'use strict';
     ajaxWebApi.ajax({
         method: 'midas.metadata.types.list',
         success: function (retVal) {
@@ -86,6 +92,7 @@ midas.solr.fetchTypes = function () {
 };
 
 midas.solr.fetchElements = function (type) {
+    'use strict';
     if (type === 'type') {
         $('#elementCombo').empty()
             .append($('<option></option>').attr("value", "element").text("Element"));
@@ -120,6 +127,7 @@ midas.solr.fetchElements = function (type) {
 };
 
 midas.solr.fetchQualifiers = function (type, element) {
+    'use strict';
     if (type === 'type' || element === 'element') {
         $('#elementCombo').empty()
             .append($('<option></option>').attr("value", "element").text("Element"));
@@ -151,6 +159,7 @@ midas.solr.fetchQualifiers = function (type, element) {
 };
 
 $(document).ready(function () {
+    'use strict';
     $('#advancedQueryField').autogrow();
     $('#advancedQueryField').focus();
 

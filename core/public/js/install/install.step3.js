@@ -1,6 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
  $(document).ready(function () {
+    'use strict';
      var defaultTest = $('.installHelp').html();
      var helpText = new Array();
      helpText['name'] = '<h4>Name</h4>Please select the name of your installation of MIDAS';

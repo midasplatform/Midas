@@ -15,6 +15,7 @@ midas.batchmake.application_div = 'apps_config_div';
 midas.batchmake.php_div = 'php_config_div';
 
 midas.batchmake.checkConfig = function (obj) {
+    'use strict';
     $('#testLoading').show();
     $('#testOk').hide();
     $('#testNok').hide();
@@ -46,9 +47,10 @@ midas.batchmake.checkConfig = function (obj) {
             $('#testLoading').hide();
         }
     });
-}
+};
 
 midas.batchmake.handleValidationResponse = function (retVal) {
+    'use strict';
     var testConfig = retVal.data;
     // testConfig should be
     // [0] = 1 if the global config is correct, 0 otherwise
@@ -71,10 +73,11 @@ midas.batchmake.handleValidationResponse = function (retVal) {
     $(document).find('div #' + midas.batchmake.php_div).children().remove();
 
     // now look at all of the individual config values, print out statuses
-    for (configVarInd in config_properties) {
+    for (var configVarInd in config_properties) {
         var property = config_properties[configVarInd]['property'];
         var status = config_properties[configVarInd]['status'];
         var type = config_properties[configVarInd]['type'];
+        var spanString;
         if (property.search(midas.batchmake.application_entry) > -1) {
             spanString = '<div class="' + type + '">' + property + ' ' + status + '</div>';
             $(document).find('div #' + midas.batchmake.application_div).append(spanString);
@@ -84,17 +87,19 @@ midas.batchmake.handleValidationResponse = function (retVal) {
             $(document).find('div #' + midas.batchmake.php_div).append(spanString);
         }
         else {
-            configVarStatusSpan_selector = '#' + property + 'Status';
+            var configVarStatusSpan_selector = '#' + property + 'Status';
             $(document).find(configVarStatusSpan_selector).html(status).removeClass().addClass(type);
         }
     }
-}
+};
 
-midas.batchmake.validateConfig = function (formData, jqForm, options) {}
+midas.batchmake.validateConfig = function (formData, jqForm, options) {};
 
 midas.batchmake.successConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
+    var jsonResponse;
     try {
-        var jsonResponse = jQuery.parseJSON(responseText);
+        jsonResponse = $.parseJSON(responseText);
     }
     catch (e) {
         midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
@@ -110,9 +115,10 @@ midas.batchmake.successConfig = function (responseText, statusText, xhr, form) {
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     $('#configForm').ajaxForm({
         beforeSubmit: midas.batchmake.validateConfig,
         success: midas.batchmake.successConfig

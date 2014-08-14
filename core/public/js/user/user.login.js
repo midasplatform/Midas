@@ -1,14 +1,14 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
-/*global $*/
-/*global document*/
-/*global json*/
+/* global document */
+/* global json */
 
 var midas = midas || {};
 midas.user = midas.user || {};
 midas.user.login = midas.user.login || {};
 
 midas.user.login.validateLoginForm = function () {
+    'use strict';
     $('input[name=previousuri]').val(json.global.currentUri);
     if ($('#password').val() == '') {
         midas.createNotice('Password field must not be empty', 3500, 'error');
@@ -43,7 +43,6 @@ midas.user.login.loginResult = function (responseText) {
 
 $(document).ready(function () {
     'use strict';
-
     $('form#loginForm').ajaxForm({
         beforeSubmit: midas.user.login.validateLoginForm,
         success: midas.user.login.loginResult

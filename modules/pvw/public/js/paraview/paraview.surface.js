@@ -2,8 +2,10 @@
 
 var midas = midas || {};
 midas.pvw = midas.pvw || {};
+var pv = pv || {};
 
 midas.pvw.start = function () {
+    'use strict';
     if (typeof midas.pvw.preInitCallback == 'function') {
         midas.pvw.preInitCallback();
     }
@@ -14,6 +16,7 @@ midas.pvw.start = function () {
 
 /** Callback for once the loadData RPC has returned */
 midas.pvw.dataLoaded = function (resp) {
+    'use strict';
     pv.viewport.render();
     midas.pvw.waitingDialog('Starting surface rendering...');
     pv.connection.session.call('vtk:surfaceRender')
@@ -22,6 +25,7 @@ midas.pvw.dataLoaded = function (resp) {
 };
 
 midas.pvw.surfaceRenderStarted = function (resp) {
+    'use strict';
     midas.pvw.bounds = resp.bounds;
     midas.pvw.nbPoints = resp.nbPoints;
     midas.pvw.nbCells = resp.nbCells;
@@ -40,6 +44,7 @@ midas.pvw.surfaceRenderStarted = function (resp) {
 };
 
 midas.pvw.populateInfo = function () {
+    'use strict';
     var bounds = midas.pvw.bounds;
     $('#boundsXInfo').html(bounds[0].toFixed(3) + ' .. ' + bounds[1].toFixed(3));
     $('#boundsYInfo').html(bounds[2].toFixed(3) + ' .. ' + bounds[3].toFixed(3));
@@ -49,6 +54,7 @@ midas.pvw.populateInfo = function () {
 };
 
 midas.pvw.resetCamera = function () {
+    'use strict';
     pv.connection.session.call('vtk:cameraPreset', '+x')
         .then(function () {
             if (midas.pvw.renderer == 'webgl') {
@@ -60,6 +66,7 @@ midas.pvw.resetCamera = function () {
 };
 
 midas.pvw.toggleEdges = function () {
+    'use strict';
     pv.connection.session.call('vtk:toggleEdges')
         .then(function () {
             if (midas.pvw.renderer == 'webgl') {

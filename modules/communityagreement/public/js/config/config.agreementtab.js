@@ -3,11 +3,13 @@
 var midas = midas || {};
 midas.communityagreement = midas.communityagreement || {};
 
-midas.communityagreement.validateAgreementChange = function (formData, jqForm, options) {}
+midas.communityagreement.validateAgreementChange = function (formData, jqForm, options) {};
 
 midas.communityagreement.successAgreementChange = function (responseText, statusText, xhr, form) {
+    'use strict';
+    var jsonResponse;
     try {
-        var jsonResponse = $.parseJSON(responseText);
+        jsonResponse = $.parseJSON(responseText);
     }
     catch (e) {
         midas.createNotice(responseText, 4000, 'error');
@@ -24,12 +26,13 @@ midas.communityagreement.successAgreementChange = function (responseText, status
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 /**
  * An ajax based form submission for form 'createAgreementForm'
  */
 $(document).ready(function () {
+    'use strict';
     $('#createAgreementForm').ajaxForm({
         beforeSubmit: midas.communityagreement.validateAgreementChange,
         success: midas.communityagreement.successAgreementChange

@@ -1,13 +1,18 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
+var midas = midas || {};
+
 var currentBrowser = false;
 var inittializedExecutableForm = false;
 var executableValid = false;
 var isExecutableMeta = false;
 var isDefineAjax = true;
-var results = new Array;
+var results = [];
 
 $(document).ready(function () {
+    'use strict';
     // Initialize Smart Wizard
     $('#wizard').smartWizard({
         // Properties
@@ -38,11 +43,13 @@ $(document).ready(function () {
 });
 
 function onLeaveStepCallback(obj) {
+    'use strict';
     var step_num = obj.attr('rel'); // get the current step number
     return validateSteps(step_num); // return false to stay on step and true to continue navigation
 }
 
 function onFinishCallback() {
+    'use strict';
     if (validateAllSteps()) {
         var date = '';
         var every = '0';
@@ -50,20 +57,20 @@ function onFinishCallback() {
             date = $('#datepicker').val();
             every = $('#intervalSelect').val();
         }
-        req = {
+        var req = {
             'results[]': results,
             'name': $('#jobName').val(),
             'date': date,
             'interval': every
         };
-        $(this).after('<img  src="' + json.global.webroot + '/core/public/images/icons/loading.gif" alt="Saving..." />')
+        $(this).after('<img  src="' + json.global.webroot + '/core/public/images/icons/loading.gif" alt="Saving..." />');
         $(this).remove();
         $.ajax({
             type: "POST",
             url: json.global.webroot + "/remoteprocessing/job/init?itemId=" + $('#selectedExecutableId').val(),
             data: req,
             success: function (x) {
-                window.location.replace($('.webroot').val() + '/remoteprocessing/job/manage')
+                window.location.replace($('.webroot').val() + '/remoteprocessing/job/manage');
             }
         });
     }
@@ -73,6 +80,7 @@ function onFinishCallback() {
 }
 
 function validateSteps(stepnumber) {
+    'use strict';
     var isStepValid = true;
     // validate step 1
     if (stepnumber == 2) {
@@ -84,7 +92,7 @@ function validateSteps(stepnumber) {
 
     if (stepnumber == 3) {
         var i = 0;
-        results = new Array();
+        results = [];
         if ($('#jobName').val() == '') {
             midas.createNotice('Please set the job\'s name.', 4000);
             isStepValid = false;
@@ -97,12 +105,20 @@ function validateSteps(stepnumber) {
 
             if ($(this).find('.selectedFolder').length > 0) {
                 if ($(this).find('.nameOutputOption').val() == '' || $(this).find('.selectedFolder').attr('element') == '') {
-                    if (required) midas.createNotice('Please set ' + $(this).attr('name'), 4000);
-                    if (required) isStepValid = false;
+                    if (required) {
+                        midas.createNotice('Please set ' + $(this).attr('name'), 4000);
+                    }
+                    if (required) {
+                        isStepValid = false;
+                    }
                 }
                 else if ($(this).find('.nameOutputOption').val().indexOf(".") == -1) {
-                    if (required) midas.createNotice('Please set an extension in the option ' + $(this).attr('name'), 4000);
-                    if (required) isStepValid = false;
+                    if (required) {
+                        midas.createNotice('Please set an extension in the option ' + $(this).attr('name'), 4000);
+                    }
+                    if (required) {
+                        isStepValid = false;
+                    }
                 }
                 else {
                     results[i] = $(this).find('.selectedFolder').attr('element') + ';;' + $(this).find('.nameOutputOption').val();
@@ -110,8 +126,12 @@ function validateSteps(stepnumber) {
             }
             else if ($(this).find('.selectInputFileLink').length > 0) {
                 if ($(this).find('.selectedItem').attr('element') == '' && $(this).find('.selectedFolderContent').attr('element') == '') {
-                    if (required) midas.createNotice('Please set ' + $(this).attr('name'), 4000);
-                    if (required) isStepValid = false;
+                    if (required) {
+                        midas.createNotice('Please set ' + $(this).attr('name'), 4000);
+                    }
+                    if (required) {
+                        isStepValid = false;
+                    }
                 }
                 else {
                     var folderElement = $(this).find('.selectedFolderContent').attr('element');
@@ -125,8 +145,12 @@ function validateSteps(stepnumber) {
             }
             else {
                 if ($(this).find('.valueInputOption').val() == '') {
-                    if (required) midas.createNotice('Please set ' + $(this).attr('name'), 4000);
-                    if (required) isStepValid = false;
+                    if (required) {
+                        midas.createNotice('Please set ' + $(this).attr('name'), 4000);
+                    }
+                    if (required) {
+                        isStepValid = false;
+                    }
                 }
                 else {
                     results[i] = $(this).find('.valueInputOption').val();
@@ -153,10 +177,12 @@ function validateSteps(stepnumber) {
 }
 
 function validateAllSteps() {
+    'use strict';
     return validateSteps(1) && validateSteps(2) && validateSteps(3) && validateSteps(4);
 }
 
 function onShowStepCallback(obj) {
+    'use strict';
     var step_num = obj.attr('rel'); // get the current step number
     if (step_num == 2) {
         $('#browseExecutableFile').click(function () {
@@ -173,12 +199,12 @@ function onShowStepCallback(obj) {
             $('#executableForm').load(json.global.webroot + '/remoteprocessing/job/getinitexecutable?scheduled=' + json.job.scheduled + '&itemId=' + itemid, new Array(), function () {
                 initExecutableForm();
             });
-
         }
     }
 }
 
 function loadRecentUpload() {
+    'use strict';
     $.getJSON(json.global.webroot + '/remoteprocessing/job/getentry?type=getRecentExecutable', function (data) {
         if (data.length == 0) {
             $('#recentuploadContentBlock').html('');
@@ -202,11 +228,11 @@ function loadRecentUpload() {
             isExecutableMeta = false;
             executableValid = true;
         });
-
     });
 }
 
 function initExecutableForm() {
+    'use strict';
     inittializedExecutableForm = true;
     $("#datepicker").datetimepicker();
     $('#ui-datepicker-div').hide();
@@ -244,6 +270,7 @@ function initExecutableForm() {
 }
 
 function itemSelectionCallback(name, id) {
+    'use strict';
     if (currentBrowser == 'executable') {
         $('#selectedExecutable').html(name);
         $('#selectedExecutableId').val(id);
@@ -285,6 +312,7 @@ function itemSelectionCallback(name, id) {
 }
 
 function folderSelectionCallback(name, id) {
+    'use strict';
     var optionWrapper = $('#option_' + currentBrowser);
     optionWrapper.find('.selectedFolderContent').html('Folder ' + name);
     optionWrapper.find('.selectedFolder').html('Folder ' + name);

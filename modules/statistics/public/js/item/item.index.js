@@ -1,5 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 midas.statistics = midas.statistics || {};
 midas.statistics.mapMarkers = [];
@@ -8,20 +10,22 @@ midas.statistics.mapMarkers = [];
  * Remove all current markers from the map
  */
 midas.statistics.clearMap = function () {
+    'use strict';
     if (midas.statistics.mapMarkers) {
         for (var i = 0; i < midas.statistics.mapMarkers.length; i++) {
             midas.statistics.mapMarkers[i].setMap(null);
         }
         midas.statistics.mapMarkers = [];
     }
-}
+};
 
 /**
  * Parses the response from itemstatistics and populates the map with markers
  */
 midas.statistics.populateMap = function (responseText, statusText, xhr, form) {
+    'use strict';
     try {
-        var response = jQuery.parseJSON(responseText);
+        var response = $.parseJSON(responseText);
         midas.statistics.clearMap();
 
         for (var i = 0; i < response.downloads.length; i++) {
@@ -54,9 +58,10 @@ midas.statistics.populateMap = function (responseText, statusText, xhr, form) {
         $('input.filterButton').removeAttr('disabled');
         $('img#loadingStatistics').hide();
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     var tabs = $("#tabsGeneric").tabs({
         select: function (event, ui) {}
     });

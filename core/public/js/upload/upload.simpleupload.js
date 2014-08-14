@@ -1,11 +1,24 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global fileDialogComplete */
+/* global fileQueued */
+/* global fileQueueError */
+/* global json */
+/* global loadFailed */
+/* global preLoad */
+/* global queueComplete */
+/* global uploadComplete */
+/* global uploadError */
+/* global uploadProgress */
+/* global uploadSuccess */
+
 var midas = midas || {};
 midas.upload = midas.upload || {};
 midas.upload.simpleupload = {};
 
 // We use shockwave flash uploader for IE (no multi-file upload support)
 midas.upload.simpleupload.initSwfupload = function () {
+    'use strict';
     // Callback hook for the flash uploader
     midas.upload.simpleupload.uploadPreStart = function (file) {
         midas.upload.simpleupload.swfu.setPostParams({
@@ -13,7 +26,7 @@ midas.upload.simpleupload.initSwfupload = function () {
             'parent': $('#destinationId').val(),
             'license': $('select[name=licenseSelect]').val()
         });
-    }
+    };
     var settings = {
         flash_url: json.global.coreWebroot + "/public/js/swfupload/swfupload_fp10/swfupload.swf",
         flash9_url: json.global.coreWebroot + "/public/js/swfupload/swfupload_fp9/swfupload_fp9.swf",
@@ -69,12 +82,13 @@ midas.upload.simpleupload.initSwfupload = function () {
         }
         midas.upload.simpleupload.swfu.startUpload();
     });
-}
+};
 
 $('img#uploadAFile').show();
 $('img#uploadAFileLoading').hide();
 
 midas.upload.simpleupload.initHtml5FileUpload = function () {
+    'use strict';
     $('.progress-current').progressbar({
         value: 0
     });
@@ -316,13 +330,16 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
 $('.uploadTabs').tabs({
     ajaxOptions: {
         beforeSend: function () {
+            'use strict';
             $('div.MainDialogLoading').show();
         },
         success: function () {
+            'use strict';
             $('div.MainDialogLoading').hide();
             $(".uploadTabs").show();
         },
         error: function (xhr, status, index, anchor) {
+            'use strict';
             $(anchor.hash).html("Couldn't load this tab. ");
         }
     }
@@ -330,6 +347,7 @@ $('.uploadTabs').tabs({
 
 $('.uploadTabs').show();
 $('#linkForm').ajaxForm(function () {
+    'use strict';
     $('.uploadedLinks').val(parseInt($('.uploadedLinks').val()) + 1);
 });
 
@@ -345,6 +363,7 @@ else {
 }
 
 $('.browseMIDASLink').click(function () {
+    'use strict';
     midas.loadDialog("select", "/browse/selectfolder/?policy=write");
     midas.showDialog('Select upload destination');
 });
@@ -354,6 +373,7 @@ if ($('#destinationId').val()) {
 }
 
 midas.registerCallback('CALLBACK_CORE_UPLOAD_FOLDER_CHANGED', 'core', function () {
+    'use strict';
     $('#startUploadLink').removeClass('disabled');
 });
 

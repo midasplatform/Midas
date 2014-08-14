@@ -1,6 +1,11 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
+var midas = midas || {};
+
 $(document).ready(function () {
+    'use strict';
     $('button.topDownloadButton').click(function () {
         $.post(json.global.webroot + '/download/checksize', {
             itemIds: json.item.item_id
@@ -89,7 +94,7 @@ $(document).ready(function () {
                     $(this).dialog("close");
                     // since we are adding, be sure that the metadata doesn't already exist
                     // if it does, give the user an error message and don't add the new metadata
-                    requestData = {};
+                    var requestData = {};
                     requestData["element"] = $('#midas_item_metadata_element').val();
                     requestData["qualifier"] = $('#midas_item_metadata_qualifier').val();
                     requestData["metadatatype"] = $('#midas_item_metadata_metadatatype').val();

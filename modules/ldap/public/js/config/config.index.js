@@ -3,13 +3,13 @@
 var midas = midas || {};
 midas.ldap = midas.ldap || {};
 
-midas.ldap.validateConfig = function (formData, jqForm, options) {
-
-}
+midas.ldap.validateConfig = function (formData, jqForm, options) {};
 
 midas.ldap.successConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
+    var jsonResponse;
     try {
-        var jsonResponse = jQuery.parseJSON(responseText);
+        jsonResponse = $.parseJSON(responseText);
     }
     catch (e) {
         midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
@@ -25,9 +25,10 @@ midas.ldap.successConfig = function (responseText, statusText, xhr, form) {
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     $('#configForm').ajaxForm({
         beforeSubmit: midas.ldap.validateConfig,
         success: midas.ldap.successConfig

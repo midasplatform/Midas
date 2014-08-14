@@ -1,5 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 midas.dicomserver = midas.dicomserver || {};
 
@@ -171,11 +173,13 @@ midas.dicomserver.checkStatus = function () {
     });
 };
 
-midas.dicomserver.validateConfig = function (formData, jqForm, options) {}
+midas.dicomserver.validateConfig = function (formData, jqForm, options) {};
 
 midas.dicomserver.successConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
+    var jsonResponse;
     try {
-        var jsonResponse = jQuery.parseJSON(responseText);
+        jsonResponse = $.parseJSON(responseText);
     }
     catch (e) {
         midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
@@ -192,9 +196,10 @@ midas.dicomserver.successConfig = function (responseText, statusText, xhr, form)
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     $("div#receptiondir").qtip({
         content: 'The file-system location of the DICOM server work directory. (required)',
         show: 'mouseover',
@@ -217,7 +222,7 @@ $(document).ready(function () {
             viewport: $(window), // Keep the qtip on-screen at all times
             effect: true // Disable positioning animation
         }
-    })
+    });
 
     $('#configForm').ajaxForm({
         beforeSubmit: midas.dicomserver.validateConfig,
@@ -242,7 +247,7 @@ $(document).ready(function () {
         $('input.startServerNo').unbind('click').click(function () {
             $("div.MainDialog").dialog('close');
         });
-    })
+    });
 
     $('div#stopServer').click(function () {
         var html = '';

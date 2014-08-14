@@ -12,9 +12,9 @@ midas.oauth.validateLogin = function () {
 
 midas.oauth.loginCallback = function (response) {
     'use strict';
-
+    var jsonResponse;
     try {
-        var ret = $.parseJSON(response);
+        jsonResponse = $.parseJSON(response);
     }
     catch (e) {
         $('.form-login input').removeAttr('disabled');
@@ -22,12 +22,12 @@ midas.oauth.loginCallback = function (response) {
         return;
     }
 
-    if (ret.status == 'ok' && ret.redirect) {
-        window.location = ret.redirect;
+    if (jsonResponse.status == 'ok' && jsonResponse.redirect) {
+        window.location = jsonResponse.redirect;
     }
     else {
         $('.form-login input').removeAttr('disabled');
-        $('.loginErrorMessage').html(ret.message).show();
+        $('.loginErrorMessage').html(jsonResponse.message).show();
     }
 };
 
