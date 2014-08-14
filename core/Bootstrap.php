@@ -160,6 +160,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       $writer->addFilter($filter);
       $logger->addWriter($writer);
       }
+    $logger->setEventItem('module', 'core');
     $logger->registerErrorHandler();
     Zend_Registry::set('logger', $logger);
 
