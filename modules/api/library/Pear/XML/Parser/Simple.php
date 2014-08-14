@@ -1,29 +1,10 @@
 <?php
-/*=========================================================================
- MIDAS Server
- Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
- All rights reserved.
- More information http://www.kitware.com
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
-         http://www.apache.org/licenses/LICENSE-2.0.txt
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-=========================================================================*/
-
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
  * XML_Parser
  *
- * XML Parser's Simple parser class 
+ * XML Parser's Simple parser class
  *
  * PHP versions 4 and 5
  *
@@ -56,12 +37,11 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @category  XML
- * @package   XML_Parser
+ * @package   XML\XML_Parser
  * @author    Stephan Schmidt <schst@php.net>
  * @copyright 2004-2008 Stephan Schmidt <schst@php.net>
  * @license   http://opensource.org/licenses/bsd-license New BSD License
- * @version   CVS: Id
+ * @version   CVS: $Id$
  * @link      http://pear.php.net/package/XML_Parser
  */
 
@@ -90,15 +70,15 @@ require_once dirname(__FILE__).'/../Parser.php';
  *     {
  *        $this->XML_Parser_Simple();
  *      }
- * 
+ *
  *    function handleElement($name, $attribs, $data)
  *     {
  *         printf('handle %s<br>', $name);
  *     }
  * }
- * 
+ *
  * $p = &new myParser();
- * 
+ *
  * $result = $p->setInputFile('myDoc.xml');
  * $result = $p->parse();
  * </code>
@@ -149,7 +129,7 @@ class XML_Parser_Simple extends XML_Parser
         'notation_decl_handler'             => 'notationHandler',
         'external_entity_ref_handler'       => 'entityrefHandler'
     );
-    
+
     /**
      * Creates an XML parser.
      *
@@ -181,15 +161,15 @@ class XML_Parser_Simple extends XML_Parser
         }
 
         if ($this->mode != 'func' && $this->mode != 'event') {
-            return $this->raiseError('Unsupported mode given', 
+            return $this->raiseError('Unsupported mode given',
                 XML_PARSER_ERROR_UNSUPPORTED_MODE);
         }
         xml_set_object($this->parser, $this->_handlerObj);
 
-        xml_set_element_handler($this->parser, array(&$this, 'startHandler'), 
+        xml_set_element_handler($this->parser, array(&$this, 'startHandler'),
             array(&$this, 'endHandler'));
         xml_set_character_data_handler($this->parser, array(&$this, 'cdataHandler'));
-        
+
         /**
          * set additional handlers for character data, entities, etc.
          */
@@ -215,7 +195,7 @@ class XML_Parser_Simple extends XML_Parser
         $this->_elStack = array();
         $this->_data    = array();
         $this->_depth   = 0;
-        
+
         $result = $this->_create();
         if ($this->isError($result)) {
             return $result;
@@ -274,7 +254,7 @@ class XML_Parser_Simple extends XML_Parser
                 $func = str_replace('.', '_', $func);
             }
             if (method_exists($this->_handlerObj, $func)) {
-                call_user_func(array(&$this->_handlerObj, $func), 
+                call_user_func(array(&$this->_handlerObj, $func),
                     $el['name'], $el['attribs'], $data);
             }
             break;
@@ -299,7 +279,7 @@ class XML_Parser_Simple extends XML_Parser
     /**
      * handle a tag
      *
-     * Implement this in your parser 
+     * Implement this in your parser
      *
      * @param string $name    element name
      * @param array  $attribs attributes
@@ -341,4 +321,11 @@ class XML_Parser_Simple extends XML_Parser
         $this->_data[$this->_depth] .= $data;
     }
 }
-?>
+
+/*
+ * Local Variables:
+ * mode: php
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ */

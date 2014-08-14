@@ -1,23 +1,4 @@
 <?php
-/*=========================================================================
- MIDAS Server
- Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
- All rights reserved.
- More information http://www.kitware.com
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
-         http://www.apache.org/licenses/LICENSE-2.0.txt
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-=========================================================================*/
-
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -56,14 +37,13 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @category  XML
- * @package   XML_Parser
+ * @package   XML\XML_Parser
  * @author    Stig Bakken <ssb@fast.no>
  * @author    Tomas V.V.Cox <cox@idecnet.com>
  * @author    Stephan Schmidt <schst@php.net>
  * @copyright 2002-2008 The PHP Group
  * @license   http://opensource.org/licenses/bsd-license New BSD License
- * @version   CVS: Id
+ * @version   CVS: $Id$
  * @link      http://pear.php.net/package/XML_Parser
  */
 
@@ -209,9 +189,6 @@ class XML_Parser extends PEAR
      */
     var $_validEncodings = array('ISO-8859-1', 'UTF-8', 'US-ASCII');
 
-    // }}}
-    // {{{ php4 constructor
-
     /**
      * Creates an XML parser.
      *
@@ -229,8 +206,6 @@ class XML_Parser extends PEAR
     {
         XML_Parser::__construct($srcenc, $mode, $tgtenc);
     }
-    // }}}
-    // {{{ php5 constructor
 
     /**
      * PHP5 constructor
@@ -250,7 +225,6 @@ class XML_Parser extends PEAR
         $this->srcenc = $srcenc;
         $this->tgtenc = $tgtenc;
     }
-    // }}}
 
     /**
      * Sets the mode of the parser.
@@ -273,7 +247,7 @@ class XML_Parser extends PEAR
     function setMode($mode)
     {
         if ($mode != 'func' && $mode != 'event') {
-            $this->raiseError('Unsupported mode given', 
+            $this->raiseError('Unsupported mode given',
                 XML_PARSER_ERROR_UNSUPPORTED_MODE);
         }
 
@@ -322,7 +296,7 @@ class XML_Parser extends PEAR
 
         case 'func':
             xml_set_object($this->parser, $this->_handlerObj);
-            xml_set_element_handler($this->parser, 
+            xml_set_element_handler($this->parser,
                 array(&$this, 'funcStartHandler'), array(&$this, 'funcEndHandler'));
             break;
 
@@ -331,7 +305,7 @@ class XML_Parser extends PEAR
             xml_set_element_handler($this->parser, 'startHandler', 'endHandler');
             break;
         default:
-            return $this->raiseError('Unsupported mode given', 
+            return $this->raiseError('Unsupported mode given',
                 XML_PARSER_ERROR_UNSUPPORTED_MODE);
             break;
         }
@@ -373,10 +347,10 @@ class XML_Parser extends PEAR
         }
         if (is_resource($xp)) {
             if ($this->tgtenc !== null) {
-                if (!@xml_parser_set_option($xp, XML_OPTION_TARGET_ENCODING, 
+                if (!@xml_parser_set_option($xp, XML_OPTION_TARGET_ENCODING,
                     $this->tgtenc)
                 ) {
-                    return $this->raiseError('invalid target encoding', 
+                    return $this->raiseError('invalid target encoding',
                         XML_PARSER_ERROR_INVALID_ENCODING);
                 }
             }
@@ -389,15 +363,12 @@ class XML_Parser extends PEAR
             return true;
         }
         if (!in_array(strtoupper($this->srcenc), $this->_validEncodings)) {
-            return $this->raiseError('invalid source encoding', 
+            return $this->raiseError('invalid source encoding',
                 XML_PARSER_ERROR_INVALID_ENCODING);
         }
-        return $this->raiseError('Unable to create XML parser resource.', 
+        return $this->raiseError('Unable to create XML parser resource.',
             XML_PARSER_ERROR_NO_RESOURCE);
     }
-
-    // }}}
-    // {{{ reset()
 
     /**
      * Reset the parser.
@@ -417,9 +388,6 @@ class XML_Parser extends PEAR
         return true;
     }
 
-    // }}}
-    // {{{ setInputFile()
-
     /**
      * Sets the input xml file to be parsed
      *
@@ -435,7 +403,7 @@ class XML_Parser extends PEAR
         /**
          * check, if file is a remote file
          */
-        if (eregi('^(http|ftp)://', substr($file, 0, 10))) {
+        if (preg_match('/^(http|ftp):\/\//i', substr($file, 0, 10))) {
             if (!ini_get('allow_url_fopen')) {
                 return $this->
                 raiseError('Remote files cannot be parsed, as safe mode is enabled.',
@@ -448,12 +416,9 @@ class XML_Parser extends PEAR
             $this->fp = $fp;
             return $fp;
         }
-        return $this->raiseError('File could not be opened.', 
+        return $this->raiseError('File could not be opened.',
             XML_PARSER_ERROR_FILE_NOT_READABLE);
     }
-
-    // }}}
-    // {{{ setInputString()
 
     /**
      * XML_Parser::setInputString()
@@ -469,9 +434,6 @@ class XML_Parser extends PEAR
         $this->fp = $data;
         return null;
     }
-
-    // }}}
-    // {{{ setInput()
 
     /**
      * Sets the file handle to use with parse().
@@ -492,7 +454,7 @@ class XML_Parser extends PEAR
         if (is_resource($fp)) {
             $this->fp = $fp;
             return true;
-        } elseif (eregi('^[a-z]+://', substr($fp, 0, 10))) {
+        } elseif (preg_match('/^[a-z]+:\/\//i', substr($fp, 0, 10))) {
             // see if it's an absolute URL (has a scheme at the beginning)
             return $this->setInputFile($fp);
         } elseif (file_exists($fp)) {
@@ -504,12 +466,9 @@ class XML_Parser extends PEAR
             return true;
         }
 
-        return $this->raiseError('Illegal input format', 
+        return $this->raiseError('Illegal input format',
             XML_PARSER_ERROR_INVALID_INPUT);
     }
-
-    // }}}
-    // {{{ parse()
 
     /**
      * Central parsing function.
@@ -564,16 +523,13 @@ class XML_Parser extends PEAR
         return xml_parse($this->parser, $data, $eof);
     }
 
-    // }}}
-    // {{{ parseString()
-
     /**
      * XML_Parser::parseString()
      *
      * Parses a string.
      *
      * @param string  $data XML data
-     * @param boolean $eof  If set and TRUE, data is the last piece 
+     * @param boolean $eof  If set and TRUE, data is the last piece
      *                      of data sent in this parser
      *
      * @return bool|PEAR_Error true on success or a PEAR Error
@@ -635,9 +591,6 @@ class XML_Parser extends PEAR
         return parent::raiseError($err);
     }
 
-    // }}}
-    // {{{ funcStartHandler()
-
     /**
      * derives and calls the Start Handler function
      *
@@ -654,13 +607,10 @@ class XML_Parser extends PEAR
         if (method_exists($this->_handlerObj, $func)) {
             call_user_func(array(&$this->_handlerObj, $func), $xp, $elem, $attribs);
         } elseif (method_exists($this->_handlerObj, 'xmltag')) {
-            call_user_func(array(&$this->_handlerObj, 'xmltag'), 
+            call_user_func(array(&$this->_handlerObj, 'xmltag'),
                 $xp, $elem, $attribs);
         }
     }
-
-    // }}}
-    // {{{ funcEndHandler()
 
     /**
      * derives and calls the End Handler function
@@ -681,9 +631,6 @@ class XML_Parser extends PEAR
         }
     }
 
-    // }}}
-    // {{{ startHandler()
-
     /**
      * abstract method signature for Start Handler
      *
@@ -699,9 +646,6 @@ class XML_Parser extends PEAR
         return null;
     }
 
-    // }}}
-    // {{{ endHandler()
-
     /**
      * abstract method signature for End Handler
      *
@@ -715,9 +659,6 @@ class XML_Parser extends PEAR
     {
         return null;
     }
-
-
-    // }}}me
 }
 
 /**
@@ -753,8 +694,6 @@ class XML_Parser_Error extends PEAR_Error
     */
     var $error_message_prefix = 'XML_Parser: ';
 
-    // }}}
-    // {{{ constructor()
     /**
     * construct a new error instance
     *
@@ -781,6 +720,12 @@ class XML_Parser_Error extends PEAR_Error
         }
         $this->PEAR_Error($msgorparser, $code, $mode, $level);
     }
-    // }}}
 }
-?>
+
+/*
+ * Local Variables:
+ * mode: php
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ */
