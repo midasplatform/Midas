@@ -130,7 +130,8 @@ $(document).ready(function () {
     midas.errorlog.priorityMap = {
         2: 'critical',
         4: 'warning',
-        6: 'info'
+        6: 'info',
+        7: 'debug'
     };
 
     midas.errorlog.jsonLogs = $.parseJSON($('div#jsonLogs').html());

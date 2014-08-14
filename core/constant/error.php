@@ -18,6 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-define("MIDAS_PRIORITY_INFO", 6);
 define("MIDAS_PRIORITY_CRITICAL", 2);
 define("MIDAS_PRIORITY_WARNING", 4);
+define("MIDAS_PRIORITY_INFO", 6);
+define("MIDAS_PRIORITY_DEBUG", 7);
