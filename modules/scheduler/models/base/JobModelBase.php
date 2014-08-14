@@ -59,7 +59,7 @@ abstract class Scheduler_JobModelBase extends Scheduler_AppModel
       return $this->load;
       }
     $os = strtolower(PHP_OS);
-    if(strpos($os, "win") === false)
+    if(strpos($os, "darwin") !== false || strpos($os, "win") === false)
       {
       $this->load = sys_getloadavg();
       return $this->load;
