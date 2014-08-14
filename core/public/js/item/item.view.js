@@ -1,6 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 $(document).ready(function () {
+    'use strict';
     $('button.topDownloadButton').click(function () {
         $.post(json.global.webroot + '/download/checksize', {
             itemIds: json.item.item_id

@@ -10,8 +10,8 @@ midas.readmes = midas.readmes || {};
 
 (function () {
     'use strict';
-
     midas.readmes.getForFolder = function (id) {
+        
         $.ajax({
             url: json.global.webroot + '/rest/readmes/folder/' + id,
             success: function (retVal) {

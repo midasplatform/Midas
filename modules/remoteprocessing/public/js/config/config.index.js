@@ -3,9 +3,10 @@
 var midas = midas || {};
 midas.remoteprocessing = midas.remoteprocessing || {};
 
-midas.remoteprocessing.validateConfig = function (formData, jqForm, options) {}
+midas.remoteprocessing.validateConfig = function (formData, jqForm, options) {};
 
 midas.remoteprocessing.successConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
     try {
         var jsonResponse = jQuery.parseJSON(responseText);
     }
@@ -23,9 +24,10 @@ midas.remoteprocessing.successConfig = function (responseText, statusText, xhr, 
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     $('#configForm').ajaxForm({
         beforeSubmit: midas.remoteprocessing.validateConfig,
         success: midas.remoteprocessing.successConfig

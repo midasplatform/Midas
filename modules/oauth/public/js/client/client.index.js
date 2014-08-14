@@ -4,6 +4,7 @@ var midas = midas || {};
 midas.oauth = midas.oauth || {};
 
 midas.oauth.newClientDialog = function () {
+    'use strict';
     midas.showDialogWithContent('Register New OAuth Client', $('#template-createClientDialog').html());
     var container = $('div.MainDialog');
     container.find('.createClientButton').click(function () {
@@ -29,6 +30,7 @@ midas.oauth.newClientDialog = function () {
 };
 
 midas.oauth.confirmDeleteClient = function () {
+    'use strict';
     var parentRow = $(this).parents('tr');
     var clientId = $(this).attr('element');
     midas.showDialogWithContent('Delete OAuth Client', $('#template-deleteClientDialog').html());
@@ -58,6 +60,7 @@ midas.oauth.confirmDeleteClient = function () {
 };
 
 midas.oauth.confirmDeleteToken = function () {
+    'use strict';
     var parentRow = $(this).parents('tr');
     var tokenId = $(this).attr('element');
     midas.showDialogWithContent('Deauthorize Token', $('#template-deleteTokenDialog').html());
@@ -87,6 +90,7 @@ midas.oauth.confirmDeleteToken = function () {
 };
 
 midas.oauth.addClientToList = function (client) {
+    'use strict';
     var html = '<tr><td>' + client.name + '</td><td>' + client.client_id + '</td><td>' + client.secret +
         '</td><td><a class="deleteClientLink" element="' + client.client_id + '">Delete</a></td></tr>';
     $('.myClientsTable tbody').append(html);
@@ -95,6 +99,7 @@ midas.oauth.addClientToList = function (client) {
 };
 
 $(document).ready(function () {
+    'use strict';
     $('.newClientButton').qtip({
         content: {
             text: $('.newClientButton').attr('qtip')

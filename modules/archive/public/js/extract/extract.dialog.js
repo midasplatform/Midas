@@ -5,12 +5,14 @@ midas.archive = midas.archive || {};
 midas.archive.extract = {};
 
 midas.archive.extract.submitClicked = function () {
+    'use strict';
     $('input#beginArchiveExtract').attr('disabled', 'disabled');
     $('input#declineArchiveExtract').attr('disabled', 'disabled');
     $('input#deleteArchiveWhenDone').attr('disabled', 'disabled');
 };
 
 midas.archive.extract.success = function (responseText) {
+    'use strict';
     $('div.MainDialog').dialog('close');
     $('input#beginArchiveExtract').removeAttr('disabled');
     $('input#declineArchiveExtract').removeAttr('disabled');

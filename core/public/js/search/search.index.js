@@ -1,6 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 $(document).ready(function () {
+    'use strict';
     json.search.keyword = $("<div/>").html(json.search.keyword).text(); // remove html entity encoding
     $('#live_search_value').val($('#live_search').val());
     $('#live_search').val(json.search.keyword);
@@ -70,6 +71,7 @@ var iterator;
 var type;
 
 function changeSorting(order) {
+    'use strict';
     $('img.searchLoading').show();
     $('ul#searchResults').hide();
     $.post(json.global.webroot + '/search', {
@@ -85,6 +87,7 @@ function changeSorting(order) {
 }
 
 function initSearchResults(type, append) {
+    'use strict';
     var i = 0;
     var j = 0;
     if (append) {
@@ -121,6 +124,7 @@ function initSearchResults(type, append) {
 }
 
 function createSearchResults(element) {
+    'use strict';
     var html = '';
     if (element.resultType == 'user') {
         html = "<img class='imageSearchResult' alt='' src='" + json.global.coreWebroot + "/public/images/icons/unknownUser-small.png'/>";

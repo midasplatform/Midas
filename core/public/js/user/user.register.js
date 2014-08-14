@@ -23,6 +23,7 @@ $('#registerForm').find('input').focusout(function () {
 });
 
 function checkAll(obj) {
+    'use strict';
     if (obj.attr('name') == 'email') {
         if (!checkEmail(obj.val())) {
             obj.parent('div').find('span').html('<img alt="" src="' + json.global.coreWebroot + '/public/images/icons/nok.png"/> ' + jsonRegister.MessageNotValid);
@@ -104,6 +105,7 @@ $('form#registerForm').submit(function () {
 });
 
 function checkEmail(mailteste) {
+    'use strict';
     var reg = /^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/;
 
     if (reg.test(mailteste)) {
@@ -115,6 +117,7 @@ function checkEmail(mailteste) {
 }
 
 function validRegisterForm() {
+    'use strict';
     firstname = $('input[name=firstname]').val().length > 0;
     lastname = $('input[name=lastname]').val().length > 0;
     var terms = $('input[name=conditions]').is(':checked');

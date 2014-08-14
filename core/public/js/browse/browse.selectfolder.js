@@ -4,12 +4,14 @@ var midas = midas || {};
 midas.browse = midas.browse || {};
 
 midas.browse.checkSelectedDestinationValid = function (node, policy) {
+    'use strict';
     if (policy >= $('div.MainDialogContent #defaultPolicy').val()) {
         midas.browse.selectFolderToggleButton(true);
     }
 };
 
 midas.browse.selectFolderToggleButton = function (on) {
+    'use strict';
     if (on) {
         $('#selectElements').removeAttr('disabled');
     }
@@ -55,6 +57,7 @@ if ($('div.MainDialogContent #selectElements') != undefined) {
 var ajaxSelectRequest = '';
 
 function selectFolderCallbackSelect(node) {
+    'use strict';
     var selectedElement = node.find('span:eq(1)').html();
     var parent = true;
     var current = node;
@@ -120,6 +123,7 @@ $('div.MainDialogContent #createFolderButton').click(function () {
 var newFolder = false;
 
 function successCreateFolderCallback(responseText, statusText, xhr, form) {
+    'use strict';
     var jsonResponse = jQuery.parseJSON(responseText);
     if (jsonResponse == null) {
         midas.createNotice('Error', 4000);
@@ -140,6 +144,7 @@ function successCreateFolderCallback(responseText, statusText, xhr, form) {
 }
 
 function selectFolderCallbackReloadNode(mainNode) {
+    'use strict';
     if (newFolder != false) {
         callbackSelect($('#moveTable').find('tr[element=' + newFolder + ']'));
     }
@@ -150,6 +155,7 @@ function selectFolderCallbackDblClick(node) {}
 function selectFolderCallbackCheckboxes(node) {}
 
 function selectFolderCallbackCustomElements(node, elements) {
+    'use strict';
     var i = 1;
     var id = node.attr('id');
 

@@ -3,9 +3,10 @@
 var midas = midas || {};
 midas.cleanup = midas.cleanup || {};
 
-midas.cleanup.validateConfig = function (formData, jqForm, options) {}
+midas.cleanup.validateConfig = function (formData, jqForm, options) {};
 
 midas.cleanup.successConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
     try {
         var jsonResponse = jQuery.parseJSON(responseText);
     }
@@ -23,9 +24,10 @@ midas.cleanup.successConfig = function (responseText, statusText, xhr, form) {
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     $('#configForm').ajaxForm({
         beforeSubmit: midas.cleanup.validateConfig,
         success: midas.cleanup.successConfig

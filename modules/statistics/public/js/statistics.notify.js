@@ -1,6 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 $(document).ready(function () {
+    'use strict';
     midas.registerCallback('CALLBACK_CORE_RESOURCES_SELECTED', 'statistics', function (params) {
         if (params.items.length > 0) {
             var html = '<li>';

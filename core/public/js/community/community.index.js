@@ -2,7 +2,6 @@
 
 $(document).ready(function () {
     'use strict';
-
     $('a.createCommunity').click(function () {
         if (json.global.logged) {
             midas.loadDialog("createCommunity", "/community/create");

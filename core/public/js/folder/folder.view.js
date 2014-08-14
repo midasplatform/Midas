@@ -3,7 +3,7 @@
 var midas = midas || {};
 
 $(document).ready(function () {
-
+    'use strict';
     $("#browseTable").treeTable({
         onFirstInit: midas.enableRangeSelect,
         onNodeShow: midas.enableRangeSelect,
@@ -74,18 +74,22 @@ $(document).ready(function () {
 midas.ajaxSelectRequest = '';
 
 function callbackSelect(node) {
+    'use strict';
     midas.genericCallbackSelect(node);
 }
 
 function callbackDblClick(node) {
+    'use strict';
     midas.genericCallbackDblClick(node);
 }
 
 function callbackCheckboxes(node) {
+    'use strict';
     midas.genericCallbackCheckboxes(node);
 }
 
 $(document).ready(function () {
+    'use strict';
     $('div.viewAction').show();
 });
 

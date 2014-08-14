@@ -3,11 +3,10 @@
 var midas = midas || {};
 midas.api = midas.api || {};
 
-midas.api.validateConfig = function (formData, jqForm, options) {
-
-}
+midas.api.validateConfig = function (formData, jqForm, options) {};
 
 midas.api.successConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
     try {
         var jsonResponse = jQuery.parseJSON(responseText);
     }
@@ -25,9 +24,10 @@ midas.api.successConfig = function (responseText, statusText, xhr, form) {
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     $('#configForm').ajaxForm({
         beforeSubmit: midas.api.validateConfig,
         success: midas.api.successConfig

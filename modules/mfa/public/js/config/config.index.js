@@ -4,10 +4,12 @@ var midas = midas || {};
 midas.mfa = midas.mfa || {};
 
 midas.mfa.validate = function () {
+    'use strict';
     return true;
 };
 
 midas.mfa.saved = function (text) {
+    'use strict';
     var resp = $.parseJSON(text);
     midas.createNotice(resp.message, 3500, resp.status);
 };

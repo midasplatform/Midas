@@ -43,6 +43,7 @@ $(document).ready(
 // is absolutely shameful. That's why I didn't namespace these functions.
 midas.ajaxSelectRequest = '';
 var callbackSelect = function (node) {
+    'use strict';
     $('div.defaultSide').hide();
     $('div.viewAction').show();
     $('div.viewInfo').show();
@@ -51,9 +52,11 @@ var callbackSelect = function (node) {
 };
 
 var callbackDblClick = function (node) {
+    'use strict';
     midas.genericCallbackDblClick(node);
 };
 
 var callbackCheckboxes = function (node) {
+    'use strict';
     midas.genericCallbackCheckboxes(node);
 };

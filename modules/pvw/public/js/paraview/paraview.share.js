@@ -7,10 +7,11 @@ midas.pvw = midas.pvw || {};
  * When called, will update the view every 200 ms
  */
 midas.pvw.startRefreshes = function () {
+    'use strict';
     pv.viewport.render(function () {
         window.setTimeout(midas.pvw.startRefreshes, 200);
     });
-}
+};
 
 $(window).load(function () {
     pv = {};

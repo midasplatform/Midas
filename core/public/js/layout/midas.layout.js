@@ -13,7 +13,7 @@ if (typeof console != "object") {
 
 // Main calls
 $(function () {
-
+    'use strict';
     // Parse json content
     // jQuery 1.8 has weird bugs when using .html() here, use the old-style innerHTML here
     json = jQuery.parseJSON($('div.jsonContent')[0].innerHTML);
@@ -283,6 +283,7 @@ $(function () {
 
 // asks the user to authenticate
 function globalAuthAsk(url) {
+    'use strict';
     if (json.global.logged) {
         window.location = url;
     }
@@ -297,6 +298,7 @@ var qtipsHelp = new Array();
 var iQtips = 0;
 
 function InitHelpQtip() {
+    'use strict';
     if (!json.global.dynamichelp) return;
     if (json.dynamicHelp == undefined) return;
     $.each(json.dynamicHelp, function (index, value) {
@@ -318,6 +320,7 @@ function InitHelpQtip() {
 
 // Dynamic help sequence
 function TimerQtip() {
+    'use strict';
     if (!json.global.dynamichelp) return;
 
     $.each(qtipsHelp, function (index, value) {
@@ -346,6 +349,7 @@ function TimerQtip() {
 }
 
 function StopTimerQtip() {
+    'use strict';
     if (!json.global.dynamichelp) return;
     $.each(qtipsHelp, function (index, value) {
         value.qtip('hide');

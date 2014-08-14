@@ -9,12 +9,14 @@ var midas = midas || {};
 midas.dicomserver = midas.dicomserver || {};
 
 midas.dicomserver.showLoadingImage = function () {
+    'use strict';
     $('li#dicomRegisterListItem').append('<div id="registering-image"><img src="' + json.global.webroot + '/modules/dicomserver/public/images/registering.gif" alt=""/> Registering images ...</div>');
-}
+};
 
 midas.dicomserver.hideLoadingImage = function () {
+    'use strict';
     $('#registering-image').remove();
-}
+};
 
 midas.dicomserver.registerAction = function () {
     'use strict';

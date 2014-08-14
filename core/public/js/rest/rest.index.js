@@ -4,6 +4,7 @@ var midas = midas || {};
 midas.rest = midas.rest || {};
 
 $(document).ready(function () {
+    'use strict';
     window.swaggerUi = new SwaggerUi({
         discoveryUrl: json.global.webroot + '/apidocs/',
         apiKey: null,

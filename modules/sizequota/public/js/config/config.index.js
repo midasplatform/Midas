@@ -3,9 +3,10 @@
 var midas = midas || {};
 midas.sizequota = midas.sizequota || {};
 
-midas.sizequota.validateConfig = function (formData, jqForm, options) {}
+midas.sizequota.validateConfig = function (formData, jqForm, options) {};
 
 midas.sizequota.successConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
     try {
         var jsonResponse = jQuery.parseJSON(responseText);
     }
@@ -23,9 +24,10 @@ midas.sizequota.successConfig = function (responseText, statusText, xhr, form) {
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     $('#configForm').ajaxForm({
         beforeSubmit: midas.sizequota.validateConfig,
         success: midas.sizequota.successConfig

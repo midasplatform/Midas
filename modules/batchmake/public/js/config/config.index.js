@@ -15,6 +15,7 @@ midas.batchmake.application_div = 'apps_config_div';
 midas.batchmake.php_div = 'php_config_div';
 
 midas.batchmake.checkConfig = function (obj) {
+    'use strict';
     $('#testLoading').show();
     $('#testOk').hide();
     $('#testNok').hide();
@@ -46,9 +47,10 @@ midas.batchmake.checkConfig = function (obj) {
             $('#testLoading').hide();
         }
     });
-}
+};
 
 midas.batchmake.handleValidationResponse = function (retVal) {
+    'use strict';
     var testConfig = retVal.data;
     // testConfig should be
     // [0] = 1 if the global config is correct, 0 otherwise
@@ -88,11 +90,12 @@ midas.batchmake.handleValidationResponse = function (retVal) {
             $(document).find(configVarStatusSpan_selector).html(status).removeClass().addClass(type);
         }
     }
-}
+};
 
-midas.batchmake.validateConfig = function (formData, jqForm, options) {}
+midas.batchmake.validateConfig = function (formData, jqForm, options) {};
 
 midas.batchmake.successConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
     try {
         var jsonResponse = jQuery.parseJSON(responseText);
     }
@@ -110,9 +113,10 @@ midas.batchmake.successConfig = function (responseText, statusText, xhr, form) {
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     $('#configForm').ajaxForm({
         beforeSubmit: midas.batchmake.validateConfig,
         success: midas.batchmake.successConfig

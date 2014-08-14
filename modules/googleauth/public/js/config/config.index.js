@@ -3,9 +3,10 @@
 var midas = midas || {};
 midas.googleauth = midas.googleauth || {};
 
-midas.googleauth.validateConfig = function (formData, jqForm, options) {}
+midas.googleauth.validateConfig = function (formData, jqForm, options) {};
 
 midas.googleauth.successConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
     try {
         var jsonResponse = jQuery.parseJSON(responseText);
     }
@@ -23,9 +24,10 @@ midas.googleauth.successConfig = function (responseText, statusText, xhr, form) 
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     $('#configForm').ajaxForm({
         beforeSubmit: midas.googleauth.validateConfig,
         success: midas.googleauth.successConfig

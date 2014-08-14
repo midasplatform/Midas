@@ -6,6 +6,7 @@
   var lastname = false;
 
   $(document).ready(function () {
+    'use strict';
       $('#databaseType').change(function () {
           $('.dbForm').hide();
           $('#form' + $(this).val()).show();

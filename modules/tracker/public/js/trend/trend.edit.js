@@ -4,21 +4,25 @@ var midas = midas || {};
 midas.tracker = midas.tracker || {};
 
 itemSelectionCallback = function (name, id) {
+    'use strict';
     var html = '<a href="' + json.global.webroot + '/item/' + id + '">' + name + '</a>';
     $('span.' + midas.tracker.whichSelect + 'DatasetContent').html(html);
     $('input[name=' + midas.tracker.whichSelect + 'ItemId]').val(id);
 };
 
 midas.tracker.removeItem = function (which) {
+    'use strict';
     $('span.' + which + 'DatasetContent').html('<span class="noItem">none</span>');
     $('input[name=' + which + 'ItemId]').val('');
 };
 
 midas.tracker.validateConfig = function () {
+    'use strict';
     return true;
 };
 
 midas.tracker.successConfig = function (text) {
+    'use strict';
     var resp = $.parseJSON(text);
     midas.createNotice(resp.message, 2500, resp.status);
 };

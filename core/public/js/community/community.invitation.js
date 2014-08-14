@@ -10,6 +10,7 @@ var jsonShare = jQuery.parseJSON($('div.jsonShareContent').html());
  * @param item The ui.item from the selected user or email node
  */
 midas.invite.showGroupSelect = function (item) {
+    'use strict';
     var dialogTitle = 'groupSelect';
     var dialogUrl = '/community/selectgroup?communityId=' + json.community.community_id;
 

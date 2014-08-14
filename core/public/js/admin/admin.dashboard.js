@@ -5,6 +5,7 @@ midas.admin = midas.admin || {};
 midas.admin.integrityComputed = false;
 
 midas.admin.computeDbIntegrity = function (event, ui) {
+    'use strict';
     if (midas.admin.integrityComputed) {
         return;
     }
@@ -21,6 +22,7 @@ midas.admin.computeDbIntegrity = function (event, ui) {
 };
 
 $(document).ready(function () {
+    'use strict';
     $('.databaseIntegrityWrapper').accordion({
         clearStyle: true,
         collapsible: true,

@@ -7,6 +7,7 @@ midas.ratings = midas.ratings || {};
  * Create the jqPlot of ratings distribution
  */
 midas.ratings.createChart = function (distribution) {
+    'use strict';
     midas.ratings.chart = $.jqplot('ratingsChart', [distribution], {
         seriesDefaults: {
             renderer: $.jqplot.BarRenderer,
@@ -51,12 +52,13 @@ midas.ratings.createChart = function (distribution) {
             background: 'white'
         }
     });
-}
+};
 
 /**
  * Display the aggregate rating information including star visualization
  */
 midas.ratings.renderAggregate = function (average, total, distribution) {
+    'use strict';
     if (average != null && average != '') {
         average = Math.round(average * 100) / 100;
         $('#averageValue').html(average);
@@ -73,7 +75,7 @@ midas.ratings.renderAggregate = function (average, total, distribution) {
     midas.ratings.createChart(distribution);
     midas.ratings.chart.replot();
     $('#voteTotal').html(total);
-}
+};
 
 /**
  * Set the rating of the current item for the currently logged user
@@ -81,6 +83,7 @@ midas.ratings.renderAggregate = function (average, total, distribution) {
  * the existing rating should be removed for the user.
  */
 midas.ratings.setRating = function (value) {
+    'use strict';
     $.post(json.global.webroot + '/ratings/rating/rateitem', {
         itemId: json.item.item_id,
         rating: value
@@ -89,8 +92,7 @@ midas.ratings.setRating = function (value) {
         midas.createNotice(resp.message, 3000, resp.status);
         midas.ratings.renderAggregate(resp.average, resp.total, resp.distribution);
     });
-
-}
+};
 
 $(window).load(function () {
     midas.doCallback('CALLBACK_RATINGS_BEFORE_LOAD');

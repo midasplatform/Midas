@@ -3,11 +3,10 @@
 var midas = midas || {};
 midas.mfa = midas.mfa || {};
 
-midas.mfa.validateConfig = function (formData, jqForm, options) {
-
-};
+midas.mfa.validateConfig = function (formData, jqForm, options) {};
 
 midas.mfa.successConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
     try {
         var jsonResponse = jQuery.parseJSON(responseText);
     }
@@ -26,6 +25,7 @@ midas.mfa.successConfig = function (responseText, statusText, xhr, form) {
  * Enable/disable the form elements based on the top checkbox
  */
 midas.mfa.setEnabledState = function () {
+    'use strict';
     if ($('#useOtpCheckbox').is(':checked')) {
         $('#otpSecret').removeAttr('disabled');
         $('#otpAlgorithmSelect').removeAttr('disabled');
@@ -39,6 +39,7 @@ midas.mfa.setEnabledState = function () {
 };
 
 $(document).ready(function () {
+    'use strict';
     $('#mfaConfigForm').ajaxForm({
         beforeSubmit: midas.mfa.validateConfig,
         success: midas.mfa.successConfig

@@ -19,16 +19,18 @@ var ajaxWebApi = {};
  *          be written. Default behavior is alert() in error conditions.
  */
 ajaxWebApi.ajax = function (params) {
+    'use strict';
     if (!params.method) {
         alert('ajaxWebApi.ajax: method parameter not set');
         return;
     }
 
     this._webApiCall(params);
-}
+};
 
 /** Internal function.  Do not call directly. */
 ajaxWebApi._webApiCall = function (params) {
+    'use strict';
     if (!params.args) {
         params.args = 'useSession=true';
     }
@@ -64,22 +66,24 @@ ajaxWebApi._webApiCall = function (params) {
             }
         }
     });
-}
+};
 
 ajaxWebApi.logMessage = function (text, log) {
+    'use strict';
     if (log) {
         log.append('<span style="color:black;">' + text + '</span><br>');
     }
     else {
         alert(text);
     }
-}
+};
 
 ajaxWebApi.logError = function (text, log) {
+    'use strict';
     if (log) {
         log.append('<span style="color:red;">Error: ' + text + '</span><br>');
     }
     else {
         alert('Error: ' + text);
     }
-}
+};

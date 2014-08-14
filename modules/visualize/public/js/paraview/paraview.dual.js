@@ -13,6 +13,7 @@ midas.visualize.right = {
 midas.visualize.camerasLocked = false;
 
 midas.visualize.start = function () {
+    'use strict';
     // Create a paraview proxy
     var file = json.visualize.url;
 
@@ -72,6 +73,7 @@ midas.visualize.start = function () {
 };
 
 midas.visualize._dataOpened = function (side, retVal) {
+    'use strict';
     midas.visualize[side].input = retVal.input;
     midas.visualize[side].bounds = retVal.imageData.Bounds;
     midas.visualize[side].extent = retVal.imageData.Extent;
@@ -128,6 +130,7 @@ midas.visualize._dataOpened = function (side, retVal) {
 };
 
 midas.visualize.initCallback = function (side, retVal) {
+    'use strict';
     midas.visualize[side].lookupTable = retVal.lookupTable;
     midas.visualize[side].activeView = retVal.activeView;
 
@@ -156,6 +159,7 @@ midas.visualize.initCallback = function (side, retVal) {
  * Helper function to setup the slice and window/level sliders
  */
 midas.visualize.setupSliders = function () {
+    'use strict';
     $('#sliceSlider').slider({
         min: midas.visualize.left.bounds[4],
         max: midas.visualize.left.bounds[5],
@@ -185,6 +189,7 @@ midas.visualize.setupSliders = function () {
  * Unregisters all mouse event handlers on the renderer
  */
 midas.visualize.disableMouseInteraction = function (side) {
+    'use strict';
     var el = midas.visualize[side].renderer.view;
     el.onclick = null;
     el.onmousemove = null;
@@ -200,11 +205,13 @@ midas.visualize.disableMouseInteraction = function (side) {
  * actually changing them in PVWeb
  */
 midas.visualize.updateWindowInfo = function (values) {
+    'use strict';
     $('#windowInfo').html('Window: ' + values[0] + ' - ' + values[1]);
 };
 
 /** Make the actual request to PVWeb to set the window */
 midas.visualize.changeWindow = function (values) {
+    'use strict';
     paraview.left.plugins.midasdual.AsyncChangeWindow(function (retVal) {
         midas.visualize.left.lookupTable = retVal.lookupTable;
         midas.visualize.forceRefreshView('left');
@@ -219,6 +226,7 @@ midas.visualize.changeWindow = function (values) {
 
 /** Change the slice and run appropriate slice filter on any meshes in the scene */
 midas.visualize.changeSlice = function (slice) {
+    'use strict';
     slice = parseInt(slice);
     midas.visualize.currentSlice = slice;
 
@@ -253,6 +261,7 @@ midas.visualize.changeSlice = function (slice) {
  * Update the value of the current slice, without rendering the slice.
  */
 midas.visualize.updateSliceInfo = function (slice) {
+    'use strict';
     var max;
     if (midas.visualize.sliceMode == 'XY Plane') {
         max = midas.visualize.left.bounds[5];
@@ -270,6 +279,7 @@ midas.visualize.updateSliceInfo = function (slice) {
  * Initialize or re-initialize the renderer within the DOM
  */
 midas.visualize.switchRenderer = function (side) {
+    'use strict';
     if (midas.visualize[side].renderer == undefined) {
         midas.visualize[side].renderer = new JavaScriptRenderer(side + 'JsRenderer', '/PWService');
         midas.visualize[side].renderer.init(paraview[side].sessionId, midas.visualize[side].activeView.__selfid__);
@@ -286,6 +296,7 @@ midas.visualize.switchRenderer = function (side) {
  * List will contain <size> color values that are RGB lists with each channel in [0, 1].
  */
 midas.visualize._generateColorList = function (size) {
+    'use strict';
     var list = [];
     for (var i = 0; i < size; i++) {
         var hue = i * (1.0 / size);
@@ -301,6 +312,7 @@ midas.visualize._generateColorList = function (size) {
  * RGB output values will be in [0, 1]
  */
 midas.visualize._hsvToRgb = function (h, s, v) {
+    'use strict';
     var r, g, b;
 
     var i = Math.floor(h * 6);
@@ -337,6 +349,7 @@ midas.visualize._hsvToRgb = function (h, s, v) {
  * Set the mode to point selection within the image.
  */
 midas.visualize.pointMapMode = function () {
+    'use strict';
     midas.createNotice('Click on the images to select points', 3500);
 
     // Bind click action on the render window
@@ -402,6 +415,7 @@ midas.visualize.pointMapMode = function () {
  * Force the renderer image to refresh from the server
  */
 midas.visualize.forceRefreshView = function (side) {
+    'use strict';
     paraview[side].sendEvent('Render', '');
 };
 
@@ -409,6 +423,7 @@ midas.visualize.forceRefreshView = function (side) {
  * Enable point selection action
  */
 midas.visualize._enablePointMap = function () {
+    'use strict';
     var button = $('#actionButtonTemplate').clone();
     button.removeAttr('id');
     button.addClass('pointSelectButton');
@@ -438,6 +453,7 @@ midas.visualize._enablePointMap = function () {
 };
 
 midas.visualize._enableDefaultMode = function () {
+    'use strict';
     var camLinkButton = $('#actionButtonTemplate').clone();
     camLinkButton.removeAttr('id');
     camLinkButton.addClass('cameraLinkButton');
@@ -464,6 +480,7 @@ midas.visualize._enableDefaultMode = function () {
  * Apply default camera parameters from the left side to the right, or use the right side defaults
  */
 midas.visualize.setCameraMode = function (side) {
+    'use strict';
     midas.visualize.right.cameraFocalPoint = [midas.visualize[side].midI, midas.visualize[side].midJ, midas.visualize[side].midK];
     midas.visualize.right.cameraPosition = [midas.visualize[side].midI, midas.visualize[side].midJ, midas.visualize[side].bounds[4] - 10];
     midas.visualize.right.cameraParallelScale =
@@ -487,6 +504,7 @@ midas.visualize.setCameraMode = function (side) {
  *   -pointMap: select a single point in the image
  */
 midas.visualize.enableActions = function (side, operations) {
+    'use strict';
     if (side == 'right') {
         $.each(operations, function (k, operation) {
             if (operation == 'pointMap') {
@@ -504,6 +522,7 @@ midas.visualize.enableActions = function (side, operations) {
  * Change the slice mode. Valid values are 'XY Plane', 'XZ Plane', 'YZ Plane'
  */
 midas.visualize.setSliceMode = function (sliceMode) {
+    'use strict';
     if (midas.visualize.sliceMode == sliceMode) {
         return; // nothing to do, already in this mode
     }
@@ -571,6 +590,7 @@ midas.visualize.setSliceMode = function (sliceMode) {
  * Display all the fiducial points selected in each image
  */
 midas.visualize.displayPointMap = function () {
+    'use strict';
     var dialog = $('#pointListDialogTemplate').clone();
     dialog.removeAttr('id');
     midas.showDialogWithContent('Fiducial point mapping',
@@ -695,6 +715,7 @@ midas.visualize.displayPointMap = function () {
  * Helper function to remove a point from the fiducial lists at global scope
  */
 midas.visualize._removePointFromList = function (side, pointToRemove) {
+    'use strict';
     var spliceIdx = -1;
     $.each(midas.visualize[side].points, function (idx, point) {
         if (point.object.__selfid__ == pointToRemove.object.__selfid__) {

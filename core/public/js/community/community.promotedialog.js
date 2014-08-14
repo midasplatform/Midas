@@ -4,12 +4,14 @@ var midas = midas || {};
 midas.community = midas.community || {};
 
 midas.community.promotedialogBeforeSubmit = function (formData, jqForm, options) {
+    'use strict';
     $('#addToGroupsSubmitButton').attr('disabled', 'disabled');
     $('#promoteDialogLoading').show();
     return true;
-}
+};
 
 midas.community.promotedialogSuccess = function (responseText, statusText, xhr, form) {
+    'use strict';
     $('div.MainDialog').dialog('close');
     $('#addToGroupsSubmitButton').removeAttr('disabled');
     $('#promoteDialogLoading').hide();
@@ -25,9 +27,10 @@ midas.community.promotedialogSuccess = function (responseText, statusText, xhr, 
             '/community/manage?communityId=' + $('#promoteCommunityId').val() + '#tabs-Users');
         window.location.reload();
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     $('#promoteGroupForm').ajaxForm({
         beforeSubmit: midas.community.promotedialogBeforeSubmit,
         success: midas.community.promotedialogSuccess

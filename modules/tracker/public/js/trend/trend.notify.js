@@ -4,15 +4,18 @@ var midas = midas || {};
 midas.tracker = midas.tracker || {};
 
 midas.tracker.validateNotificationConfig = function () {
+    'use strict';
     return true;
 };
 
 midas.tracker.successNotificationConfig = function (text) {
+    'use strict';
     var resp = $.parseJSON(text);
     midas.createNotice(resp.message, 2500, resp.status);
 };
 
 midas.tracker.toggleForm = function () {
+    'use strict';
     if ($('#noNotify').is(':checked')) {
         $('#operatorSelect').attr('disabled', 'disabled');
         $('input.thresholdValue').val('').attr('disabled', 'disabled');
@@ -24,6 +27,7 @@ midas.tracker.toggleForm = function () {
 };
 
 $(document).ready(function () {
+    'use strict';
     $('input[name=doNotify]').change(midas.tracker.toggleForm);
     var html = $.trim($('#settingInfo').html());
     if (html == '') {

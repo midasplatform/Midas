@@ -17,7 +17,7 @@ midas.keyfiles.setup = function () {
         var bitstream_id = $(this).attr('element');
         window.location.href = json.global.webroot + '/keyfiles/download/bitstream?bitstreamId=' + bitstream_id;
     });
-}
+};
 
 $(document).ready(function () {
     'use strict';

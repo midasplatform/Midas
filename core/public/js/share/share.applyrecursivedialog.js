@@ -5,11 +5,13 @@ midas.share = midas.share || {};
 midas.share.applyrecursive = {};
 
 midas.share.applyrecursive.submitClicked = function () {
+    'use strict';
     $('input#acceptApplyRecursive').attr('disabled', 'disabled');
     $('input#declineApplyRecursive').attr('disabled', 'disabled');
 };
 
 midas.share.applyrecursive.success = function (responseText) {
+    'use strict';
     $('div.MainDialog').dialog('close');
     $('input#acceptApplyRecursive').removeAttr('disabled');
     $('input#declineApplyRecursive').removeAttr('disabled');

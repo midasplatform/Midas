@@ -4,6 +4,7 @@ var midas = midas || {};
 midas.user = midas.user || {};
 
 midas.user.validatePasswordChange = function (formData, jqForm, options) {
+    'use strict';
     var form = jqForm[0];
     if (form.newPassword.value.length < 2) {
         midas.createNotice(jsonSettings.passwordErrorShort, 4000, 'error');
@@ -13,11 +14,12 @@ midas.user.validatePasswordChange = function (formData, jqForm, options) {
         midas.createNotice(jsonSettings.passwordErrorMatch, 4000, 'error');
         return false;
     }
-}
+};
 
-midas.user.validatePictureChange = function (formData, jqForm, options) {}
+midas.user.validatePictureChange = function (formData, jqForm, options) {};
 
 midas.user.validateAccountChange = function (formData, jqForm, options) {
+    'use strict';
     var form = jqForm[0];
     if (form.firstname.value.length < 1) {
         midas.createNotice(jsonSettings.accountErrorFirstname, 4000, 'error');
@@ -27,9 +29,10 @@ midas.user.validateAccountChange = function (formData, jqForm, options) {
         midas.createNotice(jsonSettings.accountErrorLastname, 4000, 'error');
         return false;
     }
-}
+};
 
 midas.user.successPasswordChange = function (responseText, statusText, xhr, form) {
+    'use strict';
     var jsonResponse = $.parseJSON(responseText);
     if (jsonResponse == null) {
         midas.createNotice('Error', 4000, 'error');
@@ -42,9 +45,10 @@ midas.user.successPasswordChange = function (responseText, statusText, xhr, form
         $('#modifyPassword').find('input[type=password]').val('');
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 midas.user.successAccountChange = function (responseText, statusText, xhr, form) {
+    'use strict';
     var jsonResponse = $.parseJSON(responseText);
     if (jsonResponse == null) {
         midas.createNotice('Error', 4000);
@@ -56,9 +60,10 @@ midas.user.successAccountChange = function (responseText, statusText, xhr, form)
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 midas.user.successPictureChange = function (responseText, statusText, xhr, form) {
+    'use strict';
     var jsonResponse = jQuery.parseJSON(responseText);
     if (jsonResponse == null) {
         midas.createNotice('Error', 4000, 'error');
@@ -71,7 +76,7 @@ midas.user.successPictureChange = function (responseText, statusText, xhr, form)
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 $(window).load(function () {
     $("#tabsSettings").tabs();

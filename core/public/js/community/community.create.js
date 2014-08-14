@@ -25,6 +25,7 @@ $('div.createNameElement input').focusout(function () {
 initCommunityPrivacy();
 
 function initCommunityPrivacy() {
+    'use strict';
     if ($('input[name=privacy]:checked').val() == 1) // private
     {
         $('input[name=canJoin]').attr('disabled', 'disabled');

@@ -1,7 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 $(document).ready(function () {
-
+    'use strict';
     json = jQuery.parseJSON($('div.jsonContent').html());
     if (json.type == 'mp3') {
         $("#jquery_jplayer_1").jPlayer({

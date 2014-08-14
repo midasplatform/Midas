@@ -8,6 +8,7 @@ var isDefineAjax = true;
 var results = new Array;
 
 $(document).ready(function () {
+    'use strict';
     // Initialize Smart Wizard
     $('#wizard').smartWizard({
         // Properties
@@ -38,11 +39,13 @@ $(document).ready(function () {
 });
 
 function onLeaveStepCallback(obj) {
+    'use strict';
     var step_num = obj.attr('rel'); // get the current step number
     return validateSteps(step_num); // return false to stay on step and true to continue navigation
 }
 
 function onFinishCallback() {
+    'use strict';
     if (validateAllSteps()) {
         var date = '';
         var every = '0';
@@ -73,6 +76,7 @@ function onFinishCallback() {
 }
 
 function validateSteps(stepnumber) {
+    'use strict';
     var isStepValid = true;
     // validate step 1
     if (stepnumber == 2) {
@@ -153,10 +157,12 @@ function validateSteps(stepnumber) {
 }
 
 function validateAllSteps() {
+    'use strict';
     return validateSteps(1) && validateSteps(2) && validateSteps(3) && validateSteps(4);
 }
 
 function onShowStepCallback(obj) {
+    'use strict';
     var step_num = obj.attr('rel'); // get the current step number
     if (step_num == 2) {
         $('#browseExecutableFile').click(function () {
@@ -173,12 +179,12 @@ function onShowStepCallback(obj) {
             $('#executableForm').load(json.global.webroot + '/remoteprocessing/job/getinitexecutable?scheduled=' + json.job.scheduled + '&itemId=' + itemid, new Array(), function () {
                 initExecutableForm();
             });
-
         }
     }
 }
 
 function loadRecentUpload() {
+    'use strict';
     $.getJSON(json.global.webroot + '/remoteprocessing/job/getentry?type=getRecentExecutable', function (data) {
         if (data.length == 0) {
             $('#recentuploadContentBlock').html('');
@@ -202,11 +208,11 @@ function loadRecentUpload() {
             isExecutableMeta = false;
             executableValid = true;
         });
-
     });
 }
 
 function initExecutableForm() {
+    'use strict';
     inittializedExecutableForm = true;
     $("#datepicker").datetimepicker();
     $('#ui-datepicker-div').hide();
@@ -244,6 +250,7 @@ function initExecutableForm() {
 }
 
 function itemSelectionCallback(name, id) {
+    'use strict';
     if (currentBrowser == 'executable') {
         $('#selectedExecutable').html(name);
         $('#selectedExecutableId').val(id);
@@ -285,6 +292,7 @@ function itemSelectionCallback(name, id) {
 }
 
 function folderSelectionCallback(name, id) {
+    'use strict';
     var optionWrapper = $('#option_' + currentBrowser);
     optionWrapper.find('.selectedFolderContent').html('Folder ' + name);
     optionWrapper.find('.selectedFolder').html('Folder ' + name);

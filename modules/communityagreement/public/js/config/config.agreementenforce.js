@@ -5,6 +5,7 @@
  * Instead render the license dialog for them when they hit Join Community.
  */
 $(document).ready(function () {
+    'use strict';
     var hasAgreement = $('#hasAgreement').html();
 
     if (hasAgreement == 'true') {

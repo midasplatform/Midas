@@ -6,6 +6,7 @@ midas.browse = midas.browse || {};
 // dependence: common/browser.js
 midas.ajaxSelectRequest = '';
 midas.browse.moveCopyCallbackSelect = function (node) {
+    'use strict';
     var selectedElement = node.find('span:eq(1)').html();
     var parent = true;
     var current = node;
@@ -46,12 +47,14 @@ midas.browse.moveCopyCallbackSelect = function (node) {
 };
 
 midas.browse.checkMoveDestinationValid = function (node, policy) {
+    'use strict';
     if (node.attr('valid') != 'false' && policy >= 1) {
         midas.browse.moveCopyToggleButton(true);
     }
 };
 
 midas.browse.moveCopyToggleButton = function (on) {
+    'use strict';
     if (on) {
         $('#selectElement').removeAttr('disabled');
         $('#shareElement').removeAttr('disabled');
@@ -71,6 +74,7 @@ midas.browse.moveCopyCallbackDblClick = function (node) {};
 midas.browse.moveCopyCallbackCheckboxes = function (node) {};
 
 midas.browse.moveCopyCallbackCustomElements = function (node, elements, first) {
+    'use strict';
     var i = 1;
     var id = node.attr('id');
     elements['folders'] = jQuery.makeArray(elements['folders']);
@@ -86,6 +90,7 @@ midas.browse.moveCopyCallbackCustomElements = function (node, elements, first) {
 };
 
 $(document).ready(function () {
+    'use strict';
     $('#moveCopyForm').submit(function () {
         $('img.submitWaiting').show();
         return true;

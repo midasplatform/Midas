@@ -2,6 +2,7 @@
 
   var jsonMetadata;
   $(document).ready(function () {
+    'use strict';
       jsonMetadata = jQuery.parseJSON($('div#jsonMetadataContent').html());
 
       if (jsonMetadata.options != undefined) {

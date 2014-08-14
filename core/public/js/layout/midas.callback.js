@@ -12,6 +12,7 @@ midas.callbacks = midas.callbacks || {};
  * @param fn The callback function
  */
 midas.registerCallback = function (name, module, fn) {
+    'use strict';
     if (midas.callbacks[name] == undefined) {
         midas.callbacks[name] = {};
     }
@@ -26,6 +27,7 @@ midas.registerCallback = function (name, module, fn) {
  * the return value for that module's registered callback.
  */
 midas.doCallback = function (name, args) {
+    'use strict';
     if (midas.callbacks[name] == undefined) {
         return {};
     }

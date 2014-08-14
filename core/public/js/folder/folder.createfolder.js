@@ -15,7 +15,7 @@ if (typeof callbackDblClick != 'function') {
 }
 
 function validateCreateFolder(formData, jqForm, options) {
-
+    'use strict';
     var form = jqForm[0];
     if (form.name.value.length < 1) {
         midas.createNotice('Error name', 4000);
@@ -24,6 +24,7 @@ function validateCreateFolder(formData, jqForm, options) {
 }
 
 function successCreateFolder(responseText, statusText, xhr, form) {
+    'use strict';
     if (typeof successCreateFolderCallback == 'function') {
         successCreateFolderCallback(responseText, statusText, xhr, form);
         return;

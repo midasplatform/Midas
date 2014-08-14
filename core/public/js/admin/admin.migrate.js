@@ -1,6 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 $(document).ready(function () {
+    'use strict';
     // Bind the migrate submit to start the import
     $('#migratesubmit').click(function () {
         startMigrate()
@@ -27,6 +28,7 @@ $(document).ready(function () {
 
 /** If the button to start the migration has been clicked */
 function startMigrate() {
+    'use strict';
     formSubmitOptions = {
         success: migrateCallback,
         dataType: 'json'
@@ -36,6 +38,7 @@ function startMigrate() {
 
 /** On import success */
 function migrateCallback(responseText, statusText, xhr, form) {
+    'use strict';
     if (responseText.error) {
         $(".viewNotice").html(responseText.error);
         $(".viewNotice").fadeIn(100).delay(2000).fadeOut(300);
@@ -48,6 +51,7 @@ function migrateCallback(responseText, statusText, xhr, form) {
 
 /** On assetstore add submit */
 function assetstoreSubmit(formData, jqForm, options) {
+    'use strict';
     // Add the type is the one in the main page (because it's hidden in the assetstore add page)
     var assetstoretype = new Object();
     assetstoretype.name = 'type';
@@ -58,6 +62,7 @@ function assetstoreSubmit(formData, jqForm, options) {
 
 /** On assetstore add success */
 function assetstoreAddCallback(responseText, statusText, xhr, $form) {
+    'use strict';
     $(".assetstoreLoading").hide();
     if (responseText.error) {
         $(".viewNotice").html(responseText.error);
@@ -86,5 +91,6 @@ function assetstoreAddCallback(responseText, statusText, xhr, $form) {
 
 /** When the cancel is clicked in the new assetstore window */
 function newAssetstoreHide() {
+    'use strict';
     $(document).trigger('hideCluetip');
 } // end function newAssetstoreHide

@@ -12,7 +12,6 @@ midas.oauth.validateLogin = function () {
 
 midas.oauth.loginCallback = function (response) {
     'use strict';
-
     try {
         var ret = $.parseJSON(response);
     }

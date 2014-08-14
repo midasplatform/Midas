@@ -5,11 +5,12 @@ midas.upload = midas.upload || {};
 midas.upload.javaupload = {};
 
 midas.upload.javaupload.sendParentToJavaSession = function () {
+    'use strict';
     $.post(json.global.webroot + '/upload/javaupload', {
         parent: $('#destinationId').val(),
         license: $('select[name=licenseSelect]:last').val()
     });
-}
+};
 
 $('.browseMIDASLink').click(function () {
     midas.loadDialog("select", "/browse/selectfolder/?policy=write");
@@ -34,6 +35,7 @@ $('select[name=licenseSelect]:last').change(function () {
 
 // Save parent folder to the session
 function folderSelectionCallback() {
+    'use strict';
     midas.upload.javaupload.sendParentToJavaSession();
 }
 

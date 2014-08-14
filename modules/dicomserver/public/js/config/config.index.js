@@ -171,9 +171,10 @@ midas.dicomserver.checkStatus = function () {
     });
 };
 
-midas.dicomserver.validateConfig = function (formData, jqForm, options) {}
+midas.dicomserver.validateConfig = function (formData, jqForm, options) {};
 
 midas.dicomserver.successConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
     try {
         var jsonResponse = jQuery.parseJSON(responseText);
     }
@@ -192,9 +193,10 @@ midas.dicomserver.successConfig = function (responseText, statusText, xhr, form)
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     $("div#receptiondir").qtip({
         content: 'The file-system location of the DICOM server work directory. (required)',
         show: 'mouseover',

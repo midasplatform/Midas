@@ -3,6 +3,7 @@
 var selectedJob = false;
 
 $(document).ready(function () {
+    'use strict';
     colorLines();
     $('.midasTree tr').click(function () {
         selectedJob = $(this).attr('element');
@@ -12,6 +13,7 @@ $(document).ready(function () {
 });
 
 function createActionMenu(obj) {
+    'use strict';
     $('.viewAction').show();
     $('#viewJob').click(function () {
         window.location.replace(json.global.webroot + '/remoteprocessing/job/view/?jobId=' + selectedJob);
@@ -19,6 +21,7 @@ function createActionMenu(obj) {
 }
 
 function colorLines(checkHidden) {
+    'use strict';
     var grey = false;
     $('.midasTree tr').each(function (index) {
         $(this).css("border", "none");

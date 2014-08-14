@@ -3,9 +3,10 @@
 var midas = midas || {};
 midas.dicom = midas.dicom || {};
 
-midas.dicom.validateConfig = function (formData, jqForm, options) {}
+midas.dicom.validateConfig = function (formData, jqForm, options) {};
 
 midas.dicom.successConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
     try {
         var jsonResponse = jQuery.parseJSON(responseText);
     }
@@ -23,9 +24,10 @@ midas.dicom.successConfig = function (responseText, statusText, xhr, form) {
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     $('#configForm').ajaxForm({
         beforeSubmit: midas.dicom.validateConfig,
         success: midas.dicom.successConfig

@@ -3,9 +3,10 @@
 var midas = midas || {};
 midas.visualize = midas.visualize || {};
 
-midas.visualize.validateConfig = function (formData, jqForm, options) {}
+midas.visualize.validateConfig = function (formData, jqForm, options) {};
 
 midas.visualize.successConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
     try {
         var jsonResponse = jQuery.parseJSON(responseText);
     }
@@ -23,9 +24,10 @@ midas.visualize.successConfig = function (responseText, statusText, xhr, form) {
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     $('#customtmp').qtip({
         content: 'Temp directory for the module to use. If you leave this empty, it will use the Midas temporary directory.'
     });

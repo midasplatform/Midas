@@ -7,6 +7,7 @@ midas.user = midas.user || {};
  * Displays the create new user
  */
 midas.user.doCreate = function () {
+    'use strict';
     var content = $('#registerFormTemplate').clone();
     content.find('form.registerForm').attr('id', 'registerForm');
     content.find('div.registerError').attr('id', 'registerError');
@@ -68,9 +69,10 @@ midas.user.doCreate = function () {
             }
         }
     });
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     $('.userBlock').click(function () {
         $(location).attr('href', ($('> .userTitle', this).attr('href')));
     });

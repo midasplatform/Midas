@@ -1,7 +1,7 @@
-/**
- * Midas tree table object
- */
+// MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 (function($) {
+    'use strict';
     var defaultPaddingLeft;
 
     $.fn.treeTable = function(opts) {

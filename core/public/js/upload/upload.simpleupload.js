@@ -6,6 +6,7 @@ midas.upload.simpleupload = {};
 
 // We use shockwave flash uploader for IE (no multi-file upload support)
 midas.upload.simpleupload.initSwfupload = function () {
+    'use strict';
     // Callback hook for the flash uploader
     midas.upload.simpleupload.uploadPreStart = function (file) {
         midas.upload.simpleupload.swfu.setPostParams({
@@ -69,12 +70,13 @@ midas.upload.simpleupload.initSwfupload = function () {
         }
         midas.upload.simpleupload.swfu.startUpload();
     });
-}
+};
 
 $('img#uploadAFile').show();
 $('img#uploadAFileLoading').hide();
 
 midas.upload.simpleupload.initHtml5FileUpload = function () {
+    'use strict';
     $('.progress-current').progressbar({
         value: 0
     });

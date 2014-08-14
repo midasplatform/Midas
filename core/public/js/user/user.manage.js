@@ -3,7 +3,7 @@
 var midas = midas || {};
 
 $(document).ready(function () {
-
+    'use strict';
     // init tree
     $('img.tabsLoading').hide();
 
@@ -31,6 +31,7 @@ $(document).ready(function () {
 var ajaxSelectRequest = '';
 
 function callbackSelect(node) {
+    'use strict';
     $('div.genericAction').hide();
     $('div.genericCommunities').hide();
     $('div.genericStats').hide();
@@ -48,14 +49,17 @@ function callbackSelect(node) {
 function callbackDblClick(node) {}
 
 function callbackCheckboxes(node) {
+    'use strict';
     midas.genericCallbackCheckboxes(node);
 }
 
 function callbackCreateElement(node) {
+    'use strict';
     initDragAndDrop();
 }
 
 function initDragAndDrop() {
+    'use strict';
     $("#browseTable .file, #browseTable .filePublic, #browseTable .filePrivate," +
         "#browseTable .folderPublic:not(.notdraggable), #browseTable .folderPrivate:not(.notdraggable)").draggable({
         helper: "clone",
@@ -154,5 +158,4 @@ function initDragAndDrop() {
         });
 
     });
-
 }

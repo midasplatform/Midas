@@ -13,6 +13,7 @@ midas.solr.PAGE_LIMIT = 10;
  * Renders the item result list and counters in the DOM, as well as the counters and prev/next buttons if needed
  */
 midas.solr.displayResults = function (items) {
+    'use strict';
     for (var idx in items) {
         var item = items[idx];
         var result = $('#itemResultTemplate').clone().show().removeAttr('id');
@@ -27,6 +28,7 @@ midas.solr.displayResults = function (items) {
  * Fetch a page of search results based on the current shared variable state
  */
 midas.solr.fetchPage = function () {
+    'use strict';
     $('.nextPageSearch').hide();
     $('#resultsArea').html('');
     $('img.resultsLoading').show();
@@ -62,6 +64,7 @@ midas.solr.fetchPage = function () {
 };
 
 midas.solr.fetchTypes = function () {
+    'use strict';
     ajaxWebApi.ajax({
         method: 'midas.metadata.types.list',
         success: function (retVal) {
@@ -86,6 +89,7 @@ midas.solr.fetchTypes = function () {
 };
 
 midas.solr.fetchElements = function (type) {
+    'use strict';
     if (type === 'type') {
         $('#elementCombo').empty()
             .append($('<option></option>').attr("value", "element").text("Element"));
@@ -120,6 +124,7 @@ midas.solr.fetchElements = function (type) {
 };
 
 midas.solr.fetchQualifiers = function (type, element) {
+    'use strict';
     if (type === 'type' || element === 'element') {
         $('#elementCombo').empty()
             .append($('<option></option>').attr("value", "element").text("Element"));
@@ -151,6 +156,7 @@ midas.solr.fetchQualifiers = function (type, element) {
 };
 
 $(document).ready(function () {
+    'use strict';
     $('#advancedQueryField').autogrow();
     $('#advancedQueryField').focus();
 

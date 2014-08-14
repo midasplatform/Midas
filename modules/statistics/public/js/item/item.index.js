@@ -8,18 +8,20 @@ midas.statistics.mapMarkers = [];
  * Remove all current markers from the map
  */
 midas.statistics.clearMap = function () {
+    'use strict';
     if (midas.statistics.mapMarkers) {
         for (var i = 0; i < midas.statistics.mapMarkers.length; i++) {
             midas.statistics.mapMarkers[i].setMap(null);
         }
         midas.statistics.mapMarkers = [];
     }
-}
+};
 
 /**
  * Parses the response from itemstatistics and populates the map with markers
  */
 midas.statistics.populateMap = function (responseText, statusText, xhr, form) {
+    'use strict';
     try {
         var response = jQuery.parseJSON(responseText);
         midas.statistics.clearMap();
@@ -54,9 +56,10 @@ midas.statistics.populateMap = function (responseText, statusText, xhr, form) {
         $('input.filterButton').removeAttr('disabled');
         $('img#loadingStatistics').hide();
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     var tabs = $("#tabsGeneric").tabs({
         select: function (event, ui) {}
     });

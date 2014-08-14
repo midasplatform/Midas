@@ -32,6 +32,7 @@ $('#deleteScalar').click(function () {
 });
 
 $(document).ready(function () {
+    'use strict';
     $.fn.qtip.zindex = 16000; // must show qtips on top of the dialog
     $.each($('a.resultItemLink'), function (idx, link) {
         if ($(link).attr('thumbnail')) {

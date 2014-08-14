@@ -3,11 +3,10 @@
 var midas = midas || {};
 midas.mfa = midas.mfa || {};
 
-midas.mfa.validateSubmit = function (formData, jqForm, options) {
-
-};
+midas.mfa.validateSubmit = function (formData, jqForm, options) {};
 
 midas.mfa.successSubmit = function (responseText, statusText, xhr, form) {
+    'use strict';
     try {
         var jsonResponse = jQuery.parseJSON(responseText);
     }
@@ -24,6 +23,7 @@ midas.mfa.successSubmit = function (responseText, statusText, xhr, form) {
 };
 
 $(document).ready(function () {
+    'use strict';
     $('#mfaLoginForm').ajaxForm({
         beforeSubmit: midas.mfa.validateSubmit,
         success: midas.mfa.successSubmit

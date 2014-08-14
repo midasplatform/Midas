@@ -1,6 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 $(document).ready(function () {
+    'use strict';
     var id = $("input#serversidefilechooser-id").val();
     var errorMessage = $("input#serversidefilechooser-errorMessage").val();
     var destSelector = $("input#serversidefilechooser-destSelector").val();

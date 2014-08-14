@@ -4,6 +4,7 @@ var midas = midas || {};
 midas.admin = midas.admin || {};
 
 midas.admin.initModulesConfigLinks = function () {
+    'use strict';
     $('input.moduleCheckbox').each(function () {
         if ($(this).is(':checked')) {
             $(this).parents('tr').find('td.configLink').show();
@@ -12,10 +13,11 @@ midas.admin.initModulesConfigLinks = function () {
             $(this).parents('tr').find('td.configLink').hide();
         }
     });
-}
+};
 
 /** On assetstore add response */
 midas.admin.assetstoreAddCallback = function (responseText, statusText, xhr, $form) {
+    'use strict';
     $(".assetstoreLoading").hide();
     if (responseText.error) {
         $(".addAssetstoreFormError").html('Error: ' + responseText.error).show();
@@ -33,6 +35,7 @@ midas.admin.assetstoreAddCallback = function (responseText, statusText, xhr, $fo
 
 /** On assetstore add submit */
 midas.admin.assetstoreSubmit = function (formData, jqForm, options) {
+    'use strict';
     // Add the type is the one in the main page (because it's hidden in the assetstore add page)
     var assetstoretype = new Object();
     assetstoretype.name = 'type';
@@ -44,6 +47,7 @@ midas.admin.assetstoreSubmit = function (formData, jqForm, options) {
 
 /** When the cancel is clicked in the new assetstore window */
 midas.admin.newAssetstoreShow = function () {
+    'use strict';
     var assetstoretype = $('select#importassetstoretype option:selected').val();
     $('#assetstoretype').find('option:selected').removeAttr("selected");
     $('#assetstoretype').find('option[value=' + assetstoretype + ']').attr("selected", "selected");
@@ -51,12 +55,14 @@ midas.admin.newAssetstoreShow = function () {
 
 /** When the cancel is clicked in the new assetstore window */
 midas.admin.newAssetstoreHide = function () {
+    'use strict';
     $(document).trigger('hideCluetip');
 } // end function newAssetstoreHide
 
-midas.admin.validateConfig = function (formData, jqForm, options) {}
+midas.admin.validateConfig = function (formData, jqForm, options) {};
 
 midas.admin.successConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
     try {
         var jsonResponse = jQuery.parseJSON(responseText);
     }
@@ -74,9 +80,10 @@ midas.admin.successConfig = function (responseText, statusText, xhr, form) {
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     midas.admin.tabs = $("#tabsGeneric").tabs({});
     $("#tabsGeneric").show();
     $('img.tabsLoading').hide()

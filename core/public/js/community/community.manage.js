@@ -5,6 +5,7 @@ midas.community = midas.community || {};
 midas.community.manage = {};
 
 midas.community.manage.init = function () {
+    'use strict';
     var mainDialogContentDiv = $('div.MainDialogContent');
     var createGroupFromDiv = $('div#createGroupFrom');
 
@@ -56,6 +57,7 @@ midas.community.manage.init = function () {
 midas.ajaxSelectRequest = '';
 
 function callbackSelect(node) {
+    'use strict';
     $('div.genericAction').show();
     $('div.genericCommunities').hide();
     $('div.genericStats').hide();
@@ -67,10 +69,12 @@ function callbackSelect(node) {
 function callbackDblClick(node) {}
 
 function callbackCheckboxes(node) {
+    'use strict';
     midas.genericCallbackCheckboxes(node);
 }
 
 function callbackCreateElement(node) {
+    'use strict';
     midas.community.manage.initDragAndDrop();
 }
 
@@ -118,6 +122,7 @@ $('a.deleteGroupLink').click(function () {
 });
 
 midas.community.manage.initDragAndDrop = function () {
+    'use strict';
     $("#browseTable .file, #browseTable .filePublic, #browseTable .filePrivate," +
         "#browseTable .folderPublic:not(.notdraggable), #browseTable .folderPrivate:not(.notdraggable)").draggable({
         helper: "clone",
@@ -189,17 +194,19 @@ midas.community.manage.initDragAndDrop = function () {
             }
         });
     });
-}
+};
 
 midas.community.manage.validateGroupChange = function (formData, jqForm, options) {
+    'use strict';
     var form = jqForm[0];
     if (form.name.value.length < 1) {
         midas.createNotice(json.community.message.infoErrorName, 4000);
         return false;
     }
-}
+};
 
 midas.community.manage.successGroupChange = function (responseText, statusText, xhr, form) {
+    'use strict';
     $("div.MainDialog").dialog("close");
     var jsonResponse = jQuery.parseJSON(responseText);
     if (jsonResponse == null) {
@@ -220,17 +227,19 @@ midas.community.manage.successGroupChange = function (responseText, statusText, 
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 midas.community.manage.validateInfoChange = function (formData, jqForm, options) {
+    'use strict';
     var form = jqForm[0];
     if (form.name.value.length < 1) {
         midas.createNotice(json.community.message.infoErrorName, 4000, 'error');
         return false;
     }
-}
+};
 
 midas.community.manage.successInfoChange = function (responseText, statusText, xhr, form) {
+    'use strict';
     var jsonResponse = jQuery.parseJSON(responseText);
     if (jsonResponse == null) {
         midas.createNotice('Error', 4000, 'error');
@@ -243,9 +252,10 @@ midas.community.manage.successInfoChange = function (responseText, statusText, x
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 midas.community.manage.successPrivacyChange = function (responseText, statusText, xhr, form) {
+    'use strict';
     var jsonResponse = jQuery.parseJSON(responseText);
     if (jsonResponse == null) {
         midas.createNotice('Error', 4000, 'error');
@@ -257,17 +267,19 @@ midas.community.manage.successPrivacyChange = function (responseText, statusText
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 midas.community.manage.promoteMember = function (userId) {
+    'use strict';
     midas.loadDialog('promoteId' + userId + '.' +
         json.community.community_id +
         new Date().getTime(),
         '/community/promotedialog?user=' + userId + '&community=' + json.community.community_id);
     midas.showDialog('Add user to groups', false);
-}
+};
 
 midas.community.manage.removeFromGroup = function (userId, groupId) {
+    'use strict';
     $.post(json.global.webroot + '/community/removeuserfromgroup', {
             groupId: groupId,
             userId: userId
@@ -286,10 +298,11 @@ midas.community.manage.removeFromGroup = function (userId, groupId) {
             }
         }
     );
-}
+};
 
 /** Used to remove a user from the members group, and thus all other groups */
 midas.community.manage.removeMember = function (userId, groupId) {
+    'use strict';
     var html = '';
     html += 'Are you sure you want to remove the user from this community? They will be removed from all groups.';
     html += '<br/>';
@@ -307,9 +320,10 @@ midas.community.manage.removeMember = function (userId, groupId) {
     $('input.removeUserNo').unbind('click').click(function () {
         $('div.MainDialog').dialog('close');
     });
-}
+};
 
 midas.community.manage.initCommunityPrivacy = function () {
+    'use strict';
     var inputCanJoin = $('input[name=canJoin]');
     var inputPrivacy = $('input[name=privacy]');
     var canJoinDiv = $('div#canJoinDiv');
@@ -327,9 +341,10 @@ midas.community.manage.initCommunityPrivacy = function () {
     inputPrivacy.change(function () {
         midas.community.manage.initCommunityPrivacy();
     });
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     midas.community.manage.initCommunityPrivacy();
 
     $("#tabsGeneric").tabs({

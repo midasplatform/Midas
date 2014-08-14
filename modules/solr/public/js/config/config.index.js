@@ -6,6 +6,7 @@ midas.solr = midas.solr || {};
 midas.solr.validateConfig = function (formData, jqForm, options) {};
 
 midas.solr.successConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
     try {
         var jsonResponse = $.parseJSON(responseText);
     }
@@ -24,9 +25,10 @@ midas.solr.successConfig = function (responseText, statusText, xhr, form) {
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');
     }
-}
+};
 
 $(document).ready(function () {
+    'use strict';
     $('#configForm').ajaxForm({
         beforeSubmit: midas.solr.validateConfig,
         success: midas.solr.successConfig

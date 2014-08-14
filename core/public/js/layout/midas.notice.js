@@ -9,6 +9,7 @@ var midas = midas || {};
  * @param state (optional) Set to either "error" or "warning" to display special state
  */
 midas.createNotice = function (text, delay, state) {
+    'use strict';
     var extraClasses = '';
     if (state == 'error') {
         extraClasses += ' growlError';
@@ -20,17 +21,19 @@ midas.createNotice = function (text, delay, state) {
         extraClasses += ' growlOk';
     }
     midas.createGrowl(false, text, delay, extraClasses);
-}
+};
 
 /**
  * @deprecated use midas.createNotice
  */
 function createNotice(text, delay, state) {
+    'use strict';
     console.log('WARNING: createNotice is deprecated, use midas.createNotice instead');
     midas.createNotice(text, delay, state);
 }
 
 midas.createGrowl = function (persistent, text, delay, extraClasses) {
+    'use strict';
     // Use the last visible jGrowl qtip as our positioning target
     var target = $('.qtip.jgrowl:visible:last');
 
@@ -88,6 +91,7 @@ midas.createGrowl = function (persistent, text, delay, extraClasses) {
 
 // Make it a window property see we can call it outside via updateGrowls() at any point
 midas.updateGrowls = function () {
+    'use strict';
     // Loop over each jGrowl qTip
     var each = $('.qtip.jgrowl:not(:animated)');
     each.each(function (i) {
@@ -100,6 +104,7 @@ midas.updateGrowls = function () {
 };
 
 function timerGrowl(event, delay) {
+    'use strict';
     var api = $(this).data('qtip');
 
     // If persistent is set to true, don't do anything.
