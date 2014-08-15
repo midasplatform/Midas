@@ -77,14 +77,14 @@ class phMagick_transform{
      * @return unknown_type
      */
     function reflection(phmagick $p, $size = 60, $transparency = 50){
-    	$p->requirePlugin('info');
+        $p->requirePlugin('info');
 
-    	$source = $p->getSource();
+        $source = $p->getSource();
 
-    	//invert image
-    	$this->flipVertical($p);
+        //invert image
+        $this->flipVertical($p);
 
-    	//crop it to $size%
+        //crop it to $size%
         list($w, $h) = $p->getInfo($p->getDestination());
         $p->crop($w, $h * ($size/100),0,0,phMagickGravity::None);
 
@@ -129,8 +129,4 @@ class phMagick_transform{
         $p->setHistory($p->getDestination());
         return  $p ;
     }
-
-
-
 }
-?>

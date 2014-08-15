@@ -30,15 +30,14 @@
 
 
 class phMagick_cli{
-	function cmd(phmagick $p, $string){
-		/*var list
-		  %width
-		  %height
-		  %source
-		  %destination
-		  %tmp
-		 */
+    function cmd(phmagick $p, $string){
+        /*var list
+          %width
+          %height
+          %source
+          %destination
+          %tmp
+         */
 
-	}
+    }
 }
-?>

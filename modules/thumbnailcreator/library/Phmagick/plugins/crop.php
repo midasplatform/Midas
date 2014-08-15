@@ -53,4 +53,3 @@ class phMagick_crop{
         return  $p ;
     }
 }
-?>

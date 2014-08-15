@@ -29,8 +29,8 @@
  */
 class phMagick_convert{
 
-	function convert(phmagick $p){
-		$cmd = $p->getBinary('convert');
+    function convert(phmagick $p){
+        $cmd = $p->getBinary('convert');
         $cmd .= ' -quality ' . $p->getImageQuality();
         $cmd .= ' "' . $p->getSource() .'"  "'. $p->getDestination().'"';
 
@@ -38,10 +38,9 @@ class phMagick_convert{
         $p->setSource($p->getDestination());
         $p->setHistory($p->getDestination());
         return  $p ;
-	}
+    }
 
-	function save(phmagick $p){
-		return $p->convert($p);
-	}
+    function save(phmagick $p){
+        return $p->convert($p);
+    }
 }
-?>

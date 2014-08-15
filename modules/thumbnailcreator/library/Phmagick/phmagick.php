@@ -1,5 +1,4 @@
 <?php
-
 /*
     +--------------------------------------------------------------------------------------------+
     |   DISCLAIMER - LEGAL NOTICE -                                                              |
@@ -61,14 +60,7 @@ class phmagick{
         return $this->log;
     }
     public function getBinary($binName){
-        if($this->getImageMagickPath() == "")
-          {
-          return $this->getImageMagickPath()  . $binName ;
-          }
-        else
-          {
-          return '"'.$this->getImageMagickPath()  . $binName .'"';
-          }
+        return $this->getImageMagickPath()  . $binName ;
     }
 
     //-----------------
@@ -103,7 +95,7 @@ class phmagick{
         if($path != '')
             if ( strpos($path, '/') < strlen($path))
                 $path .= '/';
-        $this->imageMagickPath = $path ;
+        $this->imageMagickPath = str_replace(' ','\ ',$path) ;
     }
 
      function getImageMagickPath (){
@@ -274,6 +266,11 @@ class phMagickTextObject {
     protected $fontSize;
     protected $font;
 
+    //If font size isn't specified
+    //it may be specified by the width / height
+    protected $width;
+    protected $height;
+
     protected $color;
     protected $background;
 
@@ -308,7 +305,15 @@ class phMagickTextObject {
         phMagickTextObjectDefaults::$gravity = $value;
     }
 
+    function width($w) {
+        $this->width = $w;
+        return $this;
+    }
 
+    function height($h) {
+        $this->height = $h;
+        return $this;
+    }
 
     function fontSize($i){
         $this->fontSize = $i ;
@@ -344,5 +349,3 @@ class phMagickTextObject {
         return $this ;
     }
 }
-
-?>
