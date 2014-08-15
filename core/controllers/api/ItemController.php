@@ -32,7 +32,7 @@ class Rest_ItemController extends ApiController
     $apiFunctions = array(
       'default' => 'itemExists',
       'exists' => 'itemExists',
-      'search' => 'itemSearchbyname'
+      'search' => 'itemSearch'
       );
     $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'index', $apiFunctions);
     }

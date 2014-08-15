@@ -279,20 +279,29 @@ class ApiitemComponent extends AppComponent
     }
 
   /**
-   * Return all items
+   * Return all items given a name and (optionally) a parent folder name
    * @path /item/search
    * @http GET
    * @param name The name of the item to search by
-   * @return A list of all items with the given name
+   * @param folderName (Optional) The name of the parent folder to search by
+   * @return A list of all items with the given name and parent folder name
    */
-  function itemSearchbyname($args)
+  function itemSearch($args)
     {
     $apihelperComponent = MidasLoader::loadComponent('Apihelper');
     $apihelperComponent->validateParams($args, array('name'));
     $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
     $userDao = $apihelperComponent->getUser($args);
     $itemModel = MidasLoader::loadModel('Item');
-    $items = $itemModel->getByName($args['name']);
+
+    if(array_key_exists('folderName', $args))
+      {
+      $items = $itemModel->getByNameAndFolderName($args['name'], $args['folderName']);
+      }
+    else
+      {
+      $items = $itemModel->getByName($args['name']);
+      }
 
     $matchList = array();
     foreach($items as $item)
