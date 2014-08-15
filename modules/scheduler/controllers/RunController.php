@@ -25,14 +25,6 @@ class Scheduler_RunController extends Scheduler_AppController
   public $_moduleModels = array('Job', 'JobLog');
   public $_components = array('Json');
 
-  /**
-   * @method initAction()
-   *  Index Action (first action when we access the application)
-   */
-  function init()
-    {
-    } // end method indexAction
-
   /** Index action */
   function indexAction()
     {
