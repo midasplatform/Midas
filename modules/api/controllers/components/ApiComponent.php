@@ -812,7 +812,19 @@ class Api_ApiComponent extends AppComponent
    */
   function itemSearchbyname($args)
     {
-    return $this->_callCoreApiMethod($args, 'itemSearchbyname', 'item');
+    return $this->_callCoreApiMethod($args, 'itemSearch', 'item');
+    }
+
+  /**
+   * Return all items with a given name and parent folder name
+   * @param token (Optional) Authentication token
+   * @param name The name of the item to search by
+   * @param folderName The name of the parent folder to search by
+   * @return A list of all items with the given name and parent folder name
+   */
+  function itemSearchbynameandfoldername($args)
+    {
+    return $this->_callCoreApiMethod($args, 'itemSearch', 'item');
     }
 
   /**

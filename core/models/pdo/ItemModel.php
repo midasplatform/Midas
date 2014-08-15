@@ -136,6 +136,22 @@ class ItemModel extends ItemModelBase
     return $daos;
     }
 
+  /** Get all items with the given name and parent folder name */
+  function getByNameAndFolderName($name, $folderName)
+    {
+    $select = $this->database->select()->from('item')
+                                       ->join('item2folder', 'item.item_id = item2folder.item_id', array())
+                                       ->join('folder', 'item2folder.folder_id = folder.folder_id', array())
+                                       ->where('item.name = ?', $name)
+                                       ->where('folder.name = ?', $folderName);
+    $rowset = $this->database->fetchAll($select);
+    foreach($rowset as $row)
+      {
+      $daos[] = $this->initDao(ucfirst($this->_name), $row);
+      }
+    return $daos;
+    }
+
   /**
    * Check whether an item exists with the given name in the given folder.
    * If it does, returns the existing item dao. Otherwise returns false.
