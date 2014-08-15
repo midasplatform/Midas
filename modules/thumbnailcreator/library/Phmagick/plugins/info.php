@@ -1,5 +1,4 @@
 <?php
-
 /*
     +--------------------------------------------------------------------------------------------+
     |   DISCLAIMER - LEGAL NOTICE -                                                              |
@@ -29,32 +28,31 @@
  * @since      2008-03-13
  */
 class phMagick_info{
-	function getInfo(phmagick $p, $file=''){
-		if ($file == '') $file = $p->getSource();
-		return getimagesize  ($file);
-	}
+    function getInfo(phmagick $p, $file=''){
+        if ($file == '') $file = $p->getSource();
+        return getimagesize  ($file);
+    }
 
-	function getWidth(phmagick $p, $file=''){
-		list($width, $height, $type, $attr) = $this->getInfo($p, $file);
-		return $width;
-	}
+    function getWidth(phmagick $p, $file=''){
+        list($width, $height, $type, $attr) = $this->getInfo($p, $file);
+        return $width;
+    }
 
-	function getHeight(phmagick $p, $file=''){
-	   list($width, $height, $type, $attr)	 = $this->getInfo($p, $file);
-	   return $height;
-	}
+    function getHeight(phmagick $p, $file=''){
+       list($width, $height, $type, $attr)     = $this->getInfo($p, $file);
+       return $height;
+    }
 
 
-	function getBits(phmagick $p, $file=''){
-	   if ($file == '') $file = $p->getSource();
-	   $info =  getimagesize  ($file);
-	   return $info["bits"];
-	}
+    function getBits(phmagick $p, $file=''){
+       if ($file == '') $file = $p->getSource();
+       $info =  getimagesize  ($file);
+       return $info["bits"];
+    }
 
-	function getMime(phmagick $p, $file=''){
-		if ($file == '') $file = $p->getSource();
+    function getMime(phmagick $p, $file=''){
+        if ($file == '') $file = $p->getSource();
        $info =  getimagesize  ($file);
        return $info["mime"];
-	}
+    }
 }
-?>

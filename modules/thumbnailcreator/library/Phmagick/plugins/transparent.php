@@ -17,27 +17,43 @@
 
 */
 /**
- * phMagick - execute direct calls to image magick binaries
+ * phMagick - background functions
  *
  * @package    phMagick
  * @version    0.1.0
- * @author     Nuno Costa - sven@francodacosta.com
- * @copyright  Copyright (c) 2007
+ * @author     Dustin Thomson - dthomson@51systems.com
+ * @copyright  Copyright (c) 2013
  * @license    http://www.francodacosta.com/phmagick/license/
  * @link       http://www.francodacosta.com/phmagick
- * @since      2008-03-13
+ * @since      2013-09-18
  */
+class phMagick_transparent {
 
+    /**
+     * Makes the specified colour transparent in the image.
+     * Ensure the output format is appropriate for transparency.
+     *
+     * @param phmagick $p
+     * @param int $fuzz A percentage representing the tolerance of matching colours that aren't exactly the same
+     * @param string $colour The colour to make transparent
+     * @return \phmagick
+     */
+    function transparentPaintImage(phmagick $p, $fuzz = null, $colour = 'white')
+    {
+        $cmd  = $p->getBinary('convert');
+        $cmd .= ' ' . $p->getSource() ;
 
-class phMagick_cli{
-    function cmd(phmagick $p, $string){
-        /*var list
-          %width
-          %height
-          %source
-          %destination
-          %tmp
-         */
+        if ($fuzz != null)
+            $cmd .= ' -fuzz ' . (int)$fuzz . '%';
 
+        $cmd .= ' -transparent ' . $colour;
+
+        $cmd .= ' ' . $p->getDestination() ;
+
+        $p->execute($cmd);
+        $p->setSource($p->getDestination());
+        $p->setHistory($p->getDestination());
+
+        return $p;
     }
 }

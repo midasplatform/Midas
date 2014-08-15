@@ -56,23 +56,23 @@ class phMagick_resize{
      * @param $height
      */
     function resizeExactly(phmagick $p , $width, $height){
-    	//requires Crop plugin
-    	//requires dimensions plugin
+        //requires Crop plugin
+        //requires dimensions plugin
 
-    	$p->requirePlugin('crop');
-    	$p->requirePlugin('info');
+        $p->requirePlugin('crop');
+        $p->requirePlugin('info');
 
-    	list($w,$h) = $p->getInfo($p->getSource());
+        list($w,$h) = $p->getInfo($p->getSource());
 
-    	if($w > $h){
-		    $h = $height;
-		    $w = 0;
-		}else{
-		    $h = 0;
-		    $w = $width;
-		}
+        if($w > $h){
+            $h = $height;
+            $w = 0;
+        }else{
+            $h = 0;
+            $w = $width;
+        }
 
-		$p->resize($w, $h)->crop($width, $height);
+        $p->resize($w, $h)->crop($width, $height);
 
     }
 
@@ -112,4 +112,3 @@ class phMagick_resize{
 
     }
 }
-?>

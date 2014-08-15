@@ -49,8 +49,8 @@ class phmagick_decorations{
 
     function dropShadow(phmagick $p,$color = '#000', $offset = 4, $transparency = 60, $top = 4, $left=4){
 
-    	$top = $top > 0 ? '+' . $top : $top;
-    	$left = $left > 0 ? '+' . $left : $left;
+        $top = $top > 0 ? '+' . $top : $top;
+        $left = $left > 0 ? '+' . $left : $left;
 
         $cmd = $p->getBinary('convert');
         $cmd .= ' -page '.$top.$left.' "' . $p->getSource().'"'  ;
@@ -66,13 +66,13 @@ class phmagick_decorations{
 
     function glow(phmagick $p, $color='#827f00',$offset = 10, $transparency=60){
 
-    	$p->requirePlugin('info');
-    	list ($w, $h) = $p->getInfo($p->getSource());
+        $p->requirePlugin('info');
+        list ($w, $h) = $p->getInfo($p->getSource());
 
 
-    	$cmd  = $p->getBinary('convert');
+        $cmd  = $p->getBinary('convert');
 
-    	$cmd .= ' "' . $p->getSource() .'" ' ;
+        $cmd .= ' "' . $p->getSource() .'" ' ;
         $cmd .= '( +clone  -background "'.$color.'"  -shadow '.$transparency.'x'.$offset.'-'.($offset/4).'+'.($offset/4).' ) +swap -background none   -layers merge  +repage  ';
 
         $cmd .= ' "' . $p->getDestination().'"'  ;
@@ -168,6 +168,4 @@ class phmagick_decorations{
         $p->setHistory($p->getDestination());
         return  $p ;
     }
-
 }
-?>

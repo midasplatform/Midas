@@ -1,5 +1,4 @@
 <?php
-
 /*
     +--------------------------------------------------------------------------------------------+
     |   DISCLAIMER - LEGAL NOTICE -                                                              |
@@ -29,7 +28,7 @@
  * @since      2008-03-13
  */
 class phMagick_color {
-	   function darken(phmagick $p ,$alphaValue = 50){
+       function darken(phmagick $p ,$alphaValue = 50){
         $percent = 100 - (int) $alphaValue;
 
         //get original file dimentions
@@ -78,32 +77,20 @@ class phMagick_color {
     }
 
     /**
-     * Convert's the image to grayscale
+     * Converts the image to grayscale
      */
-//    function toGrayScale(phmagick $p){
-//        $cmd  = $p->getBinary('convert');
-//        $cmd .= ' "' . $p->getSource() .'"';
-//        $cmd .= ' -colorspace Gray  ';
-//        $cmd .= ' "' . $p->getDestination().'"' ;
-//
-//        $p->execute($cmd);
-//        $p->setSource($p->getDestination());
-//        $p->setHistory($p->getDestination());
-//        return  $p ;
-//    }
+    function toGreyScale(phmagick $p, $enhance=2){
+        $cmd   = $p->getBinary('convert');
+        $cmd .= ' -modulate 100,0 ' ;
+        $cmd .= ' -sigmoidal-contrast '.$enhance.'x50%' ;
+        $cmd .= ' -background "none" "' . $p->getSource().'"' ;
+        $cmd .= ' "' . $p->getDestination() .'"';
 
-	function toGreyScale(phmagick $p, $enhance=2){
-		$cmd   = $p->getBinary('convert');
-		$cmd .= ' -modulate 100,0 ' ;
-		$cmd .= ' -sigmoidal-contrast '.$enhance.'x50%' ;
-		$cmd .= ' -background "none" "' . $p->getSource().'"' ;
-		$cmd .= ' "' . $p->getDestination() .'"';
-
-		$p->execute($cmd);
-		$p->setSource($p->getDestination());
-		$p->setHistory($p->getDestination());
-		return  $p ;
-	}
+        $p->execute($cmd);
+        $p->setSource($p->getDestination());
+        $p->setHistory($p->getDestination());
+        return  $p ;
+    }
 
     /**
      * Inverts the image colors
@@ -121,29 +108,27 @@ class phMagick_color {
     }
 
     function sepia(phmagick $p, $tone = 90){
-		$cmd   = $p->getBinary('convert');
-		$cmd .= ' -sepia-tone '. $tone .'% ' ;
-		$cmd .= ' -modulate 100,50 ' ;
-		$cmd .= ' -normalize ' ;
-		$cmd .= ' -background "none" "' . $p->getSource() .'"' ;
-		$cmd .= ' "' . $p->getDestination().'"' ;
-	     $p->execute($cmd);
-	     $p->setSource($p->getDestination());
-	     $p->setHistory($p->getDestination());
-	    return  $p ;
+        $cmd   = $p->getBinary('convert');
+        $cmd .= ' -sepia-tone '. $tone .'% ' ;
+        $cmd .= ' -modulate 100,50 ' ;
+        $cmd .= ' -normalize ' ;
+        $cmd .= ' -background "none" "' . $p->getSource() .'"' ;
+        $cmd .= ' "' . $p->getDestination().'"' ;
+         $p->execute($cmd);
+         $p->setSource($p->getDestination());
+         $p->setHistory($p->getDestination());
+        return  $p ;
     }
 
-	function autoLevels(phmagick $p){
-		$cmd  = $p->getBinary('convert');
-		$cmd .= ' -normalize ' ;
-		$cmd .= ' -background "none" "' . $p->getSource().'"'  ;
-		$cmd .= ' "' . $p->getDestination() .'"' ;
+    function autoLevels(phmagick $p){
+        $cmd  = $p->getBinary('convert');
+        $cmd .= ' -normalize ' ;
+        $cmd .= ' -background "none" "' . $p->getSource().'"'  ;
+        $cmd .= ' "' . $p->getDestination() .'"' ;
 
-		$p->execute($cmd);
-		$p->setSource($p->getDestination());
-		$p->setHistory($p->getDestination());
-		return  $p ;
-	}
-
+        $p->execute($cmd);
+        $p->setSource($p->getDestination());
+        $p->setHistory($p->getDestination());
+        return  $p ;
+    }
 }
-?>

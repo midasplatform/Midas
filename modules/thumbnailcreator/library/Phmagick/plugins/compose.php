@@ -90,4 +90,3 @@ class phMagick_compose{
         return  $p ;
     }
 }
-?>
