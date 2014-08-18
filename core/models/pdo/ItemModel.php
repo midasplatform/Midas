@@ -136,6 +136,22 @@ class ItemModel extends ItemModelBase
     return $daos;
     }
 
+  /** Get all items with the given name and parent folder id */
+  function getByNameAndFolderId($name, $folderId)
+    {
+    $select = $this->database->select()->from('item')
+      ->join('item2folder', 'item.item_id = item2folder.item_id', array())
+      ->where('item.name = ?', $name)
+      ->where('item2folder.folder_id = ?', $folderId);
+    $rowset = $this->database->fetchAll($select);
+    $daos = array();
+    foreach($rowset as $row)
+      {
+      $daos[] = $this->initDao(ucfirst($this->_name), $row);
+      }
+    return $daos;
+    }
+
   /** Get all items with the given name and parent folder name */
   function getByNameAndFolderName($name, $folderName)
     {
@@ -145,6 +161,7 @@ class ItemModel extends ItemModelBase
                                        ->where('item.name = ?', $name)
                                        ->where('folder.name = ?', $folderName);
     $rowset = $this->database->fetchAll($select);
+    $daos = array();
     foreach($rowset as $row)
       {
       $daos[] = $this->initDao(ucfirst($this->_name), $row);
