@@ -816,6 +816,18 @@ class Api_ApiComponent extends AppComponent
     }
 
   /**
+   * Return all items with a given name and parent folder id
+   * @param token (Optional) Authentication token
+   * @param name The name of the item to search by
+   * @param folderId The id of the parent folder to search by
+   * @return A list of all items with the given name and parent folder id
+   */
+  function itemSearchbynameandfolder($args)
+    {
+    return $this->_callCoreApiMethod($args, 'itemSearch', 'item');
+    }
+
+  /**
    * Return all items with a given name and parent folder name
    * @param token (Optional) Authentication token
    * @param name The name of the item to search by

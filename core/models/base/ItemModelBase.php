@@ -60,6 +60,7 @@ abstract class ItemModelBase extends AppModel
   abstract function getAll();
   abstract function getItemsFromSearch($searchterm, $userDao, $limit = 14, $group = true, $order = 'view');
   abstract function getByName($name);
+  abstract function getByNameAndFolderId($name, $folderId);
   abstract function getByNameAndFolderName($name, $folderName);
   abstract function iterateWithCallback($callback, $paramName = 'item', $otherParams = array());
   abstract function getTotalCount();

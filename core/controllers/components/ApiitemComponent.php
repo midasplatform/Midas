@@ -284,7 +284,8 @@ class ApiitemComponent extends AppComponent
    * @http GET
    * @param name The name of the item to search by
    * @param folderName (Optional) The name of the parent folder to search by
-   * @return A list of all items with the given name and parent folder name
+   * @param folderId (Optional) The id of the parent folder to search by
+   * @return A list of all items with the given name and parent folder name or id
    */
   function itemSearch($args)
     {
@@ -294,21 +295,45 @@ class ApiitemComponent extends AppComponent
     $userDao = $apihelperComponent->getUser($args);
     $itemModel = MidasLoader::loadModel('Item');
 
-    if(array_key_exists('folderName', $args))
+    if(array_key_exists('folderId', $args))
       {
-      $items = $itemModel->getByNameAndFolderName($args['name'], $args['folderName']);
+      $itemDaos = $itemModel->getByNameAndFolderId($args['name'], $args['folderId']);
+      }
+    else if(array_key_exists('folderName', $args))
+      {
+      $itemDaos = $itemModel->getByNameAndFolderName($args['name'], $args['folderName']);
       }
     else
       {
-      $items = $itemModel->getByName($args['name']);
+      $itemDaos = $itemModel->getByName($args['name']);
       }
 
+    $folderModel = MidasLoader::loadModel('Folder');
     $matchList = array();
-    foreach($items as $item)
+
+    foreach($itemDaos as $itemDao)
       {
-      if($itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
+      if($itemModel->policyCheck($itemDao, $userDao, MIDAS_POLICY_READ))
         {
-        $matchList[] = $item->toArray();
+        $itemArray = $itemDao->toArray();
+        $folderDaos = $itemDao->getFolders();
+        $folderId = -1;
+
+        foreach($folderDaos as $folderDao)
+          {
+          if($folderModel->policyCheck($folderDao, $userDao, MIDAS_POLICY_READ))
+            {
+            $folderId = $folderDao->getKey();
+            break;
+            }
+          }
+
+        if($folderId != -1)
+          {
+          $itemArray['folder_id'] = $folderId;
+          }
+
+        $matchList[] = $itemArray;
         }
       }
 
