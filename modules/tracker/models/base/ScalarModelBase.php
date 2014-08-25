@@ -56,6 +56,7 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
 
   abstract public function associateItem($scalar, $item, $label);
   abstract public function getAssociatedItems($scalar);
+  abstract public function getOtherScalarsFromSubmission($scalar);
   abstract public function getOtherValuesFromSubmission($scalar);
   abstract public function getByTrendAndTimestamp($trendId, $timestamp, $user = null);
   abstract public function getDistinctBranches();
