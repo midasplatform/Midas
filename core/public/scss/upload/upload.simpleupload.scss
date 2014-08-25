@@ -1,0 +1,217 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+#uploadTabs > div {
+    margin-left: 10px;
+}
+
+.cluetip-jtip #cluetip-inner {
+    width: 94% !important;
+}
+
+div.uploadValidationError {
+    display: none;
+    margin: 5px 0;
+    img {
+        position: relative;
+        top: 3px;
+    }
+}
+
+.hide {
+    display: none;
+}
+
+.progress-current {
+    margin-bottom: 13px;
+}
+
+.drop-zone {
+    background-color: #5CB85C;
+    border-radius: 5px;
+    border: 1px solid #4CAE4C;
+    color: #FFF;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    padding: 14px 20px;
+    &:hover {
+        background: #4CA84C linear-gradient(to bottom, #4CA84C 0%, #5CB85C 100%);
+        border: 1px solid #484;
+        cursor: pointer;
+    }
+}
+
+.start-upload {
+    background-color: #5C5CB8;
+    border-radius: 3px;
+    border: 1px solid #4C4CAE;
+    color: #FFF;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 13px;
+    margin: 0 0 8px;
+    padding: 5px 10px;
+}
+
+#startUploadLink:hover {
+    background: #4C4CA8 linear-gradient(to bottom, #4C4CA8 0%, #5C5CB8 100%);
+    border: 1px solid #448;
+}
+
+.disabled {
+    background: #DEDEDE none !important;
+    border: 1px solid #D0D0D0 !important;
+    color: #AAA;
+    cursor: default;
+}
+
+.upload-header {
+    color: #444;
+    font-weight: bold;
+    margin: 6px 0;
+}
+
+.upload-status-container {
+    background-color: #FAFAFA;
+    border-radius: 4px;
+    border: 1px solid #F0F0F0;
+    box-shadow: inset 0 0 3px 2px rgba(0, 0, 0, 0.02);
+    margin-bottom: 12px;
+    margin-right: 10px;
+    padding: 10px;
+}
+
+#swfuploadContent form {
+    margin: 0;
+    padding: 0;
+}
+
+.globalButton {
+    margin-top: 3px !important;
+}
+
+#swfuploadContent div {
+    &.fieldset {
+        border: 1px solid #AFE14C;
+        span.legend {
+            background-color: #FFF;
+            color: #73B304;
+            font: 700 14px Arial, Helvetica, sans-serif;
+            padding: 3px;
+            position: relative;
+            top: -30px;
+        }
+    }
+    &.flash {
+        border-color: #D9E4FF;
+        border-radius: 5px;
+        height: 90px;
+        margin: 10px 0;
+        overflow: auto;
+        width: 375px;
+    }
+}
+
+#swfuploadContentdiv#divStatus {
+    float: right;
+}
+
+#swfuploadContent {
+    button, input, select, textarea {
+        border-width: 1px;
+        margin-bottom: 10px;
+        padding: 2px 3px;
+    }
+    input[disabled] {
+        border: 1px solid #CCC;
+    }
+    label {
+        display: block;
+        margin-right: 5px;
+        text-align: right;
+        width: 150px;
+    }
+}
+
+#btnSubmit {
+    margin: 0 0 0 155px;
+}
+
+#swfuploadContent {
+    td {
+        font: 10pt Helvetica, Arial, sans-serif;
+        vertical-align: top;
+    }
+    .progressWrapper {
+        overflow: hidden;
+        width: 347px;
+    }
+    .progressContainer {
+        background-color: #F7F7F7;
+        border: solid 1px #E8E8E8;
+        margin: 0;
+        overflow: hidden;
+        padding: 0;
+    }
+    .message {
+        background-color: #FFC;
+        border: solid 1px #FD9;
+        margin: 1em 0;
+        overflow: hidden;
+        padding: 10px 20px;
+    }
+    .red {
+        background-color: #FFEBEB;
+        border: solid 1px #B50000;
+    }
+    .green {
+        background-color: #EBFFEB;
+        border: solid 1px #DDF0DD;
+    }
+    .blue {
+        background-color: #F0F5FF;
+        border: solid 1px #CEE2F2;
+    }
+    .progressName {
+        color: #555;
+        display: inline;
+        font-size: 8pt;
+        font-weight: 700;
+        height: 14px;
+        overflow: hidden;
+        text-align: left;
+        white-space: nowrap;
+        width: 323px;
+    }
+    .progressBarInProgress, .progressBarComplete, .progressBarError {
+        background-color: #00F;
+        font-size: 0;
+        height: 2px;
+        margin-top: 2px;
+        width: 0;
+    }
+    .progressBarComplete {
+        background-color: #008000;
+        visibility: hidden;
+        width: 100%;
+    }
+    .progressBarError {
+        background-color: #F00;
+        visibility: hidden;
+        width: 100%;
+    }
+    .progressBarStatus {
+        display: inline;
+        font-family: Arial, sans-serif;
+        font-size: 7pt;
+        margin-left: 5px;
+        margin-top: 2px;
+        text-align: left;
+        white-space: nowrap;
+        width: 100px;
+    }
+    .swfupload {
+        vertical-align: top;
+    }
+}

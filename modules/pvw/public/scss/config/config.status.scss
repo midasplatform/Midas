@@ -1,0 +1,27 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+table.instances {
+    border-collapse: collapse;
+    th {
+        background-color: #BDD;
+        border: 1px solid #D7D7D7;
+        padding: 3px;
+    }
+    td {
+        border: 1px solid #D7D7D7;
+        padding: 3px;
+    }
+}
+
+span {
+    &.running {
+        color: #008000;
+    }
+    &.dead {
+        color: #F00;
+    }
+}
+
+img.killInstance:hover {
+    cursor: pointer;
+}

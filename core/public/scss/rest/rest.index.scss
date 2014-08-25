@@ -1,0 +1,79 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+div.TopDynamicContent {
+    font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', Helvetica, Arial, sans-serif !important;
+    font-size: 13px !important;
+    text-align: left !important;
+}
+
+form#loginForm {
+    table {
+        border-collapse: separate !important;
+        border-color: #808080 !important;
+        border-spacing: 2px !important;
+        tbody tr td {
+            border-bottom: none !important;
+            border-collapse: separate !important;
+            border-color: #808080 !important;
+            border-spacing: 2px !important;
+            line-height: normal !important;
+            padding: 0 !important;
+        }
+    }
+    td {
+        display: table-cell !important;
+        vertical-align: inherit !important;
+    }
+}
+
+th {
+    display: table-cell !important;
+    vertical-align: inherit !important;
+}
+
+strong, b {
+    font-weight: bold;
+}
+
+div {
+    &.SideBar ul li {
+        border-bottom: #FFF 1px dotted !important;
+        color: #354856 !important;
+        cursor: pointer !important;
+        padding-top: 3px !important;
+    }
+    &.viewMain {
+        width: 820px !important;
+    }
+    &.footer {
+        display: none !important;
+    }
+}
+
+li.resource {
+    padding: 5px !important;
+}
+
+.swagger-ui-wrap {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: auto;
+}
+
+.icon-btn {
+    cursor: pointer;
+}
+
+#message-bar {
+    min-height: 30px;
+    padding-top: 10px;
+    text-align: center;
+}
+
+.message-success {
+    color: #89BF04;
+}
+
+.message-fail {
+    color: #C00;
+}

@@ -1,0 +1,29 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+tr.logSum {
+    td {
+        &.logMessage {
+            cursor: pointer;
+        }
+        input {
+            margin: 0 0 0 0;
+            padding: 0 0 0 0;
+            vertical-align: middle;
+        }
+    }
+    vertical-align: middle;
+}
+
+#selectAllCheckbox {
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    vertical-align: middle;
+}
+
+.ui-widget-content {
+    border: none !important;
+}
+
+.ui-datepicker {
+    clear: both;
+}

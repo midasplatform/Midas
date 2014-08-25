@@ -1,0 +1,30 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+div.viewSideBar input.globalButton {
+    margin-left: 0 !important;
+}
+
+.genericInfo {
+    margin-left: 35px;
+    margin-top: 5px;
+}
+
+div {
+    &.genericInfo .genericSubtitle {
+        font-weight: normal;
+    }
+    &.genericBigButton input {
+        background-color: #FFF;
+        background-image: -moz-linear-gradient(center top, #FFF 0%, #C4C4C4 100%);
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#C4C4C4));
+        border: none;
+        cursor: pointer;
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFF', endColorstr='#C4C4C4');
+        &:hover {
+            background-color: #BDDCC9;
+            background-image: -moz-linear-gradient(center top, #BDDCC9 0%, #8AB79B 100%);
+            background-image: -webkit-gradient(linear, left top, left bottom, from(#BDDCC9), to(#8AB79B));
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#BDDCC9', endColorstr='#8AB79B');
+        }
+    }
+}

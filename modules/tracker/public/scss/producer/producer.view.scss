@@ -1,0 +1,59 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+div {
+    &.producerInfoContainer {
+        border-bottom: 1px solid #D7D7D7;
+        margin-bottom: 6px;
+        padding-bottom: 4px;
+    }
+    &.producerData, &.datasetHeader {
+        color: #777;
+        margin-bottom: 6px;
+    }
+    &.sectionTitle {
+        color: #707070;
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+    &.trendGroupContainer {
+        border-radius: 5px;
+        border: 1px solid #A7A7A7;
+        margin-bottom: 15px;
+        padding: 6px;
+    }
+    &.headerSeparator {
+        background-color: #D7D7D7;
+        height: 1px;
+        margin-bottom: 5px;
+        margin-top: 8px;
+        width: 100%;
+    }
+    &.trendContainer {
+        color: #56758B;
+        font-size: 14px;
+        margin-bottom: 2px;
+        input[type="checkbox"] {
+            position: relative;
+            top: 1px;
+        }
+    }
+}
+
+a.trendLink {
+    color: #56758B !important;
+    display: inline-block;
+    font-weight: bold !important;
+    padding-bottom: 3px;
+    padding-left: 3px;
+    padding-top: 3px;
+    width: 90%;
+    &:hover {
+        background-color: #E5E5E5;
+        color: #16354B;
+        text-decoration: none !important;
+    }
+}
+
+input.selectTrend {
+    display: inline;
+}

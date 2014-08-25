@@ -1,0 +1,19 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+div.listFilesContainer div {
+    &.fileElement {
+        border-bottom: 1px dotted #E4E4E4;
+        min-height: 30px;
+        position: relative;
+    }
+    &.fileDate {
+        bottom: 0;
+        color: #808080;
+        font-size: 10px;
+        position: absolute;
+        right: 0;
+    }
+    &.feedUserImage {
+        float: left;
+    }
+}

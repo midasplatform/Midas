@@ -1,0 +1,82 @@
+body {
+    background: #000000;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#336699), to(#72B9FF));
+    background-image: -moz-linear-gradient(center top, #336699 0%, #72B9FF 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#336699',endColorstr='#72B9FF');
+    color: #EEE;
+    padding: 0;
+    margin: 0;
+    font-weight: bold;
+    overflow: hidden;
+    font-family: monospace;
+    font-size: 13px;
+    text-align: center;
+}
+
+#info {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 5px;
+    z-index: 100;
+}
+
+#onliver {
+    position: absolute;
+    top: 70px;
+    width: 100%;
+    padding: 5px;
+    z-index: 100;
+    color: #FFF;
+}
+
+#helpDialog1 {
+    text-align: left;
+}
+
+a, b {
+    color: #008000;
+}
+
+button {
+    &.buttonNav {
+        height: 20px !important;
+        width: 20px !important;
+        position: absolute !important;
+        box-shadow: 0 0 15px #666;
+        border-image: initial;
+    }
+    &#buttonUp {
+        left: 50px;
+        top: 100px;
+    }
+    &#buttonDown {
+        left: 50px;
+        top: 150px;
+    }
+    &#buttonLeft {
+        left: 25px;
+        top: 125px;
+    }
+    &#buttonRight {
+        left: 75px;
+        top: 125px;
+    }
+    &#buttonReset {
+        left: 50px;
+        top: 125px;
+    }
+    &#buttonPlus {
+        left: 50px;
+        top: 180px;
+    }
+    &#buttonMinus {
+        left: 50px;
+        top: 205px;
+    }
+}
+
+div#axesContainer {
+    position: absolute;
+    bottom: 0;
+}
