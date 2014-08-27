@@ -1,9 +1,0 @@
-/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
-
-div.viewSideBar input.globalButton {
-    margin-left: 0 !important;
-}
-
-div.viewWrapper {
-    padding-right: 40px !important;
-}

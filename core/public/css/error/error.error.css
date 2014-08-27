@@ -1,10 +1,1 @@
-/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
-
-div.errorMessage {
-    margin-bottom: 10px;
-    margin-top: 5px;
-}
-
-div.exceptionText {
-    margin-top: 20px;
-}
+div.errorMessage{margin-bottom:10px;margin-top:5px;}div.exceptionText{margin-top:20px;}

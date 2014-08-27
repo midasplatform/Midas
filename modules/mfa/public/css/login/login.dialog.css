@@ -1,12 +1,1 @@
-/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
-
-#otpLoginSubmit {
-    float: right;
-    margin-top: 10px;
-}
-
-#otpToken {
-    background: white url(../../../../../core/public/images/icons/lock.png) no-repeat scroll 2px 2px;
-    padding-left: 20px;
-    width: 90%;
-}
+#otpLoginSubmit{float:right;margin-top:10px;}#otpToken{background:#fff url(../../../../../core/public/images/icons/lock.png) no-repeat scroll 2px 2px;padding-left:20px;width:90%;}

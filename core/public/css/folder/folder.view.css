@@ -1,14 +1,1 @@
-/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
-
-div.defaultSideTrigger {
-    display: none;
-}
-
-div.viewInfo {
-    display: inherit !important;
-}
-
-div.genericBigButton {
-    position: relative;
-    top: -20px;
-}
+div.defaultSideTrigger{display:none;}div.viewInfo{display:inherit !important;}div.genericBigButton{position:relative;top:-20px;}

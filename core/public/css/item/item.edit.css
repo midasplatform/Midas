@@ -1,13 +1,1 @@
-/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
-
-form#editItemForm input[type="text"], form#editItemForm input[type="password"], form#editItemForm textarea {
-    width: 350px !important;
-}
-
-div.updateBitstreamNameNotice {
-    background-color: #CDD;
-    border-radius: 4px;
-    border: 2px solid #ACC;
-    margin-bottom: 5px;
-    padding: 8px;
-}
+form#editItemForm input[type="text"],form#editItemForm input[type="password"]{width:350px !important;}form#editItemForm textarea{width:350px !important;}div.updateBitstreamNameNotice{background-color:#cdd;border-radius:4px;border:2px solid #acc;margin-bottom:5px;padding:8px;}

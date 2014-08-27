@@ -1,13 +1,1 @@
-/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
-
-div.helpContent {
-    background-color: #DDD;
-    display: none;
-    font-size: 10px;
-    margin-bottom: 5px;
-    margin-top: 5px;
-}
-
-li.methodListElement {
-    margin-bottom: 3px;
-}
+div.helpContent{background-color:#ddd;display:none;font-size:10px;margin-bottom:5px;margin-top:5px;}li.methodListElement{margin-bottom:3px;}
