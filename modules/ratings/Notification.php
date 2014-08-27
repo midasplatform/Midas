@@ -48,7 +48,7 @@ class Ratings_Notification extends MIDAS_Notification
     return array(
     $this->moduleWebroot.'/public/css/star_rating/jquery.ui.stars.css',
     $this->moduleWebroot.'/public/css/item/item.ratings.css',
-    $this->coreWebroot.'/public/css/jquery/jquery.jqplot.css');
+    $this->coreWebroot.'/public/css/jquery/jquery.jqplot.min.css');
     }
 
   /** Get the element to render at the bottom of the item view */

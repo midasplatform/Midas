@@ -28,7 +28,7 @@ if(isset($this->statusmessage))
   }
 ?>
 
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.cluetip.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.cluetip.min.css" />
     <div class ="genericWrapperTopRight">
          <?php
           echo '<div style="margin-right:2px;" class="genericBigButton ">';
@@ -45,7 +45,7 @@ if(isset($this->statusmessage))
   $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
   $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.cluetip.js');
 
-  $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/jquery/jquery.filetree.css');
+  $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/jquery/jquery.filetree.min.css');
   $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/import/import.index.css');
   $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/assetstore/assetstore.add.css');
 
