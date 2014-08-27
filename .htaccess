@@ -2,21 +2,15 @@
 
 Options -Indexes
 
-<IfModule deflate_module>
-    SetOutputFilter DEFLATE
-    BrowserMatch ^Mozilla/4 gzip-only-text/html
-    BrowserMatch ^Mozilla/4.0[678] no-gzip
-    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
-</IfModule>
-
-<IfModule php_module>
-    php_flag magic_quotes_gpc off
-    php_flag register_globals off
-    php_flag short_open_tag on
-</IfModule>
-
 <IfModule rewrite_module>
-    RewriteEngine on
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule .* index.php
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} ^(.*/)?(core|(modules|privateModules)/.*)/public/.*$ [OR]
+    RewriteCond %{REQUEST_FILENAME} ^(.*/)?library/SwaggerUI/.*$ [OR]
+    RewriteCond %{REQUEST_FILENAME} ^(.*/)?favicon.ico$
+    RewriteCond %{REQUEST_FILENAME} -s [OR]
+    RewriteCond %{REQUEST_FILENAME} -l [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^.*$ - [NC,L]
+
+    RewriteRule ^.*$ index.php [NC,L]
 </IfModule>

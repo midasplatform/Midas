@@ -87,7 +87,6 @@ class DemoComponent extends AppComponent
     $description = 'Midas Platform integrates multimedia server technology with Kitware\'s open-source data analysis and';
     $description .= ' visualization clients. The server follows open standards for data storage, access and harvesting';
     $config->global->application->description = $description;
-    $config->global->application->keywords = 'demonstration, data management, visualization';
 
     $enabledModules = array('visualize', 'oai', 'metadataextractor', 'api', 'scheduler', 'thumbnailcreator', 'statistics');
     foreach($enabledModules as $module)

@@ -94,10 +94,8 @@ class AdminController extends AppController
     $formArray = $this->getFormAsArray($configForm);
     $formArray['description']->setValue($config->global->application->description);
     $formArray['environment']->setValue($config->global->environment);
-    $formArray['keywords']->setValue($config->global->application->keywords);
     $formArray['lang']->setValue($config->global->application->lang);
     $formArray['name']->setValue($config->global->application->name);
-    $formArray['smartoptimizer']->setValue($config->global->smartoptimizer);
     $formArray['timezone']->setValue($config->global->default->timezone);
     $formArray['smtpserver']->setValue($config->global->smtpserver);
     $formArray['smtpuser']->setValue($config->global->smtpuser);
@@ -152,10 +150,8 @@ class AdminController extends AppController
         {
         $config->global->application->name = $this->getParam('name');
         $config->global->application->description = $this->getParam('description');
-        $config->global->application->keywords = $this->getParam('keywords');
         $config->global->application->lang = $this->getParam('lang');
         $config->global->environment = $this->getParam('environment');
-        $config->global->smartoptimizer = $this->getParam('smartoptimizer');
         $config->global->default->timezone = $this->getParam('timezone');
         $config->global->defaultlicense = $this->getParam('licenseSelect');
         $config->global->dynamichelp = $this->getParam('dynamichelp');

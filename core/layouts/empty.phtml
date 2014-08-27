@@ -17,52 +17,27 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 echo $this->doctype()
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title><?php echo $this->title ?></title>
-
   <meta name="description" content="<?php echo htmlentities($this->metaDescription)?>" />
-  <meta name="keywords" content="<?php echo htmlentities($this->metaKeywords)?>" />
-  <meta name="robots" content="index, follow, all" />
-  <noscript>
-  <meta http-equiv="refresh" content="1; URL=<?php echo $this->webroot?>/index/nojs">
-  </noscript>
-
-  <!--[if lte IE 6]>
-    <meta http-equiv="refresh" content="1; URL=<?php echo $this->webroot?>/index/nobrowser">
-  <![endif]-->
-
-  <!-- Import CSS -->
-  <link rel="shortcut icon" href="<?php echo $this->coreWebroot ?>/public/images/icons/favicon.ico" />
+  <link rel="icon" href="<?php echo $this->coreWebroot ?>/public/images/icons/favicon.ico" />
   <?php
-  if(Zend_Registry::get("configGlobal")->smartoptimizer == 1)
-    {
-    echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/view.css,'.
-         'midas.empty.css,'.
-         'jquery-ui.css,'.
-         'form.css,'.
-         'loginForm.css,'.
-         'jquery.treeTable.css,'.
-         'jquery.qtip.min.css" />';
-    }
-  else
-    {
-    echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/midas.empty.css" />';
-    echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/view.css" />';
-    echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/jquery-ui.css" />';
-    echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/form.css" />';
-    echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/loginForm.css" />';
-    echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/jquery.treeTable.css" />';
-    echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/jquery.qtip.min.css" />';
-    }
+  echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/midas.empty.css" />';
+  echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/view.css" />';
+  echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/jquery-ui.min.css" />';
+  echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/form.css" />';
+  echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/loginForm.css" />';
+  echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/jquery.treeTable.css" />';
+  echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/jquery.qtip.min.css" />';
+  
+  echo $this->headLink();
+  echo $this->headStyle();
   ?>
-
-  <?php echo $this->headLink();  // import the css ?>
-  <?php echo $this->headStyle(); // import the css ?>
-
 </head>
 <body>
   <div class="MainDialog" style="display:none;">
@@ -86,21 +61,6 @@ echo $this->doctype()
   </div>
 
   <?php
-  if(Zend_Registry::get('configGlobal')->smartoptimizer == 1)
-    {
-    echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery.js,'.
-         'jquery-ui.js,'.
-         'midas.common.js,'.
-         'midas.empty.js,'.
-         'midas.callback.js,'.
-         'midas.dialog.js,'.
-         'midas.progress.js,'.
-         'midas.notice.js,'.
-         'jquery.treeTable.js,'.
-         'jquery.qtip.min.js"></script>';
-    }
-  else
-    {
     echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery.js"></script>';
     echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery-ui.js"></script>';
     echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/midas.common.js"></script>';
@@ -111,7 +71,6 @@ echo $this->doctype()
     echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/midas.progress.js"></script>';
     echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery.treeTable.js"></script>';
     echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery.qtip.min.js"></script>';
-    }
   ?>
   <?php echo $this->headScript() ?>
   <input type="hidden" class="webroot" value="<?php echo $this->webroot ?>" />

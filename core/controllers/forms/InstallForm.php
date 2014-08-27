@@ -121,19 +121,14 @@ class InstallForm extends AppForm
 
     $description = new Zend_Form_Element_Textarea('description');
 
-    $keywords = new Zend_Form_Element_Textarea('keywords');
-
     $name = new Zend_Form_Element_Text('name');
     $name->setRequired(true)
          ->addValidator('NotEmpty', true);
 
-    $smartoptimizer = new Zend_Form_Element_Checkbox("smartoptimizer");
-    $smartoptimizer->setChecked(true);
-
     $submit = new  Zend_Form_Element_Submit('submit');
     $submit->setLabel('Create configuration');
 
-    $form->addElements(array($keywords, $description, $process, $timezone, $environment, $lang, $name, $smartoptimizer, $submit));
+    $form->addElements(array($description, $process, $timezone, $environment, $lang, $name, $submit));
     return $form;
     }
   }

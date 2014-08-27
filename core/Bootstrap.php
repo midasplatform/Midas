@@ -186,6 +186,42 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       }
     }
 
+  /** Initialize the SASS compiler */
+  protected function _initSass()
+    {
+    $this->bootstrap('Config');
+    $config = Zend_Registry::get('configGlobal');
+    if($config->environment == 'development')
+      {
+			$directory = new RecursiveDirectoryIterator(BASE_PATH);
+			$iterator = new RecursiveIteratorIterator($directory, RecursiveIteratorIterator::LEAVES_ONLY, RecursiveIteratorIterator::CATCH_GET_CHILD);
+			$regex = new RegexIterator($iterator, '#(?:core|(?:modules|privateModules)/.*)/public/scss/(?!mixins).*\.scss$#', RegexIterator::GET_MATCH);
+			$scssPaths = array();
+			foreach($regex as $scssPath)
+				{
+				$scssPaths = array_merge($scssPaths, $scssPath);
+				}
+			require 'scssphp/scss.inc.php';
+			$scssc = new Leafo\ScssPhp\Compiler();
+			$scssc ->setFormatter('Leafo\ScssPhp\Formatter\Compressed');
+			foreach($scssPaths as $scssPath)
+				{		
+				$cssPath = preg_replace('#((?:core|(?:modules|privateModules)/.*)/public)/scss/(.*)\.scss$#', '\1/css/\2.css', $scssPath);
+				if(!file_exists($cssPath) || filemtime($cssPath) < filemtime($scssPath))
+					{			
+					$cssDirectoryName = pathinfo($cssPath, PATHINFO_DIRNAME);
+					if(!file_exists($cssDirectoryName))
+						{
+						mkdir($cssDirectoryName, 0755, true);
+						}
+					$scss = file_get_contents($scssPath);
+					$css = $scssc->compile($scss).PHP_EOL;
+					file_put_contents($cssPath, $css);
+					}
+				}
+			}
+    }
+
   /** init routes */
   protected function _initRouter()
     {

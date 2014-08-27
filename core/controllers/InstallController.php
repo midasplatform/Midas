@@ -244,10 +244,8 @@ class InstallController extends AppController
     $formArray = $this->getFormAsArray($form);
     $formArray['description']->setValue($config->global->application->description);
     $formArray['environment']->setValue($config->global->environment);
-    $formArray['keywords']->setValue($config->global->application->keywords);
     $formArray['lang']->setValue($config->global->application->lang);
     $formArray['name']->setValue($config->global->application->name);
-    $formArray['smartoptimizer']->setValue($config->global->smartoptimizer);
     $formArray['timezone']->setValue($config->global->default->timezone);
     $this->view->form = $formArray;
     $this->view->databaseType = Zend_Registry::get('configDatabase')->database->adapter;
@@ -266,13 +264,11 @@ class InstallController extends AppController
         }
 
       $config->global->application->description = $form->getValue('description');
-      $config->global->application->keywords = $form->getValue('keywords');
       $config->global->application->lang = $form->getValue('lang');
       $config->global->application->name = $form->getValue('name');
       $config->global->default->timezone = $form->getValue('timezone');
       $config->global->defaultassetstore->id = $assetstores[0]->getKey();
       $config->global->environment = $form->getValue('environment');
-      $config->global->smartoptimizer = $form->getValue('smartoptimizer');
 
       $writer = new Zend_Config_Writer_Ini();
       $writer->setConfig($config);

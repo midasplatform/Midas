@@ -36,10 +36,6 @@
                 <label for='name'>Description</label>
                 {$this->form['description']}
               </div>
-              <div class='installKeywords'>
-                <label for='name'>Keywords</label>
-                {$this->form['keywords']}
-              </div>
               <div class='installLang'";
       if(isset(Zend_Registry::get('configCore')->internationalization) && Zend_Registry::get('configCore')->internationalization == "0")
         {
@@ -56,10 +52,6 @@
               <div class='installTimezone'>
                 <label for='environment'>Time zone</label>
                 {$this->form['timezone']}
-              </div>
-              <div class='installSmartoptimizer'>
-                <label for='smartoptimizer'>CSS and Javascript optimizer</label>
-                {$this->form['smartoptimizer']}
               </div>
                 ";
 

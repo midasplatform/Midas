@@ -79,8 +79,7 @@ class ApisystemComponent extends AppComponent
     {
     $appFields = Zend_Registry::get('configGlobal')->application;
     $serverFields = array('name' => $appFields->name,
-                          'description' => $appFields->description,
-                          'keywords' => $appFields->keywords);
+                          'description' => $appFields->description);
     return array_merge($this->version($args),
                        $serverFields,
                        $this->modulesList($args),

@@ -36,8 +36,6 @@ class AdminForm extends AppForm
 
     $description = new Zend_Form_Element_Textarea('description');
 
-    $keywords = new Zend_Form_Element_Textarea('keywords');
-
     $timezone = new Zend_Form_Element_Select('timezone');
     $timezone->addMultiOptions(array(
       'America/Anchorage' => 'America/Anchorage',
@@ -60,7 +58,6 @@ class AdminForm extends AppForm
     $name->setRequired(true)
          ->addValidator('NotEmpty', true);
 
-    $smartoptimizer = new Zend_Form_Element_Checkbox('smartoptimizer');
     $dynamichelp = new Zend_Form_Element_Checkbox('dynamichelp');
     $gravatar = new Zend_Form_Element_Checkbox('gravatar');
     $closeRegistration = new Zend_Form_Element_Checkbox('closeregistration');
@@ -78,8 +75,8 @@ class AdminForm extends AppForm
     $submit ->setLabel('Save configuration');
 
     $form->addElements(
-      array($dynamichelp, $keywords, $description, $timezone, $environment, $gravatar,
-      $lang, $name, $smartoptimizer, $closeRegistration, $submit, $logtrace, $httpProxy,
+      array($dynamichelp, $description, $timezone, $environment, $gravatar,
+      $lang, $name, $closeRegistration, $submit, $logtrace, $httpProxy,
       $smtpServer, $smtpUser, $smtpPassword, $smtpFromAddress, $verifyEmail));
     return $form;
     }
