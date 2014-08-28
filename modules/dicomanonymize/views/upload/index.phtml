@@ -51,11 +51,11 @@ Click the "Choose Folder" button to select a local directory that contains a DIC
 
 <applet name="Midas DICOM Uploader"
         class="uploadApplet"
-        archive="<?php echo $this->moduleWebroot?>/public/java/dicomupload/dist/DicomUploader.jar?ts=<?php echo time()?>,
-                 <?php echo $this->moduleWebroot?>/public/java/dicomupload/lib/CTP.jar,
-                 <?php echo $this->moduleWebroot?>/public/java/dicomupload/lib/util.jar,
-                 <?php echo $this->moduleWebroot?>/public/java/dicomupload/lib/dcm4che.jar,
-                 <?php echo $this->moduleWebroot?>/public/java/dicomupload/lib/log4j.jar"
+        archive="<?php echo $this->moduleWebroot?>/public/java/upload/DicomUploader.jar?ts=<?php echo time()?>,
+                 <?php echo $this->moduleWebroot?>/public/java/upload/CTP.jar,
+                 <?php echo $this->moduleWebroot?>/public/java/upload/util.jar,
+                 <?php echo $this->moduleWebroot?>/public/java/upload/dcm4che.jar,
+                 <?php echo $this->moduleWebroot?>/public/java/upload/log4j.jar"
         width="480" height="190" mayscript="true"
         code="com.kitware.utils.Main">
   <param name = "type" value = "application/x-java-applet;version=1.5" />
@@ -65,7 +65,7 @@ Click the "Choose Folder" button to select a local directory that contains a DIC
   <param name = "baseURL" value = "<?php echo $this->protocol."://".$this->host.$this->webroot ?>/upload/"/>
   <param name = "webroot" value = "<?php echo $this->protocol."://".$this->host.$this->webroot ?>" />
   <param name = "apiURL" value = "<?php echo $this->protocol."://".$this->host.$this->webroot ?>/api/json?useSession&method=" />
-  <param name = "daScript" value="<?php echo $this->protocol."://".$this->host.$this->webroot ?>/modules/dicomanonymize/public/java/dicomupload/config/DA.script"/>
+  <param name = "daScript" value="<?php echo $this->protocol."://".$this->host.$this->webroot ?>/modules/dicomanonymize/public/java/upload/DA.script"/>
   <param name = "getUploadFileOffsetBaseURL" value="gethttpuploadoffset/"/>
   <param name = "onSuccessfulUploadRedirectEnable" value="true"/>
   <param name = "onSuccessRedirectURL" value="/item/"/>
