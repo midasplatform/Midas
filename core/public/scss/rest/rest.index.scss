@@ -1,7 +1,9 @@
 /* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
+@import 'bourbon';
+
 div.TopDynamicContent {
-    font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', Helvetica, Arial, sans-serif !important;
+    font-family: $lucida-grande !important;
     font-size: 13px !important;
     text-align: left !important;
 }

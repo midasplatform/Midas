@@ -1,5 +1,7 @@
 /* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
+@import 'bourbon';
+
 div.ui-tabs {
     position: relative !important;
     left: 11px !important;
@@ -36,7 +38,7 @@ div {
         span.legend {
             background-color: #FFF;
             color: #73B304;
-            font: 700 14px Arial, Helvetica, sans-serif;
+            font: 700 14px $lucida-grande;
             padding: 3px;
             position: relative;
             top: -30px;
@@ -79,7 +81,7 @@ div {
 
 #swfuploadContent {
     td {
-        font: 10pt Helvetica, Arial, sans-serif;
+        font: 10pt $lucida-grande;
         vertical-align: top;
     }
     .progressWrapper {
@@ -142,7 +144,7 @@ div {
     }
     .progressBarStatus {
         display: inline;
-        font-family: Arial, sans-serif;
+        font-family: $lucida-grande;
         font-size: 7pt;
         margin-left: 5px;
         margin-top: 2px;

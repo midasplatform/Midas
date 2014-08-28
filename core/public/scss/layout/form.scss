@@ -1,5 +1,7 @@
 /* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
+@import 'bourbon';
+
 form.genericForm {
     dt label {
         display: block;
@@ -117,7 +119,7 @@ form.genericForm {
         color: #2E6E9E;
         cursor: pointer;
         display: inline-block;
-        font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', Helvetica, Arial, sans-serif;
+        font-family: $lucida-grande;
         font-weight: bold;
         line-height: 1.4;
         margin-left: 208px;
@@ -139,7 +141,7 @@ input.globalButton {
     color: #2E6E9E;
     cursor: pointer;
     display: inline-block;
-    font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', Helvetica, Arial, sans-serif;
+    font-family: $lucida-grande;
     font-weight: bold;
     line-height: 1.4;
     margin-left: 208px;
@@ -161,7 +163,7 @@ form.genericForm input {
         color: #2E6E9E;
         cursor: pointer;
         display: inline-block;
-        font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', Helvetica, Arial, sans-serif;
+        font-family: $lucida-grande;
         font-weight: bold;
         line-height: 1.4;
         margin-left: 208px;

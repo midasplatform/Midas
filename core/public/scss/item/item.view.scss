@@ -1,5 +1,7 @@
 /* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
+@import 'bourbon';
+
 div {
     &.viewAction, &.viewInfo {
         display: block !important;
@@ -125,21 +127,16 @@ img {
 }
 
 button.topDownloadButton {
-    background-color: #FFF;
-    background-image: -moz-linear-gradient(center top, #4499CC 0%, #4466AA 100%);
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#4499CC), to(#4466AA));
+    @include linear-gradient(to bottom, #4499CC, #4466AA);
     border-radius: 6px;
     border: #354856 1px solid;
     color: #FFF;
     cursor: pointer;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4499CC', endColorstr='#4466AA');
     font-size: 14px;
     font-weight: bold;
     height: 35px;
     width: 100px;
     &:hover {
-        background-image: -moz-linear-gradient(center top, #227777 0%, #224444 100%);
-        background-image: -webkit-gradient(linear, left top, left bottom, from(#227777), to(#224444));
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#227777', endColorstr='#224444');
+        @include linear-gradient(to bottom, #227777, #224444);
     }
 }

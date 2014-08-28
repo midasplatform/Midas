@@ -1,14 +1,15 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+@import 'bourbon';
+
 body {
-    background: #000000;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#336699), to(#72B9FF));
-    background-image: -moz-linear-gradient(center top, #336699 0%, #72B9FF 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#336699',endColorstr='#72B9FF');
+    @include linear-gradient(to bottom, #336699, #72B9FF);
     color: #EEE;
     padding: 0;
     margin: 0;
     font-weight: bold;
     overflow: hidden;
-    font-family: monospace;
+    font-family: $monospace;
     font-size: 13px;
     text-align: center;
 }

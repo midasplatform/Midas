@@ -1,5 +1,7 @@
 /* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
+@import 'bourbon';
+
 div {
     &.viewMain h3 {
         margin-top: 2px;
@@ -52,9 +54,7 @@ div.dashPanel {
         cursor: pointer;
         margin-right: 2px;
         padding: 6px 1px 2px;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        -webkit-user-select: none;
+        @include user-select(none);
     }
     &:active {
         background-color: #AAA;
@@ -62,9 +62,7 @@ div.dashPanel {
         cursor: pointer;
         margin-right: 2px;
         padding: 6px 1px 2px;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        -webkit-user-select: none;
+        @include user-select(none);
     }
 }
 

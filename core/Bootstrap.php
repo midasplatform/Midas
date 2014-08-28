@@ -203,6 +203,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 				}
 			require 'scssphp/scss.inc.php';
 			$scssc = new Leafo\ScssPhp\Compiler();
+			$scssc->setImportPaths(BASE_PATH.'/core/public/scss/mixins/bourbon');
 			$scssc ->setFormatter('Leafo\ScssPhp\Formatter\Compressed');
 			foreach($scssPaths as $scssPath)
 				{		

@@ -1,8 +1,10 @@
 /* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
+@import 'bourbon';
+
 body {
     border: 0;
-    font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', Helvetica, Arial, sans-serif;
+    font-family: $lucida-grande;
     font-size: 12px;
     height: 100%;
     margin: 0;
@@ -37,7 +39,7 @@ img.thumbnailSmall {
 }
 
 .ui-widget {
-    font-family: 'Lucida Grande', Verdana, Arial, Helvetica, sans-serif !important;
+    font-family: $lucida-grande !important;
     font-size: 12px !important;
 }
 
@@ -46,16 +48,13 @@ div {
         display: none;
     }
     &.genericBigButton {
-        background-color: #FFF;
-        background-image: -moz-linear-gradient(center top, #FFF 0%, #C4C4C4 100%);
-        background-image: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#C4C4C4));
+        @include linear-gradient(to bottom, #FFF, #C4C4C4);
         border-radius: 3px;
         border: #354856 1px solid;
         box-shadow: 0 0 2px #666;
         color: #000;
         cursor: pointer;
         display: block;
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFF', endColorstr='#C4C4C4');
         float: left;
         font-size: 12px;
         font-weight: normal;
@@ -70,10 +69,7 @@ div {
             }
         }
         &:hover {
-            background-color: #BDDCC9;
-            background-image: -moz-linear-gradient(center top, #BDDCC9 0%, #8AB79B 100%);
-            background-image: -webkit-gradient(linear, left top, left bottom, from(#BDDCC9), to(#8AB79B));
-            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#BDDCC9', endColorstr='#8AB79B');
+            @include linear-gradient(to bottom, #BDDCC9, #8AB79B);
         }
     }
     &.genericWrapperTopRight {

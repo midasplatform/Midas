@@ -1,5 +1,7 @@
 /* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
+@import 'bourbon';
+
 #uploadTabs > div {
     margin-left: 10px;
 }
@@ -36,7 +38,7 @@ div.uploadValidationError {
     margin-bottom: 8px;
     padding: 14px 20px;
     &:hover {
-        background: #4CA84C linear-gradient(to bottom, #4CA84C 0%, #5CB85C 100%);
+        @include linear-gradient(to bottom, #4CA84C, #5CB85C);
         border: 1px solid #484;
         cursor: pointer;
     }
@@ -55,7 +57,7 @@ div.uploadValidationError {
 }
 
 #startUploadLink:hover {
-    background: #4C4CA8 linear-gradient(to bottom, #4C4CA8 0%, #5C5CB8 100%);
+    @include linear-gradient(to bottom, #4C4CA8, #5C5CB8);
     border: 1px solid #448;
 }
 
@@ -97,7 +99,7 @@ div.uploadValidationError {
         span.legend {
             background-color: #FFF;
             color: #73B304;
-            font: 700 14px Arial, Helvetica, sans-serif;
+            font: 700 14px $lucida-grande;
             padding: 3px;
             position: relative;
             top: -30px;
@@ -140,7 +142,7 @@ div.uploadValidationError {
 
 #swfuploadContent {
     td {
-        font: 10pt Helvetica, Arial, sans-serif;
+        font: 10pt $lucida-grande;
         vertical-align: top;
     }
     .progressWrapper {
@@ -203,7 +205,7 @@ div.uploadValidationError {
     }
     .progressBarStatus {
         display: inline;
-        font-family: Arial, sans-serif;
+        font-family: $lucida-grande;
         font-size: 7pt;
         margin-left: 5px;
         margin-top: 2px;

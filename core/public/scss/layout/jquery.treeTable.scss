@@ -1,5 +1,7 @@
 /* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
+@import 'bourbon';
+
 .treeTable {
     tr {
         td .expander {
@@ -45,12 +47,10 @@
 table.midasTree {
     width: 580px;
     display: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -webkit-user-select: none;
+    @include user-select(none);
     border-collapse: collapse;
     thead th {
-        font-family: Arial;
+        font-family: $lucida-grande;
         font-size: 8pt;
         color: #000;
         background-color: #E6EEEE;
@@ -104,9 +104,7 @@ table.midasTree {
 
 table.midasTree {
     tbody tr td {
-        -moz-user-select: none;
-        -ms-user-select: none;
-        -webkit-user-select: none;
+        @include user-select(none);
         cursor: default;
         padding-left: 3px;
     }

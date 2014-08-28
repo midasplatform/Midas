@@ -1,5 +1,7 @@
 /* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
+@import 'bourbon';
+
 div {
     &.addCommentWrapper {
         border-bottom: 1px dashed #C0C0C0;
@@ -31,7 +33,7 @@ div {
 
 #commentText {
     border: 0;
-    font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', Helvetica, Arial, sans-serif;
+    font-family: $lucida-grande;
     font-size: 13px;
     height: 25px;
     margin-bottom: 0;
@@ -138,13 +140,13 @@ div.commentPaginateWrapper {
 
 a.commentItrLink {
     color: #56758B;
-    font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', Helvetica, Arial, sans-serif;
+    font-family: $lucida-grande;
     font-size: 13px;
     font-weight: bold;
     text-decoration: none;
     &:visited {
         color: #56758B;
-        font-family: Verdana, 'Lucida Grande', 'Lucida Sans Unicode', Helvetica, Arial, sans-serif;
+        font-family: $lucida-grande;
         font-size: 13px;
         font-weight: bold;
         text-decoration: none;
