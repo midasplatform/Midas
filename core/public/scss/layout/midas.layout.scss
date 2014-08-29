@@ -1,6 +1,11 @@
 /* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
 
+@import 'normalize';
 @import 'bourbon';
+
+html {
+    background-color: #F3F1EC;
+}
 
 body {
     background-color: #F3F1EC;
