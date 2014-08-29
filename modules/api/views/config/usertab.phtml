@@ -58,11 +58,11 @@ else
 
 <form class="genericForm" id="generateKeyForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
   <input type="hidden" id="apiUserId" name="userId" value="<?php echo $this->user->getKey(); ?>" />
-  <div >
+  <div>
     <label for="appplication_name"><?php echo $this->t('Application Name')?>:</label>
     <?php echo $this->form['appplication_name']?>
   </div>
-  <div >
+  <div>
     <label for="expiration"><?php echo $this->t('Default Expiration')?> (minutes):</label>
     <?php echo $this->form['expiration']?>
   </div>

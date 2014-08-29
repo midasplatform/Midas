@@ -38,17 +38,17 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
       echo "
       <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
       <h3>API Configuration:</h3>
-          <div >
+          <div>
             <label for='repositoryname'>OAI Repository name</label>
             {$this->configForm['repositoryname']}
           </div>
             <br/>
-          <div >
+          <div>
             <label for='repositoryidentifier'>Repository Identifier. (should be unique, see <a href='http://www.openarchives.org/OAI/2.0/guidelines-oai-identifier.htm' target='_blank'>information</a>)</label>
             {$this->configForm['repositoryidentifier']}
           </div>
             <br/>
-          <div >
+          <div>
             <label for='adminemail'>Admin Email (send by the oai module)</label>
             {$this->configForm['adminemail']}
           </div>

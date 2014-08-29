@@ -78,7 +78,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
             foreach($this->items as $item)
               {
               $privacyClass = $item->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-              echo "<tr id='node--$node' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}' >";
+              echo "<tr id='node--$node' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}'>";
               echo "  <td class='treeBrowseElement'><span class='file{$privacyClass}'>{$this->slicename($item->getName(), 40)}</span></td>";
               echo "  <td>{$item->size}</td>";
               echo "  <td>{$this->Date->ago($item->getDateUpdate(), true)}</td>";
@@ -137,7 +137,7 @@ if(!empty($this->userCommunities))
             foreach($this->items as $item)
               {
               $privacyClass = $item->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-              echo "<tr id='node--$node' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}' >";
+              echo "<tr id='node--$node' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}'>";
               echo "  <td class='treeBrowseElement'><span class='file{$privacyClass}'>{$this->slicename($item->getName(),40)}</span></td>";
               echo "  <td>{$item->size}</td>";
               echo "  <td>{$this->Date->ago($item->getDateUpdate(), true)}</td>";
@@ -169,7 +169,7 @@ if(!empty($this->userCommunities))
     <div class="sideElementFirst viewAction">
       <ul/>
     </div>
-    <div class="sideElement viewSelected" >
+    <div class="sideElement viewSelected">
       <h1><?php echo $this->t('Selected')?><span></span></h1>
       <span></span>
     </div>

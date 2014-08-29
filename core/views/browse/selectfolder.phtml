@@ -60,8 +60,8 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/b
   </table>
    <br/>
    <?php
-   echo '<div class="genericBigButton" id="createFolderButton" >';
-      echo "<a ><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/FileTree/directory.png'/>";
+   echo '<div class="genericBigButton" id="createFolderButton">';
+      echo "<a><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/FileTree/directory.png'/>";
       echo $this->t('Create a new folder');
       echo "</a>";
     echo '</div>';
@@ -75,7 +75,7 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/b
   <form class="genericForm" type='post' action="<?php echo $this->webroot?>/browse/selectitem">
     <input type='hidden' name='elements' value='<?php echo $this->folderIds?>;<?php echo $this->itemIds?>' />
     <input type='hidden' id="selectedDestinationHidden" name='destination' />
-    Destination: <span id="selectedDestination" > <?php echo $this->t('Please select a folder.') ?> </span> <br/>
+    Destination: <span id="selectedDestination"> <?php echo $this->t('Please select a folder.') ?> </span> <br/>
     <div class="bottomButtonsContainer">
       <input type="submit" disabled  name='selectElements' id='selectElements'  value="<?php echo $this->t('Select')?>"/>
     </div>

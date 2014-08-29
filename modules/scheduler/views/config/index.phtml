@@ -67,7 +67,7 @@
        <td qtip='<?php echo str_replace("'", '"', $job->getParams()); ?>'>
          <?php echo substr($job->getParams(), 0, 30)?>
        </td>
-       <td >
+       <td>
          <a href="<?php echo $this->webroot; ?>/scheduler/run?id=<?php echo $job->getKey(); ?>">Run Now</a>
        </td>
      </tr>

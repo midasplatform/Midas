@@ -47,7 +47,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 </div>
 
 <div class="viewSideBar">
-  <div class="sideElementFirst viewAction" >
+  <div class="sideElementFirst viewAction">
     <h1>Actions</h1>
     <ul>
       <li>
@@ -55,18 +55,18 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
       </li>
     </ul>
   </div>
-  <div class="sideElement viewSelected" >
+  <div class="sideElement viewSelected">
     <h1><?php echo $this->t('Selected')?></h1>
     <span></span>
   </div>
-  <div class="sideElementLast viewInfo" >
+  <div class="sideElementLast viewInfo">
     <h1>Info</h1>
     <img class="infoLoading" style="display:none;" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
     <div class="ajaxInfoElement">
     </div>
   </div>
 
-  <div class="defaultSide" >
+  <div class="defaultSide">
     <?php
     if(!empty($this->itemThumbnails))
       {

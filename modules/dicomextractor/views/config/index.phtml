@@ -41,26 +41,26 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
       echo "
       <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
       <h3>DICOM Extractor Configuration:</h3>
-            <div >
+            <div>
               <label for='dcm2xml'>Command to run dcm2xml (for data)</label>
               {$this->configForm['dcm2xml']}
             </div>
             <br />
-            <div >
+            <div>
               <label for='dcmjpnm'>Command to run dcmj2pnm (for thumbnail)</label>
               {$this->configForm['dcmj2pnm']}
-            </div >
+            </div>
             <br />
-            <div >
+            <div>
               <label for='dcmftest'>Command to run dcmftest to verify if a file is valid DICOM.</label>
               {$this->configForm['dcmftest']}
-            </div >
+            </div>
             <br />
-            <div >
+            <div>
               <label for='dcmdictpath'>The value of the DCMDICTPATH environment
               variable.</label>
               {$this->configForm['dcmdictpath']}
-            </div >
+            </div>
           <div>
             {$this->configForm['submitConfig']}
           </div>

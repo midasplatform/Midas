@@ -64,7 +64,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.s
         <img  src="<?php echo $this->webroot?>/core/public/images/icons/loading.gif" alt="Loading..." />
       </div>
       <br/>
-      <b>Go to the <a onclick="$('.buttonNext').click();" >next step</a> if you want to use already uploaded files.</b>
+      <b>Go to the <a onclick="$('.buttonNext').click();">next step</a> if you want to use already uploaded files.</b>
 
   </div>
   <div id="step-2">
@@ -73,7 +73,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.s
       <br/><br/>
       <?php
         echo '<div id="browseExecutableFile" class="genericBigButton ">';
-          echo "<a  ><img  alt='' src='{$this->coreWebroot}/public/images/FileTree/file.png'/>";
+          echo "<a><img  alt='' src='{$this->coreWebroot}/public/images/FileTree/file.png'/>";
           echo $this->t('Browse');
           echo "</a>";
         echo '</div>';
@@ -106,7 +106,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.s
       ?>
 
       <br/>
-      <div class="nameWrapper" >
+      <div class="nameWrapper">
         <h4>Name (required)</h4>
         <input type="text" id="jobName" name="jobName"/>
       </div>
@@ -116,7 +116,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.s
     <?php if($this->scheduled)
       {?>
     <input type='checkbox' id="checkboxSchedule" name="checkboxSchedule"/> <label for="checkboxSchedule">Run as soon as possible</label>
-    <div id="schedulerWrapper" >
+    <div id="schedulerWrapper">
       Date and Time: <input type="text" id="datepicker"> Every: <select id="intervalSelect">
         <option value="0">Only once</option>
         <option value="3600">Hours</option>

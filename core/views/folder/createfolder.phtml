@@ -26,15 +26,15 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/j
 
 <form id="createFolderForm" class="genericForm" method="POST"  action="<?php echo $this->webroot?>/folder/createFolder">
    <input type="hidden" name="folderId" value="<?php echo $this->parentFolder->getKey()?>"/>
-      <div >
+      <div>
         <label for="name"><?php echo $this->t("Name")?></label>
         <?php echo $this->form['name']?>
       </div>
-      <div >
+      <div>
         <label for="description"><?php echo $this->t("Description")?></label>
         <?php echo $this->form['description']?>
       </div>
-      <div >
+      <div>
         <label for="teaser"><?php echo $this->t("Teaser")?></label>
         <?php echo $this->form['teaser']?>
       </div>

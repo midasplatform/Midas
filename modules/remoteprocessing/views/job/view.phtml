@@ -119,7 +119,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.d
             }
           }
         echo "<td class='xmlStatus'>".$result['status']."</td>";
-        echo "<td >".str_replace(' seconds', 's', $this->duration($result['time']))."</td>";
+        echo "<td>".str_replace(' seconds', 's', $this->duration($result['time']))."</td>";
         echo "<td class='showInDialog' output='".htmlentities($result['stdout'])."'><a>".$this->slicename(htmlentities($result['stdout']), 15)."</a></td>";
         echo "<td class='showInDialog' output='".htmlentities($result['stderr'])."'><a>".$this->slicename(htmlentities($result['stderr']), 15)."</a></td>";
 
@@ -168,7 +168,7 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.d
         {
         echo "<tr>";
         $metadata = $output->metadataParameters;
-        echo "<td ><a href='".$this->webroot."/item/".$output->getKey()."' elementItem='".$output->getKey()."'>".$output->getName()."</a></td>";
+        echo "<td><a href='".$this->webroot."/item/".$output->getKey()."' elementItem='".$output->getKey()."'>".$output->getName()."</a></td>";
         $path = $output->getThumbnail();
         echo "<td>";
         if(!empty($path)&&  file_exists(BASE_PATH.'/'.$path))

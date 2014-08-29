@@ -23,15 +23,15 @@
 
 <form id="editFolderForm" class="genericForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
    <input type="hidden" name="folderId" value="<?php echo $this->folderDao->getKey()?>"/>
-      <div >
+      <div>
         <label for="name"><?php echo $this->t("Name")?></label>
         <?php echo $this->form['name']?>
       </div>
-      <div >
+      <div>
         <label for="description"><?php echo $this->t("Description")?></label>
         <?php echo $this->form['description']?>
       </div>
-      <div >
+      <div>
         <label for="teaser"><?php echo $this->t("Teaser")?></label>
         <?php echo $this->form['teaser']?>
       </div>

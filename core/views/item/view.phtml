@@ -73,7 +73,7 @@ foreach($cssArray as $module => $list)
       echo "<img src='{$this->coreWebroot}/public/images/icons/document-big.png' alt=''/>";
     ?>
     </div>
-    <div class="genericName <?php if(strlen($this->itemDao->getName()) > 30) echo "tips";?>" <?php if(strlen($this->itemDao->getName()) > 30) echo "style='cursor:help;' title='".$this->itemDao->getName()."'";?>  ><?php   echo $this->slicename($this->itemDao->getName(), 30);  ?></div>
+    <div class="genericName <?php if(strlen($this->itemDao->getName()) > 30) echo "tips";?>" <?php if(strlen($this->itemDao->getName()) > 30) echo "style='cursor:help;' title='".$this->itemDao->getName()."'";?> ><?php   echo $this->slicename($this->itemDao->getName(), 30);  ?></div>
     <div class="genericSubtitle" style="color:grey;"><?php echo $this->itemSize;?></div>
   </div>
   <div class="itemViewMainSection">
@@ -283,22 +283,22 @@ foreach($cssArray as $module => $list)
       <?php
       echo
         "<li>
-          <a href='javascript:;' class='linkItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/link.png'/> Share</a>
+          <a href='javascript:;' class='linkItemLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/link.png'/> Share</a>
         </li>";
       if($this->isModerator)
         {
         echo
        "<li>
-          <a href='javascript:;' class='duplicateItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/copy.png'/> {$this->t('Copy')}</a>
+          <a href='javascript:;' class='duplicateItemLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/copy.png'/> {$this->t('Copy')}</a>
         </li>
         <li>
-          <a href='javascript:;' class='editItemLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/edit.png'/> {$this->t('Edit')}</a>
+          <a href='javascript:;' class='editItemLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/edit.png'/> {$this->t('Edit')}</a>
         </li>
         <li>
-          <a href='javascript:;' class='addMetadataLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/metadata.png'/> {$this->t('Add metadata')}</a>
+          <a href='javascript:;' class='addMetadataLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/metadata.png'/> {$this->t('Add metadata')}</a>
         </li>
         <li>
-          <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='uploadRevisionLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/upload.png'/> {$this->t('Upload new revision')}</a>
+          <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='uploadRevisionLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/upload.png'/> {$this->t('Upload new revision')}</a>
         </li>
           ";
         }
@@ -306,7 +306,7 @@ foreach($cssArray as $module => $list)
         {
         echo "
         <li>
-          <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='sharingLink' ><img alt='' src='{$this->coreWebroot}/public/images/icons/lock.png'/> {$this->t('Permissions')}</a>
+          <a href='javascript:;' type='item' element='{$this->itemDao->getKey()}' class='sharingLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/lock.png'/> {$this->t('Permissions')}</a>
         </li>
         <li>
           <a  href='javascript:;' id='itemDeleteLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/> {$this->t('Delete')}</a>
