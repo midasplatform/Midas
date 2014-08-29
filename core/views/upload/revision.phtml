@@ -18,7 +18,7 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link href="<?php echo $this->coreWebroot?>/public/css/upload/upload.revision.css?<?php echo time()?>" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->coreWebroot?>/public/css/upload/upload.revision.css" rel="stylesheet" type="text/css" />
 <link href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.fileupload-ui.min.css" rel="stylesheet" type="text/css" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
@@ -31,7 +31,7 @@
 <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload-ui.js"></script>
 <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload-uix.js"></script>
 <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.form.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/upload/upload.revision.js?<?php echo time()?>"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/upload/upload.revision.js"></script>
 
 <div class="tabs uploadTabs" id='uploadTabs'>
   <ul>
@@ -122,7 +122,7 @@
     <b><?php echo $this->t('Step 3: Upload files')?></b>
     <br/><br/>
     <applet name="MidasUploader" code="com.kitware.utils.Main"
-            archive="<?php echo $this->coreWebroot?>/public/java/upload/MidasUploader.jar?rev=3&<?php echo time()?>"
+            archive="<?php echo $this->coreWebroot?>/public/java/upload/MidasUploader.jar?rev=3"
             width="360" height="150" mayscript="true">
       <param name="type" value="application/x-java-applet;version=1.5" />
       <param name="background" value="ffffff" />
