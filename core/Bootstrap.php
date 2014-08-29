@@ -191,36 +191,46 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     {
     $this->bootstrap('Config');
     $config = Zend_Registry::get('configGlobal');
+    $logger = Zend_Registry::get('logger');
     if($config->environment == 'development')
       {
-			$directory = new RecursiveDirectoryIterator(BASE_PATH);
-			$iterator = new RecursiveIteratorIterator($directory, RecursiveIteratorIterator::LEAVES_ONLY, RecursiveIteratorIterator::CATCH_GET_CHILD);
-			$regex = new RegexIterator($iterator, '#(?:core|(?:modules|privateModules)/.*)/public/scss/(?!mixins).*\.scss$#', RegexIterator::GET_MATCH);
-			$scssPaths = array();
-			foreach($regex as $scssPath)
-				{
-				$scssPaths = array_merge($scssPaths, $scssPath);
-				}
-			require 'scssphp/scss.inc.php';
-			$scssc = new Leafo\ScssPhp\Compiler();
-			$scssc->setImportPaths(BASE_PATH.'/core/public/scss/mixins/bourbon');
-			$scssc ->setFormatter('Leafo\ScssPhp\Formatter\Compressed');
-			foreach($scssPaths as $scssPath)
-				{		
-				$cssPath = preg_replace('#((?:core|(?:modules|privateModules)/.*)/public)/scss/(.*)\.scss$#', '\1/css/\2.css', $scssPath);
-				if(!file_exists($cssPath) || filemtime($cssPath) < filemtime($scssPath))
-					{			
-					$cssDirectoryName = pathinfo($cssPath, PATHINFO_DIRNAME);
-					if(!file_exists($cssDirectoryName))
-						{
-						mkdir($cssDirectoryName, 0755, true);
-						}
-					$scss = file_get_contents($scssPath);
-					$css = $scssc->compile($scss).PHP_EOL;
-					file_put_contents($cssPath, $css);
-					}
-				}
-			}
+      $directory = new RecursiveDirectoryIterator(BASE_PATH);
+      $iterator = new RecursiveIteratorIterator($directory, RecursiveIteratorIterator::LEAVES_ONLY, RecursiveIteratorIterator::CATCH_GET_CHILD);
+      $regex = new RegexIterator($iterator, '#(?:core|(?:modules|privateModules)/.*)/public/scss/(?!mixins).*\.scss$#', RegexIterator::GET_MATCH);
+      $scssPaths = array();
+      foreach($regex as $scssPath)
+        {
+        $scssPaths = array_merge($scssPaths, $scssPath);
+        }
+      require 'scssphp/scss.inc.php';
+      $scssc = new Leafo\ScssPhp\Compiler();
+      $scssc->setImportPaths(array(BASE_PATH.'/core/public/scss/mixins', BASE_PATH.'/core/public/scss/mixins/bourbon'));
+      $scssc ->setFormatter('Leafo\ScssPhp\Formatter\Compressed');
+      foreach($scssPaths as $scssPath)
+        {
+        $cssPath = preg_replace('#((?:core|(?:modules|privateModules)/.*)/public)/scss/(.*)\.scss$#', '\1/css/\2.css', $scssPath);
+        if(!file_exists($cssPath) || filemtime($cssPath) < filemtime($scssPath))
+          {
+          $cssDirectoryName = pathinfo($cssPath, PATHINFO_DIRNAME);
+          if(!file_exists($cssDirectoryName))
+            {
+            $level = error_reporting(0);
+            mkdir($cssDirectoryName, 0755, true);
+            error_reporting($level);
+            }
+          if(is_dir($cssDirectoryName) && is_writeable($cssDirectoryName))
+            {
+            $scss = file_get_contents($scssPath);
+            $css = $scssc->compile($scss).PHP_EOL;
+            file_put_contents($cssPath, $css);
+            }
+          else
+            {
+            $logger->debug('Could not compile SASS located at '.$scssPath);
+            }
+          }
+        }
+      }
     }
 
   /** init routes */
