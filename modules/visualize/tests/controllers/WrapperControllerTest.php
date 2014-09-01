@@ -18,9 +18,6 @@
  limitations under the License.
 =========================================================================*/
 
-// need to include the module constant for this test
-require_once str_replace('tests', 'constant', str_replace('controllers', 'module.php', dirname(__FILE__)));
-
 /** config controller test*/
 class WrappergControllerTest extends ControllerTestCase
   {

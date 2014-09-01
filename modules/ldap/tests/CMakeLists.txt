@@ -21,7 +21,6 @@ set( module_name ldap )
 to_titlecase( ${module_name} module_name_titlecase )
 
 add_midas_style_test( Style${module_name_titlecase}AppController ${CMAKE_SOURCE_DIR}/modules/${module_name}/AppController.php )
-add_midas_style_test( Style${module_name_titlecase}Constant ${CMAKE_SOURCE_DIR}/modules/${module_name}/constant )
 add_midas_style_test( Style${module_name_titlecase}Controllers ${CMAKE_SOURCE_DIR}/modules/${module_name}/controllers )
 add_midas_style_test( Style${module_name_titlecase}Models ${CMAKE_SOURCE_DIR}/modules/${module_name}/models )
 add_midas_style_test( Style${module_name_titlecase}Notification ${CMAKE_SOURCE_DIR}/modules/${module_name}/Notification.php )
