@@ -61,7 +61,7 @@ midas.ratings.createChart = function (distribution) {
  */
 midas.ratings.renderAggregate = function (average, total, distribution) {
     'use strict';
-    if (average != null && average != '') {
+    if (average !== null && average != '') {
         average = Math.round(average * 100) / 100;
         $('#averageValue').html(average);
         var starSelect = Math.round(average * 2) - 1;

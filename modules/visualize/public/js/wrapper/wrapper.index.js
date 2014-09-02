@@ -79,12 +79,12 @@ $(document).ready(function () {
         var objTmp = obj.parents('li').prev().find('a');
         $('a.nextVisu').show();
         $('a.previousVisu').show();
-        if (objTmp.length == 0) {
+        if (objTmp.length === 0) {
             $('a.previousVisu').hide();
         }
 
         objTmp = obj.parents('li').next().find('a');
-        if (objTmp.length == 0) {
+        if (objTmp.length === 0) {
             $('a.nextVisu').hide();
         }
     });
@@ -101,7 +101,7 @@ $(document).ready(function () {
         $('a.nextVisu').show();
 
         obj = obj.parents('li').prev().find('a');
-        if (obj.length == 0) {
+        if (obj.length === 0) {
             $('a.previousVisu').hide();
         }
     });
@@ -117,7 +117,7 @@ $(document).ready(function () {
         createInfoAjaxVisualize(currentElement);
 
         obj = obj.parents('li').next().find('a');
-        if (obj.length == 0) {
+        if (obj.length === 0) {
             $('a.nextVisu').hide();
         }
     });

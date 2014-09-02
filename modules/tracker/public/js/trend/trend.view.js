@@ -60,7 +60,7 @@ midas.tracker.extractCurveData = function (curves) {
             midas.tracker.scalarIdMap[seriesIndex] = [];
 
             $.each(scalars, function (idx, scalar) {
-                if (!midas.tracker.unofficialVisible && scalar.official == 0) {
+                if (!midas.tracker.unofficialVisible && scalar.official === 0) {
                     return;
                 }
 
@@ -115,11 +115,11 @@ midas.tracker.populateInfo = function (curveData) {
 midas.tracker.bindPlotEvents = function () {
     'use strict';
     $('#chartDiv').unbind('jqplotDataClick').bind('jqplotClick', function (ev, gridpos, datapos, dataPoint, plot) {
-        if (dataPoint == null || typeof dataPoint.seriesIndex == 'undefined') {
+        if (dataPoint === null || typeof dataPoint.seriesIndex == 'undefined') {
             return;
         }
         var scalarId;
-        if (!json.tracker.rightTrend || dataPoint.seriesIndex == 0) {
+        if (!json.tracker.rightTrend || dataPoint.seriesIndex === 0) {
             scalarId = midas.tracker.scalarIdMap[dataPoint.seriesIndex][dataPoint.pointIndex];
         }
         else {
@@ -262,6 +262,7 @@ midas.tracker.renderChartArea = function (curveData, first) {
 };
 
 $(window).load(function () {
+    'use strict';
     var inputCurves = json.tracker.scalars;
     if (json.tracker.rightTrend) {
         inputCurves.push(json.tracker.rightScalars);

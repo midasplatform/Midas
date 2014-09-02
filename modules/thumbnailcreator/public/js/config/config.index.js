@@ -16,7 +16,7 @@ midas.thumbnailcreator.config.successConfig = function (responseText, statusText
         midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
         return false;
     }
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('Error', 4000, 'error');
         return;
     }
@@ -34,7 +34,7 @@ midas.thumbnailcreator.config.initUseThumbnailer = function () {
     var inputUseThumbnailer = $('input[name=useThumbnailer]');
     var thumbnailerDiv = $('div#thumbnailerDiv');
 
-    if (inputUseThumbnailer.filter(':checked').val() == 0) { // private
+    if (inputUseThumbnailer.filter(':checked').val() === 0) { // private
         inputThumbnailer.attr('disabled', 'disabled');
         inputThumbnailer.removeAttr('checked');
         inputThumbnailer.filter('[value=0]').attr('checked', true); // invitation

@@ -45,7 +45,7 @@ midas.upload.revision.initJqueryFileupload = function () {
     // see http:// aquantum-demo.appspot.com/file-upload
     $('.file_upload:visible').fileUploadUIX({
         beforeSend: function (event, files, index, xhr, handler, callBack) {
-            if (index == 0) { // only do this once since we have all the files every time
+            if (index === 0) { // only do this once since we have all the files every time
                 var retVal = midas.doCallback('CALLBACK_CORE_VALIDATE_UPLOAD', {
                     files: files,
                     revision: true
@@ -78,7 +78,7 @@ midas.upload.revision.initJqueryFileupload = function () {
     });
 
     $('#startUploadLink').click(function () {
-        if ($('#destinationId').val() == undefined || $('#destinationId').val().length == 0) {
+        if ($('#destinationId').val() === undefined || $('#destinationId').val().length === 0) {
             midas.createNotice("Please select where you want to upload your files.", 4000, 'warning');
             return false;
         }
@@ -150,7 +150,7 @@ midas.upload.revision.initSwfupload = function () {
     midas.upload.revision.swfu = new SWFUpload(settings);
 
     $('#startUploadLink').click(function () {
-        if ($('#destinationId').val() == undefined || $('#destinationId').val().length == 0) {
+        if ($('#destinationId').val() === undefined || $('#destinationId').val().length === 0) {
             midas.createNotice("Please select where you want to upload your files.", 4000);
             return false;
         }

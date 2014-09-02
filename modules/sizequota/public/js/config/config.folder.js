@@ -20,7 +20,7 @@ midas.sizequota.folder.successConfig = function (responseText, statusText, xhr, 
         midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
         return false;
     }
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('Error', 4000, 'error');
         return;
     }
@@ -55,7 +55,7 @@ $(document).ready(function () {
     midas.sizequota.folder.radioButtonChanged();
 
     var content = $('#quotaValue').html();
-    if (content != '' && content != 0) {
+    if (content != '' && content !== 0) {
         var quota = parseInt($('#quotaValue').html());
         var used = parseInt($('#usedSpaceValue').html());
 

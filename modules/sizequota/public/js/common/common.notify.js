@@ -75,7 +75,7 @@ midas.sizequota.folderChanged = function (args) {
 
             midas.sizequota.updateFreeSpaceMessage();
 
-            if (midas.sizequota.totalSize == 0) {
+            if (midas.sizequota.totalSize === 0) {
                 return;
             }
             if (jsonResponse.freeSpace == '') // unlimited space

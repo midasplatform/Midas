@@ -37,7 +37,6 @@ midas.comments.initCommentList = function (comments) {
     var currentUser = 0;
     if (json.modules.comments.user) {
         isAdmin = json.modules.comments.user.admin == '1';
-        json.modules.comments.user.user_id;
     }
 
     $('#existingCommentsList').html('');
@@ -115,7 +114,7 @@ midas.comments.refreshCommentList = function () {
         offset: midas.comments.offset
     }, function (data) {
         var resp = $.parseJSON(data);
-        if (resp != null && resp.status == 'ok') {
+        if (resp !== null && resp.status == 'ok') {
             midas.comments.total = resp.total;
             midas.comments.initCommentList(resp.comments);
         }
@@ -142,7 +141,7 @@ midas.comments.deleteComment = function (commentId) {
                 commentId: commentId
             }, function (data) {
                 var resp = $.parseJSON(data);
-                if (resp == null) {
+                if (resp === null) {
                     midas.createNotice('Error occurred, check the logs', 4000, 'error');
                     return;
                 }
@@ -159,7 +158,7 @@ midas.comments.deleteComment = function (commentId) {
             commentId: commentId
         }, function (data) {
             var resp = $.parseJSON(data);
-            if (resp == null) {
+            if (resp === null) {
                 alert('Error occurred, check the logs');
                 return;
             }
@@ -211,7 +210,7 @@ $(document).ready(function () {
                     comment: comment
                 }, function (data) {
                     var resp = $.parseJSON(data);
-                    if (resp == null) {
+                    if (resp === null) {
                         midas.createNotice('Error occurred, check the logs', 4000, 'error');
                         return;
                     }

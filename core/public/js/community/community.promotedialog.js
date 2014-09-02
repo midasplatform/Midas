@@ -19,7 +19,7 @@ midas.community.promotedialogSuccess = function (responseText, statusText, xhr, 
     $('#promoteDialogLoading').hide();
     var jsonResponse = $.parseJSON(responseText);
 
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('Error occurred. Check the logs.', 4000);
         return;
     }

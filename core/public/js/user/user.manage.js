@@ -40,7 +40,7 @@ function callbackSelect(node) {
 
     // user need to have at least written permission to see specific Actions
     //(edit, delete, etc...)
-    if (node.attr('type') != 0) {
+    if (node.attr('type') !== 0) {
         $('div.viewInfo').show();
         $('div.viewAction').show();
     }
@@ -66,7 +66,7 @@ function initDragAndDrop() {
         "#browseTable .folderPublic:not(.notdraggable), #browseTable .folderPrivate:not(.notdraggable)").draggable({
         helper: "clone",
         cursor: "move",
-        opacity: .75,
+        opacity: 0.75,
         refreshPositions: true, // Performance?
         revert: "invalid",
         revertDuration: 300,
@@ -110,7 +110,7 @@ function initDragAndDrop() {
                         },
                         function (data) {
                             var jsonResponse = $.parseJSON(data);
-                            if (jsonResponse == null) {
+                            if (jsonResponse === null) {
                                 midas.createNotice('Error', 4000);
                                 return;
                             }

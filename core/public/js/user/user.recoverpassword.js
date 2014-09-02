@@ -15,7 +15,7 @@ midas.user.validateRecoverPassword = function (formData, jqForm, options) {
 midas.user.successRecoverPassword = function (responseText, statusText, xhr, form) {
     'use strict';
     var jsonResponse = $.parseJSON(responseText);
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('Error', 4000, 'error');
         return;
     }

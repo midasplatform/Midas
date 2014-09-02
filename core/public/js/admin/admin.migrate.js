@@ -77,7 +77,7 @@ function assetstoreAddCallback(responseText, statusText, xhr, $form) {
                 .attr("selected", "selected"));
 
             // Add to JSON
-            var newassetstore = new Object();
+            var newassetstore = {};
             newassetstore.assetstore_id = responseText.assetstore_id;
             newassetstore.name = responseText.assetstore_name;
             newassetstore.type = responseText.assetstore_type;

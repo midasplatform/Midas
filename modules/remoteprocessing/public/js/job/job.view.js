@@ -1,6 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 /* global json */
+/* global sliceFileName */
 
 var midas = midas || {};
 
@@ -20,7 +21,7 @@ $(document).ready(function () {
 
         initMetrics();
 
-        if ($('.metric').length != 0) {
+        if ($('.metric').length !== 0) {
             $('#metricsWrapper').show();
         }
         processXmlTableColors();
@@ -173,7 +174,7 @@ function createInfoItem(jsonContent) {
         html += '<h4>' + arrayElement.translation.Private + '</h4>';
     }
 
-    if (arrayElement['thumbnail'] != undefined && arrayElement['thumbnail'] != '') {
+    if (arrayElement['thumbnail'] !== undefined && arrayElement['thumbnail'] != '') {
         html += '<b>' + json.browse.preview + '</b><br><a href="' + json.global.webroot + '/item/' + arrayElement['item_id'] + '"><img class="infoLogo" alt="" src="' + json.global.webroot + '/' + arrayElement['thumbnail'] + '" /></a>';
     }
 

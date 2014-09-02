@@ -1,5 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global ajaxWebApi */
+
 var midas = midas || {};
 midas.batchmake = midas.batchmake || {};
 
@@ -60,7 +62,7 @@ midas.batchmake.handleValidationResponse = function (retVal) {
     var config_properties = testConfig[1];
 
     // handle global config value
-    if (global_config_correct == true) {
+    if (global_config_correct === true) {
         $(document).find('#testOk').show();
         $(document).find('#testError').html(midas.batchmake.global_config_correct_msg).removeClass().addClass(midas.batchmake.info_class);
     }
@@ -105,7 +107,7 @@ midas.batchmake.successConfig = function (responseText, statusText, xhr, form) {
         midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
         return false;
     }
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('Error', 4000, 'error');
         return;
     }
@@ -126,7 +128,7 @@ $(document).ready(function () {
 
     $('#configForm').find('input').each(function () {
         // add a span after each input for displaying any errors related to that input
-        var inputID = $(this).attr("id")
+        var inputID = $(this).attr("id");
         $(this).after('<span id="' + inputID + 'Status' + '"></span>');
     });
 

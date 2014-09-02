@@ -1,5 +1,6 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global JavaScriptRenderer */
 /* global json */
 
 var paraview;
@@ -247,7 +248,7 @@ midas.visualize.updateSliceInfo = function (slice) {
  */
 midas.visualize.switchRenderer = function (first) {
     'use strict';
-    if (midas.visualize.renderers.js == undefined) {
+    if (midas.visualize.renderers.js === undefined) {
         midas.visualize.renderers.js = new JavaScriptRenderer("jsRenderer", "/PWService");
         midas.visualize.renderers.js.enableWebSocket(paraview, 'ws://' + json.visualize.hostname + ':' + json.visualize.wsport + '/PWService/Websocket');
         midas.visualize.renderers.js.init(paraview.sessionId, midas.visualize.activeView.__selfid__);
@@ -277,30 +278,31 @@ midas.visualize.pointSelectMode = function () {
         var x, y, z;
         var pscale = midas.visualize.cameraParallelScale;
         var focus = midas.visualize.cameraFocalPoint;
+        var top, bottom, left, right;
 
         if (midas.visualize.sliceMode == 'XY Plane') {
-            var top = focus[1] - pscale;
-            var bottom = focus[1] + pscale;
-            var left = focus[0] - pscale;
-            var right = focus[0] + pscale;
+            top = focus[1] - pscale;
+            bottom = focus[1] + pscale;
+            left = focus[0] - pscale;
+            right = focus[0] + pscale;
             x = (e.offsetX / $(this).width()) * (right - left) + left;
             y = (e.offsetY / $(this).height()) * (bottom - top) + top;
             z = midas.visualize.currentSlice + midas.visualize.bounds[4] - midas.visualize.extent[4];
         }
         else if (midas.visualize.sliceMode == 'XZ Plane') {
-            var top = focus[2] + pscale;
-            var bottom = focus[2] - pscale;
-            var left = focus[0] + pscale;
-            var right = focus[0] - pscale;
+            top = focus[2] + pscale;
+            bottom = focus[2] - pscale;
+            left = focus[0] + pscale;
+            right = focus[0] - pscale;
             x = (e.offsetX / $(this).width()) * (right - left) + left;
             y = midas.visualize.currentSlice + midas.visualize.bounds[2] - midas.visualize.extent[2];
             z = (e.offsetY / $(this).height()) * (bottom - top) + top;
         }
         else if (midas.visualize.sliceMode == 'YZ Plane') {
-            var top = focus[2] + pscale;
-            var bottom = focus[2] - pscale;
-            var left = focus[0] - pscale;
-            var right = focus[0] + pscale;
+            top = focus[2] + pscale;
+            bottom = focus[2] - pscale;
+            left = focus[0] - pscale;
+            right = focus[0] + pscale;
             x = midas.visualize.currentSlice + midas.visualize.bounds[0] - midas.visualize.extent[0];
             y = (e.offsetX / $(this).width()) * (right - left) + left;
             z = (e.offsetY / $(this).height()) * (bottom - top) + top;

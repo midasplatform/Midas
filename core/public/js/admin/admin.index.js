@@ -73,7 +73,7 @@ midas.admin.successConfig = function (responseText, statusText, xhr, form) {
         midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
         return false;
     }
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('Error', 4000, 'error');
         return;
     }
@@ -98,7 +98,7 @@ $(document).ready(function () {
             },
             function (data) {
                 var jsonResponse = $.parseJSON(data);
-                if (jsonResponse == null) {
+                if (jsonResponse === null) {
                     midas.createNotice('Error', 4000);
                     return;
                 }
@@ -232,7 +232,7 @@ $(document).ready(function () {
         }
         else {
             var modulevalue = 0;
-            var moduleDependencies = new Array();
+            var moduleDependencies = [];
             $.each($('input[dependencies=' + $(this).attr('module') + ']:checked'), function () {
                 moduleDependencies.push($(this).attr('module'));
             });
@@ -264,7 +264,7 @@ $(document).ready(function () {
             },
             function (data) {
                 var jsonResponse = $.parseJSON(data);
-                if (jsonResponse == null) {
+                if (jsonResponse === null) {
                     midas.createNotice('Error', 4000);
                     return;
                 }

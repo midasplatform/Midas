@@ -17,7 +17,7 @@ $('input.deleteFolderYes').unbind('click').click(function () {
         function (data) {
             $('input.deleteFolderYes').removeAttr('disabled');
             var jsonResponse = $.parseJSON(data);
-            if (jsonResponse == null) {
+            if (jsonResponse === null) {
                 midas.createNotice('Error', 4000, 'error');
                 return;
             }

@@ -45,7 +45,7 @@ midas.user.deletedialog.success = function (responseText, statusText, xhr, form)
     $('img#deleteDialogLoadingGif').hide();
     var jsonResponse = $.parseJSON(responseText);
 
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('Error', 4000, 'error');
         return;
     }

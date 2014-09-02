@@ -19,7 +19,7 @@ midas.share.applyrecursive.success = function (responseText) {
     $('input#declineApplyRecursive').removeAttr('disabled');
     var jsonResponse = $.parseJSON(responseText);
 
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('Error', 4000);
         return;
     }

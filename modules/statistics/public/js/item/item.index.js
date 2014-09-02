@@ -68,7 +68,7 @@ $(document).ready(function () {
     $('#tabsGeneric').show();
     $('img.tabsLoading').hide();
     $('#tabsGeneric').bind('tabsshow', function (event, ui) {
-        if (plotErrors._drawCount == 0) {
+        if (plotErrors._drawCount === 0) {
             plotErrors.replot();
         }
     });

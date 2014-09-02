@@ -1,6 +1,13 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global callbackCheckboxes */
+/* global callbackCreateElement */
+/* global callbackCustomElements */
+/* global callbackDblClick */
+/* global callbackReloadNode */
+/* global callbackSelect */
 /* global json */
+/* global sliceFileName */
 
 (function ($) {
     'use strict';
@@ -11,22 +18,22 @@
         var options = $.extend({}, $.fn.treeTable.defaults, opts);
 
         // default to global callbacks in none were passed
-        if (options.callbackSelect == null && typeof callbackSelect == 'function') {
+        if (options.callbackSelect === null && typeof callbackSelect == 'function') {
             options.callbackSelect = callbackSelect;
         }
-        if (options.callbackCheckboxes == null && typeof callbackCheckboxes == 'function') {
+        if (options.callbackCheckboxes === null && typeof callbackCheckboxes == 'function') {
             options.callbackCheckboxes = callbackCheckboxes;
         }
-        if (options.callbackDblClick == null && typeof callbackDblClick == 'function') {
+        if (options.callbackDblClick === null && typeof callbackDblClick == 'function') {
             options.callbackDblClick = callbackDblClick;
         }
-        if (options.callbackCreateElement == null && typeof callbackCreateElement == 'function') {
+        if (options.callbackCreateElement === null && typeof callbackCreateElement == 'function') {
             options.callbackCreateElement = callbackCreateElement;
         }
-        if (options.callbackReloadNode == null && typeof callbackReloadNode == 'function') {
+        if (options.callbackReloadNode === null && typeof callbackReloadNode == 'function') {
             options.callbackReloadNode = callbackReloadNode;
         }
-        if (options.callbackCustomElements == null && typeof callbackCustomElements == 'function') {
+        if (options.callbackCustomElements === null && typeof callbackCustomElements == 'function') {
             options.callbackCustomElements = callbackCustomElements;
         }
 
@@ -172,7 +179,7 @@
      */
     $.fn.ttFetchChildren = function () {
         var node = $(this);
-        if (node == undefined) {
+        if (node === undefined) {
             return;
         }
         var table = node.ttTable();
@@ -251,7 +258,7 @@
             $.each(elements.folders, function (index, value) {
                 i++;
                 var privacyClass;
-                if (value.privacy_status == 0) { //public
+                if (value.privacy_status === 0) { //public
                     privacyClass = 'Public';
                 } else {
                     privacyClass = 'Private';
@@ -270,7 +277,7 @@
             $.each(elements.items, function (index, value) {
                 i++;
                 var privacyClass;
-                if (value.privacy_status == 0) { //public
+                if (value.privacy_status === 0) { //public
                     privacyClass = 'Public';
                 } else {
                     privacyClass = 'Private';
@@ -289,7 +296,7 @@
                 html += "<tr class='child-of-" + id + "' id='" + id + "-10000000' element='" + id + "'>" +
                     "<td colspan='1' align='right'><a class='treeBrowserShowMore'>Show more</a></td><td></td><td></td><td></td></tr>";
             }
-            if (lastchild == undefined) {
+            if (lastchild === undefined) {
                 // We are rendering the first page
                 node.after(html);
             } else {
@@ -311,7 +318,7 @@
         var cell = $(node.children('td')[options.treeColumn]);
         var padding = cell.ttPaddingLeft() + options.indent;
         var arrayCell = node.ttChildren();
-        if (arrayCell == null) {
+        if (arrayCell === null) {
             return;
         }
         arrayCell.each(function () {
@@ -350,7 +357,7 @@
                     for (var folderIndex in children[key].folders) {
                         if (children[key].folders.hasOwnProperty(folderIndex)) {
                             var folder = children[key].folders[folderIndex];
-                            var folderPrivacyClass = folder.privacy_status == 0 ? 'Public' : 'Private';
+                            var folderPrivacyClass = folder.privacy_status === 0 ? 'Public' : 'Private';
                             var folderRow = '<tr id="node--' + index + '" class="parent" privacy="' +
                                 folder.privacy_status + '" type="folder" element="' + folder.folder_id + '">';
                             folderRow += '<td class="treeBrowseElement"><span class="folder' + folderPrivacyClass + '">' + sliceFileName(folder.name, 43) + '</span></td>';
@@ -365,7 +372,7 @@
                     for (var itemIndex in children[key].items) {
                         if (children[key].items.hasOwnProperty(itemIndex)) {
                             var item = children[key].items[itemIndex];
-                            var itemPrivacyClass = item.privacy_status == 0 ? 'Public' : 'Private';
+                            var itemPrivacyClass = item.privacy_status === 0 ? 'Public' : 'Private';
                             var itemRow = '<tr id="node--' + index + '" privacy="' + item.privacy_status + '" type="item" element="' + item.item_id + '">';
                             itemRow += '<td class="treeBrowseElement"><span class="file' + itemPrivacyClass + '">' + sliceFileName(item.name, 43) + '</span></td>';
                             itemRow += '<td>' + item.size + '</td>';
@@ -472,7 +479,7 @@
      */
     $.fn.ttChildren = function () {
         var node = $(this);
-        if (node[0] == undefined) {
+        if (node[0] === undefined) {
             return null;
         }
         var table = node.ttTable();
@@ -494,7 +501,7 @@
 
     $.fn.ttPaddingLeft = function () {
         var node = $(this);
-        if (node[0] == undefined) {
+        if (node[0] === undefined) {
             return defaultPaddingLeft;
         }
         var paddingLeft = parseInt(node[0].style.paddingLeft, 10);
@@ -583,7 +590,7 @@
         var table = $(this);
         var grey = false;
         table.find('tr').each(function (index) {
-            if (index == 0) {
+            if (index === 0) {
                 return;
             }
             if (!$(this).is(':hidden')) {
@@ -614,7 +621,7 @@
      */
     $.fn.ttInitNode = function () {
         var node = $(this);
-        if (node == undefined) {
+        if (node === undefined) {
             return;
         }
         var options = node.ttOptions();
@@ -704,7 +711,7 @@
      */
     $.fn.ttOptions = function () {
         var table = $(this).ttTable();
-        if (table.length == 0) {
+        if (table.length === 0) {
             return $.fn.treeTable.defaults;
         }
         var options = $.data(table[0], 'options');

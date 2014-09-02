@@ -13,7 +13,7 @@ midas.callbacks = midas.callbacks || {};
  */
 midas.registerCallback = function (name, module, fn) {
     'use strict';
-    if (midas.callbacks[name] == undefined) {
+    if (midas.callbacks[name] === undefined) {
         midas.callbacks[name] = {};
     }
     midas.callbacks[name][module] = fn;
@@ -28,7 +28,7 @@ midas.registerCallback = function (name, module, fn) {
  */
 midas.doCallback = function (name, args) {
     'use strict';
-    if (midas.callbacks[name] == undefined) {
+    if (midas.callbacks[name] === undefined) {
         return {};
     }
     var retVal = {};

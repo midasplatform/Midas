@@ -1,6 +1,10 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global callbackSelect */
+/* global folderSelectionCallback */
 /* global json */
+/* global sliceFileName */
+/* global trimName */
 
 var midas = midas || {};
 midas.browse = midas.browse || {};
@@ -33,7 +37,7 @@ $("#moveTable").treeTable({
 $("div.MainDialogContent img.tableLoading").hide();
 $("table#moveTable").show();
 
-if ($('div.MainDialogContent #selectElements') != undefined) {
+if ($('div.MainDialogContent #selectElements') !== undefined) {
     $('div.MainDialogContent #selectElements').click(function () {
         'use strict';
         var folderName = $('#selectedDestination').html();
@@ -65,7 +69,7 @@ function selectFolderCallbackSelect(node) {
     var parent = true;
     var current = node;
 
-    while (parent != null) {
+    while (parent !== null) {
         parent = null;
         var classNames = current[0].className.split(' ');
         for (var key in classNames) {
@@ -73,7 +77,7 @@ function selectFolderCallbackSelect(node) {
                 parent = $("div.MainDialogContent #" + classNames[key].substring(9));
             }
         }
-        if (parent != null) {
+        if (parent !== null) {
             selectedElement = parent.find('span:eq(1)').html() + '/' + selectedElement;
             current = parent;
         }
@@ -89,7 +93,7 @@ function selectFolderCallbackSelect(node) {
         $('div.MainDialogContent #selectedDestinationHidden').val(node.attr('element'));
         $('div.MainDialogContent #selectedDestination').html(sliceFileName(selectedElement, 40));
 
-        if ($('div.MainDialogContent #defaultPolicy').val() != 0) {
+        if ($('div.MainDialogContent #defaultPolicy').val() !== 0) {
             $('div.MainDialogContent #createFolderButton').show();
         }
         if (typeof node.attr('policy') == 'undefined') {
@@ -129,7 +133,7 @@ var newFolder = false;
 function successCreateFolderCallback(responseText, statusText, xhr, form) {
     'use strict';
     var jsonResponse = $.parseJSON(responseText);
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('Error', 4000);
         return;
     }
@@ -149,7 +153,7 @@ function successCreateFolderCallback(responseText, statusText, xhr, form) {
 
 function selectFolderCallbackReloadNode(mainNode) {
     'use strict';
-    if (newFolder != false) {
+    if (newFolder !== false) {
         callbackSelect($('#moveTable').find('tr[element=' + newFolder + ']'));
     }
 }

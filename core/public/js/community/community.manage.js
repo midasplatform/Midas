@@ -101,7 +101,7 @@ $('a.deleteGroupLink').click(function () {
             },
             function (data) {
                 var jsonResponse = $.parseJSON(data);
-                if (jsonResponse == null) {
+                if (jsonResponse === null) {
                     midas.createNotice('Error', 4000, 'error');
                     return;
                 }
@@ -130,7 +130,7 @@ midas.community.manage.initDragAndDrop = function () {
         "#browseTable .folderPublic:not(.notdraggable), #browseTable .folderPrivate:not(.notdraggable)").draggable({
         helper: "clone",
         cursor: "move",
-        opacity: .75,
+        opacity: 0.75,
         refreshPositions: true, // Performance?
         revert: "invalid",
         revertDuration: 300,
@@ -157,7 +157,7 @@ midas.community.manage.initDragAndDrop = function () {
                 var classNames = $(ui.draggable).parents("tr").attr('class').split(' ');
                 for (var key in classNames) {
                     if (classNames[key].match('child-of-')) {
-                       from_obj = "#" + classNames[key].substring(9);
+                        from_obj = "#" + classNames[key].substring(9);
                     }
                 }
                 var destination_obj = this;
@@ -173,7 +173,7 @@ midas.community.manage.initDragAndDrop = function () {
                         },
                         function (data) {
                             var jsonResponse = $.parseJSON(data);
-                            if (jsonResponse == null) {
+                            if (jsonResponse === null) {
                                 midas.createNotice('Error', 4000, 'error');
                                 return;
                             }
@@ -212,7 +212,7 @@ midas.community.manage.successGroupChange = function (responseText, statusText, 
     'use strict';
     $("div.MainDialog").dialog("close");
     var jsonResponse = $.parseJSON(responseText);
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('Error', 4000, 'error');
         return;
     }
@@ -244,7 +244,7 @@ midas.community.manage.validateInfoChange = function (formData, jqForm, options)
 midas.community.manage.successInfoChange = function (responseText, statusText, xhr, form) {
     'use strict';
     var jsonResponse = $.parseJSON(responseText);
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('Error', 4000, 'error');
         return;
     }
@@ -260,7 +260,7 @@ midas.community.manage.successInfoChange = function (responseText, statusText, x
 midas.community.manage.successPrivacyChange = function (responseText, statusText, xhr, form) {
     'use strict';
     var jsonResponse = $.parseJSON(responseText);
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('Error', 4000, 'error');
         return;
     }
@@ -289,7 +289,7 @@ midas.community.manage.removeFromGroup = function (userId, groupId) {
         },
         function (data) {
             var jsonResponse = $.parseJSON(data);
-            if (jsonResponse == null) {
+            if (jsonResponse === null) {
                 midas.createNotice('Error', 4000);
                 return;
             }

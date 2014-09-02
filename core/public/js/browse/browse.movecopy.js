@@ -1,6 +1,8 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 /* global json */
+/* global sliceFileName */
+/* global trimName */
 
 var midas = midas || {};
 midas.browse = midas.browse || {};
@@ -13,7 +15,7 @@ midas.browse.moveCopyCallbackSelect = function (node) {
     var parent = true;
     var current = node;
 
-    while (parent != null) {
+    while (parent !== null) {
         parent = null;
         var classNames = current[0].className.split(' ');
         for (var key in classNames) {
@@ -21,7 +23,7 @@ midas.browse.moveCopyCallbackSelect = function (node) {
                 parent = $("#moveCopyTable #" + classNames[key].substring(9));
             }
         }
-        if (parent != null) {
+        if (parent !== null) {
             selectedElement = parent.find('span:eq(1)').html() + '/' + selectedElement;
             current = parent;
         }
@@ -110,7 +112,7 @@ $(document).ready(function () {
 
     $('.uploadApplet').hide();
 
-    if ($('#selectElement') != undefined) {
+    if ($('#selectElement') !== undefined) {
         $('#selectElement').click(function () {
             var destHtml = $('#selectedDestination').html();
             var destValue = $('#selectedDestinationHidden').val();

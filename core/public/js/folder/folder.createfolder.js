@@ -1,5 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global successCreateFolderCallback */
+
 var midas = midas || {};
 
 $('#createFolderForm').ajaxForm({
@@ -10,7 +12,7 @@ $('#createFolderForm').ajaxForm({
 if (typeof callbackDblClick != 'function') {
     function childrenOf(node) {
         'use strict';
-        if (node[0] == undefined) {
+        if (node[0] === undefined) {
             return null;
         }
         return $("table.treeTable tbody tr.child-of-" + node[0].id);
@@ -34,7 +36,7 @@ function successCreateFolder(responseText, statusText, xhr, form) {
     }
     $("div.MainDialog").dialog("close");
     var jsonResponse = $.parseJSON(responseText);
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('Error', 4000);
         return;
     }

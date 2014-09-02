@@ -72,7 +72,7 @@ midas._updateProgress = function (widget, messageContainer, progress) {
     }
     else {
         $(widget).hide();
-        if ($('img.progressIndeterminate').length == 0) {
+        if ($('img.progressIndeterminate').length === 0) {
             $(messageContainer).before(
                 ' <img class="progressIndeterminate" alt="" src="' + json.global.coreWebroot + '/public/images/icons/loading.gif" /> ');
         }

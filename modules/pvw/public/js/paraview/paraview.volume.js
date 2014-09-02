@@ -175,7 +175,7 @@ midas.pvw.changeColorPreset = function (container, select) {
         return;
     }
     var colorList = midas.pvw.PRESET_TRANSFER_RGBPOINTS[name];
-    if ((colorList.length % 4) != 0) {
+    if ((colorList.length % 4) !== 0) {
         alert('Invalid color list length: ' + name);
     }
     // Map points into the actual scalar range
@@ -383,7 +383,7 @@ midas.pvw.applySofCurve = function () {
         .then(function () {
             pv.viewport.render();
         })
-        .otherwise(midas.pvw.rpcFailure)
+        .otherwise(midas.pvw.rpcFailure);
 };
 
 /**

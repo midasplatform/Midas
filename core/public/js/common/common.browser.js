@@ -90,7 +90,7 @@ midas.genericCallbackCheckboxes = function (node) {
                 links += '  <a onclick="midas.duplicateSelected(\'' + folders + '\',\'' + items + '\')">' + json.browse.duplicateSelected + '</a></li>';
                 links += '</li>';
             }
-            if (arraySelected['items'].length > 1 && arraySelected['folders'].length == 0) {
+            if (arraySelected['items'].length > 1 && arraySelected['folders'].length === 0) {
                 links += '<li>';
                 links += '<img alt="" src="' + json.global.coreWebroot + '/public/images/icons/page_white_stack.png"/> ';
                 links += '<a class="mergeItemsLink" element="' + items + '">Merge items</a>';
@@ -184,7 +184,7 @@ midas.createNewFolder = function (id) {
 
 midas.removeNodeFromTree = function (node, recursive) {
     'use strict';
-    if (!node || node.length == 0) {
+    if (!node || node.length === 0) {
         return;
     }
     var ancestorNodes = midas.ancestorsOf(node);
@@ -291,7 +291,7 @@ midas.deleteSelected = function (folders, items) {
             $('input.deleteSelectedNo').removeAttr('disabled');
             $('#deleteSelectedLoadingGif').hide();
             var resp = $.parseJSON(data);
-            if (resp == null) {
+            if (resp === null) {
                 midas.createNotice('Error during folder delete. Check the log.', 4000);
                 return;
             }
@@ -591,7 +591,7 @@ midas.createInfo = function (jsonContent) {
         html += '  </tr>';
     }
     if (arrayElement['type'] == 'item') {
-        if (arrayElement['norevisions'] == true) {
+        if (arrayElement['norevisions'] === true) {
             html += '  <tr>';
             html += '    <td>No Revisions</td>';
             html += '  </tr>';
@@ -632,7 +632,7 @@ midas.createInfo = function (jsonContent) {
         html += '<h4>' + arrayElement.translation.Private + '</h4>';
     }
 
-    if (arrayElement['thumbnail_id'] != undefined && arrayElement['thumbnail_id'] != '') {
+    if (arrayElement['thumbnail_id'] !== undefined && arrayElement['thumbnail_id'] != '') {
         html += '<h1>' + json.browse.preview + '</h1><a href="' + json.global.webroot + '/item/' + arrayElement['item_id'] + '"><img class="infoLogo" alt="" src="' + json.global.webroot + '/item/thumbnail?itemId=' + arrayElement['item_id'] + '" /></a>';
     }
 

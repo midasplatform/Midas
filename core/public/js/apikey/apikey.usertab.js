@@ -17,7 +17,7 @@ midas.apikey.successApiConfig = function (responseText, statusText, xhr, form) {
         midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
         return false;
     }
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('Error', 4000, 'error');
         return;
     }
@@ -46,7 +46,7 @@ $(document).ready(function () {
             },
             function (data) {
                 var jsonResponse = $.parseJSON(data);
-                if (jsonResponse == null) {
+                if (jsonResponse === null) {
                     midas.createNotice('Error', 4000, 'error');
                     return;
                 }

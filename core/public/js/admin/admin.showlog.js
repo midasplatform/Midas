@@ -39,7 +39,7 @@ midas.errorlog.initLogs = function () {
     });
     $('table#listLogs').show();
     $('.logsLoading').hide();
-    if (midas.errorlog.jsonLogs.total == 0) {
+    if (midas.errorlog.jsonLogs.total === 0) {
         $('#paginationMessage').html('No results');
     }
     else {

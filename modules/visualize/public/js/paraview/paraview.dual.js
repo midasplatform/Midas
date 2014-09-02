@@ -1,8 +1,9 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
-var paraview;
+/* global JavaScriptRenderer */
 /* global json */
 
+var paraview;
 var midas = midas || {};
 midas.visualize = midas.visualize || {};
 
@@ -282,7 +283,7 @@ midas.visualize.updateSliceInfo = function (slice) {
  */
 midas.visualize.switchRenderer = function (side) {
     'use strict';
-    if (midas.visualize[side].renderer == undefined) {
+    if (midas.visualize[side].renderer === undefined) {
         midas.visualize[side].renderer = new JavaScriptRenderer(side + 'JsRenderer', '/PWService');
         midas.visualize[side].renderer.init(paraview[side].sessionId, midas.visualize[side].activeView.__selfid__);
     }
@@ -302,7 +303,9 @@ midas.visualize._generateColorList = function (size) {
     var list = [];
     for (var i = 0; i < size; i++) {
         var hue = i * (1.0 / size);
-        if (hue > 1.0) hue = 1.0;
+        if (hue > 1.0) {
+            hue = 1.0;
+        }
         list.push(midas.visualize._hsvToRgb(hue, 1.0, 1.0));
     }
     return list;
@@ -325,22 +328,34 @@ midas.visualize._hsvToRgb = function (h, s, v) {
 
     switch (i % 6) {
     case 0:
-        r = v, g = t, b = p;
+        r = v;
+        g = t;
+        b = p;
         break;
     case 1:
-        r = q, g = v, b = p;
+        r = q;
+        g = v;
+        b = p;
         break;
     case 2:
-        r = p, g = v, b = t;
+        r = p;
+        g = v;
+        b = t;
         break;
     case 3:
-        r = p, g = q, b = v;
+        r = p;
+        g = q;
+        b = v;
         break;
     case 4:
-        r = t, g = p, b = v;
+        r = t;
+        g = p;
+        b = v;
         break;
     case 5:
-        r = v, g = p, b = q;
+        r = v;
+        g = p;
+        b = q;
         break;
     }
 
@@ -362,30 +377,31 @@ midas.visualize.pointMapMode = function () {
             var x, y, z;
             var pscale = midas.visualize[side].cameraParallelScale;
             var focus = midas.visualize[side].cameraFocalPoint;
+            var top, bottom, left, right;
 
             if (midas.visualize.sliceMode == 'XY Plane') {
-                var top = focus[1] - pscale;
-                var bottom = focus[1] + pscale;
-                var left = focus[0] - pscale;
-                var right = focus[0] + pscale;
+                top = focus[1] - pscale;
+                bottom = focus[1] + pscale;
+                left = focus[0] - pscale;
+                right = focus[0] + pscale;
                 x = (e.offsetX / $(this).width()) * (right - left) + left;
                 y = (e.offsetY / $(this).height()) * (bottom - top) + top;
                 z = midas.visualize.currentSlice + midas.visualize[side].bounds[4] - midas.visualize[side].extent[4];
             }
             else if (midas.visualize.sliceMode == 'XZ Plane') {
-                var top = focus[2] + pscale;
-                var bottom = focus[2] - pscale;
-                var left = focus[0] + pscale;
-                var right = focus[0] - pscale;
+                top = focus[2] + pscale;
+                bottom = focus[2] - pscale;
+                left = focus[0] + pscale;
+                right = focus[0] - pscale;
                 x = (e.offsetX / $(this).width()) * (right - left) + left;
                 y = midas.visualize.currentSlice + midas.visualize[side].bounds[2] - midas.visualize[side].extent[2];
                 z = (e.offsetY / $(this).height()) * (bottom - top) + top;
             }
             else if (midas.visualize.sliceMode == 'YZ Plane') {
-                var top = focus[2] + pscale;
-                var bottom = focus[2] - pscale;
-                var left = focus[0] - pscale;
-                var right = focus[0] + pscale;
+                top = focus[2] + pscale;
+                bottom = focus[2] - pscale;
+                left = focus[0] - pscale;
+                right = focus[0] + pscale;
                 x = midas.visualize.currentSlice + midas.visualize[side].bounds[0] - midas.visualize[side].extent[0];
                 y = (e.offsetX / $(this).width()) * (right - left) + left;
                 z = (e.offsetY / $(this).height()) * (bottom - top) + top;
@@ -529,7 +545,7 @@ midas.visualize.setSliceMode = function (sliceMode) {
         return; // nothing to do, already in this mode
     }
 
-    var slice, parallelScale, cameraPosition, min, max;
+    var cameraUp, slice, parallelScale, cameraPosition, min, max;
     if (sliceMode == 'XY Plane') {
         slice = Math.floor(midas.visualize.midK);
         parallelScale = Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
@@ -607,7 +623,7 @@ midas.visualize.displayPointMap = function () {
         var rightPoint = midas.visualize.right.points[idx];
         var tr = '<tr><td><div class="colorSwatchL"></div><span class="leftPointValue">(' + point.x.toFixed(1) + ', ' +
             point.y.toFixed(1) + ', ' + point.z.toFixed(1) + ')</span></td><td><span class="rightPointValue">';
-        if (rightPoint == undefined) {
+        if (rightPoint === undefined) {
             tr += '<i>None</i>';
         }
         else {
@@ -626,7 +642,7 @@ midas.visualize.displayPointMap = function () {
         tr.find('div.colorSwatchL').css('background-color',
             'rgb(' + Math.round(point.color[0] * 255) + ',' + Math.round(point.color[1] * 255) + ',' +
             Math.round(point.color[2] * 255) + ')');
-        if (rightPoint != undefined) {
+        if (rightPoint !== undefined) {
             tr.find('div.colorSwatchR').css('background-color',
                 'rgb(' + Math.round(rightPoint.color[0] * 255) + ',' +
                 Math.round(rightPoint.color[1] * 255) + ',' +
@@ -644,7 +660,7 @@ midas.visualize.displayPointMap = function () {
 
             midas.visualize._removePointFromList('left', point);
 
-            if (rightPoint != undefined) {
+            if (rightPoint !== undefined) {
                 paraview.right.plugins.midascommon.AsyncDeleteSource(function () {
                     midas.visualize.forceRefreshView('right');
                 }, {
@@ -728,6 +744,7 @@ midas.visualize._removePointFromList = function (side, pointToRemove) {
 };
 
 $(window).load(function () {
+    'use strict';
     if (typeof midas.visualize.preInitCallback == 'function') {
         midas.visualize.preInitCallback();
     }
@@ -737,6 +754,7 @@ $(window).load(function () {
 });
 
 $(window).unload(function () {
+    'use strict';
     paraview.left.disconnect();
     paraview.right.disconnect();
 });

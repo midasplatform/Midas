@@ -15,7 +15,7 @@ midas.communityagreement.successAgreementChange = function (responseText, status
         midas.createNotice(responseText, 4000, 'error');
         return false;
     }
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('Error', 4000, 'error');
         return;
     }

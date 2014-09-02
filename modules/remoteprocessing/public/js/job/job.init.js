@@ -84,7 +84,7 @@ function validateSteps(stepnumber) {
     var isStepValid = true;
     // validate step 1
     if (stepnumber == 2) {
-        if ($('#selectedExecutableId').val() == '' || executableValid == false || isExecutableMeta == false) {
+        if ($('#selectedExecutableId').val() == '' || executableValid === false || isExecutableMeta === false) {
             midas.createNotice("Please select an Executable and set its Option information", 4000);
             isStepValid = false;
         }
@@ -196,7 +196,7 @@ function onShowStepCallback(obj) {
         var itemid = $('#selectedExecutableId').val();
         if ($('#executableForm').attr('loaded') != itemid) {
             $('#executableForm').attr('loaded', itemid);
-            $('#executableForm').load(json.global.webroot + '/remoteprocessing/job/getinitexecutable?scheduled=' + json.job.scheduled + '&itemId=' + itemid, new Array(), function () {
+            $('#executableForm').load(json.global.webroot + '/remoteprocessing/job/getinitexecutable?scheduled=' + json.job.scheduled + '&itemId=' + itemid, [], function () {
                 initExecutableForm();
             });
         }
@@ -206,7 +206,7 @@ function onShowStepCallback(obj) {
 function loadRecentUpload() {
     'use strict';
     $.getJSON(json.global.webroot + '/remoteprocessing/job/getentry?type=getRecentExecutable', function (data) {
-        if (data.length == 0) {
+        if (data.length === 0) {
             $('#recentuploadContentBlock').html('');
             return;
         }
@@ -243,7 +243,7 @@ function initExecutableForm() {
         else {
             $('#schedulerWrapper').hide();
         }
-    })
+    });
 
     $('.selectInputFileLink').click(function () {
         midas.loadDialog("selectitem_" + $(this).attr('order'), "/browse/selectitem");
@@ -266,7 +266,7 @@ function initExecutableForm() {
         content: {
             attr: 'qtip'
         }
-    })
+    });
 }
 
 function itemSelectionCallback(name, id) {

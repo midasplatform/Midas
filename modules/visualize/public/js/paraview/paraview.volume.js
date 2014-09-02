@@ -1,5 +1,6 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global JavaScriptRenderer */
 /* global json */
 
 var paraview;
@@ -123,7 +124,7 @@ midas.visualize.initCallback = function (view, retVal) {
  */
 midas.visualize.switchRenderer = function (first) {
     'use strict';
-    if (midas.visualize.renderers.js == undefined) {
+    if (midas.visualize.renderers.js === undefined) {
         midas.visualize.renderers.js = new JavaScriptRenderer("jsRenderer", "/PWService");
         midas.visualize.renderers.js.enableWebSocket(paraview, 'ws://' + json.visualize.hostname + ':' + json.visualize.wsport + '/PWService/Websocket');
         midas.visualize.renderers.js.init(paraview.sessionId, midas.visualize.activeView.__selfid__);

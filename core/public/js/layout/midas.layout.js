@@ -294,7 +294,7 @@ function globalAuthAsk(url) {
     }
 }
 
-var qtipsHelp = new Array();
+var qtipsHelp = [];
 var iQtips = 0;
 
 function InitHelpQtip() {
@@ -302,7 +302,7 @@ function InitHelpQtip() {
     if (!json.global.dynamichelp) {
         return;
     }
-    if (json.dynamicHelp == undefined) {
+    if (json.dynamicHelp === undefined) {
         return;
     }
     $.each(json.dynamicHelp, function (index, value) {

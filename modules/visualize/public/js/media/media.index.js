@@ -20,11 +20,8 @@ $(document).ready(function () {
                 $(this).jPlayer("setMedia", {
                     m4a: json.global.webroot + "/download?items=" + json.itemId
                 });
-                supplied = 'm4a, oga';
-
             },
             ended: function (event) {
-
             },
             swfPath: json.global.moduleWebroot + "/public/js/jquery",
             supplied: "m4a, oga"

@@ -21,7 +21,7 @@ midas.archive.extract.success = function (responseText) {
     $('input#deleteArchiveWhenDone').removeAttr('disabled');
     var jsonResponse = $.parseJSON(responseText);
 
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('An error occurred, please contact an administrator', 4000, 'error');
         return;
     }

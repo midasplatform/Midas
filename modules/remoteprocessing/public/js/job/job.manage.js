@@ -27,7 +27,7 @@ function colorLines(checkHidden) {
     var grey = false;
     $('.midasTree tr').each(function (index) {
         $(this).css("border", "none");
-        if (index == 0) {
+        if (index === 0) {
             return;
         }
         if (selectedJob == $(this).attr('element')) {

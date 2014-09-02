@@ -250,7 +250,7 @@ $(document).ready(function () {
             success: function (jsonContent) {
                 var $itemIsShared = $.parseJSON(jsonContent);
                 var html = '';
-                if ($itemIsShared == true) {
+                if ($itemIsShared === true) {
                     html += json.item.message['sharedItem'];
                 }
                 html += json.item.message['deleteMessage'];

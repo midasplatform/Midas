@@ -76,7 +76,7 @@ midas.upload.simpleupload.initSwfupload = function () {
     midas.upload.simpleupload.swfu = new SWFUpload(settings);
 
     $('#startUploadLink').click(function () {
-        if ($('#destinationId').val() == undefined || $('#destinationId').val().length == 0) {
+        if ($('#destinationId').val() === undefined || $('#destinationId').val().length === 0) {
             midas.createNotice("Please select where you want to upload your files.", 4000, 'warning');
             return false;
         }
@@ -285,7 +285,7 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
             return;
         }
 
-        if ($('#destinationId').val() == undefined || $('#destinationId').val().length == 0) {
+        if ($('#destinationId').val() === undefined || $('#destinationId').val().length === 0) {
             midas.createNotice("Please select where you want to upload your files.", 4000, 'warning');
             return false;
         }

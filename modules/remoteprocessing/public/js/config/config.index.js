@@ -15,7 +15,7 @@ midas.remoteprocessing.successConfig = function (responseText, statusText, xhr, 
         midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
         return false;
     }
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('Error', 4000, 'error');
         return;
     }

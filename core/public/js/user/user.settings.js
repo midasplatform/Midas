@@ -35,7 +35,7 @@ midas.user.validateAccountChange = function (formData, jqForm, options) {
 midas.user.successPasswordChange = function (responseText, statusText, xhr, form) {
     'use strict';
     var jsonResponse = $.parseJSON(responseText);
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('Error', 4000, 'error');
         return;
     }
@@ -51,7 +51,7 @@ midas.user.successPasswordChange = function (responseText, statusText, xhr, form
 midas.user.successAccountChange = function (responseText, statusText, xhr, form) {
     'use strict';
     var jsonResponse = $.parseJSON(responseText);
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('Error', 4000);
         return;
     }
@@ -66,7 +66,7 @@ midas.user.successAccountChange = function (responseText, statusText, xhr, form)
 midas.user.successPictureChange = function (responseText, statusText, xhr, form) {
     'use strict';
     var jsonResponse = $.parseJSON(responseText);
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('Error', 4000, 'error');
         return;
     }

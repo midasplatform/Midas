@@ -193,33 +193,35 @@ midas.pvw.pointSelectMode = function () {
         var x, y, z;
         var pscale = midas.pvw.cameraParallelScale;
         var focus = midas.pvw.center;
+        var top, bottom, left, right;
+        var a;
 
         if (midas.pvw.sliceMode == 'XY Plane') {
-            var top = focus[1] - pscale;
-            var bottom = focus[1] + pscale;
-            var left = focus[0] - pscale;
-            var right = focus[0] + pscale;
+            top = focus[1] - pscale;
+            bottom = focus[1] + pscale;
+            left = focus[0] - pscale;
+            right = focus[0] + pscale;
             x = (e.offsetX / $(this).width()) * (right - left) + left;
             y = (e.offsetY / $(this).height()) * (bottom - top) + top;
-            var a = (midas.pvw.slice + midas.pvw.extent[4]) / (midas.pvw.extent[5] - midas.pvw.extent[4]);
+            a = (midas.pvw.slice + midas.pvw.extent[4]) / (midas.pvw.extent[5] - midas.pvw.extent[4]);
             z = a * (midas.pvw.bounds[5] - midas.pvw.bounds[4]) + midas.pvw.bounds[4];
         }
         else if (midas.pvw.sliceMode == 'XZ Plane') {
-            var top = focus[2] + pscale;
-            var bottom = focus[2] - pscale;
-            var left = focus[0] + pscale;
-            var right = focus[0] - pscale;
+            top = focus[2] + pscale;
+            bottom = focus[2] - pscale;
+            left = focus[0] + pscale;
+            right = focus[0] - pscale;
             x = (e.offsetX / $(this).width()) * (right - left) + left;
-            var a = (midas.pvw.slice + midas.pvw.extent[2]) / (midas.pvw.extent[3] - midas.pvw.extent[2]);
+            a = (midas.pvw.slice + midas.pvw.extent[2]) / (midas.pvw.extent[3] - midas.pvw.extent[2]);
             y = a * (midas.pvw.bounds[3] - midas.pvw.bounds[2]) + midas.pvw.bounds[2];
             z = (e.offsetY / $(this).height()) * (bottom - top) + top;
         }
         else if (midas.pvw.sliceMode == 'YZ Plane') {
-            var top = focus[2] + pscale;
-            var bottom = focus[2] - pscale;
-            var left = focus[0] - pscale;
-            var right = focus[0] + pscale;
-            var a = (midas.pvw.slice + midas.pvw.extent[0]) / (midas.pvw.extent[1] - midas.pvw.extent[0]);
+            top = focus[2] + pscale;
+            bottom = focus[2] - pscale;
+            left = focus[0] - pscale;
+            right = focus[0] + pscale;
+            a = (midas.pvw.slice + midas.pvw.extent[0]) / (midas.pvw.extent[1] - midas.pvw.extent[0]);
             x = a * (midas.pvw.bounds[1] - midas.pvw.bounds[0]) + midas.pvw.bounds[2];
             y = (e.offsetX / $(this).width()) * (right - left) + left;
             z = (e.offsetY / $(this).height()) * (bottom - top) + top;
