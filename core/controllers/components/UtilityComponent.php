@@ -618,7 +618,8 @@ class UtilityComponent extends AppComponent
     rmdir($dir);
     }
 
-  private static function getEmailTransport() {
+  private static function getEmailTransport()
+    {
     if(Zend_Registry::get('configGlobal')->smtpserver &&
        Zend_Registry::get('configGlobal')->smtpuser &&
        Zend_Registry::get('configGlobal')->smtppassword)
@@ -633,7 +634,7 @@ class UtilityComponent extends AppComponent
       {
       return null;
       }
-  }
+    }
 
   /** Send mail. */
   public static function sendEmail($to, $subject, $body)
