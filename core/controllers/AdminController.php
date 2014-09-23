@@ -99,6 +99,10 @@ class AdminController extends AppController
     $formArray['name']->setValue($config->global->application->name);
     $formArray['smartoptimizer']->setValue($config->global->smartoptimizer);
     $formArray['timezone']->setValue($config->global->default->timezone);
+    $formArray['smtpserver']->setValue($config->global->smtpserver);
+    $formArray['smtpuser']->setValue($config->global->smtpuser);
+    $formArray['smtppassword']->setValue($config->global->smtppassword);
+    $formArray['smtpfromaddress']->setValue($config->global->smtpfromaddress);
     if(isset($config->global->closeregistration))
       {
       $formArray['closeregistration']->setValue($config->global->closeregistration);
@@ -158,6 +162,10 @@ class AdminController extends AppController
         $config->global->closeregistration = $this->getParam('closeregistration');
         $config->global->logtrace = $this->getParam('logtrace');
         $config->global->httpproxy = $this->getParam('httpProxy');
+        $config->global->smtpserver = $this->getParam('smtpserver');
+        $config->global->smtpuser = $this->getParam('smtpuser');
+        $config->global->smtppassword = $this->getParam('smtppassword');
+        $config->global->smtpfromaddress = $this->getParam('smtpfromaddress');
         $config->global->gravatar = $this->getParam('gravatar');
         $config->global->verifyemail = $this->getParam('verifyemail');
 

@@ -69,13 +69,18 @@ class AdminForm extends AppForm
 
     $httpProxy = new Zend_Form_Element_Text('httpProxy');
 
+    $smtpServer = new Zend_Form_Element_Text('smtpserver');
+    $smtpUser = new Zend_Form_Element_Text('smtpuser');
+    $smtpPassword = new Zend_Form_Element_Text('smtppassword');
+    $smtpFromAddress = new Zend_Form_Element_Text('smtpfromaddress');
+
     $submit = new Zend_Form_Element_Submit('submitConfig');
     $submit ->setLabel('Save configuration');
 
     $form->addElements(
       array($dynamichelp, $keywords, $description, $timezone, $environment, $gravatar,
       $lang, $name, $smartoptimizer, $closeRegistration, $submit, $logtrace, $httpProxy,
-      $verifyEmail));
+      $smtpServer, $smtpUser, $smtpPassword, $smtpFromAddress, $verifyEmail));
     return $form;
     }
   } // end class
