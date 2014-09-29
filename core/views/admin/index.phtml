@@ -68,6 +68,22 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
                 <label for='httpProxy'>Outbound HTTP Proxy</label>
                 ".$this->configForm['httpProxy']."
               </div>
+              <div class='smtpserver'>
+                <label for='smtpserver'>SMTP Server</label>
+                {$this->configForm['smtpserver']}
+              </div>
+              <div class='smtpuser'>
+                <label for='smtpuser'>SMTP Username</label>
+                {$this->configForm['smtpuser']}
+              </div>
+              <div class='smtppassword'>
+                <label for='smtppassword'>SMTP Password</label>
+                {$this->configForm['smtppassword']}
+              </div>
+              <div class='smtpfromaddress'>
+                <label for='smtpfromaddress'>SMTP From Address</label>
+                {$this->configForm['smtpfromaddress']}
+              </div>
               <div class='installLang'";
               if(isset(Zend_Registry::get('configCore')->internationalization) && Zend_Registry::get('configCore')->internationalization == "0")
                 {

@@ -618,11 +618,34 @@ class UtilityComponent extends AppComponent
     rmdir($dir);
     }
 
+  private static function getEmailTransport()
+    {
+    if(Zend_Registry::get('configGlobal')->smtpserver &&
+       Zend_Registry::get('configGlobal')->smtpuser &&
+       Zend_Registry::get('configGlobal')->smtppassword)
+      {
+      $config = array('auth' => 'login',
+                      'username' => Zend_Registry::get('configGlobal')->smtpuser,
+                      'password' => Zend_Registry::get('configGlobal')->smtppassword);
+      $transport = new Zend_Mail_Transport_Smtp(Zend_Registry::get('configGlobal')->smtpserver, $config);
+      return $transport;
+      }
+    else
+      {
+      return null;
+      }
+    }
+
   /** Send mail. */
   public static function sendEmail($to, $subject, $body)
     {
     $validator = new Zend_Validate_EmailAddress();
-    if(getenv('midas_email_sender') && $validator->isValid(getenv('midas_email_sender')))
+    if(Zend_Registry::get('configGlobal')->smtpfromaddress &&
+       $validator->isValid(Zend_Registry::get('configGlobal')->smtpfromaddress))
+      {
+      $sender = Zend_Registry::get('configGlobal')->smtpfromaddress;
+      }
+    else if(getenv('midas_email_sender') && $validator->isValid(getenv('midas_email_sender')))
       {
       $sender = getenv('midas_email_sender');
       }
@@ -653,6 +676,10 @@ class UtilityComponent extends AppComponent
         $message->addTo($to);
         $message->setSubject($subject);
         $message->setHtmlBody($body);
+        if(Zend_Registry::get('configGlobal')->environment != 'testing')
+          {
+          $message->send();
+          }
         }
       else
         {
@@ -661,10 +688,18 @@ class UtilityComponent extends AppComponent
         $message->addTo($to);
         $message->setSubject($subject);
         $message->setBodyHtml($body);
-        }
-      if(Zend_Registry::get('configGlobal')->environment != 'testing')
-        {
-        $message->send();
+        if(Zend_Registry::get('configGlobal')->environment != 'testing')
+          {
+          $transport = UtilityComponent::getEmailTransport();
+          if($transport)
+            {
+            $message->send($transport);
+            }
+          else
+            {
+            $message->send();
+            }
+          }
         }
       }
     catch(Exception $exception)
