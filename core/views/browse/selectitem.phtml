@@ -62,7 +62,7 @@ echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/b
 </table>
 
 <br/>
-<input type="text" id="live_search_item" value="<?= $this->t('Or search it...') ?>"  autocomplete="off" autocorrect="off" autocapitalize="off" />
+<input type="text" id="live_search_item" value="<?php echo $this->t('Or search it...'); ?>"  autocomplete="off" autocorrect="off" autocapitalize="off" />
 <input type="hidden" id="live_search_item_value" value="init" />
 <div id="searchloadingSelectItem" style="display:none"></div>
 <br/>
