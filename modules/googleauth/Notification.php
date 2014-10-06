@@ -73,6 +73,7 @@ class Googleauth_Notification extends MIDAS_Notification
     $this->Googleauth_User->deleteByUser($params['userDao']);
     }
 
+  /** Check user cookie */
   public function checkUserCookie($args)
     {
     $cookie = $args['value'];

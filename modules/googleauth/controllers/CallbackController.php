@@ -18,6 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
+/** Callback controller for the googleauth module */
 class Googleauth_CallbackController extends Googleauth_AppController
 {
   public $_models = array('Setting', 'User', 'Userapi');
@@ -81,11 +82,8 @@ class Googleauth_CallbackController extends Googleauth_AppController
     {
     $clientId = $this->Setting->getValueByName('client_id', $this->moduleName);
     $clientSecret = $this->Setting->getValueByName('client_secret', $this->moduleName);
-    $scheme = (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS']) ?
-        'https://' : 'http://';
-    $redirectUri = $scheme.$_SERVER['HTTP_HOST'].
-                   Zend_Controller_Front::getInstance()->getBaseUrl().
-                   '/'.$this->moduleName.'/callback';
+    $scheme = (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS']) ? 'https://' : 'http://';
+    $redirectUri = $scheme.$_SERVER['HTTP_HOST'] .Zend_Controller_Front::getInstance()->getBaseUrl().'/'.$this->moduleName.'/callback';
     $headers = array(
       'Content-Type: application/x-www-form-urlencoded;charset=UTF-8',
       'Connection: Keep-Alive'
@@ -110,7 +108,7 @@ class Googleauth_CallbackController extends Googleauth_AppController
 
     $httpStatus = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-    if ($httpStatus != 200)
+    if($httpStatus != 200)
       {
       throw new Zend_Exception('Access token request failed: '.$resp);
       }
@@ -132,7 +130,7 @@ class Googleauth_CallbackController extends Googleauth_AppController
     $resp = curl_exec($curl);
     $httpStatus = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-    if ($httpStatus != 200)
+    if($httpStatus != 200)
       {
       throw new Zend_Exception('Get Google user info request failed: '.$resp);
       }
@@ -146,12 +144,13 @@ class Googleauth_CallbackController extends Googleauth_AppController
       'email' => strtolower($resp->emails[0]->value));
     }
 
+  /** Create or return a user */
   protected function _createOrGetUser($info)
     {
     $personId = $info['googlePersonId'];
     $existing = $this->Googleauth_User->getByGooglePersonId($personId);
 
-    if (!$existing)
+    if(!$existing)
       {
       $user = $this->User->getByEmail($info['email']);
       if(!$user)
@@ -184,7 +183,7 @@ class Googleauth_CallbackController extends Googleauth_AppController
       }
 
     $userapi = $this->Userapi->getByAppAndUser('Default', $user);
-    setcookie('midasUtil','googleauth:'.$user->getKey().':'.md5($userapi->getApikey()), time() + 60 * 60 * 24 * 30, '/');
+    setcookie('midasUtil', 'googleauth:'.$user->getKey().':'.md5($userapi->getApikey()), time() + 60 * 60 * 24 * 30, '/');
     return $user;
     }
 }
