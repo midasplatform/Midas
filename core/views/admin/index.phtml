@@ -61,23 +61,23 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
                 {$this->configForm['description']}
               </div>
               <div class='httpProxy'>
-                <label for='httpProxy'>Outbound HTTP Proxy</label>
+                <label for='httpProxy'>Outbound HTTP proxy</label>
                 ".$this->configForm['httpProxy']."
               </div>
               <div class='smtpserver'>
-                <label for='smtpserver'>SMTP Server</label>
+                <label for='smtpserver'>SMTP server</label>
                 {$this->configForm['smtpserver']}
               </div>
               <div class='smtpuser'>
-                <label for='smtpuser'>SMTP Username</label>
+                <label for='smtpuser'>SMTP username</label>
                 {$this->configForm['smtpuser']}
               </div>
               <div class='smtppassword'>
-                <label for='smtppassword'>SMTP Password</label>
+                <label for='smtppassword'>SMTP password</label>
                 {$this->configForm['smtppassword']}
               </div>
               <div class='smtpfromaddress'>
-                <label for='smtpfromaddress'>SMTP From Address</label>
+                <label for='smtpfromaddress'>SMTP from address</label>
                 {$this->configForm['smtpfromaddress']}
               </div>
               <div class='installLang'";
@@ -89,31 +89,31 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
                 <label for='lang'>Language</label>
                 {$this->configForm['lang']}
               </div>
-              <div qtip='Development is slower, but it will show you all the information needed to debug the application<br/><br/>Production is faster, but it hides the errors.' class='installEnvironment'>
+              <div qtip='Development is slower, but will display debug information.<br/><br/>Production is faster, but hides the errors.<br/><br/>Do not select development for web-accessible instances under any circumstances.' class='installEnvironment'>
                 <label for='environment'>Environment</label>
                 {$this->configForm['environment']}
               </div>
               <div class='installTimezone'>
-                <label for='environment'>Timezone</label>
+                <label for='environment'>Time zone</label>
                 {$this->configForm['timezone']}
               </div>
-              <div qtip='If you enable this feature, MIDAS will show the users how to use the system.' class='installDynamichelp'>
-                <label for='dynamichelp'>Dynamic Help</label>
+              <div qtip='If you enable this feature, Midas will show the users how to use the system.' class='installDynamichelp'>
+                <label for='dynamichelp'>Dynamic help</label>
                 {$this->configForm['dynamichelp']}
               </div>
-              <div qtip='If you enable this feature, Midas will no longer allow user registration.' class='closeRegistration'>
-                <label for='closeRegistration'>Close Registration</label>
+              <div qtip='If you enable this feature, user registration will not be allowed.' class='closeRegistration'>
+                <label for='closeRegistration'>Close registration</label>
                 {$this->configForm['closeregistration']}
               </div>
               <div qtip='Require users to verify their email addresses during registration' class='emailVerification'>
-                <label for='verifyEmail'>Require Email Verification</label>
+                <label for='verifyEmail'>Require email verification</label>
                 {$this->configForm['verifyemail']}
               </div>
               <div qtip='If enabled, users will automatically have an icon if they have created one on gravatar.com'>
                 <label for='gravatar'>Gravatar user icons</label>
                 {$this->configForm['gravatar']}
               </div>
-              <div qtip='If you enable this feature, all requests to Midas will be logged to trace.log' class='logtrace'>
+              <div qtip='If you enable this feature, all requests will be logged to trace.log' class='logtrace'>
                 <label for='logtrace'>Log all requests</label>
                 {$this->configForm['logtrace']}
               </div>
