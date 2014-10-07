@@ -31,5 +31,5 @@ skip_files:
 - ^(.*/)?core/configs/.*\.local\.ini$
 - ^(.*/)?(\.git|\.idea|\.vagrant|data|log|nbproject|provisioning|tests|tmp|utils)/.*
 - ^(.*/)?(core|modules/.*)/(database/pgsql|tests)/.*
-- ^(.*/)?library/(CMake|Executable)/.*
+- ^(.*/)?library/CMake/.*
 - ^(.*/)?modules/(batchmake|dicom.*|example|metadataextractor|pvw|remoteprocessing|solr|statistics|thumbnailcreator|visualize)/.*
