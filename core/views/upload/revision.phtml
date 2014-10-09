@@ -36,9 +36,16 @@
 <div class="tabs uploadTabs" id='uploadTabs'>
   <ul>
     <li><a href="#uploadTabs-1">Simple</a></li>
-    <li><a href="#uploadTabs-2">Files over 2 GB</a></li>
+    <?php
+    foreach($this->customTabs as $module => $tabs)
+      {
+      foreach($tabs as $tabName => $tabUrl)
+        {
+        echo '<li><a href="'.$tabUrl.'">'.$tabName.'</a></li>';
+        }
+      }
+    ?>
   </ul>
-
   <div id="uploadTabs-1">
     <b><?php echo $this->t('Step 1: Select files to upload')?></b>
     <br/>
@@ -106,45 +113,10 @@
     </div>
   </div>
 
-  <div id="uploadTabs-2">
-    <div class="belowDestinationUpload" style="display: none;"></div>
-    <b><?php echo $this->t('Step 1: Select a license')?></b>
-    <div>
-      <?php
-      echo $this->element('license')?>
-    </div>
-    <br/>
-    <b><?php echo $this->t('Step 2: Set the changes')?></b>
-    <div>
-      <textarea style="width:80%;" name="revisionChanges"/>
-    </div>
-    <br/>
-    <b><?php echo $this->t('Step 3: Upload files')?></b>
-    <br/><br/>
-    <applet name="MidasUploader" code="com.kitware.utils.Main"
-            archive="<?php echo $this->coreWebroot?>/public/java/upload/MidasUploader.jar?rev=3"
-            width="360" height="150" mayscript="true">
-      <param name="type" value="application/x-java-applet;version=1.5" />
-      <param name="background" value="ffffff" />
-      <param name="loglevel" value="WARNING" />
-      <param name="sessionId" value="<?php echo session_id();?>"/>
-      <param name="baseURL" value="<?php echo $this->protocol."://".$this->host . $this->webroot ?>/upload/"/>
-      <param name="getUploadFileOffsetBaseURL" value="gethttpuploadoffset/"/>
-      <param name="onSuccessfulUploadRedirectEnable" value="true"/>
-      <param name="onSuccessRedirectURL" value="<?php echo $this->protocol."://".$this->host . $this->webroot ?>/item/<?php echo $this->item->getKey(); ?>"/>
-      <param name="uploadUniqueIdentifierURL" value="gethttpuploaduniqueidentifier/"/>
-      <param name="uploadFileBaseURL" value="processjavarevisionupload/?sid="/>
-      <param name="uploadType" value="revision"/>
-      <param name="parentItem" value="<?php echo $this->item->getKey(); ?>"/>
-      You must install and enable Java on your system in order to use the large file uploader.
-    </applet>
-  </div>
-
 <input type="hidden" class="buttonBrowse" value="<?php echo $this->t('Browse');?>"/>
 <input type="hidden" class="sessionId" value="<?php echo session_id();?>"/>
 <input type="hidden" class="maxSizeFile" value="<?php echo $this->maxSizeFile;?>"/>
 <input type="hidden" class="uploadedSimple" value="0"/>
-<input type="hidden" class="uploadedJava" value="0"/>
 <input type="hidden" class="uploadedLinks" value="0"/>
 <?php
 foreach($this->extraHtml as $module => $extra)

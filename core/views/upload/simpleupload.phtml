@@ -30,9 +30,7 @@
 <div class="tabs uploadTabs" id='uploadTabs'>
   <ul>
     <li><a href="#uploadTabs-1">Simple</a></li>
-    <li><a href="<?php echo $this->webroot?>/upload/javaupload"><?php echo $this->t('Java Uploader');?></a></li>
-    <li><a href="<?php echo $this->webroot?>/upload/javaupload?mode=folder"><?php echo $this->t('Folders');?></a></li>
-    <li><a href="#uploadTabs-3"><?php echo $this->t('Links');?></a></li>
+    <li><a href="#uploadTabs-3"><?php echo $this->t('Link');?></a></li>
     <?php
     foreach($this->customTabs as $module => $tabs)
       {
@@ -116,7 +114,6 @@
 <input type="hidden" class="sessionId" value="<?php echo session_id();?>"/>
 <input type="hidden" class="maxSizeFile" value="<?php echo $this->maxSizeFile;?>"/>
 <input type="hidden" class="uploadedSimple" value="0"/>
-<input type="hidden" class="uploadedJava" value="0"/>
 <input type="hidden" class="uploadedLinks" value="0"/>
 
 <script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload.js"></script>

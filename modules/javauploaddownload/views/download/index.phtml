@@ -1,0 +1,54 @@
+<?php
+/*=========================================================================
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+=========================================================================*/
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot; ?>/public/css/download/download.index.css" />
+<div class="viewMain">
+  <div class="downloadDescription">
+    <img class="descriptionImage" alt="" src="<?php echo $this->moduleWebroot; ?>/public/images/icons/move.png" />
+    <?php echo $this->contentDescription; ?> will be downloaded.
+  </div>
+  <div class="downloadInstructions">
+     Press the <b>Download</b> button to choose your destination and begin the download.
+  </div>
+  <div class="pointToDownloadButton">
+    <img class="pointToDownload" alt="" src="<?php echo $this->moduleWebroot ?>/public/images/icons/download.png" />
+  </div>
+  <br /><br />
+  <applet name="MidasUploader" class="downloadApplet" width="569" height="190"
+          archive="<?php echo $this->moduleWebroot; ?>/public/java/upload/MidasUploader.jar?rev=3; ?>"
+          code="com.kitware.utils.Main" mayscript="true">
+    <param name="background" value="ffffff" />
+    <param name="baseURL" value="<?php echo $this->protocol.'://'.$this->host.$this->webroot; ?>/" />
+    <param name="downloadMode" value="true" />
+    <param name="folderIds" value="<?php echo $this->folderIds; ?>" />
+    <param name="itemIds" value="<?php echo $this->itemIds; ?>" />
+    <param name="loglevel" value="WARNING" />
+    <param name="sessionId" value="<?php echo session_id(); ?>" />
+    <param name="totalSize" value="<?php echo $this->totalSize; ?>" />
+    <param name="type" value="application/x-java-applet;version=1.5" />
+    You must install and enable Java on your system in order to use the Java download applet.
+  </applet>
+  <?php
+  foreach($this->extraHtml as $module => $extra)
+    {
+    echo $extra.PHP_EOL;
+    }
+  ?>
+</div>

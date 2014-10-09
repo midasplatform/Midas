@@ -16,25 +16,10 @@ var midas = midas || {};
 midas.upload = midas.upload || {};
 midas.upload.revision = {};
 
-/**
- * When the user sets changes or selects a license, we
- * write the value into the session for when the applet upload
- * is complete.
- */
-midas.upload.revision.sendFormToJavaSession = function () {
-    'use strict';
-    $.post(json.global.webroot + '/upload/javarevisionsession', {
-        changes: $('textarea[name=revisionChanges]:last').val(),
-        license: $('select[name=licenseSelect]:last').val(),
-        itemId: json.item.item_id
-    });
-};
-
 midas.upload.revision.updateUploadedCount = function () {
     'use strict';
     var count = parseInt($('.uploadedSimple').val()) +
-        parseInt($('.uploadedLinks').val()) +
-        parseInt($('.uploadedJava').val());
+        parseInt($('.uploadedLinks').val());
     $('.globalUploadedCount').html(count);
 };
 
@@ -202,19 +187,5 @@ $('#browseMIDASLink').click(function () {
 
 $(document).ready(function () {
     'use strict';
-    midas.upload.revision.sendFormToJavaSession();
-
-    // Save license change to the session
-    $('select[name=licenseSelect]:last').change(function () {
-        midas.upload.revision.sendFormToJavaSession();
-    });
-
-    // Save changes message to session (if it's not blank)
-    $('textarea[name=revisionChanges]:last').blur(function () {
-        if ($(this).val() != '') {
-            midas.upload.revision.sendFormToJavaSession();
-        }
-    });
-
     midas.doCallback('CALLBACK_CORE_REVISIONUPLOAD_LOADED');
 });

@@ -15,25 +15,10 @@ $(document).ready(function () {
                 window.location = json.global.webroot + '/download/item/' + json.item.item_id;
             }
             else if (retVal.action == 'promptApplet') {
-                var html = 'Warning: you have requested a large download (' + retVal.sizeStr + ') that might take a very long time to complete.';
-                html += ' It is recommended that you use the large data download applet in case your connection is interrupted. ' +
-                    'Would you like to use the applet?';
-
-                html += '<div style="margin-top: 20px; float: right">';
-                html += '<input type="button" style="margin-left: 0;" class="globalButton useLargeDataApplet" value="Yes, use large downloader"/>';
-                html += '<input type="button" style="margin-left: 10px;" class="globalButton useZipStream" value="No, use normal download"/>';
-                html += '</div>';
-                midas.showDialogWithContent('Large download requested', html, false, {
-                    width: 480
-                });
-
-                $('input.useLargeDataApplet').unbind('click').click(function () {
-                    window.location = json.global.webroot + '/download/applet?itemIds=' + json.item.item_id;
-                    $('div.MainDialog').dialog('close');
-                });
-                $('input.useZipStream').unbind('click').click(function () {
-                    window.location = json.global.webroot + '/download/item/' + json.item.item_id;
-                    $('div.MainDialog').dialog('close');
+                midas.doCallback('CALLBACK_CORE_PROMPT_APPLET', {
+                    folderIds: '',
+                    itemIds: json.item.item_id,
+                    sizeString: retVal.sizeStr
                 });
             }
         });

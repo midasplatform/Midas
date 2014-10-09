@@ -35,6 +35,7 @@ class Sizequota_Notification extends ApiEnabled_Notification
     $this->addCallBack('CALLBACK_CORE_GET_SIMPLEUPLOAD_EXTRA_HTML', 'getExtraHtmlSimple');
     $this->addCallBack('CALLBACK_CORE_GET_JAVAUPLOAD_EXTRA_HTML', 'getExtraHtmlSimple');
     $this->addCallBack('CALLBACK_CORE_GET_REVISIONUPLOAD_EXTRA_HTML', 'getExtraHtmlRevision');
+    $this->addCallBack('CALLBACK_CORE_GET_JAVAREVISIONUPLOAD_EXTRA_HTML', 'getExtraHtmlRevision');
     $this->addCallBack('CALLBACK_CORE_VALIDATE_UPLOAD', 'validateUpload');
     $this->addCallBack('CALLBACK_CORE_VALIDATE_UPLOAD_REVISION', 'validateUploadRevision');
 

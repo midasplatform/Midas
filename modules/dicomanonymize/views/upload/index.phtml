@@ -58,19 +58,19 @@ Click the "Choose Folder" button to select a local directory that contains a DIC
                  <?php echo $this->moduleWebroot?>/public/java/upload/log4j.jar"
         width="480" height="190" mayscript="true"
         code="com.kitware.utils.Main">
-  <param name = "type" value = "application/x-java-applet;version=1.5" />
-  <param name = "background" value = "ffffff" />
-  <param name = "loglevel" value = "WARNING" />
-  <param name = "sessionId" value = "<?php echo session_id();?>"/>
-  <param name = "baseURL" value = "<?php echo $this->protocol."://".$this->host.$this->webroot ?>/upload/"/>
-  <param name = "webroot" value = "<?php echo $this->protocol."://".$this->host.$this->webroot ?>" />
-  <param name = "apiURL" value = "<?php echo $this->protocol."://".$this->host.$this->webroot ?>/api/json?useSession&method=" />
-  <param name = "daScript" value="<?php echo $this->protocol."://".$this->host.$this->webroot ?>/modules/dicomanonymize/public/java/upload/DA.script"/>
-  <param name = "getUploadFileOffsetBaseURL" value="gethttpuploadoffset/"/>
-  <param name = "onSuccessfulUploadRedirectEnable" value="true"/>
-  <param name = "onSuccessRedirectURL" value="/item/"/>
-  <param name = "uploadUniqueIdentifierURL" value="gethttpuploaduniqueidentifier/"/>
-  <param name = "uploadFileBaseURL" value="processjavaupload/?sid="/>
-  <param name = "codebase_lookup" value="false"> <!-- must set this parameter so the applet won't look for files on the server -->
-  You must install and enable Java on your system in order to use the large file uploader.
+  <param name="type" value="application/x-java-applet;version=1.5" />
+  <param name="background" value="ffffff" />
+  <param name="loglevel" value="WARNING" />
+  <param name="sessionId" value="<?php echo session_id();?>"/>
+  <param name="baseURL" value="<?php echo $this->protocol.'://'.$this->host.$this->webroot ?>/javauploaddownload/upload/"/>
+  <param name="webroot" value="<?php echo $this->protocol.'://'.$this->host.$this->webroot ?>" />
+  <param name="apiURL" value="<?php echo $this->protocol.'://'.$this->host.$this->webroot ?>/api/json?useSession&method=" />
+  <param name="daScript" value="<?php echo $this->protocol.'://'.$this->host.$this->webroot ?>/modules/dicomanonymize/public/java/upload/DA.script"/>
+  <param name="getUploadFileOffsetBaseURL" value="gethttpuploadoffset/"/>
+  <param name="onSuccessfulUploadRedirectEnable" value="true"/>
+  <param name="onSuccessRedirectURL" value="/item/"/>
+  <param name="uploadUniqueIdentifierURL" value="gethttpuploaduniqueidentifier/"/>
+  <param name="uploadFileBaseURL" value="processjavaupload?sid="/>
+  <param name="codebase_lookup" value="false"> <!-- must set this parameter so the applet won't look for files on the server -->
+  You must install and enable Java on your system in order to use the DICOM anonymizer.
 </applet>

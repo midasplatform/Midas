@@ -46,7 +46,11 @@ $(document).ready(function () {
                 window.location = json.global.webroot + '/download?folders=' + folderId;
             }
             else if (retVal.action == 'promptApplet') {
-                midas.promptDownloadApplet(folderId, '', retVal.sizeStr);
+                midas.doCallback('CALLBACK_CORE_PROMPT_APPLET', {
+                    folderIds: folderId,
+                    itemIds: '',
+                    sizeString: retVal.sizeStr
+                });
             }
         });
     });
