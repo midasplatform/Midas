@@ -610,7 +610,7 @@ class UserController extends AppController
   /** Settings page action */
   public function settingsAction()
     {
-    if(!$this->logged)
+    if(!$this->logged || $this->isDemoMode())
       {
       $this->disableView();
       return false;

@@ -18,17 +18,14 @@
  limitations under the License.
 =========================================================================*/
 
-/** Demo management Component */
-class DemoComponent extends AppComponent
+/** Demo component for the demo module */
+class Demo_DemoComponent extends AppComponent
   {
-  /** reset database (only works with mysql)*/
+  public $moduleName = 'demo';
+
+  /** Reset database (only works with MySQL) */
   public function reset()
     {
-    if(Zend_Registry::get('configGlobal')->demomode != 1)
-      {
-      throw new Zend_Exception("Please enable demo mode");
-      }
-
     $db = Zend_Registry::get('dbAdapter');
     $dbname = Zend_Registry::get('configDatabase')->database->params->dbname;
 
@@ -64,13 +61,14 @@ class DemoComponent extends AppComponent
       }
 
     $userModel = MidasLoader::loadModel('User');
+
+    $admin = $userModel->createUser(MIDAS_DEMO_ADMIN_EMAIL, MIDAS_DEMO_ADMIN_PASSWORD, 'Demo', 'Administrator', 1);
+    $userModel->createUser(MIDAS_DEMO_USER_EMAIL, MIDAS_DEMO_USER_PASSWORD, 'Demo', 'User', 0);
+
     $communityModel = MidasLoader::loadModel('Community');
+    $communityDao = $communityModel->createCommunity('Demo', 'This is a demo community', MIDAS_COMMUNITY_PUBLIC, $admin, MIDAS_COMMUNITY_CAN_JOIN);
+
     $assetstoreModel = MidasLoader::loadModel('Assetstore');
-    $admin = $userModel->createUser('admin@kitware.com', 'admin', 'Demo', 'Administrator', 1);
-    $userModel->createUser('user@kitware.com', 'user', 'Demo', 'User', 0);
-
-    $communityDao = $communityModel->createCommunity('Demo', "This is a Demo Community", MIDAS_COMMUNITY_PUBLIC, $admin, MIDAS_COMMUNITY_CAN_JOIN);
-
     $assetstoreDao = new AssetstoreDao();
     $assetstoreDao->setName('Default');
     $assetstoreDao->setPath(UtilityComponent::getDataDirectory('assetstore'));
@@ -80,15 +78,20 @@ class DemoComponent extends AppComponent
     $options = array('allowModifications' => true);
     $config = new Zend_Config_Ini(CORE_CONFIGS_PATH.'/application.ini', null, $options);
     $config->global->defaultassetstore->id = $assetstoreDao->getKey();
-    $config->global->demomode = 1;
     $config->global->dynamichelp = 1;
-    $config->global->environment = 'development';
+    $config->global->environment = 'production';
     $config->global->application->name = 'Midas Platform - Demo';
-    $description = 'Midas Platform integrates multimedia server technology with Kitware\'s open-source data analysis and';
-    $description .= ' visualization clients. The server follows open standards for data storage, access and harvesting';
+    $description = 'Midas Platform is an open-source toolkit that enables the
+      rapid creation of tailored, web-enabled data storage. Designed to meet
+      the needs of advanced data-centric computing, Midas Platform addresses
+      the growing challenge of large data by providing a flexible, intelligent
+      data storage system. The system integrates multimedia server technology
+      with other open-source data analysis and visualization tools to enable
+      data-intensive applications that easily interface with existing
+      workflows.';
     $config->global->application->description = $description;
 
-    $enabledModules = array('visualize', 'oai', 'metadataextractor', 'api', 'scheduler', 'thumbnailcreator', 'statistics');
+    $enabledModules = array('api', 'metadataextractor', 'oai', 'statistics', 'scheduler', 'thumbnailcreator', 'visualize');
     foreach($enabledModules as $module)
       {
       if(file_exists(LOCAL_CONFIGS_PATH.'/'.$module.'.demo.local.ini'))
@@ -110,13 +113,12 @@ class DemoComponent extends AppComponent
     $configGlobal = new Zend_Config_Ini(APPLICATION_CONFIG, 'global', true);
     Zend_Registry::set('configGlobal', $configGlobal);
 
-    require_once BASE_PATH.'/core/controllers/components/UploadComponent.php';
-    $uploadComponent = new UploadComponent();
+    $uploadComponent = MidasLoader::loadComponent('Upload');
     $uploadComponent->createUploadedItem($admin, 'midasLogo.gif', BASE_PATH.'/core/public/images/midasLogo.gif', $communityDao->getPublicFolder(), null, '', true);
-    $uploadComponent->createUploadedItem($admin, 'cow.vtp', BASE_PATH.'/core/public/demo/cow.vtp', $communityDao->getPublicFolder(), null, '', true);
+    $uploadComponent->createUploadedItem($admin, 'cow.vtp', BASE_PATH.'/modules/demo/public/'.$this->moduleName.'/cow.vtp', $communityDao->getPublicFolder(), null, '', true);
     }
 
-  /** recursively delete a folder*/
+  /** Recursively delete a folder */
   private function _rrmdir($dir)
     {
     if(!file_exists($dir))
@@ -130,19 +132,19 @@ class DemoComponent extends AppComponent
 
     foreach($objects as $object)
       {
-      if($object != "." && $object != "..")
+      if($object != '.' && $object != '..')
         {
-        if(filetype($dir."/".$object) == "dir")
+        if(filetype($dir.'/'.$object) == 'dir')
           {
-          $this->_rrmdir($dir."/".$object);
+          $this->_rrmdir($dir.'/'.$object);
           }
         else
           {
-          unlink($dir."/".$object);
+          unlink($dir.'/'.$object);
           }
         }
       }
     reset($objects);
     rmdir($dir);
     }
-  } // end class
+  }

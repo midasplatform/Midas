@@ -212,12 +212,7 @@ echo $this->headStyle().PHP_EOL;
 </div>
 <div class="Header">
   <div class="HeaderContent">
-    <div class="HeaderLogo" onclick="window.location='<?php echo $this->webroot; ?>';">
-      <?php
-      if($this->demoMode)
-      echo 'Demo';
-      ?>
-    </div>
+    <div class="HeaderLogo" onclick="window.location='<?php echo $this->webroot; ?>';"></div>
     <div class="HeaderSearch">
       <input type="text" id="live_search" value="<?php echo $this->t('Search...'); ?>" autocomplete="off" />
       <input type="hidden" id="live_search_value" value="init"  />

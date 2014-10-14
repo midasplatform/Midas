@@ -334,10 +334,6 @@ function TimerQtip() {
         value.qtip('disable');
     });
 
-    if (json.global.demomode) {
-        $('.loginLink').qtip('enable');
-    }
-
     if (!$('#dialogStartingGuide').is(':hidden')) {
         iQtips = 0;
         setTimeout("TimerQtip()", 1000);

@@ -17,6 +17,27 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-?>
-<br/>
-<b>Administration unavailable in demo mode</b>
+
+/** Notification manager for the demo module */
+class Demo_Notification extends MIDAS_Notification
+  {
+  public $moduleName = 'demo';
+  public $_models = array('Setting');
+
+  /** Init notification process */
+  public function init()
+    {
+    $fc = Zend_Controller_Front::getInstance();
+    $this->webroot = $fc->getBaseUrl();
+    if($this->Setting->getValueByName('enabled', $this->moduleName))
+      {
+      $this->addCallBack('CALLBACK_CORE_GET_FOOTER_LAYOUT', 'getFooterLayout');
+      }
+    }
+
+  /** Get footer layout */
+  public function getFooterLayout()
+    {
+    return '<script type="text/javascript" src="'.$this->webroot.'/modules/'.$this->moduleName.'/public/js/common/common.layout.js"></script>';
+    }
+  }

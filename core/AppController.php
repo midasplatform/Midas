@@ -56,8 +56,6 @@ class AppController extends MIDAS_GlobalController
     Zend_Registry::set('webroot', $this->view->webroot);
     Zend_Registry::set('coreWebroot', $this->view->coreWebroot);
 
-    $this->view->demoMode = $this->isDemoMode();
-
     $this->view->title = Zend_Registry::get('configGlobal')->application->name;
     $this->view->metaDescription = Zend_Registry::get('configGlobal')->application->description;
 
@@ -237,7 +235,6 @@ class AppController extends MIDAS_GlobalController
       "needToLog" => false,
       "currentUri" => $this->getRequest()->REQUEST_URI,
       "lang" => Zend_Registry::get('configGlobal')->application->lang,
-      "demomode" => $this->isDemoMode(),
       "dynamichelp" => $this->isDynamicHelp(),
       "dynamichelpAnimate" => $this->isDynamicHelp() && isset($_GET['first']),
       "startingGuide" => $this->isStartingGuide(),
@@ -292,8 +289,7 @@ class AppController extends MIDAS_GlobalController
       {
       if($this->isDemoMode())
         {
-        $this->addDynamicHelp('.loginLink', "<b>Authenticate.</b><br/><br/>Demo Administrator:<br/>- Login: admin@kitware.com<br/>- Password: admin<br/><br/>
-                              Demo User:<br/>-Login: user@kitware.com<br/>-Password: user", 'bottom left', 'top right');
+        $this->addDynamicHelp('.loginLink', MIDAS_DEMO_DYNAMIC_HELP, 'bottom left', 'top right');
         }
 
       if($this->logged)
@@ -426,10 +422,6 @@ class AppController extends MIDAS_GlobalController
   /** show dynamic help ? */
   function isDynamicHelp()
     {
-    if($this->isDemoMode())
-      {
-      return true;
-      }
     try
       {
       $dynamichelp = Zend_Registry::get('configGlobal')->dynamichelp;
@@ -491,10 +483,16 @@ class AppController extends MIDAS_GlobalController
     {
     $this->view->json['dynamicHelp'][] = array('selector' => $selector, 'text' => htmlspecialchars($text), 'my' => $arrow, 'at' => $location);
     }
+
   /** check if demo mode is set */
   public function isDemoMode()
     {
-    return Zend_Registry::get('configGlobal')->demomode == 1;
+    if(in_array('demo', Zend_Registry::get('modulesEnable')))
+      {
+      $settingModel = MidasLoader::loadModel('Setting');
+      return $settingModel->getValueByName('enabled', 'demo');
+      }
+    return false;
     }
 
   /** disable layout */
