@@ -18,19 +18,11 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link href="<?php echo $this->coreWebroot?>/public/css/upload/upload.simpleupload.css" rel="stylesheet" type="text/css" />
-<link href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.fileupload-ui.min.css" rel="stylesheet" type="text/css" />
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/swfupload.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/swfupload.queue.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/fileprogress.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/handlers.js"></script>
-
+<link href="<?php echo $this->coreWebroot; ?>/public/css/upload/upload.simpleupload.css" rel="stylesheet" type="text/css" />
 <div class="tabs uploadTabs" id='uploadTabs'>
   <ul>
     <li><a href="#uploadTabs-1">Simple</a></li>
-    <li><a href="#uploadTabs-3"><?php echo $this->t('Link');?></a></li>
+    <li><a href="#uploadTabs-3"><?php echo $this->t('Link'); ?></a></li>
     <?php
     foreach($this->customTabs as $module => $tabs)
       {
@@ -41,90 +33,79 @@
       }
     ?>
   </ul>
+
   <div id="uploadTabs-1">
-      <div class="upload-header"><?php echo $this->t('Step 1: Select files to upload')?></div>
-      <div id="swfuploadContent" style="display: none;">
-        <span id="spanButtonPlaceHolder"></span>
-        <div>
-          <div class="fieldset flash" id="fsUploadProgress"></div>
+    <div class="upload-header"><?php echo $this->t('Step 1: Select files to upload'); ?></div>
+    <div id="jqueryFileUploadContent">
+      <form><input id="upload-files" type="file" style="display: none;" multiple></form>
+      <div class="drop-zone">
+          <?php echo $this->t('Browse or drop files'); ?>
+      </div>
+      <div class="upload-status-container">
+        <div class="current-progress-message"></div>
+        <div class="progress-current hide"></div>
+        <div class="overall-progress-message">No files selected</div>
+        <div class="progress-overall hide"></div>
+        <div class="uploadValidationError">
+          <img src="<?php echo $this->coreWebroot; ?>/public/images/icons/close.png" alt=""/><b></b>
         </div>
       </div>
-      <div id="jqueryFileUploadContent" style="display: none;">
-        <form><input id="upload-files" type="file" style="display: none;" multiple></form>
-        <div class="drop-zone">
-            <?php echo $this->t('Browse or drop files')?>
-        </div>
-
-        <div class="upload-status-container">
-          <div class="current-progress-message"></div>
-          <div class="progress-current hide"></div>
-          <div class="overall-progress-message">No files selected</div>
-          <div class="progress-overall hide"></div>
-          <div class="uploadValidationError">
-            <img src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png" alt=""/><b></b>
-          </div>
-        </div>
-
+    </div>
+    <div class="upload-header"><?php echo $this->t('Step 2: Select a target location'); ?></div>
+    <div>
+      <div class="upload-status-container">
+        <b><?php echo $this->t('Destination:'); ?></b>
+        <span id="destinationUpload"><?php echo $this->defaultUploadLocationText; ?></span>
+        <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->defaultUploadLocation; ?>" />
+        <div class="belowDestinationUpload" style="display: none;"></div>
       </div>
-      <div class="upload-header"><?php echo $this->t('Step 2: Select a target location')?></div>
-      <div>
-        <div class="upload-status-container">
-          <b><?php echo $this->t('Destination:')?></b>
-          <span id="destinationUpload"><?php echo $this->defaultUploadLocationText?></span>
-          <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>
-          <div class="belowDestinationUpload" style="display: none;"></div>
-        </div>
-        <input style="margin-left:0;" class="browseMIDASLink globalButton" type="button" value="Choose location" />
-      </div>
-      <br/>
-      <div class="upload-header"><?php echo $this->t('Step 3: Start the upload')?></div>
-
-      <input class="start-upload disabled" id='startUploadLink' type="button" value="<?php echo $this->t('Start Upload')?>" />
-
+      <input style="margin-left:0;" class="browseMIDASLink globalButton" type="button" value="Choose location" />
+    </div>
+    <br/>
+    <div class="upload-header"><?php echo $this->t('Step 3: Start the upload'); ?></div>
+    <input class="start-upload disabled" id='startUploadLink' type="button" value="<?php echo $this->t('Start Upload'); ?>" />
   </div>
-    <div id="uploadTabs-3">
-      <form id="linkForm" class="genericForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
+
+  <div id="uploadTabs-3">
+    <form id="linkForm" class="genericForm" method="<?php echo $this->form['method']; ?>"  action="<?php echo $this->form['action']; ?>">
+      <div>
+        <label for="name"><b><?php echo $this->t('Step 1: Set a name'); ?></b></label><br/>
+        <?php echo $this->form['name']; ?><br/><br/>
+      </div>
+      <div>
+        <label for="url"><b><?php echo $this->t('Step 2: Set the url'); ?></b></label><br/>
+        <?php echo $this->form['url']; ?><br/><br/>
+      </div>
+      <b><?php echo $this->t('Step 3: Where do you want to upload your files'); ?></b>
         <div>
-          <label for="name"><b><?php echo $this->t('Step 1: Set a name')?></b></label><br/>
-          <?php echo $this->form['name']?><br/><br/>
-        </div>
-        <div>
-          <label for="url"><b><?php echo $this->t('Step 2: Set the url')?></b></label><br/>
-          <?php echo $this->form['url']?><br/><br/>
-        </div>
-        <b><?php echo $this->t('Step 3: Where do you want to upload your files')?></b>
-          <div>
+        <br/>
+        <b><?php echo $this->t('Curent selected location:'); ?></b>
+        <span class="destinationUpload"><?php echo $this->defaultUploadLocationText; ?></span>
+        <input type="hidden" name="parent" class="destinationId" value="<?php echo $this->defaultUploadLocation; ?>"/>
           <br/>
-          <b><?php echo $this->t('Curent selected location:')?></b>
-          <span class="destinationUpload"><?php echo $this->defaultUploadLocationText?></span>
-          <input type="hidden" name="parent" class="destinationId" value="<?php echo $this->defaultUploadLocation?>"/>
-            <br/>
-            <input style="margin-left:0;" class="browseMIDASLink globalButton" type="button" value="Choose location" />
-            <br/>
-            <br/>
-        </div>
-        <div>
-          <?php echo $this->form['submit']?>
-        </div>
-      </form>
+          <input style="margin-left:0;" class="browseMIDASLink globalButton" type="button" value="Choose location" />
+          <br/>
+          <br/>
+      </div>
+      <div>
+        <?php echo $this->form['submit']; ?>
+      </div>
+    </form>
   </div>
 </div>
 
-<input type="hidden" class="buttonBrowse" value="<?php echo $this->t('Browse');?>"/>
-<input type="hidden" class="sessionId" value="<?php echo session_id();?>"/>
-<input type="hidden" class="maxSizeFile" value="<?php echo $this->maxSizeFile;?>"/>
+<input type="hidden" class="buttonBrowse" value="<?php echo $this->t('Browse'); ?>"/>
+<input type="hidden" class="sessionId" value="<?php echo session_id(); ?>"/>
+<input type="hidden" class="maxSizeFile" value="<?php echo $this->maxSizeFile; ?>"/>
 <input type="hidden" class="uploadedSimple" value="0"/>
 <input type="hidden" class="uploadedLinks" value="0"/>
 
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload-ui.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload-uix.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.form.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot; ?>/public/js/jquery/jquery.form.js"></script>
 
 <?php
 foreach($this->extraHtml as $module => $extra)
 	{
-	echo $extra."\n";
+	echo $extra.PHP_EOL;
 	}
 ?>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/upload/upload.simpleupload.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot; ?>/public/js/upload/upload.simpleupload.js"></script>

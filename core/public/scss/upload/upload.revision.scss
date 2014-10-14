@@ -11,8 +11,6 @@ div.ui-tabs {
     width: 94% !important;
 }
 
-#swfuploadContent, #jqueryFileUploadContent {}
-
 div {
     &.uploadValidationError, &.tooBigUpload {
         display: none;
@@ -23,135 +21,8 @@ div {
     }
 }
 
-#swfuploadContent form {
-    margin: 0;
-    padding: 0;
-}
-
 .globalButton {
     margin-top: 3px !important;
-}
-
-#swfuploadContent div {
-    &.fieldset {
-        border: 1px solid #AFE14C;
-        span.legend {
-            background-color: #FFF;
-            color: #73B304;
-            font: 700 14px $lucida-grande;
-            padding: 3px;
-            position: relative;
-            top: -30px;
-        }
-    }
-    &.flash {
-        border-color: #D9E4FF;
-        border-radius: 5px;
-        height: 90px;
-        margin: 10px 0;
-        overflow: auto;
-        width: 375px;
-    }
-}
-
-#swfuploadContentdiv#divStatus {
-    float: right;
-}
-
-#swfuploadContent {
-    button, input, select, textarea {
-        border-width: 1px;
-        margin-bottom: 10px;
-        padding: 2px 3px;
-    }
-    input[disabled] {
-        border: 1px solid #CCC;
-    }
-    label {
-        display: block;
-        margin-right: 5px;
-        text-align: right;
-        width: 150px;
-    }
-}
-
-#btnSubmit {
-    margin: 0 0 0 155px;
-}
-
-#swfuploadContent {
-    td {
-        font: 10pt $lucida-grande;
-        vertical-align: top;
-    }
-    .progressWrapper {
-        overflow: hidden;
-        width: 347px;
-    }
-    .progressContainer {
-        background-color: #F7F7F7;
-        border: solid 1px #E8E8E8;
-        margin: 0;
-        overflow: hidden;
-        padding: 0;
-    }
-    .message {
-        background-color: #FFC;
-        border: solid 1px #FD9;
-        margin: 1em 0;
-        overflow: hidden;
-        padding: 10px 20px;
-    }
-    .red {
-        background-color: #FFEBEB;
-        border: solid 1px #B50000;
-    }
-    .green {
-        background-color: #EBFFEB;
-        border: solid 1px #DDF0DD;
-    }
-    .blue {
-        background-color: #F0F5FF;
-        border: solid 1px #CEE2F2;
-    }
-    .progressName {
-        color: #555;
-        display: inline;
-        font-size: 8pt;
-        font-weight: 700;
-        height: 14px;
-        overflow: hidden;
-        text-align: left;
-        white-space: nowrap;
-        width: 323px;
-    }
-    .progressBarInProgress, .progressBarComplete, .progressBarError {
-        background-color: #00F;
-        font-size: 0;
-        height: 2px;
-        margin-top: 2px;
-        width: 0;
-    }
-    .progressBarComplete {
-        background-color: #008000;
-        visibility: hidden;
-        width: 100%;
-    }
-    .progressBarError {
-        background-color: #F00;
-        visibility: hidden;
-        width: 100%;
-    }
-    .progressBarStatus {
-        display: inline;
-        font-family: $lucida-grande;
-        font-size: 7pt;
-        margin-left: 5px;
-        margin-top: 2px;
-        text-align: left;
-        white-space: nowrap;
-        width: 100px;
-    }
 }
 
 a.progressCancel {
@@ -164,8 +35,4 @@ a.progressCancel {
     &:hover {
         background-position: 0 0;
     }
-}
-
-#swfuploadContent .swfupload {
-    vertical-align: top;
 }

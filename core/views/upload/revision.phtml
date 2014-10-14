@@ -18,20 +18,15 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link href="<?php echo $this->coreWebroot?>/public/css/upload/upload.revision.css" rel="stylesheet" type="text/css" />
-<link href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.fileupload-ui.min.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->coreWebroot; ?>/public/css/upload/upload.revision.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->coreWebroot; ?>/public/css/jquery/jquery.fileupload-ui.min.css" rel="stylesheet" type="text/css" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/swfupload.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/swfupload.queue.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/fileprogress.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/swfupload/js/handlers.js"></script>
-
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload-ui.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.fileupload-uix.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.form.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/upload/upload.revision.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot; ?>/public/js/jquery/jquery.fileupload.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot; ?>/public/js/jquery/jquery.fileupload-ui.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot; ?>/public/js/jquery/jquery.fileupload-uix.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot; ?>/public/js/jquery/jquery.form.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot; ?>/public/js/upload/upload.revision.js"></script>
 
 <div class="tabs uploadTabs" id='uploadTabs'>
   <ul>
@@ -47,79 +42,73 @@
     ?>
   </ul>
   <div id="uploadTabs-1">
-    <b><?php echo $this->t('Step 1: Select files to upload')?></b>
-    <br/>
-    <div id="swfuploadContent">
-      <span id="spanButtonPlaceHolder"></span>
-      <div>
-        <div class="fieldset flash"  id="fsUploadProgress"></div>
-      </div>
-    </div>
+    <b><?php echo $this->t('Step 1: Select files to upload'); ?></b>
+    <br />
     <div id="jqueryFileUploadContent">
       <div class="file_upload">
-        <form action="<?php echo $this->webroot?>/upload/saveuploaded" method="POST" enctype="multipart/form-data">
-            <input type="file" name="file[]" multiple>
-            <button type="submit">Upload</button>
-            <div class="file_upload_label"><?php echo $this->t('Browse or drop files')?></div>
+        <form action="<?php echo $this->webroot; ?>/upload/saveuploaded" method="POST" enctype="multipart/form-data">
+          <input type="file" name="file[]" multiple>
+          <button type="submit">Upload</button>
+          <div class="file_upload_label"><?php echo $this->t('Browse or drop files'); ?></div>
         </form>
         <table class="files">
-            <tr class="file_upload_template" style="display:none;">
-                <td class="file_name"></td>
-                <td class="file_size"></td>
-                <td class="file_upload_progress"><div></div></td>
-                <td class="file_upload_start" style='display:none;'><button>Start</button></td>
-                <td class="file_upload_cancel"><button></button></td>
-            </tr>
-            <tr class="file_download_template" style="display:none;">
-                <td class="file_name"><a></a></td>
-                <td class="file_size"></td>
-            </tr>
-            <div class="file_upload_buttons" style='display:none;'>
-              <button class="file_upload_start">Start All</button>
-              <button class="file_upload_cancel">Cancel All</button>
-              <button class="file_download_delete">Delete All</button>
-            </div>
+          <tr class="file_upload_template" style="display:none;">
+            <td class="file_name"></td>
+            <td class="file_size"></td>
+            <td class="file_upload_progress"><div></div></td>
+            <td class="file_upload_start" style='display:none;'><button>Start</button></td>
+            <td class="file_upload_cancel"><button></button></td>
+          </tr>
+          <tr class="file_download_template" style="display:none;">
+            <td class="file_name"><a></a></td>
+            <td class="file_size"></td>
+          </tr>
+          <div class="file_upload_buttons" style='display:none;'>
+            <button class="file_upload_start">Start All</button>
+            <button class="file_upload_cancel">Cancel All</button>
+            <button class="file_download_delete">Delete All</button>
+          </div>
         </table>
         <div class="file_upload_overall_progress" style='display:none;'><div style="display:none;"></div></div>
       </div>
     </div>
     <div class="belowDestinationUpload"></div>
-    <div class="uploadValidationError"><img src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png" alt=""/><b></b><hr></div>
+    <div class="uploadValidationError"><img src="<?php echo $this->coreWebroot; ?>/public/images/icons/close.png" alt=""/><b></b><hr /></div>
     <div class="tooBigUpload">
-      <img src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png" alt=""/> <b><?php echo $this->t('Please use the large file tool, the following files are too big:')?></b>
+      <img src="<?php echo $this->coreWebroot; ?>/public/images/icons/close.png" alt=""/> <b><?php echo $this->t('Please use the large file tool, the following files are too big:'); ?></b>
       <ul></ul>
     </div>
     <br />
-    <b><?php echo $this->t('Step 2: Select a license')?></b>
+    <b><?php echo $this->t('Step 2: Select a license'); ?></b>
     <div>
       <?php
-      echo $this->element('license')?>
+      echo $this->element('license'); ?>
     </div>
     <br/>
-    <b><?php echo $this->t('Step 3: Set the changes')?></b>
+    <b><?php echo $this->t('Step 3: Set the changes'); ?></b>
     <div>
       <textarea style="width:80%;" name="revisionChanges"/>
     </div>
-    <br/>
-    <b><?php echo $this->t('Step 4: Start the upload')?></b>
-    <br/>
-    <input id="btnCancel" style="display:none;" type="button" value="Cancel All Uploads" onclick="midas.upload.revision.swfu.cancelQueue();" disabled="disabled" style="margin-left: 2px; font-size: 8pt; height: 29px;" />
-    <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->item->getKey().'-'.($this->lastrevision?$this->lastrevision->getRevision()+1:1)?>"/>
+    <br />
+    <b><?php echo $this->t('Step 4: Start the upload'); ?></b>
+    <br />
+    <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->item->getKey().'-'.($this->lastrevision?$this->lastrevision->getRevision()+1:1); ?>"/>
     <span id="btnStartUpload">
-      <input style="margin-left:0;" id='startUploadLink' class="globalButton" type="button" value="<?php echo $this->t('Start Upload')?>" />
+      <input style="margin-left:0;" id='startUploadLink' class="globalButton" type="button" value="<?php echo $this->t('Start Upload'); ?>" />
     </span>
     <div>
-      <?php echo $this->t('Number of uploaded files');?> <span class="globalUploadedCount">0</span>
+      <?php echo $this->t('Number of uploaded files'); ?> <span class="globalUploadedCount">0</span>
     </div>
   </div>
+</div>
 
-<input type="hidden" class="buttonBrowse" value="<?php echo $this->t('Browse');?>"/>
-<input type="hidden" class="sessionId" value="<?php echo session_id();?>"/>
-<input type="hidden" class="maxSizeFile" value="<?php echo $this->maxSizeFile;?>"/>
+<input type="hidden" class="buttonBrowse" value="<?php echo $this->t('Browse'); ?>"/>
+<input type="hidden" class="sessionId" value="<?php echo session_id(); ?>"/>
+<input type="hidden" class="maxSizeFile" value="<?php echo $this->maxSizeFile; ?>"/>
 <input type="hidden" class="uploadedSimple" value="0"/>
 <input type="hidden" class="uploadedLinks" value="0"/>
 <?php
 foreach($this->extraHtml as $module => $extra)
   {
-  echo $extra."\n";
+  echo $extra.PHP_EOL;
   }

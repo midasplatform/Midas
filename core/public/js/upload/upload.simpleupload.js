@@ -1,88 +1,10 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
-/* global fileDialogComplete */
-/* global fileQueued */
-/* global fileQueueError */
 /* global json */
-/* global loadFailed */
-/* global preLoad */
-/* global queueComplete */
-/* global uploadComplete */
-/* global uploadError */
-/* global uploadProgress */
-/* global uploadSuccess */
 
 var midas = midas || {};
 midas.upload = midas.upload || {};
 midas.upload.simpleupload = {};
-
-// We use shockwave flash uploader for IE (no multi-file upload support)
-midas.upload.simpleupload.initSwfupload = function () {
-    'use strict';
-    // Callback hook for the flash uploader
-    midas.upload.simpleupload.uploadPreStart = function (file) {
-        midas.upload.simpleupload.swfu.setPostParams({
-            'sid': $('.sessionId').val(),
-            'parent': $('#destinationId').val(),
-            'license': $('select[name=licenseSelect]').val()
-        });
-    };
-    var settings = {
-        flash_url: json.global.coreWebroot + "/public/js/swfupload/swfupload_fp10/swfupload.swf",
-        flash9_url: json.global.coreWebroot + "/public/js/swfupload/swfupload_fp9/swfupload_fp9.swf",
-        upload_url: json.global.webroot + "/upload/saveuploaded",
-        post_params: {
-            'sid': $('.sessionId').val(),
-            'parent': $('#destinationId').val(),
-            'license': $('select[name=licenseSelect]').val()
-        },
-        file_size_limit: $('.maxSizeFile').val() + " MB",
-        file_types: "*.*",
-        file_types_description: "All Files",
-        file_upload_limit: 100,
-        file_queue_limit: 0,
-        custom_settings: {
-            progressTarget: "fsUploadProgress",
-            cancelButtonId: "btnCancel",
-            pageObj: midas.upload.simpleupload
-        },
-        debug: false,
-
-        // Button settings
-        button_image_url: json.global.coreWebroot + "/public/js/swfupload/images/Button_65x29.png",
-        button_width: "65",
-        button_height: "20",
-        button_placeholder_id: "spanButtonPlaceHolder",
-        button_text: '<span class="theFont">' + $('.buttonBrowse').val() + '</span>',
-        button_text_style: ".theFont { font-size: 12; }",
-        button_text_left_padding: 5,
-        button_text_top_padding: 0,
-
-        // The event handler functions are defined in handlers.js
-        swfupload_preload_handler: preLoad,
-        swfupload_load_failed_handler: loadFailed,
-        file_queued_handler: fileQueued,
-        file_queue_error_handler: fileQueueError,
-        file_dialog_complete_handler: fileDialogComplete,
-        upload_start_handler: midas.upload.simpleupload.uploadPreStart,
-        upload_progress_handler: uploadProgress,
-        upload_error_handler: uploadError,
-        upload_success_handler: uploadSuccess,
-        upload_complete_handler: uploadComplete,
-        queue_complete_handler: queueComplete // Queue plugin event
-    };
-
-    $('#swfuploadContent').show();
-    midas.upload.simpleupload.swfu = new SWFUpload(settings);
-
-    $('#startUploadLink').click(function () {
-        if ($('#destinationId').val() === undefined || $('#destinationId').val().length === 0) {
-            midas.createNotice("Please select where you want to upload your files.", 4000, 'warning');
-            return false;
-        }
-        midas.upload.simpleupload.swfu.startUpload();
-    });
-};
 
 $('img#uploadAFile').show();
 $('img#uploadAFileLoading').hide();
@@ -351,16 +273,8 @@ $('#linkForm').ajaxForm(function () {
     $('.uploadedLinks').val(parseInt($('.uploadedLinks').val()) + 1);
 });
 
-if ($.browser.msie) {
-    $('#swfuploadContent').show();
-    $('#jqueryFileUploadContent').hide();
-    midas.upload.simpleupload.initSwfupload();
-}
-else {
-    $('#swfuploadContent').hide();
-    $('#jqueryFileUploadContent').show();
-    midas.upload.simpleupload.initHtml5FileUpload();
-}
+$('#jqueryFileUploadContent').show();
+midas.upload.simpleupload.initHtml5FileUpload();
 
 $('.browseMIDASLink').click(function () {
     'use strict';

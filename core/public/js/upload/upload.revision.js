@@ -1,17 +1,5 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
-/* global fileDialogComplete */
-/* global fileQueued */
-/* global fileQueueError */
-/* global json */
-/* global loadFailed */
-/* global preLoad */
-/* global queueComplete */
-/* global uploadComplete */
-/* global uploadError */
-/* global uploadProgress */
-/* global uploadSuccess */
-
 var midas = midas || {};
 midas.upload = midas.upload || {};
 midas.upload.revision = {};
@@ -72,77 +60,6 @@ midas.upload.revision.initJqueryFileupload = function () {
     });
 };
 
-// Callback hook for the flash uploader
-midas.upload.revision.uploadPreStart = function (file) {
-    'use strict';
-    midas.upload.revision.swfu.setPostParams({
-        'sid': $('.sessionId').val(),
-        'parent': $('#destinationId').val(),
-        'license': $('select[name=licenseSelect]').val(),
-        'changes': $('textarea[name=revisionChanges]').val()
-    });
-};
-
-// We use shockwave flash uploader for IE (no multi-file upload support)
-midas.upload.revision.initSwfupload = function () {
-    'use strict';
-    var settings = {
-        flash_url: json.global.coreWebroot + "/public/js/swfupload/swfupload_fp10/swfupload.swf",
-        flash9_url: json.global.coreWebroot + "/public/js/swfupload/swfupload_fp9/swfupload_fp9.swf",
-        upload_url: json.global.webroot + "/upload/saveuploaded",
-        post_params: {
-            'sid': $('.sessionId').val(),
-            'parent': $('#destinationId').val(),
-            'license': $('select[name=licenseSelect]').val(),
-            'changes': $('textarea[name=revisionChanges]').val()
-        },
-        file_size_limit: $('.maxSizeFile').val() + " MB",
-        file_types: "*.*",
-        file_types_description: "All Files",
-        file_upload_limit: 100,
-        file_queue_limit: 0,
-        custom_settings: {
-            progressTarget: "fsUploadProgress",
-            cancelButtonId: "btnCancel",
-            pageObj: midas.upload.revision
-        },
-        debug: false,
-
-        // Button settings
-        button_image_url: json.global.coreWebroot + "/public/js/swfupload/images/Button_65x29.png",
-        button_width: "65",
-        button_height: "20",
-        button_placeholder_id: "spanButtonPlaceHolder",
-        button_text: '<span class="theFont">' + $('.buttonBrowse').val() + '</span>',
-        button_text_style: ".theFont { font-size: 12; }",
-        button_text_left_padding: 5,
-        button_text_top_padding: 0,
-
-        // The event handler functions are defined in handlers.js
-        swfupload_preload_handler: preLoad,
-        swfupload_load_failed_handler: loadFailed,
-        file_queued_handler: fileQueued,
-        file_queue_error_handler: fileQueueError,
-        file_dialog_complete_handler: fileDialogComplete,
-        upload_start_handler: midas.upload.revision.uploadPreStart,
-        upload_progress_handler: uploadProgress,
-        upload_error_handler: uploadError,
-        upload_success_handler: uploadSuccess,
-        upload_complete_handler: uploadComplete,
-        queue_complete_handler: queueComplete // Queue plugin event
-    };
-    $('#swfuploadContent').show();
-    midas.upload.revision.swfu = new SWFUpload(settings);
-
-    $('#startUploadLink').click(function () {
-        if ($('#destinationId').val() === undefined || $('#destinationId').val().length === 0) {
-            midas.createNotice("Please select where you want to upload your files.", 4000);
-            return false;
-        }
-        midas.upload.revision.swfu.startUpload();
-    });
-};
-
 $(".uploadTabs").tabs({
     ajaxOptions: {
         beforeSend: function () {
@@ -168,16 +85,8 @@ $('#linkForm').ajaxForm(function () {
     midas.upload.revision.updateUploadedCount();
 });
 
-if ($.browser.msie) {
-    $('#swfuploadContent').show();
-    $('#jqueryFileUploadContent').hide();
-    midas.upload.revision.initSwfupload();
-}
-else {
-    $('#swfuploadContent').hide();
-    $('#jqueryFileUploadContent').show();
-    midas.upload.revision.initJqueryFileupload();
-}
+$('#jqueryFileUploadContent').show();
+midas.upload.revision.initJqueryFileupload();
 
 $('#browseMIDASLink').click(function () {
     'use strict';
