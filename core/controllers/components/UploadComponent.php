@@ -105,9 +105,6 @@ class UploadComponent extends AppComponent
       case MIDAS_ASSETSTORE_REMOTE:
         // Nothing to upload in that case, we return silently
         return true;
-      case MIDAS_ASSETSTORE_AMAZON:
-        throw new Zend_Exception("Amazon support is not implemented yet.");
-        break;
       default:
         break;
       }
