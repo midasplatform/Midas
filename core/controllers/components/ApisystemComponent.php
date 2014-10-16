@@ -481,7 +481,10 @@ class ApisystemComponent extends AppComponent
     if(array_key_exists('testingmode', $args))
       {
       $httpUploadComponent->setTestingMode(true);
-      $args['localinput'] = $apiSetup['tmpDirectory'].'/'.$args['filename'];
+      if(!array_key_exists('localinput', $args))
+        {
+        $args['localinput'] = $apiSetup['tmpDirectory'] . '/' . $args['filename'];
+        }
       }
 
     // Use the Httpupload component to handle the actual file upload

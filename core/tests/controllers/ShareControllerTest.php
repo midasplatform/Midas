@@ -287,12 +287,31 @@ class ShareControllerTest extends ControllerTestCase
     $this->assertFalse($this->Folder->policyCheck($parentFolder, $user2, MIDAS_POLICY_ADMIN));
 
     // Create an item inside the parent where we have write access
+    $filename = 'search.png';
+    $path = BASE_PATH.'/tests/testfiles/'.$filename;
+
     $this->resetAll();
     $this->params = array();
-    $this->params['parent'] = '1007';
-    $this->params['license'] = 0;
-    $this->params['testpath'] = BASE_PATH.'/tests/testfiles/search.png'; //testing mode param
-    $this->dispatchUrI('/upload/saveuploaded', $user2);
+    $this->params['enabledModules'] = 'api';
+    $this->params['folderid'] = 1007;
+    $this->params['filename'] = $filename;
+    $this->params['useSession'] = 1;
+    $this->dispatchUrI('/rest/system/uploadtoken', $user2);
+    $json = json_decode($this->getBody(), true);
+    $uploadToken = $json['data']['token'];
+
+    $this->resetAll();
+    $this->request->setMethod('POST');
+    $this->params = array();
+    $this->params['enabledModules'] = 'api';
+    $this->params['testingmode'] = 1;
+    $this->params['uploadtoken'] = $uploadToken;
+    $this->params['filename'] = $filename;
+    $this->params['localinput'] = $path;
+    $this->params['length'] = filesize($path);
+    $this->params['useSession'] = 1;
+    $this->dispatchUrI('/rest/system/upload');
+
     $search = $this->Item->getItemsFromSearch('search.png', $user2);
     $this->assertNotEmpty($search, 'Unable to find uploaded item');
 

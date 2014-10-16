@@ -87,52 +87,49 @@ class UploadDownloadControllerTest extends ControllerTestCase
     $this->setupDatabase(array('default'));
     }
 
-  /** test UploadController::saveuploadedAction*/
-  function testSaveuploadedAction()
-    {
-    $this->setupDatabase(array('default'));
-
-    $usersFile = $this->loadData('User', 'default');
-    $userDao = $this->User->load($usersFile[0]->getKey());
-
-    $this->params = array();
-    $this->params['parent'] = '1001'; //public folder
-    $this->params['license'] = 0;
-    $this->params['testpath'] = BASE_PATH.'/tests/testfiles/search.png'; //testing mode param
-    $this->dispatchUrI('/upload/saveuploaded', $userDao);
-
-    $search = $this->Item->getItemsFromSearch('search.png', $userDao);
-    $this->assertNotEmpty($search, 'Unable to find uploaded item');
-
-    // Test to make sure uploading an empty file works
-    $this->resetAll();
-    $this->params['parent'] = '1001';
-    $this->params['license'] = 0;
-    $this->params['testpath'] = BASE_PATH.'/tests/testfiles/empty.txt'; //testing mode param
-    $this->dispatchUrI('/upload/saveuploaded', $userDao);
-
-    $search = $this->Item->getItemsFromSearch('empty.txt', $userDao);
-    $this->assertNotEmpty($search, 'Unable to find empty uploaded item');
-    }
-
   /**
    * Test the download controller in the case of a one-bitstream item
    */
   function testDownloadAction()
     {
+    $this->setupDatabase(array('default'));
     $usersFile = $this->loadData('User', 'default');
     $userDao = $this->User->load($usersFile[0]->getKey());
-    $actualMd5 = md5_file($this->getTempDirectory().'/testing_file.png');
+    $filename = 'search.png';
+    $path = BASE_PATH.'/tests/testfiles/'.$filename;
 
-    $search = $this->Item->getItemsFromSearch('search.png', $userDao);
+    $this->resetAll();
+    $this->params = array();
+    $this->params['enabledModules'] = 'api';
+    $this->params['folderid'] = 1001;
+    $this->params['filename'] = $filename;
+    $this->params['useSession'] = 1;
+    $this->dispatchUrI('/rest/system/uploadtoken', $userDao);
+    $json = json_decode($this->getBody(), true);
+    $uploadToken = $json['data']['token'];
+
+    $this->resetAll();
+    $this->request->setMethod('POST');
+    $this->params = array();
+    $this->params['enabledModules'] = 'api';
+    $this->params['testingmode'] = 1;
+    $this->params['uploadtoken'] = $uploadToken;
+    $this->params['filename'] = $filename;
+    $this->params['localinput'] = $path;
+    $this->params['length'] = filesize($path);
+    $this->params['useSession'] = 1;
+    $this->dispatchUrI('/rest/system/upload');
+
+    $actualMd5 = md5_file($path);
+    $search = $this->Item->getItemsFromSearch($filename, $userDao);
     $this->assertTrue(count($search) > 0);
     $itemId = $search[0]->item_id;
 
+    $this->resetAll();
     $_SERVER['REMOTE_ADDR'] = '127.0.0.1'; //must be set in order to lock active download
     $this->setupDatabase(array('activedownload')); //wipe any old locks
     $this->dispatchUrI('/download?items='.$itemId, $userDao);
     $downloadedMd5 = md5($this->getBody());
-
     $this->assertEquals($actualMd5, $downloadedMd5);
 
     // Test our special path-style URL endpoints for downloading single items or folders
@@ -147,7 +144,7 @@ class UploadDownloadControllerTest extends ControllerTestCase
     $this->resetAll();
     $this->dispatchUrI('/download?bitstream=934192', $userDao, true, false);
 
-    // Should not throw an exception; we should reach download empty zip code
+    // Should not throw an exception; we should reach download empty zip
     $this->resetAll();
     $this->dispatchUrI('/download?items=', $userDao);
     $this->assertEquals(trim($this->getBody()), 'No_item_selected');
