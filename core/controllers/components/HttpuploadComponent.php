@@ -59,7 +59,7 @@ class HttpuploadComponent extends AppComponent
 
   /**
    * Generate an upload token that will act as the authentication token for the upload.
-   * This token is the filename of a guaranteed unique file which will be placed under the
+   * This token is the filename of a unique file which will be placed under the
    * directory specified by the dirname parameter, which should be used to ensure that
    * the user can only write into a certain logical space.
    */
@@ -79,17 +79,16 @@ class HttpuploadComponent extends AppComponent
         throw new Exception('Failed to create temporary upload dir', MIDAS_HTTPUPLOAD_TMP_DIR_CREATION_FAILED);
         }
       }
-    // create a unique temporary file in the dirname directory
-    $unique_identifier = basename(tempnam($dir, 'midas'));
+    $unique_identifier = 'midas'.uniqid().'-'.md5($args['filename']);
     if($dirname != '')
       {
       $unique_identifier = $dirname.'/'.$unique_identifier;
       }
-
-    if(empty($unique_identifier))
+    if(file_exists($this->tmpDirectory.'/'.$unique_identifier))
       {
       throw new Exception('Failed to generate upload token', MIDAS_HTTPUPLOAD_UPLOAD_TOKEN_GENERATION_FAILED);
       }
+    touch($this->tmpDirectory.'/'.$unique_identifier);
     return array('token' => $unique_identifier);
     }
 
