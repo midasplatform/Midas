@@ -18,54 +18,54 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link href="<?php echo $this->coreWebroot; ?>/public/css/upload/upload.revision.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->coreWebroot; ?>/public/css/upload/upload.revision.css" rel="stylesheet" type="text/css"/>
 <div class="tabs uploadTabs" id='uploadTabs'>
-  <ul>
-    <li><a href="#uploadTabs-1">Simple</a></li>
-    <?php
-    foreach($this->customTabs as $module => $tabs)
-      {
-      foreach($tabs as $tabName => $tabUrl)
-        {
-        echo '<li><a href="'.$tabUrl.'">'.$tabName.'</a></li>';
+    <ul>
+        <li><a href="#uploadTabs-1">Simple</a></li>
+        <?php
+        foreach ($this->customTabs as $module => $tabs) {
+            foreach ($tabs as $tabName => $tabUrl) {
+                echo '<li><a href="'.$tabUrl.'">'.$tabName.'</a></li>';
+            }
         }
-      }
-    ?>
-  </ul>
-  <div id="uploadTabs-1">
-    <div class="upload-header"><?php echo $this->t('Step 1: Select file to upload'); ?></div>
-    <div id="jqueryFileUploadContent">
-      <form><input id="upload-files" type="file" style="display: none;"></form>
-      <div class="drop-zone">
-        <?php echo $this->t('Browse or drop file'); ?>
-      </div>
-      <div class="upload-status-container">
-        <div class="current-progress-message"></div>
-        <div class="progress-current hide"></div>
-        <div class="overall-progress-message">No files selected</div>
-        <div class="progress-overall hide"></div>
-        <div class="uploadValidationError">
-          <img src="<?php echo $this->coreWebroot; ?>/public/images/icons/close.png" alt=""/><b></b>
+        ?>
+    </ul>
+    <div id="uploadTabs-1">
+        <div class="upload-header"><?php echo $this->t('Step 1: Select file to upload'); ?></div>
+        <div id="jqueryFileUploadContent">
+            <form><input id="upload-files" type="file" style="display: none;">
+            </form>
+            <div class="drop-zone">
+                <?php echo $this->t('Browse or drop file'); ?>
+            </div>
+            <div class="upload-status-container">
+                <div class="current-progress-message"></div>
+                <div class="progress-current hide"></div>
+                <div class="overall-progress-message">No files selected</div>
+                <div class="progress-overall hide"></div>
+                <div class="uploadValidationError">
+                    <img src="<?php echo $this->coreWebroot; ?>/public/images/icons/close.png" alt=""/><b></b>
+                </div>
+            </div>
         </div>
-      </div>
+        <div class="upload-header"><?php echo $this->t('Step 2: Describe the changes'); ?></div>
+        <div>
+            <textarea style="width: 80%;" id="revisionChanges" name="revisionChanges"/>
+        </div>
+        <br/>
+
+        <div class="upload-header"><?php echo $this->t('Step 3: Start the upload'); ?></div>
+        <input class="start-upload disabled" id='startUploadLink' type="button"
+               value="<?php echo $this->t('Start Upload'); ?>"/>
     </div>
-    <div class="upload-header"><?php echo $this->t('Step 2: Describe the changes'); ?></div>
-    <div>
-      <textarea style="width: 80%;" id="revisionChanges" name="revisionChanges" />
-    </div>
-    <br/>
-    <div class="upload-header"><?php echo $this->t('Step 3: Start the upload'); ?></div>
-    <input class="start-upload disabled" id='startUploadLink' type="button" value="<?php echo $this->t('Start Upload'); ?>" />
-  </div>
 </div>
-<input type="hidden" id="destinationId" value="<?php echo $this->item->getKey(); ?>" />
-<input type="hidden" class="sessionId" value="<?php echo session_id(); ?>" />
-<input type="hidden" class="uploadedSimple" value="0" />
+<input type="hidden" id="destinationId" value="<?php echo $this->item->getKey(); ?>"/>
+<input type="hidden" class="sessionId" value="<?php echo session_id(); ?>"/>
+<input type="hidden" class="uploadedSimple" value="0"/>
 <?php
-foreach($this->extraHtml as $module => $extra)
-  {
-  echo $extra.PHP_EOL;
-  }
+foreach ($this->extraHtml as $module => $extra) {
+    echo $extra.PHP_EOL;
+}
 ?>
 <script type="text/javascript" src="<?php echo $this->coreWebroot; ?>/public/js/jquery/jquery.form.js"></script>
 <script type="text/javascript" src="<?php echo $this->coreWebroot; ?>/public/js/upload/upload.revision.js"></script>

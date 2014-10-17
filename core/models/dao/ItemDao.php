@@ -19,10 +19,9 @@
 =========================================================================*/
 
 /**
- * \class ItemDao
- * \brief DAO Item (table item)
+ * DAO Item (table item)
  */
 class ItemDao extends AppDao
-  {
-  public $_model = 'Item';
-  }
+{
+    public $_model = 'Item';
+}

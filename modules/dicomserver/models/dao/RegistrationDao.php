@@ -20,7 +20,7 @@
 
 /** Dicomserver_RegistrationDao */
 class Dicomserver_RegistrationDao extends AppDao
-  {
-  public $_model = 'Registration';
-  public $_module = 'dicomserver';
-  }
+{
+    public $_model = 'Registration';
+    public $_module = 'dicomserver';
+}

@@ -18,7 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-include_once BASE_PATH . '/library/KWUtils.php';
+include_once BASE_PATH.'/library/KWUtils.php';
 
 /**
  * an executor class for the batchmake module, used to forward calls
@@ -26,19 +26,17 @@ include_once BASE_PATH . '/library/KWUtils.php';
  */
 class Batchmake_Executor
 {
-  /**
-   * forwards a call to this method on to KWUtils.exec, with the same
-   * method signature.
-   * @param type $command
-   * @param type $output
-   * @param type $chdir
-   * @param type $return_val
-   */
-  public function exec($command, &$output = null, $chdir = "", &$return_val = null)
+    /**
+     * forwards a call to this method on to KWUtils.exec, with the same
+     * method signature.
+     *
+     * @param type $command
+     * @param type $output
+     * @param type $chdir
+     * @param type $return_val
+     */
+    public function exec($command, &$output = null, $chdir = "", &$return_val = null)
     {
-    KWUtils::exec($command, $output, $chdir, $return_val);
+        KWUtils::exec($command, $output, $chdir, $return_val);
     }
-} // end class
-
-
-
+}

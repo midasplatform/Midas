@@ -20,26 +20,24 @@
 
 /** Configuration form for the dicom extractor */
 class Dicomextractor_ConfigForm extends AppForm
-  {
-
-  /** create  form */
-  public function createConfigForm()
+{
+    /** create  form */
+    public function createConfigForm()
     {
-    $form = new Zend_Form;
+        $form = new Zend_Form();
 
-    $form->setAction($this->webroot.'/dicomextractor/config/index')
-         ->setMethod('post');
+        $form->setAction($this->webroot.'/dicomextractor/config/index')->setMethod('post');
 
-    $dcm2xml = new Zend_Form_Element_Text('dcm2xml');
-    $dcmj2pnm = new Zend_Form_Element_Text('dcmj2pnm');
-    $dcmftest = new Zend_Form_Element_Text('dcmftest');
-    $dcmdictpath = new Zend_Form_Element_Text('dcmdictpath');
+        $dcm2xml = new Zend_Form_Element_Text('dcm2xml');
+        $dcmj2pnm = new Zend_Form_Element_Text('dcmj2pnm');
+        $dcmftest = new Zend_Form_Element_Text('dcmftest');
+        $dcmdictpath = new Zend_Form_Element_Text('dcmdictpath');
 
-    $submit = new  Zend_Form_Element_Submit('submitConfig');
-    $submit ->setLabel('Save configuration');
+        $submit = new  Zend_Form_Element_Submit('submitConfig');
+        $submit->setLabel('Save configuration');
 
-    $form->addElements(array($dcm2xml, $dcmj2pnm, $dcmftest, $dcmdictpath,
-      $submit));
-    return $form;
+        $form->addElements(array($dcm2xml, $dcmj2pnm, $dcmftest, $dcmdictpath, $submit));
+
+        return $form;
     }
-  } // end class
+}

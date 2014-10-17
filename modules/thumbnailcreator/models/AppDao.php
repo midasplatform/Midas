@@ -20,6 +20,6 @@
 
 /** App DAO for the thumbnailcreator module */
 class Thumbnailcreator_AppDao extends MIDAS_GlobalDao
-  {
-  public $moduleName = 'thumbnailcreator';
-  }
+{
+    public $moduleName = 'thumbnailcreator';
+}

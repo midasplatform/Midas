@@ -20,143 +20,117 @@
 
 /** Download controller for the javauploaddownload module */
 class Javauploaddownload_DownloadController extends Javauploaddownload_AppController
-  {
-  public $_models = array('Folder', 'Item');
+{
+    public $_models = array('Folder', 'Item');
 
-  private function _is_https()
+    private function _is_https()
     {
-    return array_key_exists('HTTPS', $_SERVER) && $_SERVER["HTTPS"] === 'on';
+        return array_key_exists('HTTPS', $_SERVER) && $_SERVER["HTTPS"] === 'on';
     }
 
-  /**
-   * Render the view for the Java download applet
-   * @param itemIds Comma separated list of items to download
-   * @param folderIds Comma separated list of folders to download
-   */
-  public function indexAction()
+    /**
+     * Render the view for the Java download applet
+     *
+     * @param itemIds Comma separated list of items to download
+     * @param folderIds Comma separated list of folders to download
+     */
+    public function indexAction()
     {
-    $folderIds = $this->getParam('folderIds');
+        $folderIds = $this->getParam('folderIds');
 
-    if(isset($folderIds) && $folderIds)
-      {
-      $folderIdArray = explode(',', $folderIds);
-      $this->view->folderIds = $folderIds;
-      }
-    else
-      {
-      $folderIdArray = array();
-      $this->view->folderIds = '';
-      }
-
-    $itemIds = $this->getParam('itemIds');
-
-    if(isset($itemIds) && $itemIds)
-      {
-      $itemIdArray = explode(',', $itemIds);
-      $this->view->itemIds = $itemIds;
-      }
-    else
-      {
-      $itemIdArray = array();
-      $this->view->itemIds = '';
-      }
-
-    $items = array();
-    $folders = array();
-
-    foreach($itemIdArray as $itemId)
-      {
-      if($itemId)
-        {
-        $item = $this->Item->load($itemId);
-
-        if(!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
-          {
-          throw new Zend_Exception('Invalid policy on item '.$itemId, 403);
-          }
-        $items[] = $item;
+        if (isset($folderIds) && $folderIds) {
+            $folderIdArray = explode(',', $folderIds);
+            $this->view->folderIds = $folderIds;
+        } else {
+            $folderIdArray = array();
+            $this->view->folderIds = '';
         }
-      }
 
-    foreach($folderIdArray as $folderId)
-      {
-      if($folderId)
-        {
-        $folder = $this->Folder->load($folderId);
+        $itemIds = $this->getParam('itemIds');
 
-        if(!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_READ))
-          {
-          throw new Zend_Exception('Invalid policy on folder '.$folderId, 403);
-          }
-
-        $folders[] = $folder;
+        if (isset($itemIds) && $itemIds) {
+            $itemIdArray = explode(',', $itemIds);
+            $this->view->itemIds = $itemIds;
+        } else {
+            $itemIdArray = array();
+            $this->view->itemIds = '';
         }
-      }
 
-    $totalSize = 0;
-    $folders = $this->Folder->getSizeFiltered($folders, $this->userSession->Dao, MIDAS_POLICY_READ);
+        $items = array();
+        $folders = array();
 
-    foreach($folders as $folder)
-      {
-      $totalSize += $folder->size;
-      }
+        foreach ($itemIdArray as $itemId) {
+            if ($itemId) {
+                $item = $this->Item->load($itemId);
 
-    foreach($items as $item)
-      {
-      $totalSize += $item->getSizebytes();
-      }
+                if (!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ)
+                ) {
+                    throw new Zend_Exception('Invalid policy on item '.$itemId, 403);
+                }
+                $items[] = $item;
+            }
+        }
 
-    $this->view->totalSize = $totalSize;
-    $fCount = count($folderIdArray);
-    $iCount = count($itemIdArray);
+        foreach ($folderIdArray as $folderId) {
+            if ($folderId) {
+                $folder = $this->Folder->load($folderId);
 
-    if($iCount === 0 && $fCount === 0)
-      {
-      throw new Zend_Exception('No items or folders specified');
-      }
-    else if($iCount === 1 && $fCount === 0)
-      {
-      $item = $this->Item->load($itemIdArray[0]);
-      $this->view->contentDescription = 'Item <b>'.$item->getName().'</b>';
-      }
-    else if($iCount === 0 && $fCount === 1)
-      {
-      $folder = $this->Folder->load($folderIdArray[0]);
-      $this->view->contentDescription = 'Folder <b>'.$folder->getName().'</b>';
-      }
-    else if($iCount === 0)
-      {
-      $this->view->contentDescription = $fCount.' folders';
-      }
-    else if($fCount === 0)
-      {
-      $this->view->contentDescription = $iCount.' items';
-      }
-    else
-      {
-      $this->view->contentDescription = $fCount.' folder(s) and '.$iCount.' item(s)';
-      }
+                if (!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_READ)
+                ) {
+                    throw new Zend_Exception('Invalid policy on folder '.$folderId, 403);
+                }
 
-    if($this->_is_https())
-      {
-      $this->view->protocol = 'https';
-      }
-    else
-      {
-      $this->view->protocol = 'http';
-      }
+                $folders[] = $folder;
+            }
+        }
 
-    if(!$this->isTestingEnv())
-      {
-      $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
-      }
-    else
-      {
-      $this->view->host = 'localhost';
-      }
+        $totalSize = 0;
+        $folders = $this->Folder->getSizeFiltered($folders, $this->userSession->Dao, MIDAS_POLICY_READ);
 
-    $this->view->header = 'Java Download Applet';
-    $this->view->extraHtml = Zend_Registry::get('notifier')->callback(
-      'CALLBACK_CORE_GET_JAVADOWNLOAD_EXTRA_HTML', array('folders' => $folders, 'items' => $items));
+        foreach ($folders as $folder) {
+            $totalSize += $folder->size;
+        }
+
+        foreach ($items as $item) {
+            $totalSize += $item->getSizebytes();
+        }
+
+        $this->view->totalSize = $totalSize;
+        $fCount = count($folderIdArray);
+        $iCount = count($itemIdArray);
+
+        if ($iCount === 0 && $fCount === 0) {
+            throw new Zend_Exception('No items or folders specified');
+        } elseif ($iCount === 1 && $fCount === 0) {
+            $item = $this->Item->load($itemIdArray[0]);
+            $this->view->contentDescription = 'Item <b>'.$item->getName().'</b>';
+        } elseif ($iCount === 0 && $fCount === 1) {
+            $folder = $this->Folder->load($folderIdArray[0]);
+            $this->view->contentDescription = 'Folder <b>'.$folder->getName().'</b>';
+        } elseif ($iCount === 0) {
+            $this->view->contentDescription = $fCount.' folders';
+        } elseif ($fCount === 0) {
+            $this->view->contentDescription = $iCount.' items';
+        } else {
+            $this->view->contentDescription = $fCount.' folder(s) and '.$iCount.' item(s)';
+        }
+
+        if ($this->_is_https()) {
+            $this->view->protocol = 'https';
+        } else {
+            $this->view->protocol = 'http';
+        }
+
+        if (!$this->isTestingEnv()) {
+            $this->view->host = empty($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_X_FORWARDED_HOST'];
+        } else {
+            $this->view->host = 'localhost';
+        }
+
+        $this->view->header = 'Java Download Applet';
+        $this->view->extraHtml = Zend_Registry::get('notifier')->callback(
+            'CALLBACK_CORE_GET_JAVADOWNLOAD_EXTRA_HTML',
+            array('folders' => $folders, 'items' => $items)
+        );
     }
-  }
+}

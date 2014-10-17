@@ -20,69 +20,68 @@
 
 /** Config controller for the instance-wide module settings */
 class Pvw_ConfigController extends Pvw_AppController
-  {
-  public $_moduleForms = array('Config');
-  public $_models = array('Setting');
-  public $_moduleModels = array('Instance');
-  public $_moduleComponents = array('Paraview');
+{
+    public $_moduleForms = array('Config');
+    public $_models = array('Setting');
+    public $_moduleModels = array('Instance');
+    public $_moduleComponents = array('Paraview');
 
-  /**
-   * Renders the module configuration page
-   */
-  function indexAction()
+    /**
+     * Renders the module configuration page
+     */
+    public function indexAction()
     {
-    $this->requireAdminPrivileges();
+        $this->requireAdminPrivileges();
 
-    $configForm = $this->ModuleForm->Config->createConfigForm();
-    $formArray = $this->getFormAsArray($configForm);
+        $configForm = $this->ModuleForm->Config->createConfigForm();
+        $formArray = $this->getFormAsArray($configForm);
 
-    $pvpython = $this->Setting->getValueByName('pvpython', $this->moduleName);
-    $ports = $this->Setting->getValueByName('ports', $this->moduleName);
-    $displayEnv = $this->Setting->getValueByName('displayEnv', $this->moduleName);
-    if(!$ports)
-      {
-      $ports = '9000,9001';
-      }
-    $formArray['pvpython']->setValue($pvpython);
-    $formArray['ports']->setValue($ports);
-    $formArray['displayEnv']->setValue($displayEnv);
+        $pvpython = $this->Setting->getValueByName('pvpython', $this->moduleName);
+        $ports = $this->Setting->getValueByName('ports', $this->moduleName);
+        $displayEnv = $this->Setting->getValueByName('displayEnv', $this->moduleName);
+        if (!$ports) {
+            $ports = '9000,9001';
+        }
+        $formArray['pvpython']->setValue($pvpython);
+        $formArray['ports']->setValue($ports);
+        $formArray['displayEnv']->setValue($displayEnv);
 
-    $this->view->configForm = $formArray;
+        $this->view->configForm = $formArray;
     }
 
-  /**
-   * Handles submission of the module configuration form
-   */
-  function submitAction()
+    /**
+     * Handles submission of the module configuration form
+     */
+    public function submitAction()
     {
-    $this->requireAdminPrivileges();
-    $this->disableLayout();
-    $this->disableView();
+        $this->requireAdminPrivileges();
+        $this->disableLayout();
+        $this->disableView();
 
-    $pvpython = $this->getParam('pvpython');
-    $ports = $this->getParam('ports');
-    $displayEnv = $this->getParam('displayEnv');
-    $this->Setting->setConfig('pvpython', $pvpython, $this->moduleName);
-    $this->Setting->setConfig('ports', $ports, $this->moduleName);
-    $this->Setting->setConfig('displayEnv', $displayEnv, $this->moduleName);
-    echo JsonComponent::encode(array(true, 'Changes saved'));
+        $pvpython = $this->getParam('pvpython');
+        $ports = $this->getParam('ports');
+        $displayEnv = $this->getParam('displayEnv');
+        $this->Setting->setConfig('pvpython', $pvpython, $this->moduleName);
+        $this->Setting->setConfig('ports', $ports, $this->moduleName);
+        $this->Setting->setConfig('displayEnv', $displayEnv, $this->moduleName);
+        echo JsonComponent::encode(array(true, 'Changes saved'));
     }
 
-  /**
-   * Render the admin status tab
-   */
-  function statusAction()
+    /**
+     * Render the admin status tab
+     */
+    public function statusAction()
     {
-    $this->requireAdminPrivileges();
-    $this->disableLayout();
+        $this->requireAdminPrivileges();
+        $this->disableLayout();
 
-    $instances = $this->Pvw_Instance->getAll();
-    $this->view->instances = array();
-    foreach($instances as $instance)
-      {
-      $this->view->instances[] = array(
-        'dao' => $instance,
-        'status' => $this->ModuleComponent->Paraview->isRunning($instance));
-      }
+        $instances = $this->Pvw_Instance->getAll();
+        $this->view->instances = array();
+        foreach ($instances as $instance) {
+            $this->view->instances[] = array(
+                'dao' => $instance,
+                'status' => $this->ModuleComponent->Paraview->isRunning($instance),
+            );
+        }
     }
-  } // end class
+}

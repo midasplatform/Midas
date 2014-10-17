@@ -20,17 +20,18 @@
 
 /** Config form for the demo module */
 class Demo_ConfigForm extends AppForm
-  {
-  /** Create form */
-  public function createConfigForm()
+{
+    /** Create form */
+    public function createConfigForm()
     {
-    $form = new Zend_Form();
-    $form->setAction($this->webroot.'/demo/config/submit')->setMethod('post');
-    $enabled = new Zend_Form_Element_Checkbox('enabled');
-    $enabled->setLabel($this->t('Enabled'));
-    $submit = new Zend_Form_Element_Submit('submit');
-    $submit->setLabel($this->t('Save'));
-    $form->addElements(array($enabled, $submit));
-    return $form;
+        $form = new Zend_Form();
+        $form->setAction($this->webroot.'/demo/config/submit')->setMethod('post');
+        $enabled = new Zend_Form_Element_Checkbox('enabled');
+        $enabled->setLabel($this->t('Enabled'));
+        $submit = new Zend_Form_Element_Submit('submit');
+        $submit->setLabel($this->t('Save'));
+        $form->addElements(array($enabled, $submit));
+
+        return $form;
     }
-  }
+}

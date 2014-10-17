@@ -17,307 +17,306 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** test item controller*/
+
+/** test item controller */
 class ItemControllerTest extends ControllerTestCase
-  {
-
-  /** init test*/
-  public function setUp()
+{
+    /** init test */
+    public function setUp()
     {
-    $this->setupDatabase(array('default'));
-    $this->_models = array('Item', 'ItemRevision', 'User', 'Bitstream');
-    parent::setUp();
+        $this->setupDatabase(array('default'));
+        $this->_models = array('Item', 'ItemRevision', 'User', 'Bitstream');
+        parent::setUp();
     }
 
-  /** Test the item view */
-  public function testViewAction()
+    /** Test the item view */
+    public function testViewAction()
     {
-    $itemsFile = $this->loadData('Item', 'default');
-    $usersFile = $this->loadData('User', 'default');
-    $userWithPermission = $this->User->load($usersFile[0]->getKey());
+        $itemsFile = $this->loadData('Item', 'default');
+        $usersFile = $this->loadData('User', 'default');
+        $userWithPermission = $this->User->load($usersFile[0]->getKey());
 
-    $itemDao = $this->Item->load($itemsFile[1]->getKey());
-    $url = '/item/'.$itemDao->getItemId();
+        $itemDao = $this->Item->load($itemsFile[1]->getKey());
+        $url = '/item/'.$itemDao->getItemId();
 
-    // Should throw an exception for anonymous user (no read access)
-    $this->dispatchUrI($url, null, true);
-    $this->assertController('error');
-    $this->assertAction('error');
+        // Should throw an exception for anonymous user (no read access)
+        $this->dispatchUrI($url, null, true);
+        $this->assertController('error');
+        $this->assertAction('error');
 
-    // Should throw an exception for no item id parameter
-    $this->resetAll();
-    $this->dispatchUrI('/item/view', null, true);
-    $this->assertController('error');
+        // Should throw an exception for no item id parameter
+        $this->resetAll();
+        $this->dispatchUrI('/item/view', null, true);
+        $this->assertController('error');
 
-    $this->resetAll();
-    $this->dispatchUrI($url, $userWithPermission);
-    $this->assertController('item');
-    $this->assertAction('view');
-    $this->assertQueryContentContains('a.licenseLink', 'Private License');
-    $this->assertQueryContentContains('a.userTitle', 'FirstName1 LastName1');
-    $this->assertQuery('table.bitstreamList');
+        $this->resetAll();
+        $this->dispatchUrI($url, $userWithPermission);
+        $this->assertController('item');
+        $this->assertAction('view');
+        $this->assertQueryContentContains('a.licenseLink', 'Private License');
+        $this->assertQueryContentContains('a.userTitle', 'FirstName1 LastName1');
+        $this->assertQuery('table.bitstreamList');
     }
 
-  /** Test editing item fields */
-  public function testEditAction()
+    /** Test editing item fields */
+    public function testEditAction()
     {
-    $itemsFile = $this->loadData('Item', 'default');
-    $usersFile = $this->loadData('User', 'default');
-    $userWithPermission = $this->User->load($usersFile[0]->getKey());
+        $itemsFile = $this->loadData('Item', 'default');
+        $usersFile = $this->loadData('User', 'default');
+        $userWithPermission = $this->User->load($usersFile[0]->getKey());
 
-    $itemDao = $this->Item->load($itemsFile[3]->getKey());
-    $url = '/item/edit?itemId='.$itemDao->getItemId();
+        $itemDao = $this->Item->load($itemsFile[3]->getKey());
+        $url = '/item/edit?itemId='.$itemDao->getItemId();
 
-    // Should throw an exception for anonymous user
-    $this->dispatchUrI($url, null, true);
-    $this->assertController('error');
+        // Should throw an exception for anonymous user
+        $this->dispatchUrI($url, null, true);
+        $this->assertController('error');
 
-    // Should throw an exception for no item id parameter
-    $this->resetAll();
-    $this->dispatchUrI('/item/edit', null, true);
-    $this->assertController('error');
+        // Should throw an exception for no item id parameter
+        $this->resetAll();
+        $this->dispatchUrI('/item/edit', null, true);
+        $this->assertController('error');
 
-    // Test rendering the form
-    $this->resetAll();
-    $this->dispatchUrI($url, $userWithPermission);
-    $this->assertController('item');
-    $this->assertAction('edit');
-    $this->assertQuery('form#editItemForm');
-    $this->assertQuery('input[name="itemId"][value="'.$itemDao->getKey().'"]');
-    $this->assertQuery('input[type="checkbox"][name="updateBitstreamName"][value="updateBitstreamName"]');
-    $this->assertQuery('select[name="licenseSelect"]');
-    $this->assertQuery('input[name="submit"][value="Save"]');
-    $this->assertQueryContentContains('label', 'Name');
-    $this->assertQueryContentContains('label', 'Description');
+        // Test rendering the form
+        $this->resetAll();
+        $this->dispatchUrI($url, $userWithPermission);
+        $this->assertController('item');
+        $this->assertAction('edit');
+        $this->assertQuery('form#editItemForm');
+        $this->assertQuery('input[name="itemId"][value="'.$itemDao->getKey().'"]');
+        $this->assertQuery('input[type="checkbox"][name="updateBitstreamName"][value="updateBitstreamName"]');
+        $this->assertQuery('select[name="licenseSelect"]');
+        $this->assertQuery('input[name="submit"][value="Save"]');
+        $this->assertQueryContentContains('label', 'Name');
+        $this->assertQueryContentContains('label', 'Description');
 
-    // Test submitting the form
-    $this->resetAll();
-    $this->getRequest()->setMethod('POST');
-    $this->params = array();
-    $this->params['name'] = 'New name';
-    $this->params['description'] = 'New description';
-    $this->params['licenseSelect'] = '123';
-    $this->dispatchUrI($url, $userWithPermission);
-    $this->assertController('item');
-    $this->assertAction('edit');
-    $this->assertRedirect();
+        // Test submitting the form
+        $this->resetAll();
+        $this->getRequest()->setMethod('POST');
+        $this->params = array();
+        $this->params['name'] = 'New name';
+        $this->params['description'] = 'New description';
+        $this->params['licenseSelect'] = '123';
+        $this->dispatchUrI($url, $userWithPermission);
+        $this->assertController('item');
+        $this->assertAction('edit');
+        $this->assertRedirect();
 
-    $itemDao = $this->Item->load($itemDao->getKey());
-    $lastRevision = $this->Item->getLastRevision($itemDao);
-    $bitstreams = $lastRevision->getBitstreams();
-    $bitstream  = $bitstreams[0];
-    $this->assertEquals($itemDao->getName(), 'New name');
-    $this->assertEquals($itemDao->getDescription(), 'New description');
-    $this->assertEquals($lastRevision->getLicenseId(), 123);
-    $this->assertEquals($bitstream->getName(), 'foo_2.png');
+        $itemDao = $this->Item->load($itemDao->getKey());
+        $lastRevision = $this->Item->getLastRevision($itemDao);
+        $bitstreams = $lastRevision->getBitstreams();
+        $bitstream = $bitstreams[0];
+        $this->assertEquals($itemDao->getName(), 'New name');
+        $this->assertEquals($itemDao->getDescription(), 'New description');
+        $this->assertEquals($lastRevision->getLicenseId(), 123);
+        $this->assertEquals($bitstream->getName(), 'foo_2.png');
 
-    // Test submitting the form when "update bitstream" box is checked
-    $this->resetAll();
-    $this->getRequest()->setMethod('POST');
-    $this->params = array();
-    $this->params['name'] = 'New name';
-    $this->params['description'] = 'New description';
-    $this->params['licenseSelect'] = '123';
-    $this->params['updateBitstreamName'] = 'updateBitstreamName';
-    $this->dispatchUrI($url, $userWithPermission);
-    $this->assertController('item');
-    $this->assertAction('edit');
-    $this->assertRedirect();
+        // Test submitting the form when "update bitstream" box is checked
+        $this->resetAll();
+        $this->getRequest()->setMethod('POST');
+        $this->params = array();
+        $this->params['name'] = 'New name';
+        $this->params['description'] = 'New description';
+        $this->params['licenseSelect'] = '123';
+        $this->params['updateBitstreamName'] = 'updateBitstreamName';
+        $this->dispatchUrI($url, $userWithPermission);
+        $this->assertController('item');
+        $this->assertAction('edit');
+        $this->assertRedirect();
 
-    $itemDao = $this->Item->load($itemDao->getKey());
-    $lastRevision = $this->Item->getLastRevision($itemDao);
-    $bitstreams = $lastRevision->getBitstreams();
-    $bitstream  = $bitstreams[0];
-    $this->assertEquals($itemDao->getName(), 'New name');
-    $this->assertEquals($itemDao->getDescription(), 'New description');
-    $this->assertEquals($lastRevision->getLicenseId(), 123);
-    $this->assertEquals($bitstream->getName(), 'New name');
+        $itemDao = $this->Item->load($itemDao->getKey());
+        $lastRevision = $this->Item->getLastRevision($itemDao);
+        $bitstreams = $lastRevision->getBitstreams();
+        $bitstream = $bitstreams[0];
+        $this->assertEquals($itemDao->getName(), 'New name');
+        $this->assertEquals($itemDao->getDescription(), 'New description');
+        $this->assertEquals($lastRevision->getLicenseId(), 123);
+        $this->assertEquals($bitstream->getName(), 'New name');
     }
 
-  /** Test explicit deletion of an item */
-  public function testDeleteAction()
+    /** Test explicit deletion of an item */
+    public function testDeleteAction()
     {
-    $itemsFile = $this->loadData('Item', 'default');
-    $usersFile = $this->loadData('User', 'default');
-    $userWithPermission = $this->User->load($usersFile[0]->getKey());
-    $userWithoutPermission = $this->User->load($usersFile[1]->getKey());
+        $itemsFile = $this->loadData('Item', 'default');
+        $usersFile = $this->loadData('User', 'default');
+        $userWithPermission = $this->User->load($usersFile[0]->getKey());
+        $userWithoutPermission = $this->User->load($usersFile[1]->getKey());
 
-    $itemDao = $this->Item->load($itemsFile[1]->getKey());
-    $this->assertEquals(count($itemDao->getRevisions()), 1);
-    $revisions = $itemDao->getRevisions();
-    $revisionId = $revisions[0]->getItemrevisionId();
+        $itemDao = $this->Item->load($itemsFile[1]->getKey());
+        $this->assertEquals(count($itemDao->getRevisions()), 1);
+        $revisions = $itemDao->getRevisions();
+        $revisionId = $revisions[0]->getItemrevisionId();
 
-    $url = '/item/delete?itemId='.$itemDao->getItemId();
+        $url = '/item/delete?itemId='.$itemDao->getItemId();
 
-    // Should throw an exception for anonymous user
-    $this->dispatchUrI($url, null, true);
-    $this->assertController('error');
+        // Should throw an exception for anonymous user
+        $this->dispatchUrI($url, null, true);
+        $this->assertController('error');
 
-    // Should throw an exception for normal user
-    $this->resetAll();
-    $this->dispatchUrI($url, $userWithoutPermission, true);
-    $this->assertController('error');
+        // Should throw an exception for normal user
+        $this->resetAll();
+        $this->dispatchUrI($url, $userWithoutPermission, true);
+        $this->assertController('error');
 
-    // User with proper privileges should be able to delete the item
-    $this->resetAll();
-    $this->dispatchUrI($url, $userWithPermission);
-    $this->assertController('item');
-    $this->assertAction('delete');
+        // User with proper privileges should be able to delete the item
+        $this->resetAll();
+        $this->dispatchUrI($url, $userWithPermission);
+        $this->assertController('item');
+        $this->assertAction('delete');
 
-    $this->assertFalse($this->Item->load($itemsFile[1]->getKey()));
-    $this->assertFalse($this->ItemRevision->load($revisionId));
+        $this->assertFalse($this->Item->load($itemsFile[1]->getKey()));
+        $this->assertFalse($this->ItemRevision->load($revisionId));
     }
 
-  /** Test the editmetadata action */
-  public function testEditMetadataAction()
+    /** Test the editmetadata action */
+    public function testEditMetadataAction()
     {
-    $itemsFile = $this->loadData('Item', 'default');
-    $usersFile = $this->loadData('User', 'default');
-    $userWithPermission = $this->User->load($usersFile[0]->getKey());
+        $itemsFile = $this->loadData('Item', 'default');
+        $usersFile = $this->loadData('User', 'default');
+        $userWithPermission = $this->User->load($usersFile[0]->getKey());
 
-    $itemDao = $this->Item->load($itemsFile[1]->getKey());
-    $url = '/item/editmetadata?itemId='.$itemDao->getItemId().'&metadataId=1000';
+        $itemDao = $this->Item->load($itemsFile[1]->getKey());
+        $url = '/item/editmetadata?itemId='.$itemDao->getItemId().'&metadataId=1000';
 
-    // Should throw an exception for anonymous user
-    $this->dispatchUrI($url, null, true);
-    $this->assertController('error');
+        // Should throw an exception for anonymous user
+        $this->dispatchUrI($url, null, true);
+        $this->assertController('error');
 
-    // Should throw an exception for no item id parameter
-    $this->resetAll();
-    $this->dispatchUrI('/item/editmetadata', null, true);
-    $this->assertController('error');
+        // Should throw an exception for no item id parameter
+        $this->resetAll();
+        $this->dispatchUrI('/item/editmetadata', null, true);
+        $this->assertController('error');
 
-    $this->resetAll();
-    $this->dispatchUrI($url, $userWithPermission);
-    $this->assertController('item');
-    $this->assertAction('editmetadata');
-    $this->assertQuery('form#editMetadataForm');
-    $this->assertQuery('select[name="metadatatype"]');
-    $this->assertQuery('input[name="element"]');
-    $this->assertQuery('input[name="qualifier"]');
-    $this->assertQuery('input[name="value"]');
+        $this->resetAll();
+        $this->dispatchUrI($url, $userWithPermission);
+        $this->assertController('item');
+        $this->assertAction('editmetadata');
+        $this->assertQuery('form#editMetadataForm');
+        $this->assertQuery('select[name="metadatatype"]');
+        $this->assertQuery('input[name="element"]');
+        $this->assertQuery('input[name="qualifier"]');
+        $this->assertQuery('input[name="value"]');
     }
 
-  /** Test the checkshared action */
-  public function testCheckSharedAction()
+    /** Test the checkshared action */
+    public function testCheckSharedAction()
     {
-    $itemsFile = $this->loadData('Item', 'default');
-    $usersFile = $this->loadData('User', 'default');
-    $userWithPermission = $this->User->load($usersFile[0]->getKey());
+        $itemsFile = $this->loadData('Item', 'default');
+        $usersFile = $this->loadData('User', 'default');
+        $userWithPermission = $this->User->load($usersFile[0]->getKey());
 
-    $itemDao = $this->Item->load($itemsFile[1]->getKey());
-    $url = '/item/checkshared?itemId='.$itemDao->getItemId();
+        $itemDao = $this->Item->load($itemsFile[1]->getKey());
+        $url = '/item/checkshared?itemId='.$itemDao->getItemId();
 
-    $this->dispatchUrI($url, $userWithPermission);
-    $resp = JsonComponent::decode($this->getBody());
-    $this->assertTrue($resp == false);
+        $this->dispatchUrI($url, $userWithPermission);
+        $resp = JsonComponent::decode($this->getBody());
+        $this->assertTrue($resp == false);
     }
 
-  /** Test deletion of an item revision */
-  public function testDeleteItemRevisionAction()
+    /** Test deletion of an item revision */
+    public function testDeleteItemRevisionAction()
     {
-    $itemsFile = $this->loadData('Item', 'default');
-    $usersFile = $this->loadData('User', 'default');
-    $userWithPermission = $this->User->load($usersFile[0]->getKey());
+        $itemsFile = $this->loadData('Item', 'default');
+        $usersFile = $this->loadData('User', 'default');
+        $userWithPermission = $this->User->load($usersFile[0]->getKey());
 
-    $itemDao = $this->Item->load($itemsFile[1]->getKey());
-    $revisionToDelete = $this->Item->getLastRevision($itemDao);
-    $this->assertTrue($revisionToDelete instanceof ItemRevisionDao);
-    $url = '/item/deleteitemrevision?itemId='.$itemDao->getKey().
-           '&itemrevisionId='.$revisionToDelete->getKey();
+        $itemDao = $this->Item->load($itemsFile[1]->getKey());
+        $revisionToDelete = $this->Item->getLastRevision($itemDao);
+        $this->assertTrue($revisionToDelete instanceof ItemRevisionDao);
+        $url = '/item/deleteitemrevision?itemId='.$itemDao->getKey().'&itemrevisionId='.$revisionToDelete->getKey();
 
-    // Should throw an exception for anonymous user
-    $this->dispatchUrI($url, null, true);
-    $this->assertController('error');
+        // Should throw an exception for anonymous user
+        $this->dispatchUrI($url, null, true);
+        $this->assertController('error');
 
-    // Should throw an exception for no item id parameter
-    $this->resetAll();
-    $this->dispatchUrI('/item/deleteitemrevision', null, true);
-    $this->assertController('error');
+        // Should throw an exception for no item id parameter
+        $this->resetAll();
+        $this->dispatchUrI('/item/deleteitemrevision', null, true);
+        $this->assertController('error');
 
-    $this->dispatchUrI($url, $userWithPermission);
-    $this->assertController('item');
-    $this->assertAction('deleteitemrevision');
-    $this->assertRedirect();
-    $this->assertEquals($this->Item->getLastRevision($itemDao), null);
+        $this->dispatchUrI($url, $userWithPermission);
+        $this->assertController('item');
+        $this->assertAction('deleteitemrevision');
+        $this->assertRedirect();
+        $this->assertEquals($this->Item->getLastRevision($itemDao), null);
     }
 
-  /** Test edit a bitstream */
-  public function testEditBitstreamAction()
+    /** Test edit a bitstream */
+    public function testEditBitstreamAction()
     {
-    $bitsreamsFile = $this->loadData('Bitstream', 'default');
-    $usersFile = $this->loadData('User', 'default');
-    $userWithPermission = $this->User->load($usersFile[2]->getKey());
+        $bitsreamsFile = $this->loadData('Bitstream', 'default');
+        $usersFile = $this->loadData('User', 'default');
+        $userWithPermission = $this->User->load($usersFile[2]->getKey());
 
-    $bitstreamToEditId = $bitsreamsFile[0]->getKey();
-    $url = '/item/editbitstream?bitstreamId='.$bitstreamToEditId;
+        $bitstreamToEditId = $bitsreamsFile[0]->getKey();
+        $url = '/item/editbitstream?bitstreamId='.$bitstreamToEditId;
 
-    // Should throw an exception for anonymous user
-    $this->dispatchUrI($url, null, true);
-    $this->assertController('error');
+        // Should throw an exception for anonymous user
+        $this->dispatchUrI($url, null, true);
+        $this->assertController('error');
 
-    // Should throw an exception for no item id parameter
-    $this->resetAll();
-    $this->dispatchUrI('/item/editbitstream', null, true);
-    $this->assertController('error');
+        // Should throw an exception for no item id parameter
+        $this->resetAll();
+        $this->dispatchUrI('/item/editbitstream', null, true);
+        $this->assertController('error');
 
-    // Test rendering the form
-    $this->resetAll();
-    $this->dispatchUrI($url, $userWithPermission);
-    $this->assertController('item');
-    $this->assertAction('editbitstream');
-    $this->assertQuery('form#editBitstreamForm');
-    $this->assertQuery('input[name="bitstreamId"][value="'.$bitstreamToEditId.'"]');
-    $this->assertQuery('input[name="submit"][value="Save"]');
-    $this->assertQueryContentContains('label', 'Name');
-    $this->assertQueryContentContains('label', 'Mimetype');
+        // Test rendering the form
+        $this->resetAll();
+        $this->dispatchUrI($url, $userWithPermission);
+        $this->assertController('item');
+        $this->assertAction('editbitstream');
+        $this->assertQuery('form#editBitstreamForm');
+        $this->assertQuery('input[name="bitstreamId"][value="'.$bitstreamToEditId.'"]');
+        $this->assertQuery('input[name="submit"][value="Save"]');
+        $this->assertQueryContentContains('label', 'Name');
+        $this->assertQueryContentContains('label', 'Mimetype');
 
-    // Test submitting the form
-    $this->resetAll();
-    $this->getRequest()->setMethod('POST');
-    $this->params = array();
-    $this->params['name'] = 'newname.jpeg';
-    $this->params['mimetype'] = 'image/jpeg';
-    $this->dispatchUrI($url, $userWithPermission);
-    $this->assertController('item');
-    $this->assertAction('editbitstream');
-    $this->assertRedirect();
+        // Test submitting the form
+        $this->resetAll();
+        $this->getRequest()->setMethod('POST');
+        $this->params = array();
+        $this->params['name'] = 'newname.jpeg';
+        $this->params['mimetype'] = 'image/jpeg';
+        $this->dispatchUrI($url, $userWithPermission);
+        $this->assertController('item');
+        $this->assertAction('editbitstream');
+        $this->assertRedirect();
 
-    $bitstreamDao = $this->Bitstream->load($bitstreamToEditId);
-    $this->assertEquals($bitstreamDao->getName(), 'newname.jpeg');
-    $this->assertEquals($bitstreamDao->getMimetype(), 'image/jpeg');
+        $bitstreamDao = $this->Bitstream->load($bitstreamToEditId);
+        $this->assertEquals($bitstreamDao->getName(), 'newname.jpeg');
+        $this->assertEquals($bitstreamDao->getMimetype(), 'image/jpeg');
     }
 
-  /** Test delete a bitstream */
-  public function testDeleteBitstreamAction()
+    /** Test delete a bitstream */
+    public function testDeleteBitstreamAction()
     {
-    $itemsFile = $this->loadData('Item', 'default');
-    $usersFile = $this->loadData('User', 'default');
-    $userWithPermission = $this->User->load($usersFile[2]->getKey());
+        $itemsFile = $this->loadData('Item', 'default');
+        $usersFile = $this->loadData('User', 'default');
+        $userWithPermission = $this->User->load($usersFile[2]->getKey());
 
-    $itemDao = $this->Item->load($itemsFile[0]->getKey());
-    $revisionDao = $this->Item->getLastRevision($itemDao);
-    $old_bitstreams = $revisionDao->getBitstreams();
-    $this->assertEquals(count($old_bitstreams), 1);
-    $bitstreamToDeleteId = $old_bitstreams[0]->getKey();
-    $url = '/item/deletebitstream?bitstreamId='.$bitstreamToDeleteId;
+        $itemDao = $this->Item->load($itemsFile[0]->getKey());
+        $revisionDao = $this->Item->getLastRevision($itemDao);
+        $old_bitstreams = $revisionDao->getBitstreams();
+        $this->assertEquals(count($old_bitstreams), 1);
+        $bitstreamToDeleteId = $old_bitstreams[0]->getKey();
+        $url = '/item/deletebitstream?bitstreamId='.$bitstreamToDeleteId;
 
-    // Should throw an exception for anonymous user
-    $this->dispatchUrI($url, null, true);
-    $this->assertController('error');
+        // Should throw an exception for anonymous user
+        $this->dispatchUrI($url, null, true);
+        $this->assertController('error');
 
-    // Should throw an exception for no item id parameter
-    $this->resetAll();
-    $this->dispatchUrI('/item/deletebitstream', null, true);
-    $this->assertController('error');
+        // Should throw an exception for no item id parameter
+        $this->resetAll();
+        $this->dispatchUrI('/item/deletebitstream', null, true);
+        $this->assertController('error');
 
-    $this->dispatchUrI($url, $userWithPermission);
-    $this->assertController('item');
-    $this->assertAction('deletebitstream');
-    $this->assertRedirect();
-    $new_bitstreams = $revisionDao->getBitstreams();
-    $this->assertEquals(count($new_bitstreams), 0);
-    $bitstreamToDelete = $this->Bitstream->load($bitstreamToDeleteId);
-    $this->assertFalse($bitstreamToDelete, 'Bitstream should have been deleted, but was not.');
+        $this->dispatchUrI($url, $userWithPermission);
+        $this->assertController('item');
+        $this->assertAction('deletebitstream');
+        $this->assertRedirect();
+        $new_bitstreams = $revisionDao->getBitstreams();
+        $this->assertEquals(count($new_bitstreams), 0);
+        $bitstreamToDelete = $this->Bitstream->load($bitstreamToDeleteId);
+        $this->assertFalse($bitstreamToDelete, 'Bitstream should have been deleted, but was not.');
     }
-  }
+}

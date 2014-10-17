@@ -20,6 +20,6 @@
 
 /** Base model class for the cleanup module */
 class Cleanup_AppModel extends MIDASModel
-  {
-  public $moduleName = 'cleanup';
-  }
+{
+    public $moduleName = 'cleanup';
+}

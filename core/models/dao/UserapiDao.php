@@ -17,8 +17,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /** Dao for user api key */
 class UserapiDao extends AppDao
-  {
-  public $_model = 'Userapi';
-  }
+{
+    public $_model = 'Userapi';
+}

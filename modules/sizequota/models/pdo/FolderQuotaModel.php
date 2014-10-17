@@ -24,16 +24,16 @@ require_once BASE_PATH.'/modules/sizequota/models/base/FolderQuotaModelBase.php'
  * Folder quota pdo model
  */
 class Sizequota_FolderQuotaModel extends Sizequota_FolderQuotaModelBase
-  {
-  /** Returns the quota dao corresponding to the given folder, or false if none is set */
-  public function getQuota($folder)
+{
+    /** Returns the quota dao corresponding to the given folder, or false if none is set */
+    public function getQuota($folder)
     {
-    if(!$folder instanceof FolderDao)
-      {
-      throw new Zend_Exception('Parameter should be a folder.');
-      }
-    $sql = $this->database->select()->where('folder_id = ?', $folder->getKey());
-    $row = $this->database->fetchRow($sql);
-    return $this->initDao('FolderQuota', $row, 'sizequota');
+        if (!$folder instanceof FolderDao) {
+            throw new Zend_Exception('Parameter should be a folder.');
+        }
+        $sql = $this->database->select()->where('folder_id = ?', $folder->getKey());
+        $row = $this->database->fetchRow($sql);
+
+        return $this->initDao('FolderQuota', $row, 'sizequota');
     }
-  }
+}

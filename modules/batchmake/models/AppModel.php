@@ -20,6 +20,6 @@
 
 /** Batchmake_AppModel */
 class Batchmake_AppModel extends MIDASModel
-  {
-  public $moduleName = 'batchmake';
-  }
+{
+    public $moduleName = 'batchmake';
+}

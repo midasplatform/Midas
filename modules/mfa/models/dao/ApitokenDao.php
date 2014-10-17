@@ -17,9 +17,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /** DAO for the MFA Temporary API token */
 class Mfa_ApitokenDao extends Mfa_AppDao
-  {
-  public $_model = 'Apitoken';
-  public $_module = 'mfa';
-  }
+{
+    public $_model = 'Apitoken';
+    public $_module = 'mfa';
+}

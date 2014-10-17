@@ -19,10 +19,9 @@
 =========================================================================*/
 
 /**
- * \class FolderpolicyuserDao
- * \brief DAO Item (table item)
+ * DAO Item (table item)
  */
 class FolderpolicyuserDao extends AppDao
-  {
-  public $_model = 'Folderpolicyuser';
-  }
+{
+    public $_model = 'Folderpolicyuser';
+}

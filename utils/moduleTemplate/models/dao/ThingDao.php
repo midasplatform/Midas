@@ -20,7 +20,7 @@
 
 /** DAO template for the @MN@ module */
 class @MN_CAP@_ThingDao extends @MN_CAP@_AppDao
-  {
-  public $_model = 'Thing';
-  public $_module = '@MN@';
-  }
+{
+    public $_model = 'Thing';
+    public $_module = '@MN@';
+}

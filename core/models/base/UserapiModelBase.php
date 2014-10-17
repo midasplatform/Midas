@@ -17,94 +17,115 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
+/** User API base model */
 abstract class UserapiModelBase extends AppModel
-  {
-  /** constructor */
-  public function __construct()
+{
+    /** constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'userapi';
-    $this->_key = 'userapi_id';
+        parent::__construct();
+        $this->_name = 'userapi';
+        $this->_key = 'userapi_id';
 
-    $this->_mainData = array(
-        'userapi_id' => array('type' => MIDAS_DATA),
-        'user_id' => array('type' => MIDAS_DATA),
-        'apikey' => array('type' => MIDAS_DATA),
-        'application_name' =>  array('type' => MIDAS_DATA),
-        'token_expiration_time' =>  array('type' => MIDAS_DATA),
-        'creation_date' =>  array('type' => MIDAS_DATA),
-        'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
+        $this->_mainData = array(
+            'userapi_id' => array('type' => MIDAS_DATA),
+            'user_id' => array('type' => MIDAS_DATA),
+            'apikey' => array('type' => MIDAS_DATA),
+            'application_name' => array('type' => MIDAS_DATA),
+            'token_expiration_time' => array('type' => MIDAS_DATA),
+            'creation_date' => array('type' => MIDAS_DATA),
+            'user' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'User',
+                'parent_column' => 'user_id',
+                'child_column' => 'user_id',
+            ),
         );
-    $this->initialize(); // required
-    } // end __construct()
-
-  abstract function getByAppAndEmail($appname, $email);
-  abstract function getByAppAndUser($appname, $userDao);
-  abstract function getToken($email, $apikey, $appname);
-  abstract function getUserapiFromToken($token);
-  abstract function getByUser($userDao);
-
-  /**
-   * Create the user's default API key (now just a random string)
-   * @param userDao The user dao
-   * @return success boolean
-   */
-  function createDefaultApiKey($userDao)
-    {
-    if(!$userDao instanceof UserDao)
-      {
-      throw new Zend_Exception('Error parameter: must be a userDao object when creating default API key.');
-      }
-    $key = UtilityComponent::generateRandomString(32);
-
-    $rowset = $this->database->fetchAll($this->database->select()
-                                                       ->where('user_id = ?', $userDao->getKey())
-                                                       ->where('application_name = ?', 'Default'));
-
-    if(count($rowset)) //update existing record if we have one already
-      {
-      $userApiDao = $this->initDao('Userapi', $rowset[0]);
-      $userApiDao->setApikey($key);
-      $this->save($userApiDao);
-      return;
-      }
-
-    // Otherwise save new default key
-    $userApiDao = MidasLoader::newDao('UserapiDao');
-    $userApiDao->setUserId($userDao->getKey());
-    $userApiDao->setApplicationName('Default');
-    $userApiDao->setApikey($key);
-    $userApiDao->setTokenExpirationTime(100);
-    $userApiDao->setCreationDate(date("Y-m-d H:i:s"));
-    $this->save($userApiDao);
+        $this->initialize(); // required
     }
 
-  /** Create a new API key */
-  function createKey($userDao, $applicationname, $tokenexperiationtime)
+    /** Get by app and email */
+    abstract public function getByAppAndEmail($appname, $email);
+
+    /** Get by app and user */
+    abstract public function getByAppAndUser($appname, $userDao);
+
+    /** Get token */
+    abstract public function getToken($email, $apikey, $appname);
+
+    /** Get user API from token */
+    abstract public function getUserapiFromToken($token);
+
+    /** Get by user */
+    abstract public function getByUser($userDao);
+
+    /**
+     * Create the user's default API key (now just a random string)
+     *
+     * @param userDao The user dao
+     * @return success boolean
+     */
+    public function createDefaultApiKey($userDao)
     {
-    if(!$userDao instanceof UserDao || !is_string($applicationname) || !is_string($tokenexperiationtime) || empty($applicationname))
-      {
-      throw new Zend_Exception("Error parameter when creating API key.");
-      }
+        if (!$userDao instanceof UserDao) {
+            throw new Zend_Exception('Error parameter: must be a userDao object when creating default API key.');
+        }
+        $key = UtilityComponent::generateRandomString(32);
 
-    // Check that the applicationname doesn't exist for this user
-    $userapiDao = $this->getByAppAndUser($applicationname, $userDao);
-    if(!empty($userapiDao))
-      {
-      return false;
-      }
-    $now = date("Y-m-d H:i:s");
+        $rowset = $this->database->fetchAll(
+            $this->database->select()->where('user_id = ?', $userDao->getKey())->where(
+                'application_name = ?',
+                'Default'
+            )
+        );
 
-    $key = UtilityComponent::generateRandomString(40);
+        if (count($rowset)) { // update existing record if we have one already
+            $userApiDao = $this->initDao('Userapi', $rowset[0]);
+            $userApiDao->setApikey($key);
+            $this->save($userApiDao);
 
-    $userApiDao = MidasLoader::newDao('UserapiDao');
-    $userApiDao->setUserId($userDao->getKey());
-    $userApiDao->setApikey($key);
-    $userApiDao->setApplicationName($applicationname);
-    $userApiDao->setTokenExpirationTime($tokenexperiationtime);
-    $userApiDao->setCreationDate($now);
+            return;
+        }
 
-    $this->save($userApiDao);
-    return $userApiDao;
+        // Otherwise save new default key
+        $userApiDao = MidasLoader::newDao('UserapiDao');
+        $userApiDao->setUserId($userDao->getKey());
+        $userApiDao->setApplicationName('Default');
+        $userApiDao->setApikey($key);
+        $userApiDao->setTokenExpirationTime(100);
+        $userApiDao->setCreationDate(date("Y-m-d H:i:s"));
+        $this->save($userApiDao);
     }
-  }
+
+    /** Create a new API key */
+    public function createKey($userDao, $applicationname, $tokenexperiationtime)
+    {
+        if (!$userDao instanceof UserDao || !is_string($applicationname) || !is_string(
+                $tokenexperiationtime
+            ) || empty($applicationname)
+        ) {
+            throw new Zend_Exception("Error parameter when creating API key.");
+        }
+
+        // Check that the applicationname doesn't exist for this user
+        $userapiDao = $this->getByAppAndUser($applicationname, $userDao);
+        if (!empty($userapiDao)) {
+            return false;
+        }
+        $now = date("Y-m-d H:i:s");
+
+        $key = UtilityComponent::generateRandomString(40);
+
+        $userApiDao = MidasLoader::newDao('UserapiDao');
+        $userApiDao->setUserId($userDao->getKey());
+        $userApiDao->setApikey($key);
+        $userApiDao->setApplicationName($applicationname);
+        $userApiDao->setTokenExpirationTime($tokenexperiationtime);
+        $userApiDao->setCreationDate($now);
+
+        $this->save($userApiDao);
+
+        return $userApiDao;
+    }
+}

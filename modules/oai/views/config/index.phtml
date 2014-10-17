@@ -18,24 +18,25 @@
  limitations under the License.
 =========================================================================*/
 
-$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
-$this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config.index.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.index.js');
 ?>
 
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->coreWebroot ?>/public/css/common/common.genericPage.css"/>
 <div class="viewMain">
-     <div class ="genericWrapperTopRight">
-         <?php
-          echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
-            echo "<a  href='{$this->webroot}/admin#tabs-modules'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
-            echo $this->t('Back');
-            echo "</a>";
-          echo '</div>';
+    <div class="genericWrapperTopRight">
+        <?php
+        echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
+        echo "<a  href='{$this->webroot}/admin#tabs-modules'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+        echo $this->t('Back');
+        echo "</a>";
+        echo '</div>';
 
         ?>
     </div>
-     <?php
-      echo "
+    <?php
+    echo "
       <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
       <h3>API Configuration:</h3>
           <div>
@@ -57,5 +58,5 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
             {$this->configForm['submitConfig']}
           </div>
        </form>";
-       ?>
+    ?>
 </div>

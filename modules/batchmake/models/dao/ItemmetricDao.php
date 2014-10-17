@@ -20,7 +20,7 @@
 
 /** Batchmake_ItemmetricDao */
 class Batchmake_ItemmetricDao extends AppDao
-  {
-  public $_model = 'Itemmetric';
-  public $_module = 'batchmake';
-  }
+{
+    public $_model = 'Itemmetric';
+    public $_module = 'batchmake';
+}

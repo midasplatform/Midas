@@ -20,50 +20,49 @@
 
 /** Config controller for the demo module */
 class Demo_ConfigController extends Demo_AppController
-  {
-  public $_models = array('Setting');
-  public $_moduleComponents = array('Demo');
-  public $_moduleForms = array('Config');
+{
+    public $_models = array('Setting');
+    public $_moduleComponents = array('Demo');
+    public $_moduleForms = array('Config');
 
-  /** Require admin privileges excluding demo admin */
-  function requireNonDemoAdminPrivileges()
+    /** Require admin privileges excluding demo admin */
+    public function requireNonDemoAdminPrivileges()
     {
-    $this->requireAdminPrivileges();
-    if($this->userSession->Dao->getEmail() === MIDAS_DEMO_ADMIN_EMAIL)
-      {
-      throw new Zend_Exception(MIDAS_ADMIN_PRIVILEGES_REQUIRED, 403);
-      }
+        $this->requireAdminPrivileges();
+        if ($this->userSession->Dao->getEmail() === MIDAS_DEMO_ADMIN_EMAIL) {
+            throw new Zend_Exception(MIDAS_ADMIN_PRIVILEGES_REQUIRED, 403);
+        }
     }
 
-  /** Index action */
-  function indexAction()
+    /** Index action */
+    public function indexAction()
     {
-    $this->requireNonDemoAdminPrivileges();
-    $configForm = $this->ModuleForm->Config->createConfigForm();
-    $formArray = $this->getFormAsArray($configForm);
-    $param = 'enabled';
-    $value = $this->Setting->getValueByName($param, $this->moduleName);
-    $formArray[$param]->setValue($value);
-    $this->view->configForm = $formArray;
+        $this->requireNonDemoAdminPrivileges();
+        $configForm = $this->ModuleForm->Config->createConfigForm();
+        $formArray = $this->getFormAsArray($configForm);
+        $param = 'enabled';
+        $value = $this->Setting->getValueByName($param, $this->moduleName);
+        $formArray[$param]->setValue($value);
+        $this->view->configForm = $formArray;
     }
 
-  /** Reset action */
-  function resetAction()
+    /** Reset action */
+    public function resetAction()
     {
-    $this->requireNonDemoAdminPrivileges();
-    $this->ModuleComponent->Demo->reset();
-    $this->_helper->Redirector->gotoSimple('index');
+        $this->requireNonDemoAdminPrivileges();
+        $this->ModuleComponent->Demo->reset();
+        $this->_helper->Redirector->gotoSimple('index');
     }
 
-  /** Submit action */
-  function submitAction()
+    /** Submit action */
+    public function submitAction()
     {
-    $this->requireNonDemoAdminPrivileges();
-    $this->disableLayout();
-    $this->disableView();
-    $param = 'enabled';
-    $value = $this->getParam($param);
-    $this->Setting->setConfig($param, $value, $this->moduleName);
-    echo JsonComponent::encode(array(true, 'Changes saved'));
+        $this->requireNonDemoAdminPrivileges();
+        $this->disableLayout();
+        $this->disableView();
+        $param = 'enabled';
+        $value = $this->getParam($param);
+        $this->Setting->setConfig($param, $value, $this->moduleName);
+        echo JsonComponent::encode(array(true, 'Changes saved'));
     }
-  }
+}

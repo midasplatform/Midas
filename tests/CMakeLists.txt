@@ -54,7 +54,7 @@ function(add_midas_mysql_test TestName TestFile)
       FAIL_REGULAR_EXPRESSION ".*Failures: [1-9]+.*;.*Exceptions: [1-9]+.*"
       RESOURCE_LOCK MIDASDatabase
     )
-  ENDIF(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/mysql.ini) 
+  ENDIF(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/mysql.ini)
 endfunction(add_midas_mysql_test)
 
 function(add_midas_pgsql_test TestName TestFile)
@@ -75,11 +75,11 @@ function(add_midas_style_test TestName TestDir)
   if(MIDAS_RUN_STYLE_TESTS)
     add_test(
       ${TestName}
-      ${PHP} ${CMAKE_SOURCE_DIR}/tests/library/PHPCheckstyle/run.php --format console --src ${TestDir}
+      ${PHP} ${CMAKE_SOURCE_DIR}/tests/library/PHPCheckstyle/run.php --config ${CMAKE_SOURCE_DIR}/tests/phpcheckstyle.cfg.xml --format console --src ${TestDir}
     )
     set_tests_properties(
       ${TestName} PROPERTIES
-      FAIL_REGULAR_EXPRESSION "ERROR;WARNING"
+      FAIL_REGULAR_EXPRESSION "error;warning"
     )
 
     add_test(

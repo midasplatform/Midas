@@ -18,29 +18,32 @@
  limitations under the License.
 =========================================================================*/
 
-$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
-$this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config.index.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.index.js');
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/config/config.index.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/config/config.index.css"/>
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->coreWebroot ?>/public/css/common/common.genericPage.css"/>
 <div class="viewMain">
-     <div class ="genericWrapperTopRight">
-         <?php
-          echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
-            echo "<a  href='{$this->webroot}/admin#tabs-modules'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
-            echo $this->t('Back');
-            echo "</a>";
-          echo '</div>';
+    <div class="genericWrapperTopRight">
+        <?php
+        echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
+        echo "<a  href='{$this->webroot}/admin#tabs-modules'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+        echo $this->t('Back');
+        echo "</a>";
+        echo '</div>';
 
         ?>
     </div>
 
     This module requires ImageMagick.<br/>
-    To install it: <a href="http://www.imagemagick.org/" target='_blank'>http://www.imagemagick.org/</a><br/>
-    To create a PDF thumbnail, you will need <a href="http://www.ghostscript.com/download/" target='_blank'>http://www.ghostscript.com/download/</a><br/>
+    To install it:
+    <a href="http://www.imagemagick.org/" target='_blank'>http://www.imagemagick.org/</a><br/>
+    To create a PDF thumbnail, you will need
+    <a href="http://www.ghostscript.com/download/" target='_blank'>http://www.ghostscript.com/download/</a><br/>
     To create a video thumbnail, you will need the codecs of the video.<br/>
-     <?php
-      echo "
+    <?php
+    echo "
       <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
       <h3>Image Magick Configuration:</h3>
             <div>
@@ -51,16 +54,19 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
             {$this->configForm['submitConfig']}
           </div>
        </form>";
-       ?>
+    ?>
     </br>
     </br>
-    Optional: this module may need 'thumbnailer', a <a href="http://www.simpleitk.org/" target='_blank'>Simple-ITK</a>-based thumbnailing application.<br/><br/>
-    Thumbnailer can be downloaded for many platforms <a href="http://midas3.kitware.com/midas/folder/5750" target='_blank'>here</a>.<br/><br/>
-    Enabling this will allow the server to create thumbnails for .nrrd and .mha 2D or 3D image files.  If you wish to use it,
+    Optional: this module may need 'thumbnailer', a
+    <a href="http://www.simpleitk.org/" target='_blank'>Simple-ITK</a>-based thumbnailing application.<br/><br/>
+    Thumbnailer can be downloaded for many platforms
+    <a href="http://midas3.kitware.com/midas/folder/5750" target='_blank'>here</a>.<br/><br/>
+    Enabling this will allow the server to create thumbnails for .nrrd and .mha 2D or 3D image files. If you wish to use
+    it,
     please download the executable for your platform and specify the location of the Thumbnailer executable here.<br>
 
-     <?php
-      echo "
+    <?php
+    echo "
       <form class='genericForm' id='thumbnailerForm' method='{$this->thumbnailerForm['method']}'  action='{$this->thumbnailerForm['action']}'>
       <h3>Thumbnailer Configuration:</h3>
           <div class='radioElement'>
@@ -75,6 +81,6 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
             {$this->thumbnailerForm['submitThumbnailer']}
           </div>
        </form>";
-       ?>
+    ?>
 
 </div>

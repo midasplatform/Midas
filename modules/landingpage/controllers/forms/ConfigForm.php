@@ -18,27 +18,26 @@
  limitations under the License.
 =========================================================================*/
 
-/** Landingpage module config form*/
+/** Landingpage module config form */
 class Landingpage_ConfigForm extends AppForm
-  {
-  /** main config form */
-  public function createForm()
+{
+    /** main config form */
+    public function createForm()
     {
-    $form = new Zend_Form;
+        $form = new Zend_Form();
 
-    $form->setAction("")
-         ->setMethod('post');
+        $form->setAction("")->setMethod('post');
 
-    $name = new Zend_Form_Element_Textarea('text');
-    $name->setRequired(true)
-         ->setAttrib('cols', '120')
-         ->setAttrib('rows', '100')
-         ->setValue('Add some text or _Markdown_ here');
+        $name = new Zend_Form_Element_Textarea('text');
+        $name->setRequired(true)->setAttrib('cols', '120')->setAttrib('rows', '100')->setValue(
+            'Add some text or _Markdown_ here'
+        );
 
-    $submit = new  Zend_Form_Element_Submit('submit');
-    $submit->setLabel('Edit');
+        $submit = new  Zend_Form_Element_Submit('submit');
+        $submit->setLabel('Edit');
 
-    $form->addElements(array($name, $submit));
-    return $form;
-    } // end function createForm
-  } // end class
+        $form->addElements(array($name, $submit));
+
+        return $form;
+    }
+}

@@ -24,36 +24,34 @@
  * various paraviewweb apps
  */
 class Pvw_ValidationComponent extends AppComponent
-  {
-
-  /** Test whether we can visualize with slice viewer */
-  public function canVisualizeWithSliceView($itemDao)
+{
+    /** Test whether we can visualize with slice viewer */
+    public function canVisualizeWithSliceView($itemDao)
     {
-    return $this->_testItem($itemDao, array('mha', 'nrrd'));
+        return $this->_testItem($itemDao, array('mha', 'nrrd'));
     }
 
-  /** Test whether we can visualize with surface model viewer */
-  public function canVisualizeWithSurfaceView($itemDao)
+    /** Test whether we can visualize with surface model viewer */
+    public function canVisualizeWithSurfaceView($itemDao)
     {
-    return $this->_testItem($itemDao, array('vtk', 'vtp', 'ply', 'obj'));
+        return $this->_testItem($itemDao, array('vtk', 'vtp', 'ply', 'obj'));
     }
 
-  /** Helper function to test if an item matches a list of extensions */
-  private function _testItem($itemDao, $extensions)
+    /** Helper function to test if an item matches a list of extensions */
+    private function _testItem($itemDao, $extensions)
     {
-    $itemModel = MidasLoader::loadModel('Item');
-    $revision = $itemModel->getLastRevision($itemDao);
-    if(empty($revision))
-      {
-      return false;
-      }
-    $bitstreams = $revision->getBitstreams();
-    if(count($bitstreams) == 0)
-      {
-      return false;
-      }
+        $itemModel = MidasLoader::loadModel('Item');
+        $revision = $itemModel->getLastRevision($itemDao);
+        if (empty($revision)) {
+            return false;
+        }
+        $bitstreams = $revision->getBitstreams();
+        if (count($bitstreams) == 0) {
+            return false;
+        }
 
-    $ext = strtolower(substr(strrchr($bitstreams[0]->getName(), '.'), 1));
-    return in_array($ext, $extensions);
+        $ext = strtolower(substr(strrchr($bitstreams[0]->getName(), '.'), 1));
+
+        return in_array($ext, $extensions);
     }
-  } // end class
+}

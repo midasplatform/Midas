@@ -20,7 +20,7 @@
 
 /** DAO for the googleauth_user model */
 class Googleauth_UserDao extends AppDao
-  {
-  public $_model = 'User';
-  public $_module = 'googleauth';
-  }
+{
+    public $_model = 'User';
+    public $_module = 'googleauth';
+}

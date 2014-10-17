@@ -19,9 +19,9 @@
 =========================================================================*/
 
 class Validation_Upgrade_1_0_1 extends MIDASUpgrade
-  {
-  public function pgsql()
+{
+    public function pgsql()
     {
-    $this->db->query("ALTER TABLE validation_dashboard ALTER COLUMN owner_id SET DEFAULT 0;");
+        $this->db->query("ALTER TABLE validation_dashboard ALTER COLUMN owner_id SET DEFAULT 0;");
     }
-  }
+}

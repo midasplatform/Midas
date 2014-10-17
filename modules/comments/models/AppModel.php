@@ -20,6 +20,6 @@
 
 /** Base model class for the comments module */
 class Comments_AppModel extends MIDASModel
-  {
-  public $moduleName = 'comments';
-  }
+{
+    public $moduleName = 'comments';
+}

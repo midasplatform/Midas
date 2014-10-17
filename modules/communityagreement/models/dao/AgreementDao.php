@@ -27,7 +27,7 @@
  * @package    communityagreement
  */
 class Communityagreement_AgreementDao extends Communityagreement_AppDao
-  {
-  public $_model = 'Agreement';
-  public $_module = 'communityagreement';
-  }
+{
+    public $_model = 'Agreement';
+    public $_module = 'communityagreement';
+}

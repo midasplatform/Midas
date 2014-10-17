@@ -19,10 +19,9 @@
 =========================================================================*/
 
 /**
- * \class ProgressDao
- * \brief Dao for Progress object
+ * Dao for Progress object
  */
 class ProgressDao extends AppDao
-  {
-  public $_model = 'Progress';
-  }
+{
+    public $_model = 'Progress';
+}

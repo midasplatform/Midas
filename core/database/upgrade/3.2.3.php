@@ -23,14 +23,14 @@
  * multiple assetstores
  */
 class Upgrade_3_2_3 extends MIDASUpgrade
-  {
-  public function mysql()
+{
+    public function mysql()
     {
-    $this->db->query("ALTER TABLE `bitstream` ADD INDEX (`checksum`)");
+        $this->db->query("ALTER TABLE `bitstream` ADD INDEX (`checksum`)");
     }
 
-  public function pgsql()
+    public function pgsql()
     {
-    $this->db->query("CREATE INDEX bitstream_idx_checksum ON bitstream (checksum)");
+        $this->db->query("CREATE INDEX bitstream_idx_checksum ON bitstream (checksum)");
     }
-  }
+}

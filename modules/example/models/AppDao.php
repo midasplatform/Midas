@@ -22,6 +22,6 @@
  * AppDao for the example module.
  */
 class Example_AppDao extends MIDAS_GlobalDao
-  {
-  public $moduleName = 'example';
-  } // end class
+{
+    public $moduleName = 'example';
+}

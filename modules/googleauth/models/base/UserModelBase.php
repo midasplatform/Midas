@@ -23,41 +23,49 @@
  * authenticated via Google Oauth, so we use this model to store that info.
  */
 abstract class Googleauth_UserModelBase extends Googleauth_AppModel
-  {
-  /** constructor */
-  public function __construct()
+{
+    /** constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'googleauth_user';
-    $this->_key = 'googleauth_user_id';
+        parent::__construct();
+        $this->_name = 'googleauth_user';
+        $this->_key = 'googleauth_user_id';
 
-    $this->_mainData = array(
-        'googleauth_user_id' => array('type' => MIDAS_DATA),
-        'user_id' => array('type' => MIDAS_DATA),
-        'google_person_id' => array('type' => MIDAS_DATA),
-        'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User',
-                        'parent_column' => 'user_id', 'child_column' => 'user_id')
+        $this->_mainData = array(
+            'googleauth_user_id' => array('type' => MIDAS_DATA),
+            'user_id' => array('type' => MIDAS_DATA),
+            'google_person_id' => array('type' => MIDAS_DATA),
+            'user' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'User',
+                'parent_column' => 'user_id',
+                'child_column' => 'user_id',
+            ),
         );
-    $this->initialize(); // required
-    } // end __construct()
-
-  public abstract function getByGooglePersonId($pid);
-  public abstract function deleteByUser($userDao);
-
-  /**
-   * Create a new record of a user who authenticates via google auth.
-   * @param $user The user dao representing this user's information
-   * @param $googlePersonId The unique identifier value for the google user
-   * @return The created googleauth_user dao.
-   */
-  public function createGoogleUser($user, $googlePersonId)
-    {
-    $guserDao = MidasLoader::newDao('UserDao', 'googleauth');
-    $guserDao->setUserId($user->getKey());
-    $guserDao->setGooglePersonId($googlePersonId);
-
-    $this->save($guserDao);
-
-    return $guserDao;
+        $this->initialize(); // required
     }
-  }
+
+    /** Get by Google person id */
+    abstract public function getByGooglePersonId($pid);
+
+    /** Delete by user */
+    abstract public function deleteByUser($userDao);
+
+    /**
+     * Create a new record of a user who authenticates via google auth.
+     *
+     * @param $user The user dao representing this user's information
+     * @param $googlePersonId The unique identifier value for the google user
+     * @return The created googleauth_user dao.
+     */
+    public function createGoogleUser($user, $googlePersonId)
+    {
+        $guserDao = MidasLoader::newDao('UserDao', 'googleauth');
+        $guserDao->setUserId($user->getKey());
+        $guserDao->setGooglePersonId($googlePersonId);
+
+        $this->save($guserDao);
+
+        return $guserDao;
+    }
+}

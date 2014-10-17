@@ -17,39 +17,39 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-require_once BASE_PATH . '/modules/example/AppController.php';
 
-/** example sample controller*/
+require_once BASE_PATH.'/modules/example/AppController.php';
+
+/** example sample controller */
 class Example_SampleController extends Example_AppController
-  {
+{
+    public $_models = array('User');
+    public $_moduleModels = array('Wallet');
 
-  public $_models = array('User');
-  public $_moduleModels = array('Wallet');
-
-  /** init method */
-  function init()
+    /** init method */
+    public function init()
     {
     }
 
-  /**
-   *  view Action
-   */
-  function viewAction()
+    /**
+     * view Action
+     */
+    public function viewAction()
     {
-    $this->view->header = 'Example Module Sample Controller View Action';
-    $this->view->sampleList = array('sample 1', 'sample 2', 'sample 3');
-    $this->view->json['json_sample'] = 'my_json_sample_value';
-    // get userId 1 for now
-    $userDao = $this->User->load(1); // use a core model
-    $this->view->wallet = $this->Example_Wallet->createWallet($userDao, '10'); // use a model from this module
-    $this->view->wallet->setCreditCardCount(3);
+        $this->view->header = 'Example Module Sample Controller View Action';
+        $this->view->sampleList = array('sample 1', 'sample 2', 'sample 3');
+        $this->view->json['json_sample'] = 'my_json_sample_value';
+        // get userId 1 for now
+        $userDao = $this->User->load(1); // use a core model
+        $this->view->wallet = $this->Example_Wallet->createWallet($userDao, '10'); // use a model from this module
+        $this->view->wallet->setCreditCardCount(3);
     }
 
-  /**
-   *  delete Action
-   */
-  function deleteAction()
+    /**
+     * delete Action
+     */
+    public function deleteAction()
     {
-    $this->view->header = 'Example Module Sample Controller Delete Action';
+        $this->view->header = 'Example Module Sample Controller Delete Action';
     }
-  } // end class
+}

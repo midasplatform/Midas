@@ -20,19 +20,22 @@
 
 class  Zend_View_Helper_Linkuser
 {
-  /** linkuser helper */
-  function linkuser($userDao)
+    /** linkuser helper */
+    public function linkuser($userDao)
     {
-    if($userDao->getPrivacy()==MIDAS_USER_PUBLIC||isset($this->view->userDao)&&$this->view->userDao->isAdmin()||isset($this->view->userDao)&&$userDao->getKey()==$this->view->userDao->getKey())
-      {
-      return "<a class=\"userTitle\" href='{$this->view->webroot}/user/{$userDao->getKey()}'>{$userDao->getFullName()}</a>";
-      }
-    return "{$userDao->getFullName()}";
-    }//en method link user
+        if ($userDao->getPrivacy() == MIDAS_USER_PUBLIC || isset($this->view->userDao) && $this->view->userDao->isAdmin(
+            ) || isset($this->view->userDao) && $userDao->getKey() == $this->view->userDao->getKey()
+        ) {
+            return "<a class=\"userTitle\" href='{$this->view->webroot}/user/{$userDao->getKey(
+            )}'>{$userDao->getFullName()}</a>";
+        }
 
-  /** Set view*/
-  public function setView(Zend_View_Interface $view)
-    {
-    $this->view = $view;
+        return "{$userDao->getFullName()}";
     }
-}// end class
+
+    /** Set view */
+    public function setView(Zend_View_Interface $view)
+    {
+        $this->view = $view;
+    }
+}

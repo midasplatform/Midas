@@ -20,53 +20,46 @@
 ?>
 
 <div class="viewMain">
-  <h2>Midas Platform Web API</h2>
+    <h2>Midas Platform Web API</h2>
 
-  The API will send you a REST response at the following URL:<br/>
-  <pre><?php echo $this->serverURL.$this->webroot?>/api/rest?method=METHOD_NAME</pre>
-  <br/>
+    The API will send you a REST response at the following URL:<br/>
+    <pre><?php echo $this->serverURL.$this->webroot ?>/api/rest?method=METHOD_NAME</pre>
+    <br/>
     The API will send you a JSON response at the following URL:<br/>
-  <pre><?php echo $this->serverURL.$this->webroot?>/api/json?method=METHOD_NAME</pre>
+    <pre><?php echo $this->serverURL.$this->webroot ?>/api/json?method=METHOD_NAME</pre>
 
-  <div class="api.listmethods" id="api.listmethods">
-    Available methods:
-    <ul class="listmethods">
-      <?php
-      foreach( $this->data['api.listmethods'] as $methodname )
-        {
-        echo "<li class='methodListElement'>".$methodname." <a class='showHideHelp'>?</a></li>";
-        if(isset($this->help[$methodname]))
-          {
-          echo "<div class='helpContent'>";
-          echo $this->help[$methodname]['description'].'<br/>';
-          if(!empty($this->help[$methodname]['params']))
-            {
-            echo '<b>Parameters</b>';
-            foreach($this->help[$methodname]['params'] as $key => $value)
-              {
-              echo '<ul>';
-              echo "<li><b>{$key}</b> - {$value}</li>";
-              echo '</ul>';
-              }
+    <div class="api.listmethods" id="api.listmethods">
+        Available methods:
+        <ul class="listmethods">
+            <?php
+            foreach ($this->data['api.listmethods'] as $methodname) {
+                echo "<li class='methodListElement'>".$methodname." <a class='showHideHelp'>?</a></li>";
+                if (isset($this->help[$methodname])) {
+                    echo "<div class='helpContent'>";
+                    echo $this->help[$methodname]['description'].'<br/>';
+                    if (!empty($this->help[$methodname]['params'])) {
+                        echo '<b>Parameters</b>';
+                        foreach ($this->help[$methodname]['params'] as $key => $value) {
+                            echo '<ul>';
+                            echo "<li><b>{$key}</b> - {$value}</li>";
+                            echo '</ul>';
+                        }
+                    }
+                    if (!empty($this->help[$methodname]['return'])) {
+                        echo '<b>Return</b> - '.$this->help[$methodname]['return'];
+                    }
+                    if (!empty($this->help[$methodname]['example'])) {
+                        echo '<br/><b>Examples</b>';
+                        foreach ($this->help[$methodname]['example'] as $key => $value) {
+                            echo '<ul>';
+                            echo "<li><b>{$value}</b> - {$key}</li>";
+                            echo '</ul>';
+                        }
+                    }
+                    echo "</div>";
+                }
             }
-          if(!empty($this->help[$methodname]['return']))
-            {
-            echo '<b>Return</b> - '.$this->help[$methodname]['return'];
-            }
-          if(!empty($this->help[$methodname]['example']))
-            {
-            echo '<br/><b>Examples</b>';
-            foreach($this->help[$methodname]['example'] as $key => $value)
-              {
-              echo '<ul>';
-              echo "<li><b>{$value}</b> - {$key}</li>";
-              echo '</ul>';
-              }
-            }
-          echo "</div>";
-          }
-        }
-      ?>
-    </ul>
+            ?>
+        </ul>
     </div>
 </div>

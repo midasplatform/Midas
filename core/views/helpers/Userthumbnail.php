@@ -21,27 +21,20 @@
 class Zend_View_Helper_Userthumbnail
 {
     /** translation helper */
-    function userthumbnail($thumbnail, $id = '')
+    public function userthumbnail($thumbnail, $id = '')
     {
-    if(empty($thumbnail))
-      {
-      echo "<img id='{$id}' class='thumbnailSmall' " .
-           "src='{$this->view->coreWebroot}/public/images/icons/unknownUser.png'" .
-           "alt=''/>";
-      }
-    else if(preg_match("@^https?://@", $thumbnail))
-      {
-      echo "<img id='{$id}' class='thumbnailSmall' src='{$thumbnail}' alt=''/>";
-      }
-    else
-      {
-      echo "<img id='{$id}' class='thumbnailSmall' src='{$this->view->webroot}/{$thumbnail}' alt=''/>";
-      }
+        if (empty($thumbnail)) {
+            echo "<img id='{$id}' class='thumbnailSmall' "."src='{$this->view->coreWebroot}/public/images/icons/unknownUser.png'"."alt=''/>";
+        } elseif (preg_match("@^https?://@", $thumbnail)) {
+            echo "<img id='{$id}' class='thumbnailSmall' src='{$thumbnail}' alt=''/>";
+        } else {
+            echo "<img id='{$id}' class='thumbnailSmall' src='{$this->view->webroot}/{$thumbnail}' alt=''/>";
+        }
     }
 
-    /** Set view*/
+    /** Set view */
     public function setView(Zend_View_Interface $view)
     {
         $this->view = $view;
     }
-}// end class
+}

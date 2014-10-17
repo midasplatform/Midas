@@ -18,8 +18,9 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/paraview/paraview.slice.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/layout/jquery-ui.min.css" />
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->moduleWebroot ?>/public/css/paraview/paraview.slice.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/layout/jquery-ui.min.css"/>
 
 <?php
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/get_modules.js');
@@ -28,68 +29,67 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/paravi
 $this->headScript()->appendFile($this->webroot.'/modules/api/public/js/common/common.ajaxapi.js');
 
 /** Dynamic js library imports for action handlers */
-foreach($this->jsImports as $jsImport)
-  {
-  $this->headScript()->appendFile($jsImport);
-  }
+foreach ($this->jsImports as $jsImport) {
+    $this->headScript()->appendFile($jsImport);
+}
 ?>
 
 <div class="viewMain">
-  <img class="visuLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
-  <span id="loadingStatus"></span>
+    <img class="visuLoading" alt="" src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>
+    <span id="loadingStatus"></span>
 
-  <div id='renderercontainer' style="">
-    <div id='rendererOverlay'></div>
-    <div id="sliceControlContainer">
-      <div id="sliceSlider"></div>
-      <div id="sliceInfo"></div>
-    </div>
+    <div id='renderercontainer' style="">
+        <div id='rendererOverlay'></div>
+        <div id="sliceControlContainer">
+            <div id="sliceSlider"></div>
+            <div id="sliceInfo"></div>
+        </div>
 
-    <div id="windowLevelControlContainer">
-      <div id="windowLevelInfo"></div>
-      <div id="windowLevelSlider"></div>
+        <div id="windowLevelControlContainer">
+            <div id="windowLevelInfo"></div>
+            <div id="windowLevelSlider"></div>
+        </div>
+        <!-- The renderer will be inserted here -->
     </div>
-    <!-- The renderer will be inserted here -->
-  </div>
 </div>
 
 <div class="viewSideBar">
-  <div class="sideElementFirst viewAction">
-  <h1>Display</h1>
-    <ul>
-      <li>
-        <a onclick="midas.visualize.toggleControlVisibility();">
-        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/control_equalizer_blue.png"/>
-        Toggle overlay visibility
-        </a>
-      </li>
-      <li>
-        <a onclick="midas.visualize.setSliceMode('XY Plane');">
-        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/camera_go.png"/>
-        XY plane view
-        </a>
-      </li>
-      <li>
-        <a onclick="midas.visualize.setSliceMode('XZ Plane');">
-        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/camera_go.png"/>
-        XZ plane view
-        </a>
-      </li>
-      <li>
-        <a onclick="midas.visualize.setSliceMode('YZ Plane');">
-        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/camera_go.png"/>
-        YZ plane view
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div class="sideElement">
-    <h1>Info</h1>
-    Bounds (x): <span id="boundsXInfo" class="infoValue"></span><br/>
-    Bounds (y): <span id="boundsYInfo" class="infoValue"></span><br/>
-    Bounds (z): <span id="boundsZInfo" class="infoValue"></span><br/>
-    Scalar Range: <span id="scalarRangeInfo" class="infoValue"></span><br/>
-  </div>
+    <div class="sideElementFirst viewAction">
+        <h1>Display</h1>
+        <ul>
+            <li>
+                <a onclick="midas.visualize.toggleControlVisibility();">
+                    <img alt="" src="<?php echo $this->moduleWebroot; ?>/public/images/control_equalizer_blue.png"/>
+                    Toggle overlay visibility
+                </a>
+            </li>
+            <li>
+                <a onclick="midas.visualize.setSliceMode('XY Plane');">
+                    <img alt="" src="<?php echo $this->moduleWebroot; ?>/public/images/camera_go.png"/>
+                    XY plane view
+                </a>
+            </li>
+            <li>
+                <a onclick="midas.visualize.setSliceMode('XZ Plane');">
+                    <img alt="" src="<?php echo $this->moduleWebroot; ?>/public/images/camera_go.png"/>
+                    XZ plane view
+                </a>
+            </li>
+            <li>
+                <a onclick="midas.visualize.setSliceMode('YZ Plane');">
+                    <img alt="" src="<?php echo $this->moduleWebroot; ?>/public/images/camera_go.png"/>
+                    YZ plane view
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="sideElement">
+        <h1>Info</h1>
+        Bounds (x): <span id="boundsXInfo" class="infoValue"></span><br/>
+        Bounds (y): <span id="boundsYInfo" class="infoValue"></span><br/>
+        Bounds (z): <span id="boundsZInfo" class="infoValue"></span><br/>
+        Scalar Range: <span id="scalarRangeInfo" class="infoValue"></span><br/>
+    </div>
 </div>
 
 <!-- UI Action widget templates -->

@@ -20,6 +20,6 @@
 
 /** App DAO for the tracker module */
 class Tracker_AppDao extends MIDAS_GlobalDao
-  {
-  public $moduleName = 'tracker';
-  }
+{
+    public $moduleName = 'tracker';
+}

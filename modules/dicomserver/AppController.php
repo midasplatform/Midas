@@ -20,6 +20,6 @@
 
 /** App controller for the dicomserver module */
 class Dicomserver_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'dicomserver';
-  }
+{
+    public $moduleName = 'dicomserver';
+}

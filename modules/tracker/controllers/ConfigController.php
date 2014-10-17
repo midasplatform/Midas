@@ -17,45 +17,47 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /** Module configuration controller (for admin use) */
 class Tracker_ConfigController extends Tracker_AppController
-  {
-  public $_models = array('Setting');
-  public $_components = array('Breadcrumb');
+{
+    public $_models = array('Setting');
+    public $_components = array('Breadcrumb');
 
-  /**
-   * Show configuration view
-   */
-  function indexAction()
+    /**
+     * Show configuration view
+     */
+    public function indexAction()
     {
-    $this->requireAdminPrivileges();
-    $this->view->tempScalarTtl = $this->Setting->getValueByName('tempScalarTtl', $this->moduleName);
-    if(!$this->view->tempScalarTtl)
-      {
-      $this->view->tempScalarTtl = 24; //default to 24 hours
-      }
+        $this->requireAdminPrivileges();
+        $this->view->tempScalarTtl = $this->Setting->getValueByName('tempScalarTtl', $this->moduleName);
+        if (!$this->view->tempScalarTtl) {
+            $this->view->tempScalarTtl = 24; // default to 24 hours
+        }
 
-    $breadcrumbs = array();
-    $breadcrumbs[] = array('type' => 'moduleList');
-    $breadcrumbs[] = array('type' => 'custom',
-                           'text' => 'Tracker Dashboard Configuration',
-                           'icon' => $this->view->moduleWebroot.'/public/images/chart_line.png');
-    $this->Component->Breadcrumb->setBreadcrumbHeader($breadcrumbs, $this->view);
+        $breadcrumbs = array();
+        $breadcrumbs[] = array('type' => 'moduleList');
+        $breadcrumbs[] = array(
+            'type' => 'custom',
+            'text' => 'Tracker Dashboard Configuration',
+            'icon' => $this->view->moduleWebroot.'/public/images/chart_line.png',
+        );
+        $this->Component->Breadcrumb->setBreadcrumbHeader($breadcrumbs, $this->view);
     }
 
-  /**
-   * Submit configuration settings
-   */
-  function submitAction()
+    /**
+     * Submit configuration settings
+     */
+    public function submitAction()
     {
-    $this->requireAdminPrivileges();
-    $this->disableLayout();
-    $this->disableView();
+        $this->requireAdminPrivileges();
+        $this->disableLayout();
+        $this->disableView();
 
-    $tempScalarTtl = $this->getParam('tempScalarTtl');
+        $tempScalarTtl = $this->getParam('tempScalarTtl');
 
-    $this->Setting->setConfig('tempScalarTtl', $tempScalarTtl, $this->moduleName);
+        $this->Setting->setConfig('tempScalarTtl', $tempScalarTtl, $this->moduleName);
 
-    echo JsonComponent::encode(array('message' => 'Changes saved', 'status' => 'ok'));
+        echo JsonComponent::encode(array('message' => 'Changes saved', 'status' => 'ok'));
     }
-  } // end class
+}

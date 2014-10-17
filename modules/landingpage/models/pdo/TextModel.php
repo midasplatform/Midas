@@ -22,16 +22,16 @@ require_once BASE_PATH.'/modules/landingpage/models/base/TextModelBase.php';
 
 /** Landingpage text pdo model */
 class Landingpage_TextModel extends Landingpage_TextModelBase
-  {
-  /** Get all */
-  public function getAll()
+{
+    /** Get all */
+    public function getAll()
     {
-    $rowset = $this->database->fetchAll($this->database->select());
-    $return = array();
-    foreach($rowset as $row)
-      {
-      $return[] = $this->initDao('Text', $row, 'landingpage');
-      }
-    return $return;
+        $rowset = $this->database->fetchAll($this->database->select());
+        $return = array();
+        foreach ($rowset as $row) {
+            $return[] = $this->initDao('Text', $row, 'landingpage');
+        }
+
+        return $return;
     }
-  }
+}

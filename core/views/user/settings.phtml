@@ -22,212 +22,219 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.for
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.settings.js?'.time());
 ?>
 
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/user/user.settings.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/user/user.settings.css"/>
 
 <div id="tabsSettings">
-  <ul>
+<ul>
     <li><a href="#tabs-account"><?php echo $this->t('My Account') ?></a></li>
     <li><a href="#tabs-image"><?php echo $this->t('My Avatar') ?></a></li>
-    <?php if($this->allowPasswordChange)
-      { ?>
-      <li><a href="#tabs-password"><?php echo $this->t('My Password') ?></a></li>
+    <?php if ($this->allowPasswordChange) {
+        ?>
+        <li><a href="#tabs-password"><?php echo $this->t('My Password') ?></a>
+        </li>
     <?php
-      } ?>
-    <li><a href="#tabs-communities"><?php echo $this->t('My Communities') ?></a></li>
+    } ?>
+    <li><a href="#tabs-communities"><?php echo $this->t('My Communities') ?></a>
+    </li>
     <?php
-    foreach($this->customTabs as $moduleName => $module)
-      {
-      foreach($module as $name => $url)
-        {
-        $subname = str_replace(' ', '_', $name);
-        echo "<li><a href='{$url}' title='tabs-{$moduleName}_${subname}'>{$name}</a></li>";
+    foreach ($this->customTabs as $moduleName => $module) {
+        foreach ($module as $name => $url) {
+            $subname = str_replace(' ', '_', $name);
+            echo "<li><a href='{$url}' title='tabs-{$moduleName}_${subname}'>{$name}</a></li>";
         }
-      }
-      ?>
-  </ul>
-
-  <?php
-  foreach($this->customTabs as $moduleName => $module)
-    {
-    $i = 1;
-    foreach($module as $name => $url)
-      {
-      $subname = str_replace(' ', '_', $name);
-      echo '<div id="tabs-'.$moduleName.'_'.$subname.'"></div>';
-      }
     }
-  ?>
-  <div id="tabs-account">
-    <h3><?php echo $this->t('My Information')?>:</h3>
-    <form class="genericForm" id="modifyAccount" method="<?php echo $this->accountForm['method']?>"  action="<?php echo $this->accountForm['action']; echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>">
-      <table>
-        <?php
-        foreach($this->prependFields as $field)
-          {
-          echo '<tr><td><span>'.$field['label'].':</span>';
-          echo '<input type="'.$field['type'].'" name="'.$field['name'].'" value="'.$field['value'].'" /></td><td></td></tr>';
-          }
-        ?>
-        <tr>
-          <td><span><?php echo $this->t('Email');?>:</span><?php echo $this->accountForm['email']?></td><td></td>
-        </tr>
-        <tr>
-          <td><span><?php echo $this->t('First Name');?>:</span><?php echo $this->accountForm['firstname']?></td>
-          <td><span><?php echo $this->t('Last Name');?>:</span><?php echo $this->accountForm['lastname']?></td>
-        </tr>
-        <tr>
-          <td><span><?php echo $this->t('Website');?>:</span><?php echo $this->accountForm['website']?></td>
-          <td><span><?php echo $this->t('Company');?>:</span><?php echo $this->accountForm['company']?></td>
-        </tr>
-        <tr>
-          <td><span><?php echo $this->t('City');?>:</span><?php echo $this->accountForm['city']?></td>
-          <td><span><?php echo $this->t('Country');?>:</span><?php echo $this->accountForm['country']?></td>
-        </tr>
-        <tr>
-          <td colspan="2"><span><?php echo $this->t('Biography');?>:</span><?php echo $this->accountForm['biography']?>
-          </td>
-        </tr>
-        <tr>
-          <td colspan=2><?php echo $this->t('Privacy');?>:
-          <div id='accountPrivacy'><?php echo $this->accountForm['privacy']?>
-          </div>
-          </td>
-        </tr>
-        <?php
-        if($this->currentUser->isAdmin())
-          { ?>
-          <tr>
-            <td colspan="2">
-              <?php echo $this->t('Administrator');?>:
-              <input type="checkbox" name="adminStatus" id="adminStatusCheckbox"
-              <?php
-              if($this->user->isAdmin())
-                {
-                echo ' checked="checked" ';
-                }
-              if($this->user->getKey() == $this->currentUser->getKey())
-                {
-                echo ' disabled="disabled" ';
-                } ?>
-                />
-            </td>
-          </tr>
-        <?php
-          }
-        foreach($this->appendFields as $field)
-          {
-          echo '<tr><td><span>'.$field['label'].':</span>';
-          echo '<input type="'.$field['type'].'" name="'.$field['name'].'" value="'.$field['value'].'" /></td><td></td></tr>';
-          }
-        ?>
-        <tr>
-          <td><?php echo $this->accountForm['modifyAccount']?></td>
-        </tr>
-      </table>
+    ?>
+</ul>
+
+<?php
+foreach ($this->customTabs as $moduleName => $module) {
+    $i = 1;
+    foreach ($module as $name => $url) {
+        $subname = str_replace(' ', '_', $name);
+        echo '<div id="tabs-'.$moduleName.'_'.$subname.'"></div>';
+    }
+}
+?>
+<div id="tabs-account">
+    <h3><?php echo $this->t('My Information') ?>:</h3>
+
+    <form class="genericForm" id="modifyAccount" method="<?php echo $this->accountForm['method'] ?>"
+          action="<?php echo $this->accountForm['action'];
+          echo(isset($_GET['userId']) ? '?userId='.$_GET['userId'] : '') ?>">
+        <table>
+            <?php
+            foreach ($this->prependFields as $field) {
+                echo '<tr><td><span>'.$field['label'].':</span>';
+                echo '<input type="'.$field['type'].'" name="'.$field['name'].'" value="'.$field['value'].'" /></td><td></td></tr>';
+            }
+            ?>
+            <tr>
+                <td><span><?php echo $this->t('Email'); ?>:</span><?php echo $this->accountForm['email'] ?>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><span><?php echo $this->t('First Name'); ?>:</span><?php echo $this->accountForm['firstname'] ?>
+                </td>
+                <td><span><?php echo $this->t('Last Name'); ?>:</span><?php echo $this->accountForm['lastname'] ?>
+                </td>
+            </tr>
+            <tr>
+                <td><span><?php echo $this->t('Website'); ?>:</span><?php echo $this->accountForm['website'] ?>
+                </td>
+                <td><span><?php echo $this->t('Company'); ?>:</span><?php echo $this->accountForm['company'] ?>
+                </td>
+            </tr>
+            <tr>
+                <td><span><?php echo $this->t('City'); ?>:</span><?php echo $this->accountForm['city'] ?>
+                </td>
+                <td><span><?php echo $this->t('Country'); ?>:</span><?php echo $this->accountForm['country'] ?>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><span><?php echo $this->t('Biography'); ?>
+                        :</span><?php echo $this->accountForm['biography'] ?>
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2><?php echo $this->t('Privacy'); ?>:
+                    <div id='accountPrivacy'><?php echo $this->accountForm['privacy'] ?>
+                    </div>
+                </td>
+            </tr>
+            <?php
+            if ($this->currentUser->isAdmin()) {
+                ?>
+                <tr>
+                    <td colspan="2">
+                        <?php echo $this->t('Administrator'); ?>:
+                        <input type="checkbox" name="adminStatus" id="adminStatusCheckbox"
+                            <?php
+                            if ($this->user->isAdmin()) {
+                                echo ' checked="checked" ';
+                            }
+                            if ($this->user->getKey() == $this->currentUser->getKey()
+                            ) {
+                                echo ' disabled="disabled" ';
+                            } ?>
+                            />
+                    </td>
+                </tr>
+            <?php
+            }
+            foreach ($this->appendFields as $field) {
+                echo '<tr><td><span>'.$field['label'].':</span>';
+                echo '<input type="'.$field['type'].'" name="'.$field['name'].'" value="'.$field['value'].'" /></td><td></td></tr>';
+            }
+            ?>
+            <tr>
+                <td><?php echo $this->accountForm['modifyAccount'] ?></td>
+            </tr>
+        </table>
     </form>
 
-  </div>
+</div>
 
-  <div id="tabs-image">
+<div id="tabs-image">
 
     <div id="imageActual">
-    <h4><?php echo $this->t('Current Avatar')?>:</h4>
-      <?php
-      echo $this->userthumbnail($this->thumbnail,'userTopThumbnail');
-      ?>
+        <h4><?php echo $this->t('Current Avatar') ?>:</h4>
+        <?php
+        echo $this->userthumbnail($this->thumbnail, 'userTopThumbnail');
+        ?>
     </div>
-    <h3><?php echo $this->t('My Avatar')?>:</h3>
-    <form class="genericForm" id="modifyPicture" action="<?php echo $this->webroot?>/user/settings<?php echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>" method="POST" enctype="multipart/form-data">
+    <h3><?php echo $this->t('My Avatar') ?>:</h3>
 
-      <?php echo $this->t('Please select an image file on your computer (2 MB maximum)')?>
-      <input type="file" name="file" />
-      <br/>
-      <br/>
-      <input type="submit" name='modifyPicture' value="<?php echo $this->t('Upload new avatar')?>">
-      <br/>
-      <?php
-      $useGravatar = Zend_Registry::get('configGlobal')->gravatar;
-      if($useGravatar)
-        {
-        echo "<br/>";
-        if(strpos($this->thumbnail, 'http://') === false && $this->isGravatar)
-          {
-          echo ' <input type="submit" name="modifyPictureGravatar" value="'.$this->t('Use gravatar').'">';
-          }
+    <form class="genericForm" id="modifyPicture"
+          action="<?php echo $this->webroot ?>/user/settings<?php echo(isset($_GET['userId']) ? '?userId='.$_GET['userId'] : '') ?>"
+          method="POST" enctype="multipart/form-data">
+
+        <?php echo $this->t('Please select an image file on your computer (2 MB maximum)') ?>
+        <input type="file" name="file"/>
+        <br/>
+        <br/>
+        <input type="submit" name='modifyPicture' value="<?php echo $this->t('Upload new avatar') ?>">
+        <br/>
+        <?php
+        $useGravatar = Zend_Registry::get('configGlobal')->gravatar;
+        if ($useGravatar) {
+            echo "<br/>";
+            if (strpos($this->thumbnail, 'http://') === false && $this->isGravatar
+            ) {
+                echo ' <input type="submit" name="modifyPictureGravatar" value="'.$this->t('Use gravatar').'">';
+            }
         }
-      ?>
-      <br/>
+        ?>
+        <br/>
     </form>
-  </div>
+</div>
 
-  <?php if($this->allowPasswordChange)
-    { ?>
+<?php if ($this->allowPasswordChange) {
+    ?>
     <div id="tabs-password">
-      <h3><?php echo $this->t('My Password')?>:</h3>
-      <form  class="genericForm" id="modifyPassword" method='POST' action='<?php echo $this->webroot?>/user/settings<?php echo (isset($_GET['userId'])?'?userId='.$_GET['userId']:'')?>'>
-        <table>
-          <?php
-          if(!$this->userDao->isAdmin()||$this->user->isAdmin())
-            {
-            ?>
-          <tr>
-            <td><?php echo $this->t('Old password:');?></td><td><input type="password" name="oldPassword"/></td>
-          </tr>
-          <?php
-            }
-            ?>
-          <tr>
-            <td><?php echo $this->t('New password:');?></td><td><input type="password" name="newPassword"/></td>
-          </tr>
-          <tr>
-            <td><?php echo $this->t('Retype new password:');?></td><td><input type="password" name="newPasswordConfirmation"/></td>
-          </tr>
-        </table>
-        <input type='submit' name='modifyPassword' value='<?php echo $this->t('Modify password');?>'/>
-      </form>
+        <h3><?php echo $this->t('My Password') ?>:</h3>
+
+        <form class="genericForm" id="modifyPassword" method='POST'
+              action='<?php echo $this->webroot ?>/user/settings<?php echo(isset($_GET['userId']) ? '?userId='.$_GET['userId'] : '') ?>'>
+            <table>
+                <?php
+                if (!$this->userDao->isAdmin() || $this->user->isAdmin()) {
+                    ?>
+                    <tr>
+                        <td><?php echo $this->t('Old password:'); ?></td>
+                        <td><input type="password" name="oldPassword"/></td>
+                    </tr>
+                <?php
+                }
+                ?>
+                <tr>
+                    <td><?php echo $this->t('New password:'); ?></td>
+                    <td><input type="password" name="newPassword"/></td>
+                </tr>
+                <tr>
+                    <td><?php echo $this->t('Retype new password:'); ?></td>
+                    <td><input type="password" name="newPasswordConfirmation"/>
+                    </td>
+                </tr>
+            </table>
+            <input type='submit' name='modifyPassword' value='<?php echo $this->t('Modify password'); ?>'/>
+        </form>
     </div>
-  <?php
-    } ?>
-  <div id="tabs-communities">
+<?php
+} ?>
+<div id="tabs-communities">
     <?php
-    if(empty($this->communities))
-      {
-      echo $this->t('You don\'t belong to any community.');
-      }
-    else
-      {
-      echo "<h3>{$this->t('My Communities')}:</h3>";
-      echo "<ul>";
-      foreach($this->communities as $community)
-        {
-        echo "<li class='settingsCommunityList'><a href='{$this->webroot}/community/{$community->getKey()}'>{$community->getName()}</a>";
+    if (empty($this->communities)) {
+        echo $this->t('You don\'t belong to any community.');
+    } else {
+        echo "<h3>{$this->t('My Communities')}:</h3>";
         echo "<ul>";
-        foreach($community->groups as $group)
-          {
-          $name=$group->getName();
-          if($group->getKey()==$community->getAdmingroupId())
-            {
-            $name=$this->t("Administrator");
+        foreach ($this->communities as $community) {
+            echo "<li class='settingsCommunityList'><a href='{$this->webroot}/community/{$community->getKey(
+            )}'>{$community->getName()}</a>";
+            echo "<ul>";
+            foreach ($community->groups as $group) {
+                $name = $group->getName();
+                if ($group->getKey() == $community->getAdmingroupId()) {
+                    $name = $this->t("Administrator");
+                }
+                if ($group->getKey() == $community->getModeratorgroupId()) {
+                    $name = $this->t("Moderator");
+                }
+                if ($group->getKey() == $community->getMembergroupId()) {
+                    continue;
+                }
+                echo "<li>{$name}";
+                echo "</li>";
             }
-          if($group->getKey()==$community->getModeratorgroupId())
-            {
-            $name=$this->t("Moderator");
-            }
-          if($group->getKey()==$community->getMembergroupId())
-            {
-            continue;
-            }
-          echo "<li>{$name}";
-          echo "</li>";
-          }
-        echo "</ul>";
-        echo "</li>";
+            echo "</ul>";
+            echo "</li>";
         }
-      echo "</ul>";
-      }
-     ?>
-  </div>
+        echo "</ul>";
+    }
+    ?>
+</div>
 </div>
 <div style="display: none;" class="jsonSettingsContent">
-  <?php echo $this->jsonSettings?>
+    <?php echo $this->jsonSettings ?>
 </div>

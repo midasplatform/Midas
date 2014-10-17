@@ -20,61 +20,67 @@
 
 /** ItempolicyuserModelBase */
 abstract class ItempolicyuserModelBase extends AppModel
-  {
-  /** Constructor */
-  public function __construct()
+{
+    /** Constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'itempolicyuser';
+        parent::__construct();
+        $this->_name = 'itempolicyuser';
 
-    $this->_mainData = array(
-        'item_id' => array('type' => MIDAS_DATA),
-        'user_id' => array('type' => MIDAS_DATA),
-        'policy' => array('type' => MIDAS_DATA),
-        'item' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Item', 'parent_column' => 'item_id', 'child_column' => 'item_id'),
-        'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id')
-      );
-    $this->initialize(); // required
-    } // end __construct()
-
-  abstract function getPolicy($user, $item);
-
-  /** @return ItempolicyuserDao*/
-  public function createPolicy($user, $item, $policy)
-    {
-    if(!$user instanceof UserDao)
-      {
-      throw new Zend_Exception("Should be a user.");
-      }
-    if(!$item instanceof ItemDao)
-      {
-      throw new Zend_Exception("Should be an item.");
-      }
-    if(!is_numeric($policy))
-      {
-      throw new Zend_Exception("Should be a number.");
-      }
-    if(!$user->saved && !$item->saved)
-      {
-      throw new Zend_Exception("Save the daos first.");
-      }
-    $policyUser = $this->getPolicy($user, $item);
-    if($policyUser !== false)
-      {
-      $this->delete($policyUser);
-      }
-    $policyUser = MidasLoader::newDao('ItempolicyuserDao');
-    $policyUser->setUserId($user->getUserId());
-    $policyUser->setItemId($item->getItemId());
-    $policyUser->setPolicy($policy);
-    $this->save($policyUser);
-
-    return $policyUser;
+        $this->_mainData = array(
+            'item_id' => array('type' => MIDAS_DATA),
+            'user_id' => array('type' => MIDAS_DATA),
+            'policy' => array('type' => MIDAS_DATA),
+            'item' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'Item',
+                'parent_column' => 'item_id',
+                'child_column' => 'item_id',
+            ),
+            'user' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'User',
+                'parent_column' => 'user_id',
+                'child_column' => 'user_id',
+            ),
+        );
+        $this->initialize(); // required
     }
 
-  /** delete */
-  public function delete($dao)
+    /** Get policy */
+    abstract public function getPolicy($user, $item);
+
+    /** @return ItempolicyuserDao */
+    public function createPolicy($user, $item, $policy)
     {
-    parent::delete($dao);
-    }//end delete
-  } // end class
+        if (!$user instanceof UserDao) {
+            throw new Zend_Exception("Should be a user.");
+        }
+        if (!$item instanceof ItemDao) {
+            throw new Zend_Exception("Should be an item.");
+        }
+        if (!is_numeric($policy)) {
+            throw new Zend_Exception("Should be a number.");
+        }
+        if (!$user->saved && !$item->saved) {
+            throw new Zend_Exception("Save the daos first.");
+        }
+        $policyUser = $this->getPolicy($user, $item);
+        if ($policyUser !== false) {
+            $this->delete($policyUser);
+        }
+        $policyUser = MidasLoader::newDao('ItempolicyuserDao');
+        $policyUser->setUserId($user->getUserId());
+        $policyUser->setItemId($item->getItemId());
+        $policyUser->setPolicy($policy);
+        $this->save($policyUser);
+
+        return $policyUser;
+    }
+
+    /** delete */
+    public function delete($dao)
+    {
+        parent::delete($dao);
+    }
+}

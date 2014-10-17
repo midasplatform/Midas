@@ -18,38 +18,40 @@
  limitations under the License.
 =========================================================================*/
 
-$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
-$this->headScript()->appendFile($this->coreWebroot . '/public/js/admin/admin.index.js');
-$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.cluetip.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/admin/admin.index.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.cluetip.js');
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.cluetip.min.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/admin/admin.index.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->coreWebroot ?>/public/css/jquery/jquery.cluetip.min.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/admin/admin.index.css"/>
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->coreWebroot ?>/public/css/common/common.genericPage.css"/>
 <div class="viewMain">
 
-  <img class="tabsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
-  <div class="tabs" id='tabsGeneric'>
-  <ul>
+<img class="tabsLoading" alt="" src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>
+
+<div class="tabs" id='tabsGeneric'>
+<ul>
     <li><a href="#tabs-configuration">Configuration</a></li>
     <li><a href="#tabs-modules">Modules</a></li>
     <li><a href="#tabs-assetstore">Assetstores</a></li>
-    <li><a href="<?php echo $this->webroot?>/licenses/all">Licenses</a></li>
-    <li><a href="<?php echo $this->webroot?>/admin/upgrade">Upgrade</a></li>
-    <li><a href="<?php echo $this->webroot?>/admin/dashboard">Dashboard</a></li>
-    <li><a href="<?php echo $this->webroot?>/admin/showlog">Logs</a></li>
+    <li><a href="<?php echo $this->webroot ?>/licenses/all">Licenses</a></li>
+    <li><a href="<?php echo $this->webroot ?>/admin/upgrade">Upgrade</a></li>
+    <li><a href="<?php echo $this->webroot ?>/admin/dashboard">Dashboard</a>
+    </li>
+    <li><a href="<?php echo $this->webroot ?>/admin/showlog">Logs</a></li>
     <?php
-    foreach($this->extraTabs as $module => $tabs)
-      {
-      foreach($tabs as $name => $link)
-        {
-        echo '<li><a href="'.$link.'">'.$name.'</a></li>';
+    foreach ($this->extraTabs as $module => $tabs) {
+        foreach ($tabs as $name => $link) {
+            echo '<li><a href="'.$link.'">'.$name.'</a></li>';
         }
-      }
+    }
     ?>
-  </ul>
-    <div id="tabs-configuration">
-     <?php
-      echo "
+</ul>
+<div id="tabs-configuration">
+    <?php
+    echo "
       <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
       <h3>Configuration:</h3>
               <div class='installName'>
@@ -81,11 +83,13 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
                 {$this->configForm['smtpfromaddress']}
               </div>
               <div class='installLang'";
-              if(isset(Zend_Registry::get('configCore')->internationalization) && Zend_Registry::get('configCore')->internationalization == "0")
-                {
-                echo " style='display:none;' ";
-                }
-              echo ">
+    if (isset(Zend_Registry::get('configCore')->internationalization) && Zend_Registry::get(
+            'configCore'
+        )->internationalization == "0"
+    ) {
+        echo " style='display:none;' ";
+    }
+    echo ">
                 <label for='lang'>Language</label>
                 {$this->configForm['lang']}
               </div>
@@ -125,163 +129,154 @@ $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.c
             {$this->configForm['submitConfig']}
           </div>
        </form>";
-       ?>
-    </div>
-    <div id="tabs-assetstore">
-     <?php
-     foreach($this->assetstores as $assetstore)
-       {
-       echo "<div class='assetstoreElement'>
+    ?>
+</div>
+<div id="tabs-assetstore">
+    <?php
+    foreach ($this->assetstores as $assetstore) {
+        echo "<div class='assetstoreElement'>
                <div class='assetstoreNameContainer'>
                  <span class='assetstoreName'>{$assetstore->getName()}</span> ";
-       if($assetstore->default)
-         {
-         echo "(<span qtip='If set as default, the uploaded files will be stored in this assetstore.' class='defaultAssetstore' element='{$assetstore->getKey()}'>default assetstore</span>)";
-         }
-       else
-         {
-         echo "(<a qtip='If set as default, the uploaded files will be stored in this assetstore.' class='defaultAssetstoreLink' element='{$assetstore->getKey()}'>set as default</a>)";
-         }
-       echo '</div>';
-       if($assetstore->totalSpaceText === false)
-         {
-         echo "<span class='errorText'>Error: Unable to access assetstore</span><br/>";
-         }
-       else
-         {
-         if($assetstore->totalSpace > 0)
-           {
-           echo "Space: {$assetstore->freeSpaceText} free of {$assetstore->totalSpaceText} total";
-           if(($assetstore->freeSpace/$assetstore->totalSpace < 0.1))
-             {
-             echo " <span class='freeSpaceWarning'>(Warning: less than 10% free)</span>";
-             }
-           echo "<br/>";
-           }
-         }
-       echo "Path: <span class='assetstorePath'>{$assetstore->getPath()}</span>";
-       echo "<br/>Type: ";
-       switch($assetstore->getType())
-         {
-          case MIDAS_ASSETSTORE_LOCAL:
-              echo "Local";
-              break;
-          case MIDAS_ASSETSTORE_REMOTE:
-              echo "Remote";
-              break;
-          default:
-              echo $assetstore->getType();
-              break;
-         }
-       echo "<div class='assetstoreActions'>
+        if ($assetstore->default) {
+            echo "(<span qtip='If set as default, the uploaded files will be stored in this assetstore.' class='defaultAssetstore' element='{$assetstore->getKey(
+            )}'>default assetstore</span>)";
+        } else {
+            echo "(<a qtip='If set as default, the uploaded files will be stored in this assetstore.' class='defaultAssetstoreLink' element='{$assetstore->getKey(
+            )}'>set as default</a>)";
+        }
+        echo '</div>';
+        if ($assetstore->totalSpaceText === false) {
+            echo "<span class='errorText'>Error: Unable to access assetstore</span><br/>";
+        } else {
+            if ($assetstore->totalSpace > 0) {
+                echo "Space: {$assetstore->freeSpaceText} free of {$assetstore->totalSpaceText} total";
+                if (($assetstore->freeSpace / $assetstore->totalSpace < 0.1)) {
+                    echo " <span class='freeSpaceWarning'>(Warning: less than 10% free)</span>";
+                }
+                echo "<br/>";
+            }
+        }
+        echo "Path: <span class='assetstorePath'>{$assetstore->getPath()}</span>";
+        echo "<br/>Type: ";
+        switch ($assetstore->getType()) {
+            case MIDAS_ASSETSTORE_LOCAL:
+                echo "Local";
+                break;
+            case MIDAS_ASSETSTORE_REMOTE:
+                echo "Remote";
+                break;
+            default:
+                echo $assetstore->getType();
+                break;
+        }
+        echo "<div class='assetstoreActions'>
                <button class='editAssetstoreLink' element='{$assetstore->getKey()}'>Edit</button>
                <button class='removeAssetstoreLink' element='{$assetstore->getKey()}'>Delete</button>
                <button class='moveBitstreamsLink' element='{$assetstore->getKey()}'>Move bitstreams</button>
              </div>
          </div>";
-       }
-     ?>
+    }
+    ?>
 
-      <a class="load-newassetstore" href="#newassetstore-form" rel="#newassetstore-form" title="<?php echo $this->t('Add assetstore')?>">Add a new assetstore</a>
-      <br/>
-      <a href="<?php echo $this->webroot?>/import">Import local files</a>
+    <a class="load-newassetstore" href="#newassetstore-form" rel="#newassetstore-form"
+       title="<?php echo $this->t('Add assetstore') ?>">Add a new assetstore</a>
+    <br/>
+    <a href="<?php echo $this->webroot ?>/import">Import local files</a>
 
-      <div id="newassetstore-form" style="display:none;">
-         <div class="addAssetstoreFormError errorText" style="display:none;"></div>
-         <?php echo $this->assetstoreForm; ?>
-      </div>
+    <div id="newassetstore-form" style="display:none;">
+        <div class="addAssetstoreFormError errorText" style="display:none;"></div>
+        <?php echo $this->assetstoreForm; ?>
     </div>
+</div>
 
-    <div id="tabs-modules">
-      <table style='width:100%;'>
-      <?php
-      $hidden = 0;
-      foreach($this->modulesList as $category => $list)
-         {
-         echo "<tr><td colspan=3><span class='moduleCategoryArrow'>></span> <a class='moduleVisibleCategoryLink'>".$category."</a> (".$this->countModules[$category]['visible'].")</td></tr>";
-         echo "<div class='categoryWrapper' style='display:none;'>";
-         foreach($list as $key => $module)
-           {
-            if($module->dbOk && $module->dependenciesExist)
-              {
-               echo "
+<div id="tabs-modules">
+    <table style='width:100%;'>
+        <?php
+        $hidden = 0;
+        foreach ($this->modulesList as $category => $list) {
+            echo "<tr><td colspan=3><span class='moduleCategoryArrow'>></span> <a class='moduleVisibleCategoryLink'>".$category."</a> (".$this->countModules[$category]['visible'].")</td></tr>";
+            echo "<div class='categoryWrapper' style='display:none;'>";
+            foreach ($list as $key => $module) {
+                if ($module->dbOk && $module->dependenciesExist) {
+                    echo "
                  <tr class='moduleElement {$category}VisibleElement' style='display:none;'>
                     <td style='width:30px;'>
-                      <input type='checkbox' dependencies='".trim($module->dependencies)."' class='moduleCheckbox' module='{$key}' name='module[{$key}]'   ".((in_array($key, $this->modulesEnable))?'checked':'')."/>
+                      <input type='checkbox' dependencies='".trim(
+                            $module->dependencies
+                        )."' class='moduleCheckbox' module='{$key}' name='module[{$key}]'   ".((in_array(
+                            $key,
+                            $this->modulesEnable
+                        )) ? 'checked' : '')."/>
                     </td>
                     <td>
                     <b>{$module->fullname}</b><br/>
                     {$module->description}
                     </td>";
-                    if($module->configPage)
-                      {
-                    echo "
+                    if ($module->configPage) {
+                        echo "
                     <td class='configLink' style='display:none;width:300px;'>
                       <a href='{$this->webroot}/$key/config'>View configuration</a>
                     </td>";
-                      }
+                    }
                     echo "
                  </tr>
                 ";
-              }
-           }
-           echo "</div>";
-         }
-      ?>
-      </table>
+                }
+            }
+            echo "</div>";
+        }
+        ?>
+    </table>
 
-      <table class="tableElementError" style="display:none;width:100%;">
-      <?php
-      $hidden = 0;
-      echo "<tr><td colspan=3><h4 style='margin-bottom:2px;'>Hidden modules</h4></td></tr>";
-      foreach($this->modulesList as $category => $list)
-         {
-         echo "<tr><td colspan=3><span class='moduleCategoryArrow'>></span> <a class='moduleHiddenCategoryLink'>".$category."</a> (".$this->countModules[$category]['hidden'].")</td></tr>";
-         echo "<div class='categoryWrapper' style='display:none;'>";
-         foreach($list as $key => $module)
-           {
-            if(!$module->dbOk || !$module->dependenciesExist)
-             {
-             $hidden++ ;
-                echo "
+    <table class="tableElementError" style="display:none;width:100%;">
+        <?php
+        $hidden = 0;
+        echo "<tr><td colspan=3><h4 style='margin-bottom:2px;'>Hidden modules</h4></td></tr>";
+        foreach ($this->modulesList as $category => $list) {
+            echo "<tr><td colspan=3><span class='moduleCategoryArrow'>></span> <a class='moduleHiddenCategoryLink'>".$category."</a> (".$this->countModules[$category]['hidden'].")</td></tr>";
+            echo "<div class='categoryWrapper' style='display:none;'>";
+            foreach ($list as $key => $module) {
+                if (!$module->dbOk || !$module->dependenciesExist) {
+                    $hidden++;
+                    echo "
                  <tr class='moduleElementError {$category}HiddenElement'  style='display:none;'>
                     <td style='width:30px;'></td>
                     <td>
                     <b>{$module->fullname}</b><br/>
                     {$module->description}
                     </td>";
-                    if(!$module->dbOk)
-                      {
-                    echo "
+                    if (!$module->dbOk) {
+                        echo "
                     <td style='width:300px;'>
                       Not available with your database type
                     </td>";
-                      }
-                    else if(!$module->dependenciesExist)
-                      {
-                    echo "
+                    } else {
+                        if (!$module->dependenciesExist) {
+                            echo "
                     <td style='width:300px;'>
                       Missing dependencies
                     </td>";
-                      }
+                        }
+                    }
                     echo "
                  </tr>
                 ";
-             }
-           }
-           echo "</div>";
-         }
-      ?>
-      </table>
+                }
+            }
+            echo "</div>";
+        }
+        ?>
+    </table>
 
-    <?php if($hidden != 0)
-      {
-      echo "<br/><br/><a onclick=\"$('.tableElementError').show();$(this).remove();\">Show $hidden hidden modules</a>";
-      }?>
+    <?php if ($hidden != 0) {
+        echo "<br/><br/><a onclick=\"$('.tableElementError').show();$(this).remove();\">Show $hidden hidden modules</a>";
+    }?>
 
-    <p><a target="_blank" href="http://www.kitware.com/midaswiki/index.php/MIDAS3-Plugins">Additional Information</a></p>
-    </div>
-  </div>
+    <p>
+        <a target="_blank" href="http://www.kitware.com/midaswiki/index.php/MIDAS3-Plugins">Additional Information</a>
+    </p>
+</div>
+</div>
 
 </div>
 <div class="viewSideBar">

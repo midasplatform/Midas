@@ -17,30 +17,29 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** ItempolicyuserModelTest*/
+
+/** ItempolicyuserModelTest */
 class ItempolicyuserModelTest extends DatabaseTestCase
-  {
-  /** init tests*/
-  public function setUp()
+{
+    /** init tests */
+    public function setUp()
     {
-    $this->setupDatabase(array());
-    $this->_models = array(
-      'Itempolicyuser'
-    );
-    $this->_daos = array();
-    parent::setUp();
+        $this->setupDatabase(array());
+        $this->_models = array('Itempolicyuser');
+        $this->_daos = array();
+        parent::setUp();
     }
 
-  /** testCreatePolicyAndGetPolicy*/
-  public function testCreatePolicyAndGetPolicy()
+    /** testCreatePolicyAndGetPolicy */
+    public function testCreatePolicyAndGetPolicy()
     {
-    Zend_Registry::set('modulesEnable', array());
-    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
-    $usersFile = $this->loadData('User', 'default');
-    $itemsFile = $this->loadData('Item', 'default');
-    $policy = $this->Itempolicyuser->createPolicy($usersFile[0], $itemsFile[1], 1);
-    $this->assertEquals(true, $policy->saved);
-    $policy = $this->Itempolicyuser->getPolicy($usersFile[0], $itemsFile[1]);
-    $this->assertNotEquals(false, $policy);
+        Zend_Registry::set('modulesEnable', array());
+        Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
+        $usersFile = $this->loadData('User', 'default');
+        $itemsFile = $this->loadData('Item', 'default');
+        $policy = $this->Itempolicyuser->createPolicy($usersFile[0], $itemsFile[1], 1);
+        $this->assertEquals(true, $policy->saved);
+        $policy = $this->Itempolicyuser->getPolicy($usersFile[0], $itemsFile[1]);
+        $this->assertNotEquals(false, $policy);
     }
-  }
+}

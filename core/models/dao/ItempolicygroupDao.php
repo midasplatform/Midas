@@ -19,10 +19,9 @@
 =========================================================================*/
 
 /**
- * \class ItempolicygroupDao
- * \brief DAO Item
+ * DAO Item
  */
 class ItempolicygroupDao extends AppDao
-  {
-  public $_model = 'Itempolicygroup';
-  }
+{
+    public $_model = 'Itempolicygroup';
+}

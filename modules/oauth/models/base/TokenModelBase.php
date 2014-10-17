@@ -18,79 +18,96 @@
  limitations under the License.
 =========================================================================*/
 
+/** Token base model for the oauth module */
 abstract class Oauth_TokenModelBase extends Oauth_AppModel
-  {
-  /** constructor */
-  public function __construct()
+{
+    /** constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'oauth_token';
-    $this->_key = 'token_id';
+        parent::__construct();
+        $this->_name = 'oauth_token';
+        $this->_key = 'token_id';
 
-    $this->_mainData = array(
-        'token_id' => array('type' => MIDAS_DATA),
-        'token' => array('type' => MIDAS_DATA),
-        'scopes' => array('type' => MIDAS_DATA),
-        'client_id' => array('type' => MIDAS_DATA),
-        'user_id' => array('type' => MIDAS_DATA),
-        'creation_date' => array('type' => MIDAS_DATA),
-        'expiration_date' => array('type' => MIDAS_DATA),
-        'type' => array('type' => MIDAS_DATA),
-        'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User',
-                        'parent_column' => 'user_id', 'child_column' => 'user_id'),
-        'client' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Client', 'module' => $this->moduleName,
-                          'parent_column' => 'client_id', 'child_column' => 'client_id')
+        $this->_mainData = array(
+            'token_id' => array('type' => MIDAS_DATA),
+            'token' => array('type' => MIDAS_DATA),
+            'scopes' => array('type' => MIDAS_DATA),
+            'client_id' => array('type' => MIDAS_DATA),
+            'user_id' => array('type' => MIDAS_DATA),
+            'creation_date' => array('type' => MIDAS_DATA),
+            'expiration_date' => array('type' => MIDAS_DATA),
+            'type' => array('type' => MIDAS_DATA),
+            'user' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'User',
+                'parent_column' => 'user_id',
+                'child_column' => 'user_id',
+            ),
+            'client' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'Client',
+                'module' => $this->moduleName,
+                'parent_column' => 'client_id',
+                'child_column' => 'client_id',
+            ),
         );
-    $this->initialize(); // required
-    } // end __construct()
-
-  abstract public function getByToken($token);
-  abstract public function getByUser($userDao, $onlyValid = true);
-  abstract public function expireTokens($userDao, $clientDao);
-  abstract public function cleanExpired();
-
-  /**
-   * Use the provided codeDao to create and return an oauth access token.
-   * @param codeDao The code dao that should be used to create the access token
-   * @param expire Argument to strtotime for the token expiration
-   */
-  public function createAccessToken($codeDao, $expire)
-    {
-    return $this->_createToken($codeDao, MIDAS_OAUTH_TOKEN_TYPE_ACCESS, $expire);
+        $this->initialize(); // required
     }
 
-  /**
-   * Use the provided codeDao to create and return an oauth access token.
-   * @param codeDao The code dao that should be used to create the access token
-   */
-  public function createRefreshToken($codeDao)
+    /** Get by token */
+    abstract public function getByToken($token);
+
+    /** Get by user */
+    abstract public function getByUser($userDao, $onlyValid = true);
+
+    /** Expire tokens */
+    abstract public function expireTokens($userDao, $clientDao);
+
+    /** Clean expired */
+    abstract public function cleanExpired();
+
+    /**
+     * Use the provided codeDao to create and return an oauth access token.
+     *
+     * @param codeDao The code dao that should be used to create the access token
+     * @param expire Argument to strtotime for the token expiration
+     */
+    public function createAccessToken($codeDao, $expire)
     {
-    return $this->_createToken($codeDao, MIDAS_OAUTH_TOKEN_TYPE_REFRESH);
+        return $this->_createToken($codeDao, MIDAS_OAUTH_TOKEN_TYPE_ACCESS, $expire);
     }
 
-  /**
-   * Helper method to create the token dao from a code dao or refresh token dao
-   * @param fromDao The authorization code dao or refresh token dao
-   */
-  private function _createToken($fromDao, $type, $expire = null)
+    /**
+     * Use the provided codeDao to create and return an oauth access token.
+     *
+     * @param codeDao The code dao that should be used to create the access token
+     */
+    public function createRefreshToken($codeDao)
     {
-    $tokenDao = MidasLoader::newDao('TokenDao', $this->moduleName);
-    $tokenDao->setToken(UtilityComponent::generateRandomString(32));
-    $tokenDao->setType($type);
-    $tokenDao->setScopes($fromDao->getScopes());
-    $tokenDao->setUserId($fromDao->getUserId());
-    $tokenDao->setClientId($fromDao->getClientId());
-    $tokenDao->setCreationDate(date("Y-m-d H:i:s"));
-    if(is_string($expire))
-      {
-      $tokenDao->setExpirationDate(date("Y-m-d H:i:s", strtotime($expire)));
-      }
-    else
-      {
-      $tokenDao->setExpirationDate(date("Y-m-d H:i:s"));
-      }
-    $this->save($tokenDao);
-
-    return $tokenDao;
+        return $this->_createToken($codeDao, MIDAS_OAUTH_TOKEN_TYPE_REFRESH);
     }
-  }
+
+    /**
+     * Helper method to create the token dao from a code dao or refresh token dao
+     *
+     * @param fromDao The authorization code dao or refresh token dao
+     */
+    private function _createToken($fromDao, $type, $expire = null)
+    {
+        $tokenDao = MidasLoader::newDao('TokenDao', $this->moduleName);
+        $tokenDao->setToken(UtilityComponent::generateRandomString(32));
+        $tokenDao->setType($type);
+        $tokenDao->setScopes($fromDao->getScopes());
+        $tokenDao->setUserId($fromDao->getUserId());
+        $tokenDao->setClientId($fromDao->getClientId());
+        $tokenDao->setCreationDate(date("Y-m-d H:i:s"));
+        if (is_string($expire)) {
+            $tokenDao->setExpirationDate(date("Y-m-d H:i:s", strtotime($expire)));
+        } else {
+            $tokenDao->setExpirationDate(date("Y-m-d H:i:s"));
+        }
+        $this->save($tokenDao);
+
+        return $tokenDao;
+    }
+}

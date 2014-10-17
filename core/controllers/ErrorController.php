@@ -18,138 +18,116 @@
  limitations under the License.
 =========================================================================*/
 
-/** Error Controller*/
+/** Error Controller */
 class ErrorController extends AppController
-  {
-  public $_models = array();
-  public $_daos = array();
-  public $_components = array('NotifyError', 'Utility');
-  public $_forms = array();
-  private $_error;
-  private $_environment;
+{
+    public $_models = array();
+    public $_daos = array();
+    public $_components = array('NotifyError', 'Utility');
+    public $_forms = array();
+    private $_error;
+    private $_environment;
 
-  /** Init Controller*/
-  public function init()
+    /** Init Controller */
+    public function init()
     {
-    parent::init();
+        parent::init();
 
-    $error = $this->getParam('error_handler');
-    if(!isset($error) || empty($error))
-      {
-      return;
-      }
-    $session = new Zend_Session_Namespace('Auth_User');
-    $db = Zend_Registry::get('dbAdapter');
+        $error = $this->getParam('error_handler');
+        if (!isset($error) || empty($error)) {
+            return;
+        }
+        $session = new Zend_Session_Namespace('Auth_User');
+        $db = Zend_Registry::get('dbAdapter');
 
-    if(method_exists($db, "getProfiler"))
-      {
-      $profiler = $db->getProfiler();
-      }
-    else
-      {
-      $profiler = new Zend_Db_Profiler();
-      }
-    $environment = Zend_Registry::get('configGlobal')->environment;
-    $this->_environment = $environment;
-    $this->Component->NotifyError->initNotifier(
-        $environment,
-        $error,
-        $session,
-        $profiler,
-        $_SERVER
-    );
+        if (method_exists($db, "getProfiler")) {
+            $profiler = $db->getProfiler();
+        } else {
+            $profiler = new Zend_Db_Profiler();
+        }
+        $environment = Zend_Registry::get('configGlobal')->environment;
+        $this->_environment = $environment;
+        $this->Component->NotifyError->initNotifier($environment, $error, $session, $profiler, $_SERVER);
 
-    $this->_error = $error;
+        $this->_error = $error;
 
-    $this->_environment = $environment;
-    $this->view->setScriptPath(BASE_PATH."/core/views");
+        $this->_environment = $environment;
+        $this->view->setScriptPath(BASE_PATH."/core/views");
     }
 
-  /** Error Action */
-  public function errorAction()
+    /** Error Action */
+    public function errorAction()
     {
-    $error = $this->getParam('error_handler');
-    if(!isset($error) || empty($error))
-      {
-      $this->view->message = 'Page not found';
-      return;
-      }
+        $error = $this->getParam('error_handler');
+        if (!isset($error) || empty($error)) {
+            $this->view->message = 'Page not found';
 
-    $controller = $error->request->getParams();
-    $controller = $controller['controller'];
-    if($controller != 'install' && !file_exists(LOCAL_CONFIGS_PATH."/database.local.ini"))
-      {
-      $this->view->message = "Midas is not installed. Please go the <a href = '".$this->view->webroot."/install'> install page</a>.";
-      return;
-      }
-    switch($this->_error->type)
-      {
-      case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_CONTROLLER:
-      case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_ACTION:
-        $this->getResponse()->setHttpResponseCode(404);
-        $this->view->message = 'Page not found';
-        break;
-      default:
-        $code = $this->_error->exception->getCode();
-        $this->view->code = $code;
-        $this->view->exceptionText = $this->_error->exception->getMessage();
-        if($code == 0)
-          {
-          $this->getResponse()->setHttpResponseCode(500);
-          }
-        else if($code >= 400 && $code <= 417)
-          {
-          $this->getResponse()->setHttpResponseCode($code);
-          if($code == 403)
-            {
-            if($this->logged)
-              {
-              $this->view->header = 'Access Denied';
-              }
-            else
-              {
-              $this->haveToBeLogged();
-              return;
-              }
-            }
-          else if($code == 404)
-            {
-            $this->view->header = 'Not Found';
-            }
-          }
-        $this->_applicationError();
-        break;
-      }
-    $fullMessage = $this->Component->NotifyError->getFullErrorMessage();
-    if(isset($this->fullMessage))
-      {
-      $this->getLogger()->warn($this->fullMessage);
-      }
-    else
-      {
-      $this->getLogger()->warn('URL: '.$this->Component->NotifyError->curPageURL()."\n".$fullMessage);
-      }
+            return;
+        }
+
+        $controller = $error->request->getParams();
+        $controller = $controller['controller'];
+        if ($controller != 'install' && !file_exists(LOCAL_CONFIGS_PATH."/database.local.ini")
+        ) {
+            $this->view->message = "Midas is not installed. Please go the <a href = '".$this->view->webroot."/install'> install page</a>.";
+
+            return;
+        }
+        switch ($this->_error->type) {
+            case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_CONTROLLER:
+            case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_ACTION:
+                $this->getResponse()->setHttpResponseCode(404);
+                $this->view->message = 'Page not found';
+                break;
+            default:
+                $code = $this->_error->exception->getCode();
+                $this->view->code = $code;
+                $this->view->exceptionText = $this->_error->exception->getMessage();
+                if ($code == 0) {
+                    $this->getResponse()->setHttpResponseCode(500);
+                } elseif ($code >= 400 && $code <= 417) {
+                    $this->getResponse()->setHttpResponseCode($code);
+                    if ($code == 403) {
+                        if ($this->logged) {
+                            $this->view->header = 'Access Denied';
+                        } else {
+                            $this->haveToBeLogged();
+
+                            return;
+                        }
+                    } elseif ($code == 404) {
+                        $this->view->header = 'Not Found';
+                    }
+                }
+                $this->_applicationError();
+                break;
+        }
+        $fullMessage = $this->Component->NotifyError->getFullErrorMessage();
+        if (isset($this->fullMessage)) {
+            $this->getLogger()->warn($this->fullMessage);
+        } else {
+            $this->getLogger()->warn('URL: '.$this->Component->NotifyError->curPageURL()."\n".$fullMessage);
+        }
     }
 
-  private function _applicationError()
+    private function _applicationError()
     {
-    $fullMessage = $this->Component->NotifyError->getFullErrorMessage();
-    $shortMessage = $this->Component->NotifyError->getShortErrorMessage();
-    $this->fullMessage = $fullMessage;
+        $fullMessage = $this->Component->NotifyError->getFullErrorMessage();
+        $shortMessage = $this->Component->NotifyError->getShortErrorMessage();
+        $this->fullMessage = $fullMessage;
 
-    switch($this->_environment)
-      {
-      case 'production':
-        $this->view->message = $shortMessage;
-        break;
-      case 'testing':
-        $this->disableLayout();
-        $this->disableView();
+        switch ($this->_environment) {
+            case 'production':
+                $this->view->message = $shortMessage;
+                break;
+            case 'testing':
+                $this->disableLayout();
+                $this->disableView();
 
-        $this->getResponse()->appendBody($shortMessage);
-        break;
-      default:
-        $this->view->message = nl2br($fullMessage);
-      }
+                $this->getResponse()->appendBody($shortMessage);
+                break;
+            default:
+                $this->view->message = nl2br($fullMessage);
+        }
     }
-  }
+}

@@ -20,20 +20,22 @@
 
 echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/share/share.links.js"></script>';
 ?>
-<link href="<?php echo $this->coreWebroot?>/public/css/share/share.links.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->coreWebroot ?>/public/css/share/share.links.css" rel="stylesheet" type="text/css"/>
 
 <div class="viewLinkContainer">
-  You can use the following direct link to <b>view</b> this <?php echo $this->type ?>:<br/>
-  <input type='text' id='resourceViewDisplay' readonly='readonly' value='<?php echo $this->viewUrl; ?>' />
-  <button id="selectViewUrl"></button>
+    You can use the following direct link to
+    <b>view</b> this <?php echo $this->type ?>:<br/>
+    <input type='text' id='resourceViewDisplay' readonly='readonly' value='<?php echo $this->viewUrl; ?>'/>
+    <button id="selectViewUrl"></button>
 </div>
 
 <div class="downloadLinkContainer">
-  You can use the following direct link to <b>download</b> this <?php echo $this->type ?>:<br/>
-  <input type='text' id='resourceDownloadDisplay' readonly='readonly' value='<?php echo $this->downloadUrl; ?>' />
-  <button id="selectDownloadUrl"></button>
+    You can use the following direct link to
+    <b>download</b> this <?php echo $this->type ?>:<br/>
+    <input type='text' id='resourceDownloadDisplay' readonly='readonly' value='<?php echo $this->downloadUrl; ?>'/>
+    <button id="selectDownloadUrl"></button>
 </div>
 
 <div style="float: right;">
-    <input type='button' class='globalButton linksDone' value='Done' />
+    <input type='button' class='globalButton linksDone' value='Done'/>
 </div>

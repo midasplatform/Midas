@@ -18,8 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
-/** Oauth Application Controller */
+/** App controller for the googleauth module */
 class Googleauth_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'googleauth';
-  } // end class
+{
+    public $moduleName = 'googleauth';
+}

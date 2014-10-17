@@ -18,31 +18,35 @@
  limitations under the License.
 =========================================================================*/
 
-/** Folder forms*/
+/** Folder forms */
 class FolderForm extends AppForm
-  {
-  /** create edit folder form */
-  public function createEditForm()
+{
+    /** create edit folder form */
+    public function createEditForm()
     {
-    $form = new Zend_Form;
+        $form = new Zend_Form;
 
-    $form->setAction($this->webroot.'/folder/edit')
-          ->setMethod('post');
+        $form->setAction($this->webroot.'/folder/edit')
+            ->setMethod('post');
 
-    $name = new Zend_Form_Element_Text('name');
-    $name ->setAttribs(array('placeholder' => $this->t('Name of the folder'), 'autofocus' => 'autofocus', 'required' => 'required'))
-          ->setRequired(true)
-          ->addValidator('NotEmpty', true);
+        $name = new Zend_Form_Element_Text('name');
+        $name->setAttribs(array(
+            'placeholder' => $this->t('Name of the folder'),
+            'autofocus' => 'autofocus',
+            'required' => 'required'
+        ))
+            ->setRequired(true)
+            ->addValidator('NotEmpty', true);
 
-    $description = new Zend_Form_Element_Textarea('description');
-    $description ->setAttribs(array('placeholder' => $this->t('Optional')));
-    $teaser = new Zend_Form_Element_Text('teaser');
-    $teaser ->setAttribs(array('placeholder' => $this->t('Optional')));
-    $teaser->setAttrib('MAXLENGTH', '250');
-    $submit = new  Zend_Form_Element_Submit('submit');
-    $submit ->setLabel($this->t("Save"));
+        $description = new Zend_Form_Element_Textarea('description');
+        $description->setAttribs(array('placeholder' => $this->t('Optional')));
+        $teaser = new Zend_Form_Element_Text('teaser');
+        $teaser->setAttribs(array('placeholder' => $this->t('Optional')));
+        $teaser->setAttrib('MAXLENGTH', '250');
+        $submit = new  Zend_Form_Element_Submit('submit');
+        $submit->setLabel($this->t("Save"));
 
-    $form->addElements(array($name, $description, $submit, $teaser));
-    return $form;
+        $form->addElements(array($name, $description, $submit, $teaser));
+        return $form;
     }
-  } // end class
+}

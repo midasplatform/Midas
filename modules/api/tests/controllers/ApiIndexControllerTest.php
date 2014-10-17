@@ -20,22 +20,22 @@
 
 /** Tests the functionality of the web API methods */
 class ApiIndexControllerTest extends ControllerTestCase
-  {
-  /** set up tests */
-  public function setUp()
+{
+    /** set up tests */
+    public function setUp()
     {
-    $this->enabledModules = array('api');
-    parent::setUp();
+        $this->enabledModules = array('api');
+        parent::setUp();
     }
 
-  /** Make sure our index page lists out the methods */
-  public function testWebApiHelpIndex()
+    /** Make sure our index page lists out the methods */
+    public function testWebApiHelpIndex()
     {
-    $this->dispatchUrI($this->webroot.'api');
-    $this->assertModule('api');
-    $this->assertController('index');
-    $this->assertAction('index');
-    $this->assertQuery('ul.listmethods');
-    $this->assertTrue(strpos($this->getBody(), 'midas.version') !== false);
+        $this->dispatchUrI($this->webroot.'api');
+        $this->assertModule('api');
+        $this->assertController('index');
+        $this->assertAction('index');
+        $this->assertQuery('ul.listmethods');
+        $this->assertTrue(strpos($this->getBody(), 'midas.version') !== false);
     }
-  }
+}

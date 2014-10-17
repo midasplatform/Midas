@@ -20,79 +20,74 @@
 
 /** Login controller for MFA module */
 class Mfa_LoginController extends Mfa_AppController
-  {
-  public $_models = array('User');
-  public $_moduleModels = array('Otpdevice');
-  public $_moduleComponents = array('Otp');
+{
+    public $_models = array('User');
+    public $_moduleModels = array('Otpdevice');
+    public $_moduleComponents = array('Otp');
 
-  /**
-   * Renders the dialog for the user to enter his or her OTP
-   */
-  function dialogAction()
+    /**
+     * Renders the dialog for the user to enter his or her OTP
+     */
+    public function dialogAction()
     {
-    $this->disableLayout();
+        $this->disableLayout();
 
-    Zend_Session::start();
-    $mfaSession = new Zend_Session_Namespace('Mfa_Temp_User');
-    $user = $mfaSession->Dao;
+        Zend_Session::start();
+        $mfaSession = new Zend_Session_Namespace('Mfa_Temp_User');
+        $user = $mfaSession->Dao;
 
-    $otpDevice = $this->Mfa_Otpdevice->getByUser($user);
-    if(!$otpDevice)
-      {
-      throw new Zend_Exception('User '.$user->getKey().' is not an OTP device user');
-      }
-    $this->view->user = $user;
+        $otpDevice = $this->Mfa_Otpdevice->getByUser($user);
+        if (!$otpDevice) {
+            throw new Zend_Exception('User '.$user->getKey().' is not an OTP device user');
+        }
+        $this->view->user = $user;
     }
 
-  /**
-   * When the user actually submits their otp, this authenticates it
-   */
-  function submitAction()
+    /**
+     * When the user actually submits their otp, this authenticates it
+     */
+    public function submitAction()
     {
-    $this->disableLayout();
-    $this->disableView();
+        $this->disableLayout();
+        $this->disableView();
 
-    Zend_Session::start();
-    $mfaSession = new Zend_Session_Namespace('Mfa_Temp_User');
-    $user = $mfaSession->Dao;
+        Zend_Session::start();
+        $mfaSession = new Zend_Session_Namespace('Mfa_Temp_User');
+        $user = $mfaSession->Dao;
 
-    if(!isset($user) || !$user)
-      {
-      echo JsonComponent::encode(array('status' => 'error', 'message' => 'Session has expired, refresh and try again'));
-      return;
-      }
+        if (!isset($user) || !$user) {
+            echo JsonComponent::encode(
+                array('status' => 'error', 'message' => 'Session has expired, refresh and try again')
+            );
 
-    $otpDevice = $this->Mfa_Otpdevice->getByUser($user);
-    if(!$otpDevice)
-      {
-      throw new Zend_Exception('User does not have an OTP device');
-      }
-    $token = $this->getParam('token');
-    try
-      {
-      $valid = $this->ModuleComponent->Otp->authenticate($otpDevice, $token);
-      }
-    catch(Zend_Exception $exc)
-      {
-      $this->getLogger()->crit($exc->getMessage());
-      echo JsonComponent::encode(array('status' => 'error', 'message' => $exc->getMessage()));
-      return;
-      }
+            return;
+        }
 
-    if($valid)
-      {
-      session_start();
-      $authUser = new Zend_Session_Namespace('Auth_User');
-      $authUser->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
-      $authUser->Dao = $user;
-      $authUser->lock();
-      $this->getLogger()->debug(__METHOD__ . " Log in : " . $user->getFullName());
+        $otpDevice = $this->Mfa_Otpdevice->getByUser($user);
+        if (!$otpDevice) {
+            throw new Zend_Exception('User does not have an OTP device');
+        }
+        $token = $this->getParam('token');
+        try {
+            $valid = $this->ModuleComponent->Otp->authenticate($otpDevice, $token);
+        } catch (Zend_Exception $exc) {
+            $this->getLogger()->crit($exc->getMessage());
+            echo JsonComponent::encode(array('status' => 'error', 'message' => $exc->getMessage()));
 
-      echo JsonComponent::encode(array('status' => 'ok'));
-      }
-    else
-      {
-      echo JsonComponent::encode(array('status' => 'error', 'message' => 'Incorrect token'));
-      }
+            return;
+        }
+
+        if ($valid) {
+            session_start();
+            $authUser = new Zend_Session_Namespace('Auth_User');
+            $authUser->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
+            $authUser->Dao = $user;
+            $authUser->lock();
+            $this->getLogger()->debug(__METHOD__." Log in : ".$user->getFullName());
+
+            echo JsonComponent::encode(array('status' => 'ok'));
+        } else {
+            echo JsonComponent::encode(array('status' => 'error', 'message' => 'Incorrect token'));
+        }
     }
-  } // end class
+}

@@ -21,25 +21,31 @@
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.index.js');
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot; ?>/public/css/common/common.genericPage.css" />
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->coreWebroot; ?>/public/css/common/common.genericPage.css"/>
 <div class="viewMain">
-  <div class="genericWrapperTopRight">
-    <div style="float: right; margin-right: 2px;" class="genericBigButton">
-      <a href="<?php echo $this->webroot; ?>/admin#tabs-modules">
-        <img style="float: left; margin-right: 2px;" alt="" src="<?php echo $this->coreWebroot; ?>/public/images/icons/back.png" /> Back
-      </a>
+    <div class="genericWrapperTopRight">
+        <div style="float: right; margin-right: 2px;" class="genericBigButton">
+            <a href="<?php echo $this->webroot; ?>/admin#tabs-modules">
+                <img style="float: left; margin-right: 2px;" alt=""
+                     src="<?php echo $this->coreWebroot; ?>/public/images/icons/back.png"/> Back
+            </a>
+        </div>
     </div>
-  </div>
-  <form class="genericForm" id="configForm" method="<?php echo $this->configForm['method']; ?>"  action="<?php echo $this->configForm['action']; ?>">
-    <h3>Demo Configuration:</h3>
-    <div class="config-form-group">
-      <label for="enabled">Enabled:</label>
-      <?php echo $this->configForm['enabled']; ?>
-    </div>
-    <br />
-    <div class="config-submit-container">
-      <?php echo $this->configForm['submit']; ?>
-    </div>
-  </form>
-  <p><a href="<?php echo $this->webroot; ?>/demo/config/reset">Reset demo</a></p>
+    <form class="genericForm" id="configForm" method="<?php echo $this->configForm['method']; ?>"
+          action="<?php echo $this->configForm['action']; ?>">
+        <h3>Demo Configuration:</h3>
+
+        <div class="config-form-group">
+            <label for="enabled">Enabled:</label>
+            <?php echo $this->configForm['enabled']; ?>
+        </div>
+        <br/>
+
+        <div class="config-submit-container">
+            <?php echo $this->configForm['submit']; ?>
+        </div>
+    </form>
+    <p><a href="<?php echo $this->webroot; ?>/demo/config/reset">Reset demo</a>
+    </p>
 </div>

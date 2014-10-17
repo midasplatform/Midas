@@ -20,7 +20,7 @@
 
 /** Landingpage text dao */
 class Landingpage_TextDao extends AppDao
-  {
-  public $_model = 'Text';
-  public $_module = 'landingpage';
-  }
+{
+    public $_model = 'Text';
+    public $_module = 'landingpage';
+}

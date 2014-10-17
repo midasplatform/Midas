@@ -22,97 +22,92 @@
  *  License controller
  */
 class LicensesController extends AppController
-  {
-  public $_models = array('License');
-  public $_daos = array('License');
-  public $_components = array();
-  public $_forms = array();
+{
+    public $_models = array('License');
+    public $_daos = array('License');
+    public $_components = array();
+    public $_forms = array();
 
-  /**
-   * Index action. Lists all licenses on the admin page
-   */
-  function allAction()
+    /**
+     * Index action. Lists all licenses on the admin page
+     */
+    public function allAction()
     {
-    $this->requireAdminPrivileges();
-    $this->disableLayout();
-    $this->view->licenses = $this->License->getAll();
+        $this->requireAdminPrivileges();
+        $this->disableLayout();
+        $this->view->licenses = $this->License->getAll();
     }
 
-  /** View the license text in a dialog */
-  function viewAction()
+    /** View the license text in a dialog */
+    public function viewAction()
     {
-    $this->disableLayout();
-    $licenseId = $this->getParam('licenseId');
+        $this->disableLayout();
+        $licenseId = $this->getParam('licenseId');
 
-    if(!isset($licenseId))
-      {
-      throw new Zend_Exception('Must pass a license id');
-      }
-    $license = $this->License->load($licenseId);
-    if($license == false)
-      {
-      throw new Zend_Exception('Invalid licenseId');
-      }
-    $this->view->license = $license;
+        if (!isset($licenseId)) {
+            throw new Zend_Exception('Must pass a license id');
+        }
+        $license = $this->License->load($licenseId);
+        if ($license == false) {
+            throw new Zend_Exception('Invalid licenseId');
+        }
+        $this->view->license = $license;
     }
 
-  /** Delete a license */
-  function deleteAction()
+    /** Delete a license */
+    public function deleteAction()
     {
-    $this->requireAdminPrivileges();
-    $this->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
-    $licenseId = $this->getParam('licenseId');
+        $this->requireAdminPrivileges();
+        $this->disableLayout();
+        $this->_helper->viewRenderer->setNoRender();
+        $licenseId = $this->getParam('licenseId');
 
-    $license = $this->License->load($licenseId);
-    if($license == false)
-      {
-      throw new Zend_Exception('Invalid licenseId');
-      }
-    $this->License->delete($license);
+        $license = $this->License->load($licenseId);
+        if ($license == false) {
+            throw new Zend_Exception('Invalid licenseId');
+        }
+        $this->License->delete($license);
 
-    echo JsonComponent::encode(array(true, 'Success stub'));
+        echo JsonComponent::encode(array(true, 'Success stub'));
     }
 
-  /** Save an existing license */
-  function saveAction()
+    /** Save an existing license */
+    public function saveAction()
     {
-    $this->requireAdminPrivileges();
-    $this->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
-    $licenseId = $this->getParam('licenseId');
-    if(!isset($licenseId))
-      {
-      throw new Zend_Exception('Must pass a licenseId parameter');
-      }
-    $license = $this->License->load($licenseId);
-    if($license == false)
-      {
-      throw new Zend_Exception('Invalid licenseId');
-      }
-    $name = $this->getParam('name');
-    $fulltext = $this->getParam('fulltext');
+        $this->requireAdminPrivileges();
+        $this->disableLayout();
+        $this->_helper->viewRenderer->setNoRender();
+        $licenseId = $this->getParam('licenseId');
+        if (!isset($licenseId)) {
+            throw new Zend_Exception('Must pass a licenseId parameter');
+        }
+        $license = $this->License->load($licenseId);
+        if ($license == false) {
+            throw new Zend_Exception('Invalid licenseId');
+        }
+        $name = $this->getParam('name');
+        $fulltext = $this->getParam('fulltext');
 
-    $license->setName($name);
-    $license->setFulltext($fulltext);
-    $this->License->save($license);
-    echo JsonComponent::encode(array(true, 'Changes saved'));
+        $license->setName($name);
+        $license->setFulltext($fulltext);
+        $this->License->save($license);
+        echo JsonComponent::encode(array(true, 'Changes saved'));
     }
 
-  /** Create a new license */
-  function createAction()
+    /** Create a new license */
+    public function createAction()
     {
-    $this->requireAdminPrivileges();
-    $this->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+        $this->requireAdminPrivileges();
+        $this->disableLayout();
+        $this->_helper->viewRenderer->setNoRender();
 
-    $name = $this->getParam('name');
-    $fulltext = $this->getParam('fulltext');
+        $name = $this->getParam('name');
+        $fulltext = $this->getParam('fulltext');
 
-    $license = new LicenseDao();
-    $license->setName($name);
-    $license->setFulltext($fulltext);
-    $this->License->save($license);
-    echo JsonComponent::encode(array(true, 'Created new license'));
+        $license = new LicenseDao();
+        $license->setName($name);
+        $license->setFulltext($fulltext);
+        $this->License->save($license);
+        echo JsonComponent::encode(array(true, 'Created new license'));
     }
-  }
+}

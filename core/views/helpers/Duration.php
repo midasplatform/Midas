@@ -20,18 +20,18 @@
 
 class  Zend_View_Helper_Duration
 {
-  /** translation helper */
-    function duration($timestamp)
+    /** translation helper */
+    public function duration($timestamp)
     {
-    Zend_Loader::loadClass('DateComponent', BASE_PATH . '/core/controllers/components');
-    $component=new DateComponent();
-    return $component->duration($timestamp);
+        Zend_Loader::loadClass('DateComponent', BASE_PATH.'/core/controllers/components');
+        $component = new DateComponent();
+
+        return $component->duration($timestamp);
     }
 
-
-    /** Set view*/
+    /** Set view */
     public function setView(Zend_View_Interface $view)
     {
         $this->view = $view;
     }
-}// end class
+}

@@ -19,10 +19,9 @@
 =========================================================================*/
 
 /**
- * \class FeedpolicyuserDao
- * \brief DAO
+ * DAO
  */
 class FeedpolicyuserDao extends AppDao
-  {
-  public $_model = 'Feedpolicyuser';
-  }
+{
+    public $_model = 'Feedpolicyuser';
+}

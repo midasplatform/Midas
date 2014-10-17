@@ -18,48 +18,43 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Readmes_Notification
- *
- * notification manager
- *
- * @category   Midas modules
- * @package    readmes
- */
+/** Notification manager for the readmes module */
 class Readmes_Notification extends MIDAS_Notification
-  {
-  public $_models = array('Community', 'Folder');
+{
+    public $_models = array('Community', 'Folder');
 
-  /**
-   * init notification process
-   */
-  public function init()
+    /**
+     * init notification process
+     */
+    public function init()
     {
-    $this->addCallBack('CALLBACK_CORE_FOLDER_VIEW_JS', 'getFolderViewJs');
-    $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_VIEW_JSS', 'getCommunityViewJs');
+        $this->addCallBack('CALLBACK_CORE_FOLDER_VIEW_JS', 'getFolderViewJs');
+        $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_VIEW_JSS', 'getCommunityViewJs');
     }
 
-  /**
-   * callback function to get javascript for the folder
-   *
-   * @return array
-   */
-  public function getFolderViewJs()
+    /**
+     * callback function to get javascript for the folder
+     *
+     * @return array
+     */
+    public function getFolderViewJs()
     {
-    $fc = Zend_Controller_Front::getInstance();
-    $moduleUriroot = $fc->getBaseUrl().'/modules/readmes';
-    return array($moduleUriroot.'/public/js/readmes.folder.js');
+        $fc = Zend_Controller_Front::getInstance();
+        $moduleUriroot = $fc->getBaseUrl().'/modules/readmes';
+
+        return array($moduleUriroot.'/public/js/readmes.folder.js');
     }
 
-  /**
-   * callback function to get javascript for the community
-   *
-   * @return array
-   */
-  public function getCommunityViewJs()
+    /**
+     * callback function to get javascript for the community
+     *
+     * @return array
+     */
+    public function getCommunityViewJs()
     {
-    $fc = Zend_Controller_Front::getInstance();
-    $moduleUriroot = $fc->getBaseUrl().'/modules/readmes';
-    return array($moduleUriroot.'/public/js/readmes.community.js');
+        $fc = Zend_Controller_Front::getInstance();
+        $moduleUriroot = $fc->getBaseUrl().'/modules/readmes';
+
+        return array($moduleUriroot.'/public/js/readmes.community.js');
     }
-  }
+}

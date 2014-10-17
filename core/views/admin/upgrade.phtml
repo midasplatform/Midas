@@ -18,42 +18,36 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/admin/admin.upgrade.css" />
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/admin/admin.upgrade.js"></script>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/admin/admin.upgrade.css"/>
+<script type="text/javascript" src="<?php echo $this->coreWebroot ?>/public/js/admin/admin.upgrade.js"></script>
 
 <h3>Core:</h3>
-Current version: <?php echo $this->core['currentText']?><br/>
+Current version: <?php echo $this->core['currentText'] ?><br/>
 <?php
-  if($this->core['current']<$this->core['target'])
-    {
+if ($this->core['current'] < $this->core['target']) {
     echo "Need to upgrade to version: ".$this->core['targetText'];
-    }
-  else
-    {
+} else {
     echo "Midas Platform is up to date.";
-    }
+}
 ?>
 <h3>Modules:</h3>
 <?php
-foreach($this->modules as $name => $module)
-  {
-  echo "<b>{$name}</b><br/>";
-  echo "Current version: {$module['currentText']} <br/>";
-  if($module['current']<$module['target'])
-    {
-    echo "Need to upgrade to version: ".$module['targetText'].'<br/>';
+foreach ($this->modules as $name => $module) {
+    echo "<b>{$name}</b><br/>";
+    echo "Current version: {$module['currentText']} <br/>";
+    if ($module['current'] < $module['target']) {
+        echo "Need to upgrade to version: ".$module['targetText'].'<br/>';
     }
-  }
+}
 
-if(count($this->modules) == 0)
-  {
-  echo "No module enabled.";
-  }
+if (count($this->modules) == 0) {
+    echo "No module enabled.";
+}
 ?>
 <br/>
 <br/>
-<form id='upgradeMIDAS'  action="<?php echo $this->webroot?>/admin/upgrade" method="post">
-  <input type='submit' class="globalButton" value="Upgrade"/>
+<form id='upgradeMIDAS' action="<?php echo $this->webroot ?>/admin/upgrade" method="post">
+    <input type='submit' class="globalButton" value="Upgrade"/>
 </form>
 <br/><br/>
-<a href="<?php echo $this->webroot?>/admin/migratemidas2">Upgrade from MIDAS2</a>
+<a href="<?php echo $this->webroot ?>/admin/migratemidas2">Upgrade from MIDAS2</a>

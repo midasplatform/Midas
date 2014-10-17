@@ -24,61 +24,62 @@
  * but has yet to verify their email address.
  */
 abstract class PendingUserModelBase extends AppModel
-  {
-  /** Constructor */
-  public function __construct()
+{
+    /** Constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'pendinguser';
-    $this->_daoName = 'PendingUserDao';
-    $this->_key = 'pendinguser_id';
-    $this->_mainData = array(
-      'pendinguser_id' => array('type' => MIDAS_DATA),
-      'auth_key' => array('type' => MIDAS_DATA),
-      'email' => array('type' => MIDAS_DATA),
-      'firstname' => array('type' => MIDAS_DATA),
-      'lastname' => array('type' => MIDAS_DATA),
-      'salt' => array('type' => MIDAS_DATA),
-      'date_creation' => array('type' => MIDAS_DATA)
-      );
-    $this->initialize(); // required
-    } // end __construct()
-
-  /** abstract functions */
-  abstract public function getByParams($params);
-  abstract public function getAllByParams($params);
-
-  /**
-   * Create the database record for a user who has registered but not had their email verified yet
-   */
-  public function createPendingUser($email, $firstName, $lastName, $password)
-    {
-    $email = strtolower($email);
-    $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
-    $userSalt = UtilityComponent::generateRandomString(32);
-
-    $pendingUser = MidasLoader::newDao('PendingUserDao');
-    $pendingUser->setEmail($email);
-    $pendingUser->setAuthKey(UtilityComponent::generateRandomString(64, '0123456789abcdef'));
-    $pendingUser->setFirstname($firstName);
-    $pendingUser->setLastname($lastName);
-    $pendingUser->setSalt($userSalt);
-    $pendingUser->setDateCreation(date("Y-m-d H:i:s"));
-
-    $userModel = MidasLoader::loadModel('User');
-    $existingUser = $userModel->getByEmail($email);
-    if($existingUser)
-      {
-      throw new Zend_Exception('User with that email already exists');
-      }
-    $existingPendingUser = $this->getByParams(array('email' => $email));
-    if($existingPendingUser)
-      {
-      $this->delete($existingPendingUser);
-      }
-    $userModel->storePasswordHash(hash('sha256', $instanceSalt.$userSalt.$password));
-
-    $this->save($pendingUser);
-    return $pendingUser;
+        parent::__construct();
+        $this->_name = 'pendinguser';
+        $this->_daoName = 'PendingUserDao';
+        $this->_key = 'pendinguser_id';
+        $this->_mainData = array(
+            'pendinguser_id' => array('type' => MIDAS_DATA),
+            'auth_key' => array('type' => MIDAS_DATA),
+            'email' => array('type' => MIDAS_DATA),
+            'firstname' => array('type' => MIDAS_DATA),
+            'lastname' => array('type' => MIDAS_DATA),
+            'salt' => array('type' => MIDAS_DATA),
+            'date_creation' => array('type' => MIDAS_DATA),
+        );
+        $this->initialize(); // required
     }
-  }
+
+    /** Get by params */
+    abstract public function getByParams($params);
+
+    /** Get all by params */
+    abstract public function getAllByParams($params);
+
+    /**
+     * Create the database record for a user who has registered but not had their email verified yet
+     */
+    public function createPendingUser($email, $firstName, $lastName, $password)
+    {
+        $email = strtolower($email);
+        $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+        $userSalt = UtilityComponent::generateRandomString(32);
+
+        $pendingUser = MidasLoader::newDao('PendingUserDao');
+        $pendingUser->setEmail($email);
+        $pendingUser->setAuthKey(UtilityComponent::generateRandomString(64, '0123456789abcdef'));
+        $pendingUser->setFirstname($firstName);
+        $pendingUser->setLastname($lastName);
+        $pendingUser->setSalt($userSalt);
+        $pendingUser->setDateCreation(date("Y-m-d H:i:s"));
+
+        $userModel = MidasLoader::loadModel('User');
+        $existingUser = $userModel->getByEmail($email);
+        if ($existingUser) {
+            throw new Zend_Exception('User with that email already exists');
+        }
+        $existingPendingUser = $this->getByParams(array('email' => $email));
+        if ($existingPendingUser) {
+            $this->delete($existingPendingUser);
+        }
+        $userModel->storePasswordHash(hash('sha256', $instanceSalt.$userSalt.$password));
+
+        $this->save($pendingUser);
+
+        return $pendingUser;
+    }
+}

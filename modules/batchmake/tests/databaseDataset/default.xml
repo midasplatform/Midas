@@ -12,7 +12,6 @@
 	<batchmake_itemmetric itemmetric_id="1" metric_name="metric1" bms_name="metric1.bms" />
         <batchmake_itemmetric itemmetric_id="2" metric_name="metric2" bms_name="metric2.bms" />
         <batchmake_itemmetric itemmetric_id="3" metric_name="metric3" bms_name="metric3.bms" />
-        
+
 
 </dataset>
-

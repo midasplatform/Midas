@@ -17,6 +17,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /**
  * Communityagreement_AppDao
  *
@@ -24,6 +25,6 @@
  * @package    communityagreement
  */
 class Communityagreement_AppDao extends MIDAS_GlobalDao
-  {
-  public $moduleName = 'communityagreement';
-  }
+{
+    public $moduleName = 'communityagreement';
+}

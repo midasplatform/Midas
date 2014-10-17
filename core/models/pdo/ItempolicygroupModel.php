@@ -21,60 +21,67 @@
 require_once BASE_PATH.'/core/models/base/ItempolicygroupModelBase.php';
 
 /**
- * \class ItempolicygroupModel
- * \brief Pdo Model
+ * Pdo Model
  */
 class ItempolicygroupModel extends ItempolicygroupModelBase
-  {
-
-  /** compute policy status*/
-  public function computePolicyStatus($item)
+{
+    /** compute policy status */
+    public function computePolicyStatus($item)
     {
-    $sql = $this->database->select()->from(array('ipg' => 'itempolicygroup'), array('COUNT(*) as count'));
-    $sql->where('ipg.item_id = ?', $item->getItemId());
-    $sql->where('ipg.group_id = ?', MIDAS_GROUP_ANONYMOUS_KEY);
-    $row = $this->database->fetchRow($sql);
-    $count = (int)$row['count'];
+        $sql = $this->database->select()->from(array('ipg' => 'itempolicygroup'), array('COUNT(*) as count'));
+        $sql->where('ipg.item_id = ?', $item->getItemId());
+        $sql->where('ipg.group_id = ?', MIDAS_GROUP_ANONYMOUS_KEY);
+        $row = $this->database->fetchRow($sql);
+        $count = (int)$row['count'];
 
-    $itemModel = MidasLoader::loadModel('Item');
-    if($count > 0)
-      {
-      $item->setPrivacyStatus(MIDAS_PRIVACY_PUBLIC);
-      $itemModel->save($item, false);
-      return MIDAS_PRIVACY_PUBLIC;
-      }
-    $item->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE);
-    $itemModel->save($item, false);
-    return MIDAS_PRIVACY_PRIVATE;
-    }// end computePolicyStatus
+        $itemModel = MidasLoader::loadModel('Item');
+        if ($count > 0) {
+            $item->setPrivacyStatus(MIDAS_PRIVACY_PUBLIC);
+            $itemModel->save($item, false);
 
-  /** getPolicy
-   * @return ItempolicygroupDao
-   */
-  public function getPolicy($group, $item)
-    {
-    if(!$group instanceof GroupDao)
-      {
-      throw new Zend_Exception("Should be a group.");
-      }
-    if(!$item instanceof ItemDao)
-      {
-      throw new Zend_Exception("Should be an item.");
-      }
-    return $this->initDao('Itempolicygroup', $this->database->fetchRow($this->database->select()->where('item_id = ?', $item->getKey())->where('group_id = ?', $group->getKey())));
+            return MIDAS_PRIVACY_PUBLIC;
+        }
+        $item->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE);
+        $itemModel->save($item, false);
+
+        return MIDAS_PRIVACY_PRIVATE;
     }
 
-  /**
-   * deletes all itempolicygroup rows associated with the passed in group
-   * @param GroupDao
-   */
-  public function deleteGroupPolicies($group)
+    /** getPolicy
+     *
+     * @return ItempolicygroupDao
+     */
+    public function getPolicy($group, $item)
     {
-    if(!$group instanceof GroupDao)
-      {
-      throw new Zend_Exception("Should be a group.");
-      }
-    $clause = 'group_id = '.$group->getKey();
-    Zend_Registry::get('dbAdapter')->delete($this->_name, $clause);
+        if (!$group instanceof GroupDao) {
+            throw new Zend_Exception("Should be a group.");
+        }
+        if (!$item instanceof ItemDao) {
+            throw new Zend_Exception("Should be an item.");
+        }
+
+        return $this->initDao(
+            'Itempolicygroup',
+            $this->database->fetchRow(
+                $this->database->select()->where('item_id = ?', $item->getKey())->where(
+                    'group_id = ?',
+                    $group->getKey()
+                )
+            )
+        );
     }
-  } // end class
+
+    /**
+     * deletes all itempolicygroup rows associated with the passed in group
+     *
+     * @param GroupDao
+     */
+    public function deleteGroupPolicies($group)
+    {
+        if (!$group instanceof GroupDao) {
+            throw new Zend_Exception("Should be a group.");
+        }
+        $clause = 'group_id = '.$group->getKey();
+        Zend_Registry::get('dbAdapter')->delete($this->_name, $clause);
+    }
+}

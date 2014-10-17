@@ -20,7 +20,7 @@
 
 /** Batchmake_TaskDao */
 class Batchmake_TaskDao extends AppDao
-  {
-  public $_model = 'Task';
-  public $_module = 'batchmake';
-  }
+{
+    public $_model = 'Task';
+    public $_module = 'batchmake';
+}

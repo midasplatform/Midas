@@ -22,20 +22,23 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.for
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.index.js');
 ?>
 
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->coreWebroot ?>/public/css/common/common.genericPage.css"/>
 <div class="viewMain">
-  <h3>Google Auth Module Configuration</h3>
-  <form class="genericForm" id="configForm" method="POST" action="<?php echo $this->webroot;?>/googleauth/config/submit">
-    <div class="config-form-group">
-      <label for="client_id">Client ID</label>
-      <input type="text" name="client_id" value="<?php echo $this->clientId; ?>" />
-    </div>
-    <div class="config-form-group">
-      <label for="client_secret">Client Secret</label>
-      <input type="text" name="client_secret" value="<?php echo $this->clientSecret; ?>" />
-    </div>
-    <div class="config-submit-container">
-      <input type="submit" value="Save" />
-    </div>
-  </form>
+    <h3>Google Auth Module Configuration</h3>
+
+    <form class="genericForm" id="configForm" method="POST"
+          action="<?php echo $this->webroot; ?>/googleauth/config/submit">
+        <div class="config-form-group">
+            <label for="client_id">Client ID</label>
+            <input type="text" name="client_id" value="<?php echo $this->clientId; ?>"/>
+        </div>
+        <div class="config-form-group">
+            <label for="client_secret">Client Secret</label>
+            <input type="text" name="client_secret" value="<?php echo $this->clientSecret; ?>"/>
+        </div>
+        <div class="config-submit-container">
+            <input type="submit" value="Save"/>
+        </div>
+    </form>
 </div>

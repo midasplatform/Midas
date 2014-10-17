@@ -21,27 +21,31 @@
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.index.js');
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/config/config.index.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/config/config.index.css"/>
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->coreWebroot ?>/public/css/common/common.genericPage.css"/>
 <div class="viewMain">
-     <div class ="genericWrapperTopRight">
-         <?php
-          echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
-            echo "<a  href='{$this->webroot}/admin#tabs-modules'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
-            echo $this->t('Back');
-            echo "</a>";
-          echo '</div>';
+    <div class="genericWrapperTopRight">
+        <?php
+        echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
+        echo "<a  href='{$this->webroot}/admin#tabs-modules'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+        echo $this->t('Back');
+        echo "</a>";
+        echo '</div>';
         ?>
     </div>
     <h3>Solr Lucene Search Module Configuration:</h3>
+
     <div class="instructionContainer">
-      This module requires you to run a specially configured Apache Solr server.  Install instructions and a link to download
-      the server are hosted <a href="http://midas3.kitware.com/midas/item/19589">here</a>.
-      If you have existing content in this instance, make sure to rebuild the index using the link
-      at the bottom of this page once the Solr server is installed and running.
+        This module requires you to run a specially configured Apache Solr server. Install instructions and a link to
+        download
+        the server are hosted
+        <a href="http://midas3.kitware.com/midas/item/19589">here</a>.
+        If you have existing content in this instance, make sure to rebuild the index using the link
+        at the bottom of this page once the Solr server is installed and running.
     </div>
     <?php
-      echo "
+    echo "
       <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
         <br /><br />
         <div>
@@ -61,23 +65,20 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.i
         </div>
       </form>";
 
-      if($this->saved)
-        { ?>
+    if ($this->saved) {
+        ?>
         <div class="rebuildIndexContainer">
-          Click the button below to rebuild the Lucene index on all items in Midas.
-          <div>
-            <input class="globalButton" type="button" id="rebuildIndexButton" value="Rebuild index" />
-          </div>
-          <div id="rebuildProgressBar"></div>
-          <div id="rebuildProgressMessage"></div>
+            Click the button below to rebuild the Lucene index on all items in Midas.
+            <div>
+                <input class="globalButton" type="button" id="rebuildIndexButton" value="Rebuild index"/>
+            </div>
+            <div id="rebuildProgressBar"></div>
+            <div id="rebuildProgressMessage"></div>
         </div>
-        <?php
-        }
-      else
-        {
-        echo '<div class="notSavedWarning">Warning: these values are the defaults but the settings are not yet saved. '.
-        'You must save the settings before Solr searching will work!</div>';
-        }
-      ?>
+    <?php
+    } else {
+        echo '<div class="notSavedWarning">Warning: these values are the defaults but the settings are not yet saved. '.'You must save the settings before Solr searching will work!</div>';
+    }
+    ?>
 
 </div>

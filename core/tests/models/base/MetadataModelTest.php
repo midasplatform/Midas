@@ -17,128 +17,136 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** MetadataModelTest*/
+
+/** MetadataModelTest */
 class MetadataModelTest extends DatabaseTestCase
-  {
-
-  /** init test*/
-  public function setUp()
+{
+    /** init test */
+    public function setUp()
     {
-    $this->setupDatabase(array('metadata'));
-    $this->_models = array('Metadata', 'ItemRevision');
-    $this->_daos = array();
-    parent::setUp();
+        $this->setupDatabase(array('metadata'));
+        $this->_models = array('Metadata', 'ItemRevision');
+        $this->_daos = array();
+        parent::setUp();
     }
 
-  /**
-   * tests getMetadata and addMetadata
-   */
-  public function testGetMetadata()
+    /**
+     * tests getMetadata and addMetadata
+     */
+    public function testGetMetadata()
     {
-    // certain values are expected to be in the db by default
-    $metadata = $this->Metadata->getMetadata(MIDAS_METADATA_TEXT, "contributor", "author");
-    $this->assertEquals("Author of the data", $metadata->getDescription(), "author metadata had incorrect description");
+        // certain values are expected to be in the db by default
+        $metadata = $this->Metadata->getMetadata(MIDAS_METADATA_TEXT, "contributor", "author");
+        $this->assertEquals(
+            "Author of the data",
+            $metadata->getDescription(),
+            "author metadata had incorrect description"
+        );
 
-    $metadata->setQualifier('artiste', 'more artistic than an artist');
-    $this->Metadata->addMetadata(MIDAS_METADATA_TEXT, 'contributor', 'artiste', 'more artistic than an artist');
-    $newMetadata = $this->Metadata->getMetadata(MIDAS_METADATA_TEXT, "contributor", "artiste");
-    $this->assertEquals("Author of the data", $metadata->getDescription(), "more artistic than an artist");
-    $this->Metadata->delete($newMetadata);
+        $metadata->setQualifier('artiste', 'more artistic than an artist');
+        $this->Metadata->addMetadata(MIDAS_METADATA_TEXT, 'contributor', 'artiste', 'more artistic than an artist');
+        $newMetadata = $this->Metadata->getMetadata(MIDAS_METADATA_TEXT, "contributor", "artiste");
+        $this->assertEquals("Author of the data", $metadata->getDescription(), "more artistic than an artist");
+        $this->Metadata->delete($newMetadata);
     }
 
-  /**
-   * tests getAllMetadata
-   */
-  public function testGetAllMetadata()
+    /**
+     * tests getAllMetadata
+     */
+    public function testGetAllMetadata()
     {
-    // expect at least a certain set of values in the db by default
-    $metadataDaos = $this->Metadata->getAllMetadata();
+        // expect at least a certain set of values in the db by default
+        $metadataDaos = $this->Metadata->getAllMetadata();
 
-    // look for 2 arrays of at least 14 each, and in specific author and created
-    $author = array("element" => "contributor", "qualifier" => "author", "description" => "Author of the data");
-    $created = array("element" => "date", "qualifier" => "created", "description" => "Date when the data was created");
+        // look for 2 arrays of at least 14 each, and in specific author and created
+        $author = array("element" => "contributor", "qualifier" => "author", "description" => "Author of the data");
+        $created = array(
+            "element" => "date",
+            "qualifier" => "created",
+            "description" => "Date when the data was created",
+        );
 
-    $rawMetadata = $metadataDaos['raw'];
-    $sortedGlobalMetadata = $metadataDaos['sorted'][MIDAS_METADATA_TEXT];
-    $this->assertEquals(7, sizeof($rawMetadata), "expected at least 6 raw metadata");
-    $this->assertEquals(3, sizeof($sortedGlobalMetadata['DICOM']), "expected at least 4 sorted DICOM metadata");
+        $rawMetadata = $metadataDaos['raw'];
+        $sortedGlobalMetadata = $metadataDaos['sorted'][MIDAS_METADATA_TEXT];
+        $this->assertEquals(7, count($rawMetadata), "expected at least 6 raw metadata");
+        $this->assertEquals(3, count($sortedGlobalMetadata['DICOM']), "expected at least 4 sorted DICOM metadata");
 
-    $authorFound = false;
-    $createdFound = false;
+        $authorFound = false;
+        $createdFound = false;
 
-    foreach($rawMetadata as $metadata)
-      {
-      if($metadata->getElement() === $author["element"] &&
-         $metadata->getQualifier() === $author["qualifier"] &&
-         $metadata->getDescription() === $author["description"])
-        {
-        $authorFound = true;
+        foreach ($rawMetadata as $metadata) {
+            if ($metadata->getElement() === $author["element"] && $metadata->getQualifier(
+                ) === $author["qualifier"] && $metadata->getDescription() === $author["description"]
+            ) {
+                $authorFound = true;
+            }
+            if ($metadata->getElement() === $created["element"] && $metadata->getQualifier(
+                ) === $created["qualifier"] && $metadata->getDescription() === $created["description"]
+            ) {
+                $createdFound = true;
+            }
         }
-      if($metadata->getElement() === $created["element"] &&
-         $metadata->getQualifier() === $created["qualifier"] &&
-         $metadata->getDescription() === $created["description"])
-        {
-        $createdFound = true;
-        }
-      }
 
-    $this->assertTrue($authorFound, "Did not find author metadata");
-    $this->assertTrue($createdFound, "Did not find created metadata");
+        $this->assertTrue($authorFound, "Did not find author metadata");
+        $this->assertTrue($createdFound, "Did not find created metadata");
     }
 
-  /**
-   * tests getTableValueName
-   */
-  public function testGetTableValueName()
+    /**
+     * tests getTableValueName
+     */
+    public function testGetTableValueName()
     {
-    // for now just test the GLOBAL
-    $this->assertEquals($this->Metadata->getTableValueName(MIDAS_METADATA_TEXT),
-                        'metadatavalue', 'GLOBAL table should be metadatavalue');
+        // for now just test the GLOBAL
+        $this->assertEquals(
+            $this->Metadata->getTableValueName(MIDAS_METADATA_TEXT),
+            'metadatavalue',
+            'GLOBAL table should be metadatavalue'
+        );
     }
 
-  /**
-   * tests getMetadataValueExists and addMetadataValue.
-   */
-  public function testGetMetadataValueExists()
+    /**
+     * tests getMetadataValueExists and addMetadataValue.
+     */
+    public function testGetMetadataValueExists()
     {
-    // get a metadata
-    $metadata = $this->Metadata->getMetadata(MIDAS_METADATA_TEXT, "contributor", "author");
-    $metadata->setItemrevisionId(1);
-    $metadata->setValue("DFW");
-    $this->assertFalse($this->Metadata->getMetadataValueExists($metadata));
+        // get a metadata
+        $metadata = $this->Metadata->getMetadata(MIDAS_METADATA_TEXT, "contributor", "author");
+        $metadata->setItemrevisionId(1);
+        $metadata->setValue("DFW");
+        $this->assertFalse($this->Metadata->getMetadataValueExists($metadata));
 
-    $itemRevision = $this->ItemRevision->load(1);
-    $this->Metadata->addMetadataValue($itemRevision, MIDAS_METADATA_TEXT, 'contributor', 'author', 'DFW');
-    $this->assertTrue($this->Metadata->getMetadataValueExists($metadata));
+        $itemRevision = $this->ItemRevision->load(1);
+        $this->Metadata->addMetadataValue($itemRevision, MIDAS_METADATA_TEXT, 'contributor', 'author', 'DFW');
+        $this->assertTrue($this->Metadata->getMetadataValueExists($metadata));
     }
 
-  /**
-   * Testing the retrieval of valid metadata types
-   */
-  public function testGetMetadataTypes()
+    /**
+     * Testing the retrieval of valid metadata types
+     */
+    public function testGetMetadataTypes()
     {
-    $types = $this->Metadata->getMetadataTypes();
-    sort($types);
-    $this->assertEquals($types, array('int', 'text'));
+        $types = $this->Metadata->getMetadataTypes();
+        sort($types);
+        $this->assertEquals($types, array('int', 'text'));
     }
 
-  /**
-   * Testing the retrieval of valid metadata elements
-   */
-  public function testGetMetadataElements()
+    /**
+     * Testing the retrieval of valid metadata elements
+     */
+    public function testGetMetadataElements()
     {
-    $elements = $this->Metadata->getMetadataElements(0);
-    sort($elements);
-    $this->assertEquals($elements, array('DICOM', 'Document', 'contributor', 'date'));
+        $elements = $this->Metadata->getMetadataElements(0);
+        sort($elements);
+        $this->assertEquals($elements, array('DICOM', 'Document', 'contributor', 'date'));
     }
 
-  /**
-   * Testing the retrieval of valid metadata qualifiers
-   */
-  public function testGetMetadataQualifiers()
+    /**
+     * Testing the retrieval of valid metadata qualifiers
+     */
+    public function testGetMetadataQualifiers()
     {
-    $qualifiers = $this->Metadata->getMetadataQualifiers(0, 'DICOM');
-    sort($qualifiers);
-    $this->assertEquals($qualifiers, array('Manufacturer', 'NumSlices', 'PatientName'));
+        $qualifiers = $this->Metadata->getMetadataQualifiers(0, 'DICOM');
+        sort($qualifiers);
+        $this->assertEquals($qualifiers, array('Manufacturer', 'NumSlices', 'PatientName'));
     }
-  }
+}

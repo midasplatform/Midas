@@ -20,12 +20,11 @@
 
 /** Api controller for /rest */
 class Api_RestController extends Api_AppController
-  {
-
-  /** Before filter */
-  function preDispatch()
+{
+    /** Before filter */
+    public function preDispatch()
     {
-    $this->forward('rest', 'index', 'api', $this->getAllParams());
-    parent::preDispatch();
+        $this->forward('rest', 'index', 'api', $this->getAllParams());
+        parent::preDispatch();
     }
-  } // end class
+}

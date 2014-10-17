@@ -18,75 +18,71 @@
  limitations under the License.
 =========================================================================*/
 
-/** Active Download Model Base*/
+/** Active Download Model Base */
 abstract class ActivedownloadModelBase extends AppModel
-  {
-  /** Constructor*/
-  public function __construct()
+{
+    /** Constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'activedownload';
-    $this->_key = 'activedownload_id';
+        parent::__construct();
+        $this->_name = 'activedownload';
+        $this->_key = 'activedownload_id';
 
-    $this->_mainData = array(
-      'activedownload_id' =>  array('type' => MIDAS_DATA),
-      'ip' =>  array('type' => MIDAS_DATA),
-      'date_creation' =>  array('type' => MIDAS_DATA),
-      'last_update' =>  array('type' => MIDAS_DATA)
-      );
-    $this->initialize();
+        $this->_mainData = array(
+            'activedownload_id' => array('type' => MIDAS_DATA),
+            'ip' => array('type' => MIDAS_DATA),
+            'date_creation' => array('type' => MIDAS_DATA),
+            'last_update' => array('type' => MIDAS_DATA),
+        );
+        $this->initialize();
     }
 
-  /** Check for an active download by ip address */
-  abstract public function getByIp($ip);
+    /** Check for an active download by ip address */
+    abstract public function getByIp($ip);
 
-  /**
-   * Call this function to acquire the download lock.
-   * This will return false if an active download already exists for
-   * this ip address, otherwise it will return the active download
-   * lock that was created.
-   */
-  public function acquireLock()
+    /**
+     * Call this function to acquire the download lock.
+     * This will return false if an active download already exists for
+     * this ip address, otherwise it will return the active download
+     * lock that was created.
+     */
+    public function acquireLock()
     {
-    $ip = $_SERVER['REMOTE_ADDR'];
-    if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-      {
-      $ip .= '_'.$_SERVER['HTTP_X_FORWARDED_FOR'];
-      }
-
-    $oldLock = $this->getByIp($ip);
-    if($oldLock !== false)
-      {
-      // If an old lock exists but has not been updated in more than 5 minutes, we
-      // should release the old lock and create a new one.
-      $lastUpdate = strtotime($oldLock->getLastUpdate());
-      if(time() > $lastUpdate + 300)
-        {
-        $this->delete($oldLock);
+        $ip = $_SERVER['REMOTE_ADDR'];
+        if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ip .= '_'.$_SERVER['HTTP_X_FORWARDED_FOR'];
         }
-      else
-        {
-        return false;
+
+        $oldLock = $this->getByIp($ip);
+        if ($oldLock !== false) {
+            // If an old lock exists but has not been updated in more than 5 minutes, we
+            // should release the old lock and create a new one.
+            $lastUpdate = strtotime($oldLock->getLastUpdate());
+            if (time() > $lastUpdate + 300) {
+                $this->delete($oldLock);
+            } else {
+                return false;
+            }
         }
-      }
 
-    $activeDownload = MidasLoader::newDao('ActivedownloadDao');
-    $activeDownload->setDateCreation(date("Y-m-d H:i:s"));
-    $activeDownload->setLastUpdate(date("Y-m-d H:i:s"));
-    $activeDownload->setIp($ip);
-    $this->save($activeDownload);
+        $activeDownload = MidasLoader::newDao('ActivedownloadDao');
+        $activeDownload->setDateCreation(date("Y-m-d H:i:s"));
+        $activeDownload->setLastUpdate(date("Y-m-d H:i:s"));
+        $activeDownload->setIp($ip);
+        $this->save($activeDownload);
 
-    return $activeDownload;
+        return $activeDownload;
     }
 
-  /**
-   * Call this to update an active download lock.  If a lock has not been updated
-   * in more than 5 minutes, it is considered orphaned and will be removed.
-   * @param lockDao The active download lock to update
-   */
-  public function updateLock($lockDao)
+    /**
+     * Call this to update an active download lock.  If a lock has not been updated
+     * in more than 5 minutes, it is considered orphaned and will be removed.
+     *
+     * @param lockDao The active download lock to update
+     */
+    public function updateLock($lockDao)
     {
-    $lockDao->setLastUpdate(date("Y-m-d H:i:s"));
-    $this->save($lockDao);
+        $lockDao->setLastUpdate(date("Y-m-d H:i:s"));
+        $this->save($lockDao);
     }
-  }
+}

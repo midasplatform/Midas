@@ -22,28 +22,34 @@
  *  Web API controller for the Item resource (in thumbnailcreator module)
  */
 class Apithumbnailcreator_ItemController extends ApiController
-  {
-  /**
-   * The put action handles PUT requests and receives an 'id' parameter; it
-   * should update the server resource state of the resource identified by
-   * the 'id' value.
-   */
-  public function putAction()
+{
+    /**
+     * The put action handles PUT requests and receives an 'id' parameter; it
+     * should update the server resource state of the resource identified by
+     * the 'id' value.
+     */
+    public function putAction()
     {
-    $apiFunctions = array(
-      'default' => 'createBigThumbnail',
-      'bigthumbnail' => 'createBigThumbnail',
-      'smallthumbnail' => 'createSmallThumbnail'
-      );
-    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'put', $apiFunctions, 'thumbnailcreator');
+        $apiFunctions = array(
+            'default' => 'createBigThumbnail',
+            'bigthumbnail' => 'createBigThumbnail',
+            'smallthumbnail' => 'createSmallThumbnail',
+        );
+        $this->_genericAction(
+            $this->_request->getParams(),
+            $this->_request->getControllerName(),
+            'put',
+            $apiFunctions,
+            'thumbnailcreator'
+        );
     }
 
-  /**
-   * The options action handles OPTIONS requests; it should respond with
-   * the HTTP methods that the server supports for specified URL.
-   */
-  public function optionsAction()
+    /**
+     * The options action handles OPTIONS requests; it should respond with
+     * the HTTP methods that the server supports for specified URL.
+     */
+    public function optionsAction()
     {
-    $this->_response->setHeader('Allow', 'OPTIONS, PUT');
+        $this->_response->setHeader('Allow', 'OPTIONS, PUT');
     }
-  }
+}

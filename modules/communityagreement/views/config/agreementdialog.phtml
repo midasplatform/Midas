@@ -21,24 +21,25 @@
 /** display community agreement for users to read and accept */
 echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/config/config.agreementdialog.js"></script>';
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/config/config.agreementdialog.css" />
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->moduleWebroot ?>/public/css/config/config.agreementdialog.css"/>
 
 <div class="agreementContainer">
-  <div class="agreementWarning">
-    <img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/warning.png" />
-    You must agree to the following terms before you can become a member of this community.
-  </div>
+    <div class="agreementWarning">
+        <img alt="" src="<?php echo $this->coreWebroot ?>/public/images/icons/warning.png"/>
+        You must agree to the following terms before you can become a member of this community.
+    </div>
 
-  <div class="licenseDisplay">
-    <?php echo $this->t(nl2br($this->agreementDao->getAgreement()));?>
-  </div>
+    <div class="licenseDisplay">
+        <?php echo $this->t(nl2br($this->agreementDao->getAgreement())); ?>
+    </div>
 
-  <input type="checkbox" id="agreementAccepted">I have read and agree to the above terms</input>
-  <div class="agreementButtons">
-    <form class="genericForm">
-      <input type="button" id="confirmAgreement" value="Accept" disabled="disabled" />
-      <input type="button" id="declineAgreement" style="margin-left: 10px;" value="Cancel" />
-    </form>
-  <div>
+    <input type="checkbox" id="agreementAccepted">I have read and agree to the above terms</input>
+    <div class="agreementButtons">
+        <form class="genericForm">
+            <input type="button" id="confirmAgreement" value="Accept" disabled="disabled"/>
+            <input type="button" id="declineAgreement" style="margin-left: 10px;" value="Cancel"/>
+        </form>
+        <div>
 
-</div>
+        </div>

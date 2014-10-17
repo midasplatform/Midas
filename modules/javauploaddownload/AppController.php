@@ -20,6 +20,6 @@
 
 /** App controller for the javauploaddownload module */
 class Javauploaddownload_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'javauploaddownload';
-  }
+{
+    public $moduleName = 'javauploaddownload';
+}

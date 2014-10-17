@@ -18,29 +18,31 @@
  limitations under the License.
 =========================================================================*/
 
-/** config form*/
+/** config form */
 class Visualize_ConfigForm extends AppForm
-  {
-  /** create  form */
-  public function createConfigForm()
+{
+    /** create  form */
+    public function createConfigForm()
     {
-    $form = new Zend_Form;
+        $form = new Zend_Form();
 
-    $form->setAction($this->webroot.'/visualize/config/index')
-          ->setMethod('post');
+        $form->setAction($this->webroot.'/visualize/config/index')->setMethod('post');
 
-    $useparaview = new Zend_Form_Element_Checkbox("useparaview");
-    $userwebgl = new Zend_Form_Element_Checkbox("userwebgl");
-    $usesymlinks = new Zend_Form_Element_Checkbox("usesymlinks");
-    $paraviewworkdir = new Zend_Form_Element_Text("paraviewworkdir");
-    $customtmp = new Zend_Form_Element_Text("customtmp");
-    $PWApp = new Zend_Form_Element_Text("pwapp");
-    $pvbatch = new Zend_Form_Element_Text("pvbatch");
+        $useparaview = new Zend_Form_Element_Checkbox("useparaview");
+        $userwebgl = new Zend_Form_Element_Checkbox("userwebgl");
+        $usesymlinks = new Zend_Form_Element_Checkbox("usesymlinks");
+        $paraviewworkdir = new Zend_Form_Element_Text("paraviewworkdir");
+        $customtmp = new Zend_Form_Element_Text("customtmp");
+        $PWApp = new Zend_Form_Element_Text("pwapp");
+        $pvbatch = new Zend_Form_Element_Text("pvbatch");
 
-    $submit = new  Zend_Form_Element_Submit('submitConfig');
-    $submit ->setLabel('Save configuration');
+        $submit = new  Zend_Form_Element_Submit('submitConfig');
+        $submit->setLabel('Save configuration');
 
-    $form->addElements(array($pvbatch, $PWApp, $usesymlinks, $userwebgl, $paraviewworkdir, $customtmp, $useparaview, $submit));
-    return $form;
+        $form->addElements(
+            array($pvbatch, $PWApp, $usesymlinks, $userwebgl, $paraviewworkdir, $customtmp, $useparaview, $submit)
+        );
+
+        return $form;
     }
-  } // end class
+}

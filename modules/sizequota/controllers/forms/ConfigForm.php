@@ -20,51 +20,52 @@
 
 /** sizequota config form */
 class Sizequota_ConfigForm extends AppForm
-  {
-  /** create the admin->modules page config form */
-  public function createConfigForm()
+{
+    /** create the admin->modules page config form */
+    public function createConfigForm()
     {
-    $form = new Zend_Form;
-    $form->setAction($this->webroot.'/sizequota/config/index')
-         ->setMethod('post');
+        $form = new Zend_Form();
+        $form->setAction($this->webroot.'/sizequota/config/index')->setMethod('post');
 
-    $defaultUserQuota = new Zend_Form_Element_Text('defaultuserquota');
-    $defaultCommunityQuota = new Zend_Form_Element_Text('defaultcommunityquota');
+        $defaultUserQuota = new Zend_Form_Element_Text('defaultuserquota');
+        $defaultCommunityQuota = new Zend_Form_Element_Text('defaultcommunityquota');
 
-    $submit = new Zend_Form_Element_Submit('submitConfig');
-    $submit->setLabel('Save configuration');
+        $submit = new Zend_Form_Element_Submit('submitConfig');
+        $submit->setLabel('Save configuration');
 
-    $form->addElements(array($defaultUserQuota, $defaultCommunityQuota, $submit));
-    return $form;
+        $form->addElements(array($defaultUserQuota, $defaultCommunityQuota, $submit));
+
+        return $form;
     }
 
-  /** form used to set a folder-specific quota */
-  public function createFolderForm($defaultQuota)
+    /** form used to set a folder-specific quota */
+    public function createFolderForm($defaultQuota)
     {
-    if($defaultQuota === '')
-      {
-      $defaultQuota = $this->t('Unlimited');
-      }
-    $form = new Zend_Form;
-    $form->setAction($this->webroot.'/sizequota/config/foldersubmit')
-         ->setMethod('post');
+        if ($defaultQuota === '') {
+            $defaultQuota = $this->t('Unlimited');
+        }
+        $form = new Zend_Form();
+        $form->setAction($this->webroot.'/sizequota/config/foldersubmit')->setMethod('post');
 
-    $submit = new Zend_Form_Element_Submit('submitQuota');
-    $submit->setLabel($this->t('Save'));
+        $submit = new Zend_Form_Element_Submit('submitQuota');
+        $submit->setLabel($this->t('Save'));
 
-    if($defaultQuota != 'Unlimited' && $defaultQuota !== '')
-      {
-      $defaultQuota = UtilityComponent::formatSize($defaultQuota);
-      }
-    $useDefault = new Zend_Form_Element_Radio('usedefault');
-    $useDefault->addMultiOptions(array(MIDAS_USE_DEFAULT_QUOTA => $this->t('Use the default quota: ').$defaultQuota,
-                                       MIDAS_USE_SPECIFIC_QUOTA => $this->t('Use a specific quota:')))
-               ->setRequired(true);
+        if ($defaultQuota != 'Unlimited' && $defaultQuota !== '') {
+            $defaultQuota = UtilityComponent::formatSize($defaultQuota);
+        }
+        $useDefault = new Zend_Form_Element_Radio('usedefault');
+        $useDefault->addMultiOptions(
+            array(
+                MIDAS_USE_DEFAULT_QUOTA => $this->t('Use the default quota: ').$defaultQuota,
+                MIDAS_USE_SPECIFIC_QUOTA => $this->t('Use a specific quota:'),
+            )
+        )->setRequired(true);
 
-    $quota = new Zend_Form_Element_Text('quota');
-    $quota->setAttrib('quota', 30);
+        $quota = new Zend_Form_Element_Text('quota');
+        $quota->setAttrib('quota', 30);
 
-    $form->addElements(array($useDefault, $quota, $submit));
-    return $form;
+        $form->addElements(array($useDefault, $quota, $submit));
+
+        return $form;
     }
-  } // end class
+}

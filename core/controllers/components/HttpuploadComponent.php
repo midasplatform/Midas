@@ -33,173 +33,167 @@ define('MIDAS_HTTPUPLOAD_PARAM_UNDEFINED', -150);
  * upload token that can be used to start or resume an upload.
  */
 class HttpuploadComponent extends AppComponent
-  {
+{
+    public $tmpDirectory = '';
+    public $tokenParamName = 'uploadtoken';
+    public $testingEnable = false;
 
-  var $tmpDirectory = '';
-  var $tokenParamName = 'uploadtoken';
-  var $testingEnable = false;
-
-  /** Set the upload temporary directory */
-  public function setTmpDirectory($dir)
+    /** Set the upload temporary directory */
+    public function setTmpDirectory($dir)
     {
-    $this->tmpDirectory = $dir;
+        $this->tmpDirectory = $dir;
     }
 
-  /** Set whether we are in testing mode or not (boolean) */
-  public function setTestingMode($testing)
+    /** Set whether we are in testing mode or not (boolean) */
+    public function setTestingMode($testing)
     {
-    $this->testingEnable = $testing;
+        $this->testingEnable = $testing;
     }
 
-  /** Set the name of the uploadtoken parameter that is being passed */
-  public function setTokenParamName($name)
+    /** Set the name of the uploadtoken parameter that is being passed */
+    public function setTokenParamName($name)
     {
-    $this->tokenParamName = $name;
+        $this->tokenParamName = $name;
     }
 
-  /**
-   * Generate an upload token that will act as the authentication token for the upload.
-   * This token is the filename of a unique file which will be placed under the
-   * directory specified by the dirname parameter, which should be used to ensure that
-   * the user can only write into a certain logical space.
-   */
-  public function generateToken($args, $dirname = '')
+    /**
+     * Generate an upload token that will act as the authentication token for the upload.
+     * This token is the filename of a unique file which will be placed under the
+     * directory specified by the dirname parameter, which should be used to ensure that
+     * the user can only write into a certain logical space.
+     */
+    public function generateToken($args, $dirname = '')
     {
-    if(!array_key_exists('filename', $args))
-      {
-      throw new Exception('Parameter filename is not defined', MIDAS_HTTPUPLOAD_FILENAME_PARAM_UNDEFINED);
-      }
-    $dir = $dirname == '' ? '' : '/'.$dirname;
-    $dir = $this->tmpDirectory.$dir;
-
-    if(!file_exists($dir))
-      {
-      if(!mkdir($dir, 0700, true))
-        {
-        throw new Exception('Failed to create temporary upload dir', MIDAS_HTTPUPLOAD_TMP_DIR_CREATION_FAILED);
+        if (!array_key_exists('filename', $args)) {
+            throw new Exception('Parameter filename is not defined', MIDAS_HTTPUPLOAD_FILENAME_PARAM_UNDEFINED);
         }
-      }
-    $unique_identifier = 'midas'.uniqid().'-'.md5($args['filename']);
-    if($dirname != '')
-      {
-      $unique_identifier = $dirname.'/'.$unique_identifier;
-      }
-    if(file_exists($this->tmpDirectory.'/'.$unique_identifier))
-      {
-      throw new Exception('Failed to generate upload token', MIDAS_HTTPUPLOAD_UPLOAD_TOKEN_GENERATION_FAILED);
-      }
-    touch($this->tmpDirectory.'/'.$unique_identifier);
-    return array('token' => $unique_identifier);
-    }
+        $dir = $dirname == '' ? '' : '/'.$dirname;
+        $dir = $this->tmpDirectory.$dir;
 
-  /** Handle the upload */
-  public function process($args)
-    {
-    if(!array_key_exists('filename', $args))
-      {
-      throw new Exception('Parameter filename is not defined', MIDAS_HTTPUPLOAD_PARAM_UNDEFINED);
-      }
-    $filename = $args['filename'];
-
-    if(!array_key_exists($this->tokenParamName, $args))
-      {
-      throw new Exception('Parameter '.$this->tokenParamName.' is not defined', MIDAS_HTTPUPLOAD_PARAM_UNDEFINED);
-      }
-    $uploadToken = $args[$this->tokenParamName];
-
-    if(!array_key_exists('length', $args))
-      {
-      throw new Exception('Parameter length is not defined', MIDAS_HTTPUPLOAD_PARAM_UNDEFINED);
-      }
-    $length = (float)($args['length']);
-
-    if($this->testingEnable && array_key_exists('localinput', $args))
-      {
-      $localinput = array_key_exists('localinput', $args) ? $args['localinput'] : false;
-      }
-
-    //check if the temporary file exists
-    $pathTemporaryFilename = $this->tmpDirectory.'/'.$uploadToken;
-    if(!file_exists($pathTemporaryFilename))
-      {
-      throw new Exception('Invalid upload token '. $pathTemporaryFilename, MIDAS_HTTPUPLOAD_INVALID_UPLOAD_TOKEN);
-      }
-    else
-      {
-      $uploadOffset = UtilityComponent::fileSize($pathTemporaryFilename);
-      }
-
-    // can't do streaming checksum if we have a partial file already.
-    $streamChecksum = $uploadOffset == 0;
-
-    ignore_user_abort(true);
-
-    $inputfile = 'php://input'; // Stream (Client -> Server) Mode: Read, Binary
-    if($this->testingEnable && array_key_exists('localinput', $args))
-      {
-      $inputfile = $localinput; // Stream (LocalServerFile -> Server) Mode: Read, Binary
-      }
-
-    $in = fopen($inputfile, 'rb'); // Stream (LocalServerFile -> Server) Mode: Read, Binary
-    if($in === false)
-      {
-      throw new Exception('Failed to open ['.$inputfile.'] source', MIDAS_HTTPUPLOAD_INPUT_FILE_OPEN_FAILED);
-      }
-
-    // open target output
-    $out = fopen($pathTemporaryFilename, 'ab'); // Stream (Server -> TempFile) Mode: Append, Binary
-    if($out === false)
-      {
-      throw new Exception('Failed to open output file ['.$pathTemporaryFilename.']', MIDAS_HTTPUPLOAD_OUTPUT_FILE_OPEN_FAILED);
-      }
-
-    if($streamChecksum)
-      {
-      $hashctx = hash_init('md5');
-      }
-
-    // read from input and write into file
-    $bufSize = 5242880;
-    $bufSize = $length < $bufSize ? $length : $bufSize;
-    while(connection_status() == CONNECTION_NORMAL && $uploadOffset < $length && ($buf = fread($in, $bufSize)))
-      {
-      $uploadOffset += strlen($buf);
-      fwrite($out, $buf);
-      if($length - $uploadOffset < $bufSize)
-        {
-        $bufSize = $length - $uploadOffset;
+        if (!file_exists($dir)) {
+            if (!mkdir($dir, 0700, true)) {
+                throw new Exception('Failed to create temporary upload dir', MIDAS_HTTPUPLOAD_TMP_DIR_CREATION_FAILED);
+            }
         }
-      if($streamChecksum)
-        {
-        hash_update($hashctx, $buf);
+        $unique_identifier = 'midas'.uniqid().'-'.md5($args['filename']);
+        if ($dirname != '') {
+            $unique_identifier = $dirname.'/'.$unique_identifier;
         }
-      }
-    fclose($in);
-    fclose($out);
+        if (file_exists($this->tmpDirectory.'/'.$unique_identifier)) {
+            throw new Exception('Failed to generate upload token', MIDAS_HTTPUPLOAD_UPLOAD_TOKEN_GENERATION_FAILED);
+        }
+        touch($this->tmpDirectory.'/'.$unique_identifier);
 
-    if($uploadOffset < $length)
-      {
-      throw new Exception('Failed to upload file - '.$uploadOffset.'/'.$length.' bytes transferred', MIDAS_HTTPUPLOAD_UPLOAD_FAILED);
-      }
-
-    $data['filename'] = $filename;
-    $data['path']     = $pathTemporaryFilename;
-    $data['size']     = $uploadOffset;
-    $data['md5']      = $streamChecksum ? hash_final($hashctx) : '';
-
-    return $data;
+        return array('token' => $unique_identifier);
     }
 
-  /** Get the amount of data already uploaded */
-  public function getOffset($args)
+    /** Handle the upload */
+    public function process($args)
     {
-    //check parameters
-    if(!array_key_exists($this->tokenParamName, $args))
-      {
-      throw new Exception('Parameter '.$this->tokenParamName.' is not defined', MIDAS_HTTPUPLOAD_PARAM_UNDEFINED);
-      }
-    $uploadToken = $args[$this->tokenParamName];
-    $offset = UtilityComponent::fileSize($this->tmpDirectory.'/'.$uploadToken);
-    return array('offset' => $offset);
+        if (!array_key_exists('filename', $args)) {
+            throw new Exception('Parameter filename is not defined', MIDAS_HTTPUPLOAD_PARAM_UNDEFINED);
+        }
+        $filename = $args['filename'];
+
+        if (!array_key_exists($this->tokenParamName, $args)) {
+            throw new Exception(
+                'Parameter '.$this->tokenParamName.' is not defined',
+                MIDAS_HTTPUPLOAD_PARAM_UNDEFINED
+            );
+        }
+        $uploadToken = $args[$this->tokenParamName];
+
+        if (!array_key_exists('length', $args)) {
+            throw new Exception('Parameter length is not defined', MIDAS_HTTPUPLOAD_PARAM_UNDEFINED);
+        }
+        $length = (float)($args['length']);
+
+        if ($this->testingEnable && array_key_exists('localinput', $args)) {
+            $localinput = array_key_exists('localinput', $args) ? $args['localinput'] : false;
+        }
+
+        // check if the temporary file exists
+        $pathTemporaryFilename = $this->tmpDirectory.'/'.$uploadToken;
+        if (!file_exists($pathTemporaryFilename)) {
+            throw new Exception(
+                'Invalid upload token '.$pathTemporaryFilename, MIDAS_HTTPUPLOAD_INVALID_UPLOAD_TOKEN
+            );
+        } else {
+            $uploadOffset = UtilityComponent::fileSize($pathTemporaryFilename);
+        }
+
+        // can't do streaming checksum if we have a partial file already.
+        $streamChecksum = $uploadOffset == 0;
+
+        ignore_user_abort(true);
+
+        $inputfile = 'php://input'; // Stream (Client -> Server) Mode: Read, Binary
+        if ($this->testingEnable && array_key_exists('localinput', $args)) {
+            $inputfile = $localinput; // Stream (LocalServerFile -> Server) Mode: Read, Binary
+        }
+
+        $in = fopen($inputfile, 'rb'); // Stream (LocalServerFile -> Server) Mode: Read, Binary
+        if ($in === false) {
+            throw new Exception('Failed to open ['.$inputfile.'] source', MIDAS_HTTPUPLOAD_INPUT_FILE_OPEN_FAILED);
+        }
+
+        // open target output
+        $out = fopen($pathTemporaryFilename, 'ab'); // Stream (Server -> TempFile) Mode: Append, Binary
+        if ($out === false) {
+            throw new Exception(
+                'Failed to open output file ['.$pathTemporaryFilename.']',
+                MIDAS_HTTPUPLOAD_OUTPUT_FILE_OPEN_FAILED
+            );
+        }
+
+        if ($streamChecksum) {
+            $hashctx = hash_init('md5');
+        }
+
+        // read from input and write into file
+        $bufSize = 5242880;
+        $bufSize = $length < $bufSize ? $length : $bufSize;
+        while (connection_status() == CONNECTION_NORMAL && $uploadOffset < $length && ($buf = fread($in, $bufSize))) {
+            $uploadOffset += strlen($buf);
+            fwrite($out, $buf);
+            if ($length - $uploadOffset < $bufSize) {
+                $bufSize = $length - $uploadOffset;
+            }
+            if ($streamChecksum) {
+                hash_update($hashctx, $buf);
+            }
+        }
+        fclose($in);
+        fclose($out);
+
+        if ($uploadOffset < $length) {
+            throw new Exception(
+                'Failed to upload file - '.$uploadOffset.'/'.$length.' bytes transferred',
+                MIDAS_HTTPUPLOAD_UPLOAD_FAILED
+            );
+        }
+
+        $data['filename'] = $filename;
+        $data['path'] = $pathTemporaryFilename;
+        $data['size'] = $uploadOffset;
+        $data['md5'] = $streamChecksum ? hash_final($hashctx) : '';
+
+        return $data;
     }
-  }
+
+    /** Get the amount of data already uploaded */
+    public function getOffset($args)
+    {
+        // check parameters
+        if (!array_key_exists($this->tokenParamName, $args)) {
+            throw new Exception(
+                'Parameter '.$this->tokenParamName.' is not defined',
+                MIDAS_HTTPUPLOAD_PARAM_UNDEFINED
+            );
+        }
+        $uploadToken = $args[$this->tokenParamName];
+        $offset = UtilityComponent::fileSize($this->tmpDirectory.'/'.$uploadToken);
+
+        return array('offset' => $offset);
+    }
+}

@@ -20,6 +20,6 @@
 
 /** App controller for the validation module */
 class Validation_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'validation';
-  }
+{
+    public $moduleName = 'validation';
+}

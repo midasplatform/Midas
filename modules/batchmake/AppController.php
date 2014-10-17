@@ -20,6 +20,6 @@
 
 /** App controller for the batchmake module */
 class Batchmake_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'batchmake';
-  }
+{
+    public $moduleName = 'batchmake';
+}

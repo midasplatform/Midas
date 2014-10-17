@@ -22,7 +22,7 @@
  * Producer DAO
  */
 class Tracker_ProducerDao extends Tracker_AppDao
-  {
-  public $_model = 'Producer';
-  public $_module = 'tracker';
-  }
+{
+    public $_model = 'Producer';
+    public $_module = 'tracker';
+}

@@ -22,32 +22,30 @@
  * @deprecated Use MidasLoader static method loadComponent() instead.
  */
 class MIDAS_ComponentLoader
-  {
-  /**
-   * Loads components (array or string)
-   * @deprecated
-   */
-  public function loadComponents($components, $module = '')
+{
+    /**
+     * Loads components (array or string)
+     *
+     * @deprecated
+     */
+    public function loadComponents($components, $module = '')
     {
-    if(is_string($components))
-      {
-      MidasLoader::loadComponent($components, $module);
-      }
-    else if(is_array($components))
-      {
-      foreach($components as $component)
-        {
-        MidasLoader::loadComponent($component, $module);
+        if (is_string($components)) {
+            MidasLoader::loadComponent($components, $module);
+        } elseif (is_array($components)) {
+            foreach ($components as $component) {
+                MidasLoader::loadComponent($component, $module);
+            }
         }
-      }
     }
 
-  /**
-   * Loads a component
-   * @deprecated
-   */
-  public function loadComponent($component, $module = '')
+    /**
+     * Loads a component
+     *
+     * @deprecated
+     */
+    public function loadComponent($component, $module = '')
     {
-    return MidasLoader::loadComponent($component, $module);
+        return MidasLoader::loadComponent($component, $module);
     }
-  }
+}

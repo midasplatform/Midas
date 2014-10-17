@@ -20,38 +20,44 @@
 
 /** Controller template for the @MN@ module */
 class @MN_CAP@_ThingController extends @MN_CAP@_AppController
-  {
-  public $_models = array();
-  public $_moduleModels = array();
+{
+    public $_models = array();
+    public $_moduleModels = array();
 
-  /** STUB: Example get action */
-  function getAction()
+    /** STUB: Example get action */
+    public function getAction()
     {
-    $id = $this->_getParam('id');
-    $this->view->id = $id;
+        $id = $this->_getParam('id');
+        $this->view->id = $id;
     }
 
-  /** STUB: Example create action */
-  function createAction()
+    /** STUB: Example create action */
+    public function createAction()
     {
-    $this->disableLayout();
-    $this->disableView();
-    echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Done'));
+        $this->disableLayout();
+        $this->disableView();
+        echo JsonComponent::encode(
+            array('status' => 'ok', 'message' => 'Done')
+        );
     }
 
-  /** STUB: Example update action */
-  function updateAction()
+    /** STUB: Example update action */
+    public function updateAction()
     {
-    $this->disableLayout();
-    $this->disableView();
-    echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Done'));
+        $this->disableLayout();
+        $this->disableView();
+        echo JsonComponent::encode(
+            array('status' => 'ok', 'message' => 'Done')
+        );
     }
 
-  /** STUB: Example delete action */
-  function deleteAction()
+    /** STUB: Example delete action */
+    public function deleteAction()
     {
-    $this->disableLayout();
-    $this->disableView();
-    echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Done'));
+        $this->disableLayout();
+        $this->disableView();
+        echo JsonComponent::encode(
+            array('status' => 'ok', 'message' => 'Done')
+        );
     }
-  }
+}

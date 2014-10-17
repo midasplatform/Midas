@@ -20,6 +20,6 @@
 
 /** App dao for readmes module */
 class Readmes_AppDao extends MIDAS_GlobalDao
-  {
-  public $_module = 'readmes';
-  } // end class
+{
+    public $_module = 'readmes';
+}

@@ -23,5 +23,5 @@
  *  Global dao methods
  */
 class AppDao extends MIDAS_GlobalDao
-  {
-  }
+{
+}

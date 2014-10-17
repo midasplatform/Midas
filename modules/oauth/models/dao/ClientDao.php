@@ -17,9 +17,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /** Dao for oauth client */
 class Oauth_ClientDao extends AppDao
-  {
-  public $_model = 'Client';
-  public $_module = 'oauth';
-  }
+{
+    public $_model = 'Client';
+    public $_module = 'oauth';
+}

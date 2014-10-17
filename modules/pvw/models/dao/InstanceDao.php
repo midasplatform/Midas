@@ -17,9 +17,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /** Dao for pvw instance */
 class Pvw_InstanceDao extends Pvw_AppDao
-  {
-  public $_model = 'Instance';
-  public $_module = 'pvw';
-  }
+{
+    public $_model = 'Instance';
+    public $_module = 'pvw';
+}

@@ -22,25 +22,24 @@
 require_once BASE_PATH.'/modules/batchmake/constant/module.php';
 require_once BASE_PATH.'/modules/batchmake/tests/controllers/BatchmakeControllerTest.php';
 
-/** config controller tests*/
+/** config controller tests */
 class ConfigControllerTest extends BatchmakeControllerTest
-  {
-
-  /** set up tests*/
-  public function setUp()
+{
+    /** set up tests */
+    public function setUp()
     {
-    $this->setupDatabase(array('default'));
-    $this->enabledModules = array('batchmake');
-    parent::setUp();
+        $this->setupDatabase(array('default'));
+        $this->enabledModules = array('batchmake');
+        parent::setUp();
     }
 
-  /** test index action*/
-  public function testIndexAction()
+    /** test index action */
+    public function testIndexAction()
     {
-    // for now just get the page
-    $page = '/batchmake/index/index';
-    $this->params = array();
-    $this->getRequest()->setMethod('GET');
-    $this->dispatchUrI($page);
+        // for now just get the page
+        $page = '/batchmake/index/index';
+        $this->params = array();
+        $this->getRequest()->setMethod('GET');
+        $this->dispatchUrI($page);
     }
-  }
+}

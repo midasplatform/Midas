@@ -18,17 +18,18 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH . '/modules/batchmake/models/base/ItemmetricModelBase.php';
+require_once BASE_PATH.'/modules/batchmake/models/base/ItemmetricModelBase.php';
 
 /** Batchmake_ItemmetricModel */
 class Batchmake_ItemmetricModel extends Batchmake_ItemmetricModelBase
-  {
-  /**
-   * @return all rows stored.
-   */
-  public function getAll()
+{
+    /**
+     * @return all rows stored.
+     */
+    public function getAll()
     {
-    $rowsetDAOs = $this->database->getAll('Itemmetric', 'batchmake');
-    return $rowsetDAOs;
+        $rowsetDAOs = $this->database->getAll('Itemmetric', 'batchmake');
+
+        return $rowsetDAOs;
     }
-  }
+}

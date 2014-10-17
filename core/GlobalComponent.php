@@ -23,13 +23,14 @@
  *  Provides global function to the components
  */
 class MIDAS_GlobalComponent extends Zend_Controller_Action_Helper_Abstract
-  {
-  /**
-   * Get Logger
-   * @return Zend_Log
-   */
-  public function getLogger()
+{
+    /**
+     * Get Logger
+     *
+     * @return Zend_Log
+     */
+    public function getLogger()
     {
-    return Zend_Registry::get('logger');
+        return Zend_Registry::get('logger');
     }
-  } // end class
+}

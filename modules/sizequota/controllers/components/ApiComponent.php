@@ -20,48 +20,52 @@
 
 /** Component for api methods */
 class Sizequota_ApiComponent extends AppComponent
-  {
-  /** Return the user dao */
-  private function _callModuleApiMethod($args, $coreApiMethod, $resource = null, $hasReturn = true)
+{
+    /** Return the user dao */
+    private function _callModuleApiMethod($args, $coreApiMethod, $resource = null, $hasReturn = true)
     {
-    $ApiComponent = MidasLoader::loadComponent('Api'.$resource, 'sizequota');
-    $rtn = $ApiComponent->$coreApiMethod($args);
-    if($hasReturn)
-      {
-      return $rtn;
-      }
+        $ApiComponent = MidasLoader::loadComponent('Api'.$resource, 'sizequota');
+        $rtn = $ApiComponent->$coreApiMethod($args);
+        if ($hasReturn) {
+            return $rtn;
+        }
+
+        return null;
     }
 
-  /**
-   * Get the size quota for a user.
-   * @param user Id of the user to check
-   * @return array('quota' => The size quota in bytes for the user, or empty string if unlimited,
-                   'used' => Size in bytes currently used)
-   */
-  public function userGet($args)
+    /**
+     * Get the size quota for a user.
+     *
+     * @param user Id of the user to check
+     * @return array('quota' => The size quota in bytes for the user, or empty string if unlimited,
+     *                       'used' => Size in bytes currently used)
+     */
+    public function userGet($args)
     {
-    return $this->_callModuleApiMethod($args, 'userGet', 'quota');
+        return $this->_callModuleApiMethod($args, 'userGet', 'quota');
     }
 
-  /**
-   * Get the size quota for a community.
-   * @param community Id of the community to check
-   * @return array('quota' => The size quota in bytes for the community, or empty string if unlimited,
-                   'used' => Size in bytes currently used)
-   */
-  public function communityGet($args)
+    /**
+     * Get the size quota for a community.
+     *
+     * @param community Id of the community to check
+     * @return array('quota' => The size quota in bytes for the community, or empty string if unlimited,
+     *                       'used' => Size in bytes currently used)
+     */
+    public function communityGet($args)
     {
-    return $this->_callModuleApiMethod($args, 'communityGet', 'quota');
+        return $this->_callModuleApiMethod($args, 'communityGet', 'quota');
     }
 
-  /**
-   * Set a quota for a folder. For MIDAS admin use only.
-   * @param folder The folder id
-   * @param quota (Optional) The quota. Pass a number of bytes or the empty string for unlimited.
-     If this parameter isn't specified, deletes the current quota entry if one exists.
-   */
-  public function set($args)
+    /**
+     * Set a quota for a folder. For MIDAS admin use only.
+     *
+     * @param folder The folder id
+     * @param quota (Optional) The quota. Pass a number of bytes or the empty string for unlimited.
+     * If this parameter isn't specified, deletes the current quota entry if one exists.
+     */
+    public function set($args)
     {
-    return $this->_callModuleApiMethod($args, 'set', 'quota');
+        return $this->_callModuleApiMethod($args, 'set', 'quota');
     }
-  }
+}

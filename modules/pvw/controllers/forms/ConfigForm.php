@@ -18,25 +18,25 @@
  limitations under the License.
 =========================================================================*/
 
-/** config form*/
+/** config form */
 class Pvw_ConfigForm extends AppForm
-  {
-  /** create form */
-  public function createConfigForm()
+{
+    /** create form */
+    public function createConfigForm()
     {
-    $form = new Zend_Form;
+        $form = new Zend_Form();
 
-    $form->setAction($this->webroot.'/pvw/config/submit')
-         ->setMethod('post');
+        $form->setAction($this->webroot.'/pvw/config/submit')->setMethod('post');
 
-    $pvpython = new Zend_Form_Element_Text('pvpython');
-    $ports = new Zend_Form_Element_Text('ports');
-    $displayEnv = new Zend_Form_Element_text('displayEnv');
+        $pvpython = new Zend_Form_Element_Text('pvpython');
+        $ports = new Zend_Form_Element_Text('ports');
+        $displayEnv = new Zend_Form_Element_text('displayEnv');
 
-    $submit = new Zend_Form_Element_Submit('submitConfig');
-    $submit->setLabel('Save configuration');
+        $submit = new Zend_Form_Element_Submit('submitConfig');
+        $submit->setLabel('Save configuration');
 
-    $form->addElements(array($pvpython, $ports, $displayEnv, $submit));
-    return $form;
+        $form->addElements(array($pvpython, $ports, $displayEnv, $submit));
+
+        return $form;
     }
-  } // end class
+}

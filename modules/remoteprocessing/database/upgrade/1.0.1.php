@@ -19,14 +19,14 @@
 =========================================================================*/
 
 class Remoteprocessing_Upgrade_1_0_1 extends MIDASUpgrade
-  {
-  public function mysql()
+{
+    public function mysql()
     {
-    $this->db->query("ALTER TABLE remoteprocessing_job ADD COLUMN creator_id bigint(20);");
+        $this->db->query("ALTER TABLE remoteprocessing_job ADD COLUMN creator_id bigint(20);");
     }
 
-  public function pgsql()
+    public function pgsql()
     {
-    $this->db->query("ALTER TABLE remoteprocessing_job ADD COLUMN creator_id bigint;");
+        $this->db->query("ALTER TABLE remoteprocessing_job ADD COLUMN creator_id bigint;");
     }
-  }
+}

@@ -22,5 +22,5 @@
  *
  */
 class AppModel extends MIDASModel
-  {
-  }
+{
+}

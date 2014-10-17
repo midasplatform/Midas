@@ -22,66 +22,60 @@
 require_once BASE_PATH.'/modules/batchmake/constant/module.php';
 require_once BASE_PATH.'/modules/batchmake/tests/controllers/BatchmakeControllerTest.php';
 
-/** config controller tests*/
+/** config controller tests */
 class ConfigControllerTest extends BatchmakeControllerTest
-  {
-
-  /** set up tests*/
-  public function setUp()
+{
+    /** set up tests */
+    public function setUp()
     {
-    $this->setupDatabase(array('default'));
-    $this->_daos = array('User');
-    $this->_models = array('User');
-    $this->enabledModules = array('batchmake');
-    parent::setUp();
+        $this->setupDatabase(array('default'));
+        $this->_daos = array('User');
+        $this->_models = array('User');
+        $this->enabledModules = array('batchmake');
+        parent::setUp();
     }
 
-  /** test index action*/
-  public function testIndexAction()
+    /** test index action */
+    public function testIndexAction()
     {
-    // first try to bring up the page without logging in, should get an exception
-    $usersFile = $this->loadData('User', 'default');
-    $nullUserDao = null;
-    foreach($usersFile as $userDao)
-      {
-      if($userDao->getFirstname() === 'Admin')
-        {
-        $adminUserDao = $userDao;
+        // first try to bring up the page without logging in, should get an exception
+        $usersFile = $this->loadData('User', 'default');
+        $nullUserDao = null;
+        foreach ($usersFile as $userDao) {
+            if ($userDao->getFirstname() === 'Admin') {
+                $adminUserDao = $userDao;
+            } elseif ($userDao->getFirstname() === 'FirstName1') {
+                $nonAdminUserDao = $userDao;
+            }
         }
-      else if($userDao->getFirstname() === 'FirstName1')
-        {
-        $nonAdminUserDao = $userDao;
+
+        $withException = true;
+        $page = '/batchmake/config/index';
+        $this->params = array();
+        $this->getRequest()->setMethod('GET');
+        $this->dispatchUrI($page, $nullUserDao, $withException);
+
+        // now login with a non-admin account, should get an exception
+        $this->resetAll();
+        $this->params = array();
+        $this->getRequest()->setMethod('GET');
+        $this->dispatchUrI($page, $nonAdminUserDao, $withException);
+
+        // now login with an admin account
+        $this->resetAll();
+        $this->params = array();
+        $this->getRequest()->setMethod('GET');
+        $this->dispatchUrI($page, $adminUserDao);
+
+        $body = $this->getBody();
+
+        $this->assertModule("batchmake");
+        $this->assertController('config');
+        $this->assertAction("index");
+        if (strpos($body, "Batchmake Configuration") === false) {
+            $this->fail('Unable to find body element');
         }
-      }
 
-    $withException = true;
-    $page = '/batchmake/config/index';
-    $this->params = array();
-    $this->getRequest()->setMethod('GET');
-    $this->dispatchUrI($page, $nullUserDao, $withException);
-
-    // now login with a non-admin account, should get an exception
-    $this->resetAll();
-    $this->params = array();
-    $this->getRequest()->setMethod('GET');
-    $this->dispatchUrI($page, $nonAdminUserDao, $withException);
-
-    // now login with an admin account
-    $this->resetAll();
-    $this->params = array();
-    $this->getRequest()->setMethod('GET');
-    $this->dispatchUrI($page, $adminUserDao);
-
-    $body = $this->getBody();
-
-    $this->assertModule("batchmake");
-    $this->assertController('config');
-    $this->assertAction("index");
-    if(strpos($body, "Batchmake Configuration") === false)
-      {
-      $this->fail('Unable to find body element');
-      }
-
-    $this->assertQuery("form#configForm");
+        $this->assertQuery("form#configForm");
     }
-  }
+}

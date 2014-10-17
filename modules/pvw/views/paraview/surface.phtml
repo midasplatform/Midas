@@ -18,9 +18,10 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/paraview/paraview.surface.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/layout/jquery-ui.min.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/jquery/colorpicker.css" />
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->moduleWebroot ?>/public/css/paraview/paraview.surface.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/layout/jquery-ui.min.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/jquery/colorpicker.css"/>
 
 <?php
 $this->headScript()->appendFile($this->moduleWebroot.'/public/import/ext/js-core/autobahn.min.js');
@@ -37,68 +38,69 @@ $this->headScript()->appendFile($this->webroot.'/modules/api/public/js/common/co
 
 <div class="viewMain">
 
-  <div id='renderercontainer' style="">
-    <div id='rendererOverlay'></div>
-    <!-- The renderer will be inserted here -->
-  </div>
+    <div id='renderercontainer' style="">
+        <div id='rendererOverlay'></div>
+        <!-- The renderer will be inserted here -->
+    </div>
 </div>
 
 <div class="viewSideBar">
-  <div class="sideElementFirst viewAction">
-  <h1>Display</h1>
-    <ul>
-      <li>
-        <a href="javascript:;" id="bgColor">
-        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/color_swatch.png"/>
-        Background color
-        </a>
-      </li>
-      <li>
-        <a onclick="midas.pvw.resetCamera();">
-        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/camera_go.png"/>
-        Reset camera
-        </a>
-      </li>
-      <li>
-        <a onclick="midas.pvw.toggleEdges();">
-        <img alt="" src="<?php echo $this->moduleWebroot;?>/public/images/pqUnstructuredGrid16.png"/>
-        Show edges
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div class="sideElement">
-    <h1>Renderer</h1>
-    <select disabled="disabled" id="rendererSelect">
-      <option selected="selected" value="image">Server side</option>
-      <option value="webgl">WebGL</option>
-    </select>
-  </div>
-  <div class="sideElementActions viewAction">
-    <h1>Other</h1>
-    <ul>
-      <li>
-        <a href="javascript:;" class="pvwInstructions">
-        <img alt="" src="<?php echo $this->coreWebroot;?>/public/images/icons/help.png"/>
-        Instructions
-        </a>
-      </li>
-      <li>
-        <a href="javascript:;" id="shareSessionLink">
-        <img alt="" src="<?php echo $this->coreWebroot;?>/public/images/icons/link.png"/>
-        Share session
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div class="sideElement">
-    <h1>Info</h1>
-    Number of Points: <span id="nbPointsInfo" class="infoValue"></span><br/>
-    Number of Cells: <span id="nbCellsInfo" class="infoValue"></span><br/>
-    Bounds (x): <span id="boundsXInfo" class="infoValue"></span><br/>
-    Bounds (y): <span id="boundsYInfo" class="infoValue"></span><br/>
-    Bounds (z): <span id="boundsZInfo" class="infoValue"></span><br/>
-  </div>
+    <div class="sideElementFirst viewAction">
+        <h1>Display</h1>
+        <ul>
+            <li>
+                <a href="javascript:;" id="bgColor">
+                    <img alt="" src="<?php echo $this->moduleWebroot; ?>/public/images/color_swatch.png"/>
+                    Background color
+                </a>
+            </li>
+            <li>
+                <a onclick="midas.pvw.resetCamera();">
+                    <img alt="" src="<?php echo $this->moduleWebroot; ?>/public/images/camera_go.png"/>
+                    Reset camera
+                </a>
+            </li>
+            <li>
+                <a onclick="midas.pvw.toggleEdges();">
+                    <img alt="" src="<?php echo $this->moduleWebroot; ?>/public/images/pqUnstructuredGrid16.png"/>
+                    Show edges
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="sideElement">
+        <h1>Renderer</h1>
+        <select disabled="disabled" id="rendererSelect">
+            <option selected="selected" value="image">Server side</option>
+            <option value="webgl">WebGL</option>
+        </select>
+    </div>
+    <div class="sideElementActions viewAction">
+        <h1>Other</h1>
+        <ul>
+            <li>
+                <a href="javascript:;" class="pvwInstructions">
+                    <img alt="" src="<?php echo $this->coreWebroot; ?>/public/images/icons/help.png"/>
+                    Instructions
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" id="shareSessionLink">
+                    <img alt="" src="<?php echo $this->coreWebroot; ?>/public/images/icons/link.png"/>
+                    Share session
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="sideElement">
+        <h1>Info</h1>
+        Number of Points:
+        <span id="nbPointsInfo" class="infoValue"></span><br/>
+        Number of Cells: <span id="nbCellsInfo" class="infoValue"></span><br/>
+        Bounds (x): <span id="boundsXInfo" class="infoValue"></span><br/>
+        Bounds (y): <span id="boundsYInfo" class="infoValue"></span><br/>
+        Bounds (z): <span id="boundsZInfo" class="infoValue"></span><br/>
+    </div>
 </div>
 
 <!-- UI Action widget templates -->

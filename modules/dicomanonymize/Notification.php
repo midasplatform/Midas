@@ -18,25 +18,25 @@
  limitations under the License.
 =========================================================================*/
 
-/** notification manager*/
+/** Notification manager for the dicomanonymize module */
 class Dicomanonymize_Notification extends MIDAS_Notification
-  {
-  public $moduleName = 'dicomanonymize';
+{
+    public $moduleName = 'dicomanonymize';
 
-  /** init notification process*/
-  public function init()
+    /** init notification process */
+    public function init()
     {
-    $fc = Zend_Controller_Front::getInstance();
-    $this->webroot = $fc->getBaseUrl();
-    $this->moduleWebroot = $this->webroot.'/modules/'.$this->moduleName;
-    $this->coreWebroot = $this->webroot.'/core';
+        $fc = Zend_Controller_Front::getInstance();
+        $this->webroot = $fc->getBaseUrl();
+        $this->moduleWebroot = $this->webroot.'/modules/'.$this->moduleName;
+        $this->coreWebroot = $this->webroot.'/core';
 
-    $this->addCallBack('CALLBACK_CORE_GET_UPLOAD_TABS', 'getUploadTab');
-    }//end init
-
-  /** Get upload dialog tab */
-  public function getUploadTab($params)
-    {
-    return array('DICOM' => $this->webroot.'/'.$this->moduleName.'/upload');
+        $this->addCallBack('CALLBACK_CORE_GET_UPLOAD_TABS', 'getUploadTab');
     }
-  } // end class
+
+    /** Get upload dialog tab */
+    public function getUploadTab($params)
+    {
+        return array('DICOM' => $this->webroot.'/'.$this->moduleName.'/upload');
+    }
+}

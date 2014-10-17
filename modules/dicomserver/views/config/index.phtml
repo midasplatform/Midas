@@ -18,33 +18,38 @@
  limitations under the License.
 =========================================================================*/
 
-$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
 $this->headScript()->appendFile($this->apiWebroot.'/public/js/common/common.ajaxapi.js');
-$this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config.index.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.index.js');
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/config/config.index.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/config/config.index.css"/>
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->coreWebroot ?>/public/css/common/common.genericPage.css"/>
 <div class="viewMain">
-     <div class ="genericWrapperTopRight">
-         <?php
-          echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
-            echo "<a  href='{$this->webroot}/admin#tabs-modules'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
-            echo $this->t('Back');
-            echo "</a>";
-          echo '</div>';
+    <div class="genericWrapperTopRight">
+        <?php
+        echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
+        echo "<a  href='{$this->webroot}/admin#tabs-modules'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+        echo $this->t('Back');
+        echo "</a>";
+        echo '</div>';
 
         ?>
     </div>
     <h3>Requirements</h3>
-    This module requires dcm2xml and storescp from <b>DCMTK</b> to implement a DICOM Store service (C-STORE) receiver.
-    It also requires dcmqrscp and dcmqridx from <b>DCMTK</b> to implement DICOM Query/Retrieve services (C-FIND and C-MOVE).<br/>
-    To install DCMTK: <a href="http://support.dcmtk.org/redmine/projects/dcmtk/wiki/howto" target="_blank">http://support.dcmtk.org/redmine/projects/dcmtk/wiki/howto</a><br/><br/>
+    This module requires dcm2xml and storescp from
+    <b>DCMTK</b> to implement a DICOM Store service (C-STORE) receiver.
+    It also requires dcmqrscp and dcmqridx from
+    <b>DCMTK</b> to implement DICOM Query/Retrieve services (C-FIND and C-MOVE).<br/>
+    To install DCMTK:
+    <a href="http://support.dcmtk.org/redmine/projects/dcmtk/wiki/howto" target="_blank">http://support.dcmtk.org/redmine/projects/dcmtk/wiki/howto</a><br/><br/>
 
     This module requires <b>Pydas</b> to upload DICOM files to Midas.<br/>
-    To install Pydas: <a href="https://pydas.readthedocs.org/" target="_blank">https://pydas.readthedocs.org/</a><br/>
+    To install Pydas:
+    <a href="https://pydas.readthedocs.org/" target="_blank">https://pydas.readthedocs.org/</a><br/>
 
     <?php
-      echo "
+    echo "
       <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
       <h3>DICOM Server configuration:</h3>
             <div id='c-store_receiver'>
@@ -113,90 +118,95 @@ $this->headScript()->appendFile($this->moduleWebroot . '/public/js/config/config
               {$this->configForm['submitConfig']}
             </div>
        </form>";
-       ?>
+    ?>
 
     <h3>Use this dashboard to verify current configuration:</h3>
     <?php
     echo "<table>";
-    foreach($this->dashboard as $name => $status)
-      {
-      echo "<tr>";
-      echo "  <td>$name </td>";
-      if($status[0])
-        {
-        echo "  <td><img src='{$this->coreWebroot}/public/images/icons/ok.png' /></td>";
+    foreach ($this->dashboard as $name => $status) {
+        echo "<tr>";
+        echo "  <td>$name </td>";
+        if ($status[0]) {
+            echo "  <td><img src='{$this->coreWebroot}/public/images/icons/ok.png' /></td>";
+        } else {
+            echo "  <td><img src='{$this->coreWebroot}/public/images/icons/nok.png' /></td>";
         }
-      else
-        {
-        echo "  <td><img src='{$this->coreWebroot}/public/images/icons/nok.png' /></td>";
+        if (isset($status[1])) {
+            echo "  <td>$status[1]</td>";
         }
-      if(isset($status[1]))
-        {
-        echo "  <td>$status[1]</td>";
-        }
-      echo "</tr>";
-      }
+        echo "</tr>";
+    }
     echo "</table>";
     ?>
 
     <h3>Start/Stop DICOM server:</h3>
     Please restart DICOM server after each configuration change.
     <div>
-      <div style="margin-right:10px;" class="genericBigButton " id="startServer">Start</div>
-      <div style="margin-right:10px;" class="genericBigButton " id="stopServer">Stop</div>
-      <div style="margin-right:10px;">
-        <h3>Status:
-          <span class="running_status" id="running_status" style="display:none">Running</span>
-          <span class="only_storescp_running_status" id="only_storescp_running_status" style="display:none">C-STORE receiver is Running, but Query/Retrieve services are NOT Running</span>
-          <span class="only_dcmqrscp_running_status" id="only_dcmqrscp_running_status" style="display:none">Query/Retrieve services are Running, but C-STORE receiver is NOT Running</span>
-          <span class="not_running_status" id="not_running_status" style="display:none">Not Running</span>
-          <span class="not_supported_status" id="not_supported_status" style="display:none">This module is currently not supported in Windows</span>
-        </h3>
-      </div>
-      <div id="start_server_user" class="start_server_user" style="display:none">
-         Midas user who started DICOM server: <span id="span_start_server_user"></span>
-      </div>
-      <br/>
-      <div style="margin-right:10px;display:none" class="genericBigButton " id="hideError">Hide Error</div>
-      <div id="apicall_failure" class="apicall_failure" style="display:none">
-         <textarea id="apicall_failure_reason" rows="5" cols="80" readonly> </textarea>
-      </div>
+        <div style="margin-right:10px;" class="genericBigButton " id="startServer">Start</div>
+        <div style="margin-right:10px;" class="genericBigButton " id="stopServer">Stop</div>
+        <div style="margin-right:10px;">
+            <h3>Status:
+                <span class="running_status" id="running_status" style="display:none">Running</span>
+                <span class="only_storescp_running_status" id="only_storescp_running_status" style="display:none">C-STORE receiver is Running, but Query/Retrieve services are NOT Running</span>
+                <span class="only_dcmqrscp_running_status" id="only_dcmqrscp_running_status" style="display:none">Query/Retrieve services are Running, but C-STORE receiver is NOT Running</span>
+                <span class="not_running_status" id="not_running_status" style="display:none">Not Running</span>
+                <span class="not_supported_status" id="not_supported_status" style="display:none">This module is currently not supported in Windows</span>
+            </h3>
+        </div>
+        <div id="start_server_user" class="start_server_user" style="display:none">
+            Midas user who started DICOM server:
+            <span id="span_start_server_user"></span>
+        </div>
+        <br/>
+
+        <div style="margin-right:10px;display:none" class="genericBigButton " id="hideError">Hide Error</div>
+        <div id="apicall_failure" class="apicall_failure" style="display:none">
+            <textarea id="apicall_failure_reason" rows="5" cols="80" readonly> </textarea>
+        </div>
     </div>
-    <div class="manualCommandsWrapper" id="manualCommandsWrapper"  style="display: none">
-    In some platforms, the above start/stop buttons may not work because the web server user is lack of permissions. The following commands can be used to start/stop DICOM server in command line.
-    <h3 class="sectionHeader"><a href="#">Start/Stop DICOM server in command line</a></h3>
-    <ul>
-      <li>
-        Before start/stop DICOM server in command line, make sure the user to run the command:
-      </li>
-      <li>
-        1) has permission to run this command: <span class="set_bold" id="dcm2xml_command"/>
-      </li>
-      <li>
-        2) has permission to run this command: <span class="set_bold" id="storescp_command"/>
-      </li>
-      <li>
-        3) has permission to run this command: <span class="set_bold" id="dcmqrscp_command"/>
-      </li>
-      <li>
-        4) has permission to run this command: <span class="set_bold" id="dcmqridx_command"/>
-      </li>
-      <li>
-        5) has write permission to this directory: <span class="set_bold" id="reception_dir"/>
-      </li>
-      <li>
-       If all above requirements are met, copy/paste the following commands (the leading and trailing quotes are not needed) to start/stop DICOM server in command line.
-       <span class="set_bold">Refresh the page to show the current running status if the DICOM server is started/stopped in command line.</span>
-      </li>
-      <li class="manual_start">
-        <span class="set_bold">Start DICOM server:</span> <br/>
-        <span id="manual_start"></span>
-      </li>
-      <li class="manual_stop">
-        <span class="set_bold">Stop DICOM server:</span> <br/>
-        <span id="manual_stop"></span>
-      </li>
-    </ul>
-  </div>
+    <div class="manualCommandsWrapper" id="manualCommandsWrapper" style="display: none">
+        In some platforms, the above start/stop buttons may not work because the web server user is lack of permissions.
+        The following commands can be used to start/stop DICOM server in command line.
+        <h3 class="sectionHeader">
+            <a href="#">Start/Stop DICOM server in command line</a></h3>
+        <ul>
+            <li>
+                Before start/stop DICOM server in command line, make sure the user to run the command:
+            </li>
+            <li>
+                1) has permission to run this command:
+                <span class="set_bold" id="dcm2xml_command"/>
+            </li>
+            <li>
+                2) has permission to run this command:
+                <span class="set_bold" id="storescp_command"/>
+            </li>
+            <li>
+                3) has permission to run this command:
+                <span class="set_bold" id="dcmqrscp_command"/>
+            </li>
+            <li>
+                4) has permission to run this command:
+                <span class="set_bold" id="dcmqridx_command"/>
+            </li>
+            <li>
+                5) has write permission to this directory:
+                <span class="set_bold" id="reception_dir"/>
+            </li>
+            <li>
+                If all above requirements are met, copy/paste the following commands (the leading and trailing quotes
+                are not needed) to start/stop DICOM server in command line.
+                <span class="set_bold">Refresh the page to show the current running status if the DICOM server is started/stopped in command line.</span>
+            </li>
+            <li class="manual_start">
+                <span class="set_bold">Start DICOM server:</span> <br/>
+                <span id="manual_start"></span>
+            </li>
+            <li class="manual_stop">
+                <span class="set_bold">Stop DICOM server:</span> <br/>
+                <span id="manual_stop"></span>
+            </li>
+        </ul>
+    </div>
 
 </div>

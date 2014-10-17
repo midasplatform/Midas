@@ -20,6 +20,6 @@
 
 /** App controller for the demo module */
 class Demo_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'demo';
-  }
+{
+    public $moduleName = 'demo';
+}

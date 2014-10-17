@@ -18,65 +18,78 @@
  limitations under the License.
 =========================================================================*/
 
+/** Code base model for the oauth module */
 abstract class Oauth_CodeModelBase extends Oauth_AppModel
-  {
-  /** constructor */
-  public function __construct()
+{
+    /** constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'oauth_code';
-    $this->_key = 'code_id';
+        parent::__construct();
+        $this->_name = 'oauth_code';
+        $this->_key = 'code_id';
 
-    $this->_mainData = array(
-        'code_id' => array('type' => MIDAS_DATA),
-        'code' => array('type' => MIDAS_DATA),
-        'scopes' => array('type' => MIDAS_DATA),
-        'client_id' => array('type' => MIDAS_DATA),
-        'user_id' => array('type' => MIDAS_DATA),
-        'creation_date' => array('type' => MIDAS_DATA),
-        'expiration_date' => array('type' => MIDAS_DATA),
-        'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User',
-                        'parent_column' => 'user_id', 'child_column' => 'user_id'),
-        'client' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Client', 'module' => $this->moduleName,
-                          'parent_column' => 'client_id', 'child_column' => 'client_id')
+        $this->_mainData = array(
+            'code_id' => array('type' => MIDAS_DATA),
+            'code' => array('type' => MIDAS_DATA),
+            'scopes' => array('type' => MIDAS_DATA),
+            'client_id' => array('type' => MIDAS_DATA),
+            'user_id' => array('type' => MIDAS_DATA),
+            'creation_date' => array('type' => MIDAS_DATA),
+            'expiration_date' => array('type' => MIDAS_DATA),
+            'user' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'User',
+                'parent_column' => 'user_id',
+                'child_column' => 'user_id',
+            ),
+            'client' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'Client',
+                'module' => $this->moduleName,
+                'parent_column' => 'client_id',
+                'child_column' => 'client_id',
+            ),
         );
-    $this->initialize(); // required
-    } // end __construct()
-
-  abstract public function getByUser($userDao);
-  abstract public function getByCode($code);
-  abstract public function cleanExpired();
-
-  /**
-   * Create and return a new oauth authorization code for the given client and user. Expires after 10 minutes
-   * in accordance with the recommendation in the IETF draft v31
-   * @param userDao The resource owner (end user to authenticate via the client)
-   * @param clientDao The client that will be receiving the code
-   * @param scopes The array of permission scopes (see api module constants)
-   */
-  public function create($userDao, $clientDao, $scopes)
-    {
-    if(!($userDao instanceof UserDao))
-      {
-      throw new Zend_Exception('Invalid userDao');
-      }
-    if(!($clientDao instanceof Oauth_ClientDao))
-      {
-      throw new Zend_Exception('Invalid userDao');
-      }
-    if(!is_array($scopes))
-      {
-      throw new Zend_Exception('Scopes must be an array');
-      }
-    $codeDao = MidasLoader::newDao('CodeDao', $this->moduleName);
-    $codeDao->setCode(UtilityComponent::generateRandomString(32));
-    $codeDao->setScopes(JsonComponent::encode($scopes));
-    $codeDao->setUserId($userDao->getKey());
-    $codeDao->setClientId($clientDao->getKey());
-    $codeDao->setCreationDate(date("Y-m-d H:i:s"));
-    $codeDao->setExpirationDate(date("Y-m-d H:i:s", strtotime('+10 minutes')));
-    $this->save($codeDao);
-
-    return $codeDao;
+        $this->initialize(); // required
     }
-  }
+
+    /** Get by user */
+    abstract public function getByUser($userDao);
+
+    /** Get by code */
+    abstract public function getByCode($code);
+
+    /** Clean expired */
+    abstract public function cleanExpired();
+
+    /**
+     * Create and return a new oauth authorization code for the given client and user. Expires after 10 minutes
+     * in accordance with the recommendation in the IETF draft v31
+     *
+     * @param userDao The resource owner (end user to authenticate via the client)
+     * @param clientDao The client that will be receiving the code
+     * @param scopes The array of permission scopes (see api module constants)
+     */
+    public function create($userDao, $clientDao, $scopes)
+    {
+        if (!($userDao instanceof UserDao)) {
+            throw new Zend_Exception('Invalid userDao');
+        }
+        if (!($clientDao instanceof Oauth_ClientDao)) {
+            throw new Zend_Exception('Invalid userDao');
+        }
+        if (!is_array($scopes)) {
+            throw new Zend_Exception('Scopes must be an array');
+        }
+        $codeDao = MidasLoader::newDao('CodeDao', $this->moduleName);
+        $codeDao->setCode(UtilityComponent::generateRandomString(32));
+        $codeDao->setScopes(JsonComponent::encode($scopes));
+        $codeDao->setUserId($userDao->getKey());
+        $codeDao->setClientId($clientDao->getKey());
+        $codeDao->setCreationDate(date("Y-m-d H:i:s"));
+        $codeDao->setExpirationDate(date("Y-m-d H:i:s", strtotime('+10 minutes')));
+        $this->save($codeDao);
+
+        return $codeDao;
+    }
+}

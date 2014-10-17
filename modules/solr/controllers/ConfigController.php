@@ -22,71 +22,63 @@
  * Module configuration controller
  */
 class Solr_ConfigController extends Solr_AppController
-  {
-  public $_models = array('Setting');
-  public $_moduleForms = array('Config');
+{
+    public $_models = array('Setting');
+    public $_moduleForms = array('Config');
 
-  /** render config form */
-  function indexAction()
+    /** render config form */
+    public function indexAction()
     {
-    $this->requireAdminPrivileges();
+        $this->requireAdminPrivileges();
 
-    $solrHost = $this->Setting->getValueByName('solrHost', $this->moduleName);
-    $solrPort = $this->Setting->getValueByName('solrPort', $this->moduleName);
-    $solrWebroot = $this->Setting->getValueByName('solrWebroot', $this->moduleName);
+        $solrHost = $this->Setting->getValueByName('solrHost', $this->moduleName);
+        $solrPort = $this->Setting->getValueByName('solrPort', $this->moduleName);
+        $solrWebroot = $this->Setting->getValueByName('solrWebroot', $this->moduleName);
 
-    $configForm = $this->ModuleForm->Config->createConfigForm();
-    $formArray = $this->getFormAsArray($configForm);
-    if($solrHost === null)
-      {
-      $formArray['host']->setValue('localhost');
-      $this->view->saved = false;
-      }
-    else
-      {
-      $formArray['host']->setValue($solrHost);
-      $this->view->saved = true;
-      }
+        $configForm = $this->ModuleForm->Config->createConfigForm();
+        $formArray = $this->getFormAsArray($configForm);
+        if ($solrHost === null) {
+            $formArray['host']->setValue('localhost');
+            $this->view->saved = false;
+        } else {
+            $formArray['host']->setValue($solrHost);
+            $this->view->saved = true;
+        }
 
-    if($solrPort === null)
-      {
-      $formArray['port']->setValue('8983');
-      }
-    else
-      {
-      $formArray['port']->setValue($solrPort);
-      }
+        if ($solrPort === null) {
+            $formArray['port']->setValue('8983');
+        } else {
+            $formArray['port']->setValue($solrPort);
+        }
 
-    if($solrWebroot === null)
-      {
-      $formArray['webroot']->setValue('/solr/');
-      }
-    else
-      {
-      $formArray['webroot']->setValue($solrWebroot);
-      }
-    $this->view->configForm = $formArray;
+        if ($solrWebroot === null) {
+            $formArray['webroot']->setValue('/solr/');
+        } else {
+            $formArray['webroot']->setValue($solrWebroot);
+        }
+        $this->view->configForm = $formArray;
     }
 
-  /**
-   * Submit module configuration parameters (ajax)
-   * @param host Solr host (typically localhost)
-   * @param port Port Solr is listening on (defaults is 8983)
-   * @param webroot Solr webroot (typically /solr/)
-   */
-  function submitAction()
+    /**
+     * Submit module configuration parameters (ajax)
+     *
+     * @param host Solr host (typically localhost)
+     * @param port Port Solr is listening on (defaults is 8983)
+     * @param webroot Solr webroot (typically /solr/)
+     */
+    public function submitAction()
     {
-    $this->requireAdminPrivileges();
-    $this->disableLayout();
-    $this->disableView();
+        $this->requireAdminPrivileges();
+        $this->disableLayout();
+        $this->disableView();
 
-    $solrHost = $this->getParam('host');
-    $solrPort = $this->getParam('port');
-    $solrWebroot = $this->getParam('webroot');
+        $solrHost = $this->getParam('host');
+        $solrPort = $this->getParam('port');
+        $solrWebroot = $this->getParam('webroot');
 
-    $this->Setting->setConfig('solrHost', $solrHost, $this->moduleName);
-    $this->Setting->setConfig('solrPort', $solrPort, $this->moduleName);
-    $this->Setting->setConfig('solrWebroot', $solrWebroot, $this->moduleName);
-    echo JsonComponent::encode(array(true, 'Changes saved'));
+        $this->Setting->setConfig('solrHost', $solrHost, $this->moduleName);
+        $this->Setting->setConfig('solrPort', $solrPort, $this->moduleName);
+        $this->Setting->setConfig('solrWebroot', $solrWebroot, $this->moduleName);
+        echo JsonComponent::encode(array(true, 'Changes saved'));
     }
-  } // end class
+}

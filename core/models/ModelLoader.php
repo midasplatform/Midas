@@ -22,22 +22,24 @@
  * @deprecated Use MidasLoader static methods loadModel() and loadModels() instead.
  */
 class MIDAS_ModelLoader
-  {
-  /**
-   * Loads models (array or string)
-   * @deprecated
-   */
-  public function loadModels($models, $module = '')
+{
+    /**
+     * Loads models (array or string)
+     *
+     * @deprecated
+     */
+    public function loadModels($models, $module = '')
     {
-    MidasLoader::loadModels($models, $module);
+        MidasLoader::loadModels($models, $module);
     }
 
-  /**
-   * Loads a model
-   * @deprecated
-   */
-  public function loadModel($model, $module = '')
+    /**
+     * Loads a model
+     *
+     * @deprecated
+     */
+    public function loadModel($model, $module = '')
     {
-    return MidasLoader::loadModel($model, $module);
+        return MidasLoader::loadModel($model, $module);
     }
-  }
+}

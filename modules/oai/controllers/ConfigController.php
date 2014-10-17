@@ -18,52 +18,55 @@
  limitations under the License.
 =========================================================================*/
 
-/** Config controller*/
+/** Config controller */
 class Oai_ConfigController extends Oai_AppController
-  {
-  public $_moduleForms = array('Config');
-  public $_components = array('Utility', 'Date');
-  public $_moduleModels = array();
+{
+    public $_moduleForms = array('Config');
+    public $_components = array('Utility', 'Date');
+    public $_moduleModels = array();
 
-  /** index action*/
-  function indexAction()
+    /** index action */
+    public function indexAction()
     {
-    $this->requireAdminPrivileges();
+        $this->requireAdminPrivileges();
 
-    $options = array('allowModifications' => true);
-    if(file_exists(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini'))
-      {
-      $config = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini', 'global', $options);
-      }
-    else
-      {
-      $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', 'global', $options);
-      }
-
-    $configForm = $this->ModuleForm->Config->createConfigForm();
-    $formArray = $this->getFormAsArray($configForm);
-    $formArray['adminemail']->setValue($config->adminemail);
-    $formArray['repositoryidentifier']->setValue($config->repositoryidentifier);
-    $formArray['repositoryname']->setValue($config->repositoryname);
-    $this->view->configForm = $formArray;
-
-    if($this->_request->isPost())
-      {
-      $this->_helper->layout->disableLayout();
-      $this->_helper->viewRenderer->setNoRender();
-      $submitConfig = $this->getParam('submitConfig');
-      if(isset($submitConfig))
-        {
-        $config->adminemail = $this->getParam('adminemail');
-        $config->repositoryidentifier = $this->getParam('repositoryidentifier');
-        $config->repositoryname = $this->getParam('repositoryname');
-
-        $writer = new Zend_Config_Writer_Ini();
-        $writer->setConfig($config);
-        $writer->setFilename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini');
-        $writer->write();
-        echo JsonComponent::encode(array(true, 'Changed saved'));
+        $options = array('allowModifications' => true);
+        if (file_exists(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini')) {
+            $config = new Zend_Config_Ini(
+                LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini',
+                'global',
+                $options
+            );
+        } else {
+            $config = new Zend_Config_Ini(
+                BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini',
+                'global',
+                $options
+            );
         }
-      }
+
+        $configForm = $this->ModuleForm->Config->createConfigForm();
+        $formArray = $this->getFormAsArray($configForm);
+        $formArray['adminemail']->setValue($config->adminemail);
+        $formArray['repositoryidentifier']->setValue($config->repositoryidentifier);
+        $formArray['repositoryname']->setValue($config->repositoryname);
+        $this->view->configForm = $formArray;
+
+        if ($this->_request->isPost()) {
+            $this->_helper->layout->disableLayout();
+            $this->_helper->viewRenderer->setNoRender();
+            $submitConfig = $this->getParam('submitConfig');
+            if (isset($submitConfig)) {
+                $config->adminemail = $this->getParam('adminemail');
+                $config->repositoryidentifier = $this->getParam('repositoryidentifier');
+                $config->repositoryname = $this->getParam('repositoryname');
+
+                $writer = new Zend_Config_Writer_Ini();
+                $writer->setConfig($config);
+                $writer->setFilename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini');
+                $writer->write();
+                echo JsonComponent::encode(array(true, 'Changed saved'));
+            }
+        }
     }
-  } // end class
+}

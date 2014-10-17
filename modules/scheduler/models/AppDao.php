@@ -20,6 +20,6 @@
 
 /** App DAO for the scheduler module */
 class Scheduler_AppDao extends MIDAS_GlobalDao
-  {
-  public $moduleName = 'scheduler';
-  }
+{
+    public $moduleName = 'scheduler';
+}

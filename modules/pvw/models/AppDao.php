@@ -20,5 +20,5 @@
 
 /** App DAO for the PVW module */
 class Pvw_AppDao extends MIDAS_GlobalDao
-  {
-  }
+{
+}

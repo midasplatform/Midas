@@ -17,9 +17,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /** Example_WalletDao */
 class Example_WalletDao extends AppDao
-  {
-  public $_model = 'Wallet';
-  public $_module = 'example';
-  }
+{
+    public $_model = 'Wallet';
+    public $_module = 'example';
+}

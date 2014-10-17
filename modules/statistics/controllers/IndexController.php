@@ -20,82 +20,88 @@
 
 /** Index controller for the statistics module */
 class Statistics_IndexController extends Statistics_AppController
-  {
-  public $_moduleModels = array('Download');
-  public $_models = array('Errorlog', 'Assetstore');
-  public $_components = array('Utility');
+{
+    public $_moduleModels = array('Download');
+    public $_models = array('Errorlog', 'Assetstore');
+    public $_components = array('Utility');
 
-  /** index action*/
-  function indexAction()
+    /** index action */
+    public function indexAction()
     {
-    $this->requireAdminPrivileges();
+        $this->requireAdminPrivileges();
 
-    $assetstores = $this->Assetstore->getAll();
-    foreach($assetstores as $key => $assetstore)
-      {
-      // Check if we can access the path
-      if(file_exists($assetstore->getPath()))
-        {
-        $assetstores[$key]->totalSpace = UtilityComponent::diskTotalSpace($assetstore->getPath());
-        $assetstores[$key]->freeSpace = UtilityComponent::diskFreeSpace($assetstore->getPath());
-        $assetstores[$key]->usedSpace = $assetstores[$key]->totalSpace - $assetstores[$key]->freeSpace;
+        $assetstores = $this->Assetstore->getAll();
+        foreach ($assetstores as $key => $assetstore) {
+            // Check if we can access the path
+            if (file_exists($assetstore->getPath())) {
+                $assetstores[$key]->totalSpace = UtilityComponent::diskTotalSpace($assetstore->getPath());
+                $assetstores[$key]->freeSpace = UtilityComponent::diskFreeSpace($assetstore->getPath());
+                $assetstores[$key]->usedSpace = $assetstores[$key]->totalSpace - $assetstores[$key]->freeSpace;
 
-        if($assetstores[$key]->totalSpace > 0)
-          {
-          $assetstores[$key]->usedSpaceText = round(($assetstores[$key]->usedSpace / $assetstores[$key]->totalSpace) * 100, 2);
-          $assetstores[$key]->freeSpaceText = round(($assetstores[$key]->freeSpace / $assetstores[$key]->totalSpace) * 100, 2);
-          }
-        else
-          {
-          $assetstores[$key]->usedSpaceText = 0;
-          $assetstores[$key]->freeSpaceText = 0;
-          }
+                if ($assetstores[$key]->totalSpace > 0) {
+                    $assetstores[$key]->usedSpaceText = round(
+                        ($assetstores[$key]->usedSpace / $assetstores[$key]->totalSpace) * 100,
+                        2
+                    );
+                    $assetstores[$key]->freeSpaceText = round(
+                        ($assetstores[$key]->freeSpace / $assetstores[$key]->totalSpace) * 100,
+                        2
+                    );
+                } else {
+                    $assetstores[$key]->usedSpaceText = 0;
+                    $assetstores[$key]->freeSpaceText = 0;
+                }
+            } else {
+                $assetstores[$key]->totalSpaceText = false;
+            }
         }
-      else
-        {
-        $assetstores[$key]->totalSpaceText = false;
-        }
-      }
 
-    $jqplotAssetstoreArray = array();
-    foreach($assetstores as $assetstore)
-      {
-      $jqplotAssetstoreArray[] =
-        array($assetstore->getName().', '.$assetstore->getPath(),
-          array(
-            array('Free Space: '.$this->Component->Utility->formatSize($assetstore->freeSpace), $assetstore->freeSpaceText),
-            array('Used Space: '.$this->Component->Utility->formatSize($assetstore->usedSpace), $assetstore->usedSpaceText)
-               )
+        $jqplotAssetstoreArray = array();
+        foreach ($assetstores as $assetstore) {
+            $jqplotAssetstoreArray[] = array(
+                $assetstore->getName().', '.$assetstore->getPath(),
+                array(
+                    array(
+                        'Free Space: '.$this->Component->Utility->formatSize($assetstore->freeSpace),
+                        $assetstore->freeSpaceText,
+                    ),
+                    array(
+                        'Used Space: '.$this->Component->Utility->formatSize($assetstore->usedSpace),
+                        $assetstore->usedSpaceText,
+                    ),
+                ),
             );
-      }
+        }
 
-    $errors = $this->Errorlog->getLog(date("Y-m-d H:i:s", strtotime('-20 day'.date('Y-m-j G:i:s'))), date("Y-m-d H:i:s"), 'all', 2);
-    $errors = $errors['logs'];
-    $arrayErrors = array();
+        $errors = $this->Errorlog->getLog(
+            date("Y-m-d H:i:s", strtotime('-20 day'.date('Y-m-j G:i:s'))),
+            date("Y-m-d H:i:s"),
+            'all',
+            2
+        );
+        $errors = $errors['logs'];
+        $arrayErrors = array();
 
-    $format = 'Y-m-j';
-    for($i = 0; $i < 21; $i++)
-      {
-      $key = date($format, strtotime(date("Y-m-d H:i:s", strtotime('-'.$i.' day'.date('Y-m-j G:i:s')))));
-      $arrayErrors[$key] = 0;
-      }
-    foreach($errors as $error)
-      {
-      $key = date($format, strtotime($error->getDatetime()));
-      $arrayErrors[$key]++;
-      }
+        $format = 'Y-m-j';
+        for ($i = 0; $i < 21; $i++) {
+            $key = date($format, strtotime(date("Y-m-d H:i:s", strtotime('-'.$i.' day'.date('Y-m-j G:i:s')))));
+            $arrayErrors[$key] = 0;
+        }
+        foreach ($errors as $error) {
+            $key = date($format, strtotime($error->getDatetime()));
+            $arrayErrors[$key]++;
+        }
 
-    $jqplotArray = array();
-    foreach($arrayErrors as $key => $value)
-      {
-      $jqplotArray[] = array($key.' 8:00AM', $value);
-      }
+        $jqplotArray = array();
+        foreach ($arrayErrors as $key => $value) {
+            $jqplotArray[] = array($key.' 8:00AM', $value);
+        }
 
-    $this->view->json['stats']['errors'] = $jqplotArray;
-    $this->view->json['stats']['assetstores'] = $jqplotAssetstoreArray;
-    $modulesConfig = Zend_Registry::get('configsModules');
-    $this->view->piwikUrl = $modulesConfig['statistics']->piwik->url;
-    $this->view->piwikId = $modulesConfig['statistics']->piwik->id;
-    $this->view->piwikKey = $modulesConfig['statistics']->piwik->apikey;
+        $this->view->json['stats']['errors'] = $jqplotArray;
+        $this->view->json['stats']['assetstores'] = $jqplotAssetstoreArray;
+        $modulesConfig = Zend_Registry::get('configsModules');
+        $this->view->piwikUrl = $modulesConfig['statistics']->piwik->url;
+        $this->view->piwikId = $modulesConfig['statistics']->piwik->id;
+        $this->view->piwikKey = $modulesConfig['statistics']->piwik->apikey;
     }
-  } // end class
+}

@@ -24,23 +24,24 @@ require_once BASE_PATH.'/modules/thumbnailcreator/models/base/ItemthumbnailModel
  * Item thumbnail pdo model
  */
 class Thumbnailcreator_ItemthumbnailModel extends Thumbnailcreator_ItemthumbnailModelBase
-  {
-  /**
-   * Return an itemthumbnail dao based on an itemId.
-   */
-  public function getByItemId($itemId)
+{
+    /**
+     * Return an itemthumbnail dao based on an itemId.
+     */
+    public function getByItemId($itemId)
     {
-    $sql = $this->database->select()->where('item_id = ?', $itemId);
-    $row = $this->database->fetchRow($sql);
-    $dao = $this->initDao('Itemthumbnail', $row, 'thumbnailcreator');
-    return $dao;
+        $sql = $this->database->select()->where('item_id = ?', $itemId);
+        $row = $this->database->fetchRow($sql);
+        $dao = $this->initDao('Itemthumbnail', $row, 'thumbnailcreator');
+
+        return $dao;
     }
 
-  /**
-   * Delete thumbnails on a given item. Called when item is about to be deleted.
-   */
-  public function deleteByItem($item)
+    /**
+     * Delete thumbnails on a given item. Called when item is about to be deleted.
+     */
+    public function deleteByItem($item)
     {
-    Zend_Registry::get('dbAdapter')->delete($this->_name, 'item_id = '.$item->getKey());
+        Zend_Registry::get('dbAdapter')->delete($this->_name, 'item_id = '.$item->getKey());
     }
 }

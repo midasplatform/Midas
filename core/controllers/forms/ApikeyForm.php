@@ -20,22 +20,22 @@
 
 /** Apikey form */
 class ApikeyForm extends AppForm
-  {
-  /** create form */
-  public function createKeyForm()
+{
+    /** create form */
+    public function createKeyForm()
     {
-    $form = new Zend_Form;
+        $form = new Zend_Form();
 
-    $form->setAction($this->webroot.'/apikey/usertab')
-          ->setMethod('post');
+        $form->setAction($this->webroot.'/apikey/usertab')->setMethod('post');
 
-    $appplication_name = new Zend_Form_Element_Text('appplication_name');
-    $expiration = new Zend_Form_Element_Text('expiration');
+        $appplication_name = new Zend_Form_Element_Text('appplication_name');
+        $expiration = new Zend_Form_Element_Text('expiration');
 
-    $submit = new  Zend_Form_Element_Submit('createAPIKey');
-    $submit ->setLabel($this->t('Generate New API Key'));
+        $submit = new  Zend_Form_Element_Submit('createAPIKey');
+        $submit->setLabel($this->t('Generate New API Key'));
 
-    $form->addElements(array($appplication_name, $expiration, $submit));
-    return $form;
+        $form->addElements(array($appplication_name, $expiration, $submit));
+
+        return $form;
     }
-  } // end class
+}

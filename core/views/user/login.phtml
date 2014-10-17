@@ -21,49 +21,54 @@
 echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/jquery/jquery.form.js"></script>';
 echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/user/user.login.js"></script>';
 ?>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
-<form id="loginForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
-  <input type="hidden" name="previousuri" value=""/>
-  <table>
-    <tr>
-      <td><label for="email"><?php echo $this->t('Email')?></label></td>
-      <td>
-        <label for="password"><?php echo $this->t('Password')?></label>
-        <a id='forgotPasswordLink' style='text-decoration: underline;font-size: 10px;' href="#"><?php echo $this->t('Forgot your password')?>?</a>
-      </td>
-      <td></td>
-    </tr>
-    <tr>
-      <td><?php echo $this->form['email']?></td>
-      <td><?php echo $this->form['password']?></td>
-      <td>
-        <?php echo $this->form['submit']?>
-        <img style="display: none;" alt="" src="<?php echo $this->coreWebroot;?>/public/images/icons/loading.gif" id="loginWaiting" />
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <?php if(!isset(Zend_Registry::get('configGlobal')->closeregistration) ||
-                 Zend_Registry::get('configGlobal')->closeregistration == "0") {
+<form id="loginForm" method="<?php echo $this->form['method'] ?>" action="<?php echo $this->form['action'] ?>">
+    <input type="hidden" name="previousuri" value=""/>
+    <table>
+        <tr>
+            <td><label for="email"><?php echo $this->t('Email') ?></label></td>
+            <td>
+                <label for="password"><?php echo $this->t('Password') ?></label>
+                <a id='forgotPasswordLink' style='text-decoration: underline;font-size: 10px;'
+                   href="#"><?php echo $this->t('Forgot your password') ?>?</a>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><?php echo $this->form['email'] ?></td>
+            <td><?php echo $this->form['password'] ?></td>
+            <td>
+                <?php echo $this->form['submit'] ?>
+                <img style="display: none;" alt=""
+                     src="<?php echo $this->coreWebroot; ?>/public/images/icons/loading.gif" id="loginWaiting"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?php if (!isset(Zend_Registry::get('configGlobal')->closeregistration) || Zend_Registry::get(
+                    'configGlobal'
+                )->closeregistration == "0") {
                 echo $this->t("Not registered yet?"); ?>
-        <a class="registerLink" style='text-decoration: underline;'><?php echo $this->t("Register here")?></a></td>
-        <?php } else { echo '</td>'; } ?>
-      <td><?php echo $this->form['remerberMe']?>
-        <label id="rememberMeText" for="remerberMe"><?php echo $this->t("Remember Me")?></label></td>
-      <td></td>
-    </tr>
-  </table>
-  <?php
-  $extraHtml = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_LOGIN_EXTRA_HTML');
-  foreach($extraHtml as $html)
-    {
-    if(!empty($html))
-      {
-      echo $html;
-      }
+                <a class="registerLink" style='text-decoration: underline;'><?php echo $this->t("Register here") ?></a>
+            </td>
+            <?php
+            } else {
+                echo '</td>';
+            } ?>
+            <td><?php echo $this->form['remerberMe'] ?>
+                <label id="rememberMeText" for="remerberMe"><?php echo $this->t("Remember Me") ?></label></td>
+            <td></td>
+        </tr>
+    </table>
+    <?php
+    $extraHtml = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_LOGIN_EXTRA_HTML');
+    foreach ($extraHtml as $html) {
+        if (!empty($html)) {
+            echo $html;
+        }
     }
-  ?>
+    ?>
 </form>
 
 <br/>

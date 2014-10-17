@@ -20,18 +20,17 @@
 
 class Zend_View_Helper_T
 {
-  /** translation helper */
-    function t($text)
+    /** translation helper */
+    public function t($text)
     {
-    Zend_Loader::loadClass("InternationalizationComponent",BASE_PATH.'/core/controllers/components');
-    return InternationalizationComponent::translate($text);
-    }//en method t
+        Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
 
+        return InternationalizationComponent::translate($text);
+    }
 
-
-    /** Set view*/
+    /** Set view */
     public function setView(Zend_View_Interface $view)
     {
         $this->view = $view;
     }
-}// end class
+}

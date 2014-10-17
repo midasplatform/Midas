@@ -17,6 +17,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 define("MIDAS_BATCHMAKE_CHECK_IF_READABLE", 0x2);
 define("MIDAS_BATCHMAKE_CHECK_IF_WRITABLE", 0x4);
 define("MIDAS_BATCHMAKE_CHECK_IF_RW", 0x6); // 0x2 + 0x4;
@@ -67,9 +68,9 @@ define("MIDAS_BATCHMAKE_CONFIG_ERROR", "Configuration is in error");
 
 // config paths
 define("MIDAS_BATCHMAKE_MODULE", "batchmake");
-define("MIDAS_BATCHMAKE_CONFIGS_PATH", LOCAL_CONFIGS_PATH . "/" . MIDAS_BATCHMAKE_MODULE);
-//define("MIDAS_BATCHMAKE_MODULE_CONFIG", MIDAS_BATCHMAKE_CONFIGS_PATH . "module.ini");
-define("MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG", MIDAS_BATCHMAKE_CONFIGS_PATH . ".local.ini");
+define("MIDAS_BATCHMAKE_CONFIGS_PATH", LOCAL_CONFIGS_PATH."/".MIDAS_BATCHMAKE_MODULE);
+// define("MIDAS_BATCHMAKE_MODULE_CONFIG", MIDAS_BATCHMAKE_CONFIGS_PATH . "module.ini");
+define("MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG", MIDAS_BATCHMAKE_CONFIGS_PATH.".local.ini");
 
 // submit button name for config
 define("MIDAS_BATCHMAKE_SUBMIT_CONFIG", "submitConfig");

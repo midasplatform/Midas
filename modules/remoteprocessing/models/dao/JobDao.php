@@ -20,13 +20,13 @@
 
 /** Job Dao */
 class Remoteprocessing_JobDao extends Remoteprocessing_AppDao
-  {
-  public $_model = 'Job';
-  public $_module = 'remoteprocessing';
+{
+    public $_model = 'Job';
+    public $_module = 'remoteprocessing';
 
-  /** get Items */
-  function getItems()
+    /** get Items */
+    public function getItems()
     {
-    return $this->getModel()->getRelatedItems($this);
+        return $this->getModel()->getRelatedItems($this);
     }
-  }
+}

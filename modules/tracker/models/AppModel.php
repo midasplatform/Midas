@@ -20,6 +20,6 @@
 
 /** Base model class for the tracker module */
 class Tracker_AppModel extends MIDASModel
-  {
-  public $moduleName = 'tracker';
-  }
+{
+    public $moduleName = 'tracker';
+}

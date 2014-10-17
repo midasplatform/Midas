@@ -20,58 +20,53 @@
 
 /** Internationalization tools */
 class InternationalizationComponent extends AppComponent
-  {
-  private static $_instance = null;
+{
+    private static $_instance = null;
 
-  /** Instance */
-  public static function getInstance()
+    /** Instance */
+    public static function getInstance()
     {
-    if(!self::$_instance instanceof self)
-      {
-      self::$_instance = new self();
-      }
-    return self::$_instance;
-    }
-
-  /** translate*/
-  public static function translate($text)
-    {
-    if(Zend_Registry::get('configGlobal')->application->lang != 'en')
-      {
-      $translate = Zend_Registry::get('translator');
-      $new_text = $translate->_($text);
-      if($new_text == $text)
-        {
-        $translators = Zend_Registry::get('translatorsModules');
-        foreach($translators as $t)
-          {
-          $new_text = $t->_($text);
-          if($new_text != $text)
-            {
-            break;
-            }
-          }
+        if (!self::$_instance instanceof self) {
+            self::$_instance = new self();
         }
-      return $new_text;
-      }
-    return $text;
-    } //end method t
 
-  /**
-   * @method public  isDebug()
-   * Is Debug mode ON
-   * @return boolean
-   */
-  public static function isDebug()
-    {
-    $config = Zend_Registry::get('config');
-    if($config->mode->debug == 1)
-      {
-      return true;
-      }
-    else
-      {
-      return false;
-      }
+        return self::$_instance;
     }
-  } // end class
+
+    /** translate */
+    public static function translate($text)
+    {
+        if (Zend_Registry::get('configGlobal')->application->lang != 'en') {
+            $translate = Zend_Registry::get('translator');
+            $new_text = $translate->_($text);
+            if ($new_text == $text) {
+                $translators = Zend_Registry::get('translatorsModules');
+                foreach ($translators as $t) {
+                    $new_text = $t->_($text);
+                    if ($new_text != $text) {
+                        break;
+                    }
+                }
+            }
+
+            return $new_text;
+        }
+
+        return $text;
+    }
+
+    /**
+     * Is Debug mode ON
+     *
+     * @return boolean
+     */
+    public static function isDebug()
+    {
+        $config = Zend_Registry::get('config');
+        if ($config->mode->debug == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}

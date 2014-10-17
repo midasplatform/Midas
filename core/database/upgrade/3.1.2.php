@@ -19,9 +19,9 @@
 =========================================================================*/
 
 class Upgrade_3_1_2 extends MIDASUpgrade
-  {
-  public function postUpgrade()
+{
+    public function postUpgrade()
     {
-    $this->addTableField('user', 'dynamichelp', 'tinyint(4)', ' integer', 1);
+        $this->addTableField('user', 'dynamichelp', 'tinyint(4)', ' integer', 1);
     }
-  }
+}

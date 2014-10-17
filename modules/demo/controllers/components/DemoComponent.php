@@ -20,68 +20,70 @@
 
 /** Demo component for the demo module */
 class Demo_DemoComponent extends AppComponent
-  {
-  public $moduleName = 'demo';
+{
+    public $moduleName = 'demo';
 
-  /** Reset database (only works with MySQL) */
-  public function reset()
+    /** Reset database (only works with MySQL) */
+    public function reset()
     {
-    $db = Zend_Registry::get('dbAdapter');
-    $dbname = Zend_Registry::get('configDatabase')->database->params->dbname;
+        $db = Zend_Registry::get('dbAdapter');
+        $dbname = Zend_Registry::get('configDatabase')->database->params->dbname;
 
-    $stmt = $db->query("SELECT * FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = '".$dbname."'");
-    while($row = $stmt->fetch())
-      {
-      $db->query("DELETE FROM `".$row['TABLE_NAME']."`");
-      }
-
-    $path = UtilityComponent::getDataDirectory('assetstore');
-    $dir = opendir($path);
-    while($entry = readdir($dir))
-      {
-      if(is_dir($path.'/'.$entry) && !in_array($entry, array('.', '..')))
-        {
-        $this->_rrmdir($path.'/'.$entry);
+        $stmt = $db->query("SELECT * FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = '".$dbname."'");
+        while ($row = $stmt->fetch()) {
+            $db->query("DELETE FROM `".$row['TABLE_NAME']."`");
         }
-      }
 
-    $path = UtilityComponent::getDataDirectory('thumbnail');
-    $dir = opendir($path);
-    while($entry = readdir($dir))
-      {
-      if(is_dir($path.'/'.$entry) && !in_array($entry, array('.', '..')))
-        {
-        $this->_rrmdir($path.'/'.$entry);
+        $path = UtilityComponent::getDataDirectory('assetstore');
+        $dir = opendir($path);
+        while ($entry = readdir($dir)) {
+            if (is_dir($path.'/'.$entry) && !in_array($entry, array('.', '..'))
+            ) {
+                $this->_rrmdir($path.'/'.$entry);
+            }
         }
-      }
 
-    if(file_exists(LOCAL_CONFIGS_PATH.'/ldap.local.ini'))
-      {
-      unlink(LOCAL_CONFIGS_PATH.'/ldap.local.ini');
-      }
+        $path = UtilityComponent::getDataDirectory('thumbnail');
+        $dir = opendir($path);
+        while ($entry = readdir($dir)) {
+            if (is_dir($path.'/'.$entry) && !in_array($entry, array('.', '..'))
+            ) {
+                $this->_rrmdir($path.'/'.$entry);
+            }
+        }
 
-    $userModel = MidasLoader::loadModel('User');
+        if (file_exists(LOCAL_CONFIGS_PATH.'/ldap.local.ini')) {
+            unlink(LOCAL_CONFIGS_PATH.'/ldap.local.ini');
+        }
 
-    $admin = $userModel->createUser(MIDAS_DEMO_ADMIN_EMAIL, MIDAS_DEMO_ADMIN_PASSWORD, 'Demo', 'Administrator', 1);
-    $userModel->createUser(MIDAS_DEMO_USER_EMAIL, MIDAS_DEMO_USER_PASSWORD, 'Demo', 'User', 0);
+        $userModel = MidasLoader::loadModel('User');
 
-    $communityModel = MidasLoader::loadModel('Community');
-    $communityDao = $communityModel->createCommunity('Demo', 'This is a demo community', MIDAS_COMMUNITY_PUBLIC, $admin, MIDAS_COMMUNITY_CAN_JOIN);
+        $admin = $userModel->createUser(MIDAS_DEMO_ADMIN_EMAIL, MIDAS_DEMO_ADMIN_PASSWORD, 'Demo', 'Administrator', 1);
+        $userModel->createUser(MIDAS_DEMO_USER_EMAIL, MIDAS_DEMO_USER_PASSWORD, 'Demo', 'User', 0);
 
-    $assetstoreModel = MidasLoader::loadModel('Assetstore');
-    $assetstoreDao = new AssetstoreDao();
-    $assetstoreDao->setName('Default');
-    $assetstoreDao->setPath(UtilityComponent::getDataDirectory('assetstore'));
-    $assetstoreDao->setType(MIDAS_ASSETSTORE_LOCAL);
-    $assetstoreModel->save($assetstoreDao);
+        $communityModel = MidasLoader::loadModel('Community');
+        $communityDao = $communityModel->createCommunity(
+            'Demo',
+            'This is a demo community',
+            MIDAS_COMMUNITY_PUBLIC,
+            $admin,
+            MIDAS_COMMUNITY_CAN_JOIN
+        );
 
-    $options = array('allowModifications' => true);
-    $config = new Zend_Config_Ini(CORE_CONFIGS_PATH.'/application.ini', null, $options);
-    $config->global->defaultassetstore->id = $assetstoreDao->getKey();
-    $config->global->dynamichelp = 1;
-    $config->global->environment = 'production';
-    $config->global->application->name = 'Midas Platform - Demo';
-    $description = 'Midas Platform is an open-source toolkit that enables the
+        $assetstoreModel = MidasLoader::loadModel('Assetstore');
+        $assetstoreDao = new AssetstoreDao();
+        $assetstoreDao->setName('Default');
+        $assetstoreDao->setPath(UtilityComponent::getDataDirectory('assetstore'));
+        $assetstoreDao->setType(MIDAS_ASSETSTORE_LOCAL);
+        $assetstoreModel->save($assetstoreDao);
+
+        $options = array('allowModifications' => true);
+        $config = new Zend_Config_Ini(CORE_CONFIGS_PATH.'/application.ini', null, $options);
+        $config->global->defaultassetstore->id = $assetstoreDao->getKey();
+        $config->global->dynamichelp = 1;
+        $config->global->environment = 'production';
+        $config->global->application->name = 'Midas Platform - Demo';
+        $description = 'Midas Platform is an open-source toolkit that enables the
       rapid creation of tailored, web-enabled data storage. Designed to meet
       the needs of advanced data-centric computing, Midas Platform addresses
       the growing challenge of large data by providing a flexible, intelligent
@@ -89,62 +91,78 @@ class Demo_DemoComponent extends AppComponent
       with other open-source data analysis and visualization tools to enable
       data-intensive applications that easily interface with existing
       workflows.';
-    $config->global->application->description = $description;
+        $config->global->application->description = $description;
 
-    $enabledModules = array('api', 'metadataextractor', 'oai', 'statistics', 'scheduler', 'thumbnailcreator', 'visualize');
-    foreach($enabledModules as $module)
-      {
-      if(file_exists(LOCAL_CONFIGS_PATH.'/'.$module.'.demo.local.ini'))
-        {
-        copy(LOCAL_CONFIGS_PATH.'/'.$module.'.demo.local.ini', LOCAL_CONFIGS_PATH.'/'.$module.'.local.ini');
-        $config->module->$module = 1;
+        $enabledModules = array(
+            'api',
+            'metadataextractor',
+            'oai',
+            'statistics',
+            'scheduler',
+            'thumbnailcreator',
+            'visualize',
+        );
+        foreach ($enabledModules as $module) {
+            if (file_exists(LOCAL_CONFIGS_PATH.'/'.$module.'.demo.local.ini')) {
+                copy(
+                    LOCAL_CONFIGS_PATH.'/'.$module.'.demo.local.ini',
+                    LOCAL_CONFIGS_PATH.'/'.$module.'.local.ini'
+                );
+                $config->module->$module = 1;
+            } else {
+                unlink(LOCAL_CONFIGS_PATH.'/'.$module.'.local.ini');
+            }
         }
-      else
-        {
-        unlink(LOCAL_CONFIGS_PATH.'/'.$module.'.local.ini');
-        }
-      }
 
-    $writer = new Zend_Config_Writer_Ini();
-    $writer->setConfig($config);
-    $writer->setFilename((LOCAL_CONFIGS_PATH.'/application.local.ini'));
-    $writer->write();
+        $writer = new Zend_Config_Writer_Ini();
+        $writer->setConfig($config);
+        $writer->setFilename((LOCAL_CONFIGS_PATH.'/application.local.ini'));
+        $writer->write();
 
-    $configGlobal = new Zend_Config_Ini(APPLICATION_CONFIG, 'global', true);
-    Zend_Registry::set('configGlobal', $configGlobal);
+        $configGlobal = new Zend_Config_Ini(APPLICATION_CONFIG, 'global', true);
+        Zend_Registry::set('configGlobal', $configGlobal);
 
-    $uploadComponent = MidasLoader::loadComponent('Upload');
-    $uploadComponent->createUploadedItem($admin, 'midasLogo.gif', BASE_PATH.'/core/public/images/midasLogo.gif', $communityDao->getPublicFolder(), null, '', true);
-    $uploadComponent->createUploadedItem($admin, 'cow.vtp', BASE_PATH.'/modules/demo/public/'.$this->moduleName.'/cow.vtp', $communityDao->getPublicFolder(), null, '', true);
+        $uploadComponent = MidasLoader::loadComponent('Upload');
+        $uploadComponent->createUploadedItem(
+            $admin,
+            'midasLogo.gif',
+            BASE_PATH.'/core/public/images/midasLogo.gif',
+            $communityDao->getPublicFolder(),
+            null,
+            '',
+            true
+        );
+        $uploadComponent->createUploadedItem(
+            $admin,
+            'cow.vtp',
+            BASE_PATH.'/modules/demo/public/'.$this->moduleName.'/cow.vtp',
+            $communityDao->getPublicFolder(),
+            null,
+            '',
+            true
+        );
     }
 
-  /** Recursively delete a folder */
-  private function _rrmdir($dir)
+    /** Recursively delete a folder */
+    private function _rrmdir($dir)
     {
-    if(!file_exists($dir))
-      {
-      return;
-      }
-    if(is_dir($dir))
-      {
-      $objects = scandir($dir);
-      }
-
-    foreach($objects as $object)
-      {
-      if($object != '.' && $object != '..')
-        {
-        if(filetype($dir.'/'.$object) == 'dir')
-          {
-          $this->_rrmdir($dir.'/'.$object);
-          }
-        else
-          {
-          unlink($dir.'/'.$object);
-          }
+        if (!file_exists($dir)) {
+            return;
         }
-      }
-    reset($objects);
-    rmdir($dir);
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+        }
+
+        foreach ($objects as $object) {
+            if ($object != '.' && $object != '..') {
+                if (filetype($dir.'/'.$object) == 'dir') {
+                    $this->_rrmdir($dir.'/'.$object);
+                } else {
+                    unlink($dir.'/'.$object);
+                }
+            }
+        }
+        reset($objects);
+        rmdir($dir);
     }
-  }
+}

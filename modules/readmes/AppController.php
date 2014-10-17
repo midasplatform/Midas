@@ -18,13 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Readmes_AppController
- *
- * @category   Midas modules
- * @package    readmes
- */
+/** App controller for the readmes module */
 class Readmes_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'readmes';
-  }
+{
+    public $moduleName = 'readmes';
+}

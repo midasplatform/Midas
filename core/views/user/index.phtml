@@ -21,126 +21,140 @@
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.index.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
 ?>
-<link href="<?php echo $this->coreWebroot?>/public/css/user/user.index.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->coreWebroot ?>/public/css/user/user.index.css" rel="stylesheet" type="text/css"/>
 
 <div class="viewMain">
-  <div class="userList">
-  <?php
-  echo "<h3 class='userSubTitle'>";
-  switch($this->order)
-    {
-    case 'lastname':
-      echo $this->t('Alphabetic');
-      break;
-    case 'view':
-      echo $this->t('Most Popular');
-      break;
-    default:
-      break;
-    }
-  echo "</h3>";
-  if($this->order == 'lastname')
-    {
-    echo "<a href='{$this->webroot}/user?order=lastname'>{$this->t('All')}</a> ";
-    for($i = ord('A'); $i <= ord('Z'); $i++)
-      {
-      if($this->offset === chr($i))
-        {
-        echo chr($i).' ';
+    <div class="userList">
+        <?php
+        echo "<h3 class='userSubTitle'>";
+        switch ($this->order) {
+            case 'lastname':
+                echo $this->t('Alphabetic');
+                break;
+            case 'view':
+                echo $this->t('Most Popular');
+                break;
+            default:
+                break;
         }
-      else
-        {
-        echo "<a href='{$this->webroot}/user?order=lastname&offset=".chr($i)."'>".chr($i)."</a> ";
+        echo "</h3>";
+        if ($this->order == 'lastname') {
+            echo "<a href='{$this->webroot}/user?order=lastname'>{$this->t('All')}</a> ";
+            for ($i = ord('A'); $i <= ord('Z'); $i++) {
+                if ($this->offset === chr($i)) {
+                    echo chr($i).' ';
+                } else {
+                    echo "<a href='{$this->webroot}/user?order=lastname&offset=".chr($i)."'>".chr($i)."</a> ";
+                }
+            }
         }
-      }
-    }
-  if(!empty($this->users))
-    {
-    foreach($this->users as $user)
-      {
-      ?>
-      <div class="userBlock">
-      <?php
-        echo $this->linkuser($user);
-      ?>
-      <div class="userStats"><?php echo $user->getView(); ?> views</div>
-      </div>
-  <?php
-      }
-    }
-  ?>
-  </div>
+        if (!empty($this->users)) {
+            foreach ($this->users as $user) {
+                ?>
+                <div class="userBlock">
+                    <?php
+                    echo $this->linkuser($user);
+                    ?>
+                    <div class="userStats"><?php echo $user->getView(); ?> views
+                    </div>
+                </div>
+            <?php
+            }
+        }
+        ?>
+    </div>
 
     <?php
-  if(empty($this->users))
-    {
-    echo "<h4>{$this->t("No public user to show.")}. </h4>";
+    if (empty($this->users)) {
+        echo "<h4>{$this->t("No public user to show.")}. </h4>";
     }
 
-  if($this->isAdmin)
-    { ?>
-    <div class="adminCreateUser">
-      <a class="createUserLink" href="javascript:;">Create new user</a>
-    </div>
-    <!-- TEMPLATE: register form -->
-    <div id="registerFormTemplate" style="display:none;">
-      <div class="registerError">
-      </div>
-      <form class="registerForm dialogForm" method="POST" action="<?php echo $this->webroot?>/user/ajaxregister">
-        <table>
-          <tr><td>Email</td><td><input name="email" type="text" /></td></tr>
-          <tr><td>First Name</td><td><input name="firstname" type="text" /></td></tr>
-          <tr><td>Last Name</td><td><input name="lastname" type="text" /></td></tr>
-          <tr><td colspan="2">
-              <label><input name="nopassword" type="checkbox" /> Do not create a password</label>
-          </td></tr>
-          <tr><td>Password</td><td><input name="password1" type="password" /></td></tr>
-          <tr><td>Confirm Password</td><td><input name="password2" type="password" /></td></tr>
-          <tr><td></td><td><input type="submit" value="Create" /></td></tr>
-        </table>
-        <input type="hidden" name="adminCreate" value="adminCreate" />
-      </form>
-    </div>
-  <?php
+    if ($this->isAdmin) {
+        ?>
+        <div class="adminCreateUser">
+            <a class="createUserLink" href="javascript:;">Create new user</a>
+        </div>
+        <!-- TEMPLATE: register form -->
+        <div id="registerFormTemplate" style="display:none;">
+            <div class="registerError">
+            </div>
+            <form class="registerForm dialogForm" method="POST" action="<?php echo $this->webroot ?>/user/ajaxregister">
+                <table>
+                    <tr>
+                        <td>Email</td>
+                        <td><input name="email" type="text"/></td>
+                    </tr>
+                    <tr>
+                        <td>First Name</td>
+                        <td><input name="firstname" type="text"/></td>
+                    </tr>
+                    <tr>
+                        <td>Last Name</td>
+                        <td><input name="lastname" type="text"/></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <label><input name="nopassword" type="checkbox"/> Do not create a password</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Password</td>
+                        <td><input name="password1" type="password"/></td>
+                    </tr>
+                    <tr>
+                        <td>Confirm Password</td>
+                        <td><input name="password2" type="password"/></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><input type="submit" value="Create"/></td>
+                    </tr>
+                </table>
+                <input type="hidden" name="adminCreate" value="adminCreate"/>
+            </form>
+        </div>
+    <?php
     }
-  ?>
+    ?>
 </div>
 <div class="viewSideBar">
-  <div class="sideElementFirst viewAction">
-    <h1>Order</h1>
-    <ul>
-      <?php
-      if($this->order != 'lastname')
-        {
-        echo "<li><a href='{$this->webroot}/user?order=lastname'><img alt='' src='{$this->coreWebroot}/public/images/icons/alphabet.png'/> {$this->t('Alphabetic')}</a></li>";
-        }
-      else
-        {
-         echo "<li><img alt='' src='{$this->coreWebroot}/public/images/icons/alphabet.png'/> {$this->t('Alphabetic')}</li>";
-        }
-      ?>
-      <?php
-      if($this->order != 'view')
-        {
-        echo "<li><a href='{$this->webroot}/user?order=view'><img alt='' src='{$this->coreWebroot}/public/images/icons/fire.png'/> {$this->t('Popularity')}</a></li>";
-        }
-      else
-        {
-         echo "<li><img alt='' src='{$this->coreWebroot}/public/images/icons/fire.png'/> {$this->t('Popularity')}</li>";
-        }
-      ?>
-    </ul>
-  </div>
+    <div class="sideElementFirst viewAction">
+        <h1>Order</h1>
+        <ul>
+            <?php
+            if ($this->order != 'lastname') {
+                echo "<li><a href='{$this->webroot}/user?order=lastname'><img alt='' src='{$this->coreWebroot}/public/images/icons/alphabet.png'/> {$this->t(
+                    'Alphabetic'
+                )}</a></li>";
+            } else {
+                echo "<li><img alt='' src='{$this->coreWebroot}/public/images/icons/alphabet.png'/> {$this->t(
+                    'Alphabetic'
+                )}</li>";
+            }
+            ?>
+            <?php
+            if ($this->order != 'view') {
+                echo "<li><a href='{$this->webroot}/user?order=view'><img alt='' src='{$this->coreWebroot}/public/images/icons/fire.png'/> {$this->t(
+                    'Popularity'
+                )}</a></li>";
+            } else {
+                echo "<li><img alt='' src='{$this->coreWebroot}/public/images/icons/fire.png'/> {$this->t(
+                    'Popularity'
+                )}</li>";
+            }
+            ?>
+        </ul>
+    </div>
 
-  <div class="sideElement viewSelected">
-      <h1><?php echo $this->t('Selected')?></h1>
-      <span></span>
-  </div>
+    <div class="sideElement viewSelected">
+        <h1><?php echo $this->t('Selected') ?></h1>
+        <span></span>
+    </div>
 
-  <div class="sideElementLast viewInfo">
-    <h1>Info</h1>
-    <?php
-    echo $this->nUsers.' '.$this->t('user').($this->nUsers>1?'s':'');
-    ?>
-  </div>
+    <div class="sideElementLast viewInfo">
+        <h1>Info</h1>
+        <?php
+        echo $this->nUsers.' '.$this->t('user').($this->nUsers > 1 ? 's' : '');
+        ?>
+    </div>
 </div>

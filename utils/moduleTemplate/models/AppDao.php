@@ -20,6 +20,6 @@
 
 /** App DAO for the @MN@ module */
 class @MN_CAP@_AppDao extends MIDAS_GlobalDao
-  {
-  public $_module = '@MN@';
-  }
+{
+    public $_module = '@MN@';
+}

@@ -22,7 +22,7 @@
  * ThresholdNotification DAO
  */
 class Tracker_ThresholdNotificationDao extends Tracker_AppDao
-  {
-  public $_model = 'ThresholdNotification';
-  public $_module = 'tracker';
-  }
+{
+    public $_model = 'ThresholdNotification';
+    public $_module = 'tracker';
+}

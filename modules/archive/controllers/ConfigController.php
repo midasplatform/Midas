@@ -20,32 +20,34 @@
 
 /** Configure controller for archive module */
 class Archive_ConfigController extends Archive_AppController
-  {
-  public $_models = array('Setting');
+{
+    public $_models = array('Setting');
 
-  /** Admin config page */
-  function indexAction()
+    /** Admin config page */
+    public function indexAction()
     {
-    $this->requireAdminPrivileges();
+        $this->requireAdminPrivileges();
 
-    $this->view->header = 'Archive extraction module configuration';
-    $this->view->json[$this->moduleName]['unzipCommand'] = $this->Setting->getValueByName('unzipCommand', $this->moduleName);
+        $this->view->header = 'Archive extraction module configuration';
+        $this->view->json[$this->moduleName]['unzipCommand'] = $this->Setting->getValueByName(
+            'unzipCommand',
+            $this->moduleName
+        );
     }
 
-  /** Submit module configuration options */
-  function submitAction()
+    /** Submit module configuration options */
+    public function submitAction()
     {
-    $this->requireAdminPrivileges();
-    $this->disableLayout();
-    $this->disableView();
+        $this->requireAdminPrivileges();
+        $this->disableLayout();
+        $this->disableView();
 
-    $unzipCmd = $this->getParam('unzipCommand');
+        $unzipCmd = $this->getParam('unzipCommand');
 
-    if(!isset($unzipCmd))
-      {
-      throw new Zend_Exception('Must pass unzipCommand parameter');
-      }
-    $this->Setting->setConfig('unzipCommand', $unzipCmd, $this->moduleName);
-    echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Changes saved'));
+        if (!isset($unzipCmd)) {
+            throw new Zend_Exception('Must pass unzipCommand parameter');
+        }
+        $this->Setting->setConfig('unzipCommand', $unzipCmd, $this->moduleName);
+        echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Changes saved'));
     }
-  } // end class
+}

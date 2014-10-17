@@ -20,6 +20,6 @@
 
 /** App model for oauth module */
 class Oauth_AppModel extends MIDASModel
-  {
-  public $moduleName = 'oauth';
-  }
+{
+    public $moduleName = 'oauth';
+}

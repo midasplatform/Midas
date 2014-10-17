@@ -18,9 +18,9 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH . '/modules/batchmake/models/base/TaskModelBase.php';
+require_once BASE_PATH.'/modules/batchmake/models/base/TaskModelBase.php';
 
 /** Batchmake_TaskModel */
 class Batchmake_TaskModel extends Batchmake_TaskModelBase
-  {
-  }
+{
+}

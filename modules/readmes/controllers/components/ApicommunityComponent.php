@@ -20,25 +20,26 @@
 
 /** Apicommunity Component for api methods */
 class Readmes_ApicommunityComponent extends AppComponent
-  {
-  /**
-   * Get the readme text for a community
-   * @path /readmes/community/{id}
-   * @http GET
-   * @param id the id of the community from which to get the readme
-   * @return the text of the readme
-   */
-  function get($args)
+{
+    /**
+     * Get the readme text for a community
+     *
+     * @path /readmes/community/{id}
+     * @http GET
+     * @param id the id of the community from which to get the readme
+     * @return the text of the readme
+     */
+    public function get($args)
     {
-    $apihelperComponent = MidasLoader::loadComponent('Apihelper');
-    $readmeComponent = MidasLoader::loadComponent('GetReadme', 'readmes');
-    $apihelperComponent->validateParams($args, array('id'));
+        $apihelperComponent = MidasLoader::loadComponent('Apihelper');
+        $readmeComponent = MidasLoader::loadComponent('GetReadme', 'readmes');
+        $apihelperComponent->validateParams($args, array('id'));
 
-    $communityModel = MidasLoader::loadModel('Community');
+        $communityModel = MidasLoader::loadModel('Community');
 
-    $communityDao = $communityModel->load($args['id']);
-    $readme = $readmeComponent->fromCommunity($communityDao);
+        $communityDao = $communityModel->load($args['id']);
+        $readme = $readmeComponent->fromCommunity($communityDao);
 
-    return $readme;
+        return $readme;
     }
-  }
+}

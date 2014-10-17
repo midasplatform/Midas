@@ -18,53 +18,61 @@
  limitations under the License.
 =========================================================================*/
 
-/** index controller test*/
+/** index controller test */
 class IndexControllerTest extends ControllerTestCase
-  {
-  /** set up tests*/
-  public function setUp()
+{
+    /** set up tests */
+    public function setUp()
     {
-    $this->setupDatabase(array('default'));
-    $this->enabledModules = array('visualize');
-    parent::setUp();
+        $this->setupDatabase(array('default'));
+        $this->enabledModules = array('visualize');
+        parent::setUp();
     }
 
-  /** test index action*/
-  public function testIndexAction()
+    /** test index action */
+    public function testIndexAction()
     {
-    $groupModel = MidasLoader::loadModel('Group');
-    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
-    $userModel = MidasLoader::loadModel('User');
-    $folderModel = MidasLoader::loadModel('Folder');
+        $groupModel = MidasLoader::loadModel('Group');
+        $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
+        $userModel = MidasLoader::loadModel('User');
+        $folderModel = MidasLoader::loadModel('Folder');
 
-    $uploadComponent = MidasLoader::loadComponent('Upload');
+        $uploadComponent = MidasLoader::loadComponent('Upload');
 
-    $usersFile = $this->loadData('User', 'default');
-    $userDao = $userModel->load($usersFile[0]->getKey());
+        $usersFile = $this->loadData('User', 'default');
+        $userDao = $userModel->load($usersFile[0]->getKey());
 
-    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
-    Zend_Registry::set('configsModules', array());
-    $privateFolder = $folderModel->load(1002);
-    $item = $uploadComponent->createUploadedItem($userDao, "test.png", BASE_PATH.'/tests/testfiles/search.png', $privateFolder, null, '', true);
-    $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
-    $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
-    $this->params['itemId'] = $item->getKey();
-    $this->dispatchUrI("/visualize/index/index");
-    $this->assertController("index");
+        Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
+        Zend_Registry::set('configsModules', array());
+        $privateFolder = $folderModel->load(1002);
+        $item = $uploadComponent->createUploadedItem(
+            $userDao,
+            "test.png",
+            BASE_PATH.'/tests/testfiles/search.png',
+            $privateFolder,
+            null,
+            '',
+            true
+        );
+        $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
+        $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
+        $this->params['itemId'] = $item->getKey();
+        $this->dispatchUrI("/visualize/index/index");
+        $this->assertController("index");
 
-    $this->dispatchUrI("/visualize/image/index");
-    $this->assertController("image");
+        $this->dispatchUrI("/visualize/image/index");
+        $this->assertController("image");
 
-    $this->dispatchUrI("/visualize/media/index");
-    $this->assertController("media");
+        $this->dispatchUrI("/visualize/media/index");
+        $this->assertController("media");
 
-    $this->dispatchUrI("/visualize/pdf/index");
-    $this->assertController("pdf");
+        $this->dispatchUrI("/visualize/pdf/index");
+        $this->assertController("pdf");
 
-    $this->dispatchUrI("/visualize/txt/index");
-    $this->assertController("txt");
+        $this->dispatchUrI("/visualize/txt/index");
+        $this->assertController("txt");
 
-    $this->dispatchUrI("/visualize/webgl/index");
-    $this->assertController("webgl");
+        $this->dispatchUrI("/visualize/webgl/index");
+        $this->assertController("webgl");
     }
-  }
+}

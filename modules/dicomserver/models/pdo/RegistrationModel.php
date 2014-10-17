@@ -18,19 +18,21 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH . '/modules/dicomserver/models/base/RegistrationModelBase.php';
+require_once BASE_PATH.'/modules/dicomserver/models/base/RegistrationModelBase.php';
 
 /** Dicomserver_RegistrationModel */
 class Dicomserver_RegistrationModel extends Dicomserver_RegistrationModelBase
-  {
-  /**
-   * Returns registration by a itemId
-   * @param type $itemId
-   * @return type
-   */
-  function checkByItemId($itemId)
+{
+    /**
+     * Returns registration by a itemId
+     *
+     * @param  type $itemId
+     * @return type
+     */
+    public function checkByItemId($itemId)
     {
-    $row = $this->database->fetchRow($this->database->select()->where('item_id=?', $itemId));
-    return $this->initDao('Registration', $row, 'dicomserver');
+        $row = $this->database->fetchRow($this->database->select()->where('item_id=?', $itemId));
+
+        return $this->initDao('Registration', $row, 'dicomserver');
     }
-  }
+}

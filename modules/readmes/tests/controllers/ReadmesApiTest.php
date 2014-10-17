@@ -18,95 +18,91 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH . '/core/tests/controllers/api/RestCallMethodsTest.php';
+require_once BASE_PATH.'/core/tests/controllers/api/RestCallMethodsTest.php';
 
-/** config controller test*/
+/** config controller test */
 class ReadmesApiTest extends RestCallMethodsTest
-  {
-  /** set up tests*/
-  public function setUp()
+{
+    /** set up tests */
+    public function setUp()
     {
-    $this->enabledModules = array('readmes');
+        $this->enabledModules = array('readmes');
 
-    // There is copy-pasta in the folders because the setUp function would
-    // not cooperate. We should fix that one day.
+        // There is copy-pasta in the folders because the setUp function would
+        // not cooperate. We should fix that one day.
 
-    parent::setUp();
+        parent::setUp();
     }
 
-  /** test readme on folder */
-  public function testFolderReadme()
+    /** test readme on folder */
+    public function testFolderReadme()
     {
-    $this->enabledModules = array('readmes');
-    $this->resetAll();
-    $this->setupDatabase(array('default'));
-    Zend_Registry::set('modulesEnable', array());
-    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
-    $this->Community = MidasLoader::loadModel('Community');
-    $this->Folder = MidasLoader::loadModel('Folder');
-    $usersFile = $this->loadData('User', 'default');
-    $adminUser = $this->User->load($usersFile[2]->getKey());
+        $this->enabledModules = array('readmes');
+        $this->resetAll();
+        $this->setupDatabase(array('default'));
+        Zend_Registry::set('modulesEnable', array());
+        Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
+        $this->Community = MidasLoader::loadModel('Community');
+        $this->Folder = MidasLoader::loadModel('Folder');
+        $usersFile = $this->loadData('User', 'default');
+        $adminUser = $this->User->load($usersFile[2]->getKey());
 
-    $oldPath = BASE_PATH.'/modules/readmes/tests/data/readme.md';
-    $dir = $this->getTempDirectory().'/'.$adminUser->getUserId().'/1002'; //private folder
-    $newPath = $dir.'/readme.md';
-    if(!file_exists($dir))
-      {
-      mkdir($dir, 0700, true);
-      }
-    if(file_exists($newPath))
-      {
-      unlink($newPath);
-      }
-    copy($oldPath, $newPath);
-    $commFile = $this->loadData('Community', 'default');
-    $comm = $this->Community->load($commFile[0]->getKey());
+        $oldPath = BASE_PATH.'/modules/readmes/tests/data/readme.md';
+        $dir = $this->getTempDirectory().'/'.$adminUser->getUserId().'/1002'; // private folder
+        $newPath = $dir.'/readme.md';
+        if (!file_exists($dir)) {
+            mkdir($dir, 0700, true);
+        }
+        if (file_exists($newPath)) {
+            unlink($newPath);
+        }
+        copy($oldPath, $newPath);
+        $commFile = $this->loadData('Community', 'default');
+        $comm = $this->Community->load($commFile[0]->getKey());
 
-    $rootFolder = $comm->getFolder();
-    $publicFolder = $this->Folder->createFolder('Public', '', $rootFolder);
-    $uploadComponent = MidasLoader::loadComponent('Upload');
-    $uploadComponent->createUploadedItem($adminUser, 'readme.md', $newPath, $publicFolder);
+        $rootFolder = $comm->getFolder();
+        $publicFolder = $this->Folder->createFolder('Public', '', $rootFolder);
+        $uploadComponent = MidasLoader::loadComponent('Upload');
+        $uploadComponent->createUploadedItem($adminUser, 'readme.md', $newPath, $publicFolder);
 
-    $resp = $this->_callRestApi('GET', '/readmes/folder/'.$publicFolder->getKey());
-    $this->_assertStatusOk($resp);
-    $this->assertEquals($resp["body"]->data->text, "<p>This is a readme</p>\n");
+        $resp = $this->_callRestApi('GET', '/readmes/folder/'.$publicFolder->getKey());
+        $this->_assertStatusOk($resp);
+        $this->assertEquals($resp["body"]->data->text, "<p>This is a readme</p>\n");
     }
 
-  /** test readme on community */
-  public function testCommunityReadme()
+    /** test readme on community */
+    public function testCommunityReadme()
     {
-    $this->enabledModules = array('readmes');
-    $this->resetAll();
-    $this->setupDatabase(array('default'));
-    Zend_Registry::set('modulesEnable', array());
-    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
-    $this->Community = MidasLoader::loadModel('Community');
-    $this->Folder = MidasLoader::loadModel('Folder');
-    $usersFile = $this->loadData('User', 'default');
-    $adminUser = $this->User->load($usersFile[2]->getKey());
+        $this->enabledModules = array('readmes');
+        $this->resetAll();
+        $this->setupDatabase(array('default'));
+        Zend_Registry::set('modulesEnable', array());
+        Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
+        $this->Community = MidasLoader::loadModel('Community');
+        $this->Folder = MidasLoader::loadModel('Folder');
+        $usersFile = $this->loadData('User', 'default');
+        $adminUser = $this->User->load($usersFile[2]->getKey());
 
-    $oldPath = BASE_PATH.'/modules/readmes/tests/data/readme.md';
-    $dir = $this->getTempDirectory().'/'.$adminUser->getUserId().'/1002'; //private folder
-    $newPath = $dir.'/readme.md';
-    if(!file_exists($dir))
-      {
-      mkdir($dir, 0700, true);
-      }
-    if(file_exists($newPath))
-      {
-      unlink($newPath);
-      }
-    copy($oldPath, $newPath);
-    $commFile = $this->loadData('Community', 'default');
-    $comm = $this->Community->load($commFile[0]->getKey());
+        $oldPath = BASE_PATH.'/modules/readmes/tests/data/readme.md';
+        $dir = $this->getTempDirectory().'/'.$adminUser->getUserId().'/1002'; // private folder
+        $newPath = $dir.'/readme.md';
+        if (!file_exists($dir)) {
+            mkdir($dir, 0700, true);
+        }
+        if (file_exists($newPath)) {
+            unlink($newPath);
+        }
+        copy($oldPath, $newPath);
+        $commFile = $this->loadData('Community', 'default');
+        $comm = $this->Community->load($commFile[0]->getKey());
 
-    $rootFolder = $comm->getFolder();
-    $publicFolder = $this->Folder->createFolder('Public', '', $rootFolder);
-    $uploadComponent = MidasLoader::loadComponent('Upload');
-    $uploadComponent->createUploadedItem($adminUser, 'readme.md', $newPath, $publicFolder);
+        $rootFolder = $comm->getFolder();
+        $publicFolder = $this->Folder->createFolder('Public', '', $rootFolder);
+        $uploadComponent = MidasLoader::loadComponent('Upload');
+        $uploadComponent->createUploadedItem($adminUser, 'readme.md', $newPath, $publicFolder);
 
-    $resp = $this->_callRestApi('GET', '/readmes/community/'.$comm->getKey());
-    $this->_assertStatusOk($resp);
-    $this->assertEquals($resp["body"]->data->text, "<p>This is a readme</p>\n");
+        $resp = $this->_callRestApi('GET', '/readmes/community/'.$comm->getKey());
+        $this->_assertStatusOk($resp);
+        $this->assertEquals($resp["body"]->data->text, "<p>This is a readme</p>\n");
     }
-  }
+}

@@ -25,23 +25,20 @@
  * @package    readmes
  */
 class Readmes_ConfigController extends Readmes_AppController
-  {
-  public $_components = array('Breadcrumb');
+{
+    public $_components = array('Breadcrumb');
 
-  /**
-   * @method indexAction()
-   * @throws Zend_Exception on invalid userSession
-   */
-  function indexAction()
+    /**
+     * @throws Zend_Exception on invalid userSession
+     */
+    public function indexAction()
     {
-    $this->requireAdminPrivileges();
+        $this->requireAdminPrivileges();
 
-    $iconPath = $this->view->moduleWebroot.'/public/images/page_white_text.png';
-    $breadcrumbs = array();
-    $breadcrumbs[] = array('type' => 'moduleList');
-    $breadcrumbs[] = array('type' => 'custom',
-                           'text' => 'Readme Module Configuration',
-                           'icon' => $iconPath);
-    $this->Component->Breadcrumb->setBreadcrumbHeader($breadcrumbs, $this->view);
+        $iconPath = $this->view->moduleWebroot.'/public/images/page_white_text.png';
+        $breadcrumbs = array();
+        $breadcrumbs[] = array('type' => 'moduleList');
+        $breadcrumbs[] = array('type' => 'custom', 'text' => 'Readme Module Configuration', 'icon' => $iconPath);
+        $this->Component->Breadcrumb->setBreadcrumbHeader($breadcrumbs, $this->view);
     }
-  } // end class
+}

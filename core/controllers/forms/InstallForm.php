@@ -18,117 +18,117 @@
  limitations under the License.
 =========================================================================*/
 
-/** Install forms*/
+/** Install forms */
 class InstallForm extends AppForm
-  {
-  /** create  form */
-  public function createDBForm()
+{
+    /** create  form */
+    public function createDBForm()
     {
-    $form = new Zend_Form;
+        $form = new Zend_Form();
 
-    $form->setAction($this->webroot.'/install/step2')
-         ->setMethod('post');
-    $type = new Zend_Form_Element_Hidden('type');
+        $form->setAction($this->webroot.'/install/step2')->setMethod('post');
+        $type = new Zend_Form_Element_Hidden('type');
 
-    $host = new Zend_Form_Element_Text('host');
-    $host->setValue('localhost');
+        $host = new Zend_Form_Element_Text('host');
+        $host->setValue('localhost');
 
-    $port = new Zend_Form_Element_Text('port');
-    $port->addValidator('Digits', true);
+        $port = new Zend_Form_Element_Text('port');
+        $port->addValidator('Digits', true);
 
-    $unixsocket = new Zend_Form_Element_Text('unix_socket');
+        $unixsocket = new Zend_Form_Element_Text('unix_socket');
 
-    $dbname = new Zend_Form_Element_Text('dbname');
-    $dbname->setRequired(true)
-           ->addValidator('NotEmpty', true)
-           ->setValue('midas');
+        $dbname = new Zend_Form_Element_Text('dbname');
+        $dbname->setRequired(true)->addValidator('NotEmpty', true)->setValue('midas');
 
-    $username = new Zend_Form_Element_Text('username');
-    $username->setRequired(true)
-             ->addValidator('NotEmpty', true);
+        $username = new Zend_Form_Element_Text('username');
+        $username->setRequired(true)->addValidator('NotEmpty', true);
 
-    $password = new Zend_Form_Element_Password('password');
+        $password = new Zend_Form_Element_Password('password');
 
-    $firstname = new Zend_Form_Element_Text('firstname');
-    $firstname->setRequired(true)
-              ->addValidator('NotEmpty', true);
+        $firstname = new Zend_Form_Element_Text('firstname');
+        $firstname->setRequired(true)->addValidator('NotEmpty', true);
 
-    $lastname = new Zend_Form_Element_Text('lastname');
-    $lastname->setRequired(true)
-             ->addValidator('NotEmpty', true);
+        $lastname = new Zend_Form_Element_Text('lastname');
+        $lastname->setRequired(true)->addValidator('NotEmpty', true);
 
-    $email = new Zend_Form_Element_Text('email');
-    $email->setRequired(true)
-          ->addValidator('NotEmpty', true)
-          ->addValidator('EmailAddress');
+        $email = new Zend_Form_Element_Text('email');
+        $email->setRequired(true)->addValidator('NotEmpty', true)->addValidator('EmailAddress');
 
-    $userpassword1 = new Zend_Form_Element_Password('userpassword1');
-    $userpassword1->addValidator('NotEmpty', true)
-                  ->setRequired(true);
+        $userpassword1 = new Zend_Form_Element_Password('userpassword1');
+        $userpassword1->addValidator('NotEmpty', true)->setRequired(true);
 
-    $userpassword2 = new Zend_Form_Element_Password('userpassword2');
-    $userpassword2->addValidator('NotEmpty', true)
-                  ->setRequired(true);
+        $userpassword2 = new Zend_Form_Element_Password('userpassword2');
+        $userpassword2->addValidator('NotEmpty', true)->setRequired(true);
 
-    $gravatar = new Zend_Form_Element_Checkbox('gravatar');
+        $gravatar = new Zend_Form_Element_Checkbox('gravatar');
 
-    $submit = new  Zend_Form_Element_Submit('submit');
-    $submit->setLabel('Setup database and account');
+        $submit = new  Zend_Form_Element_Submit('submit');
+        $submit->setLabel('Setup database and account');
 
-    $form->addElements(array($type, $host, $port, $unixsocket, $dbname, $username, $password, $firstname, $lastname,  $email, $userpassword1, $userpassword2, $gravatar, $submit));
-    return $form;
+        $form->addElements(
+            array(
+                $type,
+                $host,
+                $port,
+                $unixsocket,
+                $dbname,
+                $username,
+                $password,
+                $firstname,
+                $lastname,
+                $email,
+                $userpassword1,
+                $userpassword2,
+                $gravatar,
+                $submit,
+            )
+        );
+
+        return $form;
     }
 
-  /** create  form */
-  public function createConfigForm()
+    /** create  form */
+    public function createConfigForm()
     {
-    $form = new Zend_Form;
+        $form = new Zend_Form();
 
-    $form->setAction($this->webroot.'/install/step3')
-         ->setMethod('post');
+        $form->setAction($this->webroot.'/install/step3')->setMethod('post');
 
-    $lang = new Zend_Form_Element_Select('lang');
-    $lang->addMultiOptions(array(
-                    'en' => 'English',
-                    'fr' => 'French'
-                        ));
+        $lang = new Zend_Form_Element_Select('lang');
+        $lang->addMultiOptions(array('en' => 'English', 'fr' => 'French'));
 
-    $process = new Zend_Form_Element_Select('process');
-    $process->addMultiOptions(array(
-                    'onthefly' => 'On the fly',
-                    'cron' => 'External'
-                        ));
+        $process = new Zend_Form_Element_Select('process');
+        $process->addMultiOptions(array('onthefly' => 'On the fly', 'cron' => 'External'));
 
-    $timezone = new Zend_Form_Element_Select('timezone');
-    $timezone->addMultiOptions(array(
-                    'America/Anchorage' => 'America/Anchorage',
-                    'America/Chicago' => 'America/Chicago',
-                    'America/Denver' => 'America/Denver',
-                    'America/Los_Angeles' => 'America/Los Angeles',
-                    'America/New_York' => 'America/New York',
-                    'America/Phoenix' => 'America/Phoenix',
-                    'Europe/London' => 'Europe/London',
-                    'Europe/Paris' => 'Europe/Paris',
-                    'Pacific/Honolulu' => 'Pacific/Honolulu',
-                    'UTC' => 'UTC'
-                        ));
+        $timezone = new Zend_Form_Element_Select('timezone');
+        $timezone->addMultiOptions(
+            array(
+                'America/Anchorage' => 'America/Anchorage',
+                'America/Chicago' => 'America/Chicago',
+                'America/Denver' => 'America/Denver',
+                'America/Los_Angeles' => 'America/Los Angeles',
+                'America/New_York' => 'America/New York',
+                'America/Phoenix' => 'America/Phoenix',
+                'Europe/London' => 'Europe/London',
+                'Europe/Paris' => 'Europe/Paris',
+                'Pacific/Honolulu' => 'Pacific/Honolulu',
+                'UTC' => 'UTC',
+            )
+        );
 
-    $environment = new Zend_Form_Element_Select('environment');
-    $environment->addMultiOptions(array(
-                    'production' => 'Production',
-                    'development' => 'Development'
-                        ));
+        $environment = new Zend_Form_Element_Select('environment');
+        $environment->addMultiOptions(array('production' => 'Production', 'development' => 'Development'));
 
-    $description = new Zend_Form_Element_Textarea('description');
+        $description = new Zend_Form_Element_Textarea('description');
 
-    $name = new Zend_Form_Element_Text('name');
-    $name->setRequired(true)
-         ->addValidator('NotEmpty', true);
+        $name = new Zend_Form_Element_Text('name');
+        $name->setRequired(true)->addValidator('NotEmpty', true);
 
-    $submit = new  Zend_Form_Element_Submit('submit');
-    $submit->setLabel('Create configuration');
+        $submit = new  Zend_Form_Element_Submit('submit');
+        $submit->setLabel('Create configuration');
 
-    $form->addElements(array($description, $process, $timezone, $environment, $lang, $name, $submit));
-    return $form;
+        $form->addElements(array($description, $process, $timezone, $environment, $lang, $name, $submit));
+
+        return $form;
     }
-  }
+}

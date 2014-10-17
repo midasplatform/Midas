@@ -18,112 +18,106 @@
  limitations under the License.
 =========================================================================*/
 
-/** package controller*/
+/** package controller */
 class Packages_PackageController extends Packages_AppController
-  {
-  public $_models = array('Community', 'Item');
-  public $_moduleModels = array('Application', 'Package', 'Project');
+{
+    public $_models = array('Community', 'Item');
+    public $_moduleModels = array('Application', 'Package', 'Project');
 
-  /**
-   * Render the page for editing package metadata on a specific package.
-   * Write permission on the item is required.
-   */
-  public function manageAction()
+    /**
+     * Render the page for editing package metadata on a specific package.
+     * Write permission on the item is required.
+     */
+    public function manageAction()
     {
-    $packageId = $this->getParam('id');
-    if(!isset($packageId))
-      {
-      throw new Zend_Exception('Must specify an id parameter');
-      }
-    $package = $this->Packages_Package->load($packageId);
-    if(!$package)
-      {
-      throw new Zend_Exception('Invalid package id');
-      }
-    if(!$this->Item->policyCheck($package->getItem(), $this->userSession->Dao, MIDAS_POLICY_WRITE))
-      {
-      throw new Zend_Exception('Write permission required');
-      }
-
-    $this->view->package = $package;
-    }
-
-  /**
-   * Called when the edit form is submitted
-   */
-  public function saveAction()
-    {
-    $packageId = $this->getParam('packageId');
-    if(!isset($packageId))
-      {
-      throw new Zend_Exception('Must set packageId parameter');
-      }
-    $package = $this->Packages_Package->load($packageId);
-    if(!isset($package))
-      {
-      throw new Zend_Exception('Invalid packageId parameter');
-      }
-    if(!$this->Item->policyCheck($package->getItem(), $this->userSession->Dao, MIDAS_POLICY_WRITE))
-      {
-      throw new Zend_Exception('Write permission required');
-      }
-    $this->disableLayout();
-    $this->disableView();
-
-    $package->setOs($this->getParam('os'));
-    $package->setArch($this->getParam('arch'));
-    $package->setRevision($this->getParam('revision'));
-    $package->setSubmissiontype($this->getParam('submissiontype'));
-    $package->setPackagetype($this->getParam('packagetype'));
-    $package->setProductname($this->getParam('productname'));
-    $package->setCodebase($this->getParam('codebase'));
-    $package->setCheckoutdate($this->getParam('checkoutdate'));
-    $package->setRelease($this->getParam('release'));
-    $this->Packages_Package->save($package);
-
-    echo JsonComponent::encode(array('message' => 'Changes saved', 'status' => 'ok'));
-    }
-
-  /**
-   * Ajax action for getting the latest package of each package type for the given os and arch
-   * @param os The os to match on
-   * @param arch The arch to match on
-   * @param applicationId The application id
-   * @return (json) - The latest uploaded package of each installer type for the given os, arch, and application
-   */
-  public function latestAction()
-    {
-    $this->disableLayout();
-    $this->disableView();
-
-    $os = $this->getParam('os');
-    $arch = $this->getParam('arch');
-    $applicationId = $this->getParam('applicationId');
-    if(!isset($applicationId))
-      {
-      throw new Zend_Exception('Must specify an applicationId parameter');
-      }
-    $application = $this->Packages_Application->load($applicationId);
-    if(!$application)
-      {
-      throw new Zend_Exception('Invalid applicationId', 404);
-      }
-    $comm = $application->getProject()->getCommunity();
-    if(!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ))
-      {
-      throw new Zend_Exception('You do not have read permissions on the project');
-      }
-
-    $latest = $this->Packages_Package->getLatestOfEachPackageType($application, $os, $arch);
-    $filtered = array();
-    foreach($latest as $package)
-      {
-      if($this->Item->policyCheck($package->getItem(), $this->userSession->Dao, MIDAS_POLICY_READ))
-        {
-        $sizestr = UtilityComponent::formatSize($package->getItem()->getSizebytes());
-        $filtered[] = array_merge($package->toArray(), array('size_formatted' => $sizestr));
+        $packageId = $this->getParam('id');
+        if (!isset($packageId)) {
+            throw new Zend_Exception('Must specify an id parameter');
         }
-      }
-    echo JsonComponent::encode($filtered);
+        $package = $this->Packages_Package->load($packageId);
+        if (!$package) {
+            throw new Zend_Exception('Invalid package id');
+        }
+        if (!$this->Item->policyCheck($package->getItem(), $this->userSession->Dao, MIDAS_POLICY_WRITE)
+        ) {
+            throw new Zend_Exception('Write permission required');
+        }
+
+        $this->view->package = $package;
     }
-  } // end class
+
+    /**
+     * Called when the edit form is submitted
+     */
+    public function saveAction()
+    {
+        $packageId = $this->getParam('packageId');
+        if (!isset($packageId)) {
+            throw new Zend_Exception('Must set packageId parameter');
+        }
+        $package = $this->Packages_Package->load($packageId);
+        if (!isset($package)) {
+            throw new Zend_Exception('Invalid packageId parameter');
+        }
+        if (!$this->Item->policyCheck($package->getItem(), $this->userSession->Dao, MIDAS_POLICY_WRITE)
+        ) {
+            throw new Zend_Exception('Write permission required');
+        }
+        $this->disableLayout();
+        $this->disableView();
+
+        $package->setOs($this->getParam('os'));
+        $package->setArch($this->getParam('arch'));
+        $package->setRevision($this->getParam('revision'));
+        $package->setSubmissiontype($this->getParam('submissiontype'));
+        $package->setPackagetype($this->getParam('packagetype'));
+        $package->setProductname($this->getParam('productname'));
+        $package->setCodebase($this->getParam('codebase'));
+        $package->setCheckoutdate($this->getParam('checkoutdate'));
+        $package->setRelease($this->getParam('release'));
+        $this->Packages_Package->save($package);
+
+        echo JsonComponent::encode(array('message' => 'Changes saved', 'status' => 'ok'));
+    }
+
+    /**
+     * Ajax action for getting the latest package of each package type for the given os and arch
+     *
+     * @param os The os to match on
+     * @param arch The arch to match on
+     * @param applicationId The application id
+     * @return (json) - The latest uploaded package of each installer type for the given os, arch, and application
+     */
+    public function latestAction()
+    {
+        $this->disableLayout();
+        $this->disableView();
+
+        $os = $this->getParam('os');
+        $arch = $this->getParam('arch');
+        $applicationId = $this->getParam('applicationId');
+        if (!isset($applicationId)) {
+            throw new Zend_Exception('Must specify an applicationId parameter');
+        }
+        $application = $this->Packages_Application->load($applicationId);
+        if (!$application) {
+            throw new Zend_Exception('Invalid applicationId', 404);
+        }
+        $comm = $application->getProject()->getCommunity();
+        if (!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ)
+        ) {
+            throw new Zend_Exception('You do not have read permissions on the project');
+        }
+
+        $latest = $this->Packages_Package->getLatestOfEachPackageType($application, $os, $arch);
+        $filtered = array();
+        foreach ($latest as $package) {
+            if ($this->Item->policyCheck($package->getItem(), $this->userSession->Dao, MIDAS_POLICY_READ)
+            ) {
+                $sizestr = UtilityComponent::formatSize($package->getItem()->getSizebytes());
+                $filtered[] = array_merge($package->toArray(), array('size_formatted' => $sizestr));
+            }
+        }
+        echo JsonComponent::encode($filtered);
+    }
+}

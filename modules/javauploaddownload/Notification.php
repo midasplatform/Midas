@@ -20,36 +20,37 @@
 
 /** Notification manager for the javauploaddownload module */
 class Javauploaddownload_Notification extends MIDAS_Notification
-  {
-  public $moduleName = 'javauploaddownload';
+{
+    public $moduleName = 'javauploaddownload';
 
-  /** Init notification process */
-  public function init()
+    /** Init notification process */
+    public function init()
     {
-    $fc = Zend_Controller_Front::getInstance();
-    $this->webroot = $fc->getBaseUrl();
-    $this->addCallBack('CALLBACK_CORE_GET_FOOTER_LAYOUT', 'getScript');
-    $this->addCallBack('CALLBACK_CORE_GET_REVISIONUPLOAD_TABS', 'getRevisionUploadTab');
-    $this->addCallBack('CALLBACK_CORE_GET_UPLOAD_TABS', 'getUploadTabs');
+        $fc = Zend_Controller_Front::getInstance();
+        $this->webroot = $fc->getBaseUrl();
+        $this->addCallBack('CALLBACK_CORE_GET_FOOTER_LAYOUT', 'getScript');
+        $this->addCallBack('CALLBACK_CORE_GET_REVISIONUPLOAD_TABS', 'getRevisionUploadTab');
+        $this->addCallBack('CALLBACK_CORE_GET_UPLOAD_TABS', 'getUploadTabs');
     }
 
-  /** Get revision upload tab */
-  public function getRevisionUploadTab($params)
+    /** Get revision upload tab */
+    public function getRevisionUploadTab($params)
     {
-    return array('File Upload Applet' => $this->webroot.'/'.$this->moduleName.'/upload/revision');
+        return array('File Upload Applet' => $this->webroot.'/'.$this->moduleName.'/upload/revision');
     }
 
-  /** Get JavaScript callback script */
-  public function getScript()
+    /** Get JavaScript callback script */
+    public function getScript()
     {
-    return '<script type="text/javascript" src="'.$this->webroot.'/modules/'.$this->moduleName.'/public/js/common/common.notify.js"></script>';
+        return '<script type="text/javascript" src="'.$this->webroot.'/modules/'.$this->moduleName.'/public/js/common/common.notify.js"></script>';
     }
 
-  /** Get upload tabs */
-  public function getUploadTabs($params)
+    /** Get upload tabs */
+    public function getUploadTabs($params)
     {
-    return array(
-      'File Upload Applet' => $this->webroot.'/'.$this->moduleName.'/upload',
-      'Folder Upload Applet' => $this->webroot.'/'.$this->moduleName.'/upload?mode=folder');
+        return array(
+            'File Upload Applet' => $this->webroot.'/'.$this->moduleName.'/upload',
+            'Folder Upload Applet' => $this->webroot.'/'.$this->moduleName.'/upload?mode=folder',
+        );
     }
-  }
+}

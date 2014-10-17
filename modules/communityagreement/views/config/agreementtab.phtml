@@ -18,17 +18,19 @@
  limitations under the License.
 =========================================================================*/
 
-echo '<script type="text/javascript" src="' . $this->moduleWebroot . '/public/js/config/config.agreementtab.js"></script>';
+echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/config/config.agreementtab.js"></script>';
 ?>
 
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/config/config.agreementtab.css" />
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->moduleWebroot ?>/public/css/config/config.agreementtab.css"/>
 
 <div class="formLabel">Community Agreement</div>
-<form id="createAgreementForm" class="genericForm" method="<?php echo $this->agreementForm['method']?>"  action="<?php echo $this->agreementForm['action']?>">
-  <div>
-    <?php echo $this->agreementForm['agreement']?>
-  </div>
-  <div>
-    <?php echo $this->agreementForm['submit']?>
-  </div>
+<form id="createAgreementForm" class="genericForm" method="<?php echo $this->agreementForm['method'] ?>"
+      action="<?php echo $this->agreementForm['action'] ?>">
+    <div>
+        <?php echo $this->agreementForm['agreement'] ?>
+    </div>
+    <div>
+        <?php echo $this->agreementForm['submit'] ?>
+    </div>
 </form>

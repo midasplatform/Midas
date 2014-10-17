@@ -20,62 +20,58 @@
 
 /**
  * Apidocs Controller for the web API
- **/
+ */
 class ApidocsController extends AppController
-  {
-  public $_components = array('Apidocs');
+{
+    public $_components = array('Apidocs');
 
-  /** init api actions*/
-  public function init()
+    /** init api actions */
+    public function init()
     {
-    $this->disableLayout();
-    $this->disableView();
+        $this->disableLayout();
+        $this->disableView();
     }
 
-  /** Index resource */
-  function indexAction()
+    /** Index resource */
+    public function indexAction()
     {
-    $results = array();
-    $results['apiVersion'] = '1.0';
-    $results['swaggerVersion'] = '1.1';
-    $baseUrl = $this->getRequest()->getScheme().'://'.$this->getRequest()->getHttpHost().$this->view->webroot;
-    $results['basePath'] = $baseUrl. '/apidocs';
-    $results['apis'] = array();
+        $results = array();
+        $results['apiVersion'] = '1.0';
+        $results['swaggerVersion'] = '1.1';
+        $baseUrl = $this->getRequest()->getScheme().'://'.$this->getRequest()->getHttpHost().$this->view->webroot;
+        $results['basePath'] = $baseUrl.'/apidocs';
+        $results['apis'] = array();
 
-    $resources = $this->Component->Apidocs->getEnabledResources();
-    foreach($resources as $resourcePath)
-      {
-      if(strpos($resourcePath, '/') > 0)
-        {
-        $resourcePath = '/' . $resourcePath;
+        $resources = $this->Component->Apidocs->getEnabledResources();
+        foreach ($resources as $resourcePath) {
+            if (strpos($resourcePath, '/') > 0) {
+                $resourcePath = '/'.$resourcePath;
+            }
+            $curResource = array();
+            $curResource['path'] = $resourcePath;
+            $curResource['discription'] = 'Operations about '.$resourcePath;
+            array_push($results['apis'], $curResource);
         }
-      $curResource = array();
-      $curResource['path'] = $resourcePath;
-      $curResource['discription'] = 'Operations about '. $resourcePath;
-      array_push($results['apis'], $curResource);
-      }
-    echo JsonComponent::encode($results);
+        echo JsonComponent::encode($results);
     }
 
-  /**
-   * We override __call to intercept the path and transform
-   * it into a resource and module name, and pass that into the ApidocsComponent.
-   */
-  public function __call($name, $args)
+    /**
+     * We override __call to intercept the path and transform
+     * it into a resource and module name, and pass that into the ApidocsComponent.
+     */
+    public function __call($name, $args)
     {
-    $pathParams = UtilityComponent::extractPathParams();
-    $module = '';
-    $resource = $this->getRequest()->getActionName();
-    if(count($pathParams))
-      {
-      if(in_array($this->getRequest()->getActionName(), Zend_Registry::get('modulesEnable')))
-        {
-        $module = $this->getRequest()->getActionName();
-        $resource = $pathParams[0];
+        $pathParams = UtilityComponent::extractPathParams();
+        $module = '';
+        $resource = $this->getRequest()->getActionName();
+        if (count($pathParams)) {
+            if (in_array($this->getRequest()->getActionName(), Zend_Registry::get('modulesEnable'))) {
+                $module = $this->getRequest()->getActionName();
+                $resource = $pathParams[0];
+            }
         }
-      }
 
-    $results = $this->Component->Apidocs->getResourceApiDocs($resource, $module);
-    echo JsonComponent::encode($results);
+        $results = $this->Component->Apidocs->getResourceApiDocs($resource, $module);
+        echo JsonComponent::encode($results);
     }
-  }
+}

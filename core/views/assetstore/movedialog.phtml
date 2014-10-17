@@ -18,29 +18,29 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/assetstore/assetstore.movedialog.css" />
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->coreWebroot ?>/public/css/assetstore/assetstore.movedialog.css"/>
 
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/assetstore/assetstore.movedialog.js"></script>
+<script type="text/javascript"
+        src="<?php echo $this->coreWebroot ?>/public/js/assetstore/assetstore.movedialog.js"></script>
 
-<form id='moveBitstreamsForm'  action="<?php echo $this->webroot?>/assetstore/movecontents" method="post">
-  Destination assetstore:
-  <select id="dstAssetstoreId">
-    <?php
-    foreach($this->assetstores as $assetstore)
-      {
-      if($assetstore->getKey() != $this->srcAssetstore->getKey())
-        {
-        echo '<option value="'.$assetstore->getKey().'">'.$assetstore->getName().'</option>';
+<form id='moveBitstreamsForm' action="<?php echo $this->webroot ?>/assetstore/movecontents" method="post">
+    Destination assetstore:
+    <select id="dstAssetstoreId">
+        <?php
+        foreach ($this->assetstores as $assetstore) {
+            if ($assetstore->getKey() != $this->srcAssetstore->getKey()) {
+                echo '<option value="'.$assetstore->getKey().'">'.$assetstore->getName().'</option>';
+            }
         }
-      }
-    ?>
-  </select>
-  <input type="hidden" id="srcAssetstoreId" value="<?php echo $this->srcAssetstore->getKey();?>" />
+        ?>
+    </select>
+    <input type="hidden" id="srcAssetstoreId" value="<?php echo $this->srcAssetstore->getKey(); ?>"/>
 
-  <div id="moveBitstreamsProgressBar"></div>
-  <div id="moveBitstreamsProgressMessage"></div>
+    <div id="moveBitstreamsProgressBar"></div>
+    <div id="moveBitstreamsProgressMessage"></div>
 
-  <div class="bottomButtons">
-    <input type="button" class="globalButton" id="moveBitstreamsConfirm" value="Move" />
-  </div>
+    <div class="bottomButtons">
+        <input type="button" class="globalButton" id="moveBitstreamsConfirm" value="Move"/>
+    </div>
 </form>

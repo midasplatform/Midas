@@ -25,16 +25,18 @@ require_once BASE_PATH.'/core/models/base/SettingModelBase.php';
  *  Pdo Model
  */
 class SettingModel extends SettingModelBase
-  {
-  /** get by name*/
-  function getDaoByName($name, $module = 'core')
+{
+    /** get by name */
+    public function getDaoByName($name, $module = 'core')
     {
-    if(!is_string($name) || !is_string($module))
-      {
-      throw new Zend_Exception('Error in Parameters when getting Setting dao by name.');
-      }
-    $row = $this->database->fetchRow($this->database->select()->where('name = ?', $name)->where('module = ?', $module));
-    $dao = $this->initDao(ucfirst($this->_name), $row);
-    return $dao;
+        if (!is_string($name) || !is_string($module)) {
+            throw new Zend_Exception('Error in Parameters when getting Setting dao by name.');
+        }
+        $row = $this->database->fetchRow(
+            $this->database->select()->where('name = ?', $name)->where('module = ?', $module)
+        );
+        $dao = $this->initDao(ucfirst($this->_name), $row);
+
+        return $dao;
     }
-  } // end class
+}

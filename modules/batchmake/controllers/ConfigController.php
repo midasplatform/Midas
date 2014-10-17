@@ -20,7 +20,8 @@
 
 /**
  *  Batchmake_ConfigController
- *  @todo TODO list for ConfigController and batchmake module
+ *
+ * @todo TODO list for ConfigController and batchmake module
  *     - better way of loading internationalization component in component and form
  *     - look into zend internationalization/translate
  *     - for web api, there is a json wrapper , ajax_web_api.js in midas2
@@ -31,91 +32,89 @@
  *     - change ajax calls to be through web api, and standard ajax
  */
 class Batchmake_ConfigController extends Batchmake_AppController
-  {
+{
+    public $_moduleForms = array('Config');
+    public $_components = array('Utility', 'Internationalization');
+    public $_moduleComponents = array('KWBatchmake');
 
-  public $_moduleForms = array('Config');
-  public $_components = array('Utility', 'Internationalization');
-  public $_moduleComponents = array('KWBatchmake');
-
-  /**
-   * will create default paths in the midas temp directory
-   * for any properties not already set, except for the
-   * condor bin dir; imposing a firmer hand on the user
-   * @param type $currentConfig
-   */
-  protected function createDefaultConfig($currentConfig)
+    /**
+     * will create default paths in the midas temp directory
+     * for any properties not already set, except for the
+     * condor bin dir; imposing a firmer hand on the user
+     *
+     * @param type $currentConfig
+     */
+    protected function createDefaultConfig($currentConfig)
     {
-    $tmpDir = $this->getTempDirectory();
-    $defaultConfigDirs = array(MIDAS_BATCHMAKE_TMP_DIR_PROPERTY => $tmpDir.'/batchmake/tmp',
-    MIDAS_BATCHMAKE_BIN_DIR_PROPERTY => $tmpDir.'/batchmake/bin',
-    MIDAS_BATCHMAKE_SCRIPT_DIR_PROPERTY => $tmpDir.'/batchmake/script',
-    MIDAS_BATCHMAKE_APP_DIR_PROPERTY => $tmpDir.'/batchmake/bin',
-    MIDAS_BATCHMAKE_DATA_DIR_PROPERTY => $tmpDir.'/batchmake/data');
-    $returnedConfig = array();
-    foreach($currentConfig as $configProp => $configDir)
-      {
-      if((!isset($configProp) || !isset($configDir) || $configDir == "") && array_key_exists($configProp, $defaultConfigDirs))
-        {
-        $configDir = $defaultConfigDirs[$configProp];
-        $returnedConfig[$configProp] = $configDir;
-        // also create this directory to be sure it exists
-        if(!KWUtils::mkDir($configDir))
-          {
-          throw new Zend_Exception("Cannot create directory ".$configDir);
-          }
+        $tmpDir = $this->getTempDirectory();
+        $defaultConfigDirs = array(
+            MIDAS_BATCHMAKE_TMP_DIR_PROPERTY => $tmpDir.'/batchmake/tmp',
+            MIDAS_BATCHMAKE_BIN_DIR_PROPERTY => $tmpDir.'/batchmake/bin',
+            MIDAS_BATCHMAKE_SCRIPT_DIR_PROPERTY => $tmpDir.'/batchmake/script',
+            MIDAS_BATCHMAKE_APP_DIR_PROPERTY => $tmpDir.'/batchmake/bin',
+            MIDAS_BATCHMAKE_DATA_DIR_PROPERTY => $tmpDir.'/batchmake/data',
+        );
+        $returnedConfig = array();
+        foreach ($currentConfig as $configProp => $configDir) {
+            if ((!isset($configProp) || !isset($configDir) || $configDir == "") && array_key_exists(
+                    $configProp,
+                    $defaultConfigDirs
+                )
+            ) {
+                $configDir = $defaultConfigDirs[$configProp];
+                $returnedConfig[$configProp] = $configDir;
+                // also create this directory to be sure it exists
+                if (!KWUtils::mkDir($configDir)) {
+                    throw new Zend_Exception("Cannot create directory ".$configDir);
+                }
+            } else {
+                $returnedConfig[$configProp] = $configDir;
+            }
         }
-      else
-        {
-        $returnedConfig[$configProp] = $configDir;
-        }
-      }
-    return $returnedConfig;
+
+        return $returnedConfig;
     }
 
-  /**
-   * @method indexAction(), will test the configuration that the user has set
-   * and return validation info for the passed in properties.
-   */
-  public function indexAction()
+    /**
+     * will test the configuration that the user has set
+     * and return validation info for the passed in properties.
+     */
+    public function indexAction()
     {
-    $this->requireAdminPrivileges();
+        $this->requireAdminPrivileges();
 
-    // get all the properties, not just the batchmake config
-    $fullConfig = $this->ModuleComponent->KWBatchmake->loadConfigProperties(null, false);
-    // now get just the batchmake ones
-    $batchmakeConfig = $this->ModuleComponent->KWBatchmake->filterBatchmakeConfigProperties($fullConfig);
-    // create these properties as default dir locations in tmp
-    $batchmakeConfig = $this->createDefaultConfig($batchmakeConfig);
-    $configPropertiesRequirements = $this->ModuleComponent->KWBatchmake->getConfigPropertiesRequirements();
+        // get all the properties, not just the batchmake config
+        $fullConfig = $this->ModuleComponent->KWBatchmake->loadConfigProperties(null, false);
+        // now get just the batchmake ones
+        $batchmakeConfig = $this->ModuleComponent->KWBatchmake->filterBatchmakeConfigProperties($fullConfig);
+        // create these properties as default dir locations in tmp
+        $batchmakeConfig = $this->createDefaultConfig($batchmakeConfig);
+        $configPropertiesRequirements = $this->ModuleComponent->KWBatchmake->getConfigPropertiesRequirements();
 
-    if($this->_request->isPost())
-      {
-      $this->_helper->layout->disableLayout();
-      $this->_helper->viewRenderer->setNoRender();
-      $submitConfig = $this->getParam(MIDAS_BATCHMAKE_SUBMIT_CONFIG);
+        if ($this->_request->isPost()) {
+            $this->_helper->layout->disableLayout();
+            $this->_helper->viewRenderer->setNoRender();
+            $submitConfig = $this->getParam(MIDAS_BATCHMAKE_SUBMIT_CONFIG);
 
-      if(isset($submitConfig))
-        {
-        // save only those properties we are interested for local configuration
-        foreach($configPropertiesRequirements as $configProperty => $configPropertyRequirement)
-          {
-          $fullConfig[MIDAS_BATCHMAKE_GLOBAL_CONFIG_NAME][$this->moduleName.'.'.$configProperty] = $this->getParam($configProperty);
-          }
-        $this->Component->Utility->createInitFile(MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG, $fullConfig);
-        $msg = $this->t(MIDAS_BATCHMAKE_CHANGES_SAVED_STRING);
-        echo JsonComponent::encode(array(true, $msg));
+            if (isset($submitConfig)) {
+                // save only those properties we are interested for local configuration
+                foreach ($configPropertiesRequirements as $configProperty => $configPropertyRequirement) {
+                    $fullConfig[MIDAS_BATCHMAKE_GLOBAL_CONFIG_NAME][$this->moduleName.'.'.$configProperty] = $this->getParam(
+                        $configProperty
+                    );
+                }
+                $this->Component->Utility->createInitFile(MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG, $fullConfig);
+                $msg = $this->t(MIDAS_BATCHMAKE_CHANGES_SAVED_STRING);
+                echo JsonComponent::encode(array(true, $msg));
+            }
+        } else {
+            // populate config form with values
+            $configForm = $this->ModuleForm->Config->createConfigForm($configPropertiesRequirements);
+            $formArray = $this->getFormAsArray($configForm);
+            foreach ($configPropertiesRequirements as $configProperty => $configPropertyRequirement) {
+                $formArray[$configProperty]->setValue($batchmakeConfig[$configProperty]);
+            }
+            $this->view->configForm = $formArray;
         }
-      }
-    else
-      {
-      // populate config form with values
-      $configForm = $this->ModuleForm->Config->createConfigForm($configPropertiesRequirements);
-      $formArray = $this->getFormAsArray($configForm);
-      foreach($configPropertiesRequirements as $configProperty => $configPropertyRequirement)
-        {
-        $formArray[$configProperty]->setValue($batchmakeConfig[$configProperty]);
-        }
-      $this->view->configForm = $formArray;
-      }
     }
-  } // end class
+}

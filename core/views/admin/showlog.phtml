@@ -18,56 +18,60 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/admin/admin.showlog.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.tablesorter.min.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/admin/admin.showlog.css"/>
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->coreWebroot ?>/public/css/jquery/jquery.tablesorter.min.css"/>
 
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.tablesorter.min.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.checkboxrange.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/admin/admin.showlog.js"></script>
+<script type="text/javascript"
+        src="<?php echo $this->coreWebroot ?>/public/js/jquery/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot ?>/public/js/jquery/jquery.checkboxrange.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot ?>/public/js/admin/admin.showlog.js"></script>
 
-<form id="logSelector" method="post" action="<?php echo $this->webroot?>/admin/showlog">
-  <label for="startlog">From</label>
-  <input type="text" id="startlog" name="startlog"/>
-  <label for="endlog">to</label>
-  <input type="text" id="endlog" name="endlog"/>
-  <br/>
-  <label for="modulelog">Module</label>
-  <select id="modulelog" name="modulelog">
-    <?php foreach($this->modulesLog as $module)
-      {
-      echo "<option value='{$module}'>{$module}</option>";
-      }
-      ?>
-  </select>
-  <label for="prioritylog">Priority</label>
-  <select id="priorityOperator" name="priorityOperator">
-    <option value="<=">&gt;=</option>
-    <option value="=">==</option>
-  </select>
-  <select id="prioritylog" name="prioritylog">
-    <option value="2">critical</option>
-    <option value="4" selected="selected">warning</option>
-    <option value="6">info</option>
-    <?php
-    if(Zend_Registry::get('configGlobal')->environment == 'development')
-      {
-      echo '<option value="7">debug</option>';
-      }
-    ?>
-  </select>
-  <br/>
-  <input type="hidden" id="errorlogOffset" name="offset" value="0" />
-  <input type="hidden" id="errorlogPageLimit" name="limit" />
-  <input type="submit" id="applyFilter" value="Apply Filter" />
+<form id="logSelector" method="post" action="<?php echo $this->webroot ?>/admin/showlog">
+    <label for="startlog">From</label>
+    <input type="text" id="startlog" name="startlog"/>
+    <label for="endlog">to</label>
+    <input type="text" id="endlog" name="endlog"/>
+    <br/>
+    <label for="modulelog">Module</label>
+    <select id="modulelog" name="modulelog">
+        <?php foreach ($this->modulesLog as $module) {
+            echo "<option value='{$module}'>{$module}</option>";
+        }
+        ?>
+    </select>
+    <label for="prioritylog">Priority</label>
+    <select id="priorityOperator" name="priorityOperator">
+        <option value="<=">&gt;=</option>
+        <option value="=">==</option>
+    </select>
+    <select id="prioritylog" name="prioritylog">
+        <option value="2">critical</option>
+        <option value="4" selected="selected">warning</option>
+        <option value="6">info</option>
+        <?php
+        if (Zend_Registry::get('configGlobal')->environment == 'development') {
+            echo '<option value="7">debug</option>';
+        }
+        ?>
+    </select>
+    <br/>
+    <input type="hidden" id="errorlogOffset" name="offset" value="0"/>
+    <input type="hidden" id="errorlogPageLimit" name="limit"/>
+    <input type="submit" id="applyFilter" value="Apply Filter"/>
 </form>
 
 <br/>
 
-<span><b>Current Filter:</b></span><br />
-From: <span id="currentFilterStart"><?php echo $this->jsonContent['currentFilter']['start']; ?></span><br />
-To: <span id="currentFilterEnd"><?php echo $this->jsonContent['currentFilter']['end']; ?></span><br />
-Module: <span id="currentFilterModule">all</span><br />
-Priority: <span id="currentFilterPriority">&gt;= warning</span><br />
+<span><b>Current Filter:</b></span><br/>
+From:
+<span id="currentFilterStart"><?php echo $this->jsonContent['currentFilter']['start']; ?></span>
+<br/>
+To:
+<span id="currentFilterEnd"><?php echo $this->jsonContent['currentFilter']['end']; ?></span>
+<br/>
+Module: <span id="currentFilterModule">all</span><br/>
+Priority: <span id="currentFilterPriority">&gt;= warning</span><br/>
 <hr/>
 <button type="button" id="deleteSelected">Delete Selected</button>
 <span id="paginationMessage"></span>
@@ -75,20 +79,20 @@ Priority: <span id="currentFilterPriority">&gt;= warning</span><br />
 <button id="errorlogNextPage" disabled="disabled">&gt;</button>
 <br/>
 <table id="listLogs" class="tablesorter">
-  <thead>
+    <thead>
     <tr>
-      <th><input type="checkbox" id="selectAllCheckbox" /></th>
-      <th>Date</th>
-      <th>Priority</th>
-      <th>Module</th>
-      <th>Short Message</th>
+        <th><input type="checkbox" id="selectAllCheckbox"/></th>
+        <th>Date</th>
+        <th>Priority</th>
+        <th>Module</th>
+        <th>Short Message</th>
     </tr>
-  </thead>
-  <tbody>
-  </tbody>
+    </thead>
+    <tbody>
+    </tbody>
 </table>
 
-<img class="logsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
+<img class="logsLoading" alt="" src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>
 
 <div id="jsonLogs" style="display:none;"><?php echo JsonComponent::encode($this->jsonContent); ?></div>
 <div id="fullLogMessages" style="display:none;"></div>

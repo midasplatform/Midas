@@ -18,49 +18,43 @@
  limitations under the License.
 =========================================================================*/
 
-/** notification manager*/
+/** Notification manager for the archive module */
 class Archive_Notification extends MIDAS_Notification
-  {
-  public $moduleName = 'archive';
+{
+    public $moduleName = 'archive';
 
-  /** init notification process*/
-  public function init()
+    /** init notification process */
+    public function init()
     {
-    $fc = Zend_Controller_Front::getInstance();
-    $this->webroot = $fc->getBaseUrl();
-    $this->moduleWebroot = $this->webroot.'/modules/'.$this->moduleName;
-    $this->coreWebroot = $this->webroot.'/core';
+        $fc = Zend_Controller_Front::getInstance();
+        $this->webroot = $fc->getBaseUrl();
+        $this->moduleWebroot = $this->webroot.'/modules/'.$this->moduleName;
+        $this->coreWebroot = $this->webroot.'/core';
 
-    $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_ACTIONMENU', 'getItemAction');
-    $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_JS', 'getItemViewJs');
-    }//end init
-
-  /** Get item action for extracting zip */
-  public function getItemAction($params)
-    {
-    $item = $params['item'];
-    $isAdmin = $params['isAdmin'];
-
-    if(!$isAdmin)
-      {
-      return null;
-      }
-
-    if(substr(strtolower($item->getName()), -4) === '.zip')
-      {
-      return '<li><a class="archiveExtractAction" href="javascript:;">'.
-             '<img alt="" src="'.$this->coreWebroot.'/public/images/icons/page_white_zip.png" /> '.
-             'Extract archive</a></li>';
-      }
-    else
-      {
-      return null;
-      }
+        $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_ACTIONMENU', 'getItemAction');
+        $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_JS', 'getItemViewJs');
     }
 
-  /** Get item view js */
-  public function getItemViewJs($params)
+    /** Get item action for extracting zip */
+    public function getItemAction($params)
     {
-    return array($this->moduleWebroot.'/public/js/common/archive.common.js');
+        $item = $params['item'];
+        $isAdmin = $params['isAdmin'];
+
+        if (!$isAdmin) {
+            return null;
+        }
+
+        if (substr(strtolower($item->getName()), -4) === '.zip') {
+            return '<li><a class="archiveExtractAction" href="javascript:;">'.'<img alt="" src="'.$this->coreWebroot.'/public/images/icons/page_white_zip.png" /> '.'Extract archive</a></li>';
+        } else {
+            return null;
+        }
     }
-  } // end class
+
+    /** Get item view js */
+    public function getItemViewJs($params)
+    {
+        return array($this->moduleWebroot.'/public/js/common/archive.common.js');
+    }
+}

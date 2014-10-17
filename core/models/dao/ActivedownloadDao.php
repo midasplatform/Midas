@@ -19,9 +19,8 @@
 =========================================================================*/
 
 /**
- * \class ActivedownloadDao
  */
 class ActivedownloadDao extends AppDao
-  {
-  public $_model = 'Activedownload';
-  } // end class
+{
+    public $_model = 'Activedownload';
+}

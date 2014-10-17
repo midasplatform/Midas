@@ -24,19 +24,19 @@
  * Subclasses may implement two callbacks, preInstall() and postInstall()
  */
 class MIDASModuleInstallScript
-  {
-  /** constructor */
-  public function __construct()
+{
+    /** constructor */
+    public function __construct()
     {
     }
 
-  /** preInstall gets called before the tables are installed */
-  public function preInstall()
+    /** preInstall gets called before the tables are installed */
+    public function preInstall()
     {
     }
 
-  /** postInstall gets called after the tables are installed */
-  public function postInstall()
+    /** postInstall gets called after the tables are installed */
+    public function postInstall()
     {
     }
-  } // end class
+}

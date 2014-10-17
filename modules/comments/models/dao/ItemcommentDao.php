@@ -17,9 +17,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /** Dao for item ratings */
 class Comments_ItemcommentDao extends Comments_AppDao
-  {
-  public $_model = 'Itemcomment';
-  public $_module = 'comments';
-  }
+{
+    public $_model = 'Itemcomment';
+    public $_module = 'comments';
+}

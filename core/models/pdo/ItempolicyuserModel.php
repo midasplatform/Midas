@@ -21,24 +21,28 @@
 require_once BASE_PATH.'/core/models/base/ItempolicyuserModelBase.php';
 
 /**
- * \class ItempolicyuserModel
- * \brief Pdo Model
+ * Pdo Model
  */
 class ItempolicyuserModel extends ItempolicyuserModelBase
-  {
-  /** getPolicy
-   * @return ItempolicyuserDao
-   */
-  public function getPolicy($user, $item)
+{
+    /** getPolicy
+     *
+     * @return ItempolicyuserDao
+     */
+    public function getPolicy($user, $item)
     {
-    if(!$user instanceof UserDao)
-      {
-      throw new Zend_Exception("Should be a user.");
-      }
-    if(!$item instanceof ItemDao)
-      {
-      throw new Zend_Exception("Should be an item.");
-      }
-    return $this->initDao('Itempolicyuser', $this->database->fetchRow($this->database->select()->where('item_id = ?', $item->getKey())->where('user_id = ?', $user->getKey())));
+        if (!$user instanceof UserDao) {
+            throw new Zend_Exception("Should be a user.");
+        }
+        if (!$item instanceof ItemDao) {
+            throw new Zend_Exception("Should be an item.");
+        }
+
+        return $this->initDao(
+            'Itempolicyuser',
+            $this->database->fetchRow(
+                $this->database->select()->where('item_id = ?', $item->getKey())->where('user_id = ?', $user->getKey())
+            )
+        );
     }
-  }
+}

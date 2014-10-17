@@ -18,67 +18,50 @@
  limitations under the License.
 =========================================================================*/
 
-/** Index controller*/
+/** Index controller */
 class Visualize_IndexController extends Visualize_AppController
-  {
-  public $_moduleComponents = array('Main');
-  public $_models = array('Item');
+{
+    public $_moduleComponents = array('Main');
+    public $_models = array('Item');
 
-  /** index*/
-  function indexAction()
+    /** index */
+    public function indexAction()
     {
-    $height = $this->getParam('height');
-    $width = $this->getParam('width');
-    $viewMode = $this->getParam('viewMode');
-    if(!isset($viewMode))
-      {
-      $viewMode = 'volume';
-      }
-    if(!isset($height))
-      {
-      $height = 500;
-      }
-    if(!isset($width))
-      {
-      $width = 500;
-      }
-    $itemId = $this->getParam('itemId');
-    $itemDao = $this->Item->load($itemId);
+        $height = $this->getParam('height');
+        $width = $this->getParam('width');
+        $viewMode = $this->getParam('viewMode');
+        if (!isset($viewMode)) {
+            $viewMode = 'volume';
+        }
+        if (!isset($height)) {
+            $height = 500;
+        }
+        if (!isset($width)) {
+            $width = 500;
+        }
+        $itemId = $this->getParam('itemId');
+        $itemDao = $this->Item->load($itemId);
 
-    if($this->ModuleComponent->Main->canVisualizeWithParaview($itemDao))
-      {
-      if($viewMode == 'slice')
-        {
-        $this->redirect('/visualize/paraview/slice?itemId='.$itemId.'&height='.$height.'&width='.$width);
+        if ($this->ModuleComponent->Main->canVisualizeWithParaview($itemDao)) {
+            if ($viewMode == 'slice') {
+                $this->redirect(
+                    '/visualize/paraview/slice?itemId='.$itemId.'&height='.$height.'&width='.$width
+                );
+            } else { // normal volume rendering
+                $this->redirect('/visualize/paraview/?itemId='.$itemId.'&height='.$height.'&width='.$width);
+            }
+        } elseif ($this->ModuleComponent->Main->canVisualizeMedia($itemDao)) {
+            $this->redirect('/visualize/media/?itemId='.$itemId.'&height='.$height.'&width='.$width);
+        } elseif ($this->ModuleComponent->Main->canVisualizeTxt($itemDao)) {
+            $this->redirect('/visualize/txt/?itemId='.$itemId.'&height='.$height.'&width='.$width);
+        } elseif ($this->ModuleComponent->Main->canVisualizeImage($itemDao)) {
+            $this->redirect('/visualize/image/?itemId='.$itemId.'&height='.$height.'&width='.$width);
+        } elseif ($this->ModuleComponent->Main->canVisualizePdf($itemDao)) {
+            $this->redirect('/visualize/pdf/?itemId='.$itemId.'&height='.$height.'&width='.$width);
+        } elseif ($this->ModuleComponent->Main->canVisualizeWebgl($itemDao)) {
+            $this->redirect('/visualize/webgl/?itemId='.$itemId.'&height='.$height.'&width='.$width);
+        } else {
+            throw new Zend_Exception('Unable to visualize');
         }
-      else //normal volume rendering
-        {
-        $this->redirect('/visualize/paraview/?itemId='.$itemId.'&height='.$height.'&width='.$width);
-        }
-      }
-    else if($this->ModuleComponent->Main->canVisualizeMedia($itemDao))
-      {
-      $this->redirect('/visualize/media/?itemId='.$itemId.'&height='.$height.'&width='.$width);
-      }
-    else if($this->ModuleComponent->Main->canVisualizeTxt($itemDao))
-      {
-      $this->redirect('/visualize/txt/?itemId='.$itemId.'&height='.$height.'&width='.$width);
-      }
-    else if($this->ModuleComponent->Main->canVisualizeImage($itemDao))
-      {
-      $this->redirect('/visualize/image/?itemId='.$itemId.'&height='.$height.'&width='.$width);
-      }
-    else if($this->ModuleComponent->Main->canVisualizePdf($itemDao))
-      {
-      $this->redirect('/visualize/pdf/?itemId='.$itemId.'&height='.$height.'&width='.$width);
-      }
-    else if($this->ModuleComponent->Main->canVisualizeWebgl($itemDao))
-      {
-      $this->redirect('/visualize/webgl/?itemId='.$itemId.'&height='.$height.'&width='.$width);
-      }
-    else
-      {
-      throw new Zend_Exception('Unable to visualize');
-      }
     }
-  } // end class
+}

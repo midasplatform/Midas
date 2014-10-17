@@ -19,10 +19,10 @@
 =========================================================================*/
 
 class Upgrade_3_0_9 extends MIDASUpgrade
-  {
-  public function mysql()
+{
+    public function mysql()
     {
-    $sql = "
+        $sql = "
       CREATE TABLE IF NOT EXISTS `uniqueidentifier` (
         `uniqueidentifier_id` varchar(255) NOT NULL,
         `resource_id` bigint(20),
@@ -30,18 +30,18 @@ class Upgrade_3_0_9 extends MIDASUpgrade
         PRIMARY KEY (`uniqueidentifier_id`)
       )   DEFAULT CHARSET=utf8;
       ";
-    $this->db->query($sql);
+        $this->db->query($sql);
     }
 
-  public function pgsql()
+    public function pgsql()
     {
-    $sql = "
+        $sql = "
       CREATE TABLE  uniqueidentifier (
         uniqueidentifier_id character varying(512)  PRIMARY KEY,
         resource_type  integer,
         resource_id bigint
       )
       ; ";
-    $this->db->query($sql);
+        $this->db->query($sql);
     }
-  }
+}

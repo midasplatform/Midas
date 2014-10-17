@@ -20,12 +20,12 @@
 ?>
 
 <?php
-  $this->headScript()->appendFile($this->coreWebroot.'/public/js/install/install.step3.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/install/install.step3.js');
 ?>
 
 <div class="viewMain">
-     <?php
-      echo "
+    <?php
+    echo "
       <form class='genericForm' method='{$this->form['method']}'  action='{$this->form['action']}'>
       <h3>Configuration:</h3>
               <div class='installName'>
@@ -37,11 +37,13 @@
                 {$this->form['description']}
               </div>
               <div class='installLang'";
-      if(isset(Zend_Registry::get('configCore')->internationalization) && Zend_Registry::get('configCore')->internationalization == "0")
-        {
+    if (isset(Zend_Registry::get('configCore')->internationalization) && Zend_Registry::get(
+            'configCore'
+        )->internationalization == "0"
+    ) {
         echo " style='display:none;' ";
-        }
-      echo ">
+    }
+    echo ">
                 <label for='lang'>Language</label>
                 {$this->form['lang']}
               </div>
@@ -55,20 +57,21 @@
               </div>
                 ";
 
-         echo"
+    echo "
           </table>
           <div>
             {$this->form['submit']}
           </div>
        </form>";
 
-     ?>
+    ?>
 </div>
 <div class="viewSideBar">
-  <div class="sideElementFirst">
-      <h1>Help</h1>
-      <div class="installHelp">
-        This page allows you to configure your installation.
-      </div>
-  </div>
+    <div class="sideElementFirst">
+        <h1>Help</h1>
+
+        <div class="installHelp">
+            This page allows you to configure your installation.
+        </div>
+    </div>
 </div>

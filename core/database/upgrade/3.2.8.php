@@ -22,5 +22,5 @@
  * Upgrade 3.2.8 is a sentinel upgrade
  */
 class Upgrade_3_2_8 extends MIDASUpgrade
-  {
-  }
+{
+}

@@ -20,112 +20,99 @@
 
 /** Json Component */
 class JsonComponent extends AppComponent
-  {
-  private static $_instance = null;
+{
+    private static $_instance = null;
 
-  /** Instance */
-  public static function getInstance()
+    /** Instance */
+    public static function getInstance()
     {
-    if(!self::$_instance instanceof self)
-      {
-      self::$_instance = new self();
-      }
-    return self::$_instance;
+        if (!self::$_instance instanceof self) {
+            self::$_instance = new self();
+        }
+
+        return self::$_instance;
     }
 
-  /**
-   * Decodes the given $encodedValue string which is
-   * encoded in the JSON format
-   *
-   * @param string $encodedValue Encoded in JSON format
-   * @param boolean
-   * @return mixed
-   */
-  public static function decode($encodedValue, $objectDecodeType = true)
+    /**
+     * Decodes the given $encodedValue string which is
+     * encoded in the JSON format
+     *
+     * @param  string $encodedValue Encoded in JSON format
+     * @param boolean
+     * @return mixed
+     */
+    public static function decode($encodedValue, $objectDecodeType = true)
     {
-    $char = substr($encodedValue, 0, 1);
-    $isValue = false;
-    if($char != "{")
-      {
-      $isValue = true;
-      $encodedValue = '{"toto":'.$encodedValue.'}';
-      }
+        $char = substr($encodedValue, 0, 1);
+        $isValue = false;
+        if ($char != "{") {
+            $isValue = true;
+            $encodedValue = '{"toto":'.$encodedValue.'}';
+        }
 
-    $tab = json_decode($encodedValue, $objectDecodeType);
-    if($isValue)
-      {
-      $tab = $tab["toto"];
-      }
-    if(is_array($tab))
-      {
-      self::getInstance()->utf8_decode_array($tab);
-      }
-    else
-      {
-      $tab = utf8_decode($tab);
-      }
-    return $tab;
+        $tab = json_decode($encodedValue, $objectDecodeType);
+        if ($isValue) {
+            $tab = $tab["toto"];
+        }
+        if (is_array($tab)) {
+            self::getInstance()->utf8_decode_array($tab);
+        } else {
+            $tab = utf8_decode($tab);
+        }
+
+        return $tab;
     }
 
-  /**
-   * Encode the mixed $valueToEncode into the JSON format
-   *
-   * @param mixed $valueToEncode
-   * @return string JSON encoded object
-   */
-  public static function encode($valueToEncode)
+    /**
+     * Encode the mixed $valueToEncode into the JSON format
+     *
+     * @param  mixed $valueToEncode
+     * @return string JSON encoded object
+     */
+    public static function encode($valueToEncode)
     {
-    if(!is_array($valueToEncode))
-      {
-      $valueToEncode = utf8_encode($valueToEncode);
-      }
-    else
-      {
-      self::getInstance()->utf8_encode_array($valueToEncode);
-      }
-    // return encoded string
-    return json_encode($valueToEncode, JSON_HEX_TAG);
+        if (!is_array($valueToEncode)) {
+            $valueToEncode = utf8_encode($valueToEncode);
+        } else {
+            self::getInstance()->utf8_encode_array($valueToEncode);
+        }
+
+        // return encoded string
+        return json_encode($valueToEncode, JSON_HEX_TAG);
     }
 
-  /** Encore Array */
-  function utf8_encode_array(&$tab)
+    /** Encore Array */
+    public function utf8_encode_array(&$tab)
     {
-    array_walk($tab, array($this, '_utf8_encode_array'));
+        array_walk($tab, array($this, '_utf8_encode_array'));
     }
 
-  /** Decode Array */
-  function utf8_decode_array(&$tab)
+    /** Decode Array */
+    public function utf8_decode_array(&$tab)
     {
-    array_walk($tab, array($this, '_utf8_decode_array'));
+        array_walk($tab, array($this, '_utf8_decode_array'));
     }
 
-  /** encode Array */
-  private function _utf8_encode_array(&$array, $key)
+    /** encode Array */
+    private function _utf8_encode_array(&$array, $key)
     {
-    if(is_object($array) && method_exists($array, 'toArray'))
-      {
-      $array = $array->toArray();
-      }
-    if(is_array($array))
-      {
-      array_walk($array, array($this, '_utf8_encode_array'));
-      }
-    else
-      {
-      $array = utf8_encode($array);
-      }
+        if (is_object($array) && method_exists($array, 'toArray')) {
+            $array = $array->toArray();
+        }
+        if (is_array($array)) {
+            array_walk($array, array($this, '_utf8_encode_array'));
+        } else {
+            $array = utf8_encode($array);
+        }
     }
 
-  /** decode array*/
-  private function _utf8_decode_array(&$array, $key)
+    /** decode array */
+    private function _utf8_decode_array(&$array, $key)
     {
-    if(is_array($array))
-      {
-      array_walk($array, array($this, '_utf8_decode_array'));
-      }
-    else
-      {
-      $array = utf8_decode($array);
-      }
+        if (is_array($array)) {
+            array_walk($array, array($this, '_utf8_decode_array'));
+        } else {
+            $array = utf8_decode($array);
+        }
     }
-  }
+}

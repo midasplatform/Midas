@@ -19,10 +19,10 @@
 =========================================================================*/
 
 class Scheduler_Upgrade_1_1_0 extends MIDASUpgrade
-  {
-  public function mysql()
+{
+    public function mysql()
     {
-    $sql = "
+        $sql = "
       DROP TABLE IF EXISTS scheduler_execution_state;
       DROP TABLE IF EXISTS scheduler_execution;
       DROP TABLE IF EXISTS scheduler_node_connection;
@@ -30,12 +30,12 @@ class Scheduler_Upgrade_1_1_0 extends MIDASUpgrade
       DROP TABLE IF EXISTS scheduler_variable_handler;
       DROP TABLE IF EXISTS scheduler_workflow;
       ";
-    $this->db->query($sql);
+        $this->db->query($sql);
     }
 
-  public function pgsql()
+    public function pgsql()
     {
-    $sql = "
+        $sql = "
       DROP INDEX IF EXISTS scheduler_execution_execution_parent;
       DROP INDEX IF EXISTS scheduler_node_workflow_id;
       DROP TABLE IF EXISTS scheduler_execution_state;
@@ -45,6 +45,6 @@ class Scheduler_Upgrade_1_1_0 extends MIDASUpgrade
       DROP TABLE IF EXISTS scheduler_variable_handler;
       DROP TABLE IF EXISTS scheduler_workflow;
       ";
-    $this->db->query($sql);
+        $this->db->query($sql);
     }
-  }
+}

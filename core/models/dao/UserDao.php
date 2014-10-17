@@ -19,36 +19,36 @@
 =========================================================================*/
 
 /**
- * \class ItemDao
- * \brief DAO Item (table item)
+ * DAO Item (table item)
  */
 class UserDao extends AppDao
-  {
-  public $_model = 'User';
+{
+    public $_model = 'User';
 
-  /**  is admin? */
-  public function isAdmin()
+    /**  is admin? */
+    public function isAdmin()
     {
-    if($this->getAdmin() == 1)
-      {
-      return true;
-      }
-    return false;
+        if ($this->getAdmin() == 1) {
+            return true;
+        }
+
+        return false;
     }
 
-  /** get full name */
-  public function getFullName()
+    /** get full name */
+    public function getFullName()
     {
-    return $this->getFirstname()." ".$this->getLastname();
-    } // end class
-
-  /** toArray */
-  public function toArray()
-    {
-    $return = parent::toArray();
-    unset($return['password']);
-    unset($return['hash_alg']);
-    unset($return['salt']);
-    return $return;
+        return $this->getFirstname()." ".$this->getLastname();
     }
-  }
+
+    /** toArray */
+    public function toArray()
+    {
+        $return = parent::toArray();
+        unset($return['password']);
+        unset($return['hash_alg']);
+        unset($return['salt']);
+
+        return $return;
+    }
+}

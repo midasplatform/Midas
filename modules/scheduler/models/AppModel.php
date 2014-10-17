@@ -20,6 +20,6 @@
 
 /** Base model class for the scheduler module */
 class Scheduler_AppModel extends MIDASModel
-  {
-  public $moduleName = 'scheduler';
-  }
+{
+    public $moduleName = 'scheduler';
+}

@@ -22,7 +22,7 @@
  * Package DAO
  */
 class Packages_PackageDao extends AppDao
-  {
-  public $_model = 'Package';
-  public $_module = 'packages';
-  }
+{
+    public $_model = 'Package';
+    public $_module = 'packages';
+}

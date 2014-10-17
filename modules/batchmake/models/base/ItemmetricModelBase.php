@@ -18,49 +18,49 @@
  limitations under the License.
 =========================================================================*/
 
+/** Base item metric model for the batchmake module */
 abstract class Batchmake_ItemmetricModelBase extends Batchmake_AppModel
-  {
-  /**
-   * constructor
-   */
-  public function __construct()
+{
+    /**
+     * constructor
+     */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'batchmake_itemmetric';
-    $this->_key = 'itemmetric_id';
+        parent::__construct();
+        $this->_name = 'batchmake_itemmetric';
+        $this->_key = 'itemmetric_id';
 
-    $this->_mainData = array(
-      'itemmetric_id' => array('type' => MIDAS_DATA),
-      'metric_name' => array('type' => MIDAS_DATA),
-      'bms_name' => array('type' => MIDAS_DATA, )
-      );
-    $this->initialize(); // required
+        $this->_mainData = array(
+            'itemmetric_id' => array('type' => MIDAS_DATA),
+            'metric_name' => array('type' => MIDAS_DATA),
+            'bms_name' => array('type' => MIDAS_DATA),
+        );
+        $this->initialize(); // required
     }
 
-  /** Create an Itemmetric
-   * @return ItemmetricDao, will throw a Zend_Exception if an
-   * Itemmetric already exists with this metricName
-   */
-  public function createItemmetric($metricName, $bmsName)
+    /** Create an Itemmetric
+     *
+     * @return ItemmetricDao, will throw a Zend_Exception if an
+     *                        Itemmetric already exists with this metricName
+     */
+    public function createItemmetric($metricName, $bmsName)
     {
-    $itemmetric = MidasLoader::newDao('ItemmetricDao', 'batchmake');
+        $itemmetric = MidasLoader::newDao('ItemmetricDao', 'batchmake');
 
-    // make sure one isn't already there by this name
-    $found = $this->findBy('metric_name', $metricName);
-    if(isset($found) && sizeof($found) > 0)
-      {
-      // don't allow the creation, as we have a metric of this name already
-      throw new Zend_Exception('An Itemmetric already exists with that name');
-      }
+        // make sure one isn't already there by this name
+        $found = $this->findBy('metric_name', $metricName);
+        if (isset($found) && count($found) > 0) {
+            // don't allow the creation, as we have a metric of this name already
+            throw new Zend_Exception('An Itemmetric already exists with that name');
+        }
 
-    $itemmetric->setMetricName($metricName);
-    $itemmetric->setBmsName($bmsName);
-    $this->save($itemmetric);
-    return $itemmetric;
-    } // end createItemmetric()
+        $itemmetric->setMetricName($metricName);
+        $itemmetric->setBmsName($bmsName);
+        $this->save($itemmetric);
 
-  /**
-   * getAll returns all rows
-   */
-  abstract public function getAll();
-  } // end class
+        return $itemmetric;
+    }
+
+    /** returns all rows */
+    abstract public function getAll();
+}

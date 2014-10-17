@@ -20,6 +20,6 @@
 
 /** App DAO for the remoteprocessing module */
 class Remoteprocessing_AppDao extends MIDAS_GlobalDao
-  {
-  public $_module = 'remoteprocessing';
-  }
+{
+    public $_module = 'remoteprocessing';
+}

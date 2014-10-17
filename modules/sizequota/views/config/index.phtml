@@ -22,20 +22,21 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.for
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.index.js');
 ?>
 
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->coreWebroot ?>/public/css/common/common.genericPage.css"/>
 <div class="viewMain">
-     <div class ="genericWrapperTopRight">
-         <?php
-          echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
-            echo "<a  href='{$this->webroot}/admin#tabs-modules'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
-            echo $this->t('Back');
-            echo "</a>";
-          echo '</div>';
+    <div class="genericWrapperTopRight">
+        <?php
+        echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
+        echo "<a  href='{$this->webroot}/admin#tabs-modules'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+        echo $this->t('Back');
+        echo "</a>";
+        echo '</div>';
 
         ?>
     </div>
-     <?php
-      echo "
+    <?php
+    echo "
       <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
         <h3>Size Quota Module Configuration:</h3>
         Leave a field blank to indicate an unlimited quota.
@@ -44,42 +45,38 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.i
           <label for='defaultuserquota'>Default user quota</label>
           {$this->configForm['defaultuserquota']}
           <select id='userQuotaUnit' name='userQuotaUnit'>";
-            $value = 1;
-            foreach(array('KB', 'MB', 'GB', 'TB') as $unit)
-              {
-              $value *= 1024;
-              echo '<option value="'.$value.'"';
-              if($this->unitValueUser == $unit)
-                {
-                echo ' selected="selected"';
-                }
-              echo '>'.$unit.'</option>';
-              }
-      echo "
+    $value = 1;
+    foreach (array('KB', 'MB', 'GB', 'TB') as $unit) {
+        $value *= 1024;
+        echo '<option value="'.$value.'"';
+        if ($this->unitValueUser == $unit) {
+            echo ' selected="selected"';
+        }
+        echo '>'.$unit.'</option>';
+    }
+    echo "
           </select>
         </div>
         <div>
           <label for='defaultcommunityquota'>Default community quota</label>
           {$this->configForm['defaultcommunityquota']}
           <select id='communityQuotaUnit' name='communityQuotaUnit'>";
-            $value = 1;
-            foreach(array('KB', 'MB', 'GB', 'TB') as $unit)
-              {
-              $value *= 1024;
-              echo '<option value="'.$value.'"';
-              if($this->unitValueCommunity == $unit)
-                {
-                echo ' selected="selected"';
-                }
-              echo '>'.$unit.'</option>';
-              }
-      echo "
+    $value = 1;
+    foreach (array('KB', 'MB', 'GB', 'TB') as $unit) {
+        $value *= 1024;
+        echo '<option value="'.$value.'"';
+        if ($this->unitValueCommunity == $unit) {
+            echo ' selected="selected"';
+        }
+        echo '>'.$unit.'</option>';
+    }
+    echo "
           </select>
         </div>
         <div>
           {$this->configForm['submitConfig']}
         </div>
       </form>";
-      ?>
+    ?>
 
 </div>

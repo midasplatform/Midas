@@ -18,25 +18,25 @@
  limitations under the License.
 =========================================================================*/
 
-/** test slicerpackages_package model*/
+/** test slicerpackages_package model */
 class PackageModelTest extends DatabaseTestCase
-  {
-  /** set up tests*/
-  public function setUp()
+{
+    /** set up tests */
+    public function setUp()
     {
-    $this->setupDatabase(array('default')); //core dataset
-    $this->setupDatabase(array('default'), 'packages'); // module dataset
-    $this->enabledModules = array('packages');
-    $this->_models = array('Folder', 'Item');
-    $this->_daos = array('Folder', 'Item');
-    parent::setUp();
+        $this->setupDatabase(array('default')); // core dataset
+        $this->setupDatabase(array('default'), 'packages'); // module dataset
+        $this->enabledModules = array('packages');
+        $this->_models = array('Folder', 'Item');
+        $this->_daos = array('Folder', 'Item');
+        parent::setUp();
     }
 
-  /** testGetAll*/
-  public function testGetAll()
+    /** testGetAll */
+    public function testGetAll()
     {
-    $packageModel = MidasLoader::loadModel('Package', 'packages');
-    $daos = $packageModel->getAll();
-    $this->assertEquals(1, count($daos));
+        $packageModel = MidasLoader::loadModel('Package', 'packages');
+        $daos = $packageModel->getAll();
+        $this->assertEquals(1, count($daos));
     }
-  }
+}

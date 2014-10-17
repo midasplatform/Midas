@@ -18,37 +18,38 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot; ?>/public/css/download/download.index.css" />
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->moduleWebroot; ?>/public/css/download/download.index.css"/>
 <div class="viewMain">
-  <div class="downloadDescription">
-    <img class="descriptionImage" alt="" src="<?php echo $this->moduleWebroot; ?>/public/images/icons/move.png" />
-    <?php echo $this->contentDescription; ?> will be downloaded.
-  </div>
-  <div class="downloadInstructions">
-     Press the <b>Download</b> button to choose your destination and begin the download.
-  </div>
-  <div class="pointToDownloadButton">
-    <img class="pointToDownload" alt="" src="<?php echo $this->moduleWebroot ?>/public/images/icons/download.png" />
-  </div>
-  <br /><br />
-  <applet name="MidasUploader" class="downloadApplet" width="569" height="190"
-          archive="<?php echo $this->moduleWebroot; ?>/public/java/upload/MidasUploader.jar?rev=3; ?>"
-          code="com.kitware.utils.Main" mayscript="true">
-    <param name="background" value="ffffff" />
-    <param name="baseURL" value="<?php echo $this->protocol.'://'.$this->host.$this->webroot; ?>/" />
-    <param name="downloadMode" value="true" />
-    <param name="folderIds" value="<?php echo $this->folderIds; ?>" />
-    <param name="itemIds" value="<?php echo $this->itemIds; ?>" />
-    <param name="loglevel" value="WARNING" />
-    <param name="sessionId" value="<?php echo session_id(); ?>" />
-    <param name="totalSize" value="<?php echo $this->totalSize; ?>" />
-    <param name="type" value="application/x-java-applet;version=1.5" />
-    You must install and enable Java on your system in order to use the Java download applet.
-  </applet>
-  <?php
-  foreach($this->extraHtml as $module => $extra)
-    {
-    echo $extra.PHP_EOL;
+    <div class="downloadDescription">
+        <img class="descriptionImage" alt="" src="<?php echo $this->moduleWebroot; ?>/public/images/icons/move.png"/>
+        <?php echo $this->contentDescription; ?> will be downloaded.
+    </div>
+    <div class="downloadInstructions">
+        Press the
+        <b>Download</b> button to choose your destination and begin the download.
+    </div>
+    <div class="pointToDownloadButton">
+        <img class="pointToDownload" alt="" src="<?php echo $this->moduleWebroot ?>/public/images/icons/download.png"/>
+    </div>
+    <br/><br/>
+    <applet name="MidasUploader" class="downloadApplet" width="569" height="190"
+            archive="<?php echo $this->moduleWebroot; ?>/public/java/upload/MidasUploader.jar?rev=3; ?>"
+            code="com.kitware.utils.Main" mayscript="true">
+        <param name="background" value="ffffff"/>
+        <param name="baseURL" value="<?php echo $this->protocol.'://'.$this->host.$this->webroot; ?>/"/>
+        <param name="downloadMode" value="true"/>
+        <param name="folderIds" value="<?php echo $this->folderIds; ?>"/>
+        <param name="itemIds" value="<?php echo $this->itemIds; ?>"/>
+        <param name="loglevel" value="WARNING"/>
+        <param name="sessionId" value="<?php echo session_id(); ?>"/>
+        <param name="totalSize" value="<?php echo $this->totalSize; ?>"/>
+        <param name="type" value="application/x-java-applet;version=1.5"/>
+        You must install and enable Java on your system in order to use the Java download applet.
+    </applet>
+    <?php
+    foreach ($this->extraHtml as $module => $extra) {
+        echo $extra.PHP_EOL;
     }
-  ?>
+    ?>
 </div>

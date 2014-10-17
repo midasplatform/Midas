@@ -1,7 +1,7 @@
 <?php
 /*=========================================================================
  MIDAS Server
- Copyright (c) Kitware SAS. 26 rue Louis GuŽrin. 69100 Villeurbanne, FRANCE
+ Copyright (c) Kitware SAS. 26 rue Louis GuÃ©rin. 69100 Villeurbanne, FRANCE
  All rights reserved.
  More information http://www.kitware.com
 
@@ -19,119 +19,101 @@
 =========================================================================*/
 
 // parse and check arguments
-foreach($args as $key => $val)
-  {
-  switch ($key)
-    { 
-    case 'identifier':
-      $identifier = $val; 
-      if (!is_valid_uri($identifier))
-        {
-        $errors .= oai_error('badArgument', $key, $val);
-        }
-      break;
+foreach ($args as $key => $val) {
+    switch ($key) {
+        case 'identifier':
+            $identifier = $val;
+            if (!is_valid_uri($identifier)) {
+                $errors .= oai_error('badArgument', $key, $val);
+            }
+            break;
 
-    case 'metadataPrefix':
-      if (is_array($METADATAFORMATS[$val])
-        && isset($METADATAFORMATS[$val]['myhandler']))
-        {
-        $metadataPrefix = $val;
-        $inc_record  = $METADATAFORMATS[$val]['myhandler'];
-        }
-      else
-        {
-        $errors .= oai_error('cannotDisseminateFormat', $key, $val);
-        }
-      break;
+        case 'metadataPrefix':
+            if (is_array($METADATAFORMATS[$val])
+                && isset($METADATAFORMATS[$val]['myhandler'])
+            ) {
+                $metadataPrefix = $val;
+                $inc_record = $METADATAFORMATS[$val]['myhandler'];
+            } else {
+                $errors .= oai_error('cannotDisseminateFormat', $key, $val);
+            }
+            break;
 
-    default:
-      $errors .= oai_error('badArgument', $key, $val);
+        default:
+            $errors .= oai_error('badArgument', $key, $val);
     }
-  }
+}
 
-if (!isset($args['identifier']))
-  {
-  $errors .= oai_error('missingArgument', 'identifier');
-  }
-if (!isset($args['metadataPrefix']))
-  {
-  $errors .= oai_error('missingArgument', 'metadataPrefix');
-  } 
+if (!isset($args['identifier'])) {
+    $errors .= oai_error('missingArgument', 'identifier');
+}
+if (!isset($args['metadataPrefix'])) {
+    $errors .= oai_error('missingArgument', 'metadataPrefix');
+}
 
 $itemModel = MidasLoader::loadModel('Item');
 $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
 require_once BASE_PATH.'/core/controllers/components/UuidComponent.php';
 $uuiComponent = new UuidComponent();
-  
+
 // remove the OAI part to get the identifier
-if(empty($errors))
-  {
-  $uuid = str_replace($oaiprefix, '', $identifier);
-  if ($uuid == '')
-    {
-    $errors .= oai_error('idDoesNotExist', '', $identifier);
+if (empty($errors)) {
+    $uuid = str_replace($oaiprefix, '', $identifier);
+    if ($uuid == '') {
+        $errors .= oai_error('idDoesNotExist', '', $identifier);
     }
 
-  $element = $uuiComponent->getByUid($uuid);
-  
-  if ($element == false || !$element instanceof ItemDao)
-    {
-    $errors .= oai_error('idDoesNotExist', '', $identifier); 
-    }
-  elseif(!$itemModel->policyCheck($element, null, MIDAS_POLICY_READ))
-    {
-    $errors .= oai_error('idDoesNotExist', '', $identifier); 
+    $element = $uuiComponent->getByUid($uuid);
+
+    if ($element == false || !$element instanceof ItemDao) {
+        $errors .= oai_error('idDoesNotExist', '', $identifier);
+    } elseif (!$itemModel->policyCheck($element, null, MIDAS_POLICY_READ)) {
+        $errors .= oai_error('idDoesNotExist', '', $identifier);
     }
 }
 
 // break and clean up on error
-if ($errors != '')
-  {
-  oai_exit();
-  }
+if ($errors != '') {
+    oai_exit();
+}
 
 $output .= "  <GetRecord>\n";
 
-if($element)
-  {  
-  $identifier = $oaiprefix.$element->getUuid();
-  $datestamp = formatDatestamp($element->getDateUpdate()); 
-  // print Header
-  $output .= '  <record>'."\n";
-  $output .= '  <header';
-  $output .='>'."\n";
+if ($element) {
+    $identifier = $oaiprefix.$element->getUuid();
+    $datestamp = formatDatestamp($element->getDateUpdate());
+    // print Header
+    $output .= '  <record>'."\n";
+    $output .= '  <header';
+    $output .= '>'."\n";
 
-  // use xmlrecord since we include stuff from database;
-  $output .= xmlrecord($identifier, 'identifier', '', 3);
-  $output .= xmlformat($datestamp, 'datestamp', '', 3);
+    // use xmlrecord since we include stuff from database;
+    $output .= xmlrecord($identifier, 'identifier', '', 3);
+    $output .= xmlformat($datestamp, 'datestamp', '', 3);
 
-  $folders = $element->getFolders();
+    $folders = $element->getFolders();
 
-  if (empty($folders))
-    {
-    $errors .= oai_error('resourceIdDoesNotExist', '', $record[1]); 
+    if (empty($folders)) {
+        $errors .= oai_error('resourceIdDoesNotExist', '', $record[1]);
     }
 
-  foreach($folders as $folder)
-    {
-    $setspec = $setspecprefix.str_replace('/', '_', $folder->getUuid());
-    $output .= xmlrecord($setspec, 'setSpec', '', 3);
+    foreach ($folders as $folder) {
+        $setspec = $setspecprefix.str_replace('/', '_', $folder->getUuid());
+        $output .= xmlrecord($setspec, 'setSpec', '', 3);
     }
-  $output .= '   </header>'."\n"; 
+    $output .= '   </header>'."\n";
 
-  // return the metadata record itself
-  $revision = $itemModel->getLastRevision($element);
-  $metadata = $itemRevisionModel->getMetadata($revision);
+    // return the metadata record itself
+    $revision = $itemModel->getLastRevision($element);
+    $metadata = $itemRevisionModel->getMetadata($revision);
 
-  include(BASE_PATH.'/modules/oai/library/oai/'.$inc_record); 
+    include(BASE_PATH.'/modules/oai/library/oai/'.$inc_record);
 
-  $output .= '  </record>'."\n"; 
-  } 
-else
-  {
-  // we should never get here
-  oai_error('idDoesNotExist');
-  }
+    $output .= '  </record>'."\n";
+} else {
+    // we should never get here
+    oai_error('idDoesNotExist');
+}
 
 // End GetRecord
-$output .= ' </GetRecord>'."\n"; 
+$output .= ' </GetRecord>'."\n";

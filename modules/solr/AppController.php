@@ -18,8 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
-/** Solr Application Controller */
+/** App controller for the solr module */
 class Solr_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'solr';
-  } // end class
+{
+    public $moduleName = 'solr';
+}

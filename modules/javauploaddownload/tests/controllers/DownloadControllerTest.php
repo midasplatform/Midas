@@ -20,51 +20,51 @@
 
 /** Test download controller */
 class DownloadControllerTest extends ControllerTestCase
-  {
-  /** Initialize tests */
-  public function setUp()
+{
+    /** Initialize tests */
+    public function setUp()
     {
-    $this->enabledModules = array('javauploaddownload');
-    $this->_models = array('Item', 'User');
-    parent::setUp();
+        $this->enabledModules = array('javauploaddownload');
+        $this->_models = array('Item', 'User');
+        parent::setUp();
     }
 
-  /** Test Java download applet prompt is triggered for large downloads */
-  function testPromptApplet()
+    /** Test Java download applet prompt is triggered for large downloads */
+    public function testPromptApplet()
     {
-    $this->resetAll();
-    $this->dispatchUri('/download/checksize?itemIds=1000', null);
-    $json = json_decode($this->getBody(), true);
-    $this->assertTrue(isset($json['action']));
-    $this->assertEquals($json['action'], 'download');
-    $this->resetAll();
-    $item = $this->Item->load(1000);
-    $item->setSizebytes(2415919104); // 2.25 GB
-    $this->Item->save($item);
-    $this->dispatchUri('/download/checksize?itemIds=1000', null);
-    $json = json_decode($this->getBody(), true);
-    $this->assertTrue(isset($json['action']));
-    $this->assertEquals($json['action'], 'promptApplet');
-    $this->assertEquals($json['sizeStr'], '2.3 GB');
+        $this->resetAll();
+        $this->dispatchUri('/download/checksize?itemIds=1000', null);
+        $json = json_decode($this->getBody(), true);
+        $this->assertTrue(isset($json['action']));
+        $this->assertEquals($json['action'], 'download');
+        $this->resetAll();
+        $item = $this->Item->load(1000);
+        $item->setSizebytes(2415919104); // 2.25 GB
+        $this->Item->save($item);
+        $this->dispatchUri('/download/checksize?itemIds=1000', null);
+        $json = json_decode($this->getBody(), true);
+        $this->assertTrue(isset($json['action']));
+        $this->assertEquals($json['action'], 'promptApplet');
+        $this->assertEquals($json['sizeStr'], '2.3 GB');
     }
 
-  /** Test rendering of the Java download applet view */
-  function testAppletViewAction()
+    /** Test rendering of the Java download applet view */
+    public function testAppletViewAction()
     {
-    $adminUser = $this->User->load(3);
-    $this->dispatchUri('/javauploaddownload/download?folderIds=1002', null, true);
-    $this->resetAll();
-    $this->dispatchUri('/javauploaddownload/download?folderIds=1002', $adminUser);
-    $this->assertQuery('param[name="itemIds"]');
-    $this->assertQuery('param[name="folderIds"][value="1002"]');
-    $this->assertQuery('param[name="totalSize"][value="0"]');
-    $this->resetAll();
-    $item = $this->Item->load(1000);
-    $item->setSizebytes(2415919104);
-    $this->Item->save($item);
-    $this->dispatchUri('/javauploaddownload/download?itemIds=1000', $adminUser);
-    $this->assertQuery('param[name="itemIds"][value="1000"]');
-    $this->assertQuery('param[name="folderIds"]');
-    $this->assertQuery('param[name="totalSize"][value="2415919104"]');
+        $adminUser = $this->User->load(3);
+        $this->dispatchUri('/javauploaddownload/download?folderIds=1002', null, true);
+        $this->resetAll();
+        $this->dispatchUri('/javauploaddownload/download?folderIds=1002', $adminUser);
+        $this->assertQuery('param[name="itemIds"]');
+        $this->assertQuery('param[name="folderIds"][value="1002"]');
+        $this->assertQuery('param[name="totalSize"][value="0"]');
+        $this->resetAll();
+        $item = $this->Item->load(1000);
+        $item->setSizebytes(2415919104);
+        $this->Item->save($item);
+        $this->dispatchUri('/javauploaddownload/download?itemIds=1000', $adminUser);
+        $this->assertQuery('param[name="itemIds"][value="1000"]');
+        $this->assertQuery('param[name="folderIds"]');
+        $this->assertQuery('param[name="totalSize"][value="2415919104"]');
     }
-  }
+}

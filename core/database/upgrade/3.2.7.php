@@ -22,10 +22,11 @@
  * Upgrade 3.2.7 adds the progress table
  */
 class Upgrade_3_2_7 extends MIDASUpgrade
-  {
-  public function mysql()
+{
+    public function mysql()
     {
-    $this->db->query("CREATE TABLE IF NOT EXISTS `progress` (
+        $this->db->query(
+            "CREATE TABLE IF NOT EXISTS `progress` (
       `progress_id` bigint(20) NOT NULL AUTO_INCREMENT,
       `message` TEXT NOT NULL,
       `current` bigint(20) NOT NULL,
@@ -33,18 +34,21 @@ class Upgrade_3_2_7 extends MIDASUpgrade
       `date_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
       `last_update` timestamp NOT NULL,
       PRIMARY KEY (`progress_id`)
-      )");
+      )"
+        );
     }
 
-  public function pgsql()
+    public function pgsql()
     {
-    $this->db->query("CREATE TABLE progress (
+        $this->db->query(
+            "CREATE TABLE progress (
       progress_id serial PRIMARY KEY,
       message TEXT NOT NULL,
       current bigint NOT NULL,
       maximum bigint NOT NULL,
       date_creation timestamp without time zone NOT NULL DEFAULT now(),
       last_update timestamp without time zone NOT NULL
-      )");
+      )"
+        );
     }
-  }
+}

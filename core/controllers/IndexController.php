@@ -23,30 +23,28 @@
  *  Index Controller
  */
 class IndexController extends AppController
-  {
+{
+    public $_models = array('Item');
+    public $_daos = array();
+    public $_components = array();
 
-  public $_models = array('Item');
-  public $_daos = array();
-  public $_components = array();
-
-  /**
-   * @method indexAction()
-   *  Index Action (first action when we access the application)
-   */
-  function indexAction()
+    /**
+     * Index Action (first action when we access the application)
+     */
+    public function indexAction()
     {
-    $this->redirect("/feed");
-    } // end method indexAction
+        $this->redirect("/feed");
+    }
 
-  /** no javascript*/
-  function nojsAction()
+    /** no javascript */
+    public function nojsAction()
     {
-    $this->disableLayout();
-    } // end method indexAction
+        $this->disableLayout();
+    }
 
-  /** no valid browser*/
-  function nobrowserAction()
+    /** no valid browser */
+    public function nobrowserAction()
     {
-    $this->disableLayout();
-    } // end method indexAction
-  } // end class
+        $this->disableLayout();
+    }
+}

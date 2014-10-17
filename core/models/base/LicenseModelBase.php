@@ -18,24 +18,24 @@
  limitations under the License.
 =========================================================================*/
 
-/** License Model Base*/
+/** License Model Base */
 abstract class LicenseModelBase extends AppModel
-  {
-  /** Constructor*/
-  public function __construct()
+{
+    /** Constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'license';
-    $this->_key = 'license_id';
+        parent::__construct();
+        $this->_name = 'license';
+        $this->_key = 'license_id';
 
-    $this->_mainData = array(
-        'license_id' => array('type' => MIDAS_DATA),
-        'name' => array('type' => MIDAS_DATA),
-        'fulltext' => array('type' => MIDAS_DATA)
+        $this->_mainData = array(
+            'license_id' => array('type' => MIDAS_DATA),
+            'name' => array('type' => MIDAS_DATA),
+            'fulltext' => array('type' => MIDAS_DATA),
         );
-    $this->initialize();
+        $this->initialize();
     }
 
-  /** Return all available licenses */
-  abstract function getAll();
-  } // end class
+    /** Return all available licenses */
+    abstract public function getAll();
+}

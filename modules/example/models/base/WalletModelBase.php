@@ -17,39 +17,45 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /** WalletModel Base class */
 class Example_WalletModelBase extends Example_AppModel
-  {
-
-  /**
-   * constructor
-   */
-  public function __construct()
+{
+    /**
+     * constructor
+     */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'example_wallet';
-    $this->_key = 'example_wallet_id';
+        parent::__construct();
+        $this->_name = 'example_wallet';
+        $this->_key = 'example_wallet_id';
 
-    $this->_mainData = array(
-      'example_wallet_id' => array('type' => MIDAS_DATA),
-      'user_id' => array('type' => MIDAS_DATA),
-      'dollars' => array('type' => MIDAS_DATA),
-      'credit_card_count' => array('type' => MIDAS_DATA),
-      'user' =>  array('type' => MIDAS_MANY_TO_ONE,
-                        'model' => 'User',
-                        'parent_column' => 'user_id',
-                        'child_column' => 'user_id'));
-    $this->initialize(); // required
+        $this->_mainData = array(
+            'example_wallet_id' => array('type' => MIDAS_DATA),
+            'user_id' => array('type' => MIDAS_DATA),
+            'dollars' => array('type' => MIDAS_DATA),
+            'credit_card_count' => array('type' => MIDAS_DATA),
+            'user' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'User',
+                'parent_column' => 'user_id',
+                'child_column' => 'user_id',
+            ),
+        );
+        $this->initialize(); // required
     }
 
-  /** Create a wallet
-   * @return WalletDao */
-  function createWallet($userDao, $dollars)
+    /** Create a wallet
+     *
+     * @return WalletDao
+     */
+    public function createWallet($userDao, $dollars)
     {
-    $wallet = MidasLoader::newDao('WalletDao', 'example');
-    $wallet->setUserId($userDao->getKey());
-    $wallet->setDollars($dollars);
-    $this->save($wallet);
-    return $wallet;
-    } // end createWallet()
-  } // end class
+        $wallet = MidasLoader::newDao('WalletDao', 'example');
+        $wallet->setUserId($userDao->getKey());
+        $wallet->setDollars($dollars);
+        $this->save($wallet);
+
+        return $wallet;
+    }
+}

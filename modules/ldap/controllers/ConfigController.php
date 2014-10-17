@@ -20,75 +20,76 @@
 
 /** Config controller for the ldap module */
 class Ldap_ConfigController extends Ldap_AppController
-  {
-  public $_moduleForms = array('Config');
-  public $_components = array('Utility');
+{
+    public $_moduleForms = array('Config');
+    public $_components = array('Utility');
 
-  /** Index action */
-  function indexAction()
+    /** Index action */
+    public function indexAction()
     {
-    $this->requireAdminPrivileges();
+        $this->requireAdminPrivileges();
 
-    $options = array('allowModifications' => true);
-    if(file_exists(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini'))
-      {
-      $config = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini', 'global', $options);
-      }
-    else
-      {
-      $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', 'global', $options);
-      }
-
-    $configForm = $this->ModuleForm->Config->createConfigForm();
-    $formArray = $this->getFormAsArray($configForm);
-    $formArray['autoAddUnknownUser']->setValue($config->ldap->autoAddUnknownUser);
-    $formArray['backup']->setValue($config->ldap->backup);
-    $formArray['basedn']->setValue($config->ldap->basedn);
-    $formArray['bindn']->setValue($config->ldap->bindn);
-    $formArray['bindpw']->setValue($config->ldap->bindpw);
-    $formArray['hostname']->setValue($config->ldap->hostname);
-    $formArray['port']->setValue($config->ldap->port);
-    $formArray['protocolVersion']->setValue($config->ldap->protocolVersion);
-    $formArray['proxyBasedn']->setValue($config->ldap->proxyBasedn);
-    $formArray['proxyPassword']->setValue($config->ldap->proxyPassword);
-    $formArray['search']->setValue($config->ldap->search);
-    $formArray['useActiveDirectory']->setValue($config->ldap->useActiveDirectory);
-    $this->view->configForm = $formArray;
-
-    if($this->_request->isPost())
-      {
-      $this->_helper->layout->disableLayout();
-      $this->_helper->viewRenderer->setNoRender();
-      $submitConfig = $this->getParam('submitConfig');
-      if(isset($submitConfig))
-        {
-        $config->ldap->autoAddUnknownUser = $this->getParam('autoAddUnknownUser');
-        $config->ldap->backup = $this->getParam('backup');
-        $config->ldap->basedn = $this->getParam('basedn');
-        $config->ldap->bindn = $this->getParam('bindn');
-        $config->ldap->hostname = $this->getParam('hostname');
-        $config->ldap->port = $this->getParam('port');
-        $config->ldap->protocolVersion = $this->getParam('protocolVersion');
-        $config->ldap->proxyBasedn = $this->getParam('proxyBasedn');
-        $config->ldap->search = $this->getParam('search');
-        $config->ldap->useActiveDirectory = $this->getParam('useActiveDirectory');
-        $bindpw = $this->getParam('bindpw');
-        if(!empty($bindpw))
-          {
-          $config->ldap->bindpw = $bindpw;
-          }
-        $proxyPassword = $this->getParam('proxyPassword');
-        if(!empty($proxyPassword))
-          {
-          $config->ldap->proxyPassword = $proxyPassword;
-          }
-
-        $writer = new Zend_Config_Writer_Ini();
-        $writer->setConfig($config);
-        $writer->setFilename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini');
-        $writer->write();
-        echo JsonComponent::encode(array(true, 'Changes saved'));
+        $options = array('allowModifications' => true);
+        if (file_exists(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini')) {
+            $config = new Zend_Config_Ini(
+                LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini',
+                'global',
+                $options
+            );
+        } else {
+            $config = new Zend_Config_Ini(
+                BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini',
+                'global',
+                $options
+            );
         }
-      }
+
+        $configForm = $this->ModuleForm->Config->createConfigForm();
+        $formArray = $this->getFormAsArray($configForm);
+        $formArray['autoAddUnknownUser']->setValue($config->ldap->autoAddUnknownUser);
+        $formArray['backup']->setValue($config->ldap->backup);
+        $formArray['basedn']->setValue($config->ldap->basedn);
+        $formArray['bindn']->setValue($config->ldap->bindn);
+        $formArray['bindpw']->setValue($config->ldap->bindpw);
+        $formArray['hostname']->setValue($config->ldap->hostname);
+        $formArray['port']->setValue($config->ldap->port);
+        $formArray['protocolVersion']->setValue($config->ldap->protocolVersion);
+        $formArray['proxyBasedn']->setValue($config->ldap->proxyBasedn);
+        $formArray['proxyPassword']->setValue($config->ldap->proxyPassword);
+        $formArray['search']->setValue($config->ldap->search);
+        $formArray['useActiveDirectory']->setValue($config->ldap->useActiveDirectory);
+        $this->view->configForm = $formArray;
+
+        if ($this->_request->isPost()) {
+            $this->_helper->layout->disableLayout();
+            $this->_helper->viewRenderer->setNoRender();
+            $submitConfig = $this->getParam('submitConfig');
+            if (isset($submitConfig)) {
+                $config->ldap->autoAddUnknownUser = $this->getParam('autoAddUnknownUser');
+                $config->ldap->backup = $this->getParam('backup');
+                $config->ldap->basedn = $this->getParam('basedn');
+                $config->ldap->bindn = $this->getParam('bindn');
+                $config->ldap->hostname = $this->getParam('hostname');
+                $config->ldap->port = $this->getParam('port');
+                $config->ldap->protocolVersion = $this->getParam('protocolVersion');
+                $config->ldap->proxyBasedn = $this->getParam('proxyBasedn');
+                $config->ldap->search = $this->getParam('search');
+                $config->ldap->useActiveDirectory = $this->getParam('useActiveDirectory');
+                $bindpw = $this->getParam('bindpw');
+                if (!empty($bindpw)) {
+                    $config->ldap->bindpw = $bindpw;
+                }
+                $proxyPassword = $this->getParam('proxyPassword');
+                if (!empty($proxyPassword)) {
+                    $config->ldap->proxyPassword = $proxyPassword;
+                }
+
+                $writer = new Zend_Config_Writer_Ini();
+                $writer->setConfig($config);
+                $writer->setFilename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini');
+                $writer->write();
+                echo JsonComponent::encode(array(true, 'Changes saved'));
+            }
+        }
     }
-  }
+}

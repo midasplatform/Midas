@@ -19,10 +19,9 @@
 =========================================================================*/
 
 /**
- * \class CommunityInvitationDao
- * \brief DAO Assetstore
+ * DAO Assetstore
  */
 class CommunityInvitationDao extends AppDao
-  {
-  public $_model = 'CommunityInvitation';
-  } // end class
+{
+    public $_model = 'CommunityInvitation';
+}

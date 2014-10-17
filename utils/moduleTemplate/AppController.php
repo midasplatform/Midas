@@ -20,6 +20,6 @@
 
 /** App controller for the @MN@ module */
 class @MN_CAP@_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = '@MN@';
-  }
+{
+    public $moduleName = '@MN@';
+}

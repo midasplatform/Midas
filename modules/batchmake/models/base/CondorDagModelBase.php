@@ -18,24 +18,25 @@
  limitations under the License.
 =========================================================================*/
 
-include_once BASE_PATH . '/modules/batchmake/constant/module.php';
+include_once BASE_PATH.'/modules/batchmake/constant/module.php';
 
 /** CondorDag Base class */
 class Batchmake_CondorDagModelBase extends Batchmake_AppModel
-  {
-  /** constructor */
-  public function __construct()
+{
+    /** constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'condor_dag';
-    $this->_daoName = 'CondorDagDao';
-    $this->_key = 'condor_dag_id';
+        parent::__construct();
+        $this->_name = 'condor_dag';
+        $this->_daoName = 'CondorDagDao';
+        $this->_key = 'condor_dag_id';
 
-    $this->_mainData = array(
-      'condor_dag_id' => array('type' => MIDAS_DATA),
-      'batchmake_task_id' => array('type' => MIDAS_DATA),
-      'out_filename' => array('type' => MIDAS_DATA),
-      'dag_filename' => array('type' => MIDAS_DATA));
-    $this->initialize(); // required
+        $this->_mainData = array(
+            'condor_dag_id' => array('type' => MIDAS_DATA),
+            'batchmake_task_id' => array('type' => MIDAS_DATA),
+            'out_filename' => array('type' => MIDAS_DATA),
+            'dag_filename' => array('type' => MIDAS_DATA),
+        );
+        $this->initialize(); // required
     }
-  } // end class
+}

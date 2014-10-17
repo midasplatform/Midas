@@ -20,6 +20,6 @@
 
 /** App controller for the statistics module */
 class Statistics_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'statistics';
-  }
+{
+    public $moduleName = 'statistics';
+}

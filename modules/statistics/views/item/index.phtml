@@ -27,39 +27,46 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/jquery/jqplot/j
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.spinbox.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
 ?>
-<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/jquery/excanvas.min.js"></script><![endif]-->
-<link rel="stylesheet" type="text/css" href="<?php echo $this->moduleWebroot?>/public/css/jquery/jquery.jqplot.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/item/item.index.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.spinbox.min.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/index/index.index.css" />
+<!--[if lt IE 9]>
+<script language="javascript" type="text/javascript"
+        src="<?php echo $this->moduleWebroot ?>/public/js/jquery/excanvas.min.js"></script><![endif]-->
+<link rel="stylesheet" type="text/css" href="<?php echo $this->moduleWebroot ?>/public/css/jquery/jquery.jqplot.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/item/item.index.css"/>
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->coreWebroot ?>/public/css/common/common.genericPage.css"/>
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->coreWebroot ?>/public/css/jquery/jquery.spinbox.min.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/index/index.index.css"/>
 <div class="viewMain">
 
-  <img class="tabsLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
-  <div class="tabs" id='tabsGeneric'>
-    <ul>
-      <li><a href="#tabs-map">Download Map</a></li>
-      <li><a href="#tabs-chart">Daily Totals</a></li>
-    </ul>
-    <div id="tabs-map">
-      <div id="logFilterForm">
-        <form id="filterForm" method="post" action="<?php echo $this->webroot?>/statistics/item/filter">
-          <label for="startdate">From</label>
-          <input class="dateSelect" type="text" id="startdate" name="startdate"/>
-          <label for="enddate">to</label>
-          <input class="dateSelect" type="text" id="enddate" name="enddate"/>
-          <label for="downloadResultLimit">Result limit</label>
-          <input qtip="Limit the maximum number of downloads to show on the map" name="limit" id="downloadResultLimit" type="text" value="1000" />
-          <input class="filterButton" type='submit' value='Apply Filter' />
-          <img id="loadingStatistics" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
-          <input type="hidden" name="itemId" value="<?php echo $this->itemIds?>" />
-        </form>
-      </div>
-      <div id="map_canvas" style="width:800px; height:470px;"></div>
-      <span id="filteredCount"></span>
+    <img class="tabsLoading" alt="" src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>
+
+    <div class="tabs" id='tabsGeneric'>
+        <ul>
+            <li><a href="#tabs-map">Download Map</a></li>
+            <li><a href="#tabs-chart">Daily Totals</a></li>
+        </ul>
+        <div id="tabs-map">
+            <div id="logFilterForm">
+                <form id="filterForm" method="post" action="<?php echo $this->webroot ?>/statistics/item/filter">
+                    <label for="startdate">From</label>
+                    <input class="dateSelect" type="text" id="startdate" name="startdate"/>
+                    <label for="enddate">to</label>
+                    <input class="dateSelect" type="text" id="enddate" name="enddate"/>
+                    <label for="downloadResultLimit">Result limit</label>
+                    <input qtip="Limit the maximum number of downloads to show on the map" name="limit"
+                           id="downloadResultLimit" type="text" value="1000"/>
+                    <input class="filterButton" type='submit' value='Apply Filter'/>
+                    <img id="loadingStatistics" alt=""
+                         src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>
+                    <input type="hidden" name="itemId" value="<?php echo $this->itemIds ?>"/>
+                </form>
+            </div>
+            <div id="map_canvas" style="width:800px; height:470px;"></div>
+            <span id="filteredCount"></span>
+        </div>
+        <div id="tabs-chart">
+            <div id="chartDownloads" style="height:450px; width:800px;"></div>
+        </div>
     </div>
-    <div id="tabs-chart">
-      <div id="chartDownloads" style="height:450px; width:800px;"></div>
-    </div>
-  </div>
 </div>

@@ -20,49 +20,50 @@
 
 /** UuidComponent component */
 class UuidComponent extends AppComponent
-  {
-  /** Get using id*/
-  public function getByUid($uuid)
+{
+    /** Get using id */
+    public function getByUid($uuid)
     {
-    $model = MidasLoader::loadModel('Community');
-    $dao = $model->getByUuid($uuid);
-    if($dao != false)
-      {
-      $dao->resourceType = MIDAS_RESOURCE_COMMUNITY;
-      return $dao;
-      }
+        $model = MidasLoader::loadModel('Community');
+        $dao = $model->getByUuid($uuid);
+        if ($dao != false) {
+            $dao->resourceType = MIDAS_RESOURCE_COMMUNITY;
 
-    $model = MidasLoader::loadModel('Folder');
-    $dao = $model->getByUuid($uuid);
-    if($dao != false)
-      {
-      $dao->resourceType = MIDAS_RESOURCE_FOLDER;
-      return $dao;
-      }
+            return $dao;
+        }
 
-    $model = MidasLoader::loadModel('Item');
-    $dao = $model->getByUuid($uuid);
-    if($dao != false)
-      {
-      $dao->resourceType = MIDAS_RESOURCE_ITEM;
-      return $dao;
-      }
+        $model = MidasLoader::loadModel('Folder');
+        $dao = $model->getByUuid($uuid);
+        if ($dao != false) {
+            $dao->resourceType = MIDAS_RESOURCE_FOLDER;
 
-    $model = MidasLoader::loadModel('ItemRevision');
-    $dao = $model->getByUuid($uuid);
-    if($dao != false)
-      {
-      $dao->resourceType = MIDAS_RESOURCE_REVISION;
-      return $dao;
-      }
+            return $dao;
+        }
 
-    $model = MidasLoader::loadModel('User');
-    $dao = $model->getByUuid($uuid);
-    if($dao != false)
-      {
-      $dao->resourceType = MIDAS_RESOURCE_USER;
-      return $dao;
-      }
-    return false;
+        $model = MidasLoader::loadModel('Item');
+        $dao = $model->getByUuid($uuid);
+        if ($dao != false) {
+            $dao->resourceType = MIDAS_RESOURCE_ITEM;
+
+            return $dao;
+        }
+
+        $model = MidasLoader::loadModel('ItemRevision');
+        $dao = $model->getByUuid($uuid);
+        if ($dao != false) {
+            $dao->resourceType = MIDAS_RESOURCE_REVISION;
+
+            return $dao;
+        }
+
+        $model = MidasLoader::loadModel('User');
+        $dao = $model->getByUuid($uuid);
+        if ($dao != false) {
+            $dao->resourceType = MIDAS_RESOURCE_USER;
+
+            return $dao;
+        }
+
+        return false;
     }
-  } // end class
+}

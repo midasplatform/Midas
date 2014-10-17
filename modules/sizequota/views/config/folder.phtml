@@ -23,49 +23,52 @@ echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/jquer
 echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/jquery/jqplot/jqplot.pieRenderer.min.js"></script>';
 echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/config/config.folder.js"></script>';
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/config/config.folder.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
-<link rel="stylesheet" type="text/css" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.jqplot.min.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/config/config.folder.css"/>
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->coreWebroot ?>/public/css/common/common.genericPage.css"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->coreWebroot ?>/public/css/jquery/jquery.jqplot.min.css"/>
 
 </div>
-  <span><?php echo $this->t('Current used space:'); ?> <span id='hUsedSpaceValue'><?php echo $this->hUsedSpace; ?></span></span>
-  <br />
-  <span><?php echo $this->t('Total space:'); ?> <span id='hQuotaValue'><?php echo $this->hQuota; ?></span></span>
-  <span style="display: none;" id="hFreeSpaceValue"><?php echo $this->hFreeSpace; ?></span>
-  <span style="display: none;" id="quotaValue"><?php echo $this->quota; ?></span>
-  <span style="display: none;" id="usedSpaceValue"><?php echo $this->usedSpace; ?></span>
-  <div id='quotaChart' style="height: 200px; width: 400px; display: none;"></div>
-  <br />
-  <?php
-  if($this->isAdmin)
-    { ?>
-    <hr />
-    <form class='quotaConfigForm' id='configForm' method='<?php echo $this->configForm['method'] ?>' action='<?php echo $this->configForm['action'] ?>'>
-      <div>
-        <?php
-          echo $this->configForm['usedefault'];
-          echo $this->configForm['quota'];
-        ?>
-      <select id="quotaUnit" name="unit">
-        <?php
-        $value = 1;
-        foreach(array('KB', 'MB', 'GB', 'TB') as $unit)
-          {
-          $value *= 1024;
-          echo '<option value="'.$value.'"';
-          if($this->unitFormValue == $unit)
-            {
-            echo ' selected="selected"';
-            }
-          echo '>'.$unit.'</option>';
-          }
-        ?>
-      </select>
-      <div>
-        <?php echo $this->configForm['submitQuota']; ?>
-      </div>
-      <input type="hidden" name="folderId" value="<?php echo $this->folder->getKey(); ?>" />
+<span><?php echo $this->t('Current used space:'); ?>
+    <span id='hUsedSpaceValue'><?php echo $this->hUsedSpace; ?></span></span>
+<br/>
+<span><?php echo $this->t('Total space:'); ?>
+    <span id='hQuotaValue'><?php echo $this->hQuota; ?></span></span>
+<span style="display: none;" id="hFreeSpaceValue"><?php echo $this->hFreeSpace; ?></span>
+<span style="display: none;" id="quotaValue"><?php echo $this->quota; ?></span>
+<span style="display: none;" id="usedSpaceValue"><?php echo $this->usedSpace; ?></span>
+<div id='quotaChart' style="height: 200px; width: 400px; display: none;"></div>
+<br/>
+<?php
+if ($this->isAdmin) {
+    ?>
+    <hr/>
+    <form class='quotaConfigForm' id='configForm' method='<?php echo $this->configForm['method'] ?>'
+          action='<?php echo $this->configForm['action'] ?>'>
+        <div>
+            <?php
+            echo $this->configForm['usedefault'];
+            echo $this->configForm['quota'];
+            ?>
+            <select id="quotaUnit" name="unit">
+                <?php
+                $value = 1;
+                foreach (array('KB', 'MB', 'GB', 'TB') as $unit) {
+                    $value *= 1024;
+                    echo '<option value="'.$value.'"';
+                    if ($this->unitFormValue == $unit) {
+                        echo ' selected="selected"';
+                    }
+                    echo '>'.$unit.'</option>';
+                }
+                ?>
+            </select>
+
+            <div>
+                <?php echo $this->configForm['submitQuota']; ?>
+            </div>
+            <input type="hidden" name="folderId" value="<?php echo $this->folder->getKey(); ?>"/>
     </form>
-  <?php
-    } ?>
+<?php
+} ?>
 </div>

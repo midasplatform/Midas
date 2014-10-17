@@ -22,6 +22,6 @@
  * Example AppModel
  */
 class Example_AppModel extends MIDASModel
-  {
-  public $moduleName = 'example';
-  }
+{
+    public $moduleName = 'example';
+}

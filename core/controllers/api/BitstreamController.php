@@ -22,73 +22,80 @@
  *  Web API controller for the Bitstream resource
  */
 class Rest_BitstreamController extends ApiController
-  {
-  /**
-   * The index action handles index/list requests; it should respond with a
-   * list of the requested resources.
-   */
-  public function indexAction()
+{
+    /**
+     * The index action handles index/list requests; it should respond with a
+     * list of the requested resources.
+     */
+    public function indexAction()
     {
-    $apiFunctions = array(
-      'default' => 'bitstreamCount',
-      'exists'  => 'bitstreamCount',
-      'download'  => 'bitstreamDownloadByChecksum'
-      );
-    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'index', $apiFunctions);
+        $apiFunctions = array(
+            'default' => 'bitstreamCount',
+            'exists' => 'bitstreamCount',
+            'download' => 'bitstreamDownloadByChecksum',
+        );
+        $this->_genericAction(
+            $this->_request->getParams(),
+            $this->_request->getControllerName(),
+            'index',
+            $apiFunctions
+        );
     }
 
-  /**
-   * The options action handles OPTIONS requests; it should respond with
-   * the HTTP methods that the server supports for specified URL.
-   */
-  public function optionsAction()
+    /**
+     * The options action handles OPTIONS requests; it should respond with
+     * the HTTP methods that the server supports for specified URL.
+     */
+    public function optionsAction()
     {
-    $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET, PUT, DELETE');
+        $this->_response->setHeader('Allow', 'OPTIONS, HEAD, GET, PUT, DELETE');
     }
 
-  /**
-   * The head action handles HEAD requests; it should respond with an
-   * identical response to the one that would correspond to a GET request,
-   * but without the response body.
-   */
-  public function headAction()
+    /**
+     * The head action handles HEAD requests; it should respond with an
+     * identical response to the one that would correspond to a GET request,
+     * but without the response body.
+     */
+    public function headAction()
     {
-    $this->_response->setHttpResponseCode(200); // 200 OK
+        $this->_response->setHttpResponseCode(200); // 200 OK
     }
 
-  /**
-   * The get action handles GET requests and receives an 'id' parameter; it
-   * should respond with the server resource state of the resource identified
-   * by the 'id' value.
-   */
-  public function getAction()
+    /**
+     * The get action handles GET requests and receives an 'id' parameter; it
+     * should respond with the server resource state of the resource identified
+     * by the 'id' value.
+     */
+    public function getAction()
     {
-     $apiFunctions = array(
-      'default' => 'bitstreamGet',
-      'download'  => 'bitstreamDownloadById'
-      );
-    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'get', $apiFunctions);
+        $apiFunctions = array('default' => 'bitstreamGet', 'download' => 'bitstreamDownloadById');
+        $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'get', $apiFunctions);
     }
 
-  /**
-   * The put action handles PUT requests and receives an 'id' parameter; it
-   * should update the server resource state of the resource identified by
-   * the 'id' value.
-   */
-  public function putAction()
+    /**
+     * The put action handles PUT requests and receives an 'id' parameter; it
+     * should update the server resource state of the resource identified by
+     * the 'id' value.
+     */
+    public function putAction()
     {
-    $apiFunctions['default'] = 'bitstreamEdit';
-    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'put', $apiFunctions);
+        $apiFunctions['default'] = 'bitstreamEdit';
+        $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'put', $apiFunctions);
     }
 
-  /**
-   * The delete action handles DELETE requests and receives an 'id'
-   * parameter; it should update the server resource state of the resource
-   * identified by the 'id' value.
-   */
-  public function deleteAction()
+    /**
+     * The delete action handles DELETE requests and receives an 'id'
+     * parameter; it should update the server resource state of the resource
+     * identified by the 'id' value.
+     */
+    public function deleteAction()
     {
-    $apiFunctions['default'] = 'bitstreamDelete';
-    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'delete', $apiFunctions);
+        $apiFunctions['default'] = 'bitstreamDelete';
+        $this->_genericAction(
+            $this->_request->getParams(),
+            $this->_request->getControllerName(),
+            'delete',
+            $apiFunctions
+        );
     }
-  }
+}

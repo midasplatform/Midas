@@ -18,49 +18,54 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot; ?>/public/css/upload/upload.revision.css" />
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->moduleWebroot; ?>/public/css/upload/upload.revision.css"/>
 <div>
-  <div class="belowDestinationUpload"></div>
+    <div class="belowDestinationUpload"></div>
 </div>
 <div>
-  <b><?php echo $this->t('Step 1: Select a license'); ?></b>
-  <div>
-  <?php echo $this->element('license'); ?>
-  </div>
+    <b><?php echo $this->t('Step 1: Select a license'); ?></b>
+
+    <div>
+        <?php echo $this->element('license'); ?>
+    </div>
 </div>
-<br />
+<br/>
 <div>
-  <b><?php echo $this->t('Step 2: Set the changes')?></b>
-  <div>
-    <textarea class="revisionChanges" name="revisionChanges" />
-  </div>
+    <b><?php echo $this->t('Step 2: Set the changes') ?></b>
+
+    <div>
+        <textarea class="revisionChanges" name="revisionChanges"/>
+    </div>
 </div>
-<br />
+<br/>
 <div>
-  <b><?php echo $this->t('Step 3: Upload files'); ?></b>
-  <br /><br />
-  <applet name="MidasUploader" class="uploadApplet" width="480" height="175"
-          archive="<?php echo $this->moduleWebroot; ?>/public/java/upload/MidasUploader.jar?rev=3; ?>"
-          code="com.kitware.utils.Main" mayscript="true">
-    <param name="background" value="ffffff" />
-    <param name="baseURL" value="<?php echo $this->protocol."://".$this->host . $this->webroot; ?>/javauploaddownload/upload/" />
-    <param name="getUploadFileOffsetBaseURL" value="gethttpuploadoffset/" />
-    <param name="loglevel" value="WARNING" />
-    <param name="onSuccessfulUploadRedirectEnable" value="true" />
-    <param name="onSuccessRedirectURL" value="<?php echo $this->protocol."://".$this->host . $this->webroot ?>/item/<?php echo $this->item->getKey(); ?>" />
-    <param name="parentItem" value="<?php echo $this->item->getKey(); ?>" />
-    <param name="sessionId" value="<?php echo session_id(); ?>" />
-    <param name="type" value="application/x-java-applet;version=1.5" />
-    <param name="uploadFileBaseURL" value="processjavarevisionupload?sid=" />
-    <param name="uploadType" value="revision" />
-    <param name="uploadUniqueIdentifierURL" value="gethttpuploaduniqueidentifier/" />
-    You must install and enable Java on your system in order to use the Java upload applet.
-  </applet>
+    <b><?php echo $this->t('Step 3: Upload files'); ?></b>
+    <br/><br/>
+    <applet name="MidasUploader" class="uploadApplet" width="480" height="175"
+            archive="<?php echo $this->moduleWebroot; ?>/public/java/upload/MidasUploader.jar?rev=3; ?>"
+            code="com.kitware.utils.Main" mayscript="true">
+        <param name="background" value="ffffff"/>
+        <param name="baseURL"
+               value="<?php echo $this->protocol."://".$this->host.$this->webroot; ?>/javauploaddownload/upload/"/>
+        <param name="getUploadFileOffsetBaseURL" value="gethttpuploadoffset/"/>
+        <param name="loglevel" value="WARNING"/>
+        <param name="onSuccessfulUploadRedirectEnable" value="true"/>
+        <param name="onSuccessRedirectURL"
+               value="<?php echo $this->protocol."://".$this->host.$this->webroot ?>/item/<?php echo $this->item->getKey(
+               ); ?>"/>
+        <param name="parentItem" value="<?php echo $this->item->getKey(); ?>"/>
+        <param name="sessionId" value="<?php echo session_id(); ?>"/>
+        <param name="type" value="application/x-java-applet;version=1.5"/>
+        <param name="uploadFileBaseURL" value="processjavarevisionupload?sid="/>
+        <param name="uploadType" value="revision"/>
+        <param name="uploadUniqueIdentifierURL" value="gethttpuploaduniqueidentifier/"/>
+        You must install and enable Java on your system in order to use the Java upload applet.
+    </applet>
 </div>
 <?php
-foreach($this->extraHtml as $module => $extra)
-  {
-  echo $extra.PHP_EOL;
-  }
+foreach ($this->extraHtml as $module => $extra) {
+    echo $extra.PHP_EOL;
+}
 ?>
 <script type="text/javascript" src="<?php echo $this->moduleWebroot; ?>/public/js/upload/upload.revision.js"></script>

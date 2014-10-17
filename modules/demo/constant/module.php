@@ -18,12 +18,12 @@
  limitations under the License.
 =========================================================================*/
 
-define('MIDAS_DEMO_ADMIN_EMAIL','admin@kitware.com');
-define('MIDAS_DEMO_ADMIN_PASSWORD','admin');
-define('MIDAS_DEMO_USER_EMAIL','user@kitware.com');
-define('MIDAS_DEMO_USER_PASSWORD','user');
+define('MIDAS_DEMO_ADMIN_EMAIL', 'admin@kitware.com');
+define('MIDAS_DEMO_ADMIN_PASSWORD', 'admin');
+define('MIDAS_DEMO_USER_EMAIL', 'user@kitware.com');
+define('MIDAS_DEMO_USER_PASSWORD', 'user');
 
-define('MIDAS_DEMO_DYNAMIC_HELP','
+define('MIDAS_DEMO_DYNAMIC_HELP', '
   <b>To authenticate:</b><br /><br />
   Demo Administrator<br />
   - Login: '.MIDAS_DEMO_ADMIN_EMAIL.'<br />

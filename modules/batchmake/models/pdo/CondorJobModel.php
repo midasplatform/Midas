@@ -18,9 +18,9 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH . '/modules/batchmake/models/base/CondorJobModelBase.php';
+require_once BASE_PATH.'/modules/batchmake/models/base/CondorJobModelBase.php';
 
 /** CondorJob class */
 class Batchmake_CondorJobModel extends Batchmake_CondorJobModelBase
-  {
-  }
+{
+}

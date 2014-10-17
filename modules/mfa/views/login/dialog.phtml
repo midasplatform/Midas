@@ -20,14 +20,15 @@
 
 echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/login/login.dialog.js"></script>';
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/login/login.dialog.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/login/login.dialog.css"/>
 
-<form class="genericForm" id="mfaLoginForm" method="POST" action="<?php echo $this->webroot?>/mfa/login/submit">
-  <input type="hidden" name="userId" value="<?php echo $this->user->getKey();?>" />
-  <div>
-    <input id="otpToken" type="password" name="token" />
-  </div>
-  <div>
-    <input type="submit" value="Enter" id="otpLoginSubmit" />
-  </div>
+<form class="genericForm" id="mfaLoginForm" method="POST" action="<?php echo $this->webroot ?>/mfa/login/submit">
+    <input type="hidden" name="userId" value="<?php echo $this->user->getKey(); ?>"/>
+
+    <div>
+        <input id="otpToken" type="password" name="token"/>
+    </div>
+    <div>
+        <input type="submit" value="Enter" id="otpLoginSubmit"/>
+    </div>
 </form>

@@ -20,18 +20,18 @@
 
 class  Zend_View_Helper_Dateago
 {
-  /** translation helper */
-    function dateago($timestamp)
+    /** translation helper */
+    public function dateago($timestamp)
     {
-    Zend_Loader::loadClass('DateComponent', BASE_PATH . '/core/controllers/components');
-    $component=new DateComponent();
-    return $component->ago($timestamp);
+        Zend_Loader::loadClass('DateComponent', BASE_PATH.'/core/controllers/components');
+        $component = new DateComponent();
+
+        return $component->ago($timestamp);
     }
 
-
-    /** Set view*/
+    /** Set view */
     public function setView(Zend_View_Interface $view)
     {
         $this->view = $view;
     }
-}// end class
+}

@@ -20,6 +20,6 @@
 
 /** App DAO for the dicomserver module */
 class Dicomserver_AppDao extends MIDAS_GlobalDao
-  {
-  public $moduleName = 'dicomserver';
-  }
+{
+    public $moduleName = 'dicomserver';
+}

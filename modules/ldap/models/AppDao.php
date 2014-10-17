@@ -20,6 +20,6 @@
 
 /** Base dao class for the ldap module */
 class Ldap_AppDao extends MIDAS_GlobalDao
-  {
-  public $moduleName = 'ldap';
-  } // end class
+{
+    public $moduleName = 'ldap';
+}

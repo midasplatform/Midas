@@ -27,35 +27,36 @@
  * @package    communityagreement
  */
 class Communityagreement_AgreementModelBase extends Communityagreement_AppModel
-  {
-  /** constructor*/
-  public function __construct()
+{
+    /** constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'communityagreement_agreement';
-    $this->_key = 'agreement_id';
+        parent::__construct();
+        $this->_name = 'communityagreement_agreement';
+        $this->_key = 'agreement_id';
 
-    $this->_mainData = array(
-        'agreement_id' =>  array('type' => MIDAS_DATA),
-        'community_id' =>  array('type' => MIDAS_DATA),
-        'agreement' => array('type' => MIDAS_DATA),
+        $this->_mainData = array(
+            'agreement_id' => array('type' => MIDAS_DATA),
+            'community_id' => array('type' => MIDAS_DATA),
+            'agreement' => array('type' => MIDAS_DATA),
         );
-    $this->initialize(); // required
-    } // end __construct()
-
-  /**
-   * Create a community agreement
-   *
-   * @param string $community_id
-   * @param string $agreement
-   * @return Communityagreement_AgreementDao
-   */
-  function createAgreement($community_id, $agreement)
-    {
-    $agreementDao = MidasLoader::newDao('AgreementDao', 'communityagreement');
-    $agreementDao->setCommunityId($community_id);
-    $agreementDao->setAgreement($agreement);
-    $this->save($agreementDao);
-    return $agreementDao;
+        $this->initialize(); // required
     }
-  } // end class
+
+    /**
+     * Create a community agreement
+     *
+     * @param  string $community_id
+     * @param  string $agreement
+     * @return Communityagreement_AgreementDao
+     */
+    public function createAgreement($community_id, $agreement)
+    {
+        $agreementDao = MidasLoader::newDao('AgreementDao', 'communityagreement');
+        $agreementDao->setCommunityId($community_id);
+        $agreementDao->setAgreement($agreement);
+        $this->save($agreementDao);
+
+        return $agreementDao;
+    }
+}

@@ -18,86 +18,84 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH . '/modules/api/tests/controllers/ApiCallMethodsTest.php';
+require_once BASE_PATH.'/modules/api/tests/controllers/ApiCallMethodsTest.php';
 
 /** Tests the functionality of miscellaneous web API methods. */
 class ApiCallMiscMethodsTest extends ApiCallMethodsTest
-  {
-  /** Test the midas.version method. */
-  public function testVersion()
+{
+    /** Test the midas.version method. */
+    public function testVersion()
     {
-    $this->params['method'] = 'midas.version';
-    $resp = $this->_callJsonApi();
-    $this->_assertStatusOk($resp);
-    $this->assertEquals($resp->data->version, Zend_Registry::get('configDatabase')->version);
+        $this->params['method'] = 'midas.version';
+        $resp = $this->_callJsonApi();
+        $this->_assertStatusOk($resp);
+        $this->assertEquals($resp->data->version, Zend_Registry::get('configDatabase')->version);
     }
 
-  /** Test the midas.modules.list method. */
-  public function testModulesList()
+    /** Test the midas.modules.list method. */
+    public function testModulesList()
     {
-    $this->params['method'] = 'midas.modules.list';
-    $resp = $this->_callJsonApi();
-    $this->_assertStatusOk($resp);
-    $this->assertNotEmpty($resp->data->modules);
-    $this->assertTrue(in_array('api', $resp->data->modules));
+        $this->params['method'] = 'midas.modules.list';
+        $resp = $this->_callJsonApi();
+        $this->_assertStatusOk($resp);
+        $this->assertNotEmpty($resp->data->modules);
+        $this->assertTrue(in_array('api', $resp->data->modules));
     }
 
-  /** Test the midas.methods.list method. */
-  public function testMethodsList()
+    /** Test the midas.methods.list method. */
+    public function testMethodsList()
     {
-    $this->params['method'] = 'midas.methods.list';
-    $resp = $this->_callJsonApi();
-    $this->_assertStatusOk($resp);
-    $this->assertNotEmpty($resp->data->methods);
-    foreach($resp->data->methods as $method)
-      {
-      $this->assertNotEmpty($method->name);
-      $this->assertNotEmpty($method->help);
-      $this->assertTrue(isset($method->help->description));
-      $this->assertTrue(isset($method->help->params));
-      $this->assertTrue(isset($method->help->example));
-      $this->assertTrue(isset($method->help->return));
+        $this->params['method'] = 'midas.methods.list';
+        $resp = $this->_callJsonApi();
+        $this->_assertStatusOk($resp);
+        $this->assertNotEmpty($resp->data->methods);
+        foreach ($resp->data->methods as $method) {
+            $this->assertNotEmpty($method->name);
+            $this->assertNotEmpty($method->help);
+            $this->assertTrue(isset($method->help->description));
+            $this->assertTrue(isset($method->help->params));
+            $this->assertTrue(isset($method->help->example));
+            $this->assertTrue(isset($method->help->return));
 
-      // Test a specific method's params list
-      if($method->name == 'login')
-        {
-        $this->assertNotEmpty($method->help->params->appname);
-        $this->assertNotEmpty($method->help->params->apikey);
-        $this->assertNotEmpty($method->help->params->email);
+            // Test a specific method's params list
+            if ($method->name == 'login') {
+                $this->assertNotEmpty($method->help->params->appname);
+                $this->assertNotEmpty($method->help->params->apikey);
+                $this->assertNotEmpty($method->help->params->email);
+            }
         }
-      }
     }
 
-  /** Test the midas.info method. */
-  public function testInfo()
+    /** Test the midas.info method. */
+    public function testInfo()
     {
-    $this->params['method'] = 'midas.info';
-    $resp = $this->_callJsonApi();
-    $this->_assertStatusOk($resp);
+        $this->params['method'] = 'midas.info';
+        $resp = $this->_callJsonApi();
+        $this->_assertStatusOk($resp);
 
-    // We should get version
-    $this->assertEquals($resp->data->version, Zend_Registry::get('configDatabase')->version);
+        // We should get version
+        $this->assertEquals($resp->data->version, Zend_Registry::get('configDatabase')->version);
 
-    // We should get modules list
-    $this->assertNotEmpty($resp->data->modules);
-    $this->assertTrue(in_array('api', $resp->data->modules));
+        // We should get modules list
+        $this->assertNotEmpty($resp->data->modules);
+        $this->assertTrue(in_array('api', $resp->data->modules));
 
-    // We should get resources list
-    $this->assertNotEmpty($resp->data->resources);
+        // We should get resources list
+        $this->assertNotEmpty($resp->data->resources);
     }
 
-  /** Test the midas.admin.database.cleanup method. */
-  public function testAdminDatabaseCleanup()
+    /** Test the midas.admin.database.cleanup method. */
+    public function testAdminDatabaseCleanup()
     {
-    $this->params['token'] = $this->_loginAsNormalUser();
-    $this->params['method'] = 'midas.admin.database.cleanup';
-    $resp = $this->_callJsonApi();
-    $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
+        $this->params['token'] = $this->_loginAsNormalUser();
+        $this->params['method'] = 'midas.admin.database.cleanup';
+        $resp = $this->_callJsonApi();
+        $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
 
-    $this->resetAll();
-    $this->params['token'] = $this->_loginAsAdministrator();
-    $this->params['method'] = 'midas.admin.database.cleanup';
-    $resp = $this->_callJsonApi();
-    $this->_assertStatusOk($resp);
+        $this->resetAll();
+        $this->params['token'] = $this->_loginAsAdministrator();
+        $this->params['method'] = 'midas.admin.database.cleanup';
+        $resp = $this->_callJsonApi();
+        $this->_assertStatusOk($resp);
     }
-  }
+}

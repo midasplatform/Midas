@@ -17,17 +17,18 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /** Dao for oauth access token */
 class Oauth_TokenDao extends AppDao
-  {
-  public $_model = 'Token';
-  public $_module = 'oauth';
+{
+    public $_model = 'Token';
+    public $_module = 'oauth';
 
-  /**
-   * Returns whether or not the token has expired. Value is not cached.
-   */
-  public function isExpired()
+    /**
+     * Returns whether or not the token has expired. Value is not cached.
+     */
+    public function isExpired()
     {
-    return time() > strtotime($this->getExpirationDate());
+        return time() > strtotime($this->getExpirationDate());
     }
-  }
+}

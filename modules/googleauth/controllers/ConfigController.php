@@ -24,33 +24,31 @@
  */
 class Googleauth_ConfigController extends Googleauth_AppController
 {
-  public $_models = array('Setting');
+    public $_models = array('Setting');
 
-  /** Renders the config view */
-  function indexAction()
+    /** Renders the config view */
+    public function indexAction()
     {
-    $this->requireAdminPrivileges();
+        $this->requireAdminPrivileges();
 
-    $this->view->clientId = $this->Setting->getValueByName('client_id', $this->moduleName);
-    $this->view->clientSecret = $this->Setting->getValueByName('client_secret', $this->moduleName);
+        $this->view->clientId = $this->Setting->getValueByName('client_id', $this->moduleName);
+        $this->view->clientSecret = $this->Setting->getValueByName('client_secret', $this->moduleName);
     }
 
-  /** XHR endpoint to save config values */
-  public function submitAction()
+    /** XHR endpoint to save config values */
+    public function submitAction()
     {
-    $this->requireAdminPrivileges();
+        $this->requireAdminPrivileges();
 
-    $this->disableLayout();
-    $this->disableView();
+        $this->disableLayout();
+        $this->disableView();
 
-    $params = array('client_id', 'client_secret');
-    foreach($params as $param)
-      {
-      $value = $this->getParam($param);
-      $this->Setting->setConfig($param, $value, $this->moduleName);
-      }
+        $params = array('client_id', 'client_secret');
+        foreach ($params as $param) {
+            $value = $this->getParam($param);
+            $this->Setting->setConfig($param, $value, $this->moduleName);
+        }
 
-    echo JsonComponent::encode(array(true, 'Changes saved'));
+        echo JsonComponent::encode(array(true, 'Changes saved'));
     }
-
 }

@@ -24,368 +24,380 @@ require_once BASE_PATH.'/modules/batchmake/tests/controllers/BatchmakeController
  * KWBatchmakeComponent tests
  */
 class KWBatchmakeComponentTest extends BatchmakeControllerTest
-  {
+{
+    protected $kwBatchmakeComponent;
+    protected $applicationConfig;
 
-  protected $kwBatchmakeComponent;
-  protected $applicationConfig;
+    protected $cwd;
 
-  protected $cwd;
-
-  /** set up tests*/
-  public function setUp()
+    /** set up tests */
+    public function setUp()
     {
-    $this->setupDatabase(array('default'));
-    $this->_models = array('User');
-    $this->enabledModules = array('batchmake');
-    $this->cwd = getcwd();
-    parent::setUp();
-    if(!isset($this->kwBatchmakeComponent))
-      {
-      require_once BASE_PATH.'/modules/batchmake/controllers/components/KWBatchmakeComponent.php';
-      require_once BASE_PATH.'/modules/batchmake/tests/library/ExecutorMock.php';
-      $executor = new Batchmake_ExecutorMock();
-      $this->kwBatchmakeComponent = new Batchmake_KWBatchmakeComponent($this->setupAndGetConfig(), $executor);
-      }
-    }
-
-  /** clean up after tests */
-  public function tearDown()
-    {
-    // remove the temporary tests dir
-    $testTmpDir = $this->getTempDirectory() . '/batchmake/tests';
-
-    KWUtils::recursiveRemoveDirectory($testTmpDir);
-    // change the current dir back to the saved cwd after each test
-    chdir($this->cwd);
-    }
-
-  /**
-   * tests config setup, relies on an alternate testing config to be defined,
-   * these properties should all point to the batchmake module testfiles dirs.
-   */
-  public function testIsConfigCorrect()
-    {
-    // start out with known correct set
-    $this->assertTrue($this->kwBatchmakeComponent->isConfigCorrect());
-
-    // now make a change to something that shouldn't work
-    $badConfigVals = $this->setupAndGetConfig();
-    $badConfigVals[MIDAS_BATCHMAKE_DATA_DIR_PROPERTY] = '/unlikely/to/work/right';
-    $badKwBatchmakeComponent = new Batchmake_KWBatchmakeComponent($badConfigVals);
-    $this->assertFalse($badKwBatchmakeComponent->isConfigCorrect());
-    }
-
-  /**
-   * tests that all the bmScripts that have been entered for testing are found
-   */
-  public function testGetBatchmakeScripts()
-    {
-    $foundTestScripts = $this->kwBatchmakeComponent->getBatchmakeScripts();
-    sort($foundTestScripts);
-    $expectedTestScripts = array("CompileEmptyOutput.bms", "CompileReturnNonzero.bms", "Compiles.bms", "Myscript2.bms", "noscripts.bms",
-        "anotherscript.bms", "anotherscriptwitherrors.bms", "bmmswitherrors.bms",
-        "cycle1.bms", "cycle31.bms", "cycle32.bms", "cycle33.bms", "nocycle1.bms",
-        "nocycle2.bms", "nocycle3.bms", "myscript.bms", "PixelCounter.bms",
-        "CompileErrors.bms");
-    sort($expectedTestScripts);
-    $this->assertEquals($foundTestScripts, $expectedTestScripts);
-    }
-
-  /**
-   * helper function to clear out any files in a directory
-   */
-  protected function clearDirFiles($dirToClear)
-    {
-    foreach(scandir($dirToClear) as $filename)
-      {
-      if($filename && $filename != '.' && $filename != '..')
-        {
-        unlink($dirToClear.'/'.$filename);
+        $this->setupDatabase(array('default'));
+        $this->_models = array('User');
+        $this->enabledModules = array('batchmake');
+        $this->cwd = getcwd();
+        parent::setUp();
+        if (!isset($this->kwBatchmakeComponent)) {
+            require_once BASE_PATH.'/modules/batchmake/controllers/components/KWBatchmakeComponent.php';
+            require_once BASE_PATH.'/modules/batchmake/tests/library/ExecutorMock.php';
+            $executor = new Batchmake_ExecutorMock();
+            $this->kwBatchmakeComponent = new Batchmake_KWBatchmakeComponent($this->setupAndGetConfig(), $executor);
         }
-      }
     }
 
-  /**
-   * helper function to run a test case
-   */
-  protected function preparePipelineScriptsTestcase($workDir, $scriptName, $expectedSet)
+    /** clean up after tests */
+    public function tearDown()
     {
-    // clear the directory of any existing files
-    $this->clearDirFiles($workDir);
+        // remove the temporary tests dir
+        $testTmpDir = $this->getTempDirectory().'/batchmake/tests';
 
-    // try symlinking all the batchmake files starting with $scriptName
-    $bmScriptsProcessed = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
-
-    // check that the correct batchmake scripts are there, and only those
-    // easiest just to add '.' and '..' to expected list
-    $expectedSet[] = '..';
-    $expectedSet[] = '.';
-    sort($expectedSet);
-
-    $foundScripts = scandir($workDir);
-    sort($foundScripts);
-
-    $this->assertEquals($expectedSet, $foundScripts,
-            "Expected batchmake scripts not found rooted from ".$scriptName);
-
-    // add in '.' and '..'
-    $bmScriptsProcessed[] = '.';
-    $bmScriptsProcessed[] = '..';
-    sort($bmScriptsProcessed);
-
-    // also check that the set of scripts returned from the method is this same set
-    $this->assertEquals($expectedSet, $bmScriptsProcessed,
-            "Expected batchmake scripts not equal to those returned from processing ".$scriptName);
+        KWUtils::recursiveRemoveDirectory($testTmpDir);
+        // change the current dir back to the saved cwd after each test
+        chdir($this->cwd);
     }
 
-  /**
-   * helper function to run a test case that is expected to throw an exception
-   */
-  protected function preparePipelineScriptsTestcaseException($workDir, $scriptName)
+    /**
+     * tests config setup, relies on an alternate testing config to be defined,
+     * these properties should all point to the batchmake module testfiles dirs.
+     */
+    public function testIsConfigCorrect()
     {
-    try
-      {
-      // need to suppress error output to keep test from failing, despite exception being caught
-      @$this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
-      $this->fail('Expected an exception for $scriptName, but did not get one.');
-      }
-    catch(Zend_Exception $ze)
-      {
-      // if we got here, this is the correct behavior
-      $this->assertTrue(true);
-      }
+        // start out with known correct set
+        $this->assertTrue($this->kwBatchmakeComponent->isConfigCorrect());
+
+        // now make a change to something that shouldn't work
+        $badConfigVals = $this->setupAndGetConfig();
+        $badConfigVals[MIDAS_BATCHMAKE_DATA_DIR_PROPERTY] = '/unlikely/to/work/right';
+        $badKwBatchmakeComponent = new Batchmake_KWBatchmakeComponent($badConfigVals);
+        $this->assertFalse($badKwBatchmakeComponent->isConfigCorrect());
     }
 
-  /** tests preparePipelineScripts, and exercises createTask. */
-  public function testPreparePipelineScripts()
+    /**
+     * tests that all the bmScripts that have been entered for testing are found
+     */
+    public function testGetBatchmakeScripts()
     {
-    $usersFile = $this->loadData('User', 'default');
-    $userDao = $this->User->load($usersFile[0]->getKey());
-    $taskDao = $this->kwBatchmakeComponent->createTask($userDao);
-    $workDir = $taskDao->getWorkDir();
-
-    $scriptName = 'anotherscript.bms';
-    $expectedSet = array("myscript.bms", "Myscript2.bms",
-         "anotherscript.bms", "noscripts.bms", "PixelCounter.bms");
-    $this->preparePipelineScriptsTestcase($workDir, $scriptName, $expectedSet);
-
-    $scriptName = "noscripts.bms";
-    $expectedSet = array("noscripts.bms");
-    $this->preparePipelineScriptsTestcase($workDir, $scriptName, $expectedSet);
-
-    // try symlinking all the batchmake files starting with anotherscriptwitherrors.bms
-    // expect an exception, as this script includes a non-existent script
-    $scriptName = 'anotherscriptwitherrors.bms';
-    $this->preparePipelineScriptsTestcaseException($workDir, $scriptName);
-
-    // cycle detection tests
-
-    // check a script with no cycle,1->2, 1->3, 3->2
-    // clear the directory of the symlinked files
-    $scriptName = "nocycle1.bms";
-    $expectedSet = array("nocycle1.bms", "nocycle2.bms", "nocycle3.bms");
-    $this->preparePipelineScriptsTestcase($workDir, $scriptName, $expectedSet);
-
-    // expect an exception, as this script has a simple cycle
-    // 1->1
-    $scriptName = 'cycle1.bms';
-    $this->preparePipelineScriptsTestcaseException($workDir, $scriptName);
-
-    // check a script with a more complex cycle, 1->2, 1->3, 2->3, 3->2
-    $scriptName = 'cycle31.bms';
-    $this->preparePipelineScriptsTestcaseException($workDir, $scriptName);
+        $foundTestScripts = $this->kwBatchmakeComponent->getBatchmakeScripts();
+        sort($foundTestScripts);
+        $expectedTestScripts = array(
+            "CompileEmptyOutput.bms",
+            "CompileReturnNonzero.bms",
+            "Compiles.bms",
+            "Myscript2.bms",
+            "noscripts.bms",
+            "anotherscript.bms",
+            "anotherscriptwitherrors.bms",
+            "bmmswitherrors.bms",
+            "cycle1.bms",
+            "cycle31.bms",
+            "cycle32.bms",
+            "cycle33.bms",
+            "nocycle1.bms",
+            "nocycle2.bms",
+            "nocycle3.bms",
+            "myscript.bms",
+            "PixelCounter.bms",
+            "CompileErrors.bms",
+        );
+        sort($expectedTestScripts);
+        $this->assertEquals($foundTestScripts, $expectedTestScripts);
     }
 
-  /** tests preparePipelineBmms */
-  public function testPreparePipelineBmms()
+    /**
+     * helper function to clear out any files in a directory
+     */
+    protected function clearDirFiles($dirToClear)
     {
-    $usersFile = $this->loadData('User', 'default');
-    $userDao = $this->User->load($usersFile[0]->getKey());
-    $taskDao = $this->kwBatchmakeComponent->createTask($userDao);
-    $workDir = $taskDao->getWorkDir();
-
-    // try a script that refers to a non-existant bmm
-    $scriptName = 'bmmswitherrors.bms';
-    $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
-    try
-      {
-      $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
-      $this->fail('Expected an exception for '.$scriptName.', but did not get one.');
-      }
-    catch(Zend_Exception $ze)
-      {
-      // if we got here, this is the correct behavior
-      $this->assertTrue(true);
-      }
-
-    // now try symlinking all the batchmake files starting with anotherscript.bms
-    $scriptName = 'anotherscript.bms';
-    $bmScripts_anotherscript = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
-    $bmms = $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts_anotherscript);
-    // these come as [ name of app => script where found ]
-    // convert them to a form useful for comparison
-    $processedBmms_anotherscript = array();
-    foreach($bmms as $bmm => $script)
-      {
-      $processedBmms_anotherscript[] = $bmm.'.bmm';
-      }
-    sort($processedBmms_anotherscript);
-
-    $globOutput = glob($workDir.'/*.bmm');
-    // strip off the path
-    $foundBmms_anotherscript = array();
-    foreach($globOutput as $bmm)
-      {
-      $foundBmms_anotherscript[] = basename($bmm);
-      }
-    sort($foundBmms_anotherscript);
-
-    $expectedBmms_anotherscript = array("AnotherApp.bmm", "MyApp2.bmm",
-      "PixelCounter.bmm", "TestApp1.bmm", "TestApp2.bmm", "myapp.bmm");
-    sort($expectedBmms_anotherscript);
-
-    // compare the three arrays
-    $this->assertEquals($processedBmms_anotherscript, $expectedBmms_anotherscript, "BMMs: processed != expected, for anotherscript.bms");
-    $this->assertEquals($processedBmms_anotherscript, $foundBmms_anotherscript, "BMMs: processed != found, for anotherscript.bms");
+        foreach (scandir($dirToClear) as $filename) {
+            if ($filename && $filename != '.' && $filename != '..') {
+                unlink($dirToClear.'/'.$filename);
+            }
+        }
     }
 
-  /** tests testCompileBatchMakeScript */
-  public function testCompileBatchMakeScript()
+    /**
+     * helper function to run a test case
+     */
+    protected function preparePipelineScriptsTestcase($workDir, $scriptName, $expectedSet)
     {
-    $usersFile = $this->loadData('User', 'default');
-    $userDao = $this->User->load($usersFile[0]->getKey());
-    $taskDao = $this->kwBatchmakeComponent->createTask($userDao);
-    $workDir = $taskDao->getWorkDir();
+        // clear the directory of any existing files
+        $this->clearDirFiles($workDir);
 
-    // a script that compiles
-    $scriptName = 'Compiles.bms';
-    $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
-    $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
+        // try symlinking all the batchmake files starting with $scriptName
+        $bmScriptsProcessed = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
 
-    // this one should work
-    $this->kwBatchmakeComponent->compileBatchMakeScript($workDir, $scriptName);
+        // check that the correct batchmake scripts are there, and only those
+        // easiest just to add '.' and '..' to expected list
+        $expectedSet[] = '..';
+        $expectedSet[] = '.';
+        sort($expectedSet);
 
-    // now try a script that doesn't compile but returns errors
-    $scriptName = 'CompileErrors.bms';
-    $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
-    $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
-    try
-      {
-      $this->kwBatchmakeComponent->compileBatchMakeScript($workDir, $scriptName);
-      $this->fail('Should have had a compile error but did not, testCompileBatchMakeScript');
-      }
-    catch(Zend_Exception $ze)
-      {
-      // if we got here, this is the correct behavior
-      // check that the exception came from the right place
-      $this->assertEquals(1, preg_match('/compileBatchMakeScript/', $ze->getMessage()));
-      }
+        $foundScripts = scandir($workDir);
+        sort($foundScripts);
 
-    // now try a script that returns a non-zero value from the compile step
-    $scriptName = 'CompileReturnNonzero.bms';
-    $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
-    $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
-    try
-      {
-      $this->kwBatchmakeComponent->compileBatchMakeScript($workDir, $scriptName);
-      $this->fail('Should have had a compile error but did not, testCompileBatchMakeScript');
-      }
-    catch(Zend_Exception $ze)
-      {
-      // if we got here, this is the correct behavior
-      // check that the exception came from the right place
-      $this->assertEquals(1, preg_match('/compileBatchMakeScript/', $ze->getMessage()));
-      }
+        $this->assertEquals(
+            $expectedSet,
+            $foundScripts,
+            "Expected batchmake scripts not found rooted from ".$scriptName
+        );
 
-    //a script that returns a zero value but an empty output from the compile step
-    $scriptName = 'CompileEmptyOutput.bms';
-    $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
-    $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
-    try
-      {
-      $this->kwBatchmakeComponent->compileBatchMakeScript($workDir, $scriptName);
-      $this->fail('Should have had a compile error but did not, testCompileBatchMakeScript');
-      }
-    catch(Zend_Exception $ze)
-      {
-      // if we got here, this is the correct behavior
-      // check that the exception came from the right place
-      $this->assertEquals(1, preg_match('/compileBatchMakeScript/', $ze->getMessage()));
-      }
+        // add in '.' and '..'
+        $bmScriptsProcessed[] = '.';
+        $bmScriptsProcessed[] = '..';
+        sort($bmScriptsProcessed);
+
+        // also check that the set of scripts returned from the method is this same set
+        $this->assertEquals(
+            $expectedSet,
+            $bmScriptsProcessed,
+            "Expected batchmake scripts not equal to those returned from processing ".$scriptName
+        );
     }
 
-  /** tests generateCondorDag */
-  public function testGenerateCondorDag()
+    /**
+     * helper function to run a test case that is expected to throw an exception
+     */
+    protected function preparePipelineScriptsTestcaseException($workDir, $scriptName)
     {
-    $usersFile = $this->loadData('User', 'default');
-    $userDao = $this->User->load($usersFile[0]->getKey());
-    $taskDao = $this->kwBatchmakeComponent->createTask($userDao);
-    $workDir = $taskDao->getWorkDir();
-
-    // try a script that returns a non-zero value
-    $scriptName = 'CompileReturnNonzero.bms';
-    $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
-    $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
-    try
-      {
-      $this->kwBatchmakeComponent->generateCondorDag($workDir, $scriptName);
-      $this->fail('Should have had an error but did not, testGenerateCondorDag');
-      }
-    catch(Zend_Exception $ze)
-      {
-      // if we got here, this is the correct behavior
-      // check that the exception came from the right place
-      $this->assertEquals(1, preg_match('/generateCondorDag/', $ze->getMessage()));
-      }
-
-    // a script that compiles
-    $scriptName = 'Compiles.bms';
-    $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
-    $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
-
-    // try to generate the Condor script
-    $dagJobFile = $this->kwBatchmakeComponent->generateCondorDag($workDir, $scriptName);
-    $this->assertEquals($dagJobFile, 'Compiles.dagjob');
-    // check that dag files and condor job files were created
-    $condorFiles = array($dagJobFile, 'Compiles.1.dagjob', 'Compiles.3.dagjob', 'Compiles.5.dagjob');
-    foreach($condorFiles as $condorFile)
-      {
-      $this->assertFileExists($workDir.'/'.$condorFile);
-      }
+        try {
+            // need to suppress error output to keep test from failing, despite exception being caught
+            @$this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
+            $this->fail('Expected an exception for $scriptName, but did not get one.');
+        } catch (Zend_Exception $ze) {
+            // if we got here, this is the correct behavior
+            $this->assertTrue(true);
+        }
     }
 
-  /** tests function testCondorSubmitDag */
-  public function testCondorSubmitDag()
+    /** tests preparePipelineScripts, and exercises createTask. */
+    public function testPreparePipelineScripts()
     {
-    $usersFile = $this->loadData('User', 'default');
-    $userDao = $this->User->load($usersFile[0]->getKey());
-    $taskDao = $this->kwBatchmakeComponent->createTask($userDao);
-    $workDir = $taskDao->getWorkDir();
+        $usersFile = $this->loadData('User', 'default');
+        $userDao = $this->User->load($usersFile[0]->getKey());
+        $taskDao = $this->kwBatchmakeComponent->createTask($userDao);
+        $workDir = $taskDao->getWorkDir();
 
-    // try a script that returns a non-zero value
-    $scriptName = 'CompileReturnNonzero.dagjob';
-    try
-      {
-      $this->kwBatchmakeComponent->condorSubmitDag($workDir, $scriptName);
-      $this->fail('Should have had an error but did not, testCondorSubmitDag');
-      }
-    catch(Zend_Exception $ze)
-      {
-      // if we got here, this is the correct behavior
-      // check that the exception came from the right place
-      $this->assertEquals(1, preg_match('/condorSubmitDag/', $ze->getMessage()));
-      }
+        $scriptName = 'anotherscript.bms';
+        $expectedSet = array(
+            "myscript.bms",
+            "Myscript2.bms",
+            "anotherscript.bms",
+            "noscripts.bms",
+            "PixelCounter.bms",
+        );
+        $this->preparePipelineScriptsTestcase($workDir, $scriptName, $expectedSet);
 
-    // a script that compiles
-    $scriptName = 'Compiles.bms';
-    $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
-    $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
+        $scriptName = "noscripts.bms";
+        $expectedSet = array("noscripts.bms");
+        $this->preparePipelineScriptsTestcase($workDir, $scriptName, $expectedSet);
 
-    $dagScript = $this->kwBatchmakeComponent->generateCondorDag($workDir, $scriptName);
-    $this->kwBatchmakeComponent->condorSubmitDag($workDir, $dagScript);
-    // how to check this now?
-    // TODO think about this some more
-    // perhaps send something back through the web-api
-    // what would that be testing exactly?
+        // try symlinking all the batchmake files starting with anotherscriptwitherrors.bms
+        // expect an exception, as this script includes a non-existent script
+        $scriptName = 'anotherscriptwitherrors.bms';
+        $this->preparePipelineScriptsTestcaseException($workDir, $scriptName);
+
+        // cycle detection tests
+
+        // check a script with no cycle,1->2, 1->3, 3->2
+        // clear the directory of the symlinked files
+        $scriptName = "nocycle1.bms";
+        $expectedSet = array("nocycle1.bms", "nocycle2.bms", "nocycle3.bms");
+        $this->preparePipelineScriptsTestcase($workDir, $scriptName, $expectedSet);
+
+        // expect an exception, as this script has a simple cycle
+        // 1->1
+        $scriptName = 'cycle1.bms';
+        $this->preparePipelineScriptsTestcaseException($workDir, $scriptName);
+
+        // check a script with a more complex cycle, 1->2, 1->3, 2->3, 3->2
+        $scriptName = 'cycle31.bms';
+        $this->preparePipelineScriptsTestcaseException($workDir, $scriptName);
     }
-  } // end class
+
+    /** tests preparePipelineBmms */
+    public function testPreparePipelineBmms()
+    {
+        $usersFile = $this->loadData('User', 'default');
+        $userDao = $this->User->load($usersFile[0]->getKey());
+        $taskDao = $this->kwBatchmakeComponent->createTask($userDao);
+        $workDir = $taskDao->getWorkDir();
+
+        // try a script that refers to a non-existant bmm
+        $scriptName = 'bmmswitherrors.bms';
+        $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
+        try {
+            $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
+            $this->fail('Expected an exception for '.$scriptName.', but did not get one.');
+        } catch (Zend_Exception $ze) {
+            // if we got here, this is the correct behavior
+            $this->assertTrue(true);
+        }
+
+        // now try symlinking all the batchmake files starting with anotherscript.bms
+        $scriptName = 'anotherscript.bms';
+        $bmScripts_anotherscript = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
+        $bmms = $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts_anotherscript);
+        // these come as [ name of app => script where found ]
+        // convert them to a form useful for comparison
+        $processedBmms_anotherscript = array();
+        foreach ($bmms as $bmm => $script) {
+            $processedBmms_anotherscript[] = $bmm.'.bmm';
+        }
+        sort($processedBmms_anotherscript);
+
+        $globOutput = glob($workDir.'/*.bmm');
+        // strip off the path
+        $foundBmms_anotherscript = array();
+        foreach ($globOutput as $bmm) {
+            $foundBmms_anotherscript[] = basename($bmm);
+        }
+        sort($foundBmms_anotherscript);
+
+        $expectedBmms_anotherscript = array(
+            "AnotherApp.bmm",
+            "MyApp2.bmm",
+            "PixelCounter.bmm",
+            "TestApp1.bmm",
+            "TestApp2.bmm",
+            "myapp.bmm",
+        );
+        sort($expectedBmms_anotherscript);
+
+        // compare the three arrays
+        $this->assertEquals(
+            $processedBmms_anotherscript,
+            $expectedBmms_anotherscript,
+            "BMMs: processed != expected, for anotherscript.bms"
+        );
+        $this->assertEquals(
+            $processedBmms_anotherscript,
+            $foundBmms_anotherscript,
+            "BMMs: processed != found, for anotherscript.bms"
+        );
+    }
+
+    /** tests testCompileBatchMakeScript */
+    public function testCompileBatchMakeScript()
+    {
+        $usersFile = $this->loadData('User', 'default');
+        $userDao = $this->User->load($usersFile[0]->getKey());
+        $taskDao = $this->kwBatchmakeComponent->createTask($userDao);
+        $workDir = $taskDao->getWorkDir();
+
+        // a script that compiles
+        $scriptName = 'Compiles.bms';
+        $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
+        $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
+
+        // this one should work
+        $this->kwBatchmakeComponent->compileBatchMakeScript($workDir, $scriptName);
+
+        // now try a script that doesn't compile but returns errors
+        $scriptName = 'CompileErrors.bms';
+        $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
+        $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
+        try {
+            $this->kwBatchmakeComponent->compileBatchMakeScript($workDir, $scriptName);
+            $this->fail('Should have had a compile error but did not, testCompileBatchMakeScript');
+        } catch (Zend_Exception $ze) {
+            // if we got here, this is the correct behavior
+            // check that the exception came from the right place
+            $this->assertEquals(1, preg_match('/compileBatchMakeScript/', $ze->getMessage()));
+        }
+
+        // now try a script that returns a non-zero value from the compile step
+        $scriptName = 'CompileReturnNonzero.bms';
+        $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
+        $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
+        try {
+            $this->kwBatchmakeComponent->compileBatchMakeScript($workDir, $scriptName);
+            $this->fail('Should have had a compile error but did not, testCompileBatchMakeScript');
+        } catch (Zend_Exception $ze) {
+            // if we got here, this is the correct behavior
+            // check that the exception came from the right place
+            $this->assertEquals(1, preg_match('/compileBatchMakeScript/', $ze->getMessage()));
+        }
+
+        // a script that returns a zero value but an empty output from the compile step
+        $scriptName = 'CompileEmptyOutput.bms';
+        $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
+        $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
+        try {
+            $this->kwBatchmakeComponent->compileBatchMakeScript($workDir, $scriptName);
+            $this->fail('Should have had a compile error but did not, testCompileBatchMakeScript');
+        } catch (Zend_Exception $ze) {
+            // if we got here, this is the correct behavior
+            // check that the exception came from the right place
+            $this->assertEquals(1, preg_match('/compileBatchMakeScript/', $ze->getMessage()));
+        }
+    }
+
+    /** tests generateCondorDag */
+    public function testGenerateCondorDag()
+    {
+        $usersFile = $this->loadData('User', 'default');
+        $userDao = $this->User->load($usersFile[0]->getKey());
+        $taskDao = $this->kwBatchmakeComponent->createTask($userDao);
+        $workDir = $taskDao->getWorkDir();
+
+        // try a script that returns a non-zero value
+        $scriptName = 'CompileReturnNonzero.bms';
+        $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
+        $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
+        try {
+            $this->kwBatchmakeComponent->generateCondorDag($workDir, $scriptName);
+            $this->fail('Should have had an error but did not, testGenerateCondorDag');
+        } catch (Zend_Exception $ze) {
+            // if we got here, this is the correct behavior
+            // check that the exception came from the right place
+            $this->assertEquals(1, preg_match('/generateCondorDag/', $ze->getMessage()));
+        }
+
+        // a script that compiles
+        $scriptName = 'Compiles.bms';
+        $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
+        $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
+
+        // try to generate the Condor script
+        $dagJobFile = $this->kwBatchmakeComponent->generateCondorDag($workDir, $scriptName);
+        $this->assertEquals($dagJobFile, 'Compiles.dagjob');
+        // check that dag files and condor job files were created
+        $condorFiles = array($dagJobFile, 'Compiles.1.dagjob', 'Compiles.3.dagjob', 'Compiles.5.dagjob');
+        foreach ($condorFiles as $condorFile) {
+            $this->assertFileExists($workDir.'/'.$condorFile);
+        }
+    }
+
+    /** tests function testCondorSubmitDag */
+    public function testCondorSubmitDag()
+    {
+        $usersFile = $this->loadData('User', 'default');
+        $userDao = $this->User->load($usersFile[0]->getKey());
+        $taskDao = $this->kwBatchmakeComponent->createTask($userDao);
+        $workDir = $taskDao->getWorkDir();
+
+        // try a script that returns a non-zero value
+        $scriptName = 'CompileReturnNonzero.dagjob';
+        try {
+            $this->kwBatchmakeComponent->condorSubmitDag($workDir, $scriptName);
+            $this->fail('Should have had an error but did not, testCondorSubmitDag');
+        } catch (Zend_Exception $ze) {
+            // if we got here, this is the correct behavior
+            // check that the exception came from the right place
+            $this->assertEquals(1, preg_match('/condorSubmitDag/', $ze->getMessage()));
+        }
+
+        // a script that compiles
+        $scriptName = 'Compiles.bms';
+        $bmScripts = $this->kwBatchmakeComponent->preparePipelineScripts($workDir, $scriptName);
+        $this->kwBatchmakeComponent->preparePipelineBmms($workDir, $bmScripts);
+
+        $dagScript = $this->kwBatchmakeComponent->generateCondorDag($workDir, $scriptName);
+        $this->kwBatchmakeComponent->condorSubmitDag($workDir, $dagScript);
+        // how to check this now?
+        // TODO think about this some more
+        // perhaps send something back through the web-api
+        // what would that be testing exactly?
+    }
+}

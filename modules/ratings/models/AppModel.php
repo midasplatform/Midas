@@ -20,6 +20,6 @@
 
 /** Base model class for the ratings module */
 class Ratings_AppModel extends MIDASModel
-  {
-  public $moduleName = 'ratings';
-  }
+{
+    public $moduleName = 'ratings';
+}

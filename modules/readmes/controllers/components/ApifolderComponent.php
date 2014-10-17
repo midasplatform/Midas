@@ -20,25 +20,26 @@
 
 /** Apifolder Component for api methods */
 class Readmes_ApifolderComponent extends AppComponent
-  {
-  /**
-   * Get the readme text for a folder
-   * @path /readmes/folder/{id}
-   * @http GET
-   * @param id the id of the folder from which to get the readme
-   * @return the text of the readme
-   */
-  function get($args)
+{
+    /**
+     * Get the readme text for a folder
+     *
+     * @path /readmes/folder/{id}
+     * @http GET
+     * @param id the id of the folder from which to get the readme
+     * @return the text of the readme
+     */
+    public function get($args)
     {
-    $apihelperComponent = MidasLoader::loadComponent('Apihelper');
-    $readmeComponent = MidasLoader::loadComponent('GetReadme', 'readmes');
-    $apihelperComponent->validateParams($args, array('id'));
+        $apihelperComponent = MidasLoader::loadComponent('Apihelper');
+        $readmeComponent = MidasLoader::loadComponent('GetReadme', 'readmes');
+        $apihelperComponent->validateParams($args, array('id'));
 
-    $folderModel = MidasLoader::loadModel('Folder');
+        $folderModel = MidasLoader::loadModel('Folder');
 
-    $folderDao = $folderModel->load($args['id']);
-    $readme = $readmeComponent->fromFolder($folderDao);
+        $folderDao = $folderModel->load($args['id']);
+        $readme = $readmeComponent->fromFolder($folderDao);
 
-    return $readme;
+        return $readme;
     }
-  }
+}

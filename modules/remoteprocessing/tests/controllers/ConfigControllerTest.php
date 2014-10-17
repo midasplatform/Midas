@@ -18,41 +18,40 @@
  limitations under the License.
 =========================================================================*/
 
-/** ConfigControllerTest*/
+/** ConfigControllerTest */
 class ConfigControllerTest extends ControllerTestCase
-  {
-  /** set up tests*/
-  public function setUp()
+{
+    /** set up tests */
+    public function setUp()
     {
-    $this->setupDatabase(array('default', 'adminUser'));
-    $this->_models = array('User');
-    $this->enabledModules = array('remoteprocessing');
-    parent::setUp();
+        $this->setupDatabase(array('default', 'adminUser'));
+        $this->_models = array('User');
+        $this->enabledModules = array('remoteprocessing');
+        parent::setUp();
     }
 
-  /** test config */
-  public function testIndex()
+    /** test config */
+    public function testIndex()
     {
-    $usersFile = $this->loadData('User', 'adminUser');
-    $userDao = $this->User->load($usersFile[0]->getKey());
+        $usersFile = $this->loadData('User', 'adminUser');
+        $userDao = $this->User->load($usersFile[0]->getKey());
 
-    $this->dispatchUrI('/remoteprocessing/config', $userDao);
-    $this->assertQuery("input#securitykey");
+        $this->dispatchUrI('/remoteprocessing/config', $userDao);
+        $this->assertQuery("input#securitykey");
 
-    $this->resetAll();
+        $this->resetAll();
 
-    $this->params = array();
-    $securityKey = uniqid();
-    $this->params['securitykey'] = $securityKey;
-    $this->params['submitConfig'] = 'true';
-    $this->request->setMethod('POST');
-    $this->dispatchUrI("/remoteprocessing/config", $userDao);
+        $this->params = array();
+        $securityKey = uniqid();
+        $this->params['securitykey'] = $securityKey;
+        $this->params['submitConfig'] = 'true';
+        $this->request->setMethod('POST');
+        $this->dispatchUrI("/remoteprocessing/config", $userDao);
 
-    if(!file_exists(LOCAL_CONFIGS_PATH."/remoteprocessing.local.ini"))
-      {
-      $this->fail('Unable to find config file');
-      }
-    $config = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/remoteprocessing.local.ini', 'global');
-    $this->assertEquals($securityKey, $config->securitykey);
+        if (!file_exists(LOCAL_CONFIGS_PATH."/remoteprocessing.local.ini")) {
+            $this->fail('Unable to find config file');
+        }
+        $config = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/remoteprocessing.local.ini', 'global');
+        $this->assertEquals($securityKey, $config->securitykey);
     }
-  }
+}

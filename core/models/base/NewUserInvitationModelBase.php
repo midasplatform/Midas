@@ -24,68 +24,89 @@
  * and has been invited by an existing user into a community group
  */
 abstract class NewUserInvitationModelBase extends AppModel
-  {
-  /** Constructor */
-  public function __construct()
+{
+    /** Constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'newuserinvitation';
-    $this->_daoName = 'NewUserInvitationDao';
-    $this->_key = 'newuserinvitation_id';
-    $this->_mainData = array(
-      'newuserinvitation_id' => array('type' => MIDAS_DATA),
-      'auth_key' => array('type' => MIDAS_DATA),
-      'email' => array('type' => MIDAS_DATA),
-      'inviter_id' => array('type' => MIDAS_DATA),
-      'date_creation' => array('type' => MIDAS_DATA),
-      'community_id' => array('type' => MIDAS_DATA),
-      'group_id' => array('type' => MIDAS_DATA),
-      'community' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Community', 'parent_column' => 'community_id', 'child_column' => 'community_id'),
-      'group' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Group', 'parent_column' => 'group_id', 'child_column' => 'group_id'),
-      'inviter' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'inviter_id')
-      );
-    $this->initialize(); // required
-    } // end __construct()
-
-  /** abstract functions */
-  abstract public function getByParams($params);
-  abstract public function getAllByParams($params);
-  abstract public function deleteByGroup($group);
-  abstract public function deleteByCommunity($community);
-
-  /**
-   * Create the database record for inviting a user via email that is not registered yet
-   * @param email The email of the user (should not exist in Midas already)
-   * @param group The group to invite the user to
-   * @param inviter The user issuing the invitation (typically the session user)
-   * @return the created NewUserInvitationDao
-   */
-  public function createInvitation($email, $group, $inviter)
-    {
-    $email = strtolower($email);
-    $newUserInvitation = MidasLoader::newDao('NewUserInvitationDao');
-    $newUserInvitation->setEmail($email);
-    $newUserInvitation->setAuthKey(UtilityComponent::generateRandomString(64, '0123456789abcdef'));
-    $newUserInvitation->setInviterId($inviter->getKey());
-    $newUserInvitation->setGroupId($group->getKey());
-    $newUserInvitation->setCommunityId($group->getCommunityId());
-    $newUserInvitation->setDateCreation(date("Y-m-d H:i:s"));
-
-    $userModel = MidasLoader::loadModel('User');
-    $existingUser = $userModel->getByEmail($email);
-    if($existingUser)
-      {
-      throw new Zend_Exception('User with that email already exists');
-      }
-
-    // If the user has already been sent an invitation to this community, delete existing record
-    $existingInvitation = $this->getByParams(array('email' => $email, 'community_id' => $group->getCommunityId()));
-    if($existingInvitation)
-      {
-      $this->delete($existingInvitation);
-      }
-
-    $this->save($newUserInvitation);
-    return $newUserInvitation;
+        parent::__construct();
+        $this->_name = 'newuserinvitation';
+        $this->_daoName = 'NewUserInvitationDao';
+        $this->_key = 'newuserinvitation_id';
+        $this->_mainData = array(
+            'newuserinvitation_id' => array('type' => MIDAS_DATA),
+            'auth_key' => array('type' => MIDAS_DATA),
+            'email' => array('type' => MIDAS_DATA),
+            'inviter_id' => array('type' => MIDAS_DATA),
+            'date_creation' => array('type' => MIDAS_DATA),
+            'community_id' => array('type' => MIDAS_DATA),
+            'group_id' => array('type' => MIDAS_DATA),
+            'community' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'Community',
+                'parent_column' => 'community_id',
+                'child_column' => 'community_id',
+            ),
+            'group' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'Group',
+                'parent_column' => 'group_id',
+                'child_column' => 'group_id',
+            ),
+            'inviter' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'User',
+                'parent_column' => 'user_id',
+                'child_column' => 'inviter_id',
+            ),
+        );
+        $this->initialize(); // required
     }
-  }
+
+    /** Get by params */
+    abstract public function getByParams($params);
+
+    /** Get all by params */
+    abstract public function getAllByParams($params);
+
+    /** Delete by group */
+    abstract public function deleteByGroup($group);
+
+    /** Delete by community */
+    abstract public function deleteByCommunity($community);
+
+    /**
+     * Create the database record for inviting a user via email that is not registered yet
+     *
+     * @param email The email of the user (should not exist in Midas already)
+     * @param group The group to invite the user to
+     * @param inviter The user issuing the invitation (typically the session user)
+     * @return the created NewUserInvitationDao
+     */
+    public function createInvitation($email, $group, $inviter)
+    {
+        $email = strtolower($email);
+        $newUserInvitation = MidasLoader::newDao('NewUserInvitationDao');
+        $newUserInvitation->setEmail($email);
+        $newUserInvitation->setAuthKey(UtilityComponent::generateRandomString(64, '0123456789abcdef'));
+        $newUserInvitation->setInviterId($inviter->getKey());
+        $newUserInvitation->setGroupId($group->getKey());
+        $newUserInvitation->setCommunityId($group->getCommunityId());
+        $newUserInvitation->setDateCreation(date("Y-m-d H:i:s"));
+
+        $userModel = MidasLoader::loadModel('User');
+        $existingUser = $userModel->getByEmail($email);
+        if ($existingUser) {
+            throw new Zend_Exception('User with that email already exists');
+        }
+
+        // If the user has already been sent an invitation to this community, delete existing record
+        $existingInvitation = $this->getByParams(array('email' => $email, 'community_id' => $group->getCommunityId()));
+        if ($existingInvitation) {
+            $this->delete($existingInvitation);
+        }
+
+        $this->save($newUserInvitation);
+
+        return $newUserInvitation;
+    }
+}

@@ -20,7 +20,7 @@
 
 /** CondorJobDao class */
 class Batchmake_CondorJobDao extends AppDao
-  {
-  public $_model = 'CondorJob';
-  public $_module = 'batchmake';
-  }
+{
+    public $_model = 'CondorJob';
+    public $_module = 'batchmake';
+}

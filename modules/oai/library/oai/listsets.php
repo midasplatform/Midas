@@ -1,7 +1,7 @@
 <?php
 /*=========================================================================
  MIDAS Server
- Copyright (c) Kitware SAS. 26 rue Louis GuŽrin. 69100 Villeurbanne, FRANCE
+ Copyright (c) Kitware SAS. 26 rue Louis GuÃ©rin. 69100 Villeurbanne, FRANCE
  All rights reserved.
  More information http://www.kitware.com
 
@@ -20,80 +20,71 @@
 
 $folderModel = MidasLoader::loadModel('Folder');
 // parse and check arguments
-foreach($args as $key => $val)
-  {
-  switch ($key)
-    { 
-    case 'resumptionToken':
-      $resumptionToken = $val;
-      $errors .= oai_error('badResumptionToken', $key, $val); 
-      break;
+foreach ($args as $key => $val) {
+    switch ($key) {
+        case 'resumptionToken':
+            $resumptionToken = $val;
+            $errors .= oai_error('badResumptionToken', $key, $val);
+            break;
 
-    default:
-      $errors .= oai_error('badArgument', $key, $val);
+        default:
+            $errors .= oai_error('badArgument', $key, $val);
     }
-  }
+}
 
 // break and clean up on error
-if ($errors != '')
-  {
-  oai_exit();
-  }
+if ($errors != '') {
+    oai_exit();
+}
 
 
 $output .= "  <ListSets>\n";
 
 
 $collections = $folderModel->getAll();
-if (empty($collections))
-  {
-  $errors .= oai_error('noRecordsMatch'); 
-  }
+if (empty($collections)) {
+    $errors .= oai_error('noRecordsMatch');
+}
 
-foreach($collections as $collection)
-  {
-  if(!$collection instanceof FolderDao || !$folderModel->policyCheck($collection, null, MIDAS_POLICY_READ))
-    {
-    continue;
+foreach ($collections as $collection) {
+    if (!$collection instanceof FolderDao || !$folderModel->policyCheck($collection, null, MIDAS_POLICY_READ)) {
+        continue;
     }
-  $setSpecs = array();
-  $colletion_id = $collection->getFolderId();
-  $setSpecs[] = $collection->getUuid();
+    $setSpecs = array();
+    $colletion_id = $collection->getFolderId();
+    $setSpecs[] = $collection->getUuid();
 
-  $name = $collection->getName();
-  $description = $collection->getDescription();
+    $name = $collection->getName();
+    $description = $collection->getDescription();
 
-  xmlset($setSpecs, $name, $description);
-  }
-$output .= "  </ListSets>\n"; 
+    xmlset($setSpecs, $name, $description);
+}
+$output .= "  </ListSets>\n";
 
 
 function xmlset($setSpecs, $name, $desc)
 {
-  global $output;
+    global $output;
 
-  $output .= "   <set>\n";
+    $output .= "   <set>\n";
 
-  for($i = 0 ; $i<count($setSpecs) ; $i++)
-    {
-    $output .= xmlformat($setSpecs[$i], 'setSpec', '', 4);
+    for ($i = 0; $i < count($setSpecs); $i++) {
+        $output .= xmlformat($setSpecs[$i], 'setSpec', '', 4);
     }
 
-  $output .= xmlformat($name, 'setName', '', 4);
-  
-  if (isset($val['setDescription']) && $val['setDescription'] != '')
-    {
-    $output .= "    <setDescription>\n";
-    $prefix = 'oai_dc';
-    $output .= metadataHeader($prefix);
-    $output .= xmlrecord($desc, 'dc:description', '', 7);
-    $output .= '     </'.$prefix;
-    if (isset($METADATAFORMATS[$prefix]['record_prefix']))
-      {
-      $output .= ':'.$METADATAFORMATS[$prefix]['record_prefix'];
-      }
-    $output .= ">\n";
-    $output .= "    </setDescription>\n";
+    $output .= xmlformat($name, 'setName', '', 4);
+
+    if (isset($val['setDescription']) && $val['setDescription'] != '') {
+        $output .= "    <setDescription>\n";
+        $prefix = 'oai_dc';
+        $output .= metadataHeader($prefix);
+        $output .= xmlrecord($desc, 'dc:description', '', 7);
+        $output .= '     </'.$prefix;
+        if (isset($METADATAFORMATS[$prefix]['record_prefix'])) {
+            $output .= ':'.$METADATAFORMATS[$prefix]['record_prefix'];
+        }
+        $output .= ">\n";
+        $output .= "    </setDescription>\n";
     }
-  $output .= "   </set>\n";
+    $output .= "   </set>\n";
 }

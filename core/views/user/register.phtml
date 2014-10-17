@@ -18,60 +18,65 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
-<link href="<?php echo $this->coreWebroot?>/public/css/user/user.register.css" rel="stylesheet" type="text/css" />
-<div class="registerContent">
-  <div class="registerInfo">
-    <h3>Join MIDAS</h3>
-    <h4>A powerful data management system</h4>
-    <ul>
-      <li>Easily store data online</li>
-      <li>Seamlessly manage data access</li>
-      <li>Create a data-sharing platform tailored to your needs</li>
-    </ul>
-    <a target="_blank" href="http://www.midasplatform.org/">Learn more &gt;</a>
-  </div>
-  <div class="register">
-    <form id="registerForm" class="genericForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
-     <div class="registerError">
-       <span></span><br/>
-     </div>
-      <div>
-        <label for="email"><?php echo $this->t("Email")?></label>
-        <?php echo $this->form['email']?>
-      </div>
-      <div>
-        <label for="firstname"><?php echo $this->t("First Name")?></label>
-        <?php echo $this->form['firstname']?>
-      </div>
-      <div>
-        <label for="lastname"><?php echo $this->t("Last Name")?></label>
-        <?php echo $this->form['lastname']?>
-      </div>
-      <div>
-        <label for="password1"><?php echo $this->t("Password")?></label>
-        <?php echo $this->form['password1']?>
-      </div>
-      <div>
-        <label for="password2"><?php echo $this->t("Confirm Password")?></label>
-        <?php echo $this->form['password2']?>
-      </div>
-      <div id="conditionsBlock">
-        <label for="conditions"></label>
-         <?php echo $this->t("I read and accepted the")?> <a class='termOfService' href='#'><?php echo $this->t('terms of service')?></a><?php echo $this->form['conditions']?>
-      </div>
-      <div>
-         <?php echo $this->form['submit']?>
-         <img style="display: none;" alt="" src="<?php echo $this->coreWebroot;?>/public/images/icons/loading.gif" id="registerWaiting" />
-      </div>
-    </form>
-  </div>
-</div>
+    <link href="<?php echo $this->coreWebroot ?>/public/css/user/user.register.css" rel="stylesheet" type="text/css"/>
+    <div class="registerContent">
+        <div class="registerInfo">
+            <h3>Join MIDAS</h3>
+            <h4>A powerful data management system</h4>
+            <ul>
+                <li>Easily store data online</li>
+                <li>Seamlessly manage data access</li>
+                <li>Create a data-sharing platform tailored to your needs</li>
+            </ul>
+            <a target="_blank" href="http://www.midasplatform.org/">Learn more &gt;</a>
+        </div>
+        <div class="register">
+            <form id="registerForm" class="genericForm" method="<?php echo $this->form['method'] ?>"
+                  action="<?php echo $this->form['action'] ?>">
+                <div class="registerError">
+                    <span></span><br/>
+                </div>
+                <div>
+                    <label for="email"><?php echo $this->t("Email") ?></label>
+                    <?php echo $this->form['email'] ?>
+                </div>
+                <div>
+                    <label for="firstname"><?php echo $this->t("First Name") ?></label>
+                    <?php echo $this->form['firstname'] ?>
+                </div>
+                <div>
+                    <label for="lastname"><?php echo $this->t("Last Name") ?></label>
+                    <?php echo $this->form['lastname'] ?>
+                </div>
+                <div>
+                    <label for="password1"><?php echo $this->t("Password") ?></label>
+                    <?php echo $this->form['password1'] ?>
+                </div>
+                <div>
+                    <label for="password2"><?php echo $this->t("Confirm Password") ?></label>
+                    <?php echo $this->form['password2'] ?>
+                </div>
+                <div id="conditionsBlock">
+                    <label for="conditions"></label>
+                    <?php echo $this->t("I read and accepted the") ?>
+                    <a class='termOfService' href='#'><?php echo $this->t(
+                            'terms of service'
+                        ) ?></a><?php echo $this->form['conditions'] ?>
+                </div>
+                <div>
+                    <?php echo $this->form['submit'] ?>
+                    <img style="display: none;" alt=""
+                         src="<?php echo $this->coreWebroot; ?>/public/images/icons/loading.gif" id="registerWaiting"/>
+                </div>
+            </form>
+        </div>
+    </div>
 
-<div class="jsonRegister"  style="display:none;">
-  <?php echo $this->jsonRegister?>
-</div>
+    <div class="jsonRegister" style="display:none;">
+        <?php echo $this->jsonRegister ?>
+    </div>
 
 <?php
-echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/user/user.register.js"></script>';
+echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/user/user.register.js"></script>';

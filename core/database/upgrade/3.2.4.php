@@ -23,27 +23,31 @@
  * so that a single ip cannot flood the server with downloads.
  */
 class Upgrade_3_2_4 extends MIDASUpgrade
-  {
-  public function mysql()
+{
+    public function mysql()
     {
-    $this->db->query("CREATE TABLE IF NOT EXISTS `activedownload` (
+        $this->db->query(
+            "CREATE TABLE IF NOT EXISTS `activedownload` (
       `activedownload_id` bigint(20) NOT NULL AUTO_INCREMENT,
       `ip` varchar(100) NOT NULL DEFAULT '',
       `date_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
       `last_update` timestamp NOT NULL,
       PRIMARY KEY (`activedownload_id`),
       KEY `ip` (`ip`)
-      )");
+      )"
+        );
     }
 
-  public function pgsql()
+    public function pgsql()
     {
-    $this->db->query("CREATE TABLE activedownload (
+        $this->db->query(
+            "CREATE TABLE activedownload (
       activedownload_id serial PRIMARY KEY,
       ip character varying(100) NOT NULL DEFAULT '',
       date_creation timestamp without time zone NOT NULL DEFAULT now(),
       last_update timestamp without time zone NOT NULL
-      )");
-    $this->db->query("CREATE INDEX activedownload_idx_ip ON activedownload (ip)");
+      )"
+        );
+        $this->db->query("CREATE INDEX activedownload_idx_ip ON activedownload (ip)");
     }
-  }
+}

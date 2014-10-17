@@ -20,796 +20,746 @@
 
 /** Utility component */
 class UtilityComponent extends AppComponent
-  {
-  /**
-   * The main function for converting to an XML document.
-   * Pass in a multi dimensional array and this recursively loops through and builds up an XML document.
-   *
-   * @param array $data
-   * @param string $rootNodeName - what you want the root node to be - defaults to data.
-   * @param SimpleXMLElement $xml - should only be used recursively
-   * @return string XML
-   */
-  public function toXml($data, $rootNodeName = 'data', $xml = null)
+{
+    /**
+     * The main function for converting to an XML document.
+     * Pass in a multi dimensional array and this recursively loops through and builds up an XML document.
+     *
+     * @param  array $data
+     * @param  string $rootNodeName - what you want the root node to be - defaults to data.
+     * @param  SimpleXMLElement $xml - should only be used recursively
+     * @return string           XML
+     */
+    public function toXml($data, $rootNodeName = 'data', $xml = null)
     {
-    // turn off compatibility mode as simple xml throws a wobbly if you don't.
-    if(ini_get('zend.ze1_compatibility_mode') == 1)
-      {
-      ini_set('zend.ze1_compatibility_mode', 0);
-      }
-
-    if($xml == null)
-      {
-      $xml = simplexml_load_string("<?xml version='1.0' encoding='utf-8'?><".$rootNodeName." />");
-      }
-
-    // loop through the data passed in.
-    foreach($data as $key => $value)
-      {
-      // no numeric keys in our xml please!
-      if(is_numeric($key))
-        {
-        // make string key...
-        $key = "unknownNode_". (string) $key;
+        // turn off compatibility mode as simple xml throws a wobbly if you don't.
+        if (ini_get('zend.ze1_compatibility_mode') == 1) {
+            ini_set('zend.ze1_compatibility_mode', 0);
         }
 
-      // replace anything not alpha numeric
-      $key = preg_replace('/[^a-z]/i', '', $key);
-
-      // if there is another array found recursively call this function
-      if(is_array($value))
-        {
-        $node = $xml->addChild($key);
-        // recursive call.
-        $this->toXml($value, $rootNodeName, $node);
+        if ($xml == null) {
+            $xml = simplexml_load_string("<?xml version='1.0' encoding='utf-8'?><".$rootNodeName." />");
         }
-      else
-        {
-        // add single node.
-        $value = htmlentities($value);
-        $xml->addChild($key, $value);
+
+        // loop through the data passed in.
+        foreach ($data as $key => $value) {
+            // no numeric keys in our xml please!
+            if (is_numeric($key)) {
+                // make string key...
+                $key = "unknownNode_".(string)$key;
+            }
+
+            // replace anything not alpha numeric
+            $key = preg_replace('/[^a-z]/i', '', $key);
+
+            // if there is another array found recursively call this function
+            if (is_array($value)) {
+                $node = $xml->addChild($key);
+                // recursive call.
+                $this->toXml($value, $rootNodeName, $node);
+            } else {
+                // add single node.
+                $value = htmlentities($value);
+                $xml->addChild($key, $value);
+            }
         }
-      }
-    // pass back as string. or simple xml object if you want!
-    return $xml->asXML();
-    }
-  /** Get all the modules */
-  public function getAllModules()
-    {
-    $modules = array();
-    if(file_exists(BASE_PATH.'/modules/') && opendir(BASE_PATH.'/modules/'))
-      {
-      $array = $this->_initModulesConfig(BASE_PATH.'/modules/');
-      $modules = array_merge($modules, $array);
-      }
 
-    if(file_exists(BASE_PATH.'/privateModules/') && opendir(BASE_PATH.'/privateModules/'))
-      {
-      $array = $this->_initModulesConfig(BASE_PATH.'/privateModules/');
-      $modules = array_merge($modules, $array);
-      }
-
-    return $modules;
+        // pass back as string. or simple xml object if you want!
+        return $xml->asXML();
     }
 
-  /**
-   * Helper method to extract tokens from request URI's in path form,
-   * e.g. download/folder/123/folder_name, starting after the action name.
-   * Returns the token as a list.
-   */
-  public static function extractPathParams()
+    /** Get all the modules */
+    public function getAllModules()
     {
-    $request = Zend_Controller_Front::getInstance()->getRequest();
-    $allTokens = preg_split('@/@', $request->getPathInfo(), null, PREG_SPLIT_NO_EMPTY);
+        $modules = array();
+        if (file_exists(BASE_PATH.'/modules/') && opendir(BASE_PATH.'/modules/')
+        ) {
+            $array = $this->_initModulesConfig(BASE_PATH.'/modules/');
+            $modules = array_merge($modules, $array);
+        }
 
-    $tokens = array();
-    $i = 0;
-    if($request->getModuleName() != 'default')
-      {
-      $i++;
-      }
-    if($request->getControllerName() != 'index')
-      {
-      $i++;
-      }
-    if($request->getActionName() != 'index')
-      {
-      $i++;
-      }
-    $max = count($allTokens);
-    for(; $i < $max; $i++)
-      {
-      $tokens[] = $allTokens[$i];
-      }
-    return $tokens;
+        if (file_exists(BASE_PATH.'/privateModules/') && opendir(BASE_PATH.'/privateModules/')
+        ) {
+            $array = $this->_initModulesConfig(BASE_PATH.'/privateModules/');
+            $modules = array_merge($modules, $array);
+        }
+
+        return $modules;
     }
 
-  /** find modules configuration in a folder */
-  private function _initModulesConfig($dir)
+    /**
+     * Helper method to extract tokens from request URI's in path form,
+     * e.g. download/folder/123/folder_name, starting after the action name.
+     * Returns the token as a list.
+     */
+    public static function extractPathParams()
     {
-    $handle = opendir($dir);
-    $modules = array();
-    while(false !== ($file = readdir($handle)))
-      {
-      if(is_dir($dir.$file) && file_exists($dir.$file.'/configs/module.ini'))
-        {
-        $config = new Zend_Config_Ini($dir.$file.'/configs/module.ini', 'global', true);
-        $config->db = array();
-        if(!file_exists($dir.$file.'/database'))
-          {
-          $config->db->PDO_MYSQL = true;
-          $config->db->PDO_PGSQL = true;
-          }
-        else
-          {
-          $handleDB = opendir($dir.$file.'/database');
-          if(file_exists($dir.$file.'/database'))
-            {
-            while(false !== ($fileDB = readdir($handleDB)))
-              {
-              if(file_exists($dir.$file.'/database/'.$fileDB.'/'))
-                {
-                switch($fileDB)
-                  {
-                  case 'mysql':
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+        $allTokens = preg_split('@/@', $request->getPathInfo(), null, PREG_SPLIT_NO_EMPTY);
+
+        $tokens = array();
+        $i = 0;
+        if ($request->getModuleName() != 'default') {
+            $i++;
+        }
+        if ($request->getControllerName() != 'index') {
+            $i++;
+        }
+        if ($request->getActionName() != 'index') {
+            $i++;
+        }
+        $max = count($allTokens);
+        for (; $i < $max; $i++) {
+            $tokens[] = $allTokens[$i];
+        }
+
+        return $tokens;
+    }
+
+    /** find modules configuration in a folder */
+    private function _initModulesConfig($dir)
+    {
+        $handle = opendir($dir);
+        $modules = array();
+        while (false !== ($file = readdir($handle))) {
+            if (is_dir($dir.$file) && file_exists($dir.$file.'/configs/module.ini')
+            ) {
+                $config = new Zend_Config_Ini($dir.$file.'/configs/module.ini', 'global', true);
+                $config->db = array();
+                if (!file_exists($dir.$file.'/database')) {
                     $config->db->PDO_MYSQL = true;
-                    break;
-                  case 'pgsql':
                     $config->db->PDO_PGSQL = true;
-                    break;
-                  default:
-                    break;
-                  }
+                } else {
+                    $handleDB = opendir($dir.$file.'/database');
+                    if (file_exists($dir.$file.'/database')) {
+                        while (false !== ($fileDB = readdir($handleDB))) {
+                            if (file_exists($dir.$file.'/database/'.$fileDB.'/')) {
+                                switch ($fileDB) {
+                                    case 'mysql':
+                                        $config->db->PDO_MYSQL = true;
+                                        break;
+                                    case 'pgsql':
+                                        $config->db->PDO_PGSQL = true;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        }
+                    }
                 }
-              }
+                $modules[$file] = $config;
             }
-          }
-        $modules[$file] = $config;
         }
-      }
-    closedir($handle);
-    return $modules;
+        closedir($handle);
+
+        return $modules;
     }
 
-  /** format long names*/
-  public static function sliceName($name, $nchar)
+    /** format long names */
+    public static function sliceName($name, $nchar)
     {
-    if(strlen($name) > $nchar)
-      {
-      $toremove = (strlen($name)) - $nchar;
-      if($toremove < 8)
-        {
+        if (strlen($name) > $nchar) {
+            $toremove = (strlen($name)) - $nchar;
+            if ($toremove < 8) {
+                return $name;
+            }
+            $name = substr($name, 0, 5).'...'.substr($name, 8 + $toremove);
+
+            return $name;
+        }
+
         return $name;
-        }
-      $name = substr($name, 0, 5).'...'.substr($name, 8 + $toremove);
-      return $name;
-      }
-    return $name;
     }
 
-  /** create init file*/
-  public static function createInitFile($path, $data)
+    /** create init file */
+    public static function createInitFile($path, $data)
     {
-    if(!is_writable(dirname($path)))
-      {
-      throw new Zend_Exception("Unable to write in: ".dirname($path));
-      }
-    if(file_exists($path))
-      {
-      unlink($path);
-      }
-
-    if(!is_array($data) || empty($data))
-      {
-      throw new Zend_Exception("Error in parameter: data, it should be a non-empty array");
-      }
-    $text = "";
-
-    foreach($data as $delimiter => $d)
-      {
-      $text .= "[".$delimiter."]\n";
-      foreach($d as $field => $value)
-        {
-        if($value == 'true' || $value == 'false')
-          {
-          $text .= $field."=".$value."\n";
-          }
-        else
-          {
-          $text .= $field."=\"".str_replace('"', "'", $value)."\"\n";
-          }
+        if (!is_writable(dirname($path))) {
+            throw new Zend_Exception("Unable to write in: ".dirname($path));
         }
-      $text .= "\n\n";
-      }
-    $fp = fopen($path, "w");
-    fwrite($fp, $text);
-    fclose($fp);
-    return $text;
-    }
-  /** PHP md5_file is very slow on large file. If md5 sum is on the system we use it. */
-  public static function md5file($filename)
-    {
-    // If we have md5 sum
-    if(Zend_Registry::get('configGlobal')->md5sum->path)
-      {
-      $result = exec(Zend_Registry::get('configGlobal')->md5sum->path.' '.$filename);
-      $resultarray = explode(' ', $result);
-      return $resultarray[0];
-      }
-    return md5_file($filename);
-    }
-
-  /**
-   * Check if the php function/extension are available
-   *
-   * $phpextensions should have the following format:
-   *   array(
-   *     "ExtensionOrFunctionName" => array( EXT_CRITICAL , $message or EXT_DEFAULT_MSG ),
-   *   );
-   *
-   * The unavailable function/extension are returned (array of string)
-   */
-  static function checkPhpExtensions($phpextensions)
-    {
-    $phpextension_missing = array();
-    foreach($phpextensions as $name => $param)
-      {
-      $is_loaded      = extension_loaded($name);
-      $is_func_exists = function_exists($name);
-      if(!$is_loaded && !$is_func_exists)
-        {
-        $is_critical = $param[0];
-        $message = "<b>".$name."</b>: Unable to find '".$name."' php extension/function. ";
-        $message .= ($param[1] === false ? "Fix the problem and re-run the install script." : $param[1]);
-        if($is_critical)
-          {
-          throw  new Zend_Exception($message);
-          }
-        $phpextension_missing[$name] = $message;
-        }
-      }
-    return $phpextension_missing;
-    }
-
-  /**
-   * Get size in bytes of the file. This also supports files over 2GB in Windows,
-   * which is not supported by PHP's filesize()
-   * @param path Path of the file to check
-   */
-  public static function fileSize($path)
-    {
-    if(strpos(strtolower(PHP_OS), 'win') === 0)
-      {
-      $filesystem = new COM('Scripting.FileSystemObject');
-      $file = $filesystem->GetFile($path);
-      return $file->Size();
-      }
-    else
-      {
-      return filesize($path);
-      }
-    }
-
-  /**
-   * Format file size. Rounds to 1 decimal place and makes sure
-   * to use 3 or less digits before the decimal place.
-   */
-  public static function formatSize($sizeInBytes, $separator = ',')
-    {
-    $suffix = 'B';
-    if(Zend_Registry::get('configGlobal')->application->lang == 'fr')
-      {
-      $suffix = 'o';
-      }
-    if($sizeInBytes >= 1073741824000)
-      {
-      $sizeInBytes = number_format($sizeInBytes / 1099511627776, 1, '.', $separator);
-      return $sizeInBytes.' T'.$suffix;
-      }
-    else if($sizeInBytes >= 1048576000)
-      {
-      $sizeInBytes = number_format($sizeInBytes / 1073741824, 1, '.', $separator);
-      return $sizeInBytes.' G'.$suffix;
-      }
-    else if($sizeInBytes >= 1024000)
-      {
-      $sizeInBytes = number_format($sizeInBytes / 1048576, 1, '.', $separator);
-      return $sizeInBytes.' M'.$suffix;
-      }
-    else
-      {
-      $sizeInBytes = number_format($sizeInBytes / 1024, 1, '.', $separator);
-      return $sizeInBytes.' K'.$suffix;
-      }
-    }
-
-  /** Safe delete function. Checks if the file can be deleted. */
-  public static function safedelete($filename)
-    {
-    if(!file_exists($filename))
-      {
-      return false;
-      }
-    unlink($filename);
-    }
-
-  /** Function to run a SQL script */
-  static function run_sql_from_file($db, $sqlfile)
-    {
-    try
-      {
-      $db->getConnection();
-      }
-    catch(Zend_Exception $exception)
-      {
-      throw new Zend_Exception("Unable to connect.");
-      }
-
-    $sql = '';
-    $lines = file($sqlfile);
-    foreach($lines as $line)
-      {
-      if(trim($line) != '' && substr(trim($line), 0, 2) != '--' && substr($line, 0, 1) != '#')
-        {
-        $sql .= $line;
-        }
-      }
-    $queries = explode(';', $sql);
-    foreach($queries as $query)
-      {
-      try
-        {
-        $db->query($query);
-        }
-      catch(Zend_Exception $exception)
-        {
-        if(trim($query) != '')
-          {
-          throw new Zend_Exception("Unable to connect.");
-          }
-        }
-      }
-    return true;
-    }
-
-  /** Get the data directory */
-  public static function getDataDirectory($subdir = '')
-    {
-    $settingModel = MidasLoader::loadModel('Setting');
-    try
-      {
-      $dataDirectory = $settingModel->getValueByName('data_directory');
-      }
-    catch(Exception $e)
-      {
-      $dataDirectory = null;
-      }
-    if(!isset($dataDirectory) || empty($dataDirectory))
-      {
-      if(getenv('midas_data_path') !== false)
-        {
-        $dataDirectory = getenv('midas_data_path');
-        }
-      else
-        {
-        $dataDirectory = BASE_PATH.'/data';
-        }
-      }
-    if($subdir == '')
-      {
-      $dataDirectory .= '/';
-      }
-    else
-      {
-      $dataDirectory .= '/'.$subdir.'/';
-      }
-    return $dataDirectory;
-    }
-
-  /**
-   * @method public getTempDirectory()
-   * @param $subdir
-   * get the midas temporary directory, appending the param $subdir, which
-   * defaults to "misc"
-   * @return string
-   */
-  public static function getTempDirectory($subdir = "misc")
-    {
-    $settingModel = MidasLoader::loadModel('Setting');
-    try
-      {
-      $tempDirectory = $settingModel->getValueByName('temp_directory');
-      }
-    catch(Exception $e)
-      {
-      // if the setting model hasn't been installed, or there is no
-      // value in the settings table for this, provide a default
-      $tempDirectory = null;
-      }
-    if(!isset($tempDirectory) || empty($tempDirectory))
-      {
-      if(getenv('midas_temp_path') !== false)
-        {
-        $tempDirectory = getenv('midas_temp_path');
-        }
-      else
-        {
-        $tempDirectory = BASE_PATH.'/tmp';
-        }
-      }
-    return $tempDirectory .'/'.$subdir;
-    }
-
-  /**
-   * @method public getCacheDirectory()
-   * get the midas cache directory
-   * @return string
-   */
-  public static function getCacheDirectory()
-    {
-    return self::getTempDirectory('cache');
-    }
-
-  /** install a module */
-  public function installModule($moduleName)
-    {
-    // TODO, The module installation process needs some improvement.
-    $allModules = $this->getAllModules();
-    $version = $allModules[$moduleName]->version;
-
-    $installScript = BASE_PATH.'/modules/'.$moduleName.'/database/InstallScript.php';
-    $installScriptExists = file_exists($installScript);
-    if($installScriptExists)
-      {
-      require_once BASE_PATH.'/core/models/MIDASModuleInstallScript.php';
-      require_once $installScript;
-
-      $classname = ucfirst($moduleName).'_InstallScript';
-      if(!class_exists($classname, false))
-        {
-        throw new Zend_Exception('Could not find class "'.$classname.'" in file "'.$installScript.'"');
+        if (file_exists($path)) {
+            unlink($path);
         }
 
-      $class = new $classname();
-      $class->preInstall();
-      }
+        if (!is_array($data) || empty($data)) {
+            throw new Zend_Exception("Error in parameter: data, it should be a non-empty array");
+        }
+        $text = "";
 
-    try
-      {
-      $configDatabase = Zend_Registry::get('configDatabase');
-      if(empty($configDatabase->database->params->driver_options))
-        {
-        $driverOptions = array();
-        }
-      else
-        {
-        $driverOptions = $configDatabase->database->params->driver_options->toArray();
-        }
-      $params = array(
-        'dbname' => $configDatabase->database->params->dbname,
-        'username' => $configDatabase->database->params->username,
-        'password' => $configDatabase->database->params->password,
-        'driver_options' => $driverOptions);
-      if(empty($configDatabase->database->params->unix_socket))
-        {
-        $params['host'] = $configDatabase->database->params->host;
-        $params['port'] = $configDatabase->database->params->port;
-        }
-      else
-        {
-        $params['unix_socket'] = $configDatabase->database->params->unix_socket;
-        }
-      $db = Zend_Db::factory($configDatabase->database->adapter, $params);
-
-      switch($configDatabase->database->adapter)
-        {
-        case 'PDO_MYSQL':
-          if(file_exists(BASE_PATH.'/modules/'.$moduleName.'/database/mysql/'.$version.'.sql'))
-            {
-            $this->run_sql_from_file($db, BASE_PATH.'/modules/'.$moduleName.'/database/mysql/'.$version.'.sql');
+        foreach ($data as $delimiter => $d) {
+            $text .= "[".$delimiter."]\n";
+            foreach ($d as $field => $value) {
+                if ($value == 'true' || $value == 'false') {
+                    $text .= $field."=".$value."\n";
+                } else {
+                    $text .= $field."=\"".str_replace('"', "'", $value)."\"\n";
+                }
             }
-          break;
-        case 'PDO_PGSQL':
-          if(file_exists(BASE_PATH.'/modules/'.$moduleName.'/database/pgsql/'.$version.'.sql'))
-            {
-            $this->run_sql_from_file($db, BASE_PATH.'/modules/'.$moduleName.'/database/pgsql/'.$version.'.sql');
+            $text .= "\n\n";
+        }
+        $fp = fopen($path, "w");
+        fwrite($fp, $text);
+        fclose($fp);
+
+        return $text;
+    }
+
+    /** PHP md5_file is very slow on large file. If md5 sum is on the system we use it. */
+    public static function md5file($filename)
+    {
+        // If we have md5 sum
+        if (Zend_Registry::get('configGlobal')->md5sum->path) {
+            $result = exec(Zend_Registry::get('configGlobal')->md5sum->path.' '.$filename);
+            $resultarray = explode(' ', $result);
+
+            return $resultarray[0];
+        }
+
+        return md5_file($filename);
+    }
+
+    /**
+     * Check if the php function/extension are available
+     *
+     * $phpextensions should have the following format:
+     *   array(
+     *     "ExtensionOrFunctionName" => array( EXT_CRITICAL , $message or EXT_DEFAULT_MSG ),
+     *   );
+     *
+     * The unavailable function/extension are returned (array of string)
+     */
+    public static function checkPhpExtensions($phpextensions)
+    {
+        $phpextension_missing = array();
+        foreach ($phpextensions as $name => $param) {
+            $is_loaded = extension_loaded($name);
+            $is_func_exists = function_exists($name);
+            if (!$is_loaded && !$is_func_exists) {
+                $is_critical = $param[0];
+                $message = "<b>".$name."</b>: Unable to find '".$name."' php extension/function. ";
+                $message .= ($param[1] === false ? "Fix the problem and re-run the install script." : $param[1]);
+                if ($is_critical) {
+                    throw  new Zend_Exception($message);
+                }
+                $phpextension_missing[$name] = $message;
             }
-          break;
-        default:
-          break;
         }
-      }
-    catch(Zend_Exception $exc)
-      {
-      $this->getLogger()->warn($exc->getMessage());
-      }
 
-    if($installScriptExists)
-      {
-      $class->postInstall();
-      }
-
-    require_once dirname(__FILE__).'/UpgradeComponent.php';
-    $upgrade = new UpgradeComponent();
-    $db = Zend_Registry::get('dbAdapter');
-    $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
-    $upgrade->initUpgrade($moduleName, $db, $dbtype);
-    $upgrade->upgrade($version);
+        return $phpextension_missing;
     }
 
-  /**
-   * Will remove all "unsafe" html tags from the text provided.
-   * @param text The text to filter
-   * @return The text stripped of all unsafe tags
-   */
-  public static function filterHtmlTags($text)
+    /**
+     * Get size in bytes of the file. This also supports files over 2GB in Windows,
+     * which is not supported by PHP's filesize()
+     *
+     * @param path Path of the file to check
+     */
+    public static function fileSize($path)
     {
-    $allowedTags = array('a', 'b', 'br', 'i', 'p', 'strong', 'table', 'thead',
-      'tbody', 'th', 'tr', 'td', 'ul', 'ol', 'li', 'style', 'div', 'span');
-    $allowedAttributes = array('href', 'class', 'style', 'type', 'target');
-    $stripTags = new Zend_Filter_StripTags($allowedTags, $allowedAttributes);
-    return $stripTags->filter($text);
-    }
+        if (strpos(strtolower(PHP_OS), 'win') === 0) {
+            $filesystem = new COM('Scripting.FileSystemObject');
+            $file = $filesystem->GetFile($path);
 
-  /**
-   * Convert a body of text from markdown to html.
-   * @param text The text to markdown
-   * @return The markdown rendered as HTML
-   */
-  public static function markDown($text)
-    {
-    require_once 'Michelf/MarkdownExtra.inc.php';
-    return Michelf\MarkdownExtra::defaultTransform($text);
-    }
-
-  /**
-   * INTERNAL FUNCTION
-   * This is used to suppress warnings from being written to the output and the
-   * error log. Users should not call this function; see beginIgnoreWarnings().
-   */
-  static function ignoreErrorHandler($errno, $errstr, $errfile, $errline)
-    {
-    return true;
-    }
-
-  /**
-   * Normally, PHP warnings are echoed by our default error handler.  If you expect them to happen
-   * from, for instance, an underlying library, but want to eat them instead of echoing them, wrap
-   * the offending lines in beginIgnoreWarnings() and endIgnoreWarnings()
-   */
-  public static function beginIgnoreWarnings()
-    {
-    set_error_handler('UtilityComponent::ignoreErrorHandler'); //must not print and log warnings
-    }
-
-  /**
-   * See documentation of UtilityComponent::beginIgnoreWarnings().
-   * Calling this restores the normal warning handler.
-   */
-  public static function endIgnoreWarnings()
-    {
-    restore_error_handler();
-    }
-
-  /** Recursively delete a directory on disk */
-  public static function rrmdir($dir)
-    {
-    if(!file_exists($dir) || !is_dir($dir))
-      {
-      return;
-      }
-
-    $objects = scandir($dir);
-    foreach($objects as $object)
-      {
-      if($object != '.' && $object != '..')
-        {
-        if(filetype($dir.'/'.$object) == 'dir')
-          {
-          self::rrmdir($dir.'/'.$object);
-          }
-        else
-          {
-          unlink($dir.'/'.$object);
-          }
+            return $file->Size();
+        } else {
+            return filesize($path);
         }
-      }
-    reset($objects);
-    rmdir($dir);
     }
 
-  private static function getEmailTransport()
+    /**
+     * Format file size. Rounds to 1 decimal place and makes sure
+     * to use 3 or less digits before the decimal place.
+     */
+    public static function formatSize($sizeInBytes, $separator = ',')
     {
-    if(Zend_Registry::get('configGlobal')->smtpserver &&
-       Zend_Registry::get('configGlobal')->smtpuser &&
-       Zend_Registry::get('configGlobal')->smtppassword)
-      {
-      $config = array('auth' => 'login',
-                      'username' => Zend_Registry::get('configGlobal')->smtpuser,
-                      'password' => Zend_Registry::get('configGlobal')->smtppassword);
-      $transport = new Zend_Mail_Transport_Smtp(Zend_Registry::get('configGlobal')->smtpserver, $config);
-      return $transport;
-      }
-    else
-      {
-      return null;
-      }
-    }
-
-  /** Send mail. */
-  public static function sendEmail($to, $subject, $body)
-    {
-    $validator = new Zend_Validate_EmailAddress();
-    if(Zend_Registry::get('configGlobal')->smtpfromaddress &&
-       $validator->isValid(Zend_Registry::get('configGlobal')->smtpfromaddress))
-      {
-      $sender = Zend_Registry::get('configGlobal')->smtpfromaddress;
-      }
-    else if(getenv('midas_email_sender') && $validator->isValid(getenv('midas_email_sender')))
-      {
-      $sender = getenv('midas_email_sender');
-      }
-    else if(ini_get('sendmail_from') && $validator->isValid(ini_get('sendmail_from')))
-      {
-      $sender = ini_get('sendmail_from');
-      }
-    else
-      {
-      $sender = 'no-reply@example.org'; // RFC2606
-      }
-    if(!$validator->isValid($to))
-      {
-      Zend_Registry::get('logger')->err('Unable to send email to invalid email address "'.$to.'"');
-      return false;
-      }
-    $subject = 'Midas Platform: '.$subject;
-    $body .= '<br/><br/><i>This is an auto-generated message from <a href="'.self::getServerURL().'">Midas Platform</a>. Please do not reply to this email.</i>';
-    try
-      {
-      UtilityComponent::beginIgnoreWarnings();
-      include_once 'google/appengine/api/mail/Message.php';
-      UtilityComponent::endIgnoreWarnings();
-      if(class_exists('google\appengine\api\mail\Message', false))
-        {
-        $message = new \google\appengine\api\mail\Message();
-        $message->setSender($sender);
-        $message->addTo($to);
-        $message->setSubject($subject);
-        $message->setHtmlBody($body);
-        if(Zend_Registry::get('configGlobal')->environment != 'testing')
-          {
-          $message->send();
-          }
+        $suffix = 'B';
+        if (Zend_Registry::get('configGlobal')->application->lang == 'fr') {
+            $suffix = 'o';
         }
-      else
-        {
-        $message = new Zend_Mail();
-        $message->setFrom($sender);
-        $message->addTo($to);
-        $message->setSubject($subject);
-        $message->setBodyHtml($body);
-        if(Zend_Registry::get('configGlobal')->environment != 'testing')
-          {
-          $transport = UtilityComponent::getEmailTransport();
-          if($transport)
-            {
-            $message->send($transport);
+        if ($sizeInBytes >= 1073741824000) {
+            $sizeInBytes = number_format($sizeInBytes / 1099511627776, 1, '.', $separator);
+
+            return $sizeInBytes.' T'.$suffix;
+        } elseif ($sizeInBytes >= 1048576000) {
+            $sizeInBytes = number_format($sizeInBytes / 1073741824, 1, '.', $separator);
+
+            return $sizeInBytes.' G'.$suffix;
+        } elseif ($sizeInBytes >= 1024000) {
+            $sizeInBytes = number_format($sizeInBytes / 1048576, 1, '.', $separator);
+
+            return $sizeInBytes.' M'.$suffix;
+        } else {
+            $sizeInBytes = number_format($sizeInBytes / 1024, 1, '.', $separator);
+
+            return $sizeInBytes.' K'.$suffix;
+        }
+    }
+
+    /** Safe delete function. Checks if the file can be deleted. */
+    public static function safedelete($filename)
+    {
+        if (!file_exists($filename)) {
+            return false;
+        }
+        unlink($filename);
+    }
+
+    /** Function to run a SQL script */
+    public static function run_sql_from_file($db, $sqlfile)
+    {
+        try {
+            $db->getConnection();
+        } catch (Zend_Exception $exception) {
+            throw new Zend_Exception("Unable to connect.");
+        }
+
+        $sql = '';
+        $lines = file($sqlfile);
+        foreach ($lines as $line) {
+            if (trim($line) != '' && substr(trim($line), 0, 2) != '--' && substr($line, 0, 1) != '#'
+            ) {
+                $sql .= $line;
             }
-          else
-            {
-            $message->send();
-            }
-          }
         }
-      }
-    catch(Exception $exception)
-      {
-      Zend_Registry::get('logger')->err('Unable to send email to "'.$to.'" with subject "'.$subject.'": '.$exception->getMessage());
-      return false;
-      }
-    Zend_Registry::get('logger')->debug('Sent email to "'.$to.'" with subject "'.$subject.'"');
-    return true;
+        $queries = explode(';', $sql);
+        foreach ($queries as $query) {
+            try {
+                $db->query($query);
+            } catch (Zend_Exception $exception) {
+                if (trim($query) != '') {
+                    throw new Zend_Exception("Unable to connect.");
+                }
+            }
+        }
+
+        return true;
     }
 
-  /**
-   * Get the hostname for this instance
-   */
-  public static function getServerURL()
+    /** Get the data directory */
+    public static function getDataDirectory($subdir = '')
     {
-    if(Zend_Registry::get('configGlobal')->environment == 'testing')
-      {
-      return 'http://localhost';
-      }
-    $currentPort = "";
-    $prefix = "http://";
+        $settingModel = MidasLoader::loadModel('Setting');
+        try {
+            $dataDirectory = $settingModel->getValueByName('data_directory');
+        } catch (Exception $e) {
+            $dataDirectory = null;
+        }
+        if (!isset($dataDirectory) || empty($dataDirectory)) {
+            if (getenv('midas_data_path') !== false) {
+                $dataDirectory = getenv('midas_data_path');
+            } else {
+                $dataDirectory = BASE_PATH.'/data';
+            }
+        }
+        if ($subdir == '') {
+            $dataDirectory .= '/';
+        } else {
+            $dataDirectory .= '/'.$subdir.'/';
+        }
 
-    if(isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443)
-      {
-      $currentPort = ":".$_SERVER['SERVER_PORT'];
-      }
-    if((isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) || (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])))
-      {
-      $prefix = "https://";
-      }
-    return $prefix.$_SERVER['SERVER_NAME'].$currentPort;
+        return $dataDirectory;
     }
 
-  /**
-   * Generate a string of random characters. Seeds RNG within the function using microtime.
-   * @param $length The length of the random string
-   * @param $alphabet (Optional) The alphabet string; if none provided, uses [a-zA-z0-9]
-   */
-  public static function generateRandomString($length, $alphabet = null)
+    /**
+     * @param $subdir
+     * get the midas temporary directory, appending the param $subdir, which
+     * defaults to "misc"
+     * @return string
+     */
+    public static function getTempDirectory($subdir = "misc")
     {
-    if(!is_string($alphabet) || empty($alphabet))
-      {
-      $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      }
+        $settingModel = MidasLoader::loadModel('Setting');
+        try {
+            $tempDirectory = $settingModel->getValueByName('temp_directory');
+        } catch (Exception $e) {
+            // if the setting model hasn't been installed, or there is no
+            // value in the settings table for this, provide a default
+            $tempDirectory = null;
+        }
+        if (!isset($tempDirectory) || empty($tempDirectory)) {
+            if (getenv('midas_temp_path') !== false) {
+                $tempDirectory = getenv('midas_temp_path');
+            } else {
+                $tempDirectory = BASE_PATH.'/tmp';
+            }
+        }
 
-    // Seed RNG with microtime (for lack of something more difficult to guess)
-    list($usec, $sec) = explode(' ', microtime());
-    srand((float) $sec + ((float) $usec * 100000));
-
-    $salt = '';
-    $max = strlen($alphabet) - 1;
-    for($i = 0; $i < $length; $i++)
-      {
-      $salt .= substr($alphabet, mt_rand(0, $max), 1);
-      }
-    return $salt;
+        return $tempDirectory.'/'.$subdir;
     }
 
-  /**
-   * Allows the current PHP process to use unlimited memory
-   */
-  public static function disableMemoryLimit()
+    /**
+     * get the midas cache directory
+     *
+     * @return string
+     */
+    public static function getCacheDirectory()
     {
-    ini_set('memory_limit', '-1');
+        return self::getTempDirectory('cache');
     }
 
-  /**
-   * Test whether the specified port is listening on the specified host.
-   * Return true if the connection is accepted, false otherwise.
-   * @param port The port to test (integer)
-   * @param [host] The hostname; default is localhost
-   */
-  public static function isPortListening($port, $host = 'localhost')
+    /** install a module */
+    public function installModule($moduleName)
     {
-    UtilityComponent::beginIgnoreWarnings();
-    $conn = fsockopen($host, $port);
-    UtilityComponent::endIgnoreWarnings();
+        // TODO, The module installation process needs some improvement.
+        $allModules = $this->getAllModules();
+        $version = $allModules[$moduleName]->version;
 
-    if(is_resource($conn))
-      {
-      fclose($conn);
-      return true;
-      }
-    return false;
+        $installScript = BASE_PATH.'/modules/'.$moduleName.'/database/InstallScript.php';
+        $installScriptExists = file_exists($installScript);
+        if ($installScriptExists) {
+            require_once BASE_PATH.'/core/models/MIDASModuleInstallScript.php';
+            require_once $installScript;
+
+            $classname = ucfirst($moduleName).'_InstallScript';
+            if (!class_exists($classname, false)) {
+                throw new Zend_Exception('Could not find class "'.$classname.'" in file "'.$installScript.'"');
+            }
+
+            $class = new $classname();
+            $class->preInstall();
+        }
+
+        try {
+            $configDatabase = Zend_Registry::get('configDatabase');
+            if (empty($configDatabase->database->params->driver_options)) {
+                $driverOptions = array();
+            } else {
+                $driverOptions = $configDatabase->database->params->driver_options->toArray();
+            }
+            $params = array(
+                'dbname' => $configDatabase->database->params->dbname,
+                'username' => $configDatabase->database->params->username,
+                'password' => $configDatabase->database->params->password,
+                'driver_options' => $driverOptions,
+            );
+            if (empty($configDatabase->database->params->unix_socket)) {
+                $params['host'] = $configDatabase->database->params->host;
+                $params['port'] = $configDatabase->database->params->port;
+            } else {
+                $params['unix_socket'] = $configDatabase->database->params->unix_socket;
+            }
+            $db = Zend_Db::factory($configDatabase->database->adapter, $params);
+
+            switch ($configDatabase->database->adapter) {
+                case 'PDO_MYSQL':
+                    if (file_exists(BASE_PATH.'/modules/'.$moduleName.'/database/mysql/'.$version.'.sql')) {
+                        $this->run_sql_from_file(
+                            $db,
+                            BASE_PATH.'/modules/'.$moduleName.'/database/mysql/'.$version.'.sql'
+                        );
+                    }
+                    break;
+                case 'PDO_PGSQL':
+                    if (file_exists(BASE_PATH.'/modules/'.$moduleName.'/database/pgsql/'.$version.'.sql')) {
+                        $this->run_sql_from_file(
+                            $db,
+                            BASE_PATH.'/modules/'.$moduleName.'/database/pgsql/'.$version.'.sql'
+                        );
+                    }
+                    break;
+                default:
+                    break;
+            }
+        } catch (Zend_Exception $exc) {
+            $this->getLogger()->warn($exc->getMessage());
+        }
+
+        if ($installScriptExists) {
+            $class->postInstall();
+        }
+
+        require_once dirname(__FILE__).'/UpgradeComponent.php';
+        $upgrade = new UpgradeComponent();
+        $db = Zend_Registry::get('dbAdapter');
+        $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
+        $upgrade->initUpgrade($moduleName, $db, $dbtype);
+        $upgrade->upgrade($version);
     }
 
-  /** Limits the maximum execution time. */
-  public static function setTimeLimit($seconds)
+    /**
+     * Will remove all "unsafe" html tags from the text provided.
+     *
+     * @param text The text to filter
+     * @return The text stripped of all unsafe tags
+     */
+    public static function filterHtmlTags($text)
     {
-    UtilityComponent::beginIgnoreWarnings();
-    set_time_limit($seconds);
-    UtilityComponent::endIgnoreWarnings();
+        $allowedTags = array(
+            'a',
+            'b',
+            'br',
+            'i',
+            'p',
+            'strong',
+            'table',
+            'thead',
+            'tbody',
+            'th',
+            'tr',
+            'td',
+            'ul',
+            'ol',
+            'li',
+            'style',
+            'div',
+            'span',
+        );
+        $allowedAttributes = array('href', 'class', 'style', 'type', 'target');
+        $stripTags = new Zend_Filter_StripTags($allowedTags, $allowedAttributes);
+
+        return $stripTags->filter($text);
     }
 
-  /** Returns available space on filesystem or disk partition. */
-  public static function diskFreeSpace($directory)
+    /**
+     * Convert a body of text from markdown to html.
+     *
+     * @param text The text to markdown
+     * @return The markdown rendered as HTML
+     */
+    public static function markDown($text)
     {
-    UtilityComponent::beginIgnoreWarnings();
-    $result = disk_free_space($directory);
-    UtilityComponent::endIgnoreWarnings();
-    return $result;
+        require_once 'Michelf/MarkdownExtra.inc.php';
+        return Michelf\MarkdownExtra::defaultTransform($text);
     }
 
-  /** Returns the total size of a filesystem or disk partition.  */
-  public static function diskTotalSpace($directory)
+    /**
+     * INTERNAL FUNCTION
+     * This is used to suppress warnings from being written to the output and the
+     * error log. Users should not call this function; see beginIgnoreWarnings().
+     */
+    public static function ignoreErrorHandler($errno, $errstr, $errfile, $errline)
     {
-    UtilityComponent::beginIgnoreWarnings();
-    $result = disk_total_space($directory);
-    UtilityComponent::endIgnoreWarnings();
-    return $result;
+        return true;
     }
-  }
+
+    /**
+     * Normally, PHP warnings are echoed by our default error handler.  If you expect them to happen
+     * from, for instance, an underlying library, but want to eat them instead of echoing them, wrap
+     * the offending lines in beginIgnoreWarnings() and endIgnoreWarnings()
+     */
+    public static function beginIgnoreWarnings()
+    {
+        set_error_handler('UtilityComponent::ignoreErrorHandler'); // must not print and log warnings
+    }
+
+    /**
+     * See documentation of UtilityComponent::beginIgnoreWarnings().
+     * Calling this restores the normal warning handler.
+     */
+    public static function endIgnoreWarnings()
+    {
+        restore_error_handler();
+    }
+
+    /** Recursively delete a directory on disk */
+    public static function rrmdir($dir)
+    {
+        if (!file_exists($dir) || !is_dir($dir)) {
+            return;
+        }
+
+        $objects = scandir($dir);
+        foreach ($objects as $object) {
+            if ($object != '.' && $object != '..') {
+                if (filetype($dir.'/'.$object) == 'dir') {
+                    self::rrmdir($dir.'/'.$object);
+                } else {
+                    unlink($dir.'/'.$object);
+                }
+            }
+        }
+        reset($objects);
+        rmdir($dir);
+    }
+
+    private static function getEmailTransport()
+    {
+        if (Zend_Registry::get('configGlobal')->smtpserver && Zend_Registry::get(
+                'configGlobal'
+            )->smtpuser && Zend_Registry::get('configGlobal')->smtppassword
+        ) {
+            $config = array(
+                'auth' => 'login',
+                'username' => Zend_Registry::get('configGlobal')->smtpuser,
+                'password' => Zend_Registry::get('configGlobal')->smtppassword,
+            );
+            $transport = new Zend_Mail_Transport_Smtp(Zend_Registry::get('configGlobal')->smtpserver, $config);
+
+            return $transport;
+        } else {
+            return null;
+        }
+    }
+
+    /** Send mail. */
+    public static function sendEmail($to, $subject, $body)
+    {
+        $validator = new Zend_Validate_EmailAddress();
+        if (Zend_Registry::get('configGlobal')->smtpfromaddress && $validator->isValid(
+                Zend_Registry::get('configGlobal')->smtpfromaddress
+            )
+        ) {
+            $sender = Zend_Registry::get('configGlobal')->smtpfromaddress;
+        } elseif (getenv('midas_email_sender') && $validator->isValid(getenv('midas_email_sender'))
+        ) {
+            $sender = getenv('midas_email_sender');
+        } elseif (ini_get('sendmail_from') && $validator->isValid(ini_get('sendmail_from'))
+        ) {
+            $sender = ini_get('sendmail_from');
+        } else {
+            $sender = 'no-reply@example.org'; // RFC2606
+        }
+        if (!$validator->isValid($to)) {
+            Zend_Registry::get('logger')->err('Unable to send email to invalid email address "'.$to.'"');
+
+            return false;
+        }
+        $subject = 'Midas Platform: '.$subject;
+        $body .= '<br/><br/><i>This is an auto-generated message from <a href="'.self::getServerURL().'">Midas Platform</a>. Please do not reply to this email.</i>';
+        try {
+            UtilityComponent::beginIgnoreWarnings();
+            include_once 'google/appengine/api/mail/Message.php';
+            UtilityComponent::endIgnoreWarnings();
+            if (class_exists('google\appengine\api\mail\Message', false)) {
+                $message = new \google\appengine\api\mail\Message();
+                $message->setSender($sender);
+                $message->addTo($to);
+                $message->setSubject($subject);
+                $message->setHtmlBody($body);
+                if (Zend_Registry::get('configGlobal')->environment != 'testing'
+                ) {
+                    $message->send();
+                }
+            } else {
+                $message = new Zend_Mail();
+                $message->setFrom($sender);
+                $message->addTo($to);
+                $message->setSubject($subject);
+                $message->setBodyHtml($body);
+                if (Zend_Registry::get('configGlobal')->environment != 'testing'
+                ) {
+                    $transport = UtilityComponent::getEmailTransport();
+                    if ($transport) {
+                        $message->send($transport);
+                    } else {
+                        $message->send();
+                    }
+                }
+            }
+        } catch (Exception $exception) {
+            Zend_Registry::get('logger')->err(
+                'Unable to send email to "'.$to.'" with subject "'.$subject.'": '.$exception->getMessage()
+            );
+
+            return false;
+        }
+        Zend_Registry::get('logger')->debug('Sent email to "'.$to.'" with subject "'.$subject.'"');
+
+        return true;
+    }
+
+    /**
+     * Get the hostname for this instance
+     */
+    public static function getServerURL()
+    {
+        if (Zend_Registry::get('configGlobal')->environment == 'testing') {
+            return 'http://localhost';
+        }
+        $currentPort = "";
+        $prefix = "http://";
+
+        if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) {
+            $currentPort = ":".$_SERVER['SERVER_PORT'];
+        }
+        if ((isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) || (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']))) {
+            $prefix = "https://";
+        }
+
+        return $prefix.$_SERVER['SERVER_NAME'].$currentPort;
+    }
+
+    /**
+     * Generate a string of random characters. Seeds RNG within the function using microtime.
+     *
+     * @param $length The length of the random string
+     * @param $alphabet (Optional) The alphabet string; if none provided, uses [a-zA-z0-9]
+     */
+    public static function generateRandomString($length, $alphabet = null)
+    {
+        if (!is_string($alphabet) || empty($alphabet)) {
+            $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        }
+
+        // Seed RNG with microtime (for lack of something more difficult to guess)
+        list($usec, $sec) = explode(' ', microtime());
+        srand((float)$sec + ((float)$usec * 100000));
+
+        $salt = '';
+        $max = strlen($alphabet) - 1;
+        for ($i = 0; $i < $length; $i++) {
+            $salt .= substr($alphabet, mt_rand(0, $max), 1);
+        }
+
+        return $salt;
+    }
+
+    /**
+     * Allows the current PHP process to use unlimited memory
+     */
+    public static function disableMemoryLimit()
+    {
+        ini_set('memory_limit', '-1');
+    }
+
+    /**
+     * Test whether the specified port is listening on the specified host.
+     * Return true if the connection is accepted, false otherwise.
+     *
+     * @param port The port to test (integer)
+     * @param [host] The hostname; default is localhost
+     */
+    public static function isPortListening($port, $host = 'localhost')
+    {
+        UtilityComponent::beginIgnoreWarnings();
+        $conn = fsockopen($host, $port);
+        UtilityComponent::endIgnoreWarnings();
+
+        if (is_resource($conn)) {
+            fclose($conn);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /** Limits the maximum execution time. */
+    public static function setTimeLimit($seconds)
+    {
+        UtilityComponent::beginIgnoreWarnings();
+        set_time_limit($seconds);
+        UtilityComponent::endIgnoreWarnings();
+    }
+
+    /** Returns available space on filesystem or disk partition. */
+    public static function diskFreeSpace($directory)
+    {
+        UtilityComponent::beginIgnoreWarnings();
+        $result = disk_free_space($directory);
+        UtilityComponent::endIgnoreWarnings();
+
+        return $result;
+    }
+
+    /** Returns the total size of a filesystem or disk partition.  */
+    public static function diskTotalSpace($directory)
+    {
+        UtilityComponent::beginIgnoreWarnings();
+        $result = disk_total_space($directory);
+        UtilityComponent::endIgnoreWarnings();
+
+        return $result;
+    }
+}

@@ -18,29 +18,33 @@
  limitations under the License.
 =========================================================================*/
 
-$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/jquery.slideto.min.js');
-$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/jquery.wiggle.min.js');
-$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/jquery.ba-bbq.min.js');
-$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/highlight.7.3.pack.js');
-$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/handlebars-1.0.rc.1.js');
-$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/underscore-min.js');
-$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/backbone-min.js');
-$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/lib/swagger.midas.js');
-$this->headScript()->appendFile($this->webroot . '/library/SwaggerUI/swagger-ui.midas.js');
-$this->headScript()->appendFile($this->coreWebroot . '/public/js/rest/rest.index.js');
+$this->headScript()->appendFile($this->webroot.'/library/SwaggerUI/lib/jquery.slideto.min.js');
+$this->headScript()->appendFile($this->webroot.'/library/SwaggerUI/lib/jquery.wiggle.min.js');
+$this->headScript()->appendFile($this->webroot.'/library/SwaggerUI/lib/jquery.ba-bbq.min.js');
+$this->headScript()->appendFile($this->webroot.'/library/SwaggerUI/lib/highlight.7.3.pack.js');
+$this->headScript()->appendFile($this->webroot.'/library/SwaggerUI/lib/handlebars-1.0.rc.1.js');
+$this->headScript()->appendFile($this->webroot.'/library/SwaggerUI/lib/underscore-min.js');
+$this->headScript()->appendFile($this->webroot.'/library/SwaggerUI/lib/backbone-min.js');
+$this->headScript()->appendFile($this->webroot.'/library/SwaggerUI/lib/swagger.midas.js');
+$this->headScript()->appendFile($this->webroot.'/library/SwaggerUI/swagger-ui.midas.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/rest/rest.index.js');
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot?>/library/SwaggerUI/css/screen.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/rest/rest.index.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->webroot ?>/library/SwaggerUI/css/screen.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/rest/rest.index.css"/>
 
 <div class="viewMain">
-  <pre>Web API URL = Base URL (<?php echo $this->serverURL.$this->webroot?>/rest) + API method URL<br/><br/>e.g. <?php echo $this->serverURL.$this->webroot?>/rest/system/login</pre>
-  <br/>
-    To authenticate requests, you can provide a parameter of <b>token</b> with an authentication token value obtained by calling <b>/system/login</b> api,
-    or to authenticate using the current Midas session you can pass a parameter key of <b>useSession</b>.
-  <br/>
-  <br/>
+    <pre>Web API URL = Base URL (<?php echo $this->serverURL.$this->webroot ?>
+        /rest) + API method URL<br/><br/>e.g. <?php echo $this->serverURL.$this->webroot ?>/rest/system/login</pre>
+    <br/>
+    To authenticate requests, you can provide a parameter of
+    <b>token</b> with an authentication token value obtained by calling
+    <b>/system/login</b> api,
+    or to authenticate using the current Midas session you can pass a parameter key of
+    <b>useSession</b>.
+    <br/>
+    <br/>
     Explore the RESTful API endpoints below, grouped by system resource.
 
-  <div id="swagger-ui-container" class="swagger-ui-wrap">
-  </div>
+    <div id="swagger-ui-container" class="swagger-ui-wrap">
+    </div>
 </div>

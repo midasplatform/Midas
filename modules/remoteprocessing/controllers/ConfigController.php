@@ -20,97 +20,93 @@
 
 /** Config controller */
 class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
-  {
-  public $_moduleForms = array('Config');
-  public $_components = array('Utility', 'Date');
+{
+    public $_moduleForms = array('Config');
+    public $_components = array('Utility', 'Date');
 
-  /** download remote script */
-  function downloadAction()
+    /** download remote script */
+    public function downloadAction()
     {
-    while(ob_get_level() > 0)
-      {
-      ob_end_clean();
-      }
-    $this->requireAdminPrivileges();
-
-    $this->disableLayout();
-    $this->disableView();
-    require_once 'ZipStream-PHP/zipstream.php';
-    ob_start();
-    $zip = new ZipStream('RemoteScript.zip');
-
-    $file = BASE_PATH.'/modules/remoteprocessing/remotescript/main.py';
-    $zip->add_file_from_path(basename($file), $file);
-    $file = BASE_PATH.'/modules/remoteprocessing/remotescript/config.cfg';
-    $zip->add_file_from_path(basename($file), $file);
-
-    $dirname = BASE_PATH.'/modules/remoteprocessing/remotescript/pydas/';
-    $dir = opendir($dirname);
-    while($file = readdir($dir))
-      {
-      if($file != '.' && $file != '..' && !is_dir($dirname.$file))
-        {
-        $zip->add_file_from_path('pydas/'.basename($dirname.$file), $dirname.$file);
+        while (ob_get_level() > 0) {
+            ob_end_clean();
         }
-      }
+        $this->requireAdminPrivileges();
 
-    $zip->finish();
-    exit();
+        $this->disableLayout();
+        $this->disableView();
+        require_once 'ZipStream-PHP/zipstream.php';
+        ob_start();
+        $zip = new ZipStream('RemoteScript.zip');
+
+        $file = BASE_PATH.'/modules/remoteprocessing/remotescript/main.py';
+        $zip->add_file_from_path(basename($file), $file);
+        $file = BASE_PATH.'/modules/remoteprocessing/remotescript/config.cfg';
+        $zip->add_file_from_path(basename($file), $file);
+
+        $dirname = BASE_PATH.'/modules/remoteprocessing/remotescript/pydas/';
+        $dir = opendir($dirname);
+        while ($file = readdir($dir)) {
+            if ($file != '.' && $file != '..' && !is_dir($dirname.$file)) {
+                $zip->add_file_from_path('pydas/'.basename($dirname.$file), $dirname.$file);
+            }
+        }
+
+        $zip->finish();
+        exit();
     }
 
-  /** index action*/
-  function indexAction()
+    /** index action */
+    public function indexAction()
     {
-    $this->requireAdminPrivileges();
+        $this->requireAdminPrivileges();
 
-    $options = array('allowModifications' => true);
-    if(file_exists(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini'))
-      {
-      $config = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini', 'global', $options);
-      }
-    else
-      {
-      $config = new Zend_Config_Ini(BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini', 'global', $options);
-      }
-
-    $configForm = $this->ModuleForm->Config->createConfigForm();
-    $formArray = $this->getFormAsArray($configForm);
-    if(empty($config->securitykey))
-      {
-      $config->securitykey = uniqid();
-
-      $writer = new Zend_Config_Writer_Ini();
-      $writer->setConfig($config);
-      $writer->setFilename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini');
-      $writer->write();
-      }
-    $formArray['securitykey']->setValue($config->securitykey);
-    if(empty($config->showbutton))
-      {
-      $formArray['showbutton']->setValue(true);
-      }
-    else
-      {
-      $formArray['showbutton']->setValue($config->showbutton);
-      }
-    $this->view->configForm = $formArray;
-
-    if($this->_request->isPost())
-      {
-      $this->disableLayout();
-      $this->disableView();
-
-      $submitConfig = $this->getParam('submitConfig');
-      if(isset($submitConfig))
-        {
-        $config->securitykey = $this->getParam('securitykey');
-        $config->showbutton = $this->getParam('showbutton');
-        $writer = new Zend_Config_Writer_Ini();
-        $writer->setConfig($config);
-        $writer->setFilename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini');
-        $writer->write();
-        echo JsonComponent::encode(array(true, 'Changes saved'));
+        $options = array('allowModifications' => true);
+        if (file_exists(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini')) {
+            $config = new Zend_Config_Ini(
+                LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini',
+                'global',
+                $options
+            );
+        } else {
+            $config = new Zend_Config_Ini(
+                BASE_PATH.'/modules/'.$this->moduleName.'/configs/module.ini',
+                'global',
+                $options
+            );
         }
-      }
+
+        $configForm = $this->ModuleForm->Config->createConfigForm();
+        $formArray = $this->getFormAsArray($configForm);
+        if (empty($config->securitykey)) {
+            $config->securitykey = uniqid();
+
+            $writer = new Zend_Config_Writer_Ini();
+            $writer->setConfig($config);
+            $writer->setFilename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini');
+            $writer->write();
+        }
+        $formArray['securitykey']->setValue($config->securitykey);
+        if (empty($config->showbutton)) {
+            $formArray['showbutton']->setValue(true);
+        } else {
+            $formArray['showbutton']->setValue($config->showbutton);
+        }
+        $this->view->configForm = $formArray;
+
+        if ($this->_request->isPost()) {
+            $this->disableLayout();
+            $this->disableView();
+
+            $submitConfig = $this->getParam('submitConfig');
+            if (isset($submitConfig)) {
+                $config->securitykey = $this->getParam('securitykey');
+                $config->showbutton = $this->getParam('showbutton');
+                $writer = new Zend_Config_Writer_Ini();
+                $writer->setConfig($config);
+                $writer->setFilename(LOCAL_CONFIGS_PATH.'/'.$this->moduleName.'.local.ini');
+                $writer->write();
+                echo JsonComponent::encode(array(true, 'Changes saved'));
+            }
+        }
     }
-  }
+}

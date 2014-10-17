@@ -22,25 +22,31 @@
  * Item thumbnail model base
  */
 abstract class Thumbnailcreator_ItemthumbnailModelBase extends Thumbnailcreator_AppModel
-  {
-  /** constructor*/
-  public function __construct()
+{
+    /** constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'thumbnailcreator_itemthumbnail';
-    $this->_key = 'itemthumbnail_id';
+        parent::__construct();
+        $this->_name = 'thumbnailcreator_itemthumbnail';
+        $this->_key = 'itemthumbnail_id';
 
-    $this->_mainData = array(
-       'itemthumbnail_id' => array('type' => MIDAS_DATA),
-       'item_id' => array('type' => MIDAS_DATA),
-       'thumbnail_id' => array('type' => MIDAS_DATA),
-       'item' => array('type' => MIDAS_MANY_TO_ONE,
-                       'model' => 'Item',
-                       'parent_column' => 'item_id',
-                       'child_column' => 'item_id'));
-    $this->initialize();
+        $this->_mainData = array(
+            'itemthumbnail_id' => array('type' => MIDAS_DATA),
+            'item_id' => array('type' => MIDAS_DATA),
+            'thumbnail_id' => array('type' => MIDAS_DATA),
+            'item' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'Item',
+                'parent_column' => 'item_id',
+                'child_column' => 'item_id',
+            ),
+        );
+        $this->initialize();
     }
 
-  abstract public function getByItemId($itemId);
-  abstract public function deleteByItem($item);
-  }
+    /** Get by item id */
+    abstract public function getByItemId($itemId);
+
+    /** Delete by item */
+    abstract public function deleteByItem($item);
+}

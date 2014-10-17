@@ -20,5 +20,5 @@
 
 /** Module App Dao */
 class Googleauth_AppDao extends MIDAS_GlobalDao
-  {
-  } // end class
+{
+}

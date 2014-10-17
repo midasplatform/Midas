@@ -20,21 +20,21 @@
 
 /** api config form */
 class Api_ConfigForm extends AppForm
-  {
-  /** create  form */
-  public function createConfigForm()
+{
+    /** create  form */
+    public function createConfigForm()
     {
-    $form = new Zend_Form;
+        $form = new Zend_Form();
 
-    $form->setAction($this->webroot.'/api/config/index')
-          ->setMethod('post');
+        $form->setAction($this->webroot.'/api/config/index')->setMethod('post');
 
-    $methodprefix = new Zend_Form_Element_Text('methodprefix');
+        $methodprefix = new Zend_Form_Element_Text('methodprefix');
 
-    $submit = new  Zend_Form_Element_Submit('submitConfig');
-    $submit ->setLabel('Save configuration');
+        $submit = new  Zend_Form_Element_Submit('submitConfig');
+        $submit->setLabel('Save configuration');
 
-    $form->addElements(array($methodprefix, $submit));
-    return $form;
+        $form->addElements(array($methodprefix, $submit));
+
+        return $form;
     }
-  } // end class
+}

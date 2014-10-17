@@ -22,24 +22,30 @@
  *  Web API controller for the Folder resource (in readmes module)
  */
 class Apireadmes_FolderController extends ApiController
-  {
-  /**
-   * The put action handles GET requests and receives an 'id' parameter; it
-   * should update the server resource state of the resource identified by
-   * the 'id' value.
-   */
-  public function getAction()
+{
+    /**
+     * The put action handles GET requests and receives an 'id' parameter; it
+     * should update the server resource state of the resource identified by
+     * the 'id' value.
+     */
+    public function getAction()
     {
-    $apiFunctions['default'] = 'get';
-    $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'get', $apiFunctions, 'readmes');
+        $apiFunctions['default'] = 'get';
+        $this->_genericAction(
+            $this->_request->getParams(),
+            $this->_request->getControllerName(),
+            'get',
+            $apiFunctions,
+            'readmes'
+        );
     }
 
-  /**
-   * The options action handles OPTIONS requests; it should respond with
-   * the HTTP methods that the server supports for specified URL.
-   */
-  public function optionsAction()
+    /**
+     * The options action handles OPTIONS requests; it should respond with
+     * the HTTP methods that the server supports for specified URL.
+     */
+    public function optionsAction()
     {
-    $this->_response->setHeader('Allow', 'OPTIONS, GET');
+        $this->_response->setHeader('Allow', 'OPTIONS, GET');
     }
-  }
+}

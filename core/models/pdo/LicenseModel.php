@@ -24,35 +24,36 @@ require_once BASE_PATH.'/core/models/base/LicenseModelBase.php';
  * License model
  */
 class LicenseModel extends LicenseModelBase
-  {
-  /** get all licenses */
-  function getAll()
+{
+    /** get all licenses */
+    public function getAll()
     {
-    return $this->database->getAll('License');
+        return $this->database->getAll('License');
     }
 
-  /**
-   * Delete the license. All revisions that pointed to
-   * this license will now have their license set to null.
-   */
-  function delete($license)
+    /**
+     * Delete the license. All revisions that pointed to
+     * this license will now have their license set to null.
+     */
+    public function delete($license)
     {
-    if(!$license instanceof LicenseDao)
-      {
-      throw new Zend_Exception('Should be a license');
-      }
-    if(!$license->saved)
-      {
-      throw new Zend_Exception('Dao must be saved');
-      }
+        if (!$license instanceof LicenseDao) {
+            throw new Zend_Exception('Should be a license');
+        }
+        if (!$license->saved) {
+            throw new Zend_Exception('Dao must be saved');
+        }
 
-    // Replace references to this license with null values
-    $this->database->getDB()->update('itemrevision',
-                                     array('license_id' => null),
-                                     array('license_id = ?' => $license->getKey()));
-    parent::delete($license);
-    unset($license->license_id);
-    $license->saved = false;
-    return true;
+        // Replace references to this license with null values
+        $this->database->getDB()->update(
+            'itemrevision',
+            array('license_id' => null),
+            array('license_id = ?' => $license->getKey())
+        );
+        parent::delete($license);
+        unset($license->license_id);
+        $license->saved = false;
+
+        return true;
     }
-  } // end class
+}

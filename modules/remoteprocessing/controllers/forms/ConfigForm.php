@@ -17,25 +17,25 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** form*/
+
+/** form */
 class Remoteprocessing_ConfigForm extends AppForm
-  {
-
-  /** create  form */
-  public function createConfigForm()
+{
+    /** create  form */
+    public function createConfigForm()
     {
-    $form = new Zend_Form;
-    $form->setAction($this->webroot.'/remoteprocessing/config/index')
-         ->setMethod('post');
+        $form = new Zend_Form();
+        $form->setAction($this->webroot.'/remoteprocessing/config/index')->setMethod('post');
 
-    $securitykey = new Zend_Form_Element_Text('securitykey');
+        $securitykey = new Zend_Form_Element_Text('securitykey');
 
-    $showbutton = new Zend_Form_Element_Checkbox('showbutton');
+        $showbutton = new Zend_Form_Element_Checkbox('showbutton');
 
-    $submit = new Zend_Form_Element_Submit('submitConfig');
-    $submit->setLabel('Save configuration');
+        $submit = new Zend_Form_Element_Submit('submitConfig');
+        $submit->setLabel('Save configuration');
 
-    $form->addElements(array($securitykey, $showbutton, $submit));
-    return $form;
+        $form->addElements(array($securitykey, $showbutton, $submit));
+
+        return $form;
     }
-  } // end class
+}

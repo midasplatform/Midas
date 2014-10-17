@@ -20,21 +20,21 @@
 
 /**
  * Index controller for the web API
- **/
+ */
 class Rest_IndexController extends AppController
-  {
-  public function preDispatch()
+{
+    public function preDispatch()
     {
-    parent::preDispatch();
-    $this->view->setScriptPath(BASE_PATH."/core/views/rest");
+        parent::preDispatch();
+        $this->view->setScriptPath(BASE_PATH."/core/views/rest");
     }
 
-  /** Index function */
-  function indexAction()
+    /** Index function */
+    public function indexAction()
     {
-    $header = '<img style="position: relative; top: 3px;" alt="" src="'.$this->view->coreWebroot.'/public/images/icons/page_white_code_red.png" />';
-    $header .= ' REST Web API';
-    $this->view->header = $header;
-    $this->view->serverURL = $this->getServerURL();
+        $header = '<img style="position: relative; top: 3px;" alt="" src="'.$this->view->coreWebroot.'/public/images/icons/page_white_code_red.png" />';
+        $header .= ' REST Web API';
+        $this->view->header = $header;
+        $this->view->serverURL = $this->getServerURL();
     }
-  }
+}

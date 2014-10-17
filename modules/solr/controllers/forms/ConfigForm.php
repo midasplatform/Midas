@@ -20,22 +20,22 @@
 
 /** module config form */
 class Solr_ConfigForm extends AppForm
-  {
-  /** create the admin->modules page config form */
-  public function createConfigForm()
+{
+    /** create the admin->modules page config form */
+    public function createConfigForm()
     {
-    $form = new Zend_Form;
-    $form->setAction($this->webroot.'/solr/config/submit')
-         ->setMethod('post');
+        $form = new Zend_Form();
+        $form->setAction($this->webroot.'/solr/config/submit')->setMethod('post');
 
-    $host = new Zend_Form_Element_Text('host');
-    $port = new Zend_Form_Element_Text('port');
-    $webroot = new Zend_Form_Element_Text('webroot');
+        $host = new Zend_Form_Element_Text('host');
+        $port = new Zend_Form_Element_Text('port');
+        $webroot = new Zend_Form_Element_Text('webroot');
 
-    $submit = new Zend_Form_Element_Submit('submitConfig');
-    $submit->setLabel('Save configuration');
+        $submit = new Zend_Form_Element_Submit('submitConfig');
+        $submit->setLabel('Save configuration');
 
-    $form->addElements(array($host, $port, $webroot, $submit));
-    return $form;
+        $form->addElements(array($host, $port, $webroot, $submit));
+
+        return $form;
     }
-  } // end class
+}

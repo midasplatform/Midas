@@ -22,39 +22,39 @@ require_once BASE_PATH.'/modules/statistics/models/base/IpLocationModelBase.php'
 
 /** statistics Ip Location model */
 class Statistics_IpLocationModel extends Statistics_IpLocationModelBase
-  {
-  /**
-   * Return the record for the given ip
-   */
-  function getByIp($ip)
+{
+    /**
+     * Return the record for the given ip
+     */
+    public function getByIp($ip)
     {
-    $sql = $this->database->select()
-            ->setIntegrityCheck(false)
-            ->from(array('e' => 'statistics_ip_location'))
-            ->where('ip = ?', $ip);
-    $rowset = $this->database->fetchAll($sql);
-    foreach($rowset as $row)
-      {
-      return $this->initDao('IpLocation', $row, 'statistics');
-      }
-    return false;
+        $sql = $this->database->select()->setIntegrityCheck(false)->from(array('e' => 'statistics_ip_location'))->where(
+            'ip = ?',
+            $ip
+        );
+        $rowset = $this->database->fetchAll($sql);
+        foreach ($rowset as $row) {
+            return $this->initDao('IpLocation', $row, 'statistics');
+        }
+
+        return false;
     }
 
-  /**
-   * Return entries that have not yet had geolocation run on them
-   */
-  function getAllUnlocated()
+    /**
+     * Return entries that have not yet had geolocation run on them
+     */
+    public function getAllUnlocated()
     {
-    $result = array();
-    $sql = $this->database->select()
-            ->setIntegrityCheck(false)
-            ->from(array('e' => 'statistics_ip_location'))
-            ->where('latitude = ?', '');
-    $rowset = $this->database->fetchAll($sql);
-    foreach($rowset as $row)
-      {
-      $result[] = $this->initDao('IpLocation', $row, 'statistics');
-      }
-    return $result;
+        $result = array();
+        $sql = $this->database->select()->setIntegrityCheck(false)->from(array('e' => 'statistics_ip_location'))->where(
+            'latitude = ?',
+            ''
+        );
+        $rowset = $this->database->fetchAll($sql);
+        foreach ($rowset as $row) {
+            $result[] = $this->initDao('IpLocation', $row, 'statistics');
+        }
+
+        return $result;
     }
-  } // end class
+}

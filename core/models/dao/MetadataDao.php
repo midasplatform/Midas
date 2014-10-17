@@ -19,10 +19,9 @@
 =========================================================================*/
 
 /**
- * \class MetadataDao
- * \brief DAO Item (table Metadata)
+ * DAO Item (table Metadata)
  */
 class MetadataDao extends AppDao
-  {
-  public $_model = 'Metadata';
-  } // end class
+{
+    public $_model = 'Metadata';
+}

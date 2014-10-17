@@ -22,7 +22,7 @@
  * Ldap User Dao
  */
 class Ldap_UserDao extends Ldap_AppDao
-  {
-  public $_model = 'User';
-  public $_module = 'ldap';
-  }
+{
+    public $_model = 'User';
+    public $_module = 'ldap';
+}

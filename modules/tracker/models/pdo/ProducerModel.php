@@ -24,33 +24,32 @@ require_once BASE_PATH.'/modules/tracker/models/base/ProducerModelBase.php';
  * Producer PDO Model
  */
 class Tracker_ProducerModel extends Tracker_ProducerModelBase
-  {
-  /**
-   * Return all producers for the given community
-   */
-  public function getByCommunityId($communityId)
+{
+    /**
+     * Return all producers for the given community
+     */
+    public function getByCommunityId($communityId)
     {
-    $sql = $this->database->select()
-                          ->setIntegrityCheck(false)
-                          ->where('community_id = ?', $communityId);
-    $rowset = $this->database->fetchAll($sql);
-    $producers = array();
-    foreach($rowset as $row)
-      {
-      $producers[] = $this->initDao('Producer', $row, $this->moduleName);
-      }
-    return $producers;
+        $sql = $this->database->select()->setIntegrityCheck(false)->where('community_id = ?', $communityId);
+        $rowset = $this->database->fetchAll($sql);
+        $producers = array();
+        foreach ($rowset as $row) {
+            $producers[] = $this->initDao('Producer', $row, $this->moduleName);
+        }
+
+        return $producers;
     }
 
-  /**
-   * Return the producer with the given display name under the given community
-   */
-  public function getByCommunityIdAndName($communityId, $displayName)
+    /**
+     * Return the producer with the given display name under the given community
+     */
+    public function getByCommunityIdAndName($communityId, $displayName)
     {
-    $sql = $this->database->select()
-                          ->setIntegrityCheck(false)
-                          ->where('community_id = ?', $communityId)
-                          ->where('display_name = ?', $displayName);
-    return $this->initDao('Producer', $this->database->fetchRow($sql), $this->moduleName);
+        $sql = $this->database->select()->setIntegrityCheck(false)->where('community_id = ?', $communityId)->where(
+            'display_name = ?',
+            $displayName
+        );
+
+        return $this->initDao('Producer', $this->database->fetchRow($sql), $this->moduleName);
     }
-  }
+}

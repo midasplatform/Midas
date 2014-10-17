@@ -20,6 +20,6 @@
 
 /** App DAO for the landingpage module */
 class Landingpage_AppDao extends MIDAS_GlobalDao
-  {
-  public $moduleName = 'landingpage';
-  }
+{
+    public $moduleName = 'landingpage';
+}

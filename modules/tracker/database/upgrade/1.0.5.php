@@ -22,17 +22,16 @@
  * Adds branch name to scalar submission table, and adds an index for it.
  */
 class Tracker_Upgrade_1_0_5 extends MIDASUpgrade
-  {
-  public function mysql()
+{
+    public function mysql()
     {
-    $this->db->query("ALTER TABLE `tracker_scalar` ADD COLUMN `params` text NULL DEFAULT NULL");
-    $this->db->query("ALTER TABLE `tracker_scalar` ADD COLUMN `extra_urls` text NULL DEFAULT NULL");
-
+        $this->db->query("ALTER TABLE `tracker_scalar` ADD COLUMN `params` text NULL DEFAULT NULL");
+        $this->db->query("ALTER TABLE `tracker_scalar` ADD COLUMN `extra_urls` text NULL DEFAULT NULL");
     }
 
-  public function pgsql()
+    public function pgsql()
     {
-    $this->db->query("ALTER TABLE tracker_scalar ADD COLUMN params text NULL DEFAULT NULL");
-    $this->db->query("ALTER TABLE tracker_scalar ADD COLUMN extra_urls text NULL DEFAULT NULL");
+        $this->db->query("ALTER TABLE tracker_scalar ADD COLUMN params text NULL DEFAULT NULL");
+        $this->db->query("ALTER TABLE tracker_scalar ADD COLUMN extra_urls text NULL DEFAULT NULL");
     }
-  }
+}

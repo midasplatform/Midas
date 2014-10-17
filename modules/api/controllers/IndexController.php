@@ -22,161 +22,158 @@ require_once BASE_PATH.'/modules/api/library/KwWebApiCore.php';
 
 /** Main controller for the web api module */
 class Api_IndexController extends Api_AppController
-  {
-  public $_moduleComponents = array('Api');
+{
+    public $_moduleComponents = array('Api');
 
-  var $kwWebApiCore = null;
-  var $apicallbacks = array();
-  var $helpContent = array();
+    public $kwWebApiCore = null;
+    public $apicallbacks = array();
+    public $helpContent = array();
 
-  // Config parameters
-  var $apiEnable = '';
-  var $apiSetup = array();
+    // Config parameters
+    public $apiEnable = '';
+    public $apiSetup = array();
 
-  /** Before filter */
-  function preDispatch()
+    /** Before filter */
+    public function preDispatch()
     {
-    parent::preDispatch();
-    $this->apiEnable = true;
+        parent::preDispatch();
+        $this->apiEnable = true;
 
-    // define api parameters
-    $modulesConfig = Zend_Registry::get('configsModules');
-    $this->apiSetup['testing'] = Zend_Registry::get('configGlobal')->environment == 'testing';
-    $this->apiSetup['tmpDirectory'] = $this->getTempDirectory();
-    $this->apiSetup['apiMethodPrefix'] = $modulesConfig['api']->methodprefix;
+        // define api parameters
+        $modulesConfig = Zend_Registry::get('configsModules');
+        $this->apiSetup['testing'] = Zend_Registry::get('configGlobal')->environment == 'testing';
+        $this->apiSetup['tmpDirectory'] = $this->getTempDirectory();
+        $this->apiSetup['apiMethodPrefix'] = $modulesConfig['api']->methodprefix;
 
-    $this->action = $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
-    switch($this->action)
-      {
-      case "rest":
-      case "json":
-      case "php_serial":
-      case "xmlrpc":
-      case "soap":
-        $this->_initApiCommons();
-        break;
-      default:
-        break;
-      }
-    }
-
-  /** Index function */
-  function indexAction()
-    {
-    $this->view->header = 'Web API';
-    $this->_computeApiHelp($this->apiSetup['apiMethodPrefix']);
-
-    // Prepare the data used by the view
-    $data = array(
-      'api.enable'        => $this->apiEnable,
-      'api.methodprefix'  => $this->apiSetup['apiMethodPrefix'],
-      'api.listmethods'   => array_keys($this->apicallbacks),
-      );
-
-    $this->view->data = $data; // transfer data to the view
-    $this->view->help = $this->helpContent;
-    $this->view->serverURL = $this->getServerURL();
-    }
-
-  /** This is called when calling a web api method */
-  private function _computeApiCallback($method_name, $apiMethodPrefix)
-    {
-    $tokens = explode('.', $method_name);
-    if(array_shift($tokens) != $apiMethodPrefix) //pop off the method prefix token
-      {
-      return; //let the web API core write out its method doesn't exist message
-      }
-
-    $method = implode($tokens);
-    if(method_exists($this->ModuleComponent->Api, $method))
-      {
-      $this->apicallbacks[$method_name] = array(&$this->ModuleComponent->Api, $method);
-      }
-    else //it doesn't exist here, check in the module specified by the 2nd token
-      {
-      $moduleName = array_shift($tokens);
-      $moduleMethod = implode('', $tokens);
-      $retVal = Zend_Registry::get('notifier')->callback('CALLBACK_API_METHOD_'.strtoupper($moduleName), array('methodName' => $moduleMethod));
-      foreach($retVal as $method)
-        {
-        $this->apicallbacks[$method_name] = array($method['object'], $method['method']);
-        break;
+        $this->action = $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
+        switch ($this->action) {
+            case "rest":
+            case "json":
+            case "php_serial":
+            case "xmlrpc":
+            case "soap":
+                $this->_initApiCommons();
+                break;
+            default:
+                break;
         }
-      }
     }
 
-  /** This index function uses this to display the list of web api methods */
-  private function _computeApiHelp($apiMethodPrefix)
+    /** Index function */
+    public function indexAction()
     {
-    $apiMethodPrefix = KwWebApiCore::checkApiMethodPrefix($apiMethodPrefix); //append the . if needed
+        $this->view->header = 'Web API';
+        $this->_computeApiHelp($this->apiSetup['apiMethodPrefix']);
 
-    // Get the list of methods in each module (including this one)
-    $apiMethods = Zend_Registry::get('notifier')->callback('CALLBACK_API_HELP', array());
-    foreach($apiMethods as $module => $methods)
-      {
-      foreach($methods as $method)
-        {
-        $apiMethodName = $apiMethodPrefix;
-        if($module != $this->moduleName) //for functions in this module, don't append module name
-          {
-          $apiMethodName .= $module.'.';
-          }
-        $apiMethodName .= $method['name'];
-        $this->helpContent[$apiMethodName] = $method['help'];
-        $this->apicallbacks[$apiMethodName] = array($method['callbackObject'], $method['callbackFunction']);
+        // Prepare the data used by the view
+        $data = array(
+            'api.enable' => $this->apiEnable,
+            'api.methodprefix' => $this->apiSetup['apiMethodPrefix'],
+            'api.listmethods' => array_keys($this->apicallbacks),
+        );
+
+        $this->view->data = $data; // transfer data to the view
+        $this->view->help = $this->helpContent;
+        $this->view->serverURL = $this->getServerURL();
+    }
+
+    /** This is called when calling a web api method */
+    private function _computeApiCallback($method_name, $apiMethodPrefix)
+    {
+        $tokens = explode('.', $method_name);
+        if (array_shift($tokens) != $apiMethodPrefix
+        ) { // pop off the method prefix token
+            return; // let the web API core write out its method doesn't exist message
         }
-      }
+
+        $method = implode($tokens);
+        if (method_exists($this->ModuleComponent->Api, $method)) {
+            $this->apicallbacks[$method_name] = array(&$this->ModuleComponent->Api, $method);
+        } else { // it doesn't exist here, check in the module specified by the 2nd token
+            $moduleName = array_shift($tokens);
+            $moduleMethod = implode('', $tokens);
+            $retVal = Zend_Registry::get('notifier')->callback(
+                'CALLBACK_API_METHOD_'.strtoupper($moduleName),
+                array('methodName' => $moduleMethod)
+            );
+            foreach ($retVal as $method) {
+                $this->apicallbacks[$method_name] = array($method['object'], $method['method']);
+                break;
+            }
+        }
     }
 
-  /** Initialize property allowing to generate XML */
-  private function _initApiCommons()
+    /** This index function uses this to display the list of web api methods */
+    private function _computeApiHelp($apiMethodPrefix)
     {
-    // Disable debug information - Required to generate valid XML output
-    //Configure::write('debug', 0);
+        $apiMethodPrefix = KwWebApiCore::checkApiMethodPrefix($apiMethodPrefix); // append the . if needed
 
-    $this->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
-
-    $this->ModuleComponent->Api->controller = &$this;
-    $this->ModuleComponent->Api->apiSetup = &$this->apiSetup;
-    $this->ModuleComponent->Api->userSession = &$this->userSession;
+        // Get the list of methods in each module (including this one)
+        $apiMethods = Zend_Registry::get('notifier')->callback('CALLBACK_API_HELP', array());
+        foreach ($apiMethods as $module => $methods) {
+            foreach ($methods as $method) {
+                $apiMethodName = $apiMethodPrefix;
+                if ($module != $this->moduleName) { // for functions in this module, don't append module name
+                    $apiMethodName .= $module.'.';
+                }
+                $apiMethodName .= $method['name'];
+                $this->helpContent[$apiMethodName] = $method['help'];
+                $this->apicallbacks[$apiMethodName] = array($method['callbackObject'], $method['callbackFunction']);
+            }
+        }
     }
 
-  /** Controller action handling REST request */
-  function restAction()
+    /** Initialize property allowing to generate XML */
+    private function _initApiCommons()
     {
-    $this->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+        // Disable debug information - Required to generate valid XML output
+        // Configure::write('debug', 0);
 
-    $method_name = $this->getParam('method');
-    if(!isset($method_name))
-      {
-      echo 'Inconsistent request: please set a method parameter';
-      exit;
-      }
+        $this->disableLayout();
+        $this->_helper->viewRenderer->setNoRender();
 
-    $request_data = $this->getAllParams();
-    $this->_computeApiCallback($method_name, $this->apiSetup['apiMethodPrefix']);
-    // Handle XML-RPC request
-    $this->kwWebApiCore = new KwWebApiRestCore($this->apiSetup, $this->apicallbacks, $request_data);
+        $this->ModuleComponent->Api->controller = &$this;
+        $this->ModuleComponent->Api->apiSetup = &$this->apiSetup;
+        $this->ModuleComponent->Api->userSession = &$this->userSession;
     }
 
-  /** Controller action handling JSON request */
-  function jsonAction()
+    /** Controller action handling REST request */
+    public function restAction()
     {
-    $this->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
+        $this->disableLayout();
+        $this->_helper->viewRenderer->setNoRender();
 
-    $method_name = $this->getParam('method');
-    if(!isset($method_name))
-      {
-      echo 'Inconsistent request: please set a method parameter';
-      exit;
-      }
+        $method_name = $this->getParam('method');
+        if (!isset($method_name)) {
+            echo 'Inconsistent request: please set a method parameter';
+            exit;
+        }
 
-    $request_data = $this->getAllParams();
-    $this->_computeApiCallback($method_name, $this->apiSetup['apiMethodPrefix']);
-    // Handle XML-RPC request
-    $this->kwWebApiCore = new KwWebApiRestCore($this->apiSetup, $this->apicallbacks, array_merge($request_data, array('format' => 'json')));
+        $request_data = $this->getAllParams();
+        $this->_computeApiCallback($method_name, $this->apiSetup['apiMethodPrefix']);
+        // Handle XML-RPC request
+        $this->kwWebApiCore = new KwWebApiRestCore($this->apiSetup, $this->apicallbacks, $request_data);
     }
-  } // end class
+
+    /** Controller action handling JSON request */
+    public function jsonAction()
+    {
+        $this->disableLayout();
+        $this->_helper->viewRenderer->setNoRender();
+
+        $method_name = $this->getParam('method');
+        if (!isset($method_name)) {
+            echo 'Inconsistent request: please set a method parameter';
+            exit;
+        }
+
+        $request_data = $this->getAllParams();
+        $this->_computeApiCallback($method_name, $this->apiSetup['apiMethodPrefix']);
+        // Handle XML-RPC request
+        $this->kwWebApiCore = new KwWebApiRestCore(
+            $this->apiSetup,
+            $this->apicallbacks,
+            array_merge($request_data, array('format' => 'json'))
+        );
+    }
+}

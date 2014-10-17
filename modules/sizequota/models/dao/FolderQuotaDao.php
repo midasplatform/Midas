@@ -22,7 +22,7 @@
  * Folder quota dao
  */
 class Sizequota_FolderQuotaDao extends AppDao
-  {
-  public $_model = 'FolderQuota';
-  public $_module = 'sizequota';
-  }
+{
+    public $_model = 'FolderQuota';
+    public $_module = 'sizequota';
+}

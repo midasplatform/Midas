@@ -19,10 +19,9 @@
 =========================================================================*/
 
 /**
- * \class SettingDao
- * \brief DAO  (table setting)
+ * DAO  (table setting)
  */
 class SettingDao extends AppDao
-  {
-  public $_model = 'Setting';
-  }
+{
+    public $_model = 'Setting';
+}

@@ -19,16 +19,16 @@
 =========================================================================*/
 
 class Upgrade_3_1_3 extends MIDASUpgrade
-  {
-  public function mysql()
+{
+    public function mysql()
     {
-    $sql = "ALTER TABLE item MODIFY description TEXT NOT NULL;";
-    $this->db->query($sql);
+        $sql = "ALTER TABLE item MODIFY description TEXT NOT NULL;";
+        $this->db->query($sql);
     }
 
-  public function pgsql()
+    public function pgsql()
     {
-    $sql = "ALTER TABLE item ALTER COLUMN description TYPE TEXT;";
-    $this->db->query($sql);
+        $sql = "ALTER TABLE item ALTER COLUMN description TYPE TEXT;";
+        $this->db->query($sql);
     }
-  }
+}

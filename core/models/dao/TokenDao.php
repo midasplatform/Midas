@@ -17,8 +17,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /** Dao for the api token */
 class TokenDao extends AppDao
-  {
-  public $_model = 'Token';
-  }
+{
+    public $_model = 'Token';
+}

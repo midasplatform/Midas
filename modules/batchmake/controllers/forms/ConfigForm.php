@@ -22,32 +22,29 @@
  * Batchmake_ConfigForm
  */
 class Batchmake_ConfigForm extends AppForm
-  {
-
-  /**
-   * @method createConfigForm
-   * does what it says.
-   */
-  public function createConfigForm($configPropertiesRequirements)
+{
+    /**
+     * does what it says.
+     */
+    public function createConfigForm($configPropertiesRequirements)
     {
-    $form = new Zend_Form;
+        $form = new Zend_Form();
 
-    $form->setAction($this->webroot.'/batchmake/config/index')
-          ->setMethod('post');
+        $form->setAction($this->webroot.'/batchmake/config/index')->setMethod('post');
 
-    $formElements = array();
-    foreach($configPropertiesRequirements as $property => $requirements)
-      {
-      $textElement = new Zend_Form_Element_Text($property);
-      $textElement->setRequired(true)->addValidator('NotEmpty', true);
-      $formElements[] = $textElement;
-      }
+        $formElements = array();
+        foreach ($configPropertiesRequirements as $property => $requirements) {
+            $textElement = new Zend_Form_Element_Text($property);
+            $textElement->setRequired(true)->addValidator('NotEmpty', true);
+            $formElements[] = $textElement;
+        }
 
-    $submit = new  Zend_Form_Element_Submit(MIDAS_BATCHMAKE_SUBMIT_CONFIG);
-    $submit ->setLabel($this->t(MIDAS_BATCHMAKE_SAVE_CONFIGURATION_STRING));
-    $formElements[] = $submit;
+        $submit = new  Zend_Form_Element_Submit(MIDAS_BATCHMAKE_SUBMIT_CONFIG);
+        $submit->setLabel($this->t(MIDAS_BATCHMAKE_SAVE_CONFIGURATION_STRING));
+        $formElements[] = $submit;
 
-    $form->addElements($formElements);
-    return $form;
+        $form->addElements($formElements);
+
+        return $form;
     }
-  } // end class
+}

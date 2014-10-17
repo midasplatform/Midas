@@ -18,8 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
-/** Parent controller class for module */
+/** App controller for the tracker module */
 class Tracker_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'tracker';
-  }
+{
+    public $moduleName = 'tracker';
+}

@@ -17,217 +17,208 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-require_once BASE_PATH . '/modules/api/library/APIEnabledNotification.php';
 
-/** notification manager for sizequota module */
+require_once BASE_PATH.'/modules/api/library/APIEnabledNotification.php';
+
+/** Notification manager for the sizequota module */
 class Sizequota_Notification extends ApiEnabled_Notification
-  {
-  public $moduleName = 'sizequota';
-  public $_moduleComponents = array('Api');
-  public $_models = array('Assetstore', 'Folder');
+{
+    public $moduleName = 'sizequota';
+    public $_moduleComponents = array('Api');
+    public $_models = array('Assetstore', 'Folder');
 
-  /** init notification process */
-  public function init()
+    /** init notification process */
+    public function init()
     {
-    $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_MANAGE_TABS', 'getCommunityTab');
-    $this->addCallBack('CALLBACK_CORE_GET_USER_TABS', 'getUserTab');
-    $this->addCallBack('CALLBACK_CORE_GET_FOOTER_LAYOUT', 'getScript');
-    $this->addCallBack('CALLBACK_CORE_GET_SIMPLEUPLOAD_EXTRA_HTML', 'getExtraHtmlSimple');
-    $this->addCallBack('CALLBACK_CORE_GET_JAVAUPLOAD_EXTRA_HTML', 'getExtraHtmlSimple');
-    $this->addCallBack('CALLBACK_CORE_GET_REVISIONUPLOAD_EXTRA_HTML', 'getExtraHtmlRevision');
-    $this->addCallBack('CALLBACK_CORE_GET_JAVAREVISIONUPLOAD_EXTRA_HTML', 'getExtraHtmlRevision');
-    $this->addCallBack('CALLBACK_CORE_VALIDATE_UPLOAD', 'validateUpload');
-    $this->addCallBack('CALLBACK_CORE_VALIDATE_UPLOAD_REVISION', 'validateUploadRevision');
+        $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_MANAGE_TABS', 'getCommunityTab');
+        $this->addCallBack('CALLBACK_CORE_GET_USER_TABS', 'getUserTab');
+        $this->addCallBack('CALLBACK_CORE_GET_FOOTER_LAYOUT', 'getScript');
+        $this->addCallBack('CALLBACK_CORE_GET_SIMPLEUPLOAD_EXTRA_HTML', 'getExtraHtmlSimple');
+        $this->addCallBack('CALLBACK_CORE_GET_JAVAUPLOAD_EXTRA_HTML', 'getExtraHtmlSimple');
+        $this->addCallBack('CALLBACK_CORE_GET_REVISIONUPLOAD_EXTRA_HTML', 'getExtraHtmlRevision');
+        $this->addCallBack('CALLBACK_CORE_GET_JAVAREVISIONUPLOAD_EXTRA_HTML', 'getExtraHtmlRevision');
+        $this->addCallBack('CALLBACK_CORE_VALIDATE_UPLOAD', 'validateUpload');
+        $this->addCallBack('CALLBACK_CORE_VALIDATE_UPLOAD_REVISION', 'validateUploadRevision');
 
-    $this->enableWebAPI($this->moduleName);
+        $this->enableWebAPI($this->moduleName);
     }
 
-  /** Add a tab to the manage community page for size quota */
-  public function getCommunityTab($args)
+    /** Add a tab to the manage community page for size quota */
+    public function getCommunityTab($args)
     {
-    $community = $args['community'];
-    $fc = Zend_Controller_Front::getInstance();
-    $moduleWebroot = $fc->getBaseUrl().'/'.$this->moduleName;
-    return array($this->t('Storage Quota') => $moduleWebroot.'/config/folder?folderId='.$community->getFolderId());
+        $community = $args['community'];
+        $fc = Zend_Controller_Front::getInstance();
+        $moduleWebroot = $fc->getBaseUrl().'/'.$this->moduleName;
+
+        return array(
+            $this->t('Storage Quota') => $moduleWebroot.'/config/folder?folderId='.$community->getFolderId(),
+        );
     }
 
-  /** Add a tab to the user's main page for size quota */
-  public function getUserTab($args)
+    /** Add a tab to the user's main page for size quota */
+    public function getUserTab($args)
     {
-    $user = $args['user'];
-    if($this->Folder->policyCheck($user->getFolder(), $this->userSession->Dao, MIDAS_POLICY_READ))
-      {
-      $fc = Zend_Controller_Front::getInstance();
-      $moduleWebroot = $fc->getBaseUrl().'/'.$this->moduleName;
-      return array($this->t('Storage Quota') => $moduleWebroot.'/config/folder?folderId='.$user->getFolderId());
-      }
-    else
-      {
-      return array();
-      }
-    }
+        $user = $args['user'];
+        if ($this->Folder->policyCheck($user->getFolder(), $this->userSession->Dao, MIDAS_POLICY_READ)
+        ) {
+            $fc = Zend_Controller_Front::getInstance();
+            $moduleWebroot = $fc->getBaseUrl().'/'.$this->moduleName;
 
-  /** Add our javascript callback script */
-  public function getScript()
-    {
-    $fc = Zend_Controller_Front::getInstance();
-    $modulePublicWebroot = $fc->getBaseUrl().'/modules/'.$this->moduleName;
-    return '<script type="text/javascript" src="'.$modulePublicWebroot.'/public/js/common/common.notify.js"></script>';
-    }
-
-  /**
-   * Add free space information to the dom on the simple upload & java upload pages
-   * @param folder The folder dao that you are uploading into
-   */
-  public function getExtraHtmlSimple($args)
-    {
-    $folderModel = MidasLoader::loadModel('Folder');
-    $folderQuotaModel = MidasLoader::loadModel('FolderQuota', $this->moduleName);
-
-    $folder = $args['folder'];
-    if(!$folder)
-      {
-      return '<div id="sizequotaFreeSpace" style="display:none;">0</div>'.
-             '<div id="sizequotaHFreeSpace" style="display:none;">--</div>';
-      }
-    $rootFolder = $folderModel->getRoot($folder);
-    $quota = $folderQuotaModel->getFolderQuota($rootFolder);
-    $assetstoreFree = disk_free_space($this->Assetstore->getDefault()->getPath());
-    if($quota == '')
-      {
-      $free = $assetstoreFree;
-      }
-    else
-      {
-      $used = $folderModel->getSize($rootFolder);
-      $free = min($assetstoreFree, $quota - $used);
-      }
-
-    $free = number_format($free, 0, '.', '');
-    $hFree = UtilityComponent::formatSize($free);
-    return '<div id="sizequotaFreeSpace" style="display:none;">'.$free.'</div>'.
-           '<div id="sizequotaHFreeSpace" style="display:none;">'.$hFree.'</div>';
-    }
-
-  /**
-   * Add free space information to the dom on the revision uploader page
-   * @param item The item dao that you are uploading a new revision into
-   */
-  public function getExtraHtmlRevision($args)
-    {
-    $folderModel = MidasLoader::loadModel('Folder');
-    $folderQuotaModel = MidasLoader::loadModel('FolderQuota', $this->moduleName);
-
-    $item = $args['item'];
-    if(!$item)
-      {
-      return '<div id="sizequotaFreeSpace" style="display:none;">0</div>'.
-             '<div id="sizequotaHFreeSpace" style="display:none;">--</div>';
-      }
-    $folders = $item->getFolders();
-    if(count($folders) == 0)
-      {
-      //don't allow any more uploading into an orphaned item
-      return '<div id="sizequotaFreeSpace" style="display:none;">0</div>'.
-             '<div id="sizequotaHFreeSpace" style="display:none;">--</div>';
-      }
-    else
-      {
-      $rootFolder = $folderModel->getRoot($folders[0]);
-      $quota = $folderQuotaModel->getFolderQuota($rootFolder);
-      $assetstoreFree = disk_free_space($this->Assetstore->getDefault()->getPath());
-      if($quota == '')
-        {
-        $free = $assetstoreFree;
+            return array(
+                $this->t('Storage Quota') => $moduleWebroot.'/config/folder?folderId='.$user->getFolderId(),
+            );
+        } else {
+            return array();
         }
-      else
-        {
-        $used = $folderModel->getSize($rootFolder);
-        $free = min($assetstoreFree, $quota - $used);
+    }
+
+    /** Add our javascript callback script */
+    public function getScript()
+    {
+        $fc = Zend_Controller_Front::getInstance();
+        $modulePublicWebroot = $fc->getBaseUrl().'/modules/'.$this->moduleName;
+
+        return '<script type="text/javascript" src="'.$modulePublicWebroot.'/public/js/common/common.notify.js"></script>';
+    }
+
+    /**
+     * Add free space information to the dom on the simple upload & java upload pages
+     *
+     * @param folder The folder dao that you are uploading into
+     */
+    public function getExtraHtmlSimple($args)
+    {
+        $folderModel = MidasLoader::loadModel('Folder');
+        $folderQuotaModel = MidasLoader::loadModel('FolderQuota', $this->moduleName);
+
+        $folder = $args['folder'];
+        if (!$folder) {
+            return '<div id="sizequotaFreeSpace" style="display:none;">0</div>'.'<div id="sizequotaHFreeSpace" style="display:none;">--</div>';
+        }
+        $rootFolder = $folderModel->getRoot($folder);
+        $quota = $folderQuotaModel->getFolderQuota($rootFolder);
+        $assetstoreFree = disk_free_space($this->Assetstore->getDefault()->getPath());
+        if ($quota == '') {
+            $free = $assetstoreFree;
+        } else {
+            $used = $folderModel->getSize($rootFolder);
+            $free = min($assetstoreFree, $quota - $used);
         }
 
-      $free = number_format($free, 0, '.', '');
-      $hFree = UtilityComponent::formatSize($free);
-      return '<div id="sizequotaFreeSpace" style="display:none;">'.$free.'</div>'.
-             '<div id="sizequotaHFreeSpace" style="display:none;">'.$hFree.'</div>';
-      }
+        $free = number_format($free, 0, '.', '');
+        $hFree = UtilityComponent::formatSize($free);
+
+        return '<div id="sizequotaFreeSpace" style="display:none;">'.$free.'</div>'.'<div id="sizequotaHFreeSpace" style="display:none;">'.$hFree.'</div>';
     }
 
-  /**
-   * Return whether or not the upload is allowed.  If uploading the file
-   * will cause the size to surpass the quota, it will be rejected.
-   * @param size Size of the uploaded file
-   * @param folderId The id of the folder being uploaded into
-   * @return array('status' => boolean, 'message' => 'error message if status is false')
-   */
-  public function validateUpload($args)
+    /**
+     * Add free space information to the dom on the revision uploader page
+     *
+     * @param item The item dao that you are uploading a new revision into
+     */
+    public function getExtraHtmlRevision($args)
     {
-    $folderModel = MidasLoader::loadModel('Folder');
-    $folderQuotaModel = MidasLoader::loadModel('FolderQuota', $this->moduleName);
+        $folderModel = MidasLoader::loadModel('Folder');
+        $folderQuotaModel = MidasLoader::loadModel('FolderQuota', $this->moduleName);
 
-    $folder = $folderModel->load($args['folderId']);
-    if(!$folder)
-      {
-      return array('status' => false, 'message' => 'Invalid folder id');
-      }
-    $rootFolder = $folderModel->getRoot($folder);
-    $quota = $folderQuotaModel->getFolderQuota($rootFolder);
-    if($quota == '')
-      {
-      return array('status' => true);
-      }
+        $item = $args['item'];
+        if (!$item) {
+            return '<div id="sizequotaFreeSpace" style="display:none;">0</div>'.'<div id="sizequotaHFreeSpace" style="display:none;">--</div>';
+        }
+        $folders = $item->getFolders();
+        if (count($folders) == 0) {
+            // don't allow any more uploading into an orphaned item
+            return '<div id="sizequotaFreeSpace" style="display:none;">0</div>'.'<div id="sizequotaHFreeSpace" style="display:none;">--</div>';
+        } else {
+            $rootFolder = $folderModel->getRoot($folders[0]);
+            $quota = $folderQuotaModel->getFolderQuota($rootFolder);
+            $assetstoreFree = disk_free_space($this->Assetstore->getDefault()->getPath());
+            if ($quota == '') {
+                $free = $assetstoreFree;
+            } else {
+                $used = $folderModel->getSize($rootFolder);
+                $free = min($assetstoreFree, $quota - $used);
+            }
 
-    $freeSpace = $quota - $folderModel->getSize($rootFolder);
-    $uploadSize = $args['size'];
-    if($uploadSize > $freeSpace)
-      {
-      return array('status' => false,
-                   'message' => 'Upload quota exceeded. Free space: '.$freeSpace.
-                                '. Attempted upload size: '.$uploadSize.
-                                ' into folder '.$args['folderId']);
-      }
-    return array('status' => true);
+            $free = number_format($free, 0, '.', '');
+            $hFree = UtilityComponent::formatSize($free);
+
+            return '<div id="sizequotaFreeSpace" style="display:none;">'.$free.'</div>'.'<div id="sizequotaHFreeSpace" style="display:none;">'.$hFree.'</div>';
+        }
     }
 
-  /**
-   * Return whether or not the upload is allowed.  If uploading the revision
-   * will cause the size to surpass the quota, it will be rejected.
-   * @param size Size of the uploaded file
-   * @param itemId The id of the item being uploaded into
-   * @return array('status' => boolean, 'message' => 'error message if status is false')
-   */
-  public function validateUploadRevision($args)
+    /**
+     * Return whether or not the upload is allowed.  If uploading the file
+     * will cause the size to surpass the quota, it will be rejected.
+     *
+     * @param size Size of the uploaded file
+     * @param folderId The id of the folder being uploaded into
+     * @return array('status' => boolean, 'message' => 'error message if status is false')
+     */
+    public function validateUpload($args)
     {
-    $folderModel = MidasLoader::loadModel('Folder');
-    $itemModel = MidasLoader::loadModel('Item');
-    $folderQuotaModel = MidasLoader::loadModel('FolderQuota', $this->moduleName);
+        $folderModel = MidasLoader::loadModel('Folder');
+        $folderQuotaModel = MidasLoader::loadModel('FolderQuota', $this->moduleName);
 
-    $item = $itemModel->load($args['itemId']);
-    if(!$item)
-      {
-      return array('status' => false, 'message' => 'Invalid item id');
-      }
-    $folders = $item->getFolders();
-    if(count($folders) == 0)
-      {
-      return array('status' => false, 'message' => 'Cannot upload into an orphaned item');
-      }
-    $rootFolder = $folderModel->getRoot($folders[0]);
-    $quota = $folderQuotaModel->getFolderQuota($rootFolder);
-    if($quota == '')
-      {
-      return array('status' => true);
-      }
+        $folder = $folderModel->load($args['folderId']);
+        if (!$folder) {
+            return array('status' => false, 'message' => 'Invalid folder id');
+        }
+        $rootFolder = $folderModel->getRoot($folder);
+        $quota = $folderQuotaModel->getFolderQuota($rootFolder);
+        if ($quota == '') {
+            return array('status' => true);
+        }
 
-    $freeSpace = $quota - $folderModel->getSize($rootFolder);
-    $uploadSize = $args['size'];
-    if($uploadSize > $freeSpace)
-      {
-      return array('status' => false,
-                   'message' => 'Upload quota exceeded. Free space: '.$freeSpace.
-                                '. Attempted upload size: '.$uploadSize.
-                                ' into item '.$args['itemId']);
-      }
-    return array('status' => true);
+        $freeSpace = $quota - $folderModel->getSize($rootFolder);
+        $uploadSize = $args['size'];
+        if ($uploadSize > $freeSpace) {
+            return array(
+                'status' => false,
+                'message' => 'Upload quota exceeded. Free space: '.$freeSpace.'. Attempted upload size: '.$uploadSize.' into folder '.$args['folderId'],
+            );
+        }
+
+        return array('status' => true);
     }
-  } // end class
+
+    /**
+     * Return whether or not the upload is allowed.  If uploading the revision
+     * will cause the size to surpass the quota, it will be rejected.
+     *
+     * @param size Size of the uploaded file
+     * @param itemId The id of the item being uploaded into
+     * @return array('status' => boolean, 'message' => 'error message if status is false')
+     */
+    public function validateUploadRevision($args)
+    {
+        $folderModel = MidasLoader::loadModel('Folder');
+        $itemModel = MidasLoader::loadModel('Item');
+        $folderQuotaModel = MidasLoader::loadModel('FolderQuota', $this->moduleName);
+
+        $item = $itemModel->load($args['itemId']);
+        if (!$item) {
+            return array('status' => false, 'message' => 'Invalid item id');
+        }
+        $folders = $item->getFolders();
+        if (count($folders) == 0) {
+            return array('status' => false, 'message' => 'Cannot upload into an orphaned item');
+        }
+        $rootFolder = $folderModel->getRoot($folders[0]);
+        $quota = $folderQuotaModel->getFolderQuota($rootFolder);
+        if ($quota == '') {
+            return array('status' => true);
+        }
+
+        $freeSpace = $quota - $folderModel->getSize($rootFolder);
+        $uploadSize = $args['size'];
+        if ($uploadSize > $freeSpace) {
+            return array(
+                'status' => false,
+                'message' => 'Upload quota exceeded. Free space: '.$freeSpace.'. Attempted upload size: '.$uploadSize.' into item '.$args['itemId'],
+            );
+        }
+
+        return array('status' => true);
+    }
+}

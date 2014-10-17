@@ -31,66 +31,69 @@
  * progress is indeterminate.
  */
 abstract class ProgressModelBase extends AppModel
-  {
-  /** constructor */
-  public function __construct()
+{
+    /** constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'progress';
-    $this->_key = 'progress_id';
+        parent::__construct();
+        $this->_name = 'progress';
+        $this->_key = 'progress_id';
 
-    $this->_mainData = array(
-      'progress_id' =>  array('type' => MIDAS_DATA),
-      'current' =>  array('type' => MIDAS_DATA),
-      'maximum' =>  array('type' => MIDAS_DATA),
-      'message' =>  array('type' => MIDAS_DATA),
-      'date_creation' => array('type' => MIDAS_DATA),
-      'last_update' => array('type' => MIDAS_DATA)
-      );
-    $this->initialize();
+        $this->_mainData = array(
+            'progress_id' => array('type' => MIDAS_DATA),
+            'current' => array('type' => MIDAS_DATA),
+            'maximum' => array('type' => MIDAS_DATA),
+            'message' => array('type' => MIDAS_DATA),
+            'date_creation' => array('type' => MIDAS_DATA),
+            'last_update' => array('type' => MIDAS_DATA),
+        );
+        $this->initialize();
     }
 
-  /**
-   * Create a new progress record beginning with current value 0
-   * @param max The max (default is 0 for indeterminate)
-   * @param message The initial progress message (defaults to empty)
-   * @return The progress dao that was created
-   */
-  public function createProgress($max = 0, $message = '')
+    /**
+     * Create a new progress record beginning with current value 0
+     *
+     * @param max The max (default is 0 for indeterminate)
+     * @param message The initial progress message (defaults to empty)
+     * @return The progress dao that was created
+     */
+    public function createProgress($max = 0, $message = '')
     {
-    $progress = MidasLoader::newDao('ProgressDao');
-    $progress->setCurrent(0);
-    $progress->setMaximum($max);
-    $progress->setMessage($message);
-    $progress->setDateCreation(date("Y-m-d H:i:s"));
-    $progress->setLastUpdate(date("Y-m-d H:i:s"));
+        $progress = MidasLoader::newDao('ProgressDao');
+        $progress->setCurrent(0);
+        $progress->setMaximum($max);
+        $progress->setMessage($message);
+        $progress->setDateCreation(date("Y-m-d H:i:s"));
+        $progress->setLastUpdate(date("Y-m-d H:i:s"));
 
-    $this->save($progress);
-    return $progress;
+        $this->save($progress);
+
+        return $progress;
     }
 
-  /**
-   * Update a progress record.  Touches its update timestamp and sets its value.
-   * @param progressDao The progress record to update
-   * @param currentValue The current value of the progress
-   */
-  public function updateProgress($progressDao, $currentValue, $message = '')
+    /**
+     * Update a progress record.  Touches its update timestamp and sets its value.
+     *
+     * @param progressDao The progress record to update
+     * @param currentValue The current value of the progress
+     */
+    public function updateProgress($progressDao, $currentValue, $message = '')
     {
-    $progressDao->setCurrent((int)$currentValue);
-    $progressDao->setMessage($message);
-    $progressDao->setLastUpdate(date("Y-m-d H:i:s"));
+        $progressDao->setCurrent((int)$currentValue);
+        $progressDao->setMessage($message);
+        $progressDao->setLastUpdate(date("Y-m-d H:i:s"));
 
-    $this->save($progressDao);
+        $this->save($progressDao);
     }
 
-  /**
-   * Override default save so that we can unlock the session,
-   * which is required for concurrent progress polling.  See documentation of
-   * session_write_close for explanation.
-   */
-  public function save($dao)
+    /**
+     * Override default save so that we can unlock the session,
+     * which is required for concurrent progress polling.  See documentation of
+     * session_write_close for explanation.
+     */
+    public function save($dao)
     {
-    session_write_close();
-    parent::save($dao);
+        session_write_close();
+        parent::save($dao);
     }
-  }
+}

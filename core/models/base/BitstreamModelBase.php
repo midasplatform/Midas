@@ -18,121 +18,133 @@
  limitations under the License.
 =========================================================================*/
 
-/** Bitstream Base Model*/
+/** Bitstream Base Model */
 abstract class BitstreamModelBase extends AppModel
-  {
-  /** constructor */
-  public function __construct()
+{
+    /** constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'bitstream';
-    $this->_key = 'bitstream_id';
+        parent::__construct();
+        $this->_name = 'bitstream';
+        $this->_key = 'bitstream_id';
 
-    $this->_mainData = array(
-      'bitstream_id' =>  array('type' => MIDAS_DATA),
-      'itemrevision_id' =>  array('type' => MIDAS_DATA),
-      'assetstore_id' =>  array('type' => MIDAS_DATA),
-      'name' =>  array('type' => MIDAS_DATA),
-      'mimetype' =>  array('type' => MIDAS_DATA),
-      'sizebytes' =>  array('type' => MIDAS_DATA),
-      'checksum' =>  array('type' => MIDAS_DATA),
-      'path' =>  array('type' => MIDAS_DATA),
-      'date' =>  array('type' => MIDAS_DATA),
-      'itemrevision' =>  array('type' => MIDAS_MANY_TO_ONE, 'model' => 'ItemRevision', 'parent_column' => 'itemrevision_id', 'child_column' => 'itemrevision_id'),
-      'assetstore' =>  array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Assetstore', 'parent_column' => 'assetstore_id', 'child_column' => 'assetstore_id'),
-      );
-    $this->initialize(); // required
-    } // end __construct()
-
-  /** Abstract functions */
-  abstract function getByChecksum($checksum, $getAll = false);
-  abstract function countOrphans();
-  abstract function removeOrphans($progressDao = null);
-  abstract function countAll($assetstore = null);
-
-  /** save */
-  public function save($dao)
-    {
-    if(!isset($dao->date) || empty($dao->date))
-      {
-      $dao->setDate(date("Y-m-d H:i:s"));
-      }
-    parent::save($dao);
+        $this->_mainData = array(
+            'bitstream_id' => array('type' => MIDAS_DATA),
+            'itemrevision_id' => array('type' => MIDAS_DATA),
+            'assetstore_id' => array('type' => MIDAS_DATA),
+            'name' => array('type' => MIDAS_DATA),
+            'mimetype' => array('type' => MIDAS_DATA),
+            'sizebytes' => array('type' => MIDAS_DATA),
+            'checksum' => array('type' => MIDAS_DATA),
+            'path' => array('type' => MIDAS_DATA),
+            'date' => array('type' => MIDAS_DATA),
+            'itemrevision' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'ItemRevision',
+                'parent_column' => 'itemrevision_id',
+                'child_column' => 'itemrevision_id',
+            ),
+            'assetstore' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'Assetstore',
+                'parent_column' => 'assetstore_id',
+                'child_column' => 'assetstore_id',
+            ),
+        );
+        $this->initialize(); // required
     }
 
-  /** delete a Bitstream*/
-  function delete($bitstream)
+    /** Get by checksum */
+    abstract public function getByChecksum($checksum, $getAll = false);
+
+    /** Count orphans */
+    abstract public function countOrphans();
+
+    /** Remove orphans */
+    abstract public function removeOrphans($progressDao = null);
+
+    /** Count all */
+    abstract public function countAll($assetstore = null);
+
+    /** save */
+    public function save($dao)
     {
-    if(!$bitstream instanceof BitstreamDao)
-      {
-      throw new Zend_Exception('Must pass a bitstream dao');
-      }
-    $checksum = $bitstream->getChecksum();
-    $path = $bitstream->getFullPath();
-    $assetstore = $bitstream->getAssetstore();
-    parent::delete($bitstream);
-    if(file_exists($path) && $assetstore->getType() != MIDAS_ASSETSTORE_REMOTE
-       && $this->getByChecksum($checksum) == false)
-      {
-      unlink($path);
-      }
-    $bitstream->saved = false;
-    unset($bitstream->bitstream_id);
-    }
-
-  /**
-   * Create a thumbnail bitstream in the provided assetstore using the
-   * passed tempThumbnailFile, which will be moved to the assetstore.
-   * @return The bitstream dao that was created for the thumbnail
-   */
-  public function createThumbnail($assetstore, $tempThumbnailFile)
-    {
-    $bitstreamDao = MidasLoader::newDao('BitstreamDao');
-
-    $md5 = md5_file($tempThumbnailFile);
-    $bitstreamDao->setName('thumbnail.jpeg');
-    $bitstreamDao->setItemrevisionId(-1); //-1 indicates this does not belong to any revision
-    $bitstreamDao->setMimetype('image/jpeg');
-    $bitstreamDao->setSizebytes(filesize($tempThumbnailFile));
-    $bitstreamDao->setDate(date("Y-m-d H:i:s"));
-    $bitstreamDao->setChecksum($md5);
-
-    $existing = $this->getByChecksum($md5);
-    if($existing)
-      {
-      unlink($tempThumbnailFile);
-      $bitstreamDao->setPath($existing->getPath());
-      $bitstreamDao->setAssetstoreId($existing->getAssetstoreId());
-      }
-    else
-      {
-      $path = substr($md5, 0, 2).'/'.substr($md5, 2, 2).'/'.$md5;
-      $fullpath = $assetstore->getPath().'/'.$path;
-
-      $currentdir = $assetstore->getPath().'/'.substr($md5, 0, 2);
-      $this->_createAssetstoreDirectory($currentdir);
-      $currentdir .= '/'.substr($md5, 2, 2);
-      $this->_createAssetstoreDirectory($currentdir);
-      rename($tempThumbnailFile, $fullpath);
-
-      $bitstreamDao->setAssetstoreId($assetstore->getKey());
-      $bitstreamDao->setPath($path);
-      }
-
-    $this->save($bitstreamDao);
-    return $bitstreamDao;
-    }
-
-  /** Helper function to create the two-level hierarchy in the assetstore */
-  private function _createAssetstoreDirectory($directorypath)
-    {
-    if(!file_exists($directorypath))
-      {
-      if(!mkdir($directorypath))
-        {
-        throw new Zend_Exception("Cannot create directory: ".$directorypath);
+        if (!isset($dao->date) || empty($dao->date)) {
+            $dao->setDate(date("Y-m-d H:i:s"));
         }
-      chmod($directorypath, 0777);
-      }
+        parent::save($dao);
     }
-  } // end class
+
+    /** delete a Bitstream */
+    public function delete($bitstream)
+    {
+        if (!$bitstream instanceof BitstreamDao) {
+            throw new Zend_Exception('Must pass a bitstream dao');
+        }
+        $checksum = $bitstream->getChecksum();
+        $path = $bitstream->getFullPath();
+        $assetstore = $bitstream->getAssetstore();
+        parent::delete($bitstream);
+        if (file_exists($path) && $assetstore->getType() != MIDAS_ASSETSTORE_REMOTE && $this->getByChecksum(
+                $checksum
+            ) == false
+        ) {
+            unlink($path);
+        }
+        $bitstream->saved = false;
+        unset($bitstream->bitstream_id);
+    }
+
+    /**
+     * Create a thumbnail bitstream in the provided assetstore using the
+     * passed tempThumbnailFile, which will be moved to the assetstore.
+     *
+     * @return The bitstream dao that was created for the thumbnail
+     */
+    public function createThumbnail($assetstore, $tempThumbnailFile)
+    {
+        $bitstreamDao = MidasLoader::newDao('BitstreamDao');
+
+        $md5 = md5_file($tempThumbnailFile);
+        $bitstreamDao->setName('thumbnail.jpeg');
+        $bitstreamDao->setItemrevisionId(-1); //-1 indicates this does not belong to any revision
+        $bitstreamDao->setMimetype('image/jpeg');
+        $bitstreamDao->setSizebytes(filesize($tempThumbnailFile));
+        $bitstreamDao->setDate(date("Y-m-d H:i:s"));
+        $bitstreamDao->setChecksum($md5);
+
+        $existing = $this->getByChecksum($md5);
+        if ($existing) {
+            unlink($tempThumbnailFile);
+            $bitstreamDao->setPath($existing->getPath());
+            $bitstreamDao->setAssetstoreId($existing->getAssetstoreId());
+        } else {
+            $path = substr($md5, 0, 2).'/'.substr($md5, 2, 2).'/'.$md5;
+            $fullpath = $assetstore->getPath().'/'.$path;
+
+            $currentdir = $assetstore->getPath().'/'.substr($md5, 0, 2);
+            $this->_createAssetstoreDirectory($currentdir);
+            $currentdir .= '/'.substr($md5, 2, 2);
+            $this->_createAssetstoreDirectory($currentdir);
+            rename($tempThumbnailFile, $fullpath);
+
+            $bitstreamDao->setAssetstoreId($assetstore->getKey());
+            $bitstreamDao->setPath($path);
+        }
+
+        $this->save($bitstreamDao);
+
+        return $bitstreamDao;
+    }
+
+    /** Helper function to create the two-level hierarchy in the assetstore */
+    private function _createAssetstoreDirectory($directorypath)
+    {
+        if (!file_exists($directorypath)) {
+            if (!mkdir($directorypath)) {
+                throw new Zend_Exception("Cannot create directory: ".$directorypath);
+            }
+            chmod($directorypath, 0777);
+        }
+    }
+}

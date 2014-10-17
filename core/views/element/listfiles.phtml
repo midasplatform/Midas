@@ -18,49 +18,46 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.listfiles.css" />
+    <link type="text/css" rel="stylesheet"
+          href="<?php echo $this->coreWebroot ?>/public/css/common/common.listfiles.css"/>
 
 <?php
-   if(!function_exists('createFileElement'))
-    {
+if (!function_exists('createFileElement')) {
     function createFileElement(&$view, $file)
-      {
-      echo "<div class='feedUserImage'>";
-      echo "<img class='thumbnailSmall' src='{$view->coreWebroot}/public/images/icons/document-big.png' alt=''/>";
-      echo "</div>";
-      echo "<div class='fileInfo'>";
-      echo " <a href='{$view->webroot}/item/{$file->getKey()}'>".trimFileName($file->getName())."</a>";
-      echo "</div>";
-      echo "<div class='fileDate'>";
-      echo  $view->Dateago(strtotime($file->policy_date));
-      echo "</div>";
-      echo "<div style='clear:left;'></div>";
-      }
-    }
-
-  if(!function_exists('trimFileName'))
     {
+        echo "<div class='feedUserImage'>";
+        echo "<img class='thumbnailSmall' src='{$view->coreWebroot}/public/images/icons/document-big.png' alt=''/>";
+        echo "</div>";
+        echo "<div class='fileInfo'>";
+        echo " <a href='{$view->webroot}/item/{$file->getKey()}'>".trimFileName($file->getName())."</a>";
+        echo "</div>";
+        echo "<div class='fileDate'>";
+        echo $view->Dateago(strtotime($file->policy_date));
+        echo "</div>";
+        echo "<div style='clear:left;'></div>";
+    }
+}
+
+if (!function_exists('trimFileName')) {
     function trimFileName($name)
-      {
-      if(strlen($name) > 35)
-        {
-        $name = substr($name, 0, 10) . '...' . substr($name, strlen($name) - 35);
+    {
+        if (strlen($name) > 35) {
+            $name = substr($name, 0, 10).'...'.substr($name, strlen($name) - 35);
         }
-      return $name;
-      }
-    }
 
-  $files=$this->listFiles;
-  if(empty($files))
-    {
+        return $name;
+    }
+}
+
+$files = $this->listFiles;
+if (empty($files)) {
     return;
-    }
+}
 
-  echo "<div class='listFilesContainer'>";
-  foreach($this->listFiles as $key => $file)
-    {
+echo "<div class='listFilesContainer'>";
+foreach ($this->listFiles as $key => $file) {
     echo "<div class='fileElement'  element='{$file->getKey()}'>";
     createFileElement($this, $file);
     echo "</div>";
-    }
-  echo "</div>";
+}
+echo "</div>";

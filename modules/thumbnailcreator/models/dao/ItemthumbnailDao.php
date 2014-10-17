@@ -22,7 +22,7 @@
  * Item thumbnail DAO
  */
 class Thumbnailcreator_ItemthumbnailDao extends Thumbnailcreator_AppDao
-  {
-  public $_model = 'Itemthumbnail';
-  public $_module = 'thumbnailcreator';
-  }
+{
+    public $_model = 'Itemthumbnail';
+    public $_module = 'thumbnailcreator';
+}

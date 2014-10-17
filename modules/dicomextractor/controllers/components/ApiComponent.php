@@ -20,27 +20,30 @@
 
 /** Component for api methods */
 class Dicomextractor_ApiComponent extends AppComponent
-  {
-  /** Return the user dao */
-  private function _callModuleApiMethod($args, $coreApiMethod, $resource = null, $hasReturn = true)
+{
+    /** Return the user dao */
+    private function _callModuleApiMethod($args, $coreApiMethod, $resource = null, $hasReturn = true)
     {
-    $ApiComponent = MidasLoader::loadComponent('Api'.$resource, 'dicomextractor');
-    $rtn = $ApiComponent->$coreApiMethod($args);
-    if($hasReturn)
-      {
-      return $rtn;
-      }
+        $ApiComponent = MidasLoader::loadComponent('Api'.$resource, 'dicomextractor');
+        $rtn = $ApiComponent->$coreApiMethod($args);
+        if ($hasReturn) {
+            return $rtn;
+        }
+
+        return null;
     }
 
-  /**
-   * Extract the dicom metadata from a revision
-   * @param item the id of the item to be extracted
-   * @return the id of the revision
-   */
-  function extract($args)
+    /**
+     * Extract the dicom metadata from a revision
+     *
+     * @param item the id of the item to be extracted
+     * @return the id of the revision
+     */
+    public function extract($args)
     {
-    $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
-    $ApihelperComponent->renameParamKey($args, 'item', 'id');
-    return $this->_callModuleApiMethod($args, 'extract', 'item');
+        $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+        $ApihelperComponent->renameParamKey($args, 'item', 'id');
+
+        return $this->_callModuleApiMethod($args, 'extract', 'item');
     }
-  }
+}

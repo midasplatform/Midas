@@ -1,7 +1,7 @@
 <?php
 /*=========================================================================
  MIDAS Server
- Copyright (c) Kitware SAS. 26 rue Louis GuŽrin. 69100 Villeurbanne, FRANCE
+ Copyright (c) Kitware SAS. 26 rue Louis GuÃ©rin. 69100 Villeurbanne, FRANCE
  All rights reserved.
  More information http://www.kitware.com
 
@@ -19,62 +19,51 @@
 =========================================================================*/
 
 // parse and check arguments
-foreach($args as $key => $val)
-{
-  switch ($key)
-    { 
-    case 'identifier':
-      $identifier = $val; 
-      break;
-  
-    default:
-      $errors .= oai_error('badArgument', $key, $val);
+foreach ($args as $key => $val) {
+    switch ($key) {
+        case 'identifier':
+            $identifier = $val;
+            break;
+
+        default:
+            $errors .= oai_error('badArgument', $key, $val);
     }
 }
 
-if (isset($args['identifier']))
-{
-  $itemModel = MidasLoader::loadModel('Item');
-  $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
-  require_once BASE_PATH.'/core/controllers/components/UuidComponent.php';
-  $uuiComponent = new UuidComponent();
-  // remove the OAI part to get the identifier
-  $uuid = str_replace($oaiprefix, '', $identifier); 
+if (isset($args['identifier'])) {
+    $itemModel = MidasLoader::loadModel('Item');
+    $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
+    require_once BASE_PATH.'/core/controllers/components/UuidComponent.php';
+    $uuiComponent = new UuidComponent();
+    // remove the OAI part to get the identifier
+    $uuid = str_replace($oaiprefix, '', $identifier);
 
-  $element = $uuiComponent->getByUid($uuid);
-  if ($element == false || !$element instanceof ItemDao)
-    {
-    $errors .= oai_error('idDoesNotExist', 'identifier', $identifier);
+    $element = $uuiComponent->getByUid($uuid);
+    if ($element == false || !$element instanceof ItemDao) {
+        $errors .= oai_error('idDoesNotExist', 'identifier', $identifier);
+    } elseif (!$itemModel->policyCheck($element, null, MIDAS_POLICY_READ)) {
+        $errors .= oai_error('idDoesNotExist', 'identifier', $identifier);
     }
-  elseif(!$itemModel->policyCheck($element, null, MIDAS_POLICY_READ))
-    {
-    $errors .= oai_error('idDoesNotExist', 'identifier', $identifier);
-    }   
 }
 
 //break and clean up on error
-if ($errors != '')
-  {
-  oai_exit();
-  }
+if ($errors != '') {
+    oai_exit();
+}
 
 // currently it is assumed that an existing identifier
 // can be served in all available metadataformats...
-if (is_array($METADATAFORMATS))
-  {
-  $output .= " <ListMetadataFormats>\n";
-  foreach($METADATAFORMATS as $key=>$val)
-    {
-    $output .= "  <metadataFormat>\n";
-    $output .= xmlformat($key, 'metadataPrefix', '', 3);
-    $output .= xmlformat($val['schema'], 'schema', '', 3);
-    $output .= xmlformat($val['metadataNamespace'], 'metadataNamespace', '', 3);
-    $output .= "  </metadataFormat>\n";
+if (is_array($METADATAFORMATS)) {
+    $output .= " <ListMetadataFormats>\n";
+    foreach ($METADATAFORMATS as $key => $val) {
+        $output .= "  <metadataFormat>\n";
+        $output .= xmlformat($key, 'metadataPrefix', '', 3);
+        $output .= xmlformat($val['schema'], 'schema', '', 3);
+        $output .= xmlformat($val['metadataNamespace'], 'metadataNamespace', '', 3);
+        $output .= "  </metadataFormat>\n";
     }
-  $output .= " </ListMetadataFormats>\n"; 
-  }
-else
-  {
-  $errors .= oai_error('noMetadataFormats'); 
-  oai_exit();
-  }
+    $output .= " </ListMetadataFormats>\n";
+} else {
+    $errors .= oai_error('noMetadataFormats');
+    oai_exit();
+}

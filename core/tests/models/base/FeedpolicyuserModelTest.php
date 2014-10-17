@@ -17,28 +17,27 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** FeedpolicyuserModelTest*/
+
+/** FeedpolicyuserModelTest */
 class FeedpolicyuserModelTest extends DatabaseTestCase
-  {
-  /** init test*/
-  public function setUp()
+{
+    /** init test */
+    public function setUp()
     {
-    $this->setupDatabase(array());
-    $this->_models = array(
-      'Feedpolicyuser'
-    );
-    $this->_daos = array();
-    parent::setUp();
+        $this->setupDatabase(array());
+        $this->_models = array('Feedpolicyuser');
+        $this->_daos = array();
+        parent::setUp();
     }
 
-  /** testCreatePolicyAndGetPolicy */
-  public function testCreatePolicyAndGetPolicy()
+    /** testCreatePolicyAndGetPolicy */
+    public function testCreatePolicyAndGetPolicy()
     {
-    $feedsFile = $this->loadData('Feed', 'default');
-    $usersFile = $this->loadData('User', 'default');
-    $policy = $this->Feedpolicyuser->createPolicy($usersFile[0], $feedsFile[5], 1);
-    $this->assertEquals(true, $policy->saved);
-    $policy = $this->Feedpolicyuser->getPolicy($usersFile[0], $feedsFile[5]);
-    $this->assertNotEquals(false, $policy);
+        $feedsFile = $this->loadData('Feed', 'default');
+        $usersFile = $this->loadData('User', 'default');
+        $policy = $this->Feedpolicyuser->createPolicy($usersFile[0], $feedsFile[5], 1);
+        $this->assertEquals(true, $policy->saved);
+        $policy = $this->Feedpolicyuser->getPolicy($usersFile[0], $feedsFile[5]);
+        $this->assertNotEquals(false, $policy);
     }
-  }
+}
