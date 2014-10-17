@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/3.7/phpunit.xsd"
+         bootstrap="tests/TestsBootstrap.php"
+         colors="true">
+    <testsuites>
+        <testsuite name="core">
+            <directory>core/tests</directory>
+        </testsuite>
+        <testsuite name="api">
+            <directory>modules/api/tests</directory>
+        </testsuite>
+        <testsuite name="archive">
+            <directory>modules/archive/tests</directory>
+        </testsuite>
+<!--
+        <testsuite name="batchmake">
+            <directory>modules/batchmake/tests</directory>
+        </testsuite>
+ -->
+        <testsuite name="cleanup">
+            <directory>modules/cleanup/tests</directory>
+        </testsuite>
+        <testsuite name="communityagreement">
+            <directory>modules/communityagreement/tests</directory>
+        </testsuite>
+        <testsuite name="javauploaddownload">
+            <directory>modules/javauploaddownload/tests</directory>
+        </testsuite>
+        <testsuite name="keyfiles">
+            <directory>modules/keyfiles/tests</directory>
+        </testsuite>
+        <testsuite name="oai">
+            <directory>modules/oai/tests</directory>
+        </testsuite>
+        <testsuite name="oauth">
+            <directory>modules/oauth/tests</directory>
+        </testsuite>
+        <testsuite name="packages">
+            <directory>modules/packages/tests</directory>
+        </testsuite>
+        <testsuite name="readmes">
+            <directory>modules/readmes/tests</directory>
+        </testsuite>
+        <testsuite name="remoteprocessing">
+            <directory>modules/remoteprocessing/tests</directory>
+        </testsuite>
+        <testsuite name="statistics">
+            <directory>modules/statistics/tests</directory>
+        </testsuite>
+        <testsuite name="validation">
+            <directory>modules/validation/tests</directory>
+        </testsuite>
+        <testsuite name="visualize">
+            <directory>modules/visualize/tests</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory>core</directory>
+            <directory>modules</directory>
+            <directory>notification</directory>
+        </whitelist>
+    </filter>
+    <logging>
+            <log type="coverage-clover" target="log/clover.xml"/>
+            <log type="junit" target="log/junit.xml"/>
+    </logging>
+</phpunit>

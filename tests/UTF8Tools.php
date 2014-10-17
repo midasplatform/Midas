@@ -21,9 +21,9 @@
 /** tools for detecting non UTF-8 files and transforming non UTF-8 files to UTF-8. */
 class UTF8Tools
 {
-    protected $excludedDirs = array('_build', '_test', '.git', 'bin', 'build', 'data', 'library', 'log', 'tmp');
+    protected $excludedDirs = array('_build', '_test', '.git', 'bin', 'bower_components', 'build', 'data', 'library', 'log', 'node_modules', 'tmp', 'vendor');
     protected $excludedExts = array('gif', 'ico', 'ini', 'jar', 'jpeg', 'jpg', 'keystore', 'png', 'psd', 'swc', 'swf');
-    protected $excludedFiles = array('.DS_Store', '.htaccess', '.gitignore', '.travis.yml');
+    protected $excludedFiles = array('.coveralls.yml', '.DS_Store', '.htaccess', '.gitignore', '.travis.yml', 'appveyor.yml');
 
     /**
      * return true if the string is UTF8 encoded.

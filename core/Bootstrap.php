@@ -189,7 +189,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             foreach ($regex as $scssPath) {
                 $scssPaths = array_merge($scssPaths, $scssPath);
             }
-            require 'scssphp/scss.inc.php';
             $scssc = new Leafo\ScssPhp\Compiler();
             $scssc->setImportPaths(
                 array(BASE_PATH.'/core/public/scss/mixins', BASE_PATH.'/core/public/scss/mixins/bourbon')

@@ -149,7 +149,6 @@ class DownloadController extends AppController
                 $this->Component->DownloadBitstream->download($bitstreams[0], $offset, true);
             } else {
                 ob_start();
-                require_once 'ZipStream-PHP/zipstream.php';
                 $this->_helper->viewRenderer->setNoRender();
                 $name = $revision->getItem()->getName();
                 $name = substr($name, 0, 50);
@@ -166,7 +165,6 @@ class DownloadController extends AppController
                 exit();
             }
         } else {
-            require_once 'ZipStream-PHP/zipstream.php';
             $this->_helper->viewRenderer->setNoRender();
             if (count($folders) == 1 && empty($revisions)) {
                 $name = $folders[0]->getName();
@@ -342,7 +340,6 @@ class DownloadController extends AppController
     private function _downloadEmptyItem($item)
     {
         ob_start();
-        require_once 'ZipStream-PHP/zipstream.php';
         $this->disableView();
         if (isset($item) && $item instanceof ItemDao) {
             $name = $item->getName();

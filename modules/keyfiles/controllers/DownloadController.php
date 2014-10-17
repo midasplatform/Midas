@@ -52,7 +52,6 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
 
         $this->_emptyOutputBuffer();
         ob_start(); //must start a new buffer for ZipStream to work
-        require_once 'ZipStream-PHP/zipstream.php';
         $zip = new ZipStream($item->getName().'.zip');
         $bitstreams = $revision->getBitstreams();
         foreach ($bitstreams as $bitstream) {
@@ -139,7 +138,6 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
         }
         $this->_emptyOutputBuffer();
         ob_start(); //must start a new output buffer for ZipStream to work
-        require_once 'ZipStream-PHP/zipstream.php';
         $zip = new ZipStream('Keyfiles.zip');
         // Iterate over top level items
         foreach ($items as $item) {

@@ -18,15 +18,6 @@
  limitations under the License.
 =========================================================================*/
 
-define('BASE_PATH', realpath(dirname(__FILE__)));
-
-set_include_path(
-    '.'
-    .PATH_SEPARATOR.'./library'
-    .PATH_SEPARATOR.'./core/dao/'
-    .PATH_SEPARATOR.get_include_path()
-);
-
 if (isset($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'Apache')) {
     if (function_exists('apache_get_modules')) {
         $mod_rewrite = in_array('mod_rewrite', apache_get_modules());
@@ -35,20 +26,16 @@ if (isset($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'A
     }
 
     if (!$mod_rewrite) {
-        echo "Please install/enable the Apache rewrite module";
+        echo 'Please install/enable the Apache rewrite module';
         exit();
     }
 }
 
-define('START_TIME', microtime(true));
-
-require_once 'Zend/Loader/Autoloader.php';
-require_once 'Zend/Application.php';
-
-$loader = Zend_Loader_Autoloader::getInstance();
-$loader->registerNamespace('App_');
-
+define('BASE_PATH', realpath(dirname(__FILE__)));
+require_once BASE_PATH.'/vendor/autoload.php';
 require_once BASE_PATH.'/core/include.php';
+require_once 'Zend/Application.php';
+define('START_TIME', microtime(true));
 
 if (!is_writable(LOCAL_CONFIGS_PATH)) {
     echo '<p>To use Midas Platform, the folder "'.LOCAL_CONFIGS_PATH.'" must be writable by your web server.</p>';

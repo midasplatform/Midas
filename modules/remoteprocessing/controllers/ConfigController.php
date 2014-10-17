@@ -34,7 +34,6 @@ class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
 
         $this->disableLayout();
         $this->disableView();
-        require_once 'ZipStream-PHP/zipstream.php';
         ob_start();
         $zip = new ZipStream('RemoteScript.zip');
 

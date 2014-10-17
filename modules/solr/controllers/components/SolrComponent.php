@@ -34,9 +34,6 @@ class Solr_SolrComponent extends AppComponent
         if ($solrHost === null) {
             throw new Zend_Exception('Solr settings not saved');
         }
-        require_once BASE_PATH.'/modules/solr/library/Apache/Solr/Service.php';
-        require_once BASE_PATH.'/modules/solr/library/Apache/Solr/Document.php';
-
         return new Apache_Solr_Service($solrHost, (int)$solrPort, $solrWebroot);
     }
 

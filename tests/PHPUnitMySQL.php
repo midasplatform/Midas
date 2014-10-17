@@ -54,7 +54,7 @@
  */
 
 $base_path = realpath(dirname(__FILE__)).'/..';
-set_include_path(get_include_path().PATH_SEPARATOR.$base_path.'/tests/library/PHPUnit');
+require_once $base_path.'/vendor/autoload.php';
 
 if (!file_exists($base_path.'/tests/configs/mysql.ini')) {
     echo 'Failures: 1 Unable to find config';
@@ -68,7 +68,5 @@ define('PHPUnit_MAIN_METHOD', 'PHPUnit_TextUI_Command::main');
 if (strpos('@php_bin@', '@php_bin') === 0) {
     set_include_path(dirname(__FILE__).PATH_SEPARATOR.get_include_path());
 }
-
-require_once 'PHPUnit/Autoload.php';
 
 PHPUnit_TextUI_Command::main();

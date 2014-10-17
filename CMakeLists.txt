@@ -20,17 +20,7 @@
 project( Midas )
 
 #-----------------------------------------------------------------------------
-cmake_minimum_required( VERSION 2.6 )
-
-#-----------------------------------------------------------------------------
-#  Set Midas version information
-set( Midas_VERSION_MAJOR "3" )
-set( Midas_VERSION_MINOR "0" )
-include( library/CMake/kwsysDateStamp.cmake )
-set( Midas_VERSION_BUILD
-  ${KWSYS_DATE_STAMP_YEAR}${KWSYS_DATE_STAMP_MONTH}${KWSYS_DATE_STAMP_DAY} )
-set( Midas_VERSION
-  "${Midas_VERSION_MAJOR}.${Midas_VERSION_MINOR}.${Midas_VERSION_BUILD}" )
+cmake_minimum_required( VERSION 2.8 )
 
 #-----------------------------------------------------------------------------
 #  Find the php executable
@@ -55,13 +45,6 @@ if(NOT databaseSetup_RESULT EQUAL 0)
 endif()
 
 message(STATUS "Database setup is complete")
-
-#-----------------------------------------------------------------------------
-#  This should be at the top level for warning suppression and coverage exclude
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/library/CMake/CTestCustom.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake )
-
-
 
 #----------------------------------------------------------------------------
 # Setup testing and required parameters for testing

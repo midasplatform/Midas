@@ -28,15 +28,7 @@ define('LIBRARY_PATH', realpath(dirname(__FILE__).'/../library'));
 define('TESTS_PATH', realpath(dirname(__FILE__)));
 define('BASE_PATH', realpath(dirname(__FILE__)).'/../');
 
-$includePaths = array(LIBRARY_PATH, get_include_path());
-set_include_path(implode(PATH_SEPARATOR, $includePaths));
-
-require_once dirname(__FILE__).'/../library/Zend/Loader/Autoloader.php';
-
-$loader = Zend_Loader_Autoloader::getInstance();
-$loader->setFallbackAutoloader(true);
-$loader->suppressNotFoundWarnings(false);
-
+require_once BASE_PATH.'/vendor/autoload.php';
 require_once BASE_PATH.'/core/include.php';
 define('START_TIME', microtime(true));
 

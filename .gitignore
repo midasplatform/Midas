@@ -6,5 +6,7 @@
 .settings/
 .vagrant/
 .zfproject.xml
+bower_components/
 nbproject/
+node_modules/
 vendor/

@@ -75,7 +75,7 @@ function(add_midas_style_test TestName TestDir)
   if(MIDAS_RUN_STYLE_TESTS)
     add_test(
       ${TestName}
-      ${PHP} ${CMAKE_SOURCE_DIR}/tests/library/PHPCheckstyle/run.php --config ${CMAKE_SOURCE_DIR}/tests/phpcheckstyle.cfg.xml --format console --src ${TestDir}
+      ${PHP} ${CMAKE_SOURCE_DIR}/vendor/phpcheckstyle/phpcheckstyle/run.php --config ${CMAKE_SOURCE_DIR}/tests/phpcheckstyle.cfg.xml --format console --src ${TestDir}
     )
     set_tests_properties(
       ${TestName} PROPERTIES
