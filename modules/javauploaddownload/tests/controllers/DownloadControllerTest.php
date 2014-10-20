@@ -25,6 +25,7 @@ class DownloadControllerTest extends ControllerTestCase
     public function setUp()
     {
         $this->enabledModules = array('javauploaddownload');
+        $this->_daos = array('Item');
         $this->_models = array('Item', 'User');
         parent::setUp();
     }
@@ -33,6 +34,7 @@ class DownloadControllerTest extends ControllerTestCase
     public function testPromptApplet()
     {
         $this->resetAll();
+        $this->setupDatabase(array('default'));
         $this->dispatchUri('/download/checksize?itemIds=1000', null);
         $json = json_decode($this->getBody(), true);
         $this->assertTrue(isset($json['action']));
@@ -51,6 +53,8 @@ class DownloadControllerTest extends ControllerTestCase
     /** Test rendering of the Java download applet view */
     public function testAppletViewAction()
     {
+        $this->resetAll();
+        $this->setupDatabase(array('default'));
         $adminUser = $this->User->load(3);
         $this->dispatchUri('/javauploaddownload/download?folderIds=1002', null, true);
         $this->resetAll();

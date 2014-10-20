@@ -25,6 +25,7 @@ class UploadControllerTest extends ControllerTestCase
     public function setUp()
     {
         $this->enabledModules = array('javauploaddownload');
+        $this->_daos = array('User');
         $this->_models = array('Item', 'User');
         parent::setUp();
     }

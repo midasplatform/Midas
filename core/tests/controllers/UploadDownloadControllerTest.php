@@ -26,8 +26,9 @@ class UploadDownloadControllerTest extends ControllerTestCase
     /** init tests */
     public function setUp()
     {
-        $this->_models = array('User', 'Folder', 'Feed', 'Assetstore', 'Item', 'Activedownload');
-        $this->_daos = array('User', 'Assetstore', 'Activedownload');
+        $this->enabledModules = array('api');
+        $this->_daos = array('Activedownload');
+        $this->_models = array('Activedownload', 'Folder', 'Item', 'User');
         parent::setUp();
     }
 
@@ -47,6 +48,8 @@ class UploadDownloadControllerTest extends ControllerTestCase
         $this->resetAll();
         $this->dispatchUrI('/upload/simpleupload', $userDao, false);
         $this->assertContains('id="destinationId" value=""', $this->getBody());
+
+        $this->resetAll();
     }
 
     /** test UploadController::revision */
@@ -62,6 +65,8 @@ class UploadDownloadControllerTest extends ControllerTestCase
         $itemDao = $this->Item->load($itemsFile[1]->getKey());
 
         $this->dispatchUrI("/upload/revision?itemId=".$itemDao->getKey(), $userDao);
+
+        $this->resetAll();
     }
 
     /** test UploadController::savelink */
@@ -84,7 +89,8 @@ class UploadDownloadControllerTest extends ControllerTestCase
         if (empty($search)) {
             $this->fail('Unable to find item');
         }
-        $this->setupDatabase(array('default'));
+
+        $this->resetAll();
     }
 
     /**
@@ -93,14 +99,15 @@ class UploadDownloadControllerTest extends ControllerTestCase
     public function testDownloadAction()
     {
         $this->setupDatabase(array('default'));
+
         $usersFile = $this->loadData('User', 'default');
         $userDao = $this->User->load($usersFile[0]->getKey());
+
         $filename = 'search.png';
         $path = BASE_PATH.'/tests/testfiles/'.$filename;
 
         $this->resetAll();
         $this->params = array();
-        $this->params['enabledModules'] = 'api';
         $this->params['folderid'] = 1001;
         $this->params['filename'] = $filename;
         $this->params['useSession'] = 1;
@@ -111,7 +118,6 @@ class UploadDownloadControllerTest extends ControllerTestCase
         $this->resetAll();
         $this->request->setMethod('POST');
         $this->params = array();
-        $this->params['enabledModules'] = 'api';
         $this->params['testingmode'] = 1;
         $this->params['uploadtoken'] = $uploadToken;
         $this->params['filename'] = $filename;
@@ -156,6 +162,8 @@ class UploadDownloadControllerTest extends ControllerTestCase
         // We should get an exception if trying to download an item that doesn't exist
         $this->resetAll();
         $this->dispatchUrI('/download?items=214529', $userDao, true, false);
+
+        $this->resetAll();
     }
 
     /**
@@ -188,11 +196,15 @@ class UploadDownloadControllerTest extends ControllerTestCase
         $lock = $this->Activedownload->acquireLock();
         $this->assertTrue($lock instanceof ActivedownloadDao);
         $this->assertNotEquals($lock->getKey(), $oldLock->getKey());
+
+        $this->resetAll();
     }
 
     /** Test the checksize method */
     public function testChecksizeAction()
     {
+        $this->setupDatabase(array('default'));
+
         $adminUser = $this->User->load(3);
         // anon user should throw an exception if no permission on the folder
         $this->dispatchUri('/download/checksize?folderIds=1002', null, true);
@@ -214,5 +226,7 @@ class UploadDownloadControllerTest extends ControllerTestCase
         $json = json_decode($this->getBody(), true);
         $this->assertTrue(isset($json['action']));
         $this->assertEquals($json['action'], 'download');
+
+        $this->resetAll();
     }
 }
