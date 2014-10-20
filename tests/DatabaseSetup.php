@@ -183,14 +183,14 @@ function releaseLock($dbType)
 
 // general setup
 error_reporting(E_ALL | E_STRICT);
-ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 
-define('APPLICATION_PATH', realpath(dirname(__FILE__).'/../core'));
+define('BASE_PATH', realpath(dirname(__FILE__).'/../'));
 define('APPLICATION_ENV', 'testing');
-define('LIBRARY_PATH', realpath(dirname(__FILE__).'/../library'));
-define('TESTS_PATH', realpath(dirname(__FILE__)));
-define('BASE_PATH', realpath(dirname(__FILE__)).'/../');
+define('APPLICATION_PATH', BASE_PATH.'/core');
+define('LIBRARY_PATH', BASE_PATH.'/library');
+define('TESTS_PATH', BASE_PATH.'/tests');
 
 require_once BASE_PATH.'/vendor/autoload.php';
 require_once BASE_PATH.'/core/include.php';

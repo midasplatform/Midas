@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** Test the behavior of the statistics download model */
-class StatisticsDownloadModelTest extends DatabaseTestCase
+class Statistics_DownloadModelTest extends DatabaseTestCase
 {
     /** set up tests */
     public function setUp()

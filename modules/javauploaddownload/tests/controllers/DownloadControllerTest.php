@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** Test download controller */
-class DownloadControllerTest extends ControllerTestCase
+class Javauploaddownload_DownloadControllerTest extends ControllerTestCase
 {
     /** Initialize tests */
     public function setUp()

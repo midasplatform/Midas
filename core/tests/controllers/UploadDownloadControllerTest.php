@@ -21,7 +21,7 @@
 /**
  * Tests uploading and downloading of files
  */
-class UploadDownloadControllerTest extends ControllerTestCase
+class Core_UploadDownloadControllerTest extends ControllerTestCase
 {
     /** init tests */
     public function setUp()

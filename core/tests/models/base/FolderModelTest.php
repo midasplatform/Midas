@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** FolderModelTest */
-class FolderModelTest extends DatabaseTestCase
+class Core_FolderModelTest extends DatabaseTestCase
 {
     /** init test */
     public function setUp()

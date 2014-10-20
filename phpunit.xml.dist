@@ -45,6 +45,9 @@
         <testsuite name="remoteprocessing">
             <directory>modules/remoteprocessing/tests</directory>
         </testsuite>
+        <testsuite name="sizequota">
+            <directory>modules/sizequota/tests</directory>
+        </testsuite>
         <testsuite name="statistics">
             <directory>modules/statistics/tests</directory>
         </testsuite>

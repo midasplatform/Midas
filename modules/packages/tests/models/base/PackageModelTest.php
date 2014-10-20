@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** test slicerpackages_package model */
-class PackageModelTest extends DatabaseTestCase
+class Packages_PackageModelTest extends DatabaseTestCase
 {
     /** set up tests */
     public function setUp()

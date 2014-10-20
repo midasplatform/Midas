@@ -17,5 +17,5 @@
 # limitations under the License.
 #=============================================================================
 
-add_midas_test( RestKeyControllerTest RestKeyControllerTest.php )
-add_midas_test( RestCallUserMethodsTest RestCallUserMethodsTest.php )
+add_midas_test(CoreRestCallUserMethodsTest RestCallUserMethodsTest.php)
+add_midas_test(CoreRestKeyControllerTest RestKeyControllerTest.php)

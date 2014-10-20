@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** ItemModelTest */
-class ItemModelTest extends DatabaseTestCase
+class Core_ItemModelTest extends DatabaseTestCase
 {
     /** init tests */
     public function setUp()

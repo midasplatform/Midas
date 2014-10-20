@@ -18,10 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH.'/modules/api/tests/controllers/ApiCallMethodsTest.php';
+require_once BASE_PATH.'/modules/api/tests/controllers/CallMethodsTestCase.php';
 
 /** Tests the functionality of the web API Group methods */
-class ApiCallGroupMethodsTest extends ApiCallMethodsTest
+class Api_CallGroupMethodsTest extends Api_CallMethodsTestCase
 {
     /** Test adding and removing a user from a group */
     public function testGroupUserAddRemove()

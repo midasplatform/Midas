@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** Tests the functionality of the user's API keys using the controllers */
-class ApiKeyControllerTest extends ControllerTestCase
+class Api_KeyControllerTest extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()

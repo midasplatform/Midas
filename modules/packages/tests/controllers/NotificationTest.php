@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** test slicerpackages notifier behavior */
-class NotificationTest extends ControllerTestCase
+class Packages_NotificationTest extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()

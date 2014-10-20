@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** test oauth client controller */
-class OauthClientControllerTest extends ControllerTestCase
+class Oauth_ClientControllerTest extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()

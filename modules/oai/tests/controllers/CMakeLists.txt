@@ -17,4 +17,7 @@
 # limitations under the License.
 #=============================================================================
 
-add_midas_test( OaiIndexController IndexControllerTest.php )
+set(module_name oai)
+to_titlecase(${module_name} module_name_titlecase)
+
+add_midas_test(${module_name_titlecase}IndexController IndexControllerTest.php)

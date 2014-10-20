@@ -24,7 +24,7 @@ require_once BASE_PATH.'/modules/batchmake/controllers/components/KWBatchmakeCom
 require_once BASE_PATH.'/library/KWUtils.php';
 
 /** helper class used for testing batchmake module */
-class BatchmakeControllerTest extends ControllerTestCase
+class Batchmake_ControllerTestCase extends ControllerTestCase
 {
     /**
      * setup function will set test config properties in the Zend_Registry

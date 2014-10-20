@@ -18,10 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH.'/modules/api/tests/controllers/ApiCallMethodsTest.php';
+require_once BASE_PATH.'/modules/api/tests/controllers/CallMethodsTestCase.php';
 
 /** Tests the functionality of the web API methods */
-class ApiCallCommunityMethodsTest extends ApiCallMethodsTest
+class Api_CallCommunityMethodsTest extends Api_CallMethodsTestCase
 {
     /** Test creation of a new community */
     public function testCommunityCreate()

@@ -22,7 +22,7 @@
  * This test is for ensuring the integrity of the left_indices and right_indices of
  * our folder tree.
  */
-class TreeIndicesTest extends DatabaseTestCase
+class Core_TreeIndicesTest extends DatabaseTestCase
 {
     /** init tests */
     public function setUp()

@@ -18,12 +18,12 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH.'/modules/batchmake/tests/controllers/BatchmakeControllerTest.php';
+require_once BASE_PATH.'/modules/batchmake/tests/controllers/ControllerTestCase.php';
 
 /**
  * ExecuteComponent tests
  */
-class ExecuteComponentTest extends BatchmakeControllerTest
+class Batchmake_ExecuteComponentTest extends Batchmake_ControllerTestCase
 {
     protected $executeComponent;
     protected $kwBatchmakeComponent;

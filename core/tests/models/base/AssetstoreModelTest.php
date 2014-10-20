@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** AssetstoreModelTest */
-class AssetstoreModelTest extends DatabaseTestCase
+class Core_AssetstoreModelTest extends DatabaseTestCase
 {
     /** init test */
     public function setUp()

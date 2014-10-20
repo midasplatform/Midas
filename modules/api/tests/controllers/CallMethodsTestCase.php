@@ -19,53 +19,47 @@
 =========================================================================*/
 
 /** Tests the functionality of the web API methods */
-class RestCallMethodsTest extends ControllerTestCase
+class Api_CallMethodsTestCase extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()
     {
         $this->setupDatabase(array('default', 'userapi')); // core dataset
         $this->enabledModules = array('api');
-        $this->_models = array(
-            'User',
-            'Userapi',
-            'Folder',
-            'Item',
-            'ItemRevision',
-            'Assetstore',
-            'Bitstream',
-            'Itempolicyuser',
-        );
+        $this->_models = array('User', 'Folder', 'Item', 'ItemRevision', 'Assetstore', 'Bitstream', 'Itempolicyuser');
         $this->_daos = array();
 
         parent::setUp();
     }
 
     /** Invoke the JSON web API */
-    protected function _callRestApi($method, $path, $sessionUser = null)
+    protected function _callJsonApi($sessionUser = null, $method = 'POST')
     {
         $this->request->setMethod($method);
-        $this->dispatchUrI('/rest'.$path, $sessionUser, false, false);
-        $responseStatus = $this->_response->getHttpResponseCode();
-        $responseBody = json_decode($this->getBody());
-        $rtn = array('status' => $responseStatus, 'body' => $responseBody);
+        $this->dispatchUrI($this->webroot.'api/json', $sessionUser);
 
-        return $rtn;
+        return json_decode($this->getBody());
     }
 
     /** Make sure we got a good response from a web API call */
     protected function _assertStatusOk($resp)
     {
         $this->assertNotEquals($resp, false);
-        $this->assertContains($resp['status'], array(200, 201));
-        $this->assertTrue(isset($resp['body']->data));
+        $this->assertEquals($resp->message, '');
+        $this->assertEquals($resp->stat, 'ok');
+        $this->assertEquals($resp->code, 0);
+        $this->assertTrue(isset($resp->data));
     }
 
     /** Make sure we failed with a given message from the API call */
-    protected function _assertStatusFail($resp)
+    protected function _assertStatusFail($resp, $code, $message = false)
     {
         $this->assertNotEquals($resp, false);
-        $this->assertContains($resp['status'], array(400, 401, 405));
+        $this->assertEquals($resp->stat, 'fail');
+        $this->assertEquals($resp->code, $code);
+        if ($message !== false) {
+            $this->assertEquals($resp->message, $message);
+        }
     }
 
     /** helper function to login as the passed in user. */
@@ -75,20 +69,19 @@ class RestCallMethodsTest extends ControllerTestCase
         $userApiModel->createDefaultApiKey($userDao);
         $apiKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
 
-        $method = 'GET';
-        $path = '/system/login';
+        $this->params['method'] = 'midas.login';
         $this->params['email'] = $userDao->getEmail();
         $this->params['appname'] = 'Default';
         $this->params['apikey'] = $apiKey;
 
-        $resp = $this->_callRestApi($method, $path);
+        $resp = $this->_callJsonApi();
         $this->_assertStatusOk($resp);
-        $this->assertEquals(strlen($resp['body']->data->token), 40);
+        $this->assertEquals(strlen($resp->data->token), 40);
 
         // **IMPORTANT** This will clear any params that were set before this function was called
         $this->resetAll();
 
-        return $resp['body']->data->token;
+        return $resp->data->token;
     }
 
     /** Authenticate using the default api key for user 1 */
@@ -334,10 +327,11 @@ class RestCallMethodsTest extends ControllerTestCase
             if ($invalidUser != null) {
                 $this->params['token'] = $this->_loginAsUser($invalidUser);
             }
+            $this->params['method'] = $method;
             foreach ($requiredParams as $requiredParam) {
                 $this->params[$requiredParam['name']] = $requiredParam['valid'];
             }
-            $resp = $this->_callRestApi();
+            $resp = $this->_callJsonApi();
             $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
         }
 

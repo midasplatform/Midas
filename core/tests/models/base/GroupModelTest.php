@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** GroupModelTest */
-class GroupModelTest extends DatabaseTestCase
+class Core_GroupModelTest extends DatabaseTestCase
 {
     /** init tests */
     public function setUp()

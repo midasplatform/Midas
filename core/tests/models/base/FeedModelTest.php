@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** FeedModelTest */
-class FeedModelTest extends DatabaseTestCase
+class Core_FeedModelTest extends DatabaseTestCase
 {
     /** init test */
     public function setUp()

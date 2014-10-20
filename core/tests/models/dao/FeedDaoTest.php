@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** FeedDaoTest */
-class FeedDaoTest extends DatabaseTestCase
+class Core_FeedDaoTest extends DatabaseTestCase
 {
     /** init tests */
     public function setUp()

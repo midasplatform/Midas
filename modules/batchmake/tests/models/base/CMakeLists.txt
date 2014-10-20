@@ -17,5 +17,8 @@
 # limitations under the License.
 #=============================================================================
 
-add_midas_test( BatchmakeTaskModel TaskModelTest.php )
-add_midas_test( BatchmakeItemmetricModel ItemmetricModelTest.php )
+set(module_name batchmake)
+to_titlecase(${module_name} module_name_titlecase)
+
+add_midas_test(${module_name_titlecase}ItemmetricModel ItemmetricModelTest.php)
+add_midas_test(${module_name_titlecase}TaskModel TaskModelTest.php)

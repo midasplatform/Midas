@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** config controller test */
-class WrappergControllerTest extends ControllerTestCase
+class Visualize_WrapperControllerTest extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()

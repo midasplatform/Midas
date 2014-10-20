@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** test feed controller */
-class FeedControllerTest extends ControllerTestCase
+class Core_FeedControllerTest extends ControllerTestCase
 {
     /** init tests */
     public function setUp()

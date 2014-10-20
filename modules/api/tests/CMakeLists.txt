@@ -17,14 +17,13 @@
 # limitations under the License.
 #=============================================================================
 
-set( module_name api )
-to_titlecase( ${module_name} module_name_titlecase )
+set(module_name api)
+to_titlecase(${module_name} module_name_titlecase)
 
-add_subdirectory( controllers )
+add_subdirectory(controllers)
 
-add_midas_style_test( Style${module_name_titlecase}AppController ${CMAKE_SOURCE_DIR}/modules/${module_name}/AppController.php )
-add_midas_style_test( Style${module_name_titlecase}Controllers ${CMAKE_SOURCE_DIR}/modules/${module_name}/controllers )
-add_midas_style_test( Style${module_name_titlecase}EnabledNotification ${CMAKE_SOURCE_DIR}/modules/${module_name}/library/APIEnabledNotification.php)
-add_midas_style_test( Style${module_name_titlecase}Notification ${CMAKE_SOURCE_DIR}/modules/${module_name}/Notification.php )
-
-add_midas_style_test( Style${module_name_titlecase}TestsControllers ${CMAKE_SOURCE_DIR}/modules/${module_name}/tests/controllers )
+add_midas_style_test(Style${module_name_titlecase}AppController ${CMAKE_SOURCE_DIR}/modules/${module_name}/AppController.php)
+add_midas_style_test(Style${module_name_titlecase}Controllers ${CMAKE_SOURCE_DIR}/modules/${module_name}/controllers)
+add_midas_style_test(Style${module_name_titlecase}EnabledNotification ${CMAKE_SOURCE_DIR}/modules/${module_name}/library/APIEnabledNotification.php)
+add_midas_style_test(Style${module_name_titlecase}Notification ${CMAKE_SOURCE_DIR}/modules/${module_name}/Notification.php)
+add_midas_style_test(Style${module_name_titlecase}TestsControllers ${CMAKE_SOURCE_DIR}/modules/${module_name}/tests/controllers)

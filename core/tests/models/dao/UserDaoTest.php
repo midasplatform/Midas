@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** UserDaoTest */
-class UserDaoTest extends DatabaseTestCase
+class Core_UserDaoTest extends DatabaseTestCase
 {
     /** init tests */
     public function setUp()

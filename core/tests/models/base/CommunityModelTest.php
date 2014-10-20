@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** Community model test */
-class CommunityModelTest extends DatabaseTestCase
+class Core_CommunityModelTest extends DatabaseTestCase
 {
     /** init tests */
     public function setUp()

@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** TaskModelTest */
-class TaskModelTest extends DatabaseTestCase
+class Batchmake_TaskModelTest extends DatabaseTestCase
 {
     /** init test */
     public function setUp()

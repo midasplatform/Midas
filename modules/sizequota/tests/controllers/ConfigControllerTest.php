@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** Test management of the size quotas behavior */
-class PerformTest extends ControllerTestCase
+class Sizequota_ConfigControllerTest extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()

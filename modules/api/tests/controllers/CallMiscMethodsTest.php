@@ -18,10 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH.'/modules/api/tests/controllers/ApiCallMethodsTest.php';
+require_once BASE_PATH.'/modules/api/tests/controllers/CallMethodsTestCase.php';
 
 /** Tests the functionality of miscellaneous web API methods. */
-class ApiCallMiscMethodsTest extends ApiCallMethodsTest
+class Api_CallMiscMethodsTest extends Api_CallMethodsTestCase
 {
     /** Test the midas.version method. */
     public function testVersion()

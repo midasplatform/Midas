@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** JobControllerTest */
-class JobControllerTest extends ControllerTestCase
+class Remoteprocessing_JobControllerTest extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()

@@ -21,7 +21,7 @@
 /**
  * Tests the Import Controller that drives the local uploader
  */
-class ImportControllerTest extends ControllerTestCase
+class Core_ImportControllerTest extends ControllerTestCase
 {
     /** init tests */
     public function setUp()

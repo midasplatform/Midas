@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** index controller tests */
-class ApiTest extends ControllerTestCase
+class Remoteprocessing_ApiComponentControllerTest extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()

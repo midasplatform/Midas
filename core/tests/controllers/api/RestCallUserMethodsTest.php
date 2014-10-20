@@ -18,10 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH.'/core/tests/controllers/api/RestCallMethodsTest.php';
+require_once BASE_PATH.'/core/tests/controllers/api/RestCallMethodsTestCase.php';
 
 /** Tests the functionality of the web API User methods */
-class RestCallUserMethodsTest extends RestCallMethodsTest
+class Core_RestCallUserMethodsTest extends RestCallMethodsTestCase
 {
     /** set up tests */
     public function setUp()

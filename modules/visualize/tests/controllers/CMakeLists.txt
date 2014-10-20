@@ -17,5 +17,8 @@
 # limitations under the License.
 #=============================================================================
 
-add_midas_test( VisualizeWrapperController WrapperControllerTest.php )
-add_midas_test( VisualizeIndexController IndexControllerTest.php )
+set(module_name visualize)
+to_titlecase(${module_name} module_name_titlecase)
+
+add_midas_test(${module_name_titlecase}IndexController IndexControllerTest.php)
+add_midas_test(${module_name_titlecase}WrapperController WrapperControllerTest.php)

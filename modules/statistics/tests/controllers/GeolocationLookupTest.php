@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** test statistics geolocation behavior */
-class StatisticsGeolocationLookupTest extends ControllerTestCase
+class Statistics_GeolocationLookupTest extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()

@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** test cleanup module behavior */
-class CleanupPerformTest extends ControllerTestCase
+class Cleanup_PerformCleanupTest extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()

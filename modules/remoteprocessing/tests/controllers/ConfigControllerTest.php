@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** ConfigControllerTest */
-class ConfigControllerTest extends ControllerTestCase
+class Remoteprocessing_ConfigControllerTest extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()

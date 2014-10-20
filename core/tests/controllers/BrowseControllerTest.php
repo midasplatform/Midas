@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** Test for the Browse controller */
-class BrowseControllerTest extends ControllerTestCase
+class Core_BrowseControllerTest extends ControllerTestCase
 {
     /** init tests */
     public function setUp()

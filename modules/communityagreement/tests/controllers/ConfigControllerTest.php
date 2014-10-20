@@ -22,7 +22,7 @@
 require_once str_replace('tests', 'constant', str_replace('controllers', 'module.php', dirname(__FILE__)));
 
 /** config controller test */
-class ConfigControllerTest extends ControllerTestCase
+class Communityagreement_ConfigControllerTest extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()

@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** index controller tests */
-class IndexControllerTest extends ControllerTestCase
+class Oai_IndexControllerTest extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()

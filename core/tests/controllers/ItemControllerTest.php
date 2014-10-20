@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** test item controller */
-class ItemControllerTest extends ControllerTestCase
+class Core_ItemControllerTest extends ControllerTestCase
 {
     /** init test */
     public function setUp()

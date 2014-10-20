@@ -21,7 +21,7 @@
 /**
  * UtilityComponentTest
  */
-class UtilityComponentTest extends ControllerTestCase
+class Core_UtilityComponentTest extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()

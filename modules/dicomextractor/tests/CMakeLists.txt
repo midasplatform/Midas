@@ -17,8 +17,8 @@
 # limitations under the License.
 #=============================================================================
 
-set( module_name dicomextractor )
-to_titlecase( ${module_name} module_name_titlecase )
+set(module_name dicomextractor)
+to_titlecase(${module_name} module_name_titlecase)
 
-add_midas_style_test( Style${module_name_titlecase}AppController ${CMAKE_SOURCE_DIR}/modules/${module_name}/AppController.php )
-add_midas_style_test( Style${module_name_titlecase}Controllers ${CMAKE_SOURCE_DIR}/modules/${module_name}/controllers )
+add_midas_style_test(Style${module_name_titlecase}AppController ${CMAKE_SOURCE_DIR}/modules/${module_name}/AppController.php)
+add_midas_style_test(Style${module_name_titlecase}Controllers ${CMAKE_SOURCE_DIR}/modules/${module_name}/controllers)

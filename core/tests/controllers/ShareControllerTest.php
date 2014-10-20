@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** Test for the Share Controller */
-class ShareControllerTest extends ControllerTestCase
+class Core_ShareControllerTest extends ControllerTestCase
 {
     /** init test */
     public function setUp()

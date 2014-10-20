@@ -17,41 +17,39 @@
 # limitations under the License.
 #=============================================================================
 
-project( Midas )
+cmake_minimum_required(VERSION 2.8)
+project(Midas)
 
-#-----------------------------------------------------------------------------
-cmake_minimum_required( VERSION 2.8 )
-
-#-----------------------------------------------------------------------------
-#  Find the php executable
 find_program(PHP "php" CACHE STRING "PHP executable.")
 if(NOT PHP)
  message(FATAL_ERROR "Please set the PHP executable")
 endif()
 
 #-----------------------------------------------------------------------------
-#  Drop all tables from the testing DB
-#  Then re-install the DB, set a Default assetstore, and install all modules
-message(STATUS "Setting up database for module testing, please wait...")
+# Drop all tables from the testing database, then reinstall the database, set
+# a default asset store, and install all modules
+#-----------------------------------------------------------------------------
+
+message(STATUS "Setting up database(s) for testing, please wait...")
 execute_process(
-  COMMAND ${PHP} ${CMAKE_CURRENT_SOURCE_DIR}/tests/DatabaseSetup.php
-  RESULT_VARIABLE databaseSetup_RESULT
-  OUTPUT_VARIABLE databaseSetup_OUT
-  ERROR_VARIABLE databaseSetup_ERR)
-
+    COMMAND ${PHP} ${CMAKE_CURRENT_SOURCE_DIR}/tests/DatabaseSetup.php
+    RESULT_VARIABLE databaseSetup_RESULT
+    OUTPUT_VARIABLE databaseSetup_OUT
+    ERROR_VARIABLE databaseSetup_ERR)
 if(NOT databaseSetup_RESULT EQUAL 0)
-  message(STATUS "DatabaseSetup output: ${databaseSetup_OUT}")
-  message(FATAL_ERROR "DatabaseSetup error: ${databaseSetup_ERR}")
+    message(STATUS "Database setup output: ${databaseSetup_OUT}")
+    message(FATAL_ERROR "Database setup error: ${databaseSetup_ERR}")
 endif()
-
 message(STATUS "Database setup is complete")
 
-#----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 # Setup testing and required parameters for testing
+#-----------------------------------------------------------------------------
 
 include(CTest)
-option( MIDAS_RUN_STYLE_TESTS "Should MIDAS run PHP style checking tests?" ON )
-set( SERVER_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR} )
+option(MIDAS_RUN_STYLE_TESTS "Run PHP style tests?" ON)
+set(SERVER_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR})
+
 add_subdirectory(tests)
 add_subdirectory(core/tests)
 add_subdirectory(modules)

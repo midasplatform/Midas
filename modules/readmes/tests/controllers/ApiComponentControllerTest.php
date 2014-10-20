@@ -18,10 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH.'/core/tests/controllers/api/RestCallMethodsTest.php';
+require_once BASE_PATH.'/core/tests/controllers/api/RestCallMethodsTestCase.php';
 
 /** config controller test */
-class ReadmesApiTest extends RestCallMethodsTest
+class Readmes_ApiComponentControllerTest extends RestCallMethodsTestCase
 {
     /** set up tests */
     public function setUp()

@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** test folder controller */
-class FolderControllerTest extends ControllerTestCase
+class Core_FolderControllerTest extends ControllerTestCase
 {
     /** init test */
     public function setUp()

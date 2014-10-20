@@ -17,7 +17,10 @@
 # limitations under the License.
 #=============================================================================
 
-add_subdirectory( components )
+set(module_name batchmake)
+to_titlecase(${module_name} module_name_titlecase)
 
-add_midas_test( BatchmakeConfigController ConfigControllerTest.php )
-add_midas_test( BatchmakeIndexController IndexControllerTest.php )
+add_subdirectory(components)
+
+add_midas_test(${module_name_titlecase}ConfigController ConfigControllerTest.php)
+add_midas_test(${module_name_titlecase}IndexController IndexControllerTest.php)

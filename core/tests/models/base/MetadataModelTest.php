@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** MetadataModelTest */
-class MetadataModelTest extends DatabaseTestCase
+class Core_MetadataModelTest extends DatabaseTestCase
 {
     /** init test */
     public function setUp()

@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** Tests the functionality of the web API methods */
-class ApiControllerTest extends ControllerTestCase
+class Validation_ApiComponentControllerTest extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()

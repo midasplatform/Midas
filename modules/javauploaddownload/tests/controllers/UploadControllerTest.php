@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** Test upload controller */
-class UploadControllerTest extends ControllerTestCase
+class Javauploaddownload_UploadControllerTest extends ControllerTestCase
 {
     /** Initialize tests */
     public function setUp()

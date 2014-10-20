@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** test licenses controller */
-class LicensesControllerTest extends ControllerTestCase
+class Core_LicensesControllerTest extends ControllerTestCase
 {
     /** Setup before each test */
     public function setUp()

@@ -17,5 +17,8 @@
 # limitations under the License.
 #=============================================================================
 
-add_midas_test(JavauploaddownloadDownloadController DownloadControllerTest.php )
-add_midas_test(JavauploaddownloadUploadController UploadControllerTest.php )
+set(module_name javauploaddownload)
+to_titlecase(${module_name} module_name_titlecase)
+
+add_midas_test(${module_name_titlecase}DownloadController DownloadControllerTest.php)
+add_midas_test(${module_name_titlecase}UploadController UploadControllerTest.php)

@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** test user controller */
-class UserControllerTest extends ControllerTestCase
+class Core_UserControllerTest extends ControllerTestCase
 {
     /** init tests */
     public function setUp()

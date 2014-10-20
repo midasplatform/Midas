@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** test keyfiles download controller */
-class KeyfilesDownloadControllerTest extends ControllerTestCase
+class Keyfiles_DownloadControllerTest extends ControllerTestCase
   {
   /** set up tests*/
   public function setUp()

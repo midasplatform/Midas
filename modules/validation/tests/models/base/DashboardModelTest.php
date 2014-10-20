@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** test hello model */
-class DashboardModelTest extends DatabaseTestCase
+class Validation_DashboardModelTest extends DatabaseTestCase
 {
     /** set up tests */
     public function setUp()

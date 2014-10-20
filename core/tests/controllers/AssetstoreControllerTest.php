@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** test assetstore controller */
-class AssetstoreControllerTest extends ControllerTestCase
+class Core_AssetstoreControllerTest extends ControllerTestCase
 {
     protected $nullUserDao;
     protected $nonAdminUserDao;

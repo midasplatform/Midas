@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** index controller test */
-class IndexControllerTest extends ControllerTestCase
+class Visualize_IndexControllerTest extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()

@@ -19,14 +19,14 @@
 =========================================================================*/
 
 error_reporting(E_ALL | E_STRICT);
-ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 
-define('APPLICATION_PATH', realpath(dirname(__FILE__).'/../core'));
+define('BASE_PATH', realpath(dirname(__FILE__).'/../'));
 define('APPLICATION_ENV', 'testing');
-define('LIBRARY_PATH', realpath(dirname(__FILE__).'/../library'));
-define('TESTS_PATH', realpath(dirname(__FILE__)));
-define('BASE_PATH', realpath(dirname(__FILE__)).'/../');
+define('APPLICATION_PATH', BASE_PATH.'/core');
+define('LIBRARY_PATH', BASE_PATH.'/library');
+define('TESTS_PATH', BASE_PATH.'/tests');
 
 require_once BASE_PATH.'/vendor/autoload.php';
 require_once BASE_PATH.'/core/include.php';
@@ -47,15 +47,20 @@ Zend_Registry::set('configGlobal', $configGlobal);
 $config = new Zend_Config_Ini(APPLICATION_CONFIG, 'testing');
 Zend_Registry::set('config', $config);
 
-// InitDatabase
-if (file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini')) {
-    $configDatabase = new Zend_Config_Ini(BASE_PATH.'/tests/configs/lock.mysql.ini', 'testing');
-} elseif (file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini')) {
-    $configDatabase = new Zend_Config_Ini(BASE_PATH.'/tests/configs/lock.pgsql.ini', 'testing');
-} else {
-    echo 'Error';
-    exit;
+$databaseIni = getenv('MIDAS_DATABASE_INI');
+
+if (!file_exists($databaseIni)) {
+    if (file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini')) {
+        $databaseIni = BASE_PATH.'/tests/configs/lock.mysql.ini';
+    } elseif (file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini')) {
+        $databaseIni = BASE_PATH.'/tests/configs/lock.pgsql.ini';
+    } else {
+        echo 'Error: database ini file not found.';
+        exit(1);
+    }
 }
+
+$configDatabase = new Zend_Config_Ini($databaseIni, 'testing');
 
 if (empty($configDatabase->database->params->driver_options)) {
     $driverOptions = array();

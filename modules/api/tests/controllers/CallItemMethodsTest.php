@@ -18,10 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH.'/modules/api/tests/controllers/ApiCallMethodsTest.php';
+require_once BASE_PATH.'/modules/api/tests/controllers/CallMethodsTestCase.php';
 
 /** Tests the functionality of the web API Item and Bitstream methods */
-class ApiCallItemMethodsTest extends ApiCallMethodsTest
+class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
 {
     /** Test the item.get method */
     public function testItemGet()

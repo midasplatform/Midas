@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** Test for the community controller */
-class CommunityControllerTest extends ControllerTestCase
+class Core_CommunityControllerTest extends ControllerTestCase
 {
     /** init tests */
     public function setUp()

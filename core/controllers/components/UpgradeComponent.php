@@ -156,21 +156,27 @@ class UpgradeComponent extends AppComponent
                 $path = LOCAL_CONFIGS_PATH.'/database.local.ini';
                 if ($testing || Zend_Registry::get('configGlobal')->environment == 'testing'
                 ) {
-                    if (file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini')) {
-                        $path = BASE_PATH.'/tests/configs/lock.pgsql.ini';
-                    }
-                    if (file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini')) {
-                        $path = BASE_PATH.'/tests/configs/lock.mysql.ini';
+                    $path = getenv('MIDAS_DATABASE_INI');
+                    if (!file_exists($path)) {
+                        if (file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini')) {
+                            $path = BASE_PATH.'/tests/configs/lock.mysql.ini';
+                        }
+                        if (file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini')) {
+                            $path = BASE_PATH.'/tests/configs/lock.pgsql.ini';
+                        }
                     }
                 }
                 $options = array('allowModifications' => true);
                 if ($testing || Zend_Registry::get('configGlobal')->environment == 'testing'
                 ) {
-                    if (file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini')) {
-                        $path = BASE_PATH.'/tests/configs/lock.pgsql.ini';
-                    }
-                    if (file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini')) {
-                        $path = BASE_PATH.'/tests/configs/lock.mysql.ini';
+                    $path = getenv('MIDAS_DATABASE_INI');
+                    if (!file_exists($path)) {
+                        if (file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini')) {
+                            $path = BASE_PATH.'/tests/configs/lock.mysql.ini';
+                        }
+                        if (file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini')) {
+                            $path = BASE_PATH.'/tests/configs/lock.pgsql.ini';
+                        }
                     }
                     $config = new Zend_Config_Ini($path, null, $options);
                     $config->testing->version = $migration['versionText'];

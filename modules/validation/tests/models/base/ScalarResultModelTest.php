@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** test ScalarResultModel */
-class ScalarResultModelTest extends DatabaseTestCase
+class Validation_ScalarResultModelTest extends DatabaseTestCase
 {
     /** set up tests */
     public function setUp()

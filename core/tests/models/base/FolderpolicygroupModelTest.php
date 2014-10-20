@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** FolderpolicygroupModelTest */
-class FolderpolicygroupModelTest extends DatabaseTestCase
+class Core_FolderpolicygroupModelTest extends DatabaseTestCase
 {
     /** init tests */
     public function setUp()

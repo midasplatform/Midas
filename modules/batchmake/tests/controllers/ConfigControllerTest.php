@@ -20,10 +20,10 @@
 
 // need to include the module constant for this test
 require_once BASE_PATH.'/modules/batchmake/constant/module.php';
-require_once BASE_PATH.'/modules/batchmake/tests/controllers/BatchmakeControllerTest.php';
+require_once BASE_PATH.'/modules/batchmake/tests/controllers/ControllerTestCase.php';
 
 /** config controller tests */
-class ConfigControllerTest extends BatchmakeControllerTest
+class Batchmake_ConfigControllerTest extends Batchmake_ControllerTestCase
 {
     /** set up tests */
     public function setUp()

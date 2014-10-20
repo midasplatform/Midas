@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** test search controller */
-class SearchControllerTest extends ControllerTestCase
+class Core_SearchControllerTest extends ControllerTestCase
 {
     /** init test */
     public function setUp()

@@ -17,5 +17,8 @@
 # limitations under the License.
 #=============================================================================
 
-add_midas_test( ValidationDashboardModel DashboardModelTest.php )
-add_midas_test( ValidationScalarResultModel ScalarResultModelTest.php )
+set(module_name validation)
+to_titlecase(${module_name} module_name_titlecase)
+
+add_midas_test(${module_name_titlecase}DashboardModel DashboardModelTest.php)
+add_midas_test(${module_name_titlecase}ScalarResultModel ScalarResultModelTest.php)

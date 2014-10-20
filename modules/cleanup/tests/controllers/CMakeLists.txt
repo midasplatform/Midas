@@ -17,4 +17,7 @@
 # limitations under the License.
 #=============================================================================
 
-add_midas_test( CleanupPerform CleanupPerformTest.php )
+set(module_name cleanup)
+to_titlecase(${module_name} module_name_titlecase)
+
+add_midas_test(${module_name_titlecase}PerformCleanup PerformCleanupTest.php)

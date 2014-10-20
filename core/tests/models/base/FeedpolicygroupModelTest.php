@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** FeedpolicygroupModelTest */
-class FeedpolicygroupModelTest extends DatabaseTestCase
+class Core_FeedpolicygroupModelTest extends DatabaseTestCase
 {
     /** init tests */
     public function setUp()

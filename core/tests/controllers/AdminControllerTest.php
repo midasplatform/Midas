@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** Test for admin controllers */
-class AdminControllerTest extends ControllerTestCase
+class Core_AdminControllerTest extends ControllerTestCase
 {
     /** init tests */
     public function setUp()

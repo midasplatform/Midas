@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** Tests the functionality of the web API methods */
-class ApiIndexControllerTest extends ControllerTestCase
+class Api_IndexControllerTest extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()

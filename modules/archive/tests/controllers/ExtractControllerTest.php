@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** Test the extract archive functionality */
-class ArchiveExtractControllerTest extends ControllerTestCase
+class Archive_ExtractControllerTest extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()

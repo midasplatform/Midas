@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** ItemmetricModelTest */
-class ItemmetricModelTest extends DatabaseTestCase
+class Batchmake_ItemmetricModelTest extends DatabaseTestCase
 {
     /** init test */
     public function setUp()

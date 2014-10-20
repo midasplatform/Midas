@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** ExecutableControllerTest */
-class ExecutableControllerTest extends ControllerTestCase
+class Remoteprocessing_ExecutableControllerTest extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()

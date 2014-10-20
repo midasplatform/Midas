@@ -28,7 +28,7 @@ require_once BASE_PATH.'/library/KWUtils.php';
  * @category   Midas controller Test
  * @package    Midas Test
  */
-class ExportComponentTest extends ControllerTestCase
+class Core_ExportComponentTest extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()

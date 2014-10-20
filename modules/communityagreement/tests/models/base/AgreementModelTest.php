@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** test agreement model */
-class AgreementModelTest extends DatabaseTestCase
+class Communityagreement_AgreementModelTest extends DatabaseTestCase
 {
     /** set up tests */
     public function setUp()

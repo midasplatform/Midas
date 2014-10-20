@@ -18,10 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH.'/modules/api/tests/controllers/ApiCallMethodsTest.php';
+require_once BASE_PATH.'/modules/api/tests/controllers/CallMethodsTestCase.php';
 
 /** Tests the functionality of the web API methods */
-class ApiCallFolderMethodsTest extends ApiCallMethodsTest
+class Api_CallFolderMethodsTest extends Api_CallMethodsTestCase
 {
     /** Test creating a folder */
     public function testFolderCreate()

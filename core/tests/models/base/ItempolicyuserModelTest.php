@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /** ItempolicyuserModelTest */
-class ItempolicyuserModelTest extends DatabaseTestCase
+class Core_ItempolicyuserModelTest extends DatabaseTestCase
 {
     /** init tests */
     public function setUp()
