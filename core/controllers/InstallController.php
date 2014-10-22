@@ -70,7 +70,7 @@ class InstallController extends AppController
         $databases = array('mysql', 'pgsql');
         $this->view->databaseType = array();
         foreach ($databases as $database) {
-            if (!extension_loaded($database) || !file_exists(BASE_PATH.'/core/database/'.$database)
+            if (!extension_loaded('pdo_'.$database) || !file_exists(BASE_PATH.'/core/database/'.$database)
             ) {
                 unset($database);
             } else {
