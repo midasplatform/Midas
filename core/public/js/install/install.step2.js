@@ -77,7 +77,7 @@ function checkDB(obj) {
             var testConnexion = $.parseJSON(jsonContent);
             console.log(jsonContent);
             obj.find('.testLoading').hide();
-            if (testConnexion[0] === true) {
+            if (testConnexion[0] == true) {
                 obj.find('.testOk').show();
                 obj.find('.testError').html(testConnexion[1]);
                 obj.find('[name=submit]').removeAttr('disabled');
@@ -91,7 +91,9 @@ function checkDB(obj) {
 
 function checkEmail(mailteste) {
     'use strict';
-    var reg = new RegExp('^[a-z0-9]+([_|\.|-|\+]{1}[a-z0-9]+)*@[a-z0-9]+([_|\.|-]{1}[a-z0-9]+)*[\.]{1}[a-z]{2,6}$', 'i');
+     var local = 'a-zA-Z0-9\x21\x23\x24\x25\x26\x27\x2a\x2b\x2d\x2f\x3d\x3f\x5e\x5f\x60\x7b\x7c\x7d\x7e';
+     var host = 'a-z0-9\x2d\x2e';
+     var reg = new RegExp('^['+local+']+(\x2e+['+local+']+)*@['+host+']{1,63}$', 'i');
 
     if (reg.test(mailteste)) {
         return (true);
