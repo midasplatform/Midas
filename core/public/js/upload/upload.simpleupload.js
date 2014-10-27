@@ -49,7 +49,7 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
             dataType: 'json',
             type: 'GET',
             url: json.global.webroot + '/rest/system/uploadtoken?useSession=true' +
-                '&filename=' + file.name + '&folderid=' + $('#destinationId').val()
+                '&filename=' + encodeURIComponent(file.name) + '&folderid=' + $('#destinationId').val()
         }).success(function (resp) {
             if (file.size > 0) {
                 startByte = 0;
@@ -114,7 +114,7 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
         var file = files[currentIndex];
         var blob = file.slice(startByte);
         var url = json.global.webroot + '/api/rest?method=midas.upload.perform&uploadtoken=' +
-            uploadToken + '&length=' + file.size + '&filename=' + (file.name || file.fileName);
+            uploadToken + '&length=' + file.size + '&filename=' + encodeURIComponent(file.name || file.fileName);
 
         resumeUploadId = uploadToken;
 
@@ -137,7 +137,7 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
 
         xhr.open('PUT', url, true);
         xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-        xhr.setRequestHeader('X-File-Name', file.name || file.fileName);
+        xhr.setRequestHeader('X-File-Name', encodeURIComponent(file.name || file.fileName));
         xhr.setRequestHeader('X-File-Size', blob.size);
         xhr.setRequestHeader('X-File-Type', file.type);
 
