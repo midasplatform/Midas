@@ -78,8 +78,8 @@ class Googleauth_CallbackController extends Googleauth_AppController
         $scheme = (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS']) ? 'https://' : 'http://';
         $redirectUri = $scheme.$_SERVER['HTTP_HOST'].Zend_Controller_Front::getInstance()->getBaseUrl(
             ).'/'.$this->moduleName.'/callback';
-        $headers = array('Content-Type: application/x-www-form-urlencoded;charset=UTF-8', 'Connection: Keep-Alive');
-        $postData = implode(
+        $headers = "Content-Type: application/x-www-form-urlencoded;charset=UTF-8\r\nConnection: Keep-Alive";
+        $content = implode(
             '&',
             array(
                 'grant_type=authorization_code',
@@ -91,47 +91,71 @@ class Googleauth_CallbackController extends Googleauth_AppController
         );
 
         // Make the request for the access token
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, 'https://accounts.google.com/o/oauth2/token');
-        curl_setopt($curl, CURLOPT_POST, 1);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_PORT, 443);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        $resp = curl_exec($curl);
+        if (extension_loaded('curl')) {
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, GOOGLE_AUTH_OAUTH2_URL);
+            curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $content);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_PORT, 443);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+            $response = curl_exec($curl);
+            $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-        $httpStatus = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            if ($status != 200) {
+                throw new Zend_Exception('Access token request failed: '.$response);
+            }
+        } else {
+            $context = array('http' => array('method' => 'POST', 'header' => $headers, 'content' => $content));
+            $context = stream_context_create($context);
+            $response = file_get_contents(GOOGLE_AUTH_OAUTH2_URL, false, $context);
 
-        if ($httpStatus != 200) {
-            throw new Zend_Exception('Access token request failed: '.$resp);
+            if ($response === false) {
+                throw new Zend_Exception('Access token request failed.');
+            }
         }
 
-        $resp = json_decode($resp);
-        $accessToken = $resp->access_token;
-        $tokenType = $resp->token_type;
+        $response = json_decode($response);
+        $accessToken = $response->access_token;
+        $tokenType = $response->token_type;
 
         // Use the access token to request info about the user
-        $headers = array('Authorization: '.$tokenType.' '.$accessToken);
+        $headers = 'Authorization: '.$tokenType.' '.$accessToken;
 
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, 'https://www.googleapis.com/plus/v1/people/me');
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_PORT, 443);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        $resp = curl_exec($curl);
-        $httpStatus = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        if (extension_loaded('curl')) {
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, GOOGLE_AUTH_PLUS_URL);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_PORT, 443);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+            $response = curl_exec($curl);
+            $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-        if ($httpStatus != 200) {
-            throw new Zend_Exception('Get Google user info request failed: '.$resp);
+            if ($status != 200) {
+                throw new Zend_Exception('Get Google user info request failed: '.$response);
+            }
+        } else {
+            $context = array('http' => array('header' => $headers));
+            $context = stream_context_create($context);
+            $response = file_get_contents(GOOGLE_AUTH_PLUS_URL, false, $context);
+
+            if ($response === false) {
+                throw new Zend_Exception('Get Google user info request failed.');
+            }
         }
-        $resp = json_decode($resp);
+
+        $response = json_decode($response);
+
+        if (isset($response->error)) {
+            throw new Zend_Exception('Get Google user info request failed.');
+        }
 
         // Extract the relevant user information from the response.
         return array(
-            'googlePersonId' => $resp->id,
-            'firstName' => $resp->name->givenName,
-            'lastName' => $resp->name->familyName,
-            'email' => strtolower($resp->emails[0]->value),
+            'googlePersonId' => $response->id,
+            'firstName' => $response->name->givenName,
+            'lastName' => $response->name->familyName,
+            'email' => strtolower($response->emails[0]->value),
         );
     }
 
