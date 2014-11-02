@@ -30,32 +30,6 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     protected $params = array();
 
     /**
-     * Start xdebug code coverage.
-     * Only has an effect if MIDAS_TEST_COVERAGE is defined to true
-     */
-    public function startCodeCoverage()
-    {
-        if (MIDAS_TEST_COVERAGE && extension_loaded('xdebug')) {
-            xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
-        }
-    }
-
-    /**
-     * Stop xdebug code coverage and write the results.
-     * Only has an effect if MIDAS_TEST_COVERAGE is defined to true
-     */
-    public function stopCodeCoverage()
-    {
-        if (MIDAS_TEST_COVERAGE && extension_loaded('xdebug')) {
-            $data = xdebug_get_code_coverage();
-            xdebug_stop_code_coverage();
-
-            $file = CMAKE_BINARY_DIR.'/xdebugCoverage/'.md5($_SERVER['SCRIPT_FILENAME']);
-            file_put_contents($file.'.'.md5(uniqid(mt_rand(), true)).'.'.get_class($this), serialize($data));
-        }
-    }
-
-    /**
      * get the midas temporary directory
      *
      * @return string
@@ -72,7 +46,6 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         $this->loadElements();
 
         parent::setUp();
-        $this->startCodeCoverage();
     }
 
     /** end test */
@@ -81,7 +54,6 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         Zend_Controller_Front::getInstance()->resetInstance();
         $this->resetAll();
         parent::tearDown();
-        $this->stopCodeCoverage();
     }
 
     /** get response body */

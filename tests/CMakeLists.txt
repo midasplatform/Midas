@@ -17,19 +17,7 @@
 # limitations under the License.
 #=============================================================================
 
-option(MIDAS_TEST_COVERAGE "Perform Xdebug code coverage. Only turn on if you need coverage." OFF)
-
-if(MIDAS_TEST_COVERAGE)
-    set(MIDAS_TEST_COVERAGE_LITERAL "true")
-else()
-    set(MIDAS_TEST_COVERAGE_LITERAL "false")
-endif()
-
 configure_file(${CMAKE_SOURCE_DIR}/tests/TestsConfig.php.in ${CMAKE_SOURCE_DIR}/tests/TestsConfig.php)
-
-if(NOT EXISTS ${CMAKE_BINARY_DIR}/xdebugCoverage)
-    file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/xdebugCoverage)
-endif()
 
 macro(to_titlecase Arg Result)
     string(SUBSTRING ${Arg} 0 1 ArgHead)
