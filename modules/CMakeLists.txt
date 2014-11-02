@@ -17,10 +17,12 @@
 # limitations under the License.
 #=============================================================================
 
+add_midas_style_test(StyleGlobalModule ${CMAKE_SOURCE_DIR}/modules/GlobalModule.php)
+
 file(GLOB sub-dir "${CMAKE_SOURCE_DIR}/modules/*")
 
 foreach(dir ${sub-dir})
-    if(IS_DIRECTORY "${dir}/tests")
+    if(IS_DIRECTORY ${dir}/tests)
         add_subdirectory(${dir}/tests)
     endif()
 endforeach()

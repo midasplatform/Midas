@@ -81,21 +81,14 @@ function(add_midas_style_test TestName TestDir)
     endif()
 endfunction()
 
-if(NOT WIN32)
-    add_midas_test(KWUtils KWUtilsTest.php)
-endif()
-
-add_midas_style_test(StyleKWUtils ${CMAKE_SOURCE_DIR}/library/KWUtils.php)
-add_midas_style_test(StyleTestsControllerTestCase ${CMAKE_SOURCE_DIR}/tests/ControllerTestCase.php)
-add_midas_style_test(StyleTestsDatabaseSetup ${CMAKE_SOURCE_DIR}/tests/DatabaseSetup.php)
-add_midas_style_test(StyleTestsDatabaseTestCase ${CMAKE_SOURCE_DIR}/tests/DatabaseTestCase.php)
-add_midas_style_test(StyleTestsKWUtilsTest ${CMAKE_SOURCE_DIR}/tests/KWUtilsTest.php)
-add_midas_style_test(StyleTestsTestsBootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php)
-add_midas_style_test(StyleTestsTrailingSpaces ${CMAKE_SOURCE_DIR}/tests/TrailingSpaces.php)
-add_midas_style_test(StyleTestsUTF8Tools ${CMAKE_SOURCE_DIR}/tests/UTF8Tools.php)
+add_midas_style_test(StyleTests ${CMAKE_SOURCE_DIR}/tests)
 
 add_test(UTF8Encoding ${PHP} ${CMAKE_SOURCE_DIR}/tests/UTF8Tools.php --src ${CMAKE_SOURCE_DIR})
 set_tests_properties(
     UTF8Encoding PROPERTIES
     FAIL_REGULAR_EXPRESSION "ERROR;WARNING"
 )
+
+if(NOT WIN32)
+    add_midas_test(KWUtils KWUtilsTest.php)
+endif()
