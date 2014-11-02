@@ -315,7 +315,7 @@ class Ldap_Notification extends MIDAS_Notification
             $body .= "We could not fulfill this request because your user account is managed by an external LDAP server.<br/><br/>";
             $body .= "Please contact the administrator of the LDAP server at <b>" . $ldapServer . "</b> to have your password changed.";
 
-            if(UtilityComponent::sendEmail($email, $subject, $body)) {
+            if (UtilityComponent::sendEmail($email, $subject, $body)) {
               return array('status' => true, 'message' => 'Sent email to '. $email);
             }
         }
