@@ -18,14 +18,11 @@
  limitations under the License.
 =========================================================================*/
 
-define("MIDAS_ASSETSTORE_LOCAL", 0);
-define("MIDAS_ASSETSTORE_REMOTE", 1);
+define('MIDAS_ASSETSTORE_LOCAL', 0);
+define('MIDAS_ASSETSTORE_REMOTE', 1);
 
-/*
- * Define Model Data type
- */
-define("MIDAS_DATA", 1001);
-define("MIDAS_ONE_TO_MANY", 1002);
-define("MIDAS_MANY_TO_ONE", 1003);
-define("MIDAS_ONE_TO_ONE", 1004);
-define("MIDAS_MANY_TO_MANY", 1005);
+define('MIDAS_DATA', 1001);
+define('MIDAS_ONE_TO_MANY', 1002);
+define('MIDAS_MANY_TO_ONE', 1003);
+define('MIDAS_ONE_TO_ONE', 1004);
+define('MIDAS_MANY_TO_MANY', 1005);

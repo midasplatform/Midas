@@ -30,10 +30,12 @@ define("LICENSE_CC_NONCOMMERCIAL", 7);
 define("LICENSE_CC_NONCOMMERCIAL_SHARELIKE", 8);
 define("LICENSE_CC_NONCOMMERCIAL_NODERIVS", 9);
 
+/** Upgrade the core to version 3.2.2. */
 class Upgrade_3_2_2 extends MIDASUpgrade
 {
     public $existingLicenses;
 
+    /** Pre database upgrade. */
     public function preUpgrade()
     {
         $this->existingLicenses = array(
@@ -122,6 +124,7 @@ class Upgrade_3_2_2 extends MIDASUpgrade
         $this->db->query("ALTER TABLE `itemrevision` DROP `license`");
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         // Create the license table

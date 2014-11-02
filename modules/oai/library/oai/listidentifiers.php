@@ -82,7 +82,7 @@ if (isset($args['resumptionToken'])) {
             $fp = fopen("tokens/id-$resumptionToken", 'r');
             $filetext = fgets($fp, 255);
             $textparts = explode('#', $filetext);
-            $deliveredrecords = (int)$textparts[0];
+            $deliveredrecords = (int) $textparts[0];
             $extquery = $textparts[1];
             $metadataPrefix = $textparts[2];
             fclose($fp);
@@ -137,7 +137,6 @@ if (empty($errors)) {
     }
     $items = $publicItems;
 
-
     if (empty($items)) {
         $errors .= oai_error('noRecordsMatch');
     }
@@ -159,9 +158,9 @@ if (count($items) - $deliveredrecords > $MAXIDS) {
     }
     $tokensPath = $tokensDir.'/id-'.$token;
     $fp = fopen($tokensPath, 'w');
-    $thendeliveredrecords = (int)$deliveredrecords + $MAXIDS;
-    fputs($fp, "$thendeliveredrecords#");
-    fputs($fp, "$extquery#");
+    $thendeliveredrecords = (int) $deliveredrecords + $MAXIDS;
+    fwrite($fp, "$thendeliveredrecords#");
+    fwrite($fp, "$extquery#");
     fclose($fp);
     $num_rows = count($items);
     $restoken = '  <resumptionToken expirationDate="'.$expirationdatetime.'"

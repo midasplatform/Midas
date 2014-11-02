@@ -1,18 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-  <metadata metadata_id="8" metadatatype="0" element="date"
-            qualifier="created"
-            description="Date when the data was created" />
-  <metadata metadata_id="9" metadatatype="0" element="contributor"
-            qualifier="author" description="Author of the data" />
-  <metadata metadata_id="10" metadatatype="0" element="DICOM"
-            qualifier="NumSlices" description="foo" />
-  <metadata metadata_id="11" metadatatype="1" element="Document"
-            qualifier="Counts" description="foo" />
-  <metadata metadata_id="12" metadatatype="0" element="DICOM"
-            qualifier="Manufacturer" description="foo" />
-  <metadata metadata_id="13" metadatatype="0" element="Document"
-            qualifier="Description" description="foo" />
-  <metadata metadata_id="14" metadatatype="0" element="DICOM"
-            qualifier="PatientName" description="foo" />
+    <metadata metadata_id="8" metadatatype="0" element="date" qualifier="created"
+        description="Date when the data was created"/>
+    <metadata metadata_id="9" metadatatype="0" element="contributor" qualifier="author"
+        description="Author of the data"/>
+    <metadata metadata_id="10" metadatatype="0" element="DICOM" qualifier="NumSlices" description="foo"/>
+    <metadata metadata_id="11" metadatatype="1" element="Document" qualifier="Counts" description="foo"/>
+    <metadata metadata_id="12" metadatatype="0" element="DICOM" qualifier="Manufacturer" description="foo"/>
+    <metadata metadata_id="13" metadatatype="0" element="Document" qualifier="Description" description="foo"/>
+    <metadata metadata_id="14" metadatatype="0" element="DICOM" qualifier="PatientName" description="foo"/>
 </dataset>

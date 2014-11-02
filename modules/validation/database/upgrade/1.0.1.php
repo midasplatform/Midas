@@ -18,8 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the validation module to version 1.0.1. */
 class Validation_Upgrade_1_0_1 extends MIDASUpgrade
 {
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $this->db->query("ALTER TABLE validation_dashboard ALTER COLUMN owner_id SET DEFAULT 0;");

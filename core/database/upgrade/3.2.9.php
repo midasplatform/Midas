@@ -19,10 +19,12 @@
 =========================================================================*/
 
 /**
- * Upgrade 3.2.9 adds pgsql indexes on policy tables
+ * Upgrade the core to version 3.2.9. Add PostgreSQL indexes on policy
+ * tables.
  */
 class Upgrade_3_2_9 extends MIDASUpgrade
 {
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $this->db->query(

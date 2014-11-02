@@ -24,7 +24,7 @@ class FolderForm extends AppForm
     /** create edit folder form */
     public function createEditForm()
     {
-        $form = new Zend_Form;
+        $form = new Zend_Form();
 
         $form->setAction($this->webroot.'/folder/edit')
             ->setMethod('post');
@@ -33,7 +33,7 @@ class FolderForm extends AppForm
         $name->setAttribs(array(
             'placeholder' => $this->t('Name of the folder'),
             'autofocus' => 'autofocus',
-            'required' => 'required'
+            'required' => 'required',
         ))
             ->setRequired(true)
             ->addValidator('NotEmpty', true);
@@ -47,6 +47,7 @@ class FolderForm extends AppForm
         $submit->setLabel($this->t("Save"));
 
         $form->addElements(array($name, $description, $submit, $teaser));
+
         return $form;
     }
 }

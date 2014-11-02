@@ -18,14 +18,17 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the core to version 3.1.3. */
 class Upgrade_3_1_3 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $sql = "ALTER TABLE item MODIFY description TEXT NOT NULL;";
         $this->db->query($sql);
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $sql = "ALTER TABLE item ALTER COLUMN description TYPE TEXT;";

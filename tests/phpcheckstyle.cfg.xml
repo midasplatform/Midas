@@ -51,7 +51,7 @@
     <!--  ****************  -->
 
     <!-- Check Constant Naming -->
-    <test name="constantNaming" regexp="/^[A-Z][A-Z0-9_]*$/" level="error"/>
+    <test name="constantNaming" regexp="/^[A-Z][a-zA-Z0-9_]*$/" level="error"/>
 
     <!-- Check Variable Naming -->
     <test name="variableNaming" regexp="/^[a-zA-Z0-9_]*$/"/>
@@ -80,7 +80,7 @@
     <test name="interfaceNaming" regexp="/^[A-Z][a-zA-Z0-9_]*$/" level="error"/>
 
     <!-- File Naming -->
-    <test name="fileNaming" regexp="/^[a-zA-Z][a-zA-Z0-9._]*$/" level="error"/>
+    <test name="fileNaming" regexp="/^[a-zA-Z0-9][a-zA-Z0-9._]*$/" level="error"/>
 
 
     <!--  ****************  -->
@@ -139,17 +139,7 @@
     </test>
 
     <!-- Check the position of the close curly brace  -->
-    <test name="controlCloseCurly">
-    </test>
-
-    <!-- Check the position of the open curly brace after a function -->
-    <!-- sl = same line -->
-    <!-- nl = new line -->
-<!--
-    <test name="funcDefinitionOpenCurly">
-        <property name="position" value="nl"/>
-    </test>
- -->
+    <test name="controlCloseCurly"></test>
 
     <!-- Check the position of the else -->
     <!-- sl = same line -->
@@ -193,12 +183,10 @@
     </test>
 
     <!-- Check that there is no space before before some tokens -->
-    <test name="noSpaceBeforeToken">
-    </test>
+    <test name="noSpaceBeforeToken"></test>
 
     <!-- Check that there is no space after some tokens -->
-    <test name="noSpaceAfterToken">
-    </test>
+    <test name="noSpaceAfterToken"></test>
 
 
     <!--  ****************  -->
@@ -241,7 +229,7 @@
     <!-- All arguments with default values should be at the end -->
     <test name="defaultValuesOrder"/>
 
-     <!-- Check for silenced errors before function calls -->
+    <!-- Check for silenced errors before function calls -->
     <test name="checkSilencedError">
         <exception value="chmod"/>
         <exception value="ldap_bind"/>
@@ -251,36 +239,28 @@
     </test>
 
     <!-- Check for encapsed variables inside a string -->
-    <test name="encapsedVariablesInsideString">
-    </test>
+    <test name="encapsedVariablesInsideString"></test>
 
     <!-- Use boolean operators instead of logical operators -->
-    <test name="useBooleanOperators">
-    </test>
+    <test name="useBooleanOperators"></test>
 
     <!-- Check for empty blocks -->
-    <test name="checkEmptyBlock">
-    </test>
+    <!--<test name="checkEmptyBlock"></test> -->
 
     <!-- Check for empty statements -->
-    <test name="checkEmptyStatement">
-    </test>
+    <test name="checkEmptyStatement"></test>
 
     <!-- Check for the presence of heredoc -->
-    <test name="checkHeredoc">
-    </test>
+    <test name="checkHeredoc"></test>
 
     <!-- Check for braces around code blocks (if, else, elseif, do, while, for, foreach) -->
-    <test name="needBraces">
-    </test>
+    <test name="needBraces"></test>
 
     <!-- Switch need a default value -->
-    <test name="switchNeedDefault">
-    </test>
+    <test name="switchNeedDefault"></test>
 
     <!-- Switch default value should be at the end -->
-    <test name="switchDefaultOrder">
-    </test>
+    <test name="switchDefaultOrder"></test>
 
     <!-- Avoid using unary operators (++) inside a control statement -->
     <test name="checkUnaryOperator">
@@ -288,10 +268,9 @@
     </test>
 
     <!-- Only one class declaration per PHP file -->
-    <test name="oneClassPerFile">
-    </test>
+    <test name="oneClassPerFile"></test>
 
-     <!-- Detect empty files -->
+    <!-- Detect empty files -->
     <test name="checkEmptyFile"/>
 
 
@@ -300,8 +279,7 @@
     <!--  ****************  -->
 
     <!-- Detect unused code (after return or throw) -->
-    <test name="checkUnusedCode">
-    </test>
+    <test name="checkUnusedCode"></test>
 
 
     <!--  *******************  -->
@@ -309,8 +287,7 @@
     <!--  *******************  -->
 
     <!-- Avoid using a count/sizeof function inside a loop -->
-    <test name="functionInsideLoop">
-    </test>
+    <test name="functionInsideLoop"></test>
 
 
     <!--  *******************  -->
@@ -330,9 +307,9 @@
         <deprecated old="define_syslog_variables" new="none" version="5.4"/>
         <deprecated old="dl" new="extension_loaded" version="5.3"/>
         <deprecated old="ereg_replace" new="preg_replace('@'.$pattern.'@', $string)" version="5.3"/>
-        <deprecated old="ereg" new="preg_match('@'.$pattern.'@', $string)"  version="5.3"/>
+        <deprecated old="ereg" new="preg_match('@'.$pattern.'@', $string)" version="5.3"/>
         <deprecated old="eregi_replace" new="preg_replace('@'.$pattern.'@i', $string)" version="5.3"/>
-        <deprecated old="eregi" new="preg_match('@'.$pattern.'@i', $string)"  version="5.3"/>
+        <deprecated old="eregi" new="preg_match('@'.$pattern.'@i', $string)" version="5.3"/>
         <deprecated old="import_request_variables" new="none" version="5.4"/>
         <deprecated old="magic_quotes_runtime" new="none" version="5.3"/>
         <deprecated old="mcrypt_generic_end" new="mcrypt_generic_deinit" version="5.4"/>
@@ -351,7 +328,8 @@
         <deprecated old="session_unregister" new="$_SESSION" version="5.3"/>
         <deprecated old="set_magic_quotes_runtime" new="none" version="5.3"/>
         <deprecated old="set_socket_blocking" new="stream_set_blocking" version="5.3"/>
-        <deprecated old="split" new="explode($pattern, $string) or preg_split('@'.$pattern.'@', $string)" version="5.3"/>
+        <deprecated old="split" new="explode($pattern, $string) or preg_split('@'.$pattern.'@', $string)"
+            version="5.3"/>
         <deprecated old="spliti" new="preg_split('@'.$pattern.'@i', $string)" version="5.3"/>
         <deprecated old="sql_regcase" new="none" version="5.3"/>
     </test>

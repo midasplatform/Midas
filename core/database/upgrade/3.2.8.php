@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Upgrade 3.2.8 is a sentinel upgrade
- */
+/** Upgrade the core to version 3.2.8. */
 class Upgrade_3_2_8 extends MIDASUpgrade
 {
 }

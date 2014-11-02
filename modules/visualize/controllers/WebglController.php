@@ -76,7 +76,7 @@ class Visualize_WebglController extends Visualize_AppController
             $data[$jsFile->getName()]['red'] = 192 / 255;
             $data[$jsFile->getName()]['green'] = 192 / 255;
             $data[$jsFile->getName()]['blue'] = 195 / 255;
-            $data[$jsFile->getName()]['hexa'] = $this->_rgb2hex((int)(192 * 255), (int)(192 * 255), (int)(192 * 255));
+            $data[$jsFile->getName()]['hexa'] = $this->_rgb2hex((int) (192 * 255), (int) (192 * 255), (int) (192 * 255));
             $data[$jsFile->getName()]['name'] = "";
         }
         $this->view->data = JsonComponent::encode(array('webroot' => $this->view->webroot, 'objects' => $data));

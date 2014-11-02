@@ -18,6 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the core to version 3.2.0. */
 class Upgrade_3_2_0 extends MIDASUpgrade
 {
 }

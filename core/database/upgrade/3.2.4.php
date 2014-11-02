@@ -19,11 +19,13 @@
 =========================================================================*/
 
 /**
- * Adds a table that will allow an ip to be locked during download
- * so that a single ip cannot flood the server with downloads.
+ * Upgrade the core to version 3.2.4. Add a table that will allow an IP address
+ * to be locked during download so that a single IP address cannot flood the
+ * server with downloads.
  */
 class Upgrade_3_2_4 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $this->db->query(
@@ -38,6 +40,7 @@ class Upgrade_3_2_4 extends MIDASUpgrade
         );
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $this->db->query(

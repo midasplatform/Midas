@@ -105,7 +105,7 @@ class ApihelperComponent extends AppComponent
             }
         }
 
-        $revisionNumber = (int)$revisionNumber;
+        $revisionNumber = (int) $revisionNumber;
         if (!is_int($revisionNumber) || $revisionNumber < 1) {
             throw new Exception(
                 "Revision Numbers must be integers greater than 0.".$revisionNumber,
@@ -217,7 +217,7 @@ class ApihelperComponent extends AppComponent
      */
     public function parseMetadataTuples($args)
     {
-        $count = (int)$args['count'];
+        $count = (int) $args['count'];
         if (!is_int($count) || $count < 1) {
             throw new Exception("Count must be an integer greater than 0.", MIDAS_INVALID_PARAMETER);
         }

@@ -18,10 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
-define("MIDAS_RESOURCE_BITSTREAM", 0);
-define("MIDAS_RESOURCE_ITEM", 1);
-define("MIDAS_RESOURCE_USER", 2);
-define("MIDAS_RESOURCE_REVISION", 3);
-define("MIDAS_RESOURCE_FOLDER", 4);
-define("MIDAS_RESOURCE_ASSETSTORE", 5);
-define("MIDAS_RESOURCE_COMMUNITY", 6);
+define('MIDAS_RESOURCE_BITSTREAM', 0);
+define('MIDAS_RESOURCE_ITEM', 1);
+define('MIDAS_RESOURCE_USER', 2);
+define('MIDAS_RESOURCE_REVISION', 3);
+define('MIDAS_RESOURCE_FOLDER', 4);
+define('MIDAS_RESOURCE_ASSETSTORE', 5);
+define('MIDAS_RESOURCE_COMMUNITY', 6);

@@ -18,8 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the core to version 3.1.4. */
 class Upgrade_3_1_4 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $sql = "CREATE TABLE IF NOT EXISTS `setting` (
@@ -32,6 +34,7 @@ class Upgrade_3_1_4 extends MIDASUpgrade
         $this->db->query($sql);
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $sql = "CREATE TABLE  setting (

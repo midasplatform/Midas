@@ -31,14 +31,14 @@ class ShareController extends AppController
         'Itempolicyuser',
         'User',
         'Community',
-        'Progress'
+        'Progress',
     );
     public $_daos = array();
     public $_components = array('Policy');
     public $_forms = array();
 
     /** ajax dialog for managing permissions */
-    function dialogAction()
+    public function dialogAction()
     {
         $this->disableLayout();
         $type = $this->getParam('type');
@@ -115,6 +115,7 @@ class ShareController extends AppController
                     }
                 }
                 echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+
                 return;
             }
             if (isset($removePolicy)) {
@@ -144,6 +145,7 @@ class ShareController extends AppController
                     }
                 }
                 echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+
                 return;
             }
             if (isset($createPolicy)) {
@@ -151,7 +153,7 @@ class ShareController extends AppController
                 $newPolicyId = $this->getParam('newPolicyId');
                 if ($newPolicyType == 'community') {
                     $newPolicy = $this->Community->load($newPolicyId)->getMemberGroup();
-                } else if ($newPolicyType == 'group') {
+                } elseif ($newPolicyType == 'group') {
                     $newPolicy = $this->Group->load($newPolicyId);
                 } else {
                     $newPolicy = $this->User->load($newPolicyId);
@@ -160,23 +162,26 @@ class ShareController extends AppController
                 if ($type == 'folder') {
                     if ($newPolicy instanceof GroupDao) {
                         $this->Folderpolicygroup->createPolicy($newPolicy, $element, MIDAS_POLICY_READ);
-                    } else if ($newPolicy instanceof UserDao) {
+                    } elseif ($newPolicy instanceof UserDao) {
                         $this->Folderpolicyuser->createPolicy($newPolicy, $element, MIDAS_POLICY_READ);
                     } else {
                         echo JsonComponent::encode(array(false, $this->t('Error')));
+
                         return;
                     }
                 } else {
                     if ($newPolicy instanceof GroupDao) {
                         $this->Itempolicygroup->createPolicy($newPolicy, $element, MIDAS_POLICY_READ);
-                    } else if ($newPolicy instanceof UserDao) {
+                    } elseif ($newPolicy instanceof UserDao) {
                         $this->Itempolicyuser->createPolicy($newPolicy, $element, MIDAS_POLICY_READ);
                     } else {
                         echo JsonComponent::encode(array(false, $this->t('Error')));
+
                         return;
                     }
                 }
                 echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+
                 return;
             }
             if (isset($setPublic)) {
@@ -187,6 +192,7 @@ class ShareController extends AppController
                     $this->Itempolicygroup->createPolicy($anonymousGroup, $element, MIDAS_POLICY_READ);
                 }
                 echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+
                 return;
             }
             if (isset($setPrivate)) {
@@ -199,6 +205,7 @@ class ShareController extends AppController
                     $this->Itempolicygroup->delete($policyDao);
                 }
                 echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+
                 return;
             }
         }
@@ -250,7 +257,7 @@ class ShareController extends AppController
     } //end dialogAction
 
     /** controller for applying policies recursively to a folder */
-    function applyrecursivedialogAction()
+    public function applyrecursivedialogAction()
     {
         $this->disableLayout();
         $folderId = $this->getParam('folderId');
@@ -261,6 +268,7 @@ class ShareController extends AppController
             $folder = $this->Folder->load($folderId);
             if (!$folder) {
                 echo JsonComponent::encode(array(false, $this->t('Invalid folder id')));
+
                 return;
             }
             if ($this->progressDao) {
@@ -272,6 +280,7 @@ class ShareController extends AppController
             $results = $this->Component->Policy->applyPoliciesRecursive($folder, $this->userSession->Dao,
                 $this->progressDao);
             echo JsonComponent::encode(array(true, $results));
+
             return;
         }
     }
@@ -282,7 +291,7 @@ class ShareController extends AppController
      * @param type The type (folder | item)
      * @param id The id of the resource
      */
-    function linksAction()
+    public function linksAction()
     {
         $this->disableLayout();
         $type = $this->getParam('type');

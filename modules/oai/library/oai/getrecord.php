@@ -107,7 +107,7 @@ if ($element) {
     $revision = $itemModel->getLastRevision($element);
     $metadata = $itemRevisionModel->getMetadata($revision);
 
-    include(BASE_PATH.'/modules/oai/library/oai/'.$inc_record);
+    include BASE_PATH.'/modules/oai/library/oai/'.$inc_record;
 
     $output .= '  </record>'."\n";
 } else {

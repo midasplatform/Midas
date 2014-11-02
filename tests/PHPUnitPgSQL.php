@@ -53,15 +53,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-$base_path = realpath(dirname(__FILE__)).'/..';
-require_once $base_path.'/vendor/autoload.php';
+$basePath = realpath(dirname(__FILE__)).'/..';
+require_once $basePath.'/vendor/autoload.php';
 
-if (!file_exists($base_path.'/tests/configs/pgsql.ini')) {
+if (!file_exists($basePath.'/tests/configs/pgsql.ini')) {
     echo 'Failures: 1 Unable to find config';
     exit();
 }
 
-copy($base_path.'/tests/configs/pgsql.ini', $base_path.'/tests/configs/lock.pgsql.ini');
+copy($basePath.'/tests/configs/pgsql.ini', $basePath.'/tests/configs/lock.pgsql.ini');
 
 define('PHPUnit_MAIN_METHOD', 'PHPUnit_TextUI_Command::main');
 

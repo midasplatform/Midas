@@ -18,14 +18,17 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the core to version 3.0.13. */
 class Upgrade_3_0_13 extends MIDASUpgrade
 {
+    /** Pre database upgrade. */
     public function preUpgrade()
     {
         $this->addTableField('metadatadocumentvalue', 'metadatavalue_id', 'bigint(20)', 'serial', false);
         $this->addTableField('metadatavalue', 'metadatavalue_id', 'bigint(20)', 'serial', false);
     }
 
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $this->addTablePrimaryKey('metadatadocumentvalue', 'metadatavalue_id');

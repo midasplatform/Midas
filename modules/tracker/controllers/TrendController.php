@@ -138,12 +138,12 @@ class Tracker_TrendController extends Tracker_AppController
         $this->view->json['tracker']['trendIds'] = $this->getParam('trendId');
 
         if (isset($yMin) && isset($yMax)) {
-            $this->view->json['tracker']['yMin'] = (float)$yMin;
-            $this->view->json['tracker']['yMax'] = (float)$yMax;
+            $this->view->json['tracker']['yMin'] = (float) $yMin;
+            $this->view->json['tracker']['yMax'] = (float) $yMax;
         }
         if (isset($y2Min) && isset($y2Max)) {
-            $this->view->json['tracker']['y2Min'] = (float)$y2Min;
-            $this->view->json['tracker']['y2Max'] = (float)$y2Max;
+            $this->view->json['tracker']['y2Min'] = (float) $y2Min;
+            $this->view->json['tracker']['y2Max'] = (float) $y2Max;
         }
     }
 
@@ -385,7 +385,7 @@ class Tracker_TrendController extends Tracker_AppController
             }
             $threshold = MidasLoader::newDao('ThresholdNotificationDao', $this->moduleName);
             $threshold->setTrendId($trend->getKey());
-            $threshold->setValue((float)$value);
+            $threshold->setValue((float) $value);
             $threshold->setComparison($operator);
             $threshold->setAction(MIDAS_TRACKER_EMAIL_USER);
             $threshold->setRecipientId($this->userSession->Dao->getKey());

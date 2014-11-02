@@ -18,8 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the core to version 3.0.16. */
 class Upgrade_3_0_16 extends MIDASUpgrade
 {
+    /** Post database upgrade. */
     public function postUpgrade()
     {
         $this->renameTableField('item', 'date', 'date_update', 'timestamp', 'timestamp without time zone', false);

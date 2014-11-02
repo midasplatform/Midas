@@ -37,9 +37,7 @@ if ($errors != '') {
     oai_exit();
 }
 
-
 $output .= "  <ListSets>\n";
-
 
 $collections = $folderModel->getAll();
 if (empty($collections)) {
@@ -60,7 +58,6 @@ foreach ($collections as $collection) {
     xmlset($setSpecs, $name, $description);
 }
 $output .= "  </ListSets>\n";
-
 
 function xmlset($setSpecs, $name, $desc)
 {

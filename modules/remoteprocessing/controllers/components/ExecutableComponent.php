@@ -201,7 +201,7 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
             if (isset($parametersList[$key]) && !empty($parametersList[$key])) {
                 $return = $return.substr($parametersList[$key], 0, 6)."-";
                 $command = str_replace('"', '', $command);
-                $command = (string)str_replace(' ', '', $command);
+                $command = (string) str_replace(' ', '', $command);
                 $return = $return.$command."_";
             }
         }

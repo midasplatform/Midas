@@ -18,14 +18,17 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the core to version 3.0.2. */
 class Upgrade_3_0_2 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $sql = "ALTER TABLE itemrevision ADD COLUMN license integer DEFAULT 0; ";
         $this->db->query($sql);
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $sql = "ALTER TABLE itemrevision ADD COLUMN license integer NOT NULL  DEFAULT '0' ; ";

@@ -18,5 +18,5 @@
  limitations under the License.
 =========================================================================*/
 
-define("MIDAS_FOLDER_USERPARENT", -1);
-define("MIDAS_FOLDER_COMMUNITYPARENT", -2);
+define('MIDAS_FOLDER_USERPARENT', -1);
+define('MIDAS_FOLDER_COMMUNITYPARENT', -2);

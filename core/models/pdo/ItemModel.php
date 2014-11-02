@@ -325,7 +325,7 @@ class ItemModel extends ItemModelBase
         // explicitly typecast the itemId to a string, for postgres
         $sql = $this->database->select()->setIntegrityCheck(false)->from(array('p' => 'feed'))->where(
             'ressource = ?',
-            (string)$itemdao->getKey()
+            (string) $itemdao->getKey()
         );
         $rowset = $this->database->fetchAll($sql);
 

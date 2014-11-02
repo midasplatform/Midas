@@ -137,7 +137,7 @@ class Solr_Notification extends ApiEnabled_Notification
             $response = $index->search(
                 $solrQuery,
                 0,
-                ((int)$limit) * 3,
+                ((int) $limit) * 3,
                 array('fl' => '*,score')
             ); // multiply limit by 3 to allow some room for policy filtering
             UtilityComponent::endIgnoreWarnings();
@@ -247,7 +247,7 @@ class Solr_Notification extends ApiEnabled_Notification
             $response = $index->search(
                 $solrQuery,
                 0,
-                ((int)$limit) * 3,
+                ((int) $limit) * 3,
                 array('fl' => '*,score')
             ); // multiply limit by 3 to allow some room for policy filtering
             UtilityComponent::endIgnoreWarnings();

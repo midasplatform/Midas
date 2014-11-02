@@ -170,19 +170,19 @@ class Remoteprocessing_JobComponent extends AppComponent
             return;
         }
         $return = array();
-        $return['job'] = $jobModel->load((int)$xml->attributes()->id[0]);
-        $return['params'] = JsonComponent::decode((string)$xml->JobParameters);
+        $return['job'] = $jobModel->load((int) $xml->attributes()->id[0]);
+        $return['params'] = JsonComponent::decode((string) $xml->JobParameters);
         $return['process'] = array();
         $i = 1;
         foreach ($xml->Process as $process) {
             $tmp = array();
-            $tmp['status'] = (string)$process->attributes()->status[0];
-            $tmp['command'] = trim((string)$process->Command);
-            $tmp['stderr'] = trim((string)$process->Error);
-            $tmp['stdout'] = trim((string)$process->Output);
+            $tmp['status'] = (string) $process->attributes()->status[0];
+            $tmp['command'] = trim((string) $process->Command);
+            $tmp['stderr'] = trim((string) $process->Error);
+            $tmp['stdout'] = trim((string) $process->Output);
             $tmp['xmlStdout'] = simplexml_load_string($tmp['stdout'], 'SimpleXMLElement', LIBXML_NOCDATA);
-            $tmp['time'] = (float)trim(
-                str_replace("s", "", (string)$process->ExecutionTime)
+            $tmp['time'] = (float) trim(
+                str_replace("s", "", (string) $process->ExecutionTime)
             ); // convert in milliseconds
             $tmp['output'] = array();
             $tmp['parameters'] = array();

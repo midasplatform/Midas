@@ -106,7 +106,7 @@ class HttpuploadComponent extends AppComponent
         if (!array_key_exists('length', $args)) {
             throw new Exception('Parameter length is not defined', MIDAS_HTTPUPLOAD_PARAM_UNDEFINED);
         }
-        $length = (float)($args['length']);
+        $length = (float) ($args['length']);
 
         if ($this->testingEnable && array_key_exists('localinput', $args)) {
             $localinput = array_key_exists('localinput', $args) ? $args['localinput'] : false;

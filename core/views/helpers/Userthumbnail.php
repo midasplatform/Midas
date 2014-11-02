@@ -18,21 +18,22 @@
  limitations under the License.
 =========================================================================*/
 
+/** User thumbnail view helper. */
 class Zend_View_Helper_Userthumbnail
 {
-    /** translation helper */
+    /** User thumbnail view helper. */
     public function userthumbnail($thumbnail, $id = '')
     {
         if (empty($thumbnail)) {
-            echo "<img id='{$id}' class='thumbnailSmall' "."src='{$this->view->coreWebroot}/public/images/icons/unknownUser.png'"."alt=''/>";
+            echo '<img id="'.$id.'" class="thumbnailSmall" src="'.$this->view->coreWebroot.'/public/images/icons/unknownUser.png" alt="" />';
         } elseif (preg_match("@^https?://@", $thumbnail)) {
-            echo "<img id='{$id}' class='thumbnailSmall' src='{$thumbnail}' alt=''/>";
+            echo '<img id="'.$id.'" class="thumbnailSmall" src="'.$thumbnail.'" alt="" />';
         } else {
-            echo "<img id='{$id}' class='thumbnailSmall' src='{$this->view->webroot}/{$thumbnail}' alt=''/>";
+            echo '<img id="'.$id.'" class="thumbnailSmall" src="'.$this->view->webroot.'/'.$thumbnail.'" alt="" />';
         }
     }
 
-    /** Set view */
+    /** Set the view. */
     public function setView(Zend_View_Interface $view)
     {
         $this->view = $view;

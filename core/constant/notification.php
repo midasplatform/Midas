@@ -18,6 +18,6 @@
  limitations under the License.
 =========================================================================*/
 
-define("MIDAS_EVENT_PRIORITY_NORMAL", 1);
-define("MIDAS_EVENT_PRIORITY_LOW", 0);
-define("MIDAS_EVENT_PRIORITY_HIGH", 2);
+define('MIDAS_EVENT_PRIORITY_NORMAL', 1);
+define('MIDAS_EVENT_PRIORITY_LOW', 0);
+define('MIDAS_EVENT_PRIORITY_HIGH', 2);

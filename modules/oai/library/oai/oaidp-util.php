@@ -21,7 +21,8 @@
 function get_token()
 {
     list($usec, $sec) = explode(" ", microtime());
-    return ((int)($usec * 1000) + (int)($sec * 1000));
+
+    return ((int) ($usec * 1000) + (int) ($sec * 1000));
 }
 
 function oai_error($code, $argument = '', $value = '')
@@ -109,6 +110,7 @@ function oai_error($code, $argument = '', $value = '')
         $request = $request_err;
     }
     $error = ' <error code="'.xmlstr($code, 'iso8859-1', false).'">'.xmlstr($text, 'iso8859-1', false)."</error>\n";
+
     return $error;
 }
 
@@ -151,6 +153,7 @@ function xmlrecord($sqlrecord, $element, $attr = '', $indent = 0)
                 $str .= str_pad('', $indent).'<'.$element.$attr.'>'.xmlstr($val, $charset,
                         $xmlescaped).'</'.$element.">\n";
             }
+
             return $str;
         } else {
             return str_pad('', $indent).'<'.$element.$attr.'>'.xmlstr($sqlrecord, $charset,
@@ -170,9 +173,11 @@ function xmlelement($element, $attr = '', &$indent, $open = true)
     }
     if ($open) {
         $indent += 2;
+
         return str_pad('', $indent).'<'.$element.$attr.'>'."\n";
     } else {
         $indent -= 2;
+
         return str_pad('', $indent).'</'.$element.'>'."\n";
     }
 }
@@ -192,6 +197,7 @@ function xmlformat($record, $element, $attr = '', $indent = 0)
         foreach ($record as $val) {
             $str .= str_pad('', $indent).'<'.$element.$attr.'>'.xmlstr($val, $charset, $xmlescaped).'</'.$element.">\n";
         }
+
         return $str;
     } elseif ($record != '') {
         return str_pad('', $indent).'<'.$element.$attr.'>'.xmlstr($record, $charset, $xmlescaped).'</'.$element.">\n";
@@ -214,31 +220,31 @@ function xmlgetinfo($dc_type_id, $value)
     }
     if ($dc_type_id == 9) {
         $output .= xmlrecord($value, 'dc:creator', '', $indent);
-    } else if ($dc_type_id > 9 && $dc_type_id < 17) {
+    } elseif ($dc_type_id > 9 && $dc_type_id < 17) {
         $output .= xmlrecord($value, 'dc:date', '', $indent);
-    } else if ($dc_type_id > 16 && $dc_type_id < 26) {
+    } elseif ($dc_type_id > 16 && $dc_type_id < 26) {
         $output .= xmlrecord($value, 'dc:identifier', '', $indent);
-    } else if ($dc_type_id > 25 && $dc_type_id < 33) {
+    } elseif ($dc_type_id > 25 && $dc_type_id < 33) {
         $output .= xmlrecord($value, 'dc:description', '', $indent);
-    } else if ($dc_type_id > 32 && $dc_type_id < 37) {
+    } elseif ($dc_type_id > 32 && $dc_type_id < 37) {
         $output .= xmlrecord($value, 'dc:format', '', $indent);
-    } else if ($dc_type_id > 36 && $dc_type_id < 39) {
+    } elseif ($dc_type_id > 36 && $dc_type_id < 39) {
         $output .= xmlrecord($value, 'dc:language', '', $indent);
-    } else if ($dc_type_id == 39) {
+    } elseif ($dc_type_id == 39) {
         $output .= xmlrecord($value, 'dc:publisher', '', $indent);
-    } else if ($dc_type_id > 39 && $dc_type_id < 53) {
+    } elseif ($dc_type_id > 39 && $dc_type_id < 53) {
         $output .= xmlrecord($value, 'dc:relation', '', $indent);
-    } else if ($dc_type_id > 52 && $dc_type_id < 55) {
+    } elseif ($dc_type_id > 52 && $dc_type_id < 55) {
         $output .= xmlrecord($value, 'dc:rights', '', $indent);
-    } else if ($dc_type_id > 55 && $dc_type_id < 57) {
+    } elseif ($dc_type_id > 55 && $dc_type_id < 57) {
         $output .= xmlrecord($value, 'dc:source', '', $indent);
-    } else if ($dc_type_id > 56 && $dc_type_id < 64) {
+    } elseif ($dc_type_id > 56 && $dc_type_id < 64) {
         $output .= xmlrecord($value, 'dc:subject', '', $indent);
-    } else if ($dc_type_id > 63 && $dc_type_id < 66) {
+    } elseif ($dc_type_id > 63 && $dc_type_id < 66) {
         $output .= xmlrecord($value, 'dc:title', '', $indent);
-    } else if ($dc_type_id == 66) {
+    } elseif ($dc_type_id == 66) {
         $output .= xmlrecord($value, 'dc:type', '', $indent);
-    } else if ($dc_type_id > 66 && $dc_type_id < 69) {
+    } elseif ($dc_type_id > 66 && $dc_type_id < 69) {
         $output .= xmlrecord($value, 'dc:type', '', $indent);
     }
 }
@@ -300,16 +306,18 @@ function date2UTCdatestamp($date)
                         // add, subtract timezone offset to get GMT , 3600 sec = 1 h
                         if ($matches[14] == '-') {
                             // we are before GMT, thus we need to add
-                            $timestamp += (int)$tz * 3600;
+                            $timestamp += (int) $tz * 3600;
                         } else {
                             // we are after GMT, thus we need to subtract
-                            $timestamp -= (int)$tz * 3600;
+                            $timestamp -= (int) $tz * 3600;
                         }
+
                         return strftime("%Y-%m-%dT%H:%M:%SZ", $timestamp);
                     }
                 } elseif ($matches[14] == 'Z') {
                     return str_replace(' ', 'T', $date);
                 }
+
                 return str_replace(' ', 'T', $date).'Z';
             } else {
                 // date is date format
@@ -322,6 +330,7 @@ function date2UTCdatestamp($date)
             if (strstr($date, ' ')) {
                 // date is datetime format
                 list($date, $time) = explode(" ", $date);
+
                 return $date;
             } else {
                 return $date;
@@ -329,7 +338,7 @@ function date2UTCdatestamp($date)
             break;
 
         default:
-            die("Unknown granularity!");
+            exit("Unknown granularity!");
     }
 }
 
@@ -349,10 +358,12 @@ function checkDateFormat($date)
             return 1;
         } else {
             $message = "Invalid Date: $date is not a valid date.";
+
             return 0;
         }
     } else {
         $message = "Invalid Date Format: $date does not comply to the date format $granularity.";
+
         return 0;
     }
 }
@@ -417,7 +428,7 @@ function php_is_at_least($version)
 
 function is_valid_uri($url)
 {
-    return ((bool)preg_match("'^[^:]+:(?://)?(?:[a-z_0-9-]+[\.]{1})*(?:[a-z_0-9-]+\.)[a-z]{2,3}.*$'i", $url));
+    return ((bool) preg_match("'^[^:]+:(?://)?(?:[a-z_0-9-]+[\.]{1})*(?:[a-z_0-9-]+\.)[a-z]{2,3}.*$'i", $url));
 }
 
 function metadataHeader($prefix)

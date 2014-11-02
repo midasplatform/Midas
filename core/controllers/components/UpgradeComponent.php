@@ -121,7 +121,7 @@ class UpgradeComponent extends AppComponent
             throw new Zend_Exception("The version format shoud be 1.2.5. You set:".$text);
         }
 
-        return (int)$array[0] * 1000000 + (int)$array[1] * 1000 + (int)$array[2];
+        return (int) $array[0] * 1000000 + (int) $array[1] * 1000 + (int) $array[2];
     }
 
     /** upgrade */

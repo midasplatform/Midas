@@ -190,7 +190,7 @@ class BreadcrumbComponent extends AppComponent
         }
         $text = isset($node['maxLength']) ? UtilityComponent::sliceName(
             $node['text'],
-            (int)$node['maxLength']
+            (int) $node['maxLength']
         ) : $node['text'];
         $str = '<li class="pathCustom"><img alt="" src="'.$node['icon'].'" /><span>';
         if (isset($node['href'])) {

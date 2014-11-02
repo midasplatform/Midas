@@ -56,7 +56,7 @@ class FolderpolicygroupModel extends FolderpolicygroupModelBase
         $sql->where('fpg.folder_id = ?', $folder->getFolderId());
         $sql->where('fpg.group_id = ?', MIDAS_GROUP_ANONYMOUS_KEY);
         $row = $this->database->fetchRow($sql);
-        $count = (int)$row['count'];
+        $count = (int) $row['count'];
 
         $folderModel = MidasLoader::loadModel('Folder');
         if ($count > 0) {

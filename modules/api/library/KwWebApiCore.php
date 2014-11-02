@@ -20,7 +20,7 @@
 
 require_once BASE_PATH.'/modules/api/library/KwUploadAPI.php';
 
-/** Midas API core functionnalities */
+/** Midas API core functionalities */
 abstract class KwWebApiCore
 {
     public $apiMethodPrefix = '';
@@ -39,8 +39,6 @@ abstract class KwWebApiCore
 
     public function __construct($apiSetup, $apicallbacks = false, $request_data = false)
     {
-        //$this->checkApiSetup($apiSetup);
-
         $this->apiMethodPrefix = KwWebApiCore::checkApiMethodPrefix($apiSetup['apiMethodPrefix']);
         $this->setCapabilities();
 
@@ -82,7 +80,6 @@ abstract class KwWebApiCore
         $this->apicallbacks[$this->apiMethodPrefix.'system.getCapabilities'] = 'this:getCapabilities';
         $this->apicallbacks[$this->apiMethodPrefix.'system.listMethods'] = 'this:listMethods';
         $this->apicallbacks[$this->apiMethodPrefix.'system.echo'] = 'this:apiEcho';
-        //$this->apicallbacks[$this->apiMethodPrefix.'system.multicall']     = 'this:multiCall';
     }
 
     /** Get the list of available methods */
@@ -152,7 +149,7 @@ abstract class KwWebApiCore
         return $result;
     }
 
-    /** Instanciate an error object using the provided $format (rest, xmlrpc, soap, ... ), $message and $error code*/
+    /** Instantiate an error object using the provided $format (rest, xmlrpc, soap, ... ), $message and $error code*/
     protected static function apiErrorFactory($format, $error, $message)
     {
         switch ($format) {
@@ -172,12 +169,12 @@ abstract class KwWebApiCore
                 return new KwWebApiXmlRpcError($error, $message);
                 break;
             default:
-                die("Unknown response format:".$format);
+                exit("Unknown response format: ".$format);
                 break;
         }
     }
 
-    /** Instanciate a Message object using the provided $format and data */
+    /** Instantiate a Message object using the provided $format and data */
     protected static function apiMessageFactory($format, $request_data = false)
     {
         switch ($format) {
@@ -197,7 +194,7 @@ abstract class KwWebApiCore
                 return new KwWebApiXmlRpcMessage($request_data);
                 break;
             default:
-                die("Unknown request format:".$format);
+                exit("Unknown request format: ".$format);
                 break;
         }
     }
@@ -231,7 +228,7 @@ class KwWebApiRestCore extends KwWebApiCore
         header('Content-Type: text/xml');
         header('Date: '.date('r'));
         echo $content;
-        exit;
+        exit();
     }
 
     protected function apiError($error, $message)
@@ -259,17 +256,9 @@ class KwWebApiXmlRpcCore extends KwWebApiCore
 
     protected function setCapabilities()
     {
-        // Initialises capabilities array
+        // Initializes capabilities array
         $this->capabilities = array(
             'xmlrpc' => array('specUrl' => 'http://www.xmlrpc.com/spec', 'specVersion' => 1),
-            //        'faults_interop' => array(
-//            'specUrl' => 'http://xmlrpc-epi.sourceforge.net/specs/rfc.fault_codes.php',
-//            'specVersion' => 20010516
-//        ),
-//        'system.multicall' => array(
-//            'specUrl' => 'http://www.xmlrpc.com/discuss/msgReader$1208',
-//            'specVersion' => 1
-//        ),
         );
     }
 
@@ -282,7 +271,7 @@ class KwWebApiXmlRpcCore extends KwWebApiCore
         header('Content-Type: text/xml');
         header('Date: '.date('r'));
         echo $content;
-        exit;
+        exit();
     }
 
     protected function apiError($error, $message)
@@ -321,7 +310,7 @@ class KwWebApiSoapCore extends KwWebApiCore
         header('Content-Type: text/xml');
         header('Date: '.date('r'));
         echo $content;
-        exit;
+        exit();
     }
 
     protected function apiError($error, $message)
@@ -387,7 +376,7 @@ class KwWebApiPhpSerialCore extends KwWebApiCore
     {
         // NOT IMPLEMENTED
         echo $content;
-        exit;
+        exit();
     }
 
     protected function apiError($error, $message)
@@ -484,7 +473,7 @@ class KwWebApiXmlRpcMessage extends KwWebApiMessage
         if (!$this->request_data) {
             // NOT IMPLEMENTED
         }
-        die('NOT IMPLEMENTED');
+        exit('NOT IMPLEMENTED');
     }
 
     public function output($result_data)
@@ -532,7 +521,7 @@ class KwWebApiSoapMessage extends KwWebApiMessage
         if (!$this->request_data) {
             // NOT IMPLEMENTED
         }
-        die('NOT IMPLEMENTED');
+        exit('NOT IMPLEMENTED');
     }
 
     public function output($result_data)
@@ -580,7 +569,7 @@ class KwWebApiJsonMessage extends KwWebApiMessage
         if (!$this->request_data) {
             // NOT IMPLEMENTED
         }
-        die('NOT IMPLEMENTED');
+        exit('NOT IMPLEMENTED');
     }
 
     public function output($result_data)
@@ -608,7 +597,7 @@ class KwWebApiPhpSerialMessage extends KwWebApiMessage
         if (!$this->request_data) {
             // NOT IMPLEMENTED
         }
-        die('NOT IMPLEMENTED');
+        exit('NOT IMPLEMENTED');
     }
 
     public function output($result_data)

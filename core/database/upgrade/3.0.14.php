@@ -18,8 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the core to version 3.0.14. */
 class Upgrade_3_0_14 extends MIDASUpgrade
 {
+    /** Pre database upgrade. */
     public function preUpgrade()
     {
         // Insert common metadata

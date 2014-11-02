@@ -18,9 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
-class  Zend_View_Helper_Duration
+/** Duration view helper. */
+class Zend_View_Helper_Duration
 {
-    /** translation helper */
+    /** Duration view helper. */
     public function duration($timestamp)
     {
         Zend_Loader::loadClass('DateComponent', BASE_PATH.'/core/controllers/components');
@@ -29,7 +30,7 @@ class  Zend_View_Helper_Duration
         return $component->duration($timestamp);
     }
 
-    /** Set view */
+    /** Set the view. */
     public function setView(Zend_View_Interface $view)
     {
         $this->view = $view;

@@ -18,8 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the core to version 3.2.1. */
 class Upgrade_3_2_1 extends MIDASUpgrade
 {
+    /** Post database upgrade. */
     public function postUpgrade()
     {
         $user = new Zend_Session_Namespace('Auth_User');

@@ -46,7 +46,7 @@ class UtilityComponent extends AppComponent
             // no numeric keys in our xml please!
             if (is_numeric($key)) {
                 // make string key...
-                $key = "unknownNode_".(string)$key;
+                $key = "unknownNode_".(string) $key;
             }
 
             // replace anything not alpha numeric
@@ -693,7 +693,7 @@ class UtilityComponent extends AppComponent
 
         // Seed RNG with microtime (for lack of something more difficult to guess)
         list($usec, $sec) = explode(' ', microtime());
-        srand((float)$sec + ((float)$usec * 100000));
+        srand((float) $sec + ((float) $usec * 100000));
 
         $salt = '';
         $max = strlen($alphabet) - 1;

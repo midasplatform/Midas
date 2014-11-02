@@ -18,8 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the scheduler module to version 1.0.1. */
 class Scheduler_Upgrade_1_0_1 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $sql = "CREATE TABLE IF NOT EXISTS `scheduler_job_log` (

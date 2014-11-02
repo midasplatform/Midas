@@ -31,7 +31,7 @@ class Javauploaddownload_UploadControllerTest extends ControllerTestCase
     }
 
     /** Test upload controller gethttpuploadoffset action */
-    function testGethttpuploadoffsetAction()
+    public function testGethttpuploadoffsetAction()
     {
         $this->setupDatabase(array('default'));
         $usersFile = $this->loadData('User', 'default');
@@ -62,7 +62,7 @@ class Javauploaddownload_UploadControllerTest extends ControllerTestCase
     }
 
     /** Test upload controller gethttpuploaduniqueidentifier action */
-    function testGethttpuploaduniqueidentifierAction()
+    public function testGethttpuploaduniqueidentifierAction()
     {
         $this->setupDatabase(array('default'));
         $usersFile = $this->loadData('User', 'default');
@@ -93,7 +93,7 @@ class Javauploaddownload_UploadControllerTest extends ControllerTestCase
     }
 
     /** Test upload controller processjavaupload action */
-    function testProcessjavauploadAction()
+    public function testProcessjavauploadAction()
     {
         $this->setupDatabase(array('default'));
         $usersFile = $this->loadData('User', 'default');

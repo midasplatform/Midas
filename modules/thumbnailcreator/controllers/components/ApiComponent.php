@@ -52,7 +52,6 @@ class Thumbnailcreator_ApiComponent extends AppComponent
      * @param itemId The item to set the thumbnail on
      * @return The Item object (with the new thumbnail_id) and the path where the newly created thumbnail is stored
      */
-
     public function createSmallThumbnail($args)
     {
         return $this->_callModuleApiMethod($args, 'createSmallThumbnail', 'item');

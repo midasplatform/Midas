@@ -18,6 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the statistics module to version 1.0.1. */
 class Statistics_Upgrade_1_0_1 extends MIDASUpgrade
 {
     /**

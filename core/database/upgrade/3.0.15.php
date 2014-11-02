@@ -18,8 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the core to version 3.0.15. */
 class Upgrade_3_0_15 extends MIDASUpgrade
 {
+    /** Post database upgrade. */
     public function postUpgrade()
     {
         $this->addTableField('user', 'city', 'varchar(100)', ' character varying(100)', null);

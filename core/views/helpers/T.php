@@ -18,9 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
+/** Translation view helper. */
 class Zend_View_Helper_T
 {
-    /** translation helper */
+    /** Translation view helper. */
     public function t($text)
     {
         Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
@@ -28,7 +29,7 @@ class Zend_View_Helper_T
         return InternationalizationComponent::translate($text);
     }
 
-    /** Set view */
+    /** Set the view. */
     public function setView(Zend_View_Interface $view)
     {
         $this->view = $view;

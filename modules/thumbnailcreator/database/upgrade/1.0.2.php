@@ -19,19 +19,21 @@
 =========================================================================*/
 
 /**
- * Moves all of our large item thumbnails into the default assetstore
- * as bitstreams.
+ * Upgrade the thumbnailcreator module to version 1.0.2. Move large item
+ * thumbnails into the default asset store as bitstreams.
  */
 class Thumbnailcreator_Upgrade_1_0_2 extends MIDASUpgrade
 {
     public $assetstore;
 
+    /** Pre database upgrade. */
     public function preUpgrade()
     {
         $assetstoreModel = MidasLoader::loadModel('Assetstore');
         $this->assetstore = $assetstoreModel->getDefault();
     }
 
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $this->db->query(
@@ -43,6 +45,7 @@ class Thumbnailcreator_Upgrade_1_0_2 extends MIDASUpgrade
         $this->db->query("ALTER TABLE `thumbnailcreator_itemthumbnail` DROP `thumbnail`");
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $this->db->query("ALTER TABLE thumbnailcreator_itemthumbnail ADD COLUMN thumbnail_id bigint NULL DEFAULT NULL");

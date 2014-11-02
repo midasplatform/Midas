@@ -18,9 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
-class  Zend_View_Helper_Dateago
+/** Date ago view helper. */
+class Zend_View_Helper_Dateago
 {
-    /** translation helper */
+    /** Date ago view helper. */
     public function dateago($timestamp)
     {
         Zend_Loader::loadClass('DateComponent', BASE_PATH.'/core/controllers/components');
@@ -29,7 +30,7 @@ class  Zend_View_Helper_Dateago
         return $component->ago($timestamp);
     }
 
-    /** Set view */
+    /** Set the view. */
     public function setView(Zend_View_Interface $view)
     {
         $this->view = $view;

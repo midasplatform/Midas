@@ -18,11 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Upgrade 3.2.7 adds the progress table
- */
+/** Upgrade the core to version 3.2.7. Add the progress table. */
 class Upgrade_3_2_7 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $this->db->query(
@@ -38,6 +37,7 @@ class Upgrade_3_2_7 extends MIDASUpgrade
         );
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $this->db->query(

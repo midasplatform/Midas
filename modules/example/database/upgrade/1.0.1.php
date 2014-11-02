@@ -18,14 +18,17 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the example module to version 1.0.1. */
 class Example_Upgrade_1_0_1 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $sql = "ALTER TABLE example_wallet ADD COLUMN credit_card_count int(10) NOT NULL;";
         $this->db->query($sql);
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $sql = "ALTER TABLE example_wallet ADD COLUMN credit_card_count integer NOT NULL;";

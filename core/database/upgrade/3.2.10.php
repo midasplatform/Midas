@@ -18,11 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Upgrade 3.2.10 adds newuserinvite table
- */
+/** Upgrade the core to version 3.2.10. Add the newuserinvite table. */
 class Upgrade_3_2_10 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $this->db->query(
@@ -52,6 +51,7 @@ class Upgrade_3_2_10 extends MIDASUpgrade
         $this->db->query("ALTER TABLE `communityinvitation` ADD COLUMN `group_id` bigint(20) NULL DEFAULT NULL");
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $this->db->query(

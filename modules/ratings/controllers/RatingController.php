@@ -43,7 +43,7 @@ class Ratings_RatingController extends Ratings_AppController
         if (!$item) {
             throw new Zend_Exception('Not a valid itemId');
         }
-        $rating = (int)$this->getParam('rating');
+        $rating = (int) $this->getParam('rating');
         if ($rating < 0 || $rating > 5) {
             throw new Zend_Exception('Rating must be 0-5');
         }

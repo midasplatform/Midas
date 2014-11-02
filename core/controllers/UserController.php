@@ -193,7 +193,7 @@ class UserController extends AppController
         }
         $form = $this->Form->User->createRegisterForm();
         if ($this->_request->isPost()) {
-            $nopass = (bool)$this->getParam('nopassword');
+            $nopass = (bool) $this->getParam('nopassword');
             if ($adminCreate && $nopass) {
                 $form->populate($this->getRequest()->getPost());
                 $passwd = UtilityComponent::generateRandomString(32);
@@ -783,7 +783,7 @@ class UserController extends AppController
                 $userDao->setPrivacy($privacy);
                 if ($this->userSession->Dao->isAdmin() && $this->userSession->Dao->getKey() != $userDao->getKey()
                 ) {
-                    $adminStatus = (bool)$this->getParam('adminStatus');
+                    $adminStatus = (bool) $this->getParam('adminStatus');
                     $userDao->setAdmin($adminStatus ? 1 : 0);
                 }
                 $this->User->save($userDao);

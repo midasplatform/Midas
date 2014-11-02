@@ -18,8 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the core to version 3.1.2. */
 class Upgrade_3_1_2 extends MIDASUpgrade
 {
+    /** Post database upgrade. */
     public function postUpgrade()
     {
         $this->addTableField('user', 'dynamichelp', 'tinyint(4)', ' integer', 1);

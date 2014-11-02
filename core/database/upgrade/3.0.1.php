@@ -18,8 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the core to version 3.0.1. */
 class Upgrade_3_0_1 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $sql = "ALTER TABLE folderpolicygroup ADD COLUMN date timestamp DEFAULT CURRENT_TIMESTAMP(); ";
@@ -36,6 +38,7 @@ class Upgrade_3_0_1 extends MIDASUpgrade
         $this->db->query($sql);
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $sql = "ALTER TABLE folderpolicygroup ADD COLUMN date TIMESTAMP DEFAULT CURRENT_TIMESTAMP; ";

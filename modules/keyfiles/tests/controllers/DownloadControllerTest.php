@@ -20,50 +20,50 @@
 
 /** test keyfiles download controller */
 class Keyfiles_DownloadControllerTest extends ControllerTestCase
-  {
-  /** set up tests*/
+{
+    /** set up tests*/
   public function setUp()
-    {
-    $this->setupDatabase(array('default')); //core dataset
+  {
+      $this->setupDatabase(array('default')); //core dataset
     $this->enabledModules = array('keyfiles');
-    $this->_models = array('Bitstream', 'Item', 'User');
+      $this->_models = array('Bitstream', 'Item', 'User');
 
-    parent::setUp();
-    }
+      parent::setUp();
+  }
 
   /**
    * Test downloading of a single bitstream key file
    */
   public function testDownloadBitstreamKeyfile()
-    {
-    $usersFile = $this->loadData('User', 'default');
-    $bitstreamsFile = $this->loadData('Bitstream', 'default');
-    $userDao = $this->User->load($usersFile[2]->getKey());
-    $bitstreamDao = $this->Bitstream->load($bitstreamsFile[0]->getKey());
+  {
+      $usersFile = $this->loadData('User', 'default');
+      $bitstreamsFile = $this->loadData('Bitstream', 'default');
+      $userDao = $this->User->load($usersFile[2]->getKey());
+      $bitstreamDao = $this->Bitstream->load($bitstreamsFile[0]->getKey());
 
-    $url = '/keyfiles/download/bitstream?bitstreamId='.$bitstreamDao->getKey();
+      $url = '/keyfiles/download/bitstream?bitstreamId='.$bitstreamDao->getKey();
 
     // Should throw an exception for no bitstream parameter
     $this->dispatchUrI('/keyfiles/download/bitstream', null, true);
 
     // Make sure we get the checksum as the response
     $this->resetAll();
-    $this->dispatchUrI($url, $userDao);
-    $this->assertEquals($bitstreamDao->getChecksum(), $this->getBody());
-    }
+      $this->dispatchUrI($url, $userDao);
+      $this->assertEquals($bitstreamDao->getChecksum(), $this->getBody());
+  }
 
   /**
    * Test downloading of a recursive zip of keyfiles
    */
   public function testDownloadZip()
-    {
-    // Should throw an exception for no bitstream parameter
+  {
+      // Should throw an exception for no bitstream parameter
     $this->dispatchUrI('/keyfiles/download/batch', null, true);
 
     // Get some coverage on the batch controller
     $this->resetAll();
-    $this->dispatchUrI('/keyfiles/download/batch?items=1-2-3-&folders=1000', null);
-    $this->assertController('download');
-    $this->assertAction('batch');
-    }
+      $this->dispatchUrI('/keyfiles/download/batch?items=1-2-3-&folders=1000', null);
+      $this->assertController('download');
+      $this->assertAction('batch');
   }
+}

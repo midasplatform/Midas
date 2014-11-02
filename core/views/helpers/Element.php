@@ -38,8 +38,6 @@
  * @version    $Id: Partial.php 20096 2010-01-06 02:05:09Z bkarwin $
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-/** Zend_View_Helper_Abstract.php */
-// require_once 'Zend/View/Helper/Abstract.php';
 
 /**
  * Helper for rendering a template fragment in its own variable scope.
@@ -51,7 +49,7 @@
  */
 class Zend_View_Helper_Element extends Zend_View_Helper_Abstract
 {
-    /** element */
+    /** Element view helper. */
     public function element($name = null, $module = null, $model = null)
     {
         $view = $this->view;

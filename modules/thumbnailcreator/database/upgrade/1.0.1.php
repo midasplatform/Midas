@@ -19,11 +19,12 @@
 =========================================================================*/
 
 /**
- * Add a table that will store a separate thumbnail for an item
+ * Upgrade the thumbnailcreator module to version 1.0.1. Add a table that will
+ * store a separate thumbnail for an item.
  */
 class Thumbnailcreator_Upgrade_1_0_1 extends MIDASUpgrade
 {
-    /** Mysql upgrade */
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $this->db->query(
@@ -37,7 +38,7 @@ class Thumbnailcreator_Upgrade_1_0_1 extends MIDASUpgrade
         );
     }
 
-    /** Pgsql upgrade */
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $this->db->query(

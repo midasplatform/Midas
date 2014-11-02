@@ -217,7 +217,7 @@ class Api_CallGroupMethodsTest extends Api_CallMethodsTestCase
         $this->_assertStatusOk($resp);
 
         $users = $resp->data->users;
-        $users = (array)$users;
+        $users = (array) $users;
         $this->assertEquals(1, count($users), 'users should only have one entry');
         foreach ($users as $id => $names) {
             $this->assertEquals($id, $commAdminId, 'users should have commAdminId as an entry');
@@ -239,7 +239,7 @@ class Api_CallGroupMethodsTest extends Api_CallMethodsTestCase
         $resp = $this->_callJsonApi();
         $this->_assertStatusOk($resp);
         $users = $resp->data->users;
-        $users = (array)$users;
+        $users = (array) $users;
         $this->assertEquals(3, count($users), 'users should have 3 entries');
         $members = array($commAdminId, $commMemberId, $commModeratorId);
         foreach ($users as $id => $names) {
@@ -260,7 +260,7 @@ class Api_CallGroupMethodsTest extends Api_CallMethodsTestCase
         $this->_assertStatusOk($resp);
 
         $users = $resp->data->users;
-        $users = (array)$users;
+        $users = (array) $users;
         $this->assertEquals(1, count($users), 'users should only have one entry');
         foreach ($users as $id => $names) {
             $this->assertEquals($id, $commAdminId, 'users should have commAdminId as an entry');

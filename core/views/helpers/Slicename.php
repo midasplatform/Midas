@@ -18,9 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
+/** Slice name view helper. */
 class Zend_View_Helper_Slicename
 {
-    /** translation helper */
+    /** Slice name view helper. */
     public function slicename($name, $nchar)
     {
         Zend_Loader::loadClass('UtilityComponent', BASE_PATH.'/core/controllers/components');

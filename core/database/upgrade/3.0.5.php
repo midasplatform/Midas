@@ -18,8 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the core to version 3.0.5. */
 class Upgrade_3_0_5 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $sql = "ALTER TABLE community MODIFY folder_id bigint(20) NULL DEFAULT NULL;  ";
@@ -30,6 +32,7 @@ class Upgrade_3_0_5 extends MIDASUpgrade
         $this->db->query($sql);
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $sql = "ALTER TABLE community ALTER COLUMN folder_id DROP NOT NULL; ; ";

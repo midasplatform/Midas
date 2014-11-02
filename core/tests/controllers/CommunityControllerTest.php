@@ -122,7 +122,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
             $this->request->setMethod('POST');
             $this->params['communityId'] = $comm->getKey();
             $this->params['name'] = $comm->getName();
-            $this->params['privacy'] = (string)MIDAS_COMMUNITY_PUBLIC;
+            $this->params['privacy'] = (string) MIDAS_COMMUNITY_PUBLIC;
             $this->params['modifyPrivacy'] = 'true';
             $this->dispatchUrI('/community/manage', $user, true);
         }
@@ -142,7 +142,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
                 $this->params['name'] = $comm->getName();
                 // send privacy as a string, since there was a bug with privacy codes as
                 // strings, which is how they would be sent from an actual rendered page
-                $this->params['privacy'] = (string)$finalStatus;
+                $this->params['privacy'] = (string) $finalStatus;
                 $this->params['modifyPrivacy'] = 'true';
                 $this->dispatchUrI('/community/manage', $adminUser);
 

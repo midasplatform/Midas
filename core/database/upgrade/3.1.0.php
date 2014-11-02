@@ -18,8 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the core to version 3.1.0. */
 class Upgrade_3_1_0 extends MIDASUpgrade
 {
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $this->db->query('ALTER TABLE community ALTER COLUMN moderatorgroup_id DROP NOT NULL');

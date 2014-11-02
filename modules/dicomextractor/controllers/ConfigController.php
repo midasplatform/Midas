@@ -25,7 +25,7 @@ class Dicomextractor_ConfigController extends Dicomextractor_AppController
     public $_components = array('Utility', 'Date');
 
     /** index action */
-    function indexAction()
+    public function indexAction()
     {
         $this->requireAdminPrivileges();
 

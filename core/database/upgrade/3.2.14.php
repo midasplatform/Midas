@@ -19,10 +19,12 @@
 =========================================================================*/
 
 /**
- * Upgrade 3.2.14 fixes bug #1001: folder modified time changed incorrectly
+ * Upgrade the core to version 3.2.14. Fix bug #1001: folder modified time
+ * changed incorrectly.
  */
 class Upgrade_3_2_14 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         // Remove "on update current timestamp" qualifier from the date_update column

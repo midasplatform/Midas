@@ -20,7 +20,6 @@
 
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/job/job.view.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.dataTable.js');
-
 ?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/job/job.view.css"/>
 <link type="text/css" rel="stylesheet"
@@ -212,7 +211,6 @@ if ($this->job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_DONE && !empty($thi
     </table>
 
     <?php
-
     $itemsList = "";
     foreach ($this->outputs as $ouput) {
         $itemsList .= $ouput->getKey().'-';
@@ -222,7 +220,6 @@ if ($this->job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_DONE && !empty($thi
     echo $this->t('Download Results');
     echo "</a>";
     echo '</div>';
-
     ?>
 <?php
 }

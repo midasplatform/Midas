@@ -19,10 +19,12 @@
 =========================================================================*/
 
 /**
- * Adding indexes for faster lookup of the folder & item hierarchy
+ * Upgrade the core to version 3.2.5. Add indexes for faster lookup of the
+ * folder and item hierarchies.
  */
 class Upgrade_3_2_5 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $this->db->query("ALTER TABLE `folder` ADD INDEX (`left_indice`)");
@@ -30,6 +32,7 @@ class Upgrade_3_2_5 extends MIDASUpgrade
         $this->db->query("ALTER TABLE `item2folder` ADD INDEX (`folder_id`)");
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $this->db->query("CREATE INDEX folder_idx_parent_id ON folder (parent_id)");

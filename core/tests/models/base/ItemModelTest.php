@@ -71,7 +71,7 @@ class Core_ItemModelTest extends DatabaseTestCase
         // loop through all revisions, find highest that matches item id
         $found = false;
         foreach ($revisionsFile as $revisionDao) {
-            if ((int)$revisionDao->getItemId() === (int)$itemId) {
+            if ((int) $revisionDao->getItemId() === (int) $itemId) {
                 // see if we find the matching highest
                 if ($revisionDao->getKey() === $revisionKey) {
                     $found = true;

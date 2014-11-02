@@ -18,14 +18,17 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the core to version 3.0.4. */
 class Upgrade_3_0_4 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $sql = "ALTER TABLE folder ADD COLUMN teaser  varchar(250) DEFAULT ''; ";
         $this->db->query($sql);
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $sql = "ALTER TABLE folder ADD COLUMN teaser  character varying(250)  DEFAULT '' ; ";

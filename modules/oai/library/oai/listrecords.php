@@ -71,7 +71,6 @@ foreach ($args as $key => $val) {
     }
 }
 
-
 // Resume previous session?
 if (isset($args['resumptionToken'])) {
     if (count($args) > 1) {
@@ -82,7 +81,7 @@ if (isset($args['resumptionToken'])) {
             $fp = fopen($MidasTempDirectory."/tokens/re-$resumptionToken", 'r');
             $filetext = fgets($fp, 255);
             $textparts = explode('#', $filetext);
-            $deliveredrecords = (int)$textparts[0];
+            $deliveredrecords = (int) $textparts[0];
             $extquery = $textparts[1];
             $metadataPrefix = $textparts[2];
             if (is_array($METADATAFORMATS[$metadataPrefix]) && isset($METADATAFORMATS[$metadataPrefix]['myhandler'])) {
@@ -155,10 +154,10 @@ if (count($items) - $deliveredrecords > $MAXRECORDS) {
     }
 
     $fp = fopen($MidasTempDirectory."/tokens/re-$token", 'w');
-    $thendeliveredrecords = (int)$deliveredrecords + $MAXRECORDS;
-    fputs($fp, "$thendeliveredrecords#");
-    fputs($fp, "$extquery#");
-    fputs($fp, "$metadataPrefix#");
+    $thendeliveredrecords = (int) $deliveredrecords + $MAXRECORDS;
+    fwrite($fp, "$thendeliveredrecords#");
+    fwrite($fp, "$extquery#");
+    fwrite($fp, "$metadataPrefix#");
     fclose($fp);
     $restoken = '  <resumptionToken expirationDate="'.$expirationdatetime.'"
      completeListSize="'.$num_rows.'"
@@ -181,12 +180,10 @@ while ($countrec++ < $maxrec) {
     $identifier = $oaiprefix.$element->getUuid();
     $datestamp = formatDatestamp($element->getDateUpdate());
 
-
     $output .= '  <record>'."\n";
     $output .= '   <header>'."\n";
     $output .= xmlformat($identifier, 'identifier', '', 4);
     $output .= xmlformat($datestamp, 'datestamp', '', 4);
-
 
     // return the metadata record itself
     $folders = $element->getFolders();
@@ -203,7 +200,7 @@ while ($countrec++ < $maxrec) {
 
     $revision = $itemModel->getLastRevision($element);
     $metadata = $itemRevisionModel->getMetadata($revision);
-    include(BASE_PATH.'/modules/oai/library/oai/'.$inc_record);
+    include BASE_PATH.'/modules/oai/library/oai/'.$inc_record;
 
     $output .= '  </record>'."\n";
 }

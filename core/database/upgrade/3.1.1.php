@@ -18,14 +18,17 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the core to version 3.1.1. */
 class Upgrade_3_1_1 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $this->db->query('DROP TABLE itemkeyword');
         $this->db->query('DROP TABLE item2keyword');
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $this->db->query('DROP TABLE itemkeyword');

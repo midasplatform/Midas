@@ -87,7 +87,7 @@ class ApiitemComponent extends AppComponent
             throw new Exception("This item doesn't exist or you don't have write permission.", MIDAS_INVALID_POLICY);
         }
 
-        $type = array_key_exists('type', $args) ? (int)$args['type'] : MIDAS_METADATA_TEXT;
+        $type = array_key_exists('type', $args) ? (int) $args['type'] : MIDAS_METADATA_TEXT;
         $qualifier = array_key_exists('qualifier', $args) ? $args['qualifier'] : '';
         $element = $args['element'];
         $value = $args['value'];
@@ -135,7 +135,7 @@ class ApiitemComponent extends AppComponent
             throw new Exception("This item doesn't exist or you don't have write permission.", MIDAS_INVALID_POLICY);
         }
 
-        $revisionNumber = array_key_exists('revision', $args) ? (int)$args['revision'] : null;
+        $revisionNumber = array_key_exists('revision', $args) ? (int) $args['revision'] : null;
         $revision = $apihelperComponent->getItemRevision($item, $revisionNumber);
 
         foreach ($metadataTuples as $tup) {
@@ -185,7 +185,7 @@ class ApiitemComponent extends AppComponent
 
         $element = $args['element'];
         $qualifier = array_key_exists('qualifier', $args) ? $args['qualifier'] : '';
-        $type = array_key_exists('type', $args) ? (int)$args['type'] : MIDAS_METADATA_TEXT;
+        $type = array_key_exists('type', $args) ? (int) $args['type'] : MIDAS_METADATA_TEXT;
 
         $revisionDao = $apihelperComponent->getItemRevision($item, isset($args['revision']) ? $args['revision'] : null);
 

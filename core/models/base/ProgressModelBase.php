@@ -79,7 +79,7 @@ abstract class ProgressModelBase extends AppModel
      */
     public function updateProgress($progressDao, $currentValue, $message = '')
     {
-        $progressDao->setCurrent((int)$currentValue);
+        $progressDao->setCurrent((int) $currentValue);
         $progressDao->setMessage($message);
         $progressDao->setLastUpdate(date("Y-m-d H:i:s"));
 

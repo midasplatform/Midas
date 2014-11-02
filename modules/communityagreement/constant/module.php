@@ -18,5 +18,5 @@
  limitations under the License.
 =========================================================================*/
 
-define("MIDAS_COMMUNITYAGREEMENT_AGREEMENT_IS_EMPTY", 0);
-define("MIDAS_COMMUNITYAGREEMENT_AGREEMENT_NOT_EMPTY", 1);
+define('MIDAS_COMMUNITYAGREEMENT_AGREEMENT_IS_EMPTY', 0);
+define('MIDAS_COMMUNITYAGREEMENT_AGREEMENT_NOT_EMPTY', 1);

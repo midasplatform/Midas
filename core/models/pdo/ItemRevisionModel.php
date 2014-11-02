@@ -107,7 +107,7 @@ class ItemRevisionModel extends ItemRevisionModelBase
         $deleteType = array(MIDAS_FEED_CREATE_REVISION);
         $sql = $this->database->select()->setIntegrityCheck(false)->from(array('p' => 'feed'))->where(
             'ressource = ?',
-            (string)$revisiondao->getKey()
+            (string) $revisiondao->getKey()
         );
 
         $rowset = $this->database->fetchAll($sql);

@@ -34,7 +34,8 @@ class Solr_SolrComponent extends AppComponent
         if ($solrHost === null) {
             throw new Zend_Exception('Solr settings not saved');
         }
-        return new Apache_Solr_Service($solrHost, (int)$solrPort, $solrWebroot);
+
+        return new Apache_Solr_Service($solrHost, (int) $solrPort, $solrWebroot);
     }
 
     /**

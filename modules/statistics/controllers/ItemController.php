@@ -80,7 +80,7 @@ class Statistics_ItemController extends Statistics_AppController
 
         $limit = $this->getParam('limit');
         if (isset($limit) && is_numeric($limit) && $limit > 0) {
-            $limit = (int)$limit;
+            $limit = (int) $limit;
         } else {
             $limit = 1000;
         }

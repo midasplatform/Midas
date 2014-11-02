@@ -42,7 +42,6 @@ if (is_numeric(Configure::read('filePickerId'))) {
 }
 $fp_uuid = Configure::read('filePickerId');
 
-
 if (!isset($script)) {
     $script = $this->webroot.'admin/filePicker';
 }
@@ -65,17 +64,7 @@ if (!isset($msg)) {
     $msg = '';
 }
 
-// Find root:
-/*if( strpos( strtolower(PHP_OS), 'win') !== false )
-    {
-    $root = 'c:/';
-    }
-  else
-    {
-    $root = '/';
-    }*/
 $root = '';
-
 ?>
 
 <!-- FILE PICKER -->

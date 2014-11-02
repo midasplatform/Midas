@@ -113,7 +113,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
                         'fileName' => $resultArray[1],
                     );
                 } elseif ($option->field->external == 1) {
-                    $parametersList[$i] = (string)$option->name;
+                    $parametersList[$i] = (string) $option->name;
                     if (strpos($result, 'folder') !== false) {
                         $folder = $this->Folder->load(str_replace('folder', '', $result));
                         if ($folder == false || !$this->Folder->policyCheck(
@@ -138,7 +138,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
                         $cmdOptions[$i] = array('type' => 'input', 'item' => array($item));
                     }
                 } else {
-                    $parametersList[$i] = (string)$option->name;
+                    $parametersList[$i] = (string) $option->name;
                     $cmdOptions[$i] = array('type' => 'param', 'values' => array());
                     if (strpos($result, ';') !== false) {
                         $cmdOptions[$i]['values'] = explode(';', $result);
@@ -162,7 +162,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
                     }
 
                     if (!empty($option->tag)) {
-                        $cmdOptions[$i]['tag'] = (string)$option->tag;
+                        $cmdOptions[$i]['tag'] = (string) $option->tag;
                     }
                 }
                 $i++;

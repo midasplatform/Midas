@@ -33,7 +33,7 @@ class Scheduler_RunController extends Scheduler_AppController
         $this->disableView();
 
         $lastStart = $this->Setting->getValueByName('lastrun', $this->moduleName);
-        if ($lastStart !== null && $startTime < (int)$lastStart + 270) {
+        if ($lastStart !== null && $startTime < (int) $lastStart + 270) {
             throw new Zend_Exception(
                 'The scheduler is already running. Please wait for it to complete before invoking again.'
             );

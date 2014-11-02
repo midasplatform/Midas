@@ -18,12 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Add the ldap_user table for storing ldap users
- */
+/** Upgrade the ldap module to version 1.0.1. */
 class Ldap_Upgrade_1_0_1 extends MIDASUpgrade
 {
-    /** Mysql upgrade */
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $this->db->query(
@@ -37,7 +35,7 @@ class Ldap_Upgrade_1_0_1 extends MIDASUpgrade
         );
     }
 
-    /** Pgsql upgrade */
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $this->db->query(

@@ -219,7 +219,7 @@ class Tracker_ApiComponent extends AppComponent
         }
         $submitTime = date("Y-m-d H:i:s", $submitTime);
 
-        $value = (float)$args['value'];
+        $value = (float) $args['value'];
 
         $producerRevision = trim($args['producerRevision']);
 

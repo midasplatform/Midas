@@ -18,8 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the scheduler module to version 1.1.0. */
 class Scheduler_Upgrade_1_1_0 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $sql = "
@@ -33,6 +35,7 @@ class Scheduler_Upgrade_1_1_0 extends MIDASUpgrade
         $this->db->query($sql);
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $sql = "

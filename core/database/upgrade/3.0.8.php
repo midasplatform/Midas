@@ -18,8 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the core to version 3.0.8. */
 class Upgrade_3_0_8 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $sql = "ALTER TABLE folder ADD COLUMN privacy_status  integer DEFAULT 0; ";
@@ -28,6 +30,7 @@ class Upgrade_3_0_8 extends MIDASUpgrade
         $this->db->query($sql);
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $sql = "ALTER TABLE folder ADD COLUMN privacy_status  integer NOT NULL  DEFAULT '0' ; ";

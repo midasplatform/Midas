@@ -32,7 +32,7 @@ class ItempolicygroupModel extends ItempolicygroupModelBase
         $sql->where('ipg.item_id = ?', $item->getItemId());
         $sql->where('ipg.group_id = ?', MIDAS_GROUP_ANONYMOUS_KEY);
         $row = $this->database->fetchRow($sql);
-        $count = (int)$row['count'];
+        $count = (int) $row['count'];
 
         $itemModel = MidasLoader::loadModel('Item');
         if ($count > 0) {

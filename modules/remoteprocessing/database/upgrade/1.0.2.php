@@ -18,13 +18,16 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the remoteprocessing module to version 1.0.2. */
 class Remoteprocessing_Upgrade_1_0_2 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $this->db->query("ALTER TABLE remoteprocessing_job ADD COLUMN name varchar(512);");
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $this->db->query("ALTER TABLE remoteprocessing_job ADD COLUMN name character varying(512);");

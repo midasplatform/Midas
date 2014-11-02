@@ -75,7 +75,7 @@ class Thumbnailcreator_ThumbnailController extends Thumbnailcreator_AppControlle
             $thumbnail = $imComponent->createThumbnailFromPath(
                 $bitstream->getName(),
                 $bitstream->getFullPath(),
-                (int)$width,
+                (int) $width,
                 0,
                 false
             );

@@ -351,7 +351,7 @@ class Api_CallFolderMethodsTest extends Api_CallMethodsTestCase
         $apiUserPolicies = $resp->data->user;
         foreach ($userPolicies as $userPolicy) {
             $user = $userPolicy->getUser();
-            $userId = (string)$user->getUserId();
+            $userId = (string) $user->getUserId();
             $userFound = false;
             foreach ($apiUserPolicies as $apiUserPolicy) {
                 if ($apiUserPolicy->user_id == $userId) {
@@ -367,7 +367,7 @@ class Api_CallFolderMethodsTest extends Api_CallMethodsTestCase
         $apiGroupPolicies = $resp->data->group;
         foreach ($groupPolicies as $groupPolicy) {
             $group = $groupPolicy->getGroup();
-            $groupId = (string)$group->getGroupId();
+            $groupId = (string) $group->getGroupId();
             $groupFound = false;
             foreach ($apiGroupPolicies as $apiGroupPolicy) {
                 if ($apiGroupPolicy->group_id == $groupId) {

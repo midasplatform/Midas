@@ -18,5 +18,5 @@
  limitations under the License.
 =========================================================================*/
 
-define("MIDAS_THUMBNAILCREATOR_USE_THUMBNAILER", 1);
-define("MIDAS_THUMBNAILCREATOR_NOT_USE_THUMBNAILER", 0);
+define('MIDAS_THUMBNAILCREATOR_USE_THUMBNAILER', 1);
+define('MIDAS_THUMBNAILCREATOR_NOT_USE_THUMBNAILER', 0);

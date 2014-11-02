@@ -312,7 +312,7 @@ class Api_CallCommunityMethodsTest extends Api_CallMethodsTestCase
         $this->params['community_id'] = $validCommunityId;
         $resp = $this->_callJsonApi();
         $this->_assertStatusOk($resp);
-        $groups = (array)$resp->data->groups;
+        $groups = (array) $resp->data->groups;
         $this->assertEquals(3, count($groups), 'groups should have 3 entries');
 
         $expectedGroups = array('3003', '3004', '3005');

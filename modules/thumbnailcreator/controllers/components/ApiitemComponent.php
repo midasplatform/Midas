@@ -75,7 +75,7 @@ class Thumbnailcreator_ApiitemComponent extends AppComponent
             $thumbnail = $imComponent->createThumbnailFromPath(
                 $bitstream->getName(),
                 $bitstream->getFullPath(),
-                (int)$width,
+                (int) $width,
                 0,
                 false
             );
@@ -102,7 +102,6 @@ class Thumbnailcreator_ApiitemComponent extends AppComponent
      * @param id The item to set the thumbnail on
      * @return The Item object (with the new thumbnail_id) and the path where the newly created thumbnail is stored
      */
-
     public function createSmallThumbnail($args)
     {
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');

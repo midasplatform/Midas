@@ -111,7 +111,7 @@ class UserapiModel extends UserapiModelBase
 
         // seed with microseconds
         list($usec, $sec) = explode(' ', microtime());
-        mt_srand((float)$sec + ((float)$usec * 100000));
+        mt_srand((float) $sec + ((float) $usec * 100000));
 
         $token = "";
         $max = strlen($keychars) - 1;

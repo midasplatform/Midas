@@ -76,14 +76,14 @@ class Sizequota_ConfigController extends Sizequota_AppController
                     return;
                 }
                 if ($defaultUserQuota !== '') {
-                    $defaultUserQuota *= (float)$userQuotaUnit;
+                    $defaultUserQuota *= (float) $userQuotaUnit;
                 }
                 if ($defaultCommunityQuota !== '') {
-                    $defaultCommunityQuota *= (float)$communityQuotaUnit;
+                    $defaultCommunityQuota *= (float) $communityQuotaUnit;
                 }
 
-                $this->Setting->setConfig('defaultuserquota', (string)$defaultUserQuota, $this->moduleName);
-                $this->Setting->setConfig('defaultcommunityquota', (string)$defaultCommunityQuota, $this->moduleName);
+                $this->Setting->setConfig('defaultuserquota', (string) $defaultUserQuota, $this->moduleName);
+                $this->Setting->setConfig('defaultcommunityquota', (string) $defaultCommunityQuota, $this->moduleName);
                 echo JsonComponent::encode(array(true, 'Changes saved'));
             }
         }
@@ -226,7 +226,7 @@ class Sizequota_ConfigController extends Sizequota_AppController
     private function _isValidQuota($quotas)
     {
         foreach ($quotas as $quota) {
-            if ($quota !== '' && (!is_numeric($quota) || ((float)$quota) < 0)
+            if ($quota !== '' && (!is_numeric($quota) || ((float) $quota) < 0)
             ) {
                 return false;
             }

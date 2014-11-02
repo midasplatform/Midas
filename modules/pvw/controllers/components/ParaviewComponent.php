@@ -174,8 +174,8 @@ class Pvw_ParaviewComponent extends AppComponent
             $portEntry = trim($portEntry);
             if (strpos($portEntry, '-') !== false) { // port range check
                 list($start, $end) = explode('-', $portEntry);
-                $start = (int)trim($start);
-                $end = (int)trim($end);
+                $start = (int) trim($start);
+                $end = (int) trim($end);
                 if ($start <= 0 || $end <= 0 || $start >= $end) {
                     throw new Zend_Exception('Port range invalid: '.$portEntry, 500);
                 }

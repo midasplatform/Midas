@@ -23,13 +23,14 @@
  */
 class Rest_IndexController extends AppController
 {
+	/** Pre dispatch. */
     public function preDispatch()
     {
         parent::preDispatch();
         $this->view->setScriptPath(BASE_PATH."/core/views/rest");
     }
 
-    /** Index function */
+    /** Index action. */
     public function indexAction()
     {
         $header = '<img style="position: relative; top: 3px;" alt="" src="'.$this->view->coreWebroot.'/public/images/icons/page_white_code_red.png" />';

@@ -18,11 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Upgrade 3.2.13 move userapi and token to core
- */
+/** Upgrade the core to version 3.2.13. Move the userapi and token to core. */
 class Upgrade_3_2_13 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $this->db->query(
@@ -50,6 +49,7 @@ class Upgrade_3_2_13 extends MIDASUpgrade
         $this->db->query("RENAME TABLE `api_token` to `token`");
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $this->db->query(
@@ -79,6 +79,7 @@ class Upgrade_3_2_13 extends MIDASUpgrade
         $this->db->query("ALTER INDEX api_token_pkey RENAME TO token_pkey");
     }
 
+    /** Post database upgrade. */
     public function postUpgrade()
     {
         $userModel = MidasLoader::loadModel('User');

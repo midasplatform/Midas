@@ -1,5 +1,4 @@
 <?php
-
 /*=========================================================================
  MIDAS Server
  Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
@@ -19,9 +18,9 @@
  limitations under the License.
 =========================================================================*/
 
+/** KwUploadAPI */
 class KwUploadAPI
 {
-    //const PARAM_NAME_UPLOAD_TOKEN = 'uploadUniqueIdentifier';
     const PARAM_NAME_UPLOAD_TOKEN = 'uploadtoken';
 
     public $tmp_directory = '';
@@ -33,7 +32,6 @@ class KwUploadAPI
     /** Create the object */
     public function __construct($apiSetup)
     {
-        //$this->checkApiSetup($apiSetup);
         $this->tmp_directory = $apiSetup['tmp_directory'];
         $this->testing_enable = $apiSetup['testing'];
     }
@@ -83,9 +81,9 @@ class KwUploadAPI
     /** Handle the upload */
     public function process($args)
     {
-        $uploadOffset = (float)0; // bytes received
+        $uploadOffset = (float) 0; // bytes received
 
-        //check parameters
+        // check parameters
         if (!array_key_exists('filename', $args)) {
             error_log(
                 __FILE__.":".__FUNCTION__.":".__LINE__." - "."Parameter filename is not defined",
@@ -108,7 +106,7 @@ class KwUploadAPI
                 MIDAS_INVALID_PARAMETER
             );
         }
-        $uploadToken = $args[self::PARAM_NAME_UPLOAD_TOKEN]; //XXX123.TMP
+        $uploadToken = $args[self::PARAM_NAME_UPLOAD_TOKEN]; // XXX123.TMP
 
         if (!array_key_exists('length', $args)) {
             error_log(
@@ -118,13 +116,13 @@ class KwUploadAPI
             );
             throw new Exception('Parameter length is not defined', MIDAS_INVALID_PARAMETER);
         }
-        $length = (float)($args['length']);
+        $length = (float) ($args['length']);
 
         if ($this->testing_enable && array_key_exists('localinput', $args)) {
             $localinput = array_key_exists('localinput', $args) ? $args['localinput'] : false;
         }
 
-        //check if the temporary file exists
+        // check if the temporary file exists
         $pathTemporaryFilename = $this->tmp_directory.'/'.$uploadToken;
         if (!file_exists($pathTemporaryFilename)) {
             error_log(
@@ -211,7 +209,7 @@ class KwUploadAPI
     /** Get the amount of data already uploaded */
     public function getOffset($args)
     {
-        //check parameters
+        // check parameters
         if (!array_key_exists(self::PARAM_NAME_UPLOAD_TOKEN, $args)) {
             throw new Exception(
                 'Parameter '.self::PARAM_NAME_UPLOAD_TOKEN.' is not defined',

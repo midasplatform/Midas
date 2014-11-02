@@ -48,7 +48,7 @@ class AssetstoreController extends AppController
         if (isset($change) && isset($element)) {
             $assetstore = $this->Assetstore->load($element);
             if ($assetstore != false) {
-                $this->Setting->setConfig('default_assetstore', (string)$assetstore->getKey());
+                $this->Setting->setConfig('default_assetstore', (string) $assetstore->getKey());
                 echo JsonComponent::encode(array(true, $this->t('Changes saved')));
 
                 return;

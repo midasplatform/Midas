@@ -25,7 +25,6 @@ if (empty($errors) && (count($args) > 0)) {
     }
 }
 
-
 // break and clean up on error
 if ($errors != '') {
     oai_exit();
@@ -43,7 +42,6 @@ $output .= xmlformat($earliestDatestamp, 'earliestDatestamp', '', $indent);
 $output .= xmlformat($deletedRecord, 'deletedRecord', '', $indent);
 $output .= xmlformat($granularity, 'granularity', '', $indent);
 $output .= xmlformat($compression, 'compression', '', $indent);
-
 
 // A description MAY be included.
 // Use this if you choose to comply with a specific format of unique identifiers

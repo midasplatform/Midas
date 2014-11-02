@@ -55,9 +55,9 @@ class Solr_AdvancedController extends Solr_AppController
         $query = $this->getParam('query');
         // Extract <element>.<qualifier> from between '-' and ':' in '<type>-<element>.<qualifier>: <value>'
         $query = preg_replace_callback('/(?<=-)[\w. ]*(?=:)/', array(&$this, 'strReplaceSpaces'), $query);
-        $limit = (int)$this->getParam('limit');
-        $solrOffset = (int)$this->getParam('solrOffset');
-        $displayOffset = (int)$this->getParam('displayOffset');
+        $limit = (int) $this->getParam('limit');
+        $solrOffset = (int) $this->getParam('solrOffset');
+        $displayOffset = (int) $this->getParam('displayOffset');
 
         $itemIds = array();
         try {

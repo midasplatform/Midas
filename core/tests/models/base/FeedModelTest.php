@@ -94,6 +94,6 @@ class Core_FeedModelTest extends DatabaseTestCase
         $this->assertEquals(count($feed), 1);
         $this->assertEquals($feed[0]->user_id, $usersFile[0]->getKey());
         $this->assertEquals($feed[0]->type, MIDAS_FEED_CREATE_USER);
-        $this->assertEquals($feed[0]->ressource, (string)$usersFile[0]->getKey());
+        $this->assertEquals($feed[0]->ressource, (string) $usersFile[0]->getKey());
     }
 }

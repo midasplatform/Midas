@@ -39,7 +39,7 @@ class Solr_ApisearchComponent extends AppComponent
         $authComponent = MidasLoader::loadComponent('Authentication');
         $userDao = $authComponent->getUser($args, Zend_Registry::get('userSession')->Dao);
 
-        $limit = array_key_exists('limit', $args) ? (int)$args['limit'] : 25;
+        $limit = array_key_exists('limit', $args) ? (int) $args['limit'] : 25;
         $itemIds = array();
         try {
             $index = $solrComponent->getSolrIndex();

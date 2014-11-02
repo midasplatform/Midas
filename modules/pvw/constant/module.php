@@ -20,4 +20,4 @@
 
 // Max amount of time in seconds to wait between starting pvpython and it binding to the TCP port.
 // If this time is surpassed, we stop waiting and alert the user that something failed.
-define("MIDAS_PVW_STARTUP_TIMEOUT", 5);
+define('MIDAS_PVW_STARTUP_TIMEOUT', 5);

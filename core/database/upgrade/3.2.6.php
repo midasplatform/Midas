@@ -19,22 +19,25 @@
 =========================================================================*/
 
 /**
- * Upgrade 3.2.6 moves all of our item thumbnails into the default assetstore
- * as bitstreams.
+ * Upgrade the core to version 3.2.6. Moves item thumbnails into the default
+ * asset store as bitstreams.
  */
 class Upgrade_3_2_6 extends MIDASUpgrade
 {
     public $assetstore;
 
+    /** Pre database upgrade. */
     public function preUpgrade()
     {
         $assetstoreModel = MidasLoader::loadModel('Assetstore');
         try {
             $this->assetstore = $assetstoreModel->getDefault();
         } catch (Exception $e) {
+        	// DO NOTHING
         }
     }
 
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $this->db->query("ALTER TABLE `item` ADD COLUMN `thumbnail_id` bigint(20) NULL DEFAULT NULL");
@@ -44,6 +47,7 @@ class Upgrade_3_2_6 extends MIDASUpgrade
         $this->db->query("ALTER TABLE `item` DROP `thumbnail`");
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $this->db->query("ALTER TABLE item ADD COLUMN thumbnail_id bigint NULL DEFAULT NULL");

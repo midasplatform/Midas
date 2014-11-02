@@ -18,17 +18,17 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Adds branch name to scalar submission table, and adds an index for it.
- */
+/** Upgrade the tracker module to version 1.0.5. */
 class Tracker_Upgrade_1_0_5 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $this->db->query("ALTER TABLE `tracker_scalar` ADD COLUMN `params` text NULL DEFAULT NULL");
         $this->db->query("ALTER TABLE `tracker_scalar` ADD COLUMN `extra_urls` text NULL DEFAULT NULL");
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $this->db->query("ALTER TABLE tracker_scalar ADD COLUMN params text NULL DEFAULT NULL");

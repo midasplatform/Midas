@@ -19,10 +19,12 @@
 =========================================================================*/
 
 /**
- * Upgrade 3.2.12 improves the password salting and hashing system
+ * Upgrade the core to version 3.2.12. Improves the password salting and
+ * hashing system.
  */
 class Upgrade_3_2_12 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $this->db->query("ALTER TABLE `user` ADD COLUMN `hash_alg` varchar(32) NOT NULL default ''");
@@ -41,6 +43,7 @@ class Upgrade_3_2_12 extends MIDASUpgrade
         $this->db->query("ALTER TABLE `pendinguser` DROP `password`");
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $this->db->query("ALTER TABLE \"user\" ADD COLUMN hash_alg character varying(32) NOT NULL DEFAULT ''");

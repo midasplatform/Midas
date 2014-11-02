@@ -301,9 +301,9 @@ class BrowseController extends AppController
             $itemsortdir = $sortdir;
         }
 
-        $folderOffset = (int)$this->getParam('folderOffset', 0);
-        $itemOffset = (int)$this->getParam('itemOffset', 0);
-        $limit = (int)$this->getParam('limit', -1);
+        $folderOffset = (int) $this->getParam('folderOffset', 0);
+        $itemOffset = (int) $this->getParam('itemOffset', 0);
+        $limit = (int) $this->getParam('limit', -1);
 
         if (!isset($folderIds)) {
             throw new Zend_Exception("Please set the folder Id");

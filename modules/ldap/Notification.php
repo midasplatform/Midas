@@ -104,7 +104,7 @@ class Ldap_Notification extends MIDAS_Notification
     {
         $config = Zend_Registry::get('configsModules');
         $hostname = $config['ldap']->ldap->hostname;
-        $port = (int)$config['ldap']->ldap->port;
+        $port = (int) $config['ldap']->ldap->port;
         $proxybasedn = $config['ldap']->ldap->proxyBasedn;
         $protocolVersion = $config['ldap']->ldap->protocolVersion;
         $backupServer = $config['ldap']->ldap->backup;
@@ -175,7 +175,7 @@ class Ldap_Notification extends MIDAS_Notification
         $config = Zend_Registry::get('configsModules');
         $baseDn = $config['ldap']->ldap->basedn;
         $hostname = $config['ldap']->ldap->hostname;
-        $port = (int)$config['ldap']->ldap->port;
+        $port = (int) $config['ldap']->ldap->port;
         $protocolVersion = $config['ldap']->ldap->protocolVersion;
         $autoAddUnknownUser = $config['ldap']->ldap->autoAddUnknownUser;
         $searchTerm = $config['ldap']->ldap->search;
@@ -313,10 +313,10 @@ class Ldap_Notification extends MIDAS_Notification
             $subject = "Password Request";
             $body = "You have requested a new password for Midas Platform.<br/><br/>";
             $body .= "We could not fulfill this request because your user account is managed by an external LDAP server.<br/><br/>";
-            $body .= "Please contact the administrator of the LDAP server at <b>" . $ldapServer . "</b> to have your password changed.";
+            $body .= "Please contact the administrator of the LDAP server at <b>".$ldapServer."</b> to have your password changed.";
 
             if (UtilityComponent::sendEmail($email, $subject, $body)) {
-              return array('status' => true, 'message' => 'Sent email to '. $email);
+                return array('status' => true, 'message' => 'Sent email to '.$email);
             }
         }
 

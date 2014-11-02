@@ -18,14 +18,17 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the core to version 3.0.3. */
 class Upgrade_3_0_3 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
         $sql = "ALTER TABLE community ADD COLUMN can_join integer DEFAULT 0; ";
         $this->db->query($sql);
     }
 
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $sql = "ALTER TABLE community ADD COLUMN can_join integer NOT NULL  DEFAULT '0' ; ";

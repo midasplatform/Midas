@@ -376,7 +376,7 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
             }
 
             try {
-                $newRevision = (bool)$this->getParam(
+                $newRevision = (bool) $this->getParam(
                     'newRevision'
                 ); // on name collision, should we create new revision?
                 $item = $this->Component->Upload->createUploadedItem(
@@ -386,7 +386,7 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
                     $parent,
                     $license,
                     $data['md5'],
-                    (bool)$testingMode,
+                    (bool) $testingMode,
                     $newRevision
                 );
             } catch (Exception $e) {
@@ -490,7 +490,7 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
                     $revNumber,
                     $license,
                     $data['md5'],
-                    (bool)$testingMode
+                    (bool) $testingMode
                 );
             } catch (Exception $e) {
                 if (!$testingMode) {
