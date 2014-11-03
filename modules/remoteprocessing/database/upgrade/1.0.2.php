@@ -24,7 +24,7 @@ class Remoteprocessing_Upgrade_1_0_2 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query("ALTER TABLE remoteprocessing_job ADD COLUMN name varchar(512);");
+        $this->db->query("ALTER TABLE `remoteprocessing_job` ADD COLUMN `name` varchar(512);");
     }
 
     /** Upgrade a PostgreSQL database. */

@@ -53,7 +53,7 @@ class Oauth_CodeModel extends Oauth_CodeModelBase
      */
     public function cleanExpired()
     {
-        $sql = $this->database->select()->setIntegrityCheck(false)->where('expiration_date < ?', date("Y-m-d H:i:s"));
+        $sql = $this->database->select()->setIntegrityCheck(false)->where('expiration_date < ?', date('Y-m-d H:i:s'));
 
         $rows = $this->database->fetchAll($sql);
         foreach ($rows as $row) {

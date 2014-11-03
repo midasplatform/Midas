@@ -24,18 +24,14 @@ class Upgrade_3_0_6 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $sql = "ALTER TABLE community MODIFY admingroup_id bigint(20) NULL DEFAULT NULL;  ";
-        $this->db->query($sql);
-        $sql = "ALTER TABLE community MODIFY moderatorgroup_id bigint(20) NULL DEFAULT NULL;  ";
-        $this->db->query($sql);
+        $this->db->query("ALTER TABLE community MODIFY admingroup_id bigint(20) NULL DEFAULT NULL;");
+        $this->db->query("ALTER TABLE community MODIFY moderatorgroup_id bigint(20) NULL DEFAULT NULL;");
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $sql = "ALTER TABLE community ALTER COLUMN admingroup_id DROP NOT NULL; ; ";
-        $this->db->query($sql);
-        $sql = "ALTER TABLE community ALTER COLUMN membergroup_id DROP NOT NULL; ; ";
-        $this->db->query($sql);
+        $this->db->query("ALTER TABLE community ALTER COLUMN admingroup_id DROP NOT NULL;");
+        $this->db->query("ALTER TABLE community ALTER COLUMN membergroup_id DROP NOT NULL;");
     }
 }

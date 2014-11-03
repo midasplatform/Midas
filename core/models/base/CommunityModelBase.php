@@ -161,7 +161,7 @@ abstract class CommunityModelBase extends AppModel
         $communityDao->setName($name);
         $communityDao->setDescription($description);
         $communityDao->setPrivacy($privacy);
-        $communityDao->setCreation(date("Y-m-d H:i:s"));
+        $communityDao->setCreation(date('Y-m-d H:i:s'));
         $communityDao->setCanJoin($canJoin);
         $communityDao->setUuid($uuid);
         $this->save($communityDao);

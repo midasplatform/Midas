@@ -29,6 +29,8 @@ function getSqlDbTypes($testConfigDir)
             $dbTypes[] = 'mysql';
         } elseif ($entry === 'pgsql.ini') {
             $dbTypes[] = 'pgsql';
+        } elseif ($entry === 'sqlite.ini') {
+            $dbTypes[] = 'sqlite';
         }
     }
     $d->close();
@@ -58,15 +60,17 @@ function loadDbAdapter($testConfigDir, $dbType)
     }
     $params = array(
         'dbname' => $configDatabase->database->params->dbname,
-        'username' => $configDatabase->database->params->username,
-        'password' => $configDatabase->database->params->password,
         'driver_options' => $driverOptions,
     );
-    if (empty($configDatabase->database->params->unix_socket)) {
-        $params['host'] = $configDatabase->database->params->host;
-        $params['port'] = $configDatabase->database->params->port;
-    } else {
-        $params['unix_socket'] = $configDatabase->database->params->unix_socket;
+    if ($dbType != 'sqlite') {
+        $params['username'] = $configDatabase->database->params->username;
+        $params['password'] = $configDatabase->database->params->password;
+        if (empty($configDatabase->database->params->unix_socket)) {
+            $params['host'] = $configDatabase->database->params->host;
+            $params['port'] = $configDatabase->database->params->port;
+        } else {
+            $params['unix_socket'] = $configDatabase->database->params->unix_socket;
+        }
     }
     $db = Zend_Db::factory($configDatabase->database->adapter, $params);
     if ($configDatabase->database->profiler == '1') {
@@ -82,14 +86,24 @@ function loadDbAdapter($testConfigDir, $dbType)
 /** Drop database tables */
 function dropTables($db, $dbType)
 {
-    $tables = $db->listTables();
-    foreach ($tables as $table) {
-        if ($dbType === 'mysql') {
-            $sql = "drop table `".$table."` cascade";
-        } elseif ($dbType === 'pgsql') {
-            $sql = 'drop table "'.$table.'" cascade';
+    $db->beginTransaction();
+    try {
+        $tables = $db->listTables();
+        foreach ($tables as $table) {
+            if ($dbType === 'mysql') {
+                $db->query("DROP TABLE IF EXISTS `".$table."` CASCADE;");
+            } elseif ($dbType === 'pgsql') {
+                $db->query('DROP TABLE IF EXISTS "'.$table.'" CASCADE;');
+            } elseif ($dbType === 'sqlite' && $table != 'sqlite_sequence') {
+                $db->query('DROP TABLE IF EXISTS "'.$table.'";');
+            } else {
+                continue;
+            }
         }
-        $db->query($sql);
+        $db->commit();
+    } catch (Zend_Exception $exception) {
+        $db->rollBack();
+        throw $exception;
     }
 }
 
@@ -105,7 +119,7 @@ function installCore($db, $dbType, $utilityComponent)
 
     $sqlFile = BASE_PATH.'/core/database/'.$dbType.'/'.$newestVersion.'.sql';
     if (!isset($sqlFile) || !file_exists($sqlFile)) {
-        throw new Zend_Exception('Unable to find sql file: '.$sqlFile);
+        throw new Zend_Exception('Unable to find SQL file: '.$sqlFile);
     }
 
     switch ($dbType) {
@@ -117,10 +131,22 @@ function installCore($db, $dbType, $utilityComponent)
             $utilityComponent->run_sql_from_file($db, $sqlFile);
             $upgradeDbType = 'PDO_PGSQL';
             break;
+        case 'sqlite':
+            $utilityComponent->run_sql_from_file($db, $sqlFile);
+            $upgradeDbType = 'PDO_SQLITE';
+            break;
         default:
-            throw new Zend_Exception('Unknown db type: '.$dbType);
+            throw new Zend_Exception('Unknown database type: '.$dbType);
             break;
     }
+
+    $options = array('allowModifications' => true);
+    $databaseConfig = new Zend_Config_Ini(BASE_PATH.'/tests/configs/lock.'.$dbType.'.ini', null, $options);
+    $databaseConfig->testing->version = $newestVersion;
+    $writer = new Zend_Config_Writer_Ini();
+    $writer->setConfig($databaseConfig);
+    $writer->setFilename(BASE_PATH.'/tests/configs/lock.'.$dbType.'.ini');
+    $writer->write();
 
     $upgradeComponent->initUpgrade('core', $db, $upgradeDbType);
     $upgradeComponent->upgrade(str_replace('.sql', '', basename($sqlFile)), true /* true for testing */);
@@ -225,15 +251,15 @@ Zend_Registry::set('configGlobal', $configGlobal);
 $config = new Zend_Config_Ini(APPLICATION_CONFIG, 'testing');
 Zend_Registry::set('config', $config);
 
-// get DB type
-// for now only supporting pgsql and mysql
-// get the DB type from the existing config files
+// get database type
+// for now only supporting MySQL, PostgreSQL, and SQLite
+// get the database type from the existing config files
 $testConfigDir = BASE_PATH.'/tests/configs/';
 $dbTypes = getSqlDbTypes($testConfigDir);
 
 foreach ($dbTypes as $dbType) {
     try {
-        echo "Dropping and installing tables for DB type: ".$dbType."\n";
+        echo "Dropping and installing tables for database type: ".$dbType.PHP_EOL;
         $dbAdapter = loadDbAdapter($testConfigDir, $dbType);
         dropTables($dbAdapter, $dbType);
         require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';

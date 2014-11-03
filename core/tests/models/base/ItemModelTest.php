@@ -93,7 +93,7 @@ class Core_ItemModelTest extends DatabaseTestCase
         $usersFile = $this->loadData('User', 'default');
         $revision = new ItemRevisionDao();
         $revision->setUserId($usersFile[0]->getKey());
-        $revision->setDate(date("Y-m-d H:i:s"));
+        $revision->setDate(date('Y-m-d H:i:s'));
         $revision->setChanges("change");
         $revision->setItemId(0);
         $revision->setRevision(1);
@@ -122,7 +122,7 @@ class Core_ItemModelTest extends DatabaseTestCase
         // add on 3 revisions
         $revision = new ItemRevisionDao();
         $revision->setUserId($usersFile[0]->getKey());
-        $revision->setDate(date("Y-m-d H:i:s"));
+        $revision->setDate(date('Y-m-d H:i:s'));
         $revision->setChanges("r1");
         $revision->setItemId(0);
         $revision->setRevision(1);
@@ -135,7 +135,7 @@ class Core_ItemModelTest extends DatabaseTestCase
 
         $revision = new ItemRevisionDao();
         $revision->setUserId($usersFile[0]->getKey());
-        $revision->setDate(date("Y-m-d H:i:s"));
+        $revision->setDate(date('Y-m-d H:i:s'));
         $revision->setChanges("r2");
         $revision->setItemId(0);
         $revision->setRevision(2);
@@ -148,7 +148,7 @@ class Core_ItemModelTest extends DatabaseTestCase
 
         $revision = new ItemRevisionDao();
         $revision->setUserId($usersFile[0]->getKey());
-        $revision->setDate(date("Y-m-d H:i:s"));
+        $revision->setDate(date('Y-m-d H:i:s'));
         $revision->setChanges("r3");
         $revision->setItemId(0);
         $revision->setRevision(3);

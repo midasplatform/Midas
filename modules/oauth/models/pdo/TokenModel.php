@@ -44,7 +44,7 @@ class Oauth_TokenModel extends Oauth_TokenModelBase
         $sql = $this->database->select()->setIntegrityCheck(false)->where(
             'user_id = ?',
             $userDao->getKey()
-        )->where('expiration_date > ? OR type = '.MIDAS_OAUTH_TOKEN_TYPE_REFRESH, date("Y-m-d H:i:s"));
+        )->where('expiration_date > ? OR type = '.MIDAS_OAUTH_TOKEN_TYPE_REFRESH, date('Y-m-d H:i:s'));
         $rows = $this->database->fetchAll($sql);
         $daos = array();
         foreach ($rows as $row) {
@@ -62,7 +62,7 @@ class Oauth_TokenModel extends Oauth_TokenModelBase
      */
     public function expireTokens($userDao, $clientDao)
     {
-        $data = array('expiration_date' => date("Y-m-d H:i:s"));
+        $data = array('expiration_date' => date('Y-m-d H:i:s'));
         $this->database->getDB()->update(
             'oauth_token',
             $data,
@@ -77,7 +77,7 @@ class Oauth_TokenModel extends Oauth_TokenModelBase
     {
         $sql = $this->database->select()->setIntegrityCheck(false)->where(
             'expiration_date < ?',
-            date("Y-m-d H:i:s")
+            date('Y-m-d H:i:s')
         )->where(
             'type = ?',
             MIDAS_OAUTH_TOKEN_TYPE_ACCESS

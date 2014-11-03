@@ -32,9 +32,12 @@ install:
   - composer install
 
 before_script:
-  - cp tests/travis/mysql.ini tests/configs/mysql.ini && cp tests/travis/pgsql.ini tests/configs/pgsql.ini
+  - cp tests/travis/mysql.ini tests/configs/mysql.ini
+  - cp tests/travis/pgsql.ini tests/configs/pgsql.ini
+  - cp tests/travis/sqlite.ini tests/configs/sqlite.ini
   - mysql -u root -e 'create database midas_test;'
   - psql -U postgres -c 'create database midas_test;'
+  - touch midas_test.db
 
 script:
   - mkdir _test && cd _test

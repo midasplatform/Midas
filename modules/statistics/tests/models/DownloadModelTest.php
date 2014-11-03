@@ -56,8 +56,8 @@ class Statistics_DownloadModelTest extends DatabaseTestCase
         }
         $arrayDownload = $downloadModel->getDailyCounts(
             array(7),
-            date("Y-m-d H:i:s", strtotime('-20 day'.date('Y-m-d G:i:s'))),
-            date("Y-m-d H:i:s")
+            date('Y-m-d H:i:s', strtotime('-20 day'.date('Y-m-d G:i:s'))),
+            date('Y-m-d H:i:s')
         );
         $this->assertEquals(count($arrayDownload), 2);
         $this->assertEquals($arrayDownload[date('Y-m-d', strtotime('-3 day'))], 50);

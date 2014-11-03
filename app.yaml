@@ -50,6 +50,6 @@ skip_files:
 - ^(.*/)?(\.coveralls.yml|\.project|\.travis.yml|\.zfproject\.xml|composer\.json|COPYRIGHT|CTestConfig\.cmake|LICENSE|README\.md|Vagrantfile)$
 - ^(.*/)?core/configs/.*\.local\.ini$
 - ^(.*/)?(\.git|\.idea|\.vagrant|data|log|nbproject|provisioning|tests|tmp|utils)/.*
-- ^(.*/)?(core|modules/.*)/(database/pgsql|tests)/.*
+- ^(.*/)?(core|modules/.*)/(database/pgsql|sqlite|tests)/.*
 - ^(.*/)?library/CMake/.*
 - ^(.*/)?modules/(batchmake|dicom.*|example|metadataextractor|pvw|remoteprocessing|solr|statistics|thumbnailcreator|visualize)/.*

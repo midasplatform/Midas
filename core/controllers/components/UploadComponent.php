@@ -144,7 +144,7 @@ class UploadComponent extends AppComponent
         $itemRevisionDao = new ItemRevisionDao();
         $itemRevisionDao->setChanges('Initial revision');
         $itemRevisionDao->setUser_id($userDao->getKey());
-        $itemRevisionDao->setDate(date("Y-m-d H:i:s"));
+        $itemRevisionDao->setDate(date('Y-m-d H:i:s'));
         $itemRevisionDao->setLicenseId(null);
         $itemModel->addRevision($item, $itemRevisionDao);
 
@@ -241,7 +241,7 @@ class UploadComponent extends AppComponent
         $itemRevisionDao = new ItemRevisionDao();
         $itemRevisionDao->setChanges($changes);
         $itemRevisionDao->setUser_id($userDao->getKey());
-        $itemRevisionDao->setDate(date("Y-m-d H:i:s"));
+        $itemRevisionDao->setDate(date('Y-m-d H:i:s'));
         $itemRevisionDao->setLicenseId($license);
         $itemModel->addRevision($item, $itemRevisionDao);
 
@@ -334,7 +334,7 @@ class UploadComponent extends AppComponent
             $itemRevisionDao = new ItemRevisionDao();
             $itemRevisionDao->setChanges($changes);
             $itemRevisionDao->setUser_id($userDao->getKey());
-            $itemRevisionDao->setDate(date("Y-m-d H:i:s"));
+            $itemRevisionDao->setDate(date('Y-m-d H:i:s'));
             $itemRevisionDao->setLicenseId($license);
             $itemModel->addRevision($item, $itemRevisionDao);
         } else {

@@ -95,7 +95,7 @@ class Cleanup_PerformCleanupTest extends ControllerTestCase
         $this->assertTrue(touch($tempDir.'/72/398/shouldBeDeleted.txt', strtotime('-8 days')));
 
         // Make it so the job will fire on the next scheduler run
-        $job->setFireTime(date('Y-m-j', strtotime('-1 day')).' 1:00:00');
+        $job->setFireTime(date('Y-m-d', strtotime('-1 day')).' 01:00:00');
         $jobModel->save($job);
 
         // Run the scheduler

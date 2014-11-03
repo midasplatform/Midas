@@ -100,11 +100,11 @@ abstract class Oauth_TokenModelBase extends Oauth_AppModel
         $tokenDao->setScopes($fromDao->getScopes());
         $tokenDao->setUserId($fromDao->getUserId());
         $tokenDao->setClientId($fromDao->getClientId());
-        $tokenDao->setCreationDate(date("Y-m-d H:i:s"));
+        $tokenDao->setCreationDate(date('Y-m-d H:i:s'));
         if (is_string($expire)) {
-            $tokenDao->setExpirationDate(date("Y-m-d H:i:s", strtotime($expire)));
+            $tokenDao->setExpirationDate(date('Y-m-d H:i:s', strtotime($expire)));
         } else {
-            $tokenDao->setExpirationDate(date("Y-m-d H:i:s"));
+            $tokenDao->setExpirationDate(date('Y-m-d H:i:s'));
         }
         $this->save($tokenDao);
 

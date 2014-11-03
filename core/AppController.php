@@ -142,7 +142,7 @@ class AppController extends MIDAS_GlobalController
                     }
                     $errorlogModel = MidasLoader::loadModel('Errorlog');
                     $count = $errorlogModel->countSince(
-                        date("Y-m-d H:i:s", strtotime('-24 hour')),
+                        date('Y-m-d H:i:s', strtotime('-24 hour')),
                         array(MIDAS_PRIORITY_CRITICAL, MIDAS_PRIORITY_WARNING)
                     );
 
@@ -357,7 +357,7 @@ class AppController extends MIDAS_GlobalController
     {
         $fc = Zend_Controller_Front::getInstance();
 
-        $entry = date("Y-m-d H:i:s")."\n";
+        $entry = date('Y-m-d H:i:s')."\n";
         if (isset($_SERVER['REMOTE_ADDR'])) {
             $entry .= 'IP='.$_SERVER['REMOTE_ADDR']."\n";
         }

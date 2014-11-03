@@ -91,7 +91,7 @@ abstract class NewUserInvitationModelBase extends AppModel
         $newUserInvitation->setInviterId($inviter->getKey());
         $newUserInvitation->setGroupId($group->getKey());
         $newUserInvitation->setCommunityId($group->getCommunityId());
-        $newUserInvitation->setDateCreation(date("Y-m-d H:i:s"));
+        $newUserInvitation->setDateCreation(date('Y-m-d H:i:s'));
 
         $userModel = MidasLoader::loadModel('User');
         $existingUser = $userModel->getByEmail($email);

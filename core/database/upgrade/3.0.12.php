@@ -24,15 +24,13 @@ class Upgrade_3_0_12 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $sql = "DROP  TABLE uniqueidentifier ; ";
-        $this->db->query($sql);
+        $this->db->query("DROP TABLE uniqueidentifier;");
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $sql = "DROP  TABLE uniqueidentifier; ";
-        $this->db->query($sql);
+        $this->db->query("DROP TABLE uniqueidentifier;");
     }
 
     /** Post database upgrade. */

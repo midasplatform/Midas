@@ -424,7 +424,7 @@ class Packages_ApiComponent extends AppComponent
         if (array_key_exists('checkoutdate', $args)) {
             $packageDao->setCheckoutdate($args['checkoutdate']);
         } else {
-            $packageDao->setCheckoutdate(date("Y-m-d H:i:s"));
+            $packageDao->setCheckoutdate(date('Y-m-d H:i:s'));
         }
         $packageModel->save($packageDao);
 

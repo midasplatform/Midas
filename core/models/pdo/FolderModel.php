@@ -302,7 +302,7 @@ class FolderModel extends FolderModelBase
                 $sql->joinLeft(
                     array('ip' => 'itempolicyuser'),
                     '
-                          i.item_id = ip.item_id AND '.$this->database->getDB()->quoteInto('policy >= ?', $policy).'
+                          i.item_id = ip.item_id AND '.$this->database->getDB()->quoteInto('ip.policy >= ?', $policy).'
                              AND '.$this->database->getDB()->quoteInto('user_id = ? ', $userId).' ',
                     array()
                 )->joinLeft(
@@ -663,7 +663,7 @@ class FolderModel extends FolderModelBase
             unset($data['folder_id']);
             unset($data['left_indice']);
             unset($data['right_indice']);
-            $data['date_update'] = date("Y-m-d H:i:s");
+            $data['date_update'] = date('Y-m-d H:i:s');
             $this->database->update($data, array('folder_id = ?' => $key));
 
             Zend_Registry::get('notifier')->callback('CALLBACK_CORE_FOLDER_SAVED', array('folder' => $folder));
@@ -671,9 +671,9 @@ class FolderModel extends FolderModelBase
             return $key;
         } else {
             if (!isset($data['date_creation']) || empty($data['date_creation'])) {
-                $data['date_creation'] = date("Y-m-d H:i:s");
+                $data['date_creation'] = date('Y-m-d H:i:s');
             }
-            $data['date_update'] = date("Y-m-d H:i:s");
+            $data['date_update'] = date('Y-m-d H:i:s');
 
             $this->database->getDB()->update(
                 'folder',

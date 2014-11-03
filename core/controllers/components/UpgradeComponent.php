@@ -49,6 +49,9 @@ class UpgradeComponent extends AppComponent
             case "PDO_PGSQL":
                 $this->dbtypeShort = 'pgsql';
                 break;
+            case "PDO_SQLITE":
+                $this->dbtypeShort = 'sqlite';
+                break;
             default:
                 throw new Zend_Exception("Unknown database type");
                 break;
@@ -87,7 +90,7 @@ class UpgradeComponent extends AppComponent
         if (file_exists($this->dir)) {
             $d = dir($this->dir);
             while (false !== ($entry = $d->read())) {
-                if (preg_match('/^([0-9]+)(.)([0-9]+)(.)([0-9]+)\.php/i', $entry, $matches)) {
+                if (preg_match('/^([0-9]+)\.([0-9]+)\.([0-9]+)\.php$/i', $entry, $matches)) {
                     $versionText = basename(str_replace(".php", "", $entry));
                     $versionNumber = $this->transformVersionToNumeric($versionText);
                     $files[$versionNumber] = array(
@@ -96,7 +99,7 @@ class UpgradeComponent extends AppComponent
                         'versionText' => $versionText,
                     );
                 }
-                if (preg_match('/^([0-9]+)(.)([0-9]+)(.)([0-9]+)\.sql/i', $entry, $matches)) {
+                if (preg_match('/^([0-9]+)\.([0-9]+)\.([0-9]+)\.sql$/i', $entry, $matches)) {
                     $versionText = basename(str_replace(".sql", "", $entry));
                     $versionNumber = $this->transformVersionToNumeric($versionText);
                     $files[$versionNumber] = array(
@@ -118,7 +121,7 @@ class UpgradeComponent extends AppComponent
     {
         $array = explode('.', $text);
         if (count($array) != 3) {
-            throw new Zend_Exception("The version format shoud be 1.2.5. You set:".$text);
+            throw new Zend_Exception("The version format shoud be 1.2.3. You set:".$text);
         }
 
         return (int) $array[0] * 1000000 + (int) $array[1] * 1000 + (int) $array[2];
@@ -164,6 +167,9 @@ class UpgradeComponent extends AppComponent
                         if (file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini')) {
                             $path = BASE_PATH.'/tests/configs/lock.pgsql.ini';
                         }
+                        if (file_exists(BASE_PATH.'/tests/configs/lock.sqlite.ini')) {
+                            $path = BASE_PATH.'/tests/configs/lock.sqlite.ini';
+                        }
                     }
                 }
                 $options = array('allowModifications' => true);
@@ -176,6 +182,9 @@ class UpgradeComponent extends AppComponent
                         }
                         if (file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini')) {
                             $path = BASE_PATH.'/tests/configs/lock.pgsql.ini';
+                        }
+                        if (file_exists(BASE_PATH.'/tests/configs/lock.sqlite.ini')) {
+                            $path = BASE_PATH.'/tests/configs/lock.sqlite.ini';
                         }
                     }
                     $config = new Zend_Config_Ini($path, null, $options);
@@ -214,7 +223,7 @@ class UpgradeComponent extends AppComponent
         $array = explode('.', str_replace('.php', '', basename($filename)));
         if (count($array) != 3) {
             throw new Zend_Exception(
-                "The version format shoud be 1.2.5. You set:".str_replace('.php', '', basename($filename))
+                "The version format shoud be 1.2.3. You set:".str_replace('.php', '', basename($filename))
             );
         }
 

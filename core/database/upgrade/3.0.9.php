@@ -24,27 +24,25 @@ class Upgrade_3_0_9 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $sql = "
-      CREATE TABLE IF NOT EXISTS `uniqueidentifier` (
-        `uniqueidentifier_id` varchar(255) NOT NULL,
-        `resource_id` bigint(20),
-        `resource_type` tinyint(4),
-        PRIMARY KEY (`uniqueidentifier_id`)
-      )   DEFAULT CHARSET=utf8;
-      ";
-        $this->db->query($sql);
+        $this->db->query("
+            CREATE TABLE IF NOT EXISTS `uniqueidentifier` (
+                `uniqueidentifier_id` varchar(255) NOT NULL,
+                `resource_id` bigint(20),
+                `resource_type` tinyint(4),
+                PRIMARY KEY (`uniqueidentifier_id`)
+            ) DEFAULT CHARSET=utf8;
+        ");
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $sql = "
-      CREATE TABLE  uniqueidentifier (
-        uniqueidentifier_id character varying(512)  PRIMARY KEY,
-        resource_type  integer,
-        resource_id bigint
-      )
-      ; ";
-        $this->db->query($sql);
+        $this->db->query("
+            CREATE TABLE  uniqueidentifier (
+                uniqueidentifier_id character varying(512)  PRIMARY KEY,
+                resource_type  integer,
+                resource_id bigint
+            );
+        ");
     }
 }

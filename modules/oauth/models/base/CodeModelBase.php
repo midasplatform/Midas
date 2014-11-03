@@ -86,8 +86,8 @@ abstract class Oauth_CodeModelBase extends Oauth_AppModel
         $codeDao->setScopes(JsonComponent::encode($scopes));
         $codeDao->setUserId($userDao->getKey());
         $codeDao->setClientId($clientDao->getKey());
-        $codeDao->setCreationDate(date("Y-m-d H:i:s"));
-        $codeDao->setExpirationDate(date("Y-m-d H:i:s", strtotime('+10 minutes')));
+        $codeDao->setCreationDate(date('Y-m-d H:i:s'));
+        $codeDao->setExpirationDate(date('Y-m-d H:i:s', strtotime('+10 minutes')));
         $this->save($codeDao);
 
         return $codeDao;

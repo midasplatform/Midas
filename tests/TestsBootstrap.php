@@ -54,6 +54,8 @@ if (!file_exists($databaseIni)) {
         $databaseIni = BASE_PATH.'/tests/configs/lock.mysql.ini';
     } elseif (file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini')) {
         $databaseIni = BASE_PATH.'/tests/configs/lock.pgsql.ini';
+    } elseif (file_exists(BASE_PATH.'/tests/configs/lock.sqlite.ini')) {
+        $databaseIni = BASE_PATH.'/tests/configs/lock.sqlite.ini';
     } else {
         echo 'Error: database ini file not found.';
         exit(1);
@@ -95,11 +97,18 @@ $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
 $upgradeComponent->initUpgrade('core', $db, $dbtype);
 $version = Zend_Registry::get('configDatabase')->version;
 if (!isset($version)) {
-    if (Zend_Registry::get('configDatabase')->database->adapter == 'PDO_MYSQL'
+    if (Zend_Registry::get('configDatabase')->database->adapter === 'PDO_MYSQL'
     ) {
         $type = 'mysql';
-    } else {
+    } elseif (Zend_Registry::get('configDatabase')->database->adapter === 'PDO_PGSQL'
+    ) {
         $type = 'pgsql';
+    } elseif (Zend_Registry::get('configDatabase')->database->adapter === 'PDO_SQLITE'
+    ) {
+        $type = 'sqlite';
+    } else {
+        echo 'Error';
+        exit;
     }
     $MyDirectory = opendir(BASE_PATH."/core/database/".$type);
     while ($Entry = @readdir($MyDirectory)) {
@@ -130,9 +139,12 @@ $logger = Zend_Log::factory(
 
 Zend_Registry::set('logger', $logger);
 
+if (file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini')) {
+    rename(BASE_PATH.'/tests/configs/lock.mysql.ini', BASE_PATH.'/tests/configs/mysql.ini');
+}
 if (file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini')) {
     rename(BASE_PATH.'/tests/configs/lock.pgsql.ini', BASE_PATH.'/tests/configs/pgsql.ini');
 }
-if (file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini')) {
-    rename(BASE_PATH.'/tests/configs/lock.mysql.ini', BASE_PATH.'/tests/configs/mysql.ini');
+if (file_exists(BASE_PATH.'/tests/configs/lock.sqlite.ini')) {
+    rename(BASE_PATH.'/tests/configs/lock.sqlite.ini', BASE_PATH.'/tests/configs/sqlite.ini');
 }

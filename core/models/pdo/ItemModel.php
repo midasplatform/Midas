@@ -486,11 +486,16 @@ class ItemModel extends ItemModelBase
             $userId = $userDao->getUserId();
         }
 
-        if (Zend_Registry::get('configDatabase')->database->adapter == 'PDO_MYSQL'
+        if (Zend_Registry::get('configDatabase')->database->adapter === 'PDO_MYSQL'
         ) {
             $rand = 'RAND()';
         } else {
             $rand = 'random()';
+        }
+        if (Zend_Registry::get('configDatabase')->database->adapter == 'PDO_SQLITE') {
+            $floor = 'CAST(tt.maxid*'.$rand.' AS INTEGER)';
+        } else {
+            $floor = 'FLOOR(tt.maxid*'.$rand.')';
         }
         $sql = $this->database->select()->setIntegrityCheck(false)->from(array('i' => 'item'))->join(
             array(
@@ -499,7 +504,7 @@ class ItemModel extends ItemModelBase
                     array('maxid' => 'MAX(item_id)')
                 ),
             ),
-            ' i.item_id >= FLOOR(tt.maxid*'.$rand.')'
+            ' i.item_id >= '.$floor
         )->joinLeft(
             array('ip' => 'itempolicyuser'),
             '

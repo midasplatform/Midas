@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- * Upgrade the core to version 3.2.6. Moves item thumbnails into the default
+ * Upgrade the core to version 3.2.6. Move item thumbnails into the default
  * asset store as bitstreams.
  */
 class Upgrade_3_2_6 extends MIDASUpgrade
@@ -40,37 +40,37 @@ class Upgrade_3_2_6 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query("ALTER TABLE `item` ADD COLUMN `thumbnail_id` bigint(20) NULL DEFAULT NULL");
+        $this->db->query("ALTER TABLE `item` ADD COLUMN `thumbnail_id` bigint(20) NULL DEFAULT NULL;");
 
         $this->_moveAllThumbnails();
 
-        $this->db->query("ALTER TABLE `item` DROP `thumbnail`");
+        $this->db->query("ALTER TABLE `item` DROP `thumbnail`;");
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $this->db->query("ALTER TABLE item ADD COLUMN thumbnail_id bigint NULL DEFAULT NULL");
+        $this->db->query("ALTER TABLE item ADD COLUMN thumbnail_id bigint NULL DEFAULT NULL;");
 
         $this->_moveAllThumbnails();
 
-        $this->db->query("ALTER TABLE item DROP COLUMN thumbnail");
+        $this->db->query("ALTER TABLE item DROP COLUMN thumbnail;");
     }
 
     private function _moveAllThumbnails()
     {
         // Iterate through all existing items that have thumbnails
-        $sql = $this->db->select()->from(array('item'))->where('thumbnail != ?', '');
+        $sql = $this->db->select()
+            ->from(array('item'))
+            ->where('thumbnail != ?', '');
         $rowset = $this->db->fetchAll($sql);
         foreach ($rowset as $row) {
             $itemId = $row['item_id'];
             $thumbnailBitstream = $this->_moveThumbnailToAssetstore($row['thumbnail']);
             if ($thumbnailBitstream !== null) {
-                $this->db->update(
-                    'item',
+                $this->db->update('item',
                     array('thumbnail_id' => $thumbnailBitstream->getKey()),
-                    array('item_id = ?' => $itemId)
-                );
+                    array('item_id = ?' => $itemId));
             }
         }
     }
@@ -80,8 +80,7 @@ class Upgrade_3_2_6 extends MIDASUpgrade
         $bitstreamModel = MidasLoader::loadModel('Bitstream');
 
         $oldpath = BASE_PATH.'/'.$thumbnail;
-        if (!file_exists($oldpath)
-        ) { // thumbnail file no longer exists, so we remove its reference
+        if (!file_exists($oldpath)) { //thumbnail file no longer exists, so we remove its reference
 
             return null;
         }

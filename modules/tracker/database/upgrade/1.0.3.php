@@ -18,18 +18,18 @@
  limitations under the License.
 =========================================================================*/
 
-/** Upgrade the tracker module to version 1.0.3. Add ab uild results link. */
+/** Upgrade the tracker module to version 1.0.3. Add a build results link. */
 class Tracker_Upgrade_1_0_3 extends MIDASUpgrade
 {
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query("ALTER TABLE `tracker_scalar` ADD COLUMN `build_results_url` text NOT NULL");
+        $this->db->query("ALTER TABLE `tracker_scalar` ADD COLUMN `build_results_url` text NOT NULL;");
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $this->db->query("ALTER TABLE tracker_scalar ADD COLUMN build_results_url text NOT NULL DEFAULT ''");
+        $this->db->query("ALTER TABLE tracker_scalar ADD COLUMN build_results_url text NOT NULL;");
     }
 }

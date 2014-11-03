@@ -32,7 +32,6 @@ abstract class MetadataModelBase extends AppModel
             'metadatatype' => array('type' => MIDAS_DATA),
             'element' => array('type' => MIDAS_DATA),
             'qualifier' => array('type' => MIDAS_DATA),
-            'description' => array('type' => MIDAS_DATA),
             'value' => array('type' => MIDAS_DATA),
             'itemrevision_id' => array(
                 'type' => MIDAS_MANY_TO_ONE,
@@ -69,7 +68,7 @@ abstract class MetadataModelBase extends AppModel
      *
      * @return MetadataDao
      */
-    public function addMetadata($type, $element, $qualifier, $description)
+    public function addMetadata($type, $element, $qualifier, $description = null)
     {
         // Gets the metadata
         $metadata = $this->getMetadata($type, $element, $qualifier);
@@ -81,7 +80,6 @@ abstract class MetadataModelBase extends AppModel
         $metadataDao->setMetadatatype($type);
         $metadataDao->setElement($element);
         $metadataDao->setQualifier($qualifier);
-        $metadataDao->setDescription($description);
 
         $this->save($metadataDao);
 

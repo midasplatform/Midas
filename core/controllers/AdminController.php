@@ -301,14 +301,14 @@ class AdminController extends AppController
         $limit = $this->getParam('limit');
         $offset = $this->getParam('offset');
         if (!isset($start) || empty($start)) {
-            $start = date("Y-m-d H:i:s", strtotime('-24 hour'));
+            $start = date('Y-m-d H:i:s', strtotime('-24 hour'));
         } else {
-            $start = date("Y-m-d H:i:s", strtotime($start));
+            $start = date('Y-m-d H:i:s', strtotime($start));
         }
         if (!isset($end) || empty($end)) {
-            $end = date("Y-m-d H:i:s");
+            $end = date('Y-m-d H:i:s');
         } else {
-            $end = date("Y-m-d H:i:s", strtotime($end));
+            $end = date('Y-m-d H:i:s', strtotime($end));
         }
         if (!isset($module) || empty($module)) {
             $module = 'all';

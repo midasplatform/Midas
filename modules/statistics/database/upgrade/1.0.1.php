@@ -29,27 +29,25 @@ class Statistics_Upgrade_1_0_1 extends MIDASUpgrade
     public function mysql()
     {
         // Create a new table mapping ip -> lat/long
-        $this->db->query(
-            "CREATE TABLE `statistics_ip_location` (
-              `ip_location_id` bigint(20) NOT NULL AUTO_INCREMENT,
-              `ip` VARCHAR(50) NOT NULL,
-              `latitude` VARCHAR(50) NOT NULL,
-              `longitude` VARCHAR(50) NOT NULL,
-              PRIMARY KEY (`ip_location_id`),
-              UNIQUE KEY (`ip`) )"
-        );
+        $sql = "
+            CREATE TABLE IF NOT EXISTS `statistics_ip_location` (
+                `ip_location_id` bigint(20) NOT NULL AUTO_INCREMENT,
+                `ip` varchar(50) NOT NULL,
+                `latitude` varchar(50) NOT NULL,
+                `longitude` varchar(50) NOT NULL,
+                PRIMARY KEY (`ip_location_id`),
+                UNIQUE KEY (`ip`)
+            ) DEFAULT CHARSET=utf8;
+        ";
+        $this->db->query($sql);
 
         // Add a logical foreign key into the download table
-        $this->db->query(
-            "ALTER TABLE `statistics_download`
-              ADD COLUMN `ip_location_id` bigint(20) NOT NULL"
-        );
+        $this->db->query("ALTER TABLE `statistics_download` ADD COLUMN `ip_location_id` bigint(20) NOT NULL;");
 
         // Copy the entries from our old table into the new one
-        $sql = $this->db->select()->from(
-            array('d' => 'statistics_download'),
-            array('ip', 'latitude', 'longitude')
-        )->distinct();
+        $sql = $this->db->select()
+            ->from(array('d' => 'statistics_download'), array('ip', 'latitude', 'longitude'))
+            ->distinct();
         $rowSet = $this->db->fetchAll($sql);
         $ips = array();
         foreach ($rowSet as $row) {
@@ -62,17 +60,19 @@ class Statistics_Upgrade_1_0_1 extends MIDASUpgrade
             $id = $this->db->lastInsertId('statistics_ip_location', 'ip_location_id');
 
             // Point the download table entries to the new entry
-            $this->db->update('statistics_download', array('ip_location_id' => $id), array('ip = ?' => $ip));
+            $this->db->update('statistics_download',
+                array('ip_location_id' => $id),
+                array('ip = ?' => $ip));
         }
 
         // Drop the columns from the download table
-        $this->db->query("ALTER TABLE `statistics_download` DROP `ip`");
-        $this->db->query("ALTER TABLE `statistics_download` DROP `latitude`");
-        $this->db->query("ALTER TABLE `statistics_download` DROP `longitude`");
+        $this->db->query("ALTER TABLE `statistics_download` DROP `ip`;");
+        $this->db->query("ALTER TABLE `statistics_download` DROP `latitude`;");
+        $this->db->query("ALTER TABLE `statistics_download` DROP `longitude`;");
 
         // Add item id index to the download table for faster item statistics lookup
-        $this->db->query("ALTER TABLE `statistics_download` ADD INDEX (`item_id`)");
+        $this->db->query("ALTER TABLE `statistics_download` ADD KEY (`item_id`);");
         // Add latitude index to the geolocation table for quick selection of blank entries
-        $this->db->query("ALTER TABLE `statistics_ip_location` ADD INDEX (`latitude`)");
+        $this->db->query("ALTER TABLE `statistics_ip_location` ADD KEY (`latitude`);");
     }
 }

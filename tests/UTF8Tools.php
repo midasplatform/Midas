@@ -22,7 +22,7 @@
 class UTF8Tools
 {
     protected $excludedDirs = array('_build', '_test', '.git', 'bin', 'bower_components', 'build', 'data', 'library', 'log', 'node_modules', 'tmp', 'vendor');
-    protected $excludedExts = array('gif', 'ico', 'ini', 'jar', 'jpeg', 'jpg', 'keystore', 'png', 'psd', 'swc', 'swf');
+    protected $excludedExts = array('db', 'gif', 'ico', 'ini', 'jar', 'jpeg', 'jpg', 'keystore', 'phar', 'png', 'psd', 'swc', 'swf', 'zip');
     protected $excludedFiles = array('.coveralls.yml', '.DS_Store', '.htaccess', '.gitignore', '.travis.yml', 'appveyor.yml');
 
     /**

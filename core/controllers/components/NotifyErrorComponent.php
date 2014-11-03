@@ -179,7 +179,7 @@ class NotifyErrorComponent extends AppComponent
             $message .= "Request type: ".$this->_server['HTTP_X_REQUESTED_WITH']."\n";
         }
 
-        $message .= "Server time: ".date("Y-m-d H:i:s")."\n";
+        $message .= "Server time: ".date('Y-m-d H:i:s')."\n";
 
         if (!empty($this->_server['HTTP_REFERER'])) {
             $message .= "Referer: ".$this->_server['HTTP_REFERER']."\n";
@@ -217,7 +217,7 @@ class NotifyErrorComponent extends AppComponent
             $message .= "Request type: ".$this->_server['HTTP_X_REQUESTED_WITH']."\n";
         }
 
-        $message .= "Server time: ".date("Y-m-d H:i:s")."\n";
+        $message .= "Server time: ".date('Y-m-d H:i:s')."\n";
         $message .= "RequestURI: ".$this->_error->request->getRequestUri()."\n";
 
         if (!empty($this->_server['HTTP_REFERER'])) {

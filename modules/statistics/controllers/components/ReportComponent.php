@@ -34,8 +34,8 @@ class Statistics_ReportComponent extends AppComponent
 
         $reportContent .= '<br/><br/><b>Status</b>';
         $errors = $errorModel->getLog(
-            date("Y-m-d H:i:s", strtotime('-1 day'.date('Y-m-j G:i:s'))),
-            date("Y-m-d H:i:s"),
+            date('Y-m-d H:i:s', strtotime('-1 day'.date('Y-m-d H:i:s'))),
+            date('Y-m-d H:i:s'),
             'all',
             2
         );

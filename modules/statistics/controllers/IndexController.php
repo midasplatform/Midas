@@ -74,17 +74,17 @@ class Statistics_IndexController extends Statistics_AppController
         }
 
         $errors = $this->Errorlog->getLog(
-            date("Y-m-d H:i:s", strtotime('-20 day'.date('Y-m-j G:i:s'))),
-            date("Y-m-d H:i:s"),
+            date('Y-m-d H:i:s', strtotime('-20 day'.date('Y-m-d H:i:s'))),
+            date('Y-m-d H:i:s'),
             'all',
             2
         );
         $errors = $errors['logs'];
         $arrayErrors = array();
 
-        $format = 'Y-m-j';
+        $format = 'Y-m-d';
         for ($i = 0; $i < 21; $i++) {
-            $key = date($format, strtotime(date("Y-m-d H:i:s", strtotime('-'.$i.' day'.date('Y-m-j G:i:s')))));
+            $key = date($format, strtotime(date('Y-m-d H:i:s', strtotime('-'.$i.' day'.date('Y-m-d H:i:s')))));
             $arrayErrors[$key] = 0;
         }
         foreach ($errors as $error) {

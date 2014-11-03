@@ -68,11 +68,11 @@ class Statistics_ItemController extends Statistics_AppController
         $this->view->header = $header;
         $arrayDownload = $this->Statistics_Download->getDailyCounts(
             $idArray,
-            date("Y-m-d H:i:s", strtotime('-20 day'.date('Y-m-j G:i:s'))),
-            date("Y-m-d H:i:s")
+            date('Y-m-d H:i:s', strtotime('-20 day'.date('Y-m-d H:i:s'))),
+            date('Y-m-d H:i:s')
         );
         for ($i = 20; $i >= 0; $i--) {
-            $dateKey = date('Y-m-j', strtotime('-'.$i.' day'));
+            $dateKey = date('Y-m-d', strtotime('-'.$i.' day'));
             if (!array_key_exists($dateKey, $arrayDownload)) {
                 $arrayDownload[$dateKey] = 0;
             }

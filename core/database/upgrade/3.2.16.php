@@ -18,8 +18,20 @@
  limitations under the License.
 =========================================================================*/
 
-/** App dao for cleanup module */
-class Cleanup_AppDao extends MIDAS_GlobalDao
+/** Upgrade the core to version 3.2.16. */
+class Upgrade_3_2_16 extends MIDASUpgrade
 {
-    public $_module = 'cleanup';
+    /** Upgrade a MySQL database. */
+    public function mysql()
+    {
+        $this->db->query("ALTER TABLE `metadata` DROP COLUMN `description`;");
+        $this->db->query("DROP TABLE IF EXISTS `metadatadocumentvalue`;");
+    }
+
+    /** Upgrade a PostgreSQL database. */
+    public function pgsql()
+    {
+        $this->db->query("ALTER TABLE metadata DROP COLUMN description;");
+        $this->db->query("DROP TABLE IF EXISTS metadatadocumentvalue;");
+    }
 }

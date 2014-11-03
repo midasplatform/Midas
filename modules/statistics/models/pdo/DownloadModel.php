@@ -131,16 +131,15 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
             $sql->where('date <= ?', $endDate);
         }
 
-        if (Zend_Registry::get('configDatabase')->database->adapter == 'PDO_MYSQL'
-        ) {
-            $sql->from(array('statistics_download'), array('day' => 'DATE(date)', 'count' => 'count(*)'))->group(
-                'DATE(date)'
-            );
-        } else { // PGSQL implementation
+        if (Zend_Registry::get('configDatabase')->database->adapter === 'PDO_PGSQL') {
             $sql->from(
                 array('statistics_download'),
                 array('day' => "date_trunc('day', date)", 'count' => 'count(*)')
             )->group('day');
+        } else {
+            $sql->from(array('statistics_download'), array('day' => 'DATE(date)', 'count' => 'count(*)'))->group(
+                'DATE(date)'
+            );
         }
         $rowset = $this->database->fetchAll($sql);
         $results = array();

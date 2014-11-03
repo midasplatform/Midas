@@ -100,7 +100,7 @@ class Oauth_TokenControllerTest extends ControllerTestCase
         $this->_assertErrorResponse('invalid_grant');
         $this->resetAll();
         // g. Expired code
-        $codeDao->setExpirationDate(date("Y-m-d H:i:s", strtotime('-1 hour')));
+        $codeDao->setExpirationDate(date('Y-m-d H:i:s', strtotime('-1 hour')));
         $codeModel->save($codeDao);
         $this->params['client_secret'] = $client->getSecret();
         $this->params['grant_type'] = 'authorization_code';
@@ -108,7 +108,7 @@ class Oauth_TokenControllerTest extends ControllerTestCase
         $this->params['code'] = $codeDao->getCode();
         $this->dispatchUri('/oauth/token');
         $this->_assertErrorResponse('invalid_grant');
-        $codeDao->setExpirationDate(date("Y-m-d H:i:s", strtotime('+1 hour')));
+        $codeDao->setExpirationDate(date('Y-m-d H:i:s', strtotime('+1 hour')));
         $codeModel->save($codeDao);
         $this->resetAll();
         // h. Client id mismatch
@@ -221,7 +221,7 @@ class Oauth_TokenControllerTest extends ControllerTestCase
         $this->resetAll();
 
         // Test with valid token but incorrect scope
-        $accessToken->setExpirationDate(date("Y-m-d H:i:s", strtotime('+1 hour')));
+        $accessToken->setExpirationDate(date('Y-m-d H:i:s', strtotime('+1 hour')));
         $tokenModel->save($accessToken);
         $this->dispatchUri($uri);
         $this->_assertApiFailure();

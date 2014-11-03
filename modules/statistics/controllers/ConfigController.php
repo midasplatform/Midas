@@ -71,7 +71,7 @@ class Statistics_ConfigController extends Statistics_AppController
                         $job->setTask('TASK_STATISTICS_SEND_REPORT');
                         $job->setPriority('1');
                         $job->setRunOnlyOnce(false);
-                        $job->setFireTime(date('Y-m-j', strtotime('+1 day'.date('Y-m-j G:i:s'))).' 1:00:00');
+                        $job->setFireTime(date('Y-m-d', strtotime('+1 day'.date('Y-m-d H:i:s'))).' 01:00:00');
                         $job->setTimeInterval(24 * 60 * 60);
                         $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
                         $job->setParams(JsonComponent::encode(array()));
@@ -95,7 +95,7 @@ class Statistics_ConfigController extends Statistics_AppController
                     $job->setTask('TASK_STATISTICS_PERFORM_GEOLOCATION');
                     $job->setPriority(1);
                     $job->setRunOnlyOnce(0);
-                    $job->setFireTime(date('Y-m-j', strtotime('+1 day'.date('Y-m-j G:i:s'))).' 1:00:00');
+                    $job->setFireTime(date('Y-m-d', strtotime('+1 day'.date('Y-m-d H:i:s'))).' 01:00:00');
                     $job->setTimeInterval(1 * 60 * 60);
                     $jobLocation = $job;
                 }

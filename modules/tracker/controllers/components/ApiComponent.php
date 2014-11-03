@@ -217,7 +217,7 @@ class Tracker_ApiComponent extends AppComponent
         if ($submitTime === false) {
             throw new Exception('Invalid submitTime value: '.$args['submitTime'], -1);
         }
-        $submitTime = date("Y-m-d H:i:s", $submitTime);
+        $submitTime = date('Y-m-d H:i:s', $submitTime);
 
         $value = (float) $args['value'];
 
@@ -256,7 +256,7 @@ class Tracker_ApiComponent extends AppComponent
                 $job->setTask('TASK_TRACKER_DELETE_TEMP_SCALAR');
                 $job->setPriority(1);
                 $job->setRunOnlyOnce(1);
-                $job->setFireTime(date('Y-m-j G:i:s', strtotime('+'.$nHours.' hours')));
+                $job->setFireTime(date('Y-m-d H:i:s', strtotime('+'.$nHours.' hours')));
                 $job->setTimeInterval(0);
                 $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
                 $job->setCreatorId($user->getKey());
@@ -393,9 +393,9 @@ class Tracker_ApiComponent extends AppComponent
             if ($submitTime === false) {
                 throw new Exception('Invalid submitTime value: '.$args['submitTime'], -1);
             }
-            $submitTime = date("Y-m-d H:i:s", $submitTime);
+            $submitTime = date('Y-m-d H:i:s', $submitTime);
         } else {
-            $submitTime = date("Y-m-d H:i:s"); // Use current time if no submit time is explicitly set
+            $submitTime = date('Y-m-d H:i:s'); // Use current time if no submit time is explicitly set
         }
 
         $producerRevision = trim($args['producerRevision']);
@@ -459,7 +459,7 @@ class Tracker_ApiComponent extends AppComponent
                             $job->setTask('TASK_TRACKER_DELETE_TEMP_SCALAR');
                             $job->setPriority(1);
                             $job->setRunOnlyOnce(1);
-                            $job->setFireTime(date('Y-m-j G:i:s', strtotime('+'.$nHours.' hours')));
+                            $job->setFireTime(date('Y-m-d H:i:s', strtotime('+'.$nHours.' hours')));
                             $job->setTimeInterval(0);
                             $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
                             $job->setCreatorId($user->getKey());

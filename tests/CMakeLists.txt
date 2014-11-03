@@ -29,6 +29,7 @@ endmacro()
 function(add_midas_test TestName TestFile)
     add_midas_mysql_test(${TestName} ${TestFile})
     add_midas_pgsql_test(${TestName} ${TestFile})
+    add_midas_sqlite_test(${TestName} ${TestFile})
 endfunction()
 
 function(add_midas_mysql_test TestName TestFile)
@@ -53,6 +54,20 @@ function(add_midas_pgsql_test TestName TestFile)
         )
         set_tests_properties(
             PgSQL${TestName} PROPERTIES
+            FAIL_REGULAR_EXPRESSION ".*Failures: [1-9]+.*;.*Exceptions: [1-9]+.*"
+            RESOURCE_LOCK MIDASDatabase
+        )
+    endif()
+endfunction()
+
+function(add_midas_sqlite_test TestName TestFile)
+    if(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/sqlite.ini)
+        add_test(
+            SQLite${TestName}
+            ${PHP} ${CMAKE_SOURCE_DIR}/tests/PHPUnitSQLite.php --debug --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
+        )
+        set_tests_properties(
+            SQLite${TestName} PROPERTIES
             FAIL_REGULAR_EXPRESSION ".*Failures: [1-9]+.*;.*Exceptions: [1-9]+.*"
             RESOURCE_LOCK MIDASDatabase
         )

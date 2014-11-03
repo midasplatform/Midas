@@ -32,7 +32,7 @@ class Tracker_ThresholdNotificationComponent extends AppComponent
             $job->setTask('TASK_TRACKER_SEND_THRESHOLD_NOTIFICATION');
             $job->setPriority(1);
             $job->setRunOnlyOnce(1);
-            $job->setFireTime(date('Y-m-j G:i:s'));
+            $job->setFireTime(date('Y-m-d H:i:s'));
             $job->setTimeInterval(0);
             $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
             $job->setCreatorId($notification->getRecipientId());

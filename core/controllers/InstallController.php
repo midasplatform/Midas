@@ -67,7 +67,7 @@ class InstallController extends AppController
         }
         $this->view->header = 'Step 2: Database Configuration';
 
-        $databases = array('mysql', 'pgsql');
+        $databases = array('mysql', 'pgsql', 'sqlite');
         $this->view->databaseType = array();
         foreach ($databases as $database) {
             if (!extension_loaded('pdo_'.$database) || !file_exists(BASE_PATH.'/core/database/'.$database)
@@ -75,6 +75,7 @@ class InstallController extends AppController
                 unset($database);
             } else {
                 $form = $this->Form->Install->createDBForm();
+                $host = $form->getElement('host');
                 $port = $form->getElement('port');
                 $username = $form->getElement('username');
                 switch ($database) {
@@ -85,6 +86,11 @@ class InstallController extends AppController
                     case 'pgsql':
                         $port->setValue('5432');
                         $username->setValue('postgres');
+                        break;
+                    case 'sqlite':
+                        $host->setValue('');
+                        $port->setValue('');
+                        $username->setValue('');
                         break;
                     default:
                         break;
@@ -144,16 +150,18 @@ class InstallController extends AppController
                 $driverOptions = array();
                 $params = array(
                     'dbname' => $form->getValue('dbname'),
-                    'username' => $form->getValue('username'),
-                    'password' => $form->getValue('password'),
                     'driver_options' => $driverOptions,
                 );
-                $unixsocket = $form->getValue('unix_socket');
-                if ($unixsocket) {
-                    $params['unix_socket'] = $unixsocket;
-                } else {
-                    $params['host'] = $form->getValue('host');
-                    $params['port'] = $form->getValue('port');
+                if ($dbtype != 'PDO_SQLITE') {
+                    $params['username'] = $form->getValue('username');
+                    $params['password'] = $form->getValue('password');
+                    $unixsocket = $form->getValue('unix_socket');
+                    if ($unixsocket) {
+                        $params['unix_socket'] = $unixsocket;
+                    } else {
+                        $params['host'] = $form->getValue('host');
+                        $params['port'] = $form->getValue('port');
+                    }
                 }
 
                 $db = Zend_Db::factory($dbtype, $params);
@@ -176,9 +184,11 @@ class InstallController extends AppController
                 $configGlobal = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/application.local.ini', 'global');
                 Zend_Registry::set('configGlobal', $configGlobal);
 
+                $configDatabase = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/database.local.ini', $configGlobal->environment);
+                Zend_Registry::set('configDatabase', $configDatabase);
+
                 require_once BASE_PATH.'/core/controllers/components/UpgradeComponent.php';
                 $upgradeComponent = new UpgradeComponent();
-                $db = Zend_Registry::get('dbAdapter');
 
                 $upgradeComponent->initUpgrade('core', $db, $dbtype);
                 $upgradeComponent->upgrade(str_replace('.sql', '', basename($sqlFile)));
@@ -268,31 +278,36 @@ class InstallController extends AppController
         $this->requireAjaxRequest();
         $this->_helper->layout->disableLayout();
         $this->_helper->viewRenderer->setNoRender();
-        try {
-            $driverOptions = array();
-            $params = array(
-                'dbname' => $this->getParam('dbname'),
-                'username' => $this->getParam('username'),
-                'password' => $this->getParam('password'),
-                'driver_options' => $driverOptions,
-            );
-            $unixsocket = $this->getParam('unix_socket');
-            if ($unixsocket) {
-                $params['unix_socket'] = $this->getParam('unix_socket');
-            } else {
-                $params['host'] = $this->getParam('host');
-                $params['port'] = $this->getParam('port');
+        $dbtype = 'PDO_'.strtoupper($this->getParam('type'));
+        if ($dbtype === 'PDO_SQLITE') {
+            $return = array(true, 'The database is reachable');
+        } else {
+            try {
+                $driverOptions = array();
+                $params = array(
+                    'dbname' => $this->getParam('dbname'),
+                    'username' => $this->getParam('username'),
+                    'password' => $this->getParam('password'),
+                    'driver_options' => $driverOptions,
+                );
+                $unixsocket = $this->getParam('unix_socket');
+                if ($unixsocket) {
+                    $params['unix_socket'] = $this->getParam('unix_socket');
+                } else {
+                    $params['host'] = $this->getParam('host');
+                    $params['port'] = $this->getParam('port');
+                }
+                $db = Zend_Db::factory('PDO_'.strtoupper($this->getParam('type')), $params);
+                $tables = $db->listTables();
+                if (count($tables) > 0) {
+                    $return = array(false, 'The database is not empty');
+                } else {
+                    $return = array(true, 'The database is reachable');
+                }
+                $db->closeConnection();
+            } catch (Zend_Exception $exception) {
+                $return = array(false, 'Could not connect to the database');
             }
-            $db = Zend_Db::factory('PDO_'.strtoupper($this->getParam('type')), $params);
-            $tables = $db->listTables();
-            if (count($tables) > 0) {
-                $return = array(false, 'The database is not empty');
-            } else {
-                $return = array(true, 'The database is reachable');
-            }
-            $db->closeConnection();
-        } catch (Zend_Exception $exception) {
-            $return = array(false, 'Could not connect to the database');
         }
         echo JsonComponent::encode($return);
     }

@@ -22,7 +22,6 @@
   apt: name={{ item }} state=present
   with_items:
     - mysql-server
-    - php5-mysql
     - python-mysqldb
   notify:
     - restart apache2

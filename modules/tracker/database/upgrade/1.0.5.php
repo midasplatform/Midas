@@ -24,14 +24,14 @@ class Tracker_Upgrade_1_0_5 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query("ALTER TABLE `tracker_scalar` ADD COLUMN `params` text NULL DEFAULT NULL");
-        $this->db->query("ALTER TABLE `tracker_scalar` ADD COLUMN `extra_urls` text NULL DEFAULT NULL");
+        $this->db->query("ALTER TABLE `tracker_scalar` ADD COLUMN `params` text;");
+        $this->db->query("ALTER TABLE `tracker_scalar` ADD COLUMN `extra_urls` text;");
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $this->db->query("ALTER TABLE tracker_scalar ADD COLUMN params text NULL DEFAULT NULL");
-        $this->db->query("ALTER TABLE tracker_scalar ADD COLUMN extra_urls text NULL DEFAULT NULL");
+        $this->db->query("ALTER TABLE tracker_scalar ADD COLUMN params text;");
+        $this->db->query("ALTER TABLE tracker_scalar ADD COLUMN extra_urls text;");
     }
 }

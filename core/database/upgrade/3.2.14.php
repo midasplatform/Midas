@@ -27,26 +27,11 @@ class Upgrade_3_2_14 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        // Remove "on update current timestamp" qualifier from the date_update column
-        $this->db->query(
-            "ALTER TABLE `folder`
-      CHANGE `date_update` `date_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
-        );
-        $this->db->query(
-            "ALTER TABLE `item`
-      CHANGE `date_update` `date_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
-        );
-        $this->db->query(
-            "ALTER TABLE `itemrevision`
-      CHANGE `date` `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
-        );
-        $this->db->query(
-            "ALTER TABLE `bitstream`
-      CHANGE `date` `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
-        );
-        $this->db->query(
-            "ALTER TABLE `feed`
-      CHANGE `date` `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
-        );
+        // Remove the "on update current timestamp" qualifier from the date_update column.
+        $this->db->query("ALTER TABLE `folder` CHANGE `date_update` `date_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;");
+        $this->db->query("ALTER TABLE `item` CHANGE `date_update` `date_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;");
+        $this->db->query("ALTER TABLE `itemrevision` CHANGE `date` `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;");
+        $this->db->query("ALTER TABLE `bitstream` CHANGE `date` `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;");
+        $this->db->query("ALTER TABLE `feed` CHANGE `date` `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;");
     }
 }

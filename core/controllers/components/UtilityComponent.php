@@ -129,6 +129,7 @@ class UtilityComponent extends AppComponent
                 if (!file_exists($dir.$file.'/database')) {
                     $config->db->PDO_MYSQL = true;
                     $config->db->PDO_PGSQL = true;
+                    $config->db->PDO_SQLITE = true;
                 } else {
                     $handleDB = opendir($dir.$file.'/database');
                     if (file_exists($dir.$file.'/database')) {
@@ -140,6 +141,9 @@ class UtilityComponent extends AppComponent
                                         break;
                                     case 'pgsql':
                                         $config->db->PDO_PGSQL = true;
+                                        break;
+                                    case 'sqlite':
+                                        $config->db->PDO_SQLITE = true;
                                         break;
                                     default:
                                         break;
@@ -455,6 +459,14 @@ class UtilityComponent extends AppComponent
                         $this->run_sql_from_file(
                             $db,
                             BASE_PATH.'/modules/'.$moduleName.'/database/pgsql/'.$version.'.sql'
+                        );
+                    }
+                    break;
+                case 'PDO_SQLITE':
+                    if (file_exists(BASE_PATH.'/modules/'.$moduleName.'/database/sqlite/'.$version.'.sql')) {
+                        $this->run_sql_from_file(
+                            $db,
+                            BASE_PATH.'/modules/'.$moduleName.'/database/sqlite/'.$version.'.sql'
                         );
                     }
                     break;

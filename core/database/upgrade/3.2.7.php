@@ -24,31 +24,31 @@ class Upgrade_3_2_7 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query(
-            "CREATE TABLE IF NOT EXISTS `progress` (
-      `progress_id` bigint(20) NOT NULL AUTO_INCREMENT,
-      `message` TEXT NOT NULL,
-      `current` bigint(20) NOT NULL,
-      `maximum` bigint(20) NOT NULL,
-      `date_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      `last_update` timestamp NOT NULL,
-      PRIMARY KEY (`progress_id`)
-      )"
-        );
+        $this->db->query("
+            CREATE TABLE IF NOT EXISTS `progress` (
+                `progress_id` bigint(20) NOT NULL AUTO_INCREMENT,
+                `message` TEXT NOT NULL,
+                `current` bigint(20) NOT NULL,
+                `maximum` bigint(20) NOT NULL,
+                `date_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                `last_update` timestamp NOT NULL,
+                PRIMARY KEY (`progress_id`)
+            ) DEFAULT CHARSET=utf8;
+        ");
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $this->db->query(
-            "CREATE TABLE progress (
-      progress_id serial PRIMARY KEY,
-      message TEXT NOT NULL,
-      current bigint NOT NULL,
-      maximum bigint NOT NULL,
-      date_creation timestamp without time zone NOT NULL DEFAULT now(),
-      last_update timestamp without time zone NOT NULL
-      )"
-        );
+        $this->db->query("
+            CREATE TABLE IF NOT EXISTS progress (
+                progress_id serial PRIMARY KEY,
+                message TEXT NOT NULL,
+                current bigint NOT NULL,
+                maximum bigint NOT NULL,
+                date_creation timestamp without time zone NOT NULL DEFAULT now(),
+                last_update timestamp without time zone NOT NULL
+            );
+        ");
     }
 }

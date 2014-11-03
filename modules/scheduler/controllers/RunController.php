@@ -67,9 +67,9 @@ class Scheduler_RunController extends Scheduler_AppController
                 while ($firetime < $currTime && $interval > 0) {
                     $firetime += $interval; // only schedule jobs for the future
                 }
-                $job->setFireTime(date("Y-m-d H:i:s", $firetime));
+                $job->setFireTime(date('Y-m-d H:i:s', $firetime));
             }
-            $job->setTimeLastFired(date("Y-m-d H:i:s"));
+            $job->setTimeLastFired(date('Y-m-d H:i:s'));
             $this->Scheduler_Job->save($job);
             try {
                 if (!isset($tasks[$job->getTask()])) {

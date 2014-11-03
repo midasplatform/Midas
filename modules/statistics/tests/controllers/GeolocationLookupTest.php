@@ -67,7 +67,7 @@ class Statistics_GeolocationLookupTest extends ControllerTestCase
         $this->assertEquals($params->apikey, '1234');
 
         // Make it so the job will fire on the next scheduler run
-        $job->setFireTime(date('Y-m-j', strtotime('-1 day')).' 1:00:00');
+        $job->setFireTime(date('Y-m-d', strtotime('-1 day')).' 01:00:00');
         $jobModel->save($job);
 
         // Run the scheduler

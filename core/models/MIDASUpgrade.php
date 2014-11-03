@@ -18,8 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- */
+/** Upgrade the core or a module to a newer version. */
 class MIDASUpgrade
 {
     protected $db;
@@ -44,13 +43,18 @@ class MIDASUpgrade
     {
     }
 
-    /** calls if mysql enable */
+    /** Upgrade a MySQL database. */
     public function mysql()
     {
     }
 
-    /** called is pgsql enabled */
+    /** Upgrade a PostgreSQL database. */
     public function pgsql()
+    {
+    }
+
+    /** Upgrade a SQLite database. */
+    public function sqlite()
     {
     }
 
@@ -191,10 +195,12 @@ class MIDASUpgrade
             $sql = " DEFAULT '".$default."'";
         }
 
-        if ($this->dbtype == "PDO_PGSQL") {
-            $this->db->query("ALTER TABLE \"".$table."\" ADD \"".$field."\" ".$pgSqlType.$sql);
+        if ($this->dbtype === 'PDO_MYSQL') {
+            $this->db->query("ALTER TABLE ".$table." ADD ".$field." ".$mySQLType.$sql.";");
+        } elseif ($this->dbtype === 'PDO_PGSQL') {
+            $this->db->query("ALTER TABLE \"".$table."\" ADD \"".$field."\" ".$pgSqlType.$sql.";");
         } else {
-            $this->db->query("ALTER TABLE ".$table." ADD ".$field." ".$mySQLType.$sql);
+            throw new Zend_Exception('Database does not support adding table fields');
         }
     }
 
@@ -203,10 +209,12 @@ class MIDASUpgrade
      */
     public function removeTableField($table, $field)
     {
-        if ($this->dbtype == "PDO_PGSQL") {
-            $this->db->query("ALTER TABLE \"".$table."\" DROP COLUMN \"".$field."\"");
+        if ($this->dbtype === 'PDO_MYSQL') {
+            $this->db->query("ALTER TABLE ".$table." DROP ".$field.";");
+        } elseif ($this->dbtype === 'PDO_PGSQL') {
+            $this->db->query("ALTER TABLE \"".$table."\" DROP COLUMN \"".$field."\";");
         } else {
-            $this->db->query("ALTER TABLE ".$table." DROP ".$field);
+            throw new Zend_Exception('Database does not support removing table fields');
         }
     }
 
@@ -215,22 +223,24 @@ class MIDASUpgrade
      */
     public function renameTableField($table, $field, $newfield, $mySQLType, $pgSqlType, $default)
     {
-        if ($this->dbtype == "PDO_PGSQL") {
-            $this->db->query("ALTER TABLE \"".$table."\" RENAME \"".$field."\" TO \"".$newfield."\"");
-            $this->db->query("ALTER TABLE \"".$table."\" ALTER COLUMN \"".$newfield."\" TYPE ".$pgSqlType);
+        if ($this->dbtype === 'PDO_MYSQL') {
             if ($default !== false) {
                 $this->db->query(
-                    "ALTER TABLE \"".$table."\" ALTER COLUMN \"".$newfield."\" SET DEFAULT ".$default
+                    "ALTER TABLE ".$table." CHANGE ".$field." ".$newfield." ".$mySQLType." DEFAULT '".$default."';"
+                );
+            } else {
+                $this->db->query("ALTER TABLE ".$table." CHANGE ".$field." ".$newfield." ".$mySQLType.";");
+            }
+        } elseif ($this->dbtype === 'PDO_PGSQL') {
+            $this->db->query("ALTER TABLE \"".$table."\" RENAME \"".$field."\" TO \"".$newfield."\";");
+            $this->db->query("ALTER TABLE \"".$table."\" ALTER COLUMN \"".$newfield."\" TYPE ".$pgSqlType.";");
+            if ($default !== false) {
+                $this->db->query(
+                    "ALTER TABLE \"".$table."\" ALTER COLUMN \"".$newfield."\" SET DEFAULT ".$default.";"
                 );
             }
         } else {
-            if ($default !== false) {
-                $this->db->query(
-                    "ALTER TABLE ".$table." CHANGE ".$field." ".$newfield." ".$mySQLType." DEFAULT '".$default."'"
-                );
-            } else {
-                $this->db->query("ALTER TABLE ".$table." CHANGE ".$field." ".$newfield." ".$mySQLType);
-            }
+            throw new Zend_Exception('Database does not support renaming table fields');
         }
     }
 
@@ -240,10 +250,10 @@ class MIDASUpgrade
      */
     public function checkIndexExists($table, $field)
     {
-        if ($this->dbtype == "PDO_MYSQL") {
-            $rowset = $this->db->fetchAll("SHOW INDEX FROM ".$tablename);
+        if ($this->dbtype === 'PDO_MYSQL') {
+            $rowset = $this->db->fetchAll("SHOW INDEX FROM ".$tablename.";");
             foreach ($rowset as $index_array) {
-                if ($index_array['Column_name'] == $columnname) {
+                if ($index_array['Column_name'] === $columnname) {
                     return true;
                 }
             }
@@ -258,12 +268,14 @@ class MIDASUpgrade
     public function addTableIndex($table, $field)
     {
         if (!$this->checkIndexExists($table, $field)) {
-            if ($this->dbtype == "PDO_PGSQL") {
+            if ($this->dbtype === 'PDO_MYSQL') {
+                $this->db->query("ALTER TABLE ".$table." ADD INDEX ( ".$field." );");
+            } elseif ($this->dbtype === 'PDO_PGSQL') {
                 @$this->db->query(
-                    "CREATE INDEX ".$table."_".$field."_idx ON \"".$table."\" (\"".$field."\")"
+                    "CREATE INDEX ".$table."_".$field."_idx ON \"".$table."\" (\"".$field."\");"
                 );
             } else {
-                $this->db->query("ALTER TABLE ".$table." ADD INDEX ( ".$field." )");
+                throw new Zend_Exception('Database does not support adding table indexes');
             }
         }
     }
@@ -274,10 +286,12 @@ class MIDASUpgrade
     public function removeTableIndex($table, $field)
     {
         if ($this->checkIndexExists($table, $field)) {
-            if ($this->dbtype == "PDO_PGSQL") {
-                $this->db->query("DROP INDEX ".$table."_".$field."_idx");
+            if ($this->dbtype === 'PDO_MYSQL') {
+                $this->db->query("ALTER TABLE ".$table." DROP INDEX ".$field.";");
+            } elseif ($this->dbtype === 'PDO_PGSQL') {
+                $this->db->query("DROP INDEX ".$table."_".$field."_idx;");
             } else {
-                $this->db->query("ALTER TABLE ".$table." DROP INDEX ".$field);
+                throw new Zend_Exception('Database does not support renaming table indexes');
             }
         }
     }
@@ -287,10 +301,12 @@ class MIDASUpgrade
      */
     public function addTablePrimaryKey($table, $field)
     {
-        if ($this->dbtype == "PDO_PGSQL") {
-            $this->db->query("ALTER TABLE \"".$table."\" ADD PRIMARY KEY (\"".$field."\")");
+        if ($this->dbtype === 'PDO_MYSQL') {
+            $this->db->query("ALTER TABLE ".$table." ADD PRIMARY KEY ( ".$field." );");
+        } elseif ($this->dbtype === 'PDO_PGSQL') {
+            $this->db->query("ALTER TABLE \"".$table."\" ADD PRIMARY KEY (\"".$field."\");");
         } else {
-            $this->db->query("ALTER TABLE ".$table." ADD PRIMARY KEY ( ".$field." )");
+            throw new Zend_Exception('Database does not support adding table primary keys');
         }
     }
 
@@ -299,11 +315,13 @@ class MIDASUpgrade
      */
     public function removeTablePrimaryKey($table)
     {
-        if ($this->dbtype == "PDO_PGSQL") {
-            $this->db->query("ALTER TABLE \"".$table."\" DROP CONSTRAINT \"value_pkey\"");
-            $this->db->query("ALTER TABLE \"".$table."\" DROP CONSTRAINT \"".$table."_pkey\"");
+        if ($this->dbtype === 'PDO_MYSQL') {
+            $this->db->query("ALTER TABLE ".$table." DROP PRIMARY KEY;");
+        } elseif ($this->dbtype === 'PDO_PGSQL') {
+            $this->db->query("ALTER TABLE \"".$table."\" DROP CONSTRAINT \"value_pkey\";");
+            $this->db->query("ALTER TABLE \"".$table."\" DROP CONSTRAINT \"".$table."_pkey\";");
         } else {
-            $this->db->query("ALTER TABLE ".$table." DROP PRIMARY KEY");
+            throw new Zend_Exception('Database does not support removing table primary keys');
         }
     }
 }

@@ -18,8 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/** Base model class for the cleanup module */
-class Cleanup_AppModel extends MIDASModel
+/** Upgrade the dicomserver module to version 1.0.1. */
+class Dicomserver_Upgrade_1_0_1 extends MIDASUpgrade
 {
-    public $moduleName = 'cleanup';
 }

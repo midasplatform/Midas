@@ -53,7 +53,7 @@ function checkDB(obj) {
     obj.find('.testOk').hide();
     obj.find('.testNok').hide();
     obj.find('.testError').html('');
-    if ((obj.find('[name=host]').val() == '' || obj.find('[name=port]').val() == "") && obj.find('[name=unix_socket]').val() == '') {
+    if (obj.find('[name=type]').val() != 'sqlite' && (obj.find('[name=host]').val() == '' || obj.find('[name=port]').val() == "") && obj.find('[name=unix_socket]').val() == '') {
         obj.find('.testNok').show();
         obj.find('.testError').html("Please set the host and port or the socket.");
         obj.find('.testLoading').hide();

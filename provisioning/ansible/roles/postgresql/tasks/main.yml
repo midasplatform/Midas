@@ -21,7 +21,6 @@
 - name: apt install
   apt: name={{ item }} state=present
   with_items:
-    - php5-pgsql
     - postgresql
     - python-psycopg2
 

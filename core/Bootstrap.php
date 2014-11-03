@@ -73,23 +73,37 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         } else {
             $driverOptions = $configDatabase->database->params->driver_options->toArray();
         }
-        $driverOptions[PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = true;
-        $params = array(
-            'dbname' => $configDatabase->database->params->dbname,
-            'username' => $configDatabase->database->params->username,
-            'password' => $configDatabase->database->params->password,
-            'driver_options' => $driverOptions,
-        );
-        if (empty($configDatabase->database->params->unix_socket)) {
-            $params['host'] = $configDatabase->database->params->host;
-            $params['port'] = $configDatabase->database->params->port;
+
+        if ($configDatabase->database->adapter == 'PDO_SQLITE') {
+            $params = array(
+                'dbname' => $configDatabase->database->params->dbname,
+                'driver_options' => $driverOptions,
+            );
         } else {
-            $params['unix_socket'] = $configDatabase->database->params->unix_socket;
+            if ($configDatabase->database->adapter == 'PDO_MYSQL') {
+                $driverOptions[PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = true;
+            }
+
+            $params = array(
+                'dbname' => $configDatabase->database->params->dbname,
+                'username' => $configDatabase->database->params->username,
+                'password' => $configDatabase->database->params->password,
+                'driver_options' => $driverOptions,
+            );
+
+            if (empty($configDatabase->database->params->unix_socket)) {
+                $params['host'] = $configDatabase->database->params->host;
+                $params['port'] = $configDatabase->database->params->port;
+            } else {
+                $params['unix_socket'] = $configDatabase->database->params->unix_socket;
+            }
         }
+
         if ($configGlobal->environment == 'production') {
             Zend_Loader::loadClass('ProductionDbProfiler', BASE_PATH.'/core/models/profiler');
             $params['profiler'] = new ProductionDbProfiler();
         }
+
         $db = Zend_Db::factory($configDatabase->database->adapter, $params);
         $db->getProfiler()->setEnabled(true);
         Zend_Db_Table::setDefaultAdapter($db);

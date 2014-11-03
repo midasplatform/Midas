@@ -92,7 +92,7 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
         $sql = $this->database->select()->setIntegrityCheck(false)->where('priority >= ?', $minPriority)->where(
             'status = ?',
             SCHEDULER_JOB_STATUS_TORUN
-        )->where('fire_time <= ?', date("Y-m-d H:i:s"))->limit($limit)->order(array('priority DESC', 'fire_time ASC'));
+        )->where('fire_time <= ?', date('Y-m-d H:i:s'))->limit($limit)->order(array('priority DESC', 'fire_time ASC'));
         $rowset = $this->database->fetchAll($sql);
         $return = array();
         foreach ($rowset as $row) {
@@ -112,7 +112,7 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
             SCHEDULER_JOB_STATUS_TORUN
         )->where(
             'fire_time >= ?',
-            date("Y-m-d H:i:s")
+            date('Y-m-d H:i:s')
         )->order(array('fire_time ASC'));
         $rowset = $this->database->fetchAll($sql);
         $return = array();

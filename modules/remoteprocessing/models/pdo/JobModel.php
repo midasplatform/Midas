@@ -27,7 +27,7 @@ class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
     public function getBy($os, $condition, $expiration_date = false, $status = MIDAS_REMOTEPROCESSING_STATUS_WAIT)
     {
         if ($expiration_date == false) {
-            $expiration_date = date("Y-m-d H:i:s");
+            $expiration_date = date('Y-m-d H:i:s');
         }
         $sql = $this->database->select()->setIntegrityCheck(false)->where('os = ?', $os)->where(
             'status = ?',

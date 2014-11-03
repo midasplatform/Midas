@@ -20,9 +20,27 @@
 cmake_minimum_required(VERSION 2.8)
 project(Midas)
 
-find_program(PHP "php" CACHE STRING "PHP executable.")
+find_program(PHP "php" CACHE STRING "PHP executable")
 if(NOT PHP)
- message(FATAL_ERROR "Please set the PHP executable")
+    message(FATAL_ERROR "Please set the path to the PHP executable")
+endif()
+
+find_file(COMPOSER_LOCK "composer.lock" PATHS ${CMAKE_CURRENT_SOURCE_DIR} NO_DEFAULT_PATH)
+if(NOT COMPOSER_LOCK)
+    find_file(COMPOSER_PHAR "composer.phar")
+    if(NOT COMPOSER_PHAR)
+        message(FATAL_ERROR "Please set the path to composer.phar")
+    endif()
+    execute_process(
+        COMMAND ${PHP} ${COMPOSER_PHAR} install
+        RESULT_VARIABLE COMPOSER_INSTALL_RESULT
+        OUTPUT_VARIABLE COMPOSER_INSTALL_OUTPUT
+        ERROR_VARIABLE COMPOSER_INSTALL_ERROR)
+    if(NOT COMPOSER_INSTALL_RESULT EQUAL 0)
+        message(STATUS "Composer install output: ${COMPOSER_INSTALL_OUTPUT}")
+        message(FATAL_ERROR "Composer install error: ${COMPOSER_INSTALL_ERROR}")
+    endif()
+    message(STATUS "Composer install is complete")
 endif()
 
 #-----------------------------------------------------------------------------
@@ -33,12 +51,12 @@ endif()
 message(STATUS "Setting up database(s) for testing, please wait...")
 execute_process(
     COMMAND ${PHP} ${CMAKE_CURRENT_SOURCE_DIR}/tests/DatabaseSetup.php
-    RESULT_VARIABLE databaseSetup_RESULT
-    OUTPUT_VARIABLE databaseSetup_OUT
-    ERROR_VARIABLE databaseSetup_ERR)
-if(NOT databaseSetup_RESULT EQUAL 0)
-    message(STATUS "Database setup output: ${databaseSetup_OUT}")
-    message(FATAL_ERROR "Database setup error: ${databaseSetup_ERR}")
+    RESULT_VARIABLE DATABASE_SETUP_RESULT
+    OUTPUT_VARIABLE DATABASE_SETUP_OUTPUT
+    ERROR_VARIABLE DATABASE_SETUP_ERROR)
+if(NOT DATABASE_SETUP_RESULT EQUAL 0)
+    message(STATUS "Database setup output: ${DATABASE_SETUP_OUTPUT}")
+    message(FATAL_ERROR "Database setup error: ${DATABASE_SETUP_ERROR}")
 endif()
 message(STATUS "Database setup is complete")
 

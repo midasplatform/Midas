@@ -24,27 +24,28 @@ class Ldap_Upgrade_1_0_1 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query(
-            "CREATE TABLE IF NOT EXISTS `ldap_user` (
-                      `ldap_user_id` bigint(20) NOT NULL AUTO_INCREMENT,
-                      `user_id` bigint(20) NOT NULL,
-                      `login` varchar(255) NOT NULL,
-                      PRIMARY KEY (`ldap_user_id`),
-                      KEY `login` (`login`)
-                      )"
-        );
+        $sql = $this->db->query("
+            CREATE TABLE IF NOT EXISTS `ldap_user` (
+                `ldap_user_id` bigint(20) NOT NULL AUTO_INCREMENT,
+                `user_id` bigint(20) NOT NULL,
+                `login` varchar(255) NOT NULL,
+                PRIMARY KEY (`ldap_user_id`),
+                KEY (`login`)
+            ) DEFAULT CHARSET=utf8;
+        ");
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $this->db->query(
-            "CREATE TABLE ldap_user (
-                      ldap_user_id serial PRIMARY KEY,
-                      user_id bigint NOT NULL,
-                      login character varying(255) NOT NULL)"
-        );
+        $this->db->query("
+            CREATE TABLE IF NOT EXISTS ldap_user (
+                ldap_user_id serial PRIMARY KEY,
+                user_id bigint NOT NULL,
+                login character varying(255) NOT NULL
+            );
+        ");
 
-        $this->db->query("CREATE INDEX ldap_user_login_idx ON ldap_user (login)");
+        $this->db->query("CREATE INDEX ldap_user_login_idx ON ldap_user (login);");
     }
 }

@@ -36,17 +36,18 @@ class Core_MetadataModelTest extends DatabaseTestCase
     public function testGetMetadata()
     {
         // certain values are expected to be in the db by default
-        $metadata = $this->Metadata->getMetadata(MIDAS_METADATA_TEXT, "contributor", "author");
-        $this->assertEquals(
-            "Author of the data",
-            $metadata->getDescription(),
-            "author metadata had incorrect description"
-        );
+        $metadata = $this->Metadata->getMetadata(MIDAS_METADATA_TEXT, 'contributor', 'author');
+        $this->assertEquals('contributor', $metadata->getElement(),
+            'contributor.author metadata had incorrect element');
+        $this->assertEquals('author', $metadata->getQualifier(), 'contributor.author metadata had incorrect qualifier');
 
         $metadata->setQualifier('artiste', 'more artistic than an artist');
-        $this->Metadata->addMetadata(MIDAS_METADATA_TEXT, 'contributor', 'artiste', 'more artistic than an artist');
-        $newMetadata = $this->Metadata->getMetadata(MIDAS_METADATA_TEXT, "contributor", "artiste");
-        $this->assertEquals("Author of the data", $metadata->getDescription(), "more artistic than an artist");
+        $this->Metadata->addMetadata(MIDAS_METADATA_TEXT, 'contributor', 'artiste');
+        $newMetadata = $this->Metadata->getMetadata(MIDAS_METADATA_TEXT, 'contributor', 'artiste');
+        $this->assertEquals('contributor', $metadata->getElement(),
+            'contributor.artiste metadata had incorrect element');
+        $this->assertEquals('artiste', $metadata->getQualifier(),
+            'contributor.artiste metadata had incorrect qualifier');
         $this->Metadata->delete($newMetadata);
     }
 
@@ -59,12 +60,8 @@ class Core_MetadataModelTest extends DatabaseTestCase
         $metadataDaos = $this->Metadata->getAllMetadata();
 
         // look for 2 arrays of at least 14 each, and in specific author and created
-        $author = array("element" => "contributor", "qualifier" => "author", "description" => "Author of the data");
-        $created = array(
-            "element" => "date",
-            "qualifier" => "created",
-            "description" => "Date when the data was created",
-        );
+        $author = array("element" => "contributor", "qualifier" => "author");
+        $created = array("element" => "date", "qualifier" => "created");
 
         $rawMetadata = $metadataDaos['raw'];
         $sortedGlobalMetadata = $metadataDaos['sorted'][MIDAS_METADATA_TEXT];
@@ -75,13 +72,13 @@ class Core_MetadataModelTest extends DatabaseTestCase
         $createdFound = false;
 
         foreach ($rawMetadata as $metadata) {
-            if ($metadata->getElement() === $author["element"] && $metadata->getQualifier(
-                ) === $author["qualifier"] && $metadata->getDescription() === $author["description"]
+            if ($metadata->getElement() === $author["element"] &&
+                $metadata->getQualifier() === $author["qualifier"]
             ) {
                 $authorFound = true;
             }
-            if ($metadata->getElement() === $created["element"] && $metadata->getQualifier(
-                ) === $created["qualifier"] && $metadata->getDescription() === $created["description"]
+            if ($metadata->getElement() === $created["element"] &&
+                $metadata->getQualifier() === $created["qualifier"]
             ) {
                 $createdFound = true;
             }

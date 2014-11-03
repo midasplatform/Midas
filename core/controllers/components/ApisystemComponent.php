@@ -361,7 +361,7 @@ class ApisystemComponent extends AppComponent
                         $revision = new ItemRevisionDao();
                         $revision->setChanges('Initial revision');
                         $revision->setUser_id($userDao->getKey());
-                        $revision->setDate(date("Y-m-d H:i:s"));
+                        $revision->setDate(date('Y-m-d H:i:s'));
                         $revision->setLicenseId(null);
                         $itemModel->addRevision($item, $revision);
                     }

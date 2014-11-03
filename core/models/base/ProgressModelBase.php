@@ -63,8 +63,8 @@ abstract class ProgressModelBase extends AppModel
         $progress->setCurrent(0);
         $progress->setMaximum($max);
         $progress->setMessage($message);
-        $progress->setDateCreation(date("Y-m-d H:i:s"));
-        $progress->setLastUpdate(date("Y-m-d H:i:s"));
+        $progress->setDateCreation(date('Y-m-d H:i:s'));
+        $progress->setLastUpdate(date('Y-m-d H:i:s'));
 
         $this->save($progress);
 
@@ -81,7 +81,7 @@ abstract class ProgressModelBase extends AppModel
     {
         $progressDao->setCurrent((int) $currentValue);
         $progressDao->setMessage($message);
-        $progressDao->setLastUpdate(date("Y-m-d H:i:s"));
+        $progressDao->setLastUpdate(date('Y-m-d H:i:s'));
 
         $this->save($progressDao);
     }

@@ -33,13 +33,7 @@ class Upgrade_3_0_13 extends MIDASUpgrade
     {
         $this->addTablePrimaryKey('metadatadocumentvalue', 'metadatavalue_id');
         $this->addTablePrimaryKey('metadatavalue', 'metadatavalue_id');
-        $this->db->query(
-            "ALTER TABLE `metadatadocumentvalue` CHANGE `metadatavalue_id`
-                      `metadatavalue_id` BIGINT( 20 ) NOT NULL AUTO_INCREMENT"
-        );
-        $this->db->query(
-            "ALTER TABLE `metadatavalue` CHANGE `metadatavalue_id`
-                      `metadatavalue_id` BIGINT( 20 ) NOT NULL AUTO_INCREMENT"
-        );
+        $this->db->query("ALTER TABLE `metadatadocumentvalue` CHANGE `metadatavalue_id` `metadatavalue_id` bigint(20) NOT NULL AUTO_INCREMENT;");
+        $this->db->query("ALTER TABLE `metadatavalue` CHANGE `metadatavalue_id` `metadatavalue_id` bigint(20) NOT NULL AUTO_INCREMENT;");
     }
 }

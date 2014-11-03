@@ -148,12 +148,12 @@ abstract class ItemModelBase extends AppModel
             $dao->setUuid(uniqid().md5(mt_rand()));
         }
         if (!isset($dao->date_creation) || empty($dao->date_creation)) {
-            $dao->setDateCreation(date("Y-m-d H:i:s"));
+            $dao->setDateCreation(date('Y-m-d H:i:s'));
         }
         if (!isset($dao->type) || empty($dao->type)) {
             $dao->setType(0);
         }
-        $dao->setDateUpdate(date("Y-m-d H:i:s"));
+        $dao->setDateUpdate(date('Y-m-d H:i:s'));
         $dao->setDescription(UtilityComponent::filterHtmlTags($dao->getDescription()));
         parent::save($dao);
 
@@ -254,8 +254,8 @@ abstract class ItemModelBase extends AppModel
         $newItem = $this->createItem($name, $description, $folderDao);
         $newItem->setType($itemDao->getType());
         $newItem->setSizebytes($itemDao->getSizebytes());
-        $newItem->setDateCreation(date("Y-m-d H:i:s"));
-        $newItem->setDateUpdate(date("Y-m-d H:i:s"));
+        $newItem->setDateCreation(date('Y-m-d H:i:s'));
+        $newItem->setDateUpdate(date('Y-m-d H:i:s'));
 
         $thumbnailId = $itemDao->getThumbnailId();
         if ($thumbnailId !== null) {

@@ -70,7 +70,7 @@ abstract class BitstreamModelBase extends AppModel
     public function save($dao)
     {
         if (!isset($dao->date) || empty($dao->date)) {
-            $dao->setDate(date("Y-m-d H:i:s"));
+            $dao->setDate(date('Y-m-d H:i:s'));
         }
         parent::save($dao);
     }
@@ -110,7 +110,7 @@ abstract class BitstreamModelBase extends AppModel
         $bitstreamDao->setItemrevisionId(-1); //-1 indicates this does not belong to any revision
         $bitstreamDao->setMimetype('image/jpeg');
         $bitstreamDao->setSizebytes(filesize($tempThumbnailFile));
-        $bitstreamDao->setDate(date("Y-m-d H:i:s"));
+        $bitstreamDao->setDate(date('Y-m-d H:i:s'));
         $bitstreamDao->setChecksum($md5);
 
         $existing = $this->getByChecksum($md5);

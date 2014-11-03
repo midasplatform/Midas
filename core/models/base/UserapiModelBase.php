@@ -94,7 +94,7 @@ abstract class UserapiModelBase extends AppModel
         $userApiDao->setApplicationName('Default');
         $userApiDao->setApikey($key);
         $userApiDao->setTokenExpirationTime(100);
-        $userApiDao->setCreationDate(date("Y-m-d H:i:s"));
+        $userApiDao->setCreationDate(date('Y-m-d H:i:s'));
         $this->save($userApiDao);
     }
 
@@ -113,7 +113,7 @@ abstract class UserapiModelBase extends AppModel
         if (!empty($userapiDao)) {
             return false;
         }
-        $now = date("Y-m-d H:i:s");
+        $now = date('Y-m-d H:i:s');
 
         $key = UtilityComponent::generateRandomString(40);
 
