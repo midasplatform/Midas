@@ -53,8 +53,6 @@
             "/core/configs/*.local.*",
             "/data/*/**",
             "/log/**",
-            "/tests/TestsConfig.php",
-            "!/tests/TestsConfig.php.in",
             "/tmp/*/**"
         ]
     }

@@ -1,12 +1,10 @@
-.buildpath
 .DS_Store
 .idea/
-.project
 .sass-cache/
-.settings/
 .vagrant/
-.zfproject.xml
 bower_components/
-nbproject/
+composer.lock
+composer.phar
+cron.yaml
 node_modules/
 vendor/

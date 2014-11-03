@@ -17,11 +17,12 @@
 # limitations under the License.
 #=============================================================================
 
-# This CMake script should be used to create a new Midas module. Requires CMake v2.8.3+
+# This CMake script should be used to create a new Midas module.
 # Call as
 #   cmake -P NewModule.cmake modulename
 # Where modulename is the name of your module. It should have no spaces in it.
 #
+cmake_minimum_required(VERSION 2.8.7)
 if(NOT DEFINED CMAKE_ARGV3)
   message(FATAL_ERROR "Must pass in module name as an argument: cmake -P NewModule.cmake mymodule")
 endif()

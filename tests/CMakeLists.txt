@@ -17,8 +17,6 @@
 # limitations under the License.
 #=============================================================================
 
-configure_file(${CMAKE_SOURCE_DIR}/tests/TestsConfig.php.in ${CMAKE_SOURCE_DIR}/tests/TestsConfig.php)
-
 macro(to_titlecase Arg Result)
     string(SUBSTRING ${Arg} 0 1 ArgHead)
     string(TOUPPER ${ArgHead} ArgHead)
