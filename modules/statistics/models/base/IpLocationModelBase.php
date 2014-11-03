@@ -57,10 +57,6 @@ abstract class Statistics_IpLocationModelBase extends Statistics_AppModel
      */
     public function performGeolocation($apiKey)
     {
-        if (function_exists('curl_init') == false) {
-            throw new Exception('Curl must be enabled on the server');
-        }
-
         if (empty($apiKey)) {
             return 'Empty API key. No geolocations performed';
         }
@@ -71,15 +67,25 @@ abstract class Statistics_IpLocationModelBase extends Statistics_AppModel
             $location->setLatitude('0');
             $location->setLongitude('0'); // only try geolocation once per ip
             if ($location->getIp()) {
-                $url = 'http://api.ipinfodb.com/v3/ip-city/?key='.$apiKey.'&ip='.$location->getIp().'&format=json';
+                $url = 'https://api.ipinfodb.com/v3/ip-city/?key='.$apiKey.'&ip='.$location->getIp().'&format=json';
 
-                $curl = curl_init();
-                curl_setopt($curl, CURLOPT_URL, $url);
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                $resp = curl_exec($curl);
+                if (extension_loaded('curl')) {
+                    $curl = curl_init();
+                    curl_setopt($curl, CURLOPT_URL, $url);
+                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($curl, CURLOPT_PORT, 443);
+                    $response = curl_exec($curl);
+                    $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-                if ($resp && !empty($resp)) {
-                    $answer = json_decode($resp);
+                    if ($status != 200) {
+                        $response = false;
+                    }
+                } else {
+                    $response = file_get_contents($url, false);
+                }
+
+                if ($status !== false) {
+                    $answer = json_decode($response);
                     if ($answer && strtoupper($answer->statusCode) == 'OK') {
                         $location->setLatitude($answer->latitude);
                         $location->setLongitude($answer->longitude);
