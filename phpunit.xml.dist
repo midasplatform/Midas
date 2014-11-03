@@ -42,9 +42,11 @@
         <testsuite name="readmes">
             <directory>modules/readmes/tests</directory>
         </testsuite>
+<!--
         <testsuite name="remoteprocessing">
             <directory>modules/remoteprocessing/tests</directory>
         </testsuite>
+-->
         <testsuite name="sizequota">
             <directory>modules/sizequota/tests</directory>
         </testsuite>

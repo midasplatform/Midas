@@ -5,7 +5,8 @@ Midas Platform
 
 _Version 3.x_
 
-[![Build Status](https://travis-ci.org/midasplatform/Midas.png?branch=master)](https://travis-ci.org/midasplatform/Midas)
+[![Build Status](https://travis-ci.org/midasplatform/Midas.svg)](https://travis-ci.org/midasplatform/Midas)
+[![Coverage Status](https://img.shields.io/coveralls/midasplatform/Midas.svg)](https://coveralls.io/r/midasplatform/Midas?)
 
 Overview
 --------
