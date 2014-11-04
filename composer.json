@@ -12,29 +12,36 @@
     },
     "require": {
         "php": ">=5.3.23",
+        "ext-gd": "*",
         "ext-json": "*",
         "francodacosta/phMagick": "0.4.*@dev",
         "leafo/scssphp": "~0.1.1",
         "maennchen/zipstream-php": "~0.2.2",
         "michelf/php-markdown": "~1.4.1",
+        "monolog/monolog": "~1.11.0",
         "pear-pear.php.net/XML_Serializer": "~0.20.2",
         "reprovinci/solr-php-client": "~1.0.3",
+        "sendgrid/sendgrid": "~2.1.1",
         "zendframework/zendframework1": "~1.12.9"
     },
     "require-dev": {
+    	"fabpot/php-cs-fixer": "~0.5.7",
         "phpcheckstyle/phpcheckstyle": "V0.14.1",
         "phpunit/dbunit": "~1.3.1",
         "phpunit/phpunit": "~3.7.38",
-        "satooshi/php-coveralls": "~0.6.1"
+        "satooshi/php-coveralls": "~0.6.1",
+        "sensiolabs/security-checker": "~2.0.0"
     },
     "suggest": {
         "ext-curl": "*",
+        "ext-imagick": "*",
         "ext-ldap": "*",
         "ext-memcached": "*",
         "ext-zip": "*"
     },
     "autoload": {
         "psr-0": {
+        	"Midas_": "library",
             "REST_": "library"
         }
     },

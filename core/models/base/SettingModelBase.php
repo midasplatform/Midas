@@ -57,28 +57,29 @@ abstract class SettingModelBase extends AppModel
     public function setConfig($name, $value, $module = 'core')
     {
         if (!is_string($name)) {
-            throw new Zend_Exception('SettingModelBase.setConfig: Error in Parameter: name is not a string');
+            throw new Zend_Exception('Setting name is not a string.');
         }
-        if (!is_string($value)) {
-            throw new Zend_Exception('SettingModelBase.setConfig: Error in Parameter: value is not a string');
+        if (!is_bool($value) && !is_numeric($value) && !is_string($value)) {
+            throw new Zend_Exception('Setting value is not a boolean, number, or string.');
         }
         if (!is_string($module)) {
-            throw new Zend_Exception('SettingModelBase.setConfig: Error in Parameter: module is not a string');
+            throw new Zend_Exception('Module name is not a string.');
         }
         $dao = $this->getDaoByName($name, $module);
         if ($dao != false && $dao->getValue() == $value) {
             return;
         }
         if ($dao != false && $value === null) {
-            $this->delete($previousDao);
+            $this->delete($dao);
         } elseif ($dao != false) {
             $dao->setValue($value);
             $this->save($dao);
         } else {
-            $dao = new SettingDao();
-            $dao->setName($name);
-            $dao->setModule($module);
-            $dao->setValue($value);
+            $dao = $this->initDao('Setting', array(
+                'name' => $name,
+                'value' => $value,
+                'module' => $module,
+            ));
             $this->save($dao);
         }
 

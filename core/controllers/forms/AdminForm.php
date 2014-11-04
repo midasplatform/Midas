@@ -58,15 +58,9 @@ class AdminForm extends AppForm
         $dynamichelp = new Zend_Form_Element_Checkbox('dynamichelp');
         $gravatar = new Zend_Form_Element_Checkbox('gravatar');
         $closeRegistration = new Zend_Form_Element_Checkbox('closeregistration');
-        $verifyEmail = new Zend_Form_Element_Checkbox('verifyemail');
         $logtrace = new Zend_Form_Element_Checkbox('logtrace');
 
         $httpProxy = new Zend_Form_Element_Text('httpProxy');
-
-        $smtpServer = new Zend_Form_Element_Text('smtpserver');
-        $smtpUser = new Zend_Form_Element_Text('smtpuser');
-        $smtpPassword = new Zend_Form_Element_Text('smtppassword');
-        $smtpFromAddress = new Zend_Form_Element_Text('smtpfromaddress');
 
         $submit = new Zend_Form_Element_Submit('submitConfig');
         $submit->setLabel('Save configuration');
@@ -84,11 +78,6 @@ class AdminForm extends AppForm
                 $submit,
                 $logtrace,
                 $httpProxy,
-                $smtpServer,
-                $smtpUser,
-                $smtpPassword,
-                $smtpFromAddress,
-                $verifyEmail,
             )
         );
 

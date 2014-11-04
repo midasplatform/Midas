@@ -118,6 +118,7 @@ class Tracker_Notification extends ApiEnabled_Notification
         }
         $baseUrl = UtilityComponent::getServerURL().$this->webroot;
 
+        $email = $user->getEmail();
         $subject = 'Tracker Threshold Notification';
         $body = 'Hello,<br/><br/>This email was sent because a submitted scalar value violates a threshold that you specified.<br/><br/>';
         $body .= '<b>Community:</b> <a href="'.$baseUrl.'/community/'.$producer->getCommunityId(
@@ -128,6 +129,14 @@ class Tracker_Notification extends ApiEnabled_Notification
             ).'">'.$trend->getDisplayName().'</a><br/>';
         $body .= '<b>Value:</b> '.$scalar['value'];
 
-        UtilityComponent::sendEmail($user->getEmail(), $subject, $body);
+        $result = Zend_Registry::get('notifier')->callback(
+            'CALLBACK_CORE_SEND_MAIL_MESSAGE',
+            array(
+                'to' => $email,
+                'subject' => $subject,
+                'html' => $body,
+                'event' => 'tracker_threshold_crossed',
+            )
+        );
     }
 }

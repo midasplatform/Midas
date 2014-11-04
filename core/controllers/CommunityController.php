@@ -544,22 +544,23 @@ class CommunityController extends AppController
 
                 $url = $this->getServerURL().$this->view->webroot;
                 $subject = 'Community Invitation';
-                $body = $this->userSession->Dao->getFullName().' has invited you to join the <b>'.$community->getName(
-                    ).'</b> community on Midas Platform.<br/><br/>'.'<a href="'.$url.'/user/emailregister?email='.$email.'&authKey='.$newuserinvite->getAuthKey(
-                    ).'">Click here</a> to complete your user registration '.'if you wish to join.';
-                if (UtilityComponent::sendEmail($email, $subject, $body)) {
-                    $this->getLogger()->debug(
-                        'User '.$this->userSession->Dao->getEmail().' emailed '.$email.' to join '.$community->getName(
-                        ).' ('.$group->getName().' group)'
-                    );
-                } else {
-                    $this->getLogger()->warn(
-                        'Failed sending register/community invitation email to '.$email.' for community '.$community->getName(
-                        )
-                    );
-                }
+                $body = $this->userSession->Dao->getFullName().' has invited you to join the <b>'.$community->getName().'</b> community on Midas Platform.<br/><br/>'.'<a href="'.$url.'/user/emailregister?email='.$email.'&authKey='.$newuserinvite->getAuthKey().'">Click here</a> to complete your user registration '.'if you wish to join.';
 
-                echo JsonComponent::encode(array(true, 'Invitation sent to '.$email));
+                $result = Zend_Registry::get('notifier')->callback(
+                    'CALLBACK_CORE_SEND_MAIL_MESSAGE',
+                    array(
+                        'to' => $email,
+                        'subject' => $subject,
+                        'html' => $body,
+                        'event' => 'community_invite',
+                    )
+                );
+
+                if ($result) {
+                    echo JsonComponent::encode(array(true, 'Invitation sent to '.$email));
+                } else {
+                    echo JsonComponent::encode(array(true, 'Invitation not sent'));
+                }
             }
         } else {
             throw new Zend_Exception('Must pass userId or email parameter');
@@ -586,23 +587,26 @@ class CommunityController extends AppController
                 array(false, $userDao->getFullName().$this->t(' is already invited to this community.'))
             );
         } else {
+            $email = $userDao->getEmail();
             $url = $this->getServerURL().$this->view->webroot;
             $subject = 'Community Invitation';
-            $body = 'You have been invited to join the <b>'.$community->getName(
-                ).'</b> community at '.$url.'.<br/><br/>'.'<a href="'.$url.'/community/'.$community->getKey(
-                ).'">'.'Click here</a> to see the community, and click the "Join the community" button '.'if you wish to join.';
-            if (UtilityComponent::sendEmail($userDao->getEmail(), $subject, $body)
-            ) {
-                $this->getLogger()->debug(
-                    'User '.$this->userSession->Dao->getEmail().' invited user '.$userDao->getEmail(
-                    ).' to '.$community->getName().' ('.$groupDao->getName().' group)'
-                );
+            $body = 'You have been invited to join the <b>'.$community->getName().'</b> community at '.$url.'.<br/><br/>'.'<a href="'.$url.'/community/'.$community->getKey().'">'.'Click here</a> to see the community, and click the "Join the community" button '.'if you wish to join.';
+
+            $result = Zend_Registry::get('notifier')->callback(
+                'CALLBACK_CORE_SEND_MAIL_MESSAGE',
+                array(
+                    'to' => $email,
+                    'subject' => $subject,
+                    'html' => $body,
+                    'event' => 'community_invite',
+                )
+            );
+
+            if ($result) {
+                echo JsonComponent::encode(array(true, 'Invitation sent to '.$email));
             } else {
-                $this->getLogger()->warn(
-                    'Failed sending community invitation email to '.$email.' for community '.$community->getName()
-                );
+                echo JsonComponent::encode(array(true, 'Invitation not sent'));
             }
-            echo JsonComponent::encode(array(true, $userDao->getFullName().' '.$this->t('has been invited')));
         }
     }
 

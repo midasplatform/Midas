@@ -81,10 +81,7 @@ class AdminController extends AppController
         $formArray['lang']->setValue($config->global->application->lang);
         $formArray['name']->setValue($config->global->application->name);
         $formArray['timezone']->setValue($config->global->default->timezone);
-        $formArray['smtpserver']->setValue($config->global->smtpserver);
-        $formArray['smtpuser']->setValue($config->global->smtpuser);
-        $formArray['smtppassword']->setValue($config->global->smtppassword);
-        $formArray['smtpfromaddress']->setValue($config->global->smtpfromaddress);
+
         if (isset($config->global->closeregistration)) {
             $formArray['closeregistration']->setValue($config->global->closeregistration);
         }
@@ -99,9 +96,6 @@ class AdminController extends AppController
         }
         if (isset($config->global->logtrace)) {
             $formArray['logtrace']->setValue($config->global->logtrace);
-        }
-        if (isset($config->global->verifyemail)) {
-            $formArray['verifyemail']->setValue($config->global->verifyemail);
         }
         $this->view->configForm = $formArray;
 
@@ -131,12 +125,7 @@ class AdminController extends AppController
                 $config->global->closeregistration = $this->getParam('closeregistration');
                 $config->global->logtrace = $this->getParam('logtrace');
                 $config->global->httpproxy = $this->getParam('httpProxy');
-                $config->global->smtpserver = $this->getParam('smtpserver');
-                $config->global->smtpuser = $this->getParam('smtpuser');
-                $config->global->smtppassword = $this->getParam('smtppassword');
-                $config->global->smtpfromaddress = $this->getParam('smtpfromaddress');
                 $config->global->gravatar = $this->getParam('gravatar');
-                $config->global->verifyemail = $this->getParam('verifyemail');
 
                 $writer = new Zend_Config_Writer_Ini();
                 $writer->setConfig($config);
@@ -220,9 +209,13 @@ class AdminController extends AppController
         $adapter = Zend_Registry::get('configDatabase')->database->adapter;
         foreach ($allModules as $key => $module) {
             if (file_exists(BASE_PATH."/modules/".$key."/controllers/ConfigController.php")) {
-                $allModules[$key]->configPage = true;
+                $allModules[$key]->configPage = 'config';
             } elseif (file_exists(BASE_PATH."/privateModules/".$key."/controllers/ConfigController.php")) {
-                $allModules[$key]->configPage = true;
+                $allModules[$key]->configPage = 'config';
+            } elseif (file_exists(BASE_PATH."/modules/".$key."/controllers/AdminController.php")) {
+                $allModules[$key]->configPage = 'admin';
+            } elseif (file_exists(BASE_PATH."/privateModules/".$key."/controllers/AdminController.php")) {
+                $allModules[$key]->configPage = 'admin';
             } else {
                 $allModules[$key]->configPage = false;
             }

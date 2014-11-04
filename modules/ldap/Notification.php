@@ -305,7 +305,6 @@ class Ldap_Notification extends MIDAS_Notification
     public function handleResetPassword($params)
     {
         $ldapUser = $this->Ldap_User->getByUser($params['user']);
-
         if ($ldapUser !== false) {
             $config = Zend_Registry::get('configsModules');
             $ldapServer = $config['ldap']->ldap->hostname;
@@ -314,13 +313,20 @@ class Ldap_Notification extends MIDAS_Notification
             $body = "You have requested a new password for Midas Platform.<br/><br/>";
             $body .= "We could not fulfill this request because your user account is managed by an external LDAP server.<br/><br/>";
             $body .= "Please contact the administrator of the LDAP server at <b>".$ldapServer."</b> to have your password changed.";
-
-            if (UtilityComponent::sendEmail($email, $subject, $body)) {
-                return array('status' => true, 'message' => 'Sent email to '.$email);
+			$result = Zend_Registry::get('notifier')->callback(
+				'CALLBACK_CORE_SEND_MAIL_MESSAGE',
+				array(
+					'to' => $email,
+					'subject' => $subject,
+					'html' => $body,
+					'event' => 'ldap_reset_password',
+				)
+			);
+            if ($result) {
+                return array('status' => true, 'message' => 'Password request sent.');
             }
         }
-
-        return array('status' => false, 'message' => 'Could not send email');
+        return array('status' => false, 'message' => 'Could not send password request.');
     }
 
     /**

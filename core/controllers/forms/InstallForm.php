@@ -97,9 +97,6 @@ class InstallForm extends AppForm
         $lang = new Zend_Form_Element_Select('lang');
         $lang->addMultiOptions(array('en' => 'English', 'fr' => 'French'));
 
-        $process = new Zend_Form_Element_Select('process');
-        $process->addMultiOptions(array('onthefly' => 'On the fly', 'cron' => 'External'));
-
         $timezone = new Zend_Form_Element_Select('timezone');
         $timezone->addMultiOptions(
             array(
@@ -127,7 +124,7 @@ class InstallForm extends AppForm
         $submit = new  Zend_Form_Element_Submit('submit');
         $submit->setLabel('Create configuration');
 
-        $form->addElements(array($description, $process, $timezone, $environment, $lang, $name, $submit));
+        $form->addElements(array($description, $timezone, $environment, $lang, $name, $submit));
 
         return $form;
     }

@@ -34,8 +34,8 @@ class Statistics_ReportComponent extends AppComponent
 
         $reportContent .= '<br/><br/><b>Status</b>';
         $errors = $errorModel->getLog(
-            date('Y-m-d H:i:s', strtotime('-1 day'.date('Y-m-d H:i:s'))),
-            date('Y-m-d H:i:s'),
+            date("Y-m-d H:i:s", strtotime('-1 day'.date('Y-m-j G:i:s'))),
+            date("Y-m-d H:i:s"),
             'all',
             2
         );
@@ -90,10 +90,20 @@ class Statistics_ReportComponent extends AppComponent
     public function send()
     {
         $subject = 'Statistics Report';
+        $body = $this->report;
         $userModel = MidasLoader::loadModel('User');
         $admins = $userModel->getAdmins();
         foreach ($admins as $admin) {
-            UtilityComponent::sendEmail($admin->getEmail(), $subject, $this->report);
+            $email = $admin->getEmail();
+            Zend_Registry::get('notifier')->callback(
+                'CALLBACK_CORE_SEND_MAIL_MESSAGE',
+                array(
+                    'to' => $email,
+                    'subject' => $subject,
+                    'html' => $body,
+                    'event' => 'statistics_report',
+                )
+            );
         }
     }
 }

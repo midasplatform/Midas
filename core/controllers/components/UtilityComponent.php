@@ -584,90 +584,27 @@ class UtilityComponent extends AppComponent
         rmdir($dir);
     }
 
-    private static function getEmailTransport()
-    {
-        if (Zend_Registry::get('configGlobal')->smtpserver && Zend_Registry::get(
-                'configGlobal'
-            )->smtpuser && Zend_Registry::get('configGlobal')->smtppassword
-        ) {
-            $config = array(
-                'auth' => 'login',
-                'username' => Zend_Registry::get('configGlobal')->smtpuser,
-                'password' => Zend_Registry::get('configGlobal')->smtppassword,
-            );
-            $transport = new Zend_Mail_Transport_Smtp(Zend_Registry::get('configGlobal')->smtpserver, $config);
-
-            return $transport;
-        } else {
-            return null;
-        }
-    }
-
-    /** Send mail. */
+    /**
+     * Send an email.
+     *
+     * @deprecated since version 3.2.17
+     * @param array|string $to "To" email address or addresses
+     * @param string $subject subject
+     * @param string $body body
+     * @returns bool true on success
+     * @throws Zend_Exception
+     */
     public static function sendEmail($to, $subject, $body)
     {
-        $validator = new Zend_Validate_EmailAddress();
-        if (Zend_Registry::get('configGlobal')->smtpfromaddress && $validator->isValid(
-                Zend_Registry::get('configGlobal')->smtpfromaddress
+        return Zend_Registry::get('notifier')->callback(
+            'CALLBACK_CORE_SEND_MAIL_MESSAGE',
+            array(
+                'to' => $to,
+                'subject' => $subject,
+                'html' => $body,
+                'event' => 'legacy_send_email',
             )
-        ) {
-            $sender = Zend_Registry::get('configGlobal')->smtpfromaddress;
-        } elseif (getenv('midas_email_sender') && $validator->isValid(getenv('midas_email_sender'))
-        ) {
-            $sender = getenv('midas_email_sender');
-        } elseif (ini_get('sendmail_from') && $validator->isValid(ini_get('sendmail_from'))
-        ) {
-            $sender = ini_get('sendmail_from');
-        } else {
-            $sender = 'no-reply@example.org'; // RFC2606
-        }
-        if (!$validator->isValid($to)) {
-            Zend_Registry::get('logger')->err('Unable to send email to invalid email address "'.$to.'"');
-
-            return false;
-        }
-        $subject = 'Midas Platform: '.$subject;
-        $body .= '<br/><br/><i>This is an auto-generated message from <a href="'.self::getServerURL().'">Midas Platform</a>. Please do not reply to this email.</i>';
-        try {
-            UtilityComponent::beginIgnoreWarnings();
-            include_once 'google/appengine/api/mail/Message.php';
-            UtilityComponent::endIgnoreWarnings();
-            if (class_exists('google\appengine\api\mail\Message', false)) {
-                $message = new \google\appengine\api\mail\Message();
-                $message->setSender($sender);
-                $message->addTo($to);
-                $message->setSubject($subject);
-                $message->setHtmlBody($body);
-                if (Zend_Registry::get('configGlobal')->environment != 'testing'
-                ) {
-                    $message->send();
-                }
-            } else {
-                $message = new Zend_Mail();
-                $message->setFrom($sender);
-                $message->addTo($to);
-                $message->setSubject($subject);
-                $message->setBodyHtml($body);
-                if (Zend_Registry::get('configGlobal')->environment != 'testing'
-                ) {
-                    $transport = UtilityComponent::getEmailTransport();
-                    if ($transport) {
-                        $message->send($transport);
-                    } else {
-                        $message->send();
-                    }
-                }
-            }
-        } catch (Exception $exception) {
-            Zend_Registry::get('logger')->err(
-                'Unable to send email to "'.$to.'" with subject "'.$subject.'": '.$exception->getMessage()
-            );
-
-            return false;
-        }
-        Zend_Registry::get('logger')->debug('Sent email to "'.$to.'" with subject "'.$subject.'"');
-
-        return true;
+        );
     }
 
     /**

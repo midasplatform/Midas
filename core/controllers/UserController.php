@@ -35,6 +35,7 @@ class UserController extends AppController
         'Group',
         'Item',
         'Community',
+        'Setting',
     );
     public $_daos = array('User', 'Folder', 'Folderpolicygroup', 'Folderpolicyuser', 'Group');
     public $_components = array('Breadcrumb', 'Date', 'Filter', 'Sortdao');
@@ -112,20 +113,29 @@ class UserController extends AppController
             $pass = UtilityComponent::generateRandomString(10);
             $this->User->changePassword($user, $pass);
 
-            // Send the email
             $url = $this->getServerURL().$this->view->webroot;
 
             $subject = "Password Request";
-            $body = "You have requested a new password for Midas Platform.<br>";
-            $body .= "Please go to this page to log into Midas Platform and change your password:<br>";
-            $body .= "<a href=\"".$url."\">".$url."</a><br>";
-            $body .= "Your new password is: ".$pass."<br>";
+            $body = "You have requested a new password for Midas Platform.<br />";
+            $body .= "Please go to this page to log into Midas Platform and change your password:<br />";
+            $body .= "<a href=\"".$url."\">".$url."</a><br />";
+            $body .= "Your new password is: ".$pass."<br />";
 
-            if (UtilityComponent::sendEmail($email, $subject, $body)) {
+            $result = Zend_Registry::get('notifier')->callback(
+                'CALLBACK_CORE_SEND_MAIL_MESSAGE',
+                array(
+                    'to' => $email,
+                    'subject' => $subject,
+                    'html' => $body,
+                    'event' => 'user_reset_password',
+                )
+            );
+
+            if ($result) {
                 $this->User->save($user);
-                echo JsonComponent::encode(array(true, $this->t('Sent email to').' '.$email));
+                echo JsonComponent::encode(array(true, 'Password request sent.'));
             } else {
-                echo JsonComponent::encode(array(false, 'Could not send email'));
+                echo JsonComponent::encode(array(false, 'Could not send password request.'));
             }
         }
     }
@@ -231,10 +241,9 @@ class UserController extends AppController
             }
 
             $email = strtolower(trim($form->getValue('email')));
-            if ($adminCreate || !isset(Zend_Registry::get('configGlobal')->verifyemail) || Zend_Registry::get(
-                    'configGlobal'
-                )->verifyemail != '1'
-            ) {
+            $addressVerification = $this->Setting->getValueByName('address_verification', 'mail');
+
+            if ($adminCreate || $addressVerification != '1') {
                 $newUser = $this->User->createUser(
                     $email,
                     $form->getValue('password1'),
@@ -246,14 +255,24 @@ class UserController extends AppController
                     $subject = 'User Registration';
                     $url = $this->getServerURL().$this->view->webroot;
                     $body = "An administrator has created a user account for you at the following Midas Platform instance:<br/><br/>";
-                    $body .= '<a href="'.$url.'">'.$url.'</a><br/><br/>';
+                    $body .= '<a href="'.$url.'">'.$url.'</a><br /><br />';
 
                     if (!$nopass) {
                         $body .= "Log in using this email address (".$email.") and your initial password:<br/><br/>";
                         $body .= '<b>'.$form->getValue('password1').'</b><br/><br/>';
                     }
 
-                    if (UtilityComponent::sendEmail($email, $subject, $body)) {
+                    $result = Zend_Registry::get('notifier')->callback(
+                        'CALLBACK_CORE_SEND_MAIL_MESSAGE',
+                        array(
+                            'to' => $email,
+                            'subject' => $subject,
+                            'html' => $body,
+                            'event' => 'user_create',
+                        )
+                    );
+
+                    if ($result) {
                         echo JsonComponent::encode(array('status' => 'ok', 'message' => 'User created successfully'));
                     } else {
                         echo JsonComponent::encode(
@@ -286,7 +305,18 @@ class UserController extends AppController
                 $body = "You have created an account on Midas Platform.<br/><br/>";
                 $body .= '<a href="'.$url.'">Click here</a> to verify your email and complete registration.<br/><br/>';
                 $body .= 'If you did not initiate this registration, please disregard this email.<br/><br/>';
-                if (UtilityComponent::sendEmail($email, $subject, $body)) {
+
+                $result = Zend_Registry::get('notifier')->callback(
+                    'CALLBACK_CORE_SEND_MAIL_MESSAGE',
+                    array(
+                        'to' => $email,
+                        'subject' => $subject,
+                        'html' => $body,
+                        'event' => 'user_verify',
+                    )
+                );
+
+                if ($result) {
                     echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Verification email sent'));
                 } else {
                     echo JsonComponent::encode(
@@ -314,10 +344,9 @@ class UserController extends AppController
                 throw new Zend_Exception("User already exists.");
             }
 
-            if (!isset(Zend_Registry::get('configGlobal')->verifyemail) || Zend_Registry::get(
-                    'configGlobal'
-                )->verifyemail != '1'
-            ) {
+            $addressVerification = $this->Setting->getValueByName('address_verification', 'mail');
+
+            if ($addressVerification != '1') {
                 if (!headers_sent()) {
                     session_start();
                 }
@@ -345,7 +374,18 @@ class UserController extends AppController
                 $body = "You have created an account on Midas Platform.<br/><br/>";
                 $body .= '<a href="'.$url.'">Click here</a> to verify your email and complete registration.<br/><br/>';
                 $body .= 'If you did not initiate this registration, please disregard this email.<br/><br/>';
-                if (UtilityComponent::sendEmail($email, $subject, $body)) {
+
+                $result = Zend_Registry::get('notifier')->callback(
+                    'CALLBACK_CORE_SEND_MAIL_MESSAGE',
+                    array(
+                        'to' => $email,
+                        'subject' => $subject,
+                        'html' => $body,
+                        'event' => 'user_verify',
+                    )
+                );
+
+                if ($result) {
                     $this->redirect('/user/emailsent');
                 }
             }

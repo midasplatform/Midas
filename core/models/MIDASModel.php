@@ -143,10 +143,13 @@ class MIDASModel
     }
 
     /**
-     * init a dao
+     * Initialize a DAO.
      *
-     * @param $name name of the dao
-     * @param $data array of values
+     * @param string $name name of the DAO
+     * @param array $data array of values
+     * @param string $module
+     * @returns false|MIDAS_GlobalDao
+     * @throws Zend_Exception
      */
     public function initDao($name, $data, $module = null)
     {
