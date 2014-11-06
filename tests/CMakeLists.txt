@@ -96,6 +96,8 @@ endfunction()
 
 add_midas_style_test(StyleTests ${CMAKE_SOURCE_DIR}/tests)
 
+add_test(NAME SecurityCheck COMMAND ${CMAKE_SOURCE_DIR}/vendor/bin/security-checker --no-interaction --quiet security:check WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+
 add_test(UTF8Encoding ${PHP} ${CMAKE_SOURCE_DIR}/tests/UTF8Tools.php --src ${CMAKE_SOURCE_DIR})
 set_tests_properties(
     UTF8Encoding PROPERTIES
