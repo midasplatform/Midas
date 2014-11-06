@@ -18,8 +18,13 @@
  limitations under the License.
 =========================================================================*/
 
-/** App dao for readmes module */
+/**
+ * Generic DAO class for the readmes module.
+ *
+ * @package Modules\Readmes\DAO
+ */
 class Readmes_AppDao extends MIDAS_GlobalDao
 {
+    /** @var string */
     public $_module = 'readmes';
 }

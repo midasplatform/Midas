@@ -19,13 +19,74 @@
 =========================================================================*/
 
 /**
- * DAO Item (table item)
+ * User DAO.
+ *
+ * @method int getUserId()
+ * @method void setUserId(int $UserId)
+ * @method string getFirstname()
+ * @method void setFirstname(string $firstName)
+ * @method string getLastname()
+ * @method void setLastname(string $lastName)
+ * @method string getEmail()
+ * @method void setEmail(string $email)
+ * @method string getThumbnail()
+ * @method void setThumbnail(string $thumbnail)
+ * @method string getCompany()
+ * @method void setCompany(string $company)
+ * @method string getHashAlg()
+ * @method void setHashAlg(string $hashAlg)
+ * @method string getSalt()
+ * @method void setSalt(string $salt)
+ * @method string getCreation()
+ * @method void setCreation(string $creation)
+ * @method int getFolderId()
+ * @method void setFolderId(int $folderId)
+ * @method int getAdmin()
+ * @method void setAdmin(int $admin)
+ * @method int getPrivacy()
+ * @method void setPrivacy(int $privacy)
+ * @method int getView()
+ * @method void setView(int $view)
+ * @method string getUuid()
+ * @method void setUuid(string $uuid)
+ * @method string getCity()
+ * @method void setCity(string $city)
+ * @method string getCountry()
+ * @method void setCountry(string $country)
+ * @method string getWebsite()
+ * @method void setWebsite(string $website)
+ * @method string getBiography()
+ * @method void setBiography(string $biography)
+ * @method int getDynamichelp()
+ * @method void setDynamichelp(int $dynamicHelp)
+ * @method FolderDao getFolder()
+ * @method void setFolder(FolderDao $folder)
+ * @method array getGroups()
+ * @method void setGroups(array $groups)
+ * @method array getInvitations()
+ * @method void setInvitations(array $invitations)
+ * @method array getFolderpolicyuser()
+ * @method void setFolderpolicyuser(array $folderPolicyUser)
+ * @method array getItempolicyuser()
+ * @method void setItempolicyuser(array $itemPolicyUser)
+ * @method array getFeeds()
+ * @method void setFeeds(array $feeds)
+ * @method array getFeedpolicyuser()
+ * @method void setFeedpolicyuser(array $feedPolicyUser)
+ * @method array getItemrevisions()
+ * @method void setItemrevisions(array $itemRevisions)
+ * @package Core\DAO
  */
 class UserDao extends AppDao
 {
+    /** @var string */
     public $_model = 'User';
 
-    /**  is admin? */
+    /**
+     * Return true if this user is an administrator.
+     *
+     * @return bool
+     */
     public function isAdmin()
     {
         if ($this->getAdmin() == 1) {
@@ -35,13 +96,21 @@ class UserDao extends AppDao
         return false;
     }
 
-    /** get full name */
+    /**
+     * Return the full name of this user.
+     *
+     * @return string
+     */
     public function getFullName()
     {
         return $this->getFirstname()." ".$this->getLastname();
     }
 
-    /** toArray */
+    /**
+     * Return the user DAO field values as an array.
+     *
+     * @return array
+     */
     public function toArray()
     {
         $return = parent::toArray();

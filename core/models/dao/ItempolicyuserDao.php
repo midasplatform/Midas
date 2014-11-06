@@ -19,9 +19,22 @@
 =========================================================================*/
 
 /**
- * DAO Item
+ * Item user policy DAO.
+ *
+ * @method int getItemId()
+ * @method void setItemId(int $itemId)
+ * @method int getUserId()
+ * @method void setUserId(int $userId)
+ * @method int getPolicy()
+ * @method void setPolicy(int $policy)
+ * @method ItemDao getItem()
+ * @method void setItem(ItemDao $item)
+ * @method UserDao getUser()
+ * @method void setUser(UserDao $user)
+ * @package Core\DAO
  */
 class ItempolicyuserDao extends AppDao
 {
+    /** @var string */
     public $_model = 'Itempolicyuser';
 }

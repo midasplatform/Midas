@@ -19,9 +19,26 @@
 =========================================================================*/
 
 /**
- * DAO Assetstore
+ * Community invitation DAO.
+ *
+ * @method int getCommunityinvitationId()
+ * @method void setCommunityinvitationId(int $communityInvitationId)
+ * @method int getCommunityId()
+ * @method void setCommunityId(int $communityId)
+ * @method int getGroupId()
+ * @method void setGroupId(int $groupId)
+ * @method int getUserId()
+ * @method void setUserId(int $userId)
+ * @method CommunityDao getCommunity()
+ * @method void setCommunity(CommunityDao $community)
+ * @method GroupDao getGroup()
+ * @method void setGroup(GroupDao $group)
+ * @method UserDao getUser()
+ * @method void setUser(UserDao $user)
+ * @package Core\DAO
  */
 class CommunityInvitationDao extends AppDao
 {
+    /** @var string */
     public $_model = 'CommunityInvitation';
 }

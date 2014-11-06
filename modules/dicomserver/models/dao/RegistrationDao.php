@@ -18,9 +18,22 @@
  limitations under the License.
 =========================================================================*/
 
-/** Dicomserver_RegistrationDao */
+/**
+ * Registration DAO class for the dicomserver module.
+ *
+ * @method int getRegistrationId()
+ * @method void setRegistrationId(int $registrationId)
+ * @method int getItemId()
+ * @method void setItemId(int $itemId)
+ * @method int getRevisionId()
+ * @method void setRevisionId(int $revisionId)
+ * @package Modules\Dicomserver\DAO
+ */
 class Dicomserver_RegistrationDao extends AppDao
 {
+    /** @var string */
     public $_model = 'Registration';
+
+    /** @var string */
     public $_module = 'dicomserver';
 }

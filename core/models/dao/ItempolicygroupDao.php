@@ -19,9 +19,24 @@
 =========================================================================*/
 
 /**
- * DAO Item
+ * Item group policy DAO.
+ *
+ * @method int getItemId()
+ * @method void setItemId(int $itemId)
+ * @method int getGroupId()
+ * @method void setGroupId(int $groupId)
+ * @method int getPolicy()
+ * @method void setPolicy(int $policy)
+ * @method string getDate()
+ * @method void setDate(string $date)
+ * @method ItemDao getItem()
+ * @method void setItem(ItemDao $item)
+ * @method GroupDao getGroup()
+ * @method void setGroup(GroupDao $group)
+ * @package Core\DAO
  */
 class ItempolicygroupDao extends AppDao
 {
+    /** @var string */
     public $_model = 'Itempolicygroup';
 }

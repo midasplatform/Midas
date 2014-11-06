@@ -19,8 +19,20 @@
 =========================================================================*/
 
 /**
+ * Active download lock DAO.
+ *
+ * @method int getActivedownloadId()
+ * @method void setActivedownloadId(int $activeDownloadId)
+ * @method string getIp()
+ * @method void setIp(string $ip)
+ * @method string getDateCreation()
+ * @method void setDateCreation(string $dateCreation)
+ * @method string getLastUpdate()
+ * @method void setLastUpdate(string $lastUpdate)
+ * @package Core\DAO
  */
 class ActivedownloadDao extends AppDao
 {
+    /** @var string */
     public $_model = 'Activedownload';
 }

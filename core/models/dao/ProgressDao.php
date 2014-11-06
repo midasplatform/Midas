@@ -19,9 +19,24 @@
 =========================================================================*/
 
 /**
- * Dao for Progress object
+ * Progress DAO.
+ *
+ * @method int getProgressId()
+ * @method void setProgressId(int $progressId)
+ * @method int getCurrent()
+ * @method void setCurrent(int $current)
+ * @method int getMaximum()
+ * @method void setMaximum(int $maximum)
+ * @method string getMessage()
+ * @method void setMessage(string $message)
+ * @method string getDateCreation()
+ * @method void setDateCreation(string $dateCreation)
+ * @method string getLastUpdate()
+ * @method void setLastUpdate(string $lastUpdate)
+ * @package Core\DAO
  */
 class ProgressDao extends AppDao
 {
+    /** @var string */
     public $_model = 'Progress';
 }

@@ -18,8 +18,13 @@
  limitations under the License.
 =========================================================================*/
 
-/** App DAO for the dicomserver module */
+/**
+ * Generic DAO class for the dicomserver module.
+ *
+ * @package Modules\Dicomserver\DAO
+ */
 class Dicomserver_AppDao extends MIDAS_GlobalDao
 {
+    /** @var string */
     public $moduleName = 'dicomserver';
 }

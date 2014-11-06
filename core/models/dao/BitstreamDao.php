@@ -19,16 +19,46 @@
 =========================================================================*/
 
 /**
- * DAO Bitstream (table bitstream)
+ * Bitstream DAO.
+ *
+ * @method int getBitstreamId()
+ * @method void setBitstreamId(int $bitstreamId)
+ * @method int getItemrevisionId()
+ * @method void setItemrevisionId(int $itemRevisionId)
+ * @method int getAssetstoreId()
+ * @method void setAssetstoreId(int $assetStoreId)
+ * @method string getName()
+ * @method void setName(string $name)
+ * @method string getMimetype()
+ * @method void setMimetype(string $mimeType)
+ * @method int getSizebytes()
+ * @method void setSizebytes(int $sizeBytes)
+ * @method string getChecksum()
+ * @method void setChecksum(string $checksum)
+ * @method string getPath()
+ * @method void setPath(string $path)
+ * @method string getDate()
+ * @method void setDate(string $date)
+ * @method ItemrevisionDao getItemrevision()
+ * @method void setItemrevision(ItemrevisionDao $itemRevision)
+ * @method AssetstoreDao getAssetstore()
+ * @method void setAssetstore(AssetstoreDao $assetStore)
+ * @package Core\DAO
  */
 class BitstreamDao extends AppDao
 {
+    /** @var string */
     public $_model = 'Bitstream';
+
+    /** @var array */
     public $_components = array('MimeType', 'Utility');
 
     /**
-     * Fill the properties of the bitstream given the path.
-     * The file should be accessible from the web server.
+     * Fill in the properties of this bitstream given its path. The file must
+     * accessible by the web server.
+     *
+     * @deprecated
+     * @throws Zend_Exception
      */
     public function fillPropertiesFromPath()
     {
@@ -37,7 +67,7 @@ class BitstreamDao extends AppDao
             throw new Zend_Exception('BitstreamDao path is not set in fillPropertiesFromPath()');
         }
 
-        // TODO Compute the full path from the assetstore. For now using the path
+        // TODO: Compute the full path from the asset store. For now using the path.
         $this->setMimetype($this->Component->MimeType->getType($this->path));
         // clear the stat cache, as the underlying file might have changed
         // since the last time filesize was called on the same filepath
@@ -48,7 +78,13 @@ class BitstreamDao extends AppDao
         }
     }
 
-    /** Returns the full path of the bitstream based on the assetstore and the path of the bitstream */
+    /**
+     * Return the full path of this bitstream from its asset store and the
+     * relative path of the bitstream.
+     *
+     * @deprecated
+     * @return string
+     */
     public function getFullPath()
     {
         $assetstore = $this->get('assetstore');

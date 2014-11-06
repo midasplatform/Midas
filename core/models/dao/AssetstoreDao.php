@@ -19,9 +19,22 @@
 =========================================================================*/
 
 /**
- * DAO Assetstore (table assetstore)
+ * Asset store DAO.
+ *
+ * @method int getAssetstoreId()
+ * @method void setAssetstoreId(int $assetStoreId)
+ * @method string getName()
+ * @method void setName(string $name)
+ * @method string getPath()
+ * @method void setPath(string $path)
+ * @method int getType()
+ * @method void setType(int $type)
+ * @method array getBitstreams()
+ * @method void setBitstreams(array $bitstreams)
+ * @package Core\DAO
  */
 class AssetstoreDao extends AppDao
 {
+    /** @var string */
     public $_model = 'Assetstore';
 }

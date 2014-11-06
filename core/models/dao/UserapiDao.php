@@ -18,8 +18,27 @@
  limitations under the License.
 =========================================================================*/
 
-/** Dao for user api key */
+/**
+ * User API DAO.
+ *
+ * @method int getUserapiId()
+ * @method void setUserapiId(int $userApiId)
+ * @method int getUserId()
+ * @method void setUserId(int $userId)
+ * @method string getApikey()
+ * @method void setApikey(string $apiKey)
+ * @method string getApplicationName()
+ * @method void setApplicationName(string $applicationName)
+ * @method int getTokenExpirationTime()
+ * @method void setTokenExpirationTime(int $tokenExpirationTime)
+ * @method string getCreationDate()
+ * @method void setCreationDate(string $creationDate)
+ * @method UserDao getUser()
+ * @method void setUser(UserDao $user)
+ * @package Core\DAO
+ */
 class UserapiDao extends AppDao
 {
+    /** @var string */
     public $_model = 'Userapi';
 }

@@ -18,9 +18,22 @@
  limitations under the License.
 =========================================================================*/
 
-/** Batchmake_ItemmetricDao */
+/**
+ * Item metric DAO for the batchmake module.
+ *
+ * @method int getItemmetricId()
+ * @method void setItemmetricId(string $itemmetricId)
+ * @method int getMetricName()
+ * @method void setMetricName(string $metricName)
+ * @method int getBmsName()
+ * @method void setBmsName(string $bmsName)
+ * @package Modules\Batchmake\DAO
+ */
 class Batchmake_ItemmetricDao extends AppDao
 {
+    /** @var string */
     public $_model = 'Itemmetric';
+
+    /** @var string */
     public $_module = 'batchmake';
 }

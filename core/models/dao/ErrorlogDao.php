@@ -19,8 +19,22 @@
 =========================================================================*/
 
 /**
+ * Error log DAO.
+ *
+ * @method int getErrorlogId()
+ * @method void setErrorlogId(int $errorLogId)
+ * @method string getModule()
+ * @method void setModule(string $module)
+ * @method string getMessage()
+ * @method void setMessage(string $message)
+ * @method string getDatetime()
+ * @method void setDatetime(string $dateTime)
+ * @method int getPriority()
+ * @method void setPriority(int $priority)
+ * @package Core\DAO
  */
 class ErrorlogDao extends AppDao
 {
+    /** @var string */
     public $_model = 'Errorlog';
 }

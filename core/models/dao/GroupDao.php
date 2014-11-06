@@ -19,9 +19,22 @@
 =========================================================================*/
 
 /**
- * DAO Assetstore (table assetstore)
+ * Group DAO.
+ *
+ * @method int getGroupId()
+ * @method void setGroupId(int $groupId)
+ * @method int getCommunityId()
+ * @method void setCommunityId(int $communityId)
+ * @method string getName()
+ * @method void setName(string $name)
+ * @method CommunityDao getCommunity()
+ * @method void setCommunity(CommunityDao $community)
+ * @method array getUsers()
+ * @method void setUsers(array $users)
+ * @package Core\DAO
  */
 class GroupDao extends AppDao
 {
+    /** @var string */
     public $_model = 'Group';
 }

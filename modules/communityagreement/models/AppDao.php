@@ -19,12 +19,12 @@
 =========================================================================*/
 
 /**
- * Communityagreement_AppDao
+ * Generic DAO for the communityagreement module.
  *
- * @category   Midas modules
- * @package    communityagreement
+ * @package Modules\Communityagreement\DAO
  */
 class Communityagreement_AppDao extends MIDAS_GlobalDao
 {
+    /** @var string */
     public $moduleName = 'communityagreement';
 }

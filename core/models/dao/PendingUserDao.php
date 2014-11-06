@@ -19,8 +19,26 @@
 =========================================================================*/
 
 /**
+ * Pending user DAO.
+ *
+ * @method int getPendinguserId()
+ * @method void setPendinguserId(int $pendingUserId)
+ * @method string getAuthKey()
+ * @method void setAuthKey(string $authKey)
+ * @method string getEmail()
+ * @method void setEmail(string $email)
+ * @method string getFirstname()
+ * @method void setFirstname(string $firstName)
+ * @method string getLastname()
+ * @method void setLastname(string $lastName)
+ * @method string getSalt()
+ * @method void setSalt(string $salt)
+ * @method string getDateCreation()
+ * @method void setDateCreation(string $dateCreation)
+ * @package Core\DAO
  */
 class PendingUserDao extends AppDao
 {
+    /** @var string */
     public $_model = 'PendingUser';
 }

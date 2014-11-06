@@ -19,9 +19,24 @@
 =========================================================================*/
 
 /**
- * DAO Item (table item)
+ * Folder user policy DAO.
+ *
+ * @method int getFolderId()
+ * @method void setFolderId(int $folderId)
+ * @method int getUserId()
+ * @method void setUserId(int $userId)
+ * @method int getPolicy()
+ * @method void setPolicy(int $policy)
+ * @method string getDate()
+ * @method void setDate(string $date)
+ * @method FolderDao getFolder()
+ * @method void setFolder(FolderDao $folder)
+ * @method UserDao getUser()
+ * @method void setUser(UserDao $user)
+ * @package Core\DAO
  */
 class FolderpolicyuserDao extends AppDao
 {
+    /** @var string */
     public $_model = 'Folderpolicyuser';
 }

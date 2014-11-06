@@ -19,9 +19,12 @@
 =========================================================================*/
 
 /**
- * AppDao for the module.
+ * Generic DAO class for the packages module.
+ *
+ * @package Modules\Packages\DAO
  */
 class Packages_AppDao extends MIDAS_GlobalDao
 {
+    /** @var string */
     public $moduleName = 'packages';
 }

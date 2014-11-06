@@ -18,9 +18,30 @@
  limitations under the License.
 =========================================================================*/
 
-/** CondorJobDao class */
+/**
+ * Condor job DAO for the batchmake module.
+ *
+ * @method int getCondorJobId()
+ * @method void CondorJobId(int $condorJobId)
+ * @method int getCondorDagId()
+ * @method void CondorDagId(int $condorDagId)
+ * @method string getJobdefinitionFilename()
+ * @method void setJobdefinitionFilename(string $jobdefinitionFilename)
+ * @method string getOutputFilename()
+ * @method void setOutputFilename(string $outputFilename)
+ * @method string getErrorFilename()
+ * @method void setErrorFilename(string $errorFilename)
+ * @method string getLogFilename()
+ * @method void setLogFilename(string $logFilename)
+ * @method string getPostFilename()
+ * @method void setPostFilename(string $postFilename)
+ * @package Modules\Batchmake\DAO
+ */
 class Batchmake_CondorJobDao extends AppDao
 {
+    /** @var string */
     public $_model = 'CondorJob';
+
+    /** @var string */
     public $_module = 'batchmake';
 }

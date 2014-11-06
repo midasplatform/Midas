@@ -19,9 +19,24 @@
 =========================================================================*/
 
 /**
- * DAO Item (table item)
+ * Folder group policy DAO.
+ *
+ * @method int getFolderId()
+ * @method void setFolderId(int $folderId)
+ * @method int getGroupId()
+ * @method void setGroupId(int $groupId)
+ * @method int getPolicy()
+ * @method void setPolicy(int $policy)
+ * @method string getDate()
+ * @method void setDate(string $date)
+ * @method FolderDao getFolder()
+ * @method void setFolder(FolderDao $folder)
+ * @method GroupDao getGroup()
+ * @method void setGroup(GroupDao $group)
+ * @package Core\DAO
  */
 class FolderpolicygroupDao extends AppDao
 {
+    /** @var string */
     public $_model = 'Folderpolicygroup';
 }

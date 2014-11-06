@@ -18,9 +18,24 @@
  limitations under the License.
 =========================================================================*/
 
-/** CondorDagDao class */
+/**
+ * Condor DAG DAO for the batchmake module.
+ *
+ * @method int getCondorDagId()
+ * @method void setCondorDagId(int $condorDagId)
+ * @method int getBatchmakeTaskId()
+ * @method void setBatchmakeTaskId(int $batchmakeTaskId)
+ * @method string getOutFilename()
+ * @method void setOutFilename(string $outFilename)
+ * @method string getDagFilename()
+ * @method void setDagFilename(string $dagFilename)
+ * @package Modules\Batchmake\DAO
+ */
 class Batchmake_CondorDagDao extends AppDao
 {
+    /** @var string */
     public $_model = 'CondorDag';
+
+    /** @var string */
     public $_module = 'batchmake';
 }

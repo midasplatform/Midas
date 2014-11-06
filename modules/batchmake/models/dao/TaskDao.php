@@ -18,9 +18,22 @@
  limitations under the License.
 =========================================================================*/
 
-/** Batchmake_TaskDao */
+/**
+ * Task DAO for the batchmake module.
+ *
+ * @method int getBatchmakeTaskId()
+ * @method void setBatchmakeTaskId(int $batchmakeTaskId)
+ * @method int getUserId()
+ * @method void setUserId(int $userId)
+ * @method string getWorkDir()
+ * @method void setWorkDir(string $workDir)
+ * @package Modules\Batchmake\DAO
+ */
 class Batchmake_TaskDao extends AppDao
 {
+    /** @var string */
     public $_model = 'Task';
+
+    /** @var string */
     public $_module = 'batchmake';
 }

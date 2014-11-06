@@ -19,15 +19,16 @@
 =========================================================================*/
 
 /**
- *  Global dao methods
+ * Generic DAO base class.
+ *
+ * @package Core\DAO
  */
 class MIDAS_GlobalDao
 {
+    /** @var string */
     protected $key;
 
-    /**
-     * Construct dao
-     */
+    /** Constructor */
     public function __construct()
     {
         if ($this->getModel()->getKey() !== '') {
@@ -39,9 +40,7 @@ class MIDAS_GlobalDao
         $this->loadElements();
     }
 
-    /**
-     * Loads model and components
-     */
+    /** Load the components. */
     public function loadElements()
     {
         Zend_Registry::set('components', array());
@@ -58,9 +57,11 @@ class MIDAS_GlobalDao
     }
 
     /**
-     * Init the dao based on the primary key
+     * Initialize the DAO from the primary key.
      *
-     * @param $key Primary Key
+     * @param string $key primary key with which to initialize the DAO
+     * @return bool true if the DAO is successfully initialized
+     * @throws Zend_Exception
      */
     public function initValues($key)
     {
@@ -82,7 +83,11 @@ class MIDAS_GlobalDao
         return true;
     }
 
-    /** return values as an array */
+    /**
+     * Return the names and values of the fields of the DAO as an associative array.
+     *
+     * @return array
+     */
     public function toArray()
     {
         $return = array();
@@ -99,9 +104,10 @@ class MIDAS_GlobalDao
     }
 
     /**
-     * Return key value
+     * Return the value of the key field of the DAO.
      *
-     * @return key
+     * @return mixed
+     * @throws Zend_Exception
      */
     public function getKey()
     {
@@ -114,10 +120,11 @@ class MIDAS_GlobalDao
     }
 
     /**
-     * Generic get function. You can define custom function.
+     * Return the value of a field of the DAO.
      *
-     * @param $var name of the element we want to get
-     * @return value
+     * @param string $var name of the field of which to return the value
+     * @return mixed
+     * @throws Zend_Exception
      */
     public function get($var)
     {
@@ -144,10 +151,12 @@ class MIDAS_GlobalDao
     }
 
     /**
-     * Set a value
+     * Set the value of a field of the DAO.
      *
-     * @param $var name of the element we want to set
-     * @param $value
+     * @param string $var name of the field of which to set the value
+     * @param mixed $value value of the field
+     * @return void|mixed
+     * @throws Zend_Exception
      */
     public function set($var, $value)
     {
@@ -164,9 +173,10 @@ class MIDAS_GlobalDao
     }
 
     /**
-     * Get Model
+     * Return a model.
      *
-     * @return model
+     * @param string|null $name name of the model
+     * @return object
      */
     public function getModel($name = null)
     {
@@ -185,7 +195,7 @@ class MIDAS_GlobalDao
     }
 
     /**
-     * Get Logger
+     * Fetch the logger from the Zend registry.
      *
      * @return Zend_Log
      */
@@ -195,11 +205,12 @@ class MIDAS_GlobalDao
     }
 
     /**
-     * Catch if the method does not exist and create a method dynamically
+     * Invoke inaccessible methods.
      *
-     * @param $method method name
-     * @param $params array of param
-     * @return return the result of the function dynamically created
+     * @param string $method name of the method
+     * @param array $params parameters of the method
+     * @return mixed
+     * @throws Zend_Exception
      */
     public function __call($method, $params)
     {
@@ -233,8 +244,10 @@ class MIDAS_GlobalDao
     }
 
     /**
-     * @param $var name
-     * @return real var
+     * Return a method name given the name of an item of data in a model.
+     *
+     * @param string $var name of an item of data
+     * @return string
      */
     private function _getRealName($var)
     {

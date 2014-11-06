@@ -19,9 +19,46 @@
 =========================================================================*/
 
 /**
- * DAO Item (table folder)
+ * Folder DAO.
+ *
+ * @method int getFolderId()
+ * @method void setFolderId(int $folderId)
+ * @method int getLeftIndice()
+ * @method void setLeftIndice(int $leftIndex)
+ * @method int getRightIndice()
+ * @method void setRightIndice(int $rightIndex)
+ * @method int getParentId()
+ * @method void setParentId(int $parentId)
+ * @method string getName()
+ * @method void setName(string $name)
+ * @method string getDescription()
+ * @method void setDescription(string $description)
+ * @method string getDateUpdate()
+ * @method void setDateUpdate(string $dateUpdate)
+ * @method string getDateCreation()
+ * @method void setDateCreation(string $dateCreation)
+ * @method int getView()
+ * @method void setView(int $view)
+ * @method string getTeaser()
+ * @method void setTeaser(string $teaser)
+ * @method int getPrivacyStatus()
+ * @method void setPrivacyStatus(int $privacyStatus)
+ * @method string getUuid()
+ * @method void setUuid(string $uuid)
+ * @method array getItems()
+ * @method void setItems(array $items)
+ * @method FolderpolicygroupDao getFolderpolicygroup()
+ * @method void setFolderpolicygroup(FolderpolicygroupDao $folderPolicyGroup)
+ * @method FolderpolicyuserDao getFolderpolicyuser()
+ * @method void setFolderpolicyuser(FolderpolicyuserDao $folderPolicyUser)
+ * @method array getFolders()
+ * @method void setFolders(array $folders)
+ * @method FolderDao getParent()
+ * @method void setParent(FolderDao $parent)
+ * @package Core\DAO
  */
 class FolderDao extends AppDao
 {
+    /** @var string */
     public $_model = 'Folder';
 }

@@ -18,7 +18,13 @@
  limitations under the License.
 =========================================================================*/
 
-/** sizequota App Dao */
+/**
+ * Generic DAO class for the sizequota module.
+ *
+ * @package Modules\Sizequota\DAO
+ */
 class Sizequota_AppDao extends MIDAS_GlobalDao
 {
+    /** @var string */
+    public $moduleName = 'sizequota';
 }

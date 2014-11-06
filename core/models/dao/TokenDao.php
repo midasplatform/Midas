@@ -18,8 +18,23 @@
  limitations under the License.
 =========================================================================*/
 
-/** Dao for the api token */
+/**
+ * API token DAO.
+ *
+ * @method int getTokenId()
+ * @method void setTokenId(int $tokenId)
+ * @method int getUserapiId()
+ * @method void setUserapiId(int $userApiId)
+ * @method string getToken()
+ * @method void setToken(string $token)
+ * @method string getExpirationDate()
+ * @method void setExpirationDate(string $expirationDate)
+ * @method UserapiDao getUserapi()
+ * @method void setUserapi(UserapiDao $userApi)
+ * @package Core\DAO
+ */
 class TokenDao extends AppDao
 {
+    /** @var string */
     public $_model = 'Token';
 }

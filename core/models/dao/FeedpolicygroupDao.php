@@ -19,9 +19,24 @@
 =========================================================================*/
 
 /**
- * DAO
+ * Feed group policy DAO.
+ *
+ * @method int getFeedId()
+ * @method void setFeedId(int $feedId)
+ * @method int getGroupId()
+ * @method void setGroupId(int $groupId)
+ * @method int getPolicy()
+ * @method void setPolicy(int $policy)
+ * @method string getDate()
+ * @method void setDate(string $date)
+ * @method FeedDao getFeed()
+ * @method void setFeed(FeedDao $feed)
+ * @method GroupDao getGroup()
+ * @method void setGroup(GroupDao $group)
+ * @package Core\DAO
  */
 class FeedpolicygroupDao extends AppDao
 {
+    /** @var string */
     public $_model = 'Feedpolicygroup';
 }

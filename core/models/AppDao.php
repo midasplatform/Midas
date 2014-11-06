@@ -19,8 +19,9 @@
 =========================================================================*/
 
 /**
- *  GlobalDao
- *  Global dao methods
+ * Generic DAO class.
+ *
+ * @package Core\DAO
  */
 class AppDao extends MIDAS_GlobalDao
 {
