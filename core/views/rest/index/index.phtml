@@ -33,8 +33,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/rest/rest.index.j
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/rest/rest.index.css"/>
 
 <div class="viewMain">
-    <pre>Web API URL = Base URL (<?php echo $this->serverURL.$this->webroot ?>
-        /rest) + API method URL<br/><br/>e.g. <?php echo $this->serverURL.$this->webroot ?>/rest/system/login</pre>
+    <pre>Web API URL = Base URL (<?php echo $this->serverURL.$this->webroot ?>/rest)+ API method URL<br/><br/>e.g. <?php echo $this->serverURL.$this->webroot ?>/rest/system/login</pre>
     <br/>
     To authenticate requests, you can provide a parameter of
     <b>token</b> with an authentication token value obtained by calling

@@ -576,4 +576,25 @@ abstract class ItemModelBase extends AppModel
         $item->setThumbnailId($thumb->getKey());
         $this->save($item);
     }
+
+    /**
+     * Return the latest bitstream from the latest item revision of the given item.
+     *
+     * @param ItemDao $itemDao item DAO
+     * @return BitstreamDao bitstream DAO
+     * @throws Zend_Exception
+     */
+    public function getLatestBitstream($itemDao)
+    {
+        /** @var ItemRevisionModel $itemRevisionModel */
+        $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
+
+        try {
+            $itemRevisionDao = $this->getLastRevision($itemDao);
+        } catch (Zend_Exception $exception) {
+            throw new Zend_Exception('Item does not contain any item revisions');
+        }
+
+        return $itemRevisionModel->getLatestBitstream($itemRevisionDao);
+    }
 }

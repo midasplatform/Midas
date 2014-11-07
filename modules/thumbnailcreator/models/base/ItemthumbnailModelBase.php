@@ -23,10 +23,11 @@
  */
 abstract class Thumbnailcreator_ItemthumbnailModelBase extends Thumbnailcreator_AppModel
 {
-    /** constructor */
+    /** Constructor. */
     public function __construct()
     {
         parent::__construct();
+
         $this->_name = 'thumbnailcreator_itemthumbnail';
         $this->_key = 'itemthumbnail_id';
 
@@ -41,12 +42,22 @@ abstract class Thumbnailcreator_ItemthumbnailModelBase extends Thumbnailcreator_
                 'child_column' => 'item_id',
             ),
         );
+
         $this->initialize();
     }
 
-    /** Get by item id */
+    /**
+     * Get by item id
+     *
+     * @param ItemDao $itemId
+     * @return false|Thumbnailcreator_ItemthumbnailDao
+     */
     abstract public function getByItemId($itemId);
 
-    /** Delete by item */
+    /**
+     * Delete by item
+     *
+     * @param ItemDao $item
+     */
     abstract public function deleteByItem($item);
 }

@@ -18,6 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
+require_once 'XML/Serializer.php';
 require_once BASE_PATH.'/modules/api/library/KwUploadAPI.php';
 
 /** Midas API core functionalities */

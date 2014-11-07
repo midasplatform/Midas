@@ -176,4 +176,22 @@ abstract class ItemRevisionModelBase extends AppModel
         }
         parent::save($dao);
     }
+
+    /**
+     * Return the latest bitstream from the given item revision.
+     *
+     * @param ItemRevisionDao $itemRevisionDao item revision DAO
+     * @return BitstreamDao
+     * @throws Zend_Exception
+     */
+    public function getLatestBitstream($itemRevisionDao)
+    {
+        $bitstreamDaos = $itemRevisionDao->getBitstreams();
+
+        if (count($bitstreamDaos) === 0) {
+            throw new Zend_Exception('Item revision does not contain any bitstreams');
+        }
+
+        return $bitstreamDaos[0];
+    }
 }

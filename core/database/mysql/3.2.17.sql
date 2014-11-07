@@ -1,6 +1,6 @@
 -- MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- MySQL core database, version 3.2.16
+-- MySQL core database, version 3.2.17
 
 CREATE TABLE IF NOT EXISTS `activedownload` (
     `activedownload_id` bigint(20) NOT NULL AUTO_INCREMENT,

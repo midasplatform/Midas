@@ -26,7 +26,10 @@ require_once BASE_PATH.'/modules/thumbnailcreator/models/base/ItemthumbnailModel
 class Thumbnailcreator_ItemthumbnailModel extends Thumbnailcreator_ItemthumbnailModelBase
 {
     /**
-     * Return an itemthumbnail dao based on an itemId.
+     * Return an item thumbnail dao based on an itemId.
+     *
+     * @param int $itemId
+     * @return false|Thumbnailcreator_ItemthumbnailDao
      */
     public function getByItemId($itemId)
     {
@@ -39,6 +42,8 @@ class Thumbnailcreator_ItemthumbnailModel extends Thumbnailcreator_Itemthumbnail
 
     /**
      * Delete thumbnails on a given item. Called when item is about to be deleted.
+     *
+     * @param ItemDao $item
      */
     public function deleteByItem($item)
     {

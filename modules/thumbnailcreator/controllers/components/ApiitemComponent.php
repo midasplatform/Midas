@@ -34,7 +34,7 @@ class Thumbnailcreator_ApiitemComponent extends AppComponent
     public function createBigThumbnail($args)
     {
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
-        $apihelperComponent->renameParamKey($args, 'itemId', 'id');
+        $apihelperComponent->renameParamKey($args, 'itemId', 'id', false);
         $apihelperComponent->validateParams($args, array('id'));
 
         $imComponent = MidasLoader::loadComponent('Imagemagick', 'thumbnailcreator');
@@ -105,7 +105,7 @@ class Thumbnailcreator_ApiitemComponent extends AppComponent
     public function createSmallThumbnail($args)
     {
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
-        $apihelperComponent->renameParamKey($args, 'itemId', 'id');
+        $apihelperComponent->renameParamKey($args, 'itemId', 'id', false);
         $apihelperComponent->validateParams($args, array('id'));
         $itemId = $args['id'];
 
@@ -142,9 +142,6 @@ class Thumbnailcreator_ApiitemComponent extends AppComponent
             $itemModel->replaceThumbnail($item, $pathThumbnail);
         }
 
-        $return = $item->toArray();
-        $return['pathToCreatedThumbnail'] = $pathThumbnail;
-
-        return $return;
+        return $item->toArray();
     }
 }

@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/** App controller for the thumbnailcreator module */
-class Thumbnailcreator_AppController extends MIDAS_GlobalModule
+/** Bootstrap for the thumbnailcreator module. */
+class Thumbnailcreator_Bootstrap extends Zend_Application_Module_Bootstrap
 {
-    /** @var string */
-    public $moduleName = 'thumbnailcreator';
 }
