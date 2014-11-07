@@ -202,7 +202,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
      */
     public function preprocessByThumbnailer($name, $fullPath)
     {
-        $tmpPath = UtilityComponent::getTempDirectory('thumbnail');
+        $tmpPath = UtilityComponent::getTempDirectory('thumbnailcreator');
 
         if (!file_exists($tmpPath)) {
             throw new Zend_Exception(
