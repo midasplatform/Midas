@@ -21,14 +21,11 @@
 /** Admin form for the mail module. */
 class Mail_Form_Admin extends Zend_Form
 {
+    /** Initialize this form. */
     public function init()
     {
         $this->setName('mail_config');
         $this->setMethod('POST');
-
-//         $csrf = new Zend_Form_Element_Hash('mail_csrf');
-//         $csrf->setSalt('PIYXLxz3eNkhaXJiJqvMNzjOhlWn2hPM');
-//         $csrf->setTimeout(3600);
 
         $provider = new Zend_Form_Element_Select('provider');
         $provider->setLabel('Provider');

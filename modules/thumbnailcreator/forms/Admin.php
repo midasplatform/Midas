@@ -21,6 +21,7 @@
 /** Admin form for the thumbnailcreator module. */
 class Thumbnailcreator_Form_Admin extends Zend_Form
 {
+    /** Initialize this form. */
     public function init()
     {
         $this->setName('thumbnailcreator_config');
