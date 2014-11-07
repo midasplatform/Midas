@@ -1,1 +1,3 @@
-pvw-data
+*
+!.gitignore
+!.htaccess

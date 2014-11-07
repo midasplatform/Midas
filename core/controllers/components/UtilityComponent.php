@@ -344,11 +344,13 @@ class UtilityComponent extends AppComponent
     public static function getDataDirectory($subdir = '')
     {
         $settingModel = MidasLoader::loadModel('Setting');
+
         try {
             $dataDirectory = $settingModel->getValueByName('data_directory');
         } catch (Exception $e) {
             $dataDirectory = null;
         }
+
         if (!isset($dataDirectory) || empty($dataDirectory)) {
             if (getenv('midas_data_path') !== false) {
                 $dataDirectory = getenv('midas_data_path');
@@ -356,13 +358,18 @@ class UtilityComponent extends AppComponent
                 $dataDirectory = BASE_PATH.'/data';
             }
         }
+
         if ($subdir == '') {
-            $dataDirectory .= '/';
+            $path = $dataDirectory.'/';
         } else {
-            $dataDirectory .= '/'.$subdir.'/';
+            $path = $dataDirectory.'/'.$subdir.'/';
         }
 
-        return $dataDirectory;
+        if (is_writable($dataDirectory) && !file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        return realpath($path);
     }
 
     /**
@@ -374,6 +381,7 @@ class UtilityComponent extends AppComponent
     public static function getTempDirectory($subdir = "misc")
     {
         $settingModel = MidasLoader::loadModel('Setting');
+
         try {
             $tempDirectory = $settingModel->getValueByName('temp_directory');
         } catch (Exception $e) {
@@ -381,6 +389,7 @@ class UtilityComponent extends AppComponent
             // value in the settings table for this, provide a default
             $tempDirectory = null;
         }
+
         if (!isset($tempDirectory) || empty($tempDirectory)) {
             if (getenv('midas_temp_path') !== false) {
                 $tempDirectory = getenv('midas_temp_path');
@@ -389,7 +398,13 @@ class UtilityComponent extends AppComponent
             }
         }
 
-        return $tempDirectory.'/'.$subdir;
+        $path = $tempDirectory.'/'.$subdir;
+
+        if (is_writable($tempDirectory) && !file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        return realpath($path);
     }
 
     /**
