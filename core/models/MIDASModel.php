@@ -49,9 +49,9 @@ class MIDASModel
      *
      * @return string
      */
-    protected function getTempDirectory()
+    protected function getTempDirectory($subDirectory = 'misc', $createDirectory = true)
     {
-        return UtilityComponent::getTempDirectory();
+        return UtilityComponent::getTempDirectory($subDirectory, $createDirectory);
     }
 
     /**

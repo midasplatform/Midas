@@ -339,9 +339,9 @@ class MIDAS_GlobalController extends Zend_Controller_Action
      *
      * @return string
      */
-    protected function getDataDirectory($subdir = '')
+    protected function getDataDirectory($subDirectory = '', $createDirectory = true)
     {
-        return UtilityComponent::getDataDirectory($subdir);
+        return UtilityComponent::getDataDirectory($subDirectory, $createDirectory);
     }
 
     /**
@@ -349,9 +349,9 @@ class MIDAS_GlobalController extends Zend_Controller_Action
      *
      * @return string
      */
-    protected function getTempDirectory($subdir = 'misc')
+    protected function getTempDirectory($subDirectory = 'misc', $createDirectory = true)
     {
-        return UtilityComponent::getTempDirectory($subdir);
+        return UtilityComponent::getTempDirectory($subDirectory, $createDirectory);
     }
 
     /** return an array of form element     */

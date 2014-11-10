@@ -341,7 +341,7 @@ class UtilityComponent extends AppComponent
     }
 
     /** Get the data directory */
-    public static function getDataDirectory($subdir = '')
+    public static function getDataDirectory($subDirectory = '', $createDirectory = true)
     {
         $settingModel = MidasLoader::loadModel('Setting');
 
@@ -359,13 +359,13 @@ class UtilityComponent extends AppComponent
             }
         }
 
-        if ($subdir == '') {
+        if ($subDirectory == '') {
             $path = $dataDirectory.'/';
         } else {
-            $path = $dataDirectory.'/'.$subdir.'/';
+            $path = $dataDirectory.'/'.$subDirectory.'/';
         }
 
-        if (is_writable($dataDirectory) && !file_exists($path)) {
+        if ($createDirectory && is_writable($dataDirectory) && !file_exists($path)) {
             mkdir($path, 0777, true);
         }
 
@@ -373,12 +373,12 @@ class UtilityComponent extends AppComponent
     }
 
     /**
-     * @param $subdir
+     * @param $subDirectory
      * get the midas temporary directory, appending the param $subdir, which
      * defaults to "misc"
      * @return string
      */
-    public static function getTempDirectory($subdir = "misc")
+    public static function getTempDirectory($subDirectory = 'misc', $createDirectory = true)
     {
         $settingModel = MidasLoader::loadModel('Setting');
 
@@ -398,9 +398,9 @@ class UtilityComponent extends AppComponent
             }
         }
 
-        $path = $tempDirectory.'/'.$subdir;
+        $path = $tempDirectory.'/'.$subDirectory;
 
-        if (is_writable($tempDirectory) && !file_exists($path)) {
+        if ($createDirectory && is_writable($tempDirectory) && !file_exists($path)) {
             mkdir($path, 0777, true);
         }
 
