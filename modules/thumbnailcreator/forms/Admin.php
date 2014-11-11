@@ -74,7 +74,7 @@ class Thumbnailcreator_Form_Admin extends Zend_Form
         $submit->setLabel('Save');
 
         if ($isAppEngine) {
-            array($provider, $format, $submit);
+            $this->addElements(array($provider, $format, $submit));
         } else {
             $this->addElements(array($provider, $format, $imageMagick, $useThumbnailer, $thumbnailer, $submit));
         }

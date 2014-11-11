@@ -52,4 +52,4 @@ skip_files:
 - ^(.*/)?(\.git|\.idea|\.vagrant|data|log|provisioning|tests|tmp|utils)/.*
 - ^(.*/)?(core|modules/.*)/(database/pgsql|sqlite|tests)/.*
 - ^(.*/)?library/CMake/.*
-- ^(.*/)?modules/(batchmake|dicom.*|example|metadataextractor|pvw|remoteprocessing|solr|thumbnailcreator|visualize)/.*
+- ^(.*/)?modules/(batchmake|dicom.*|example|javauploaddownload|metadataextractor|pvw|remoteprocessing|solr|visualize)/.*

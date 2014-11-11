@@ -140,7 +140,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         }
         parent::preDispatch();
         if (!$this->isDebug()) {
-            $frontendOptions = array('automatic_serialization' => true, 'lifetime' => 86400);
+            $frontendOptions = array('automatic_serialization' => true, 'lifetime' => 86400, 'cache_id_prefix' => 'midas_');
             if (extension_loaded('memcached') || session_save_path() === 'Memcache'
             ) {
                 $cache = Zend_Cache::factory('Core', 'Libmemcached', $frontendOptions, array());
