@@ -21,8 +21,10 @@
 require_once BASE_PATH.'/core/AppController.php';
 
 /**
- *  GlobalAction
- *  Provides global function to the controllers
+ * Provides global function to the controllers
+ *
+ * @property object $ModuleComponent
+ * @property object $ModuleForm
  */
 class MIDAS_GlobalModule extends AppController
 {

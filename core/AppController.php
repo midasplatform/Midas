@@ -566,125 +566,87 @@ class AppController extends MIDAS_GlobalController
         return InternationalizationComponent::translate($text);
     }
 
-    /** completion eclipse */
-    /**
-     * Assetstore Model
-     *
-     * @var AssetstoreModelBase
-     */
+    /** @var ActivedownloadModel */
+    public $Activedownload;
+
+    /** @var AssetstoreModel */
     public $Assetstore;
 
-    /**
-     * Bitstream Model
-     *
-     * @var BitstreamModelBase
-     */
+    /** @var BitstreamModel */
     public $Bitstream;
 
-    /**
-     * Community Model
-     *
-     * @var CommunityModelBase
-     */
+    /** @var CommunityModel */
     public $Community;
 
-    /**
-     * Errorlog Model
-     *
-     * @var ErrorlogModelBase
-     */
+    /** @var CommunityInvitationModel */
+    public $CommunityInvitation;
+
+    /** @var object */
+    public $Component;
+
+    /** @var ErrorlogModel */
     public $Errorlog;
 
-    /**
-     * Feed Model
-     *
-     * @var FeedModelBase
-     */
+    /** @var FeedModel */
     public $Feed;
 
-    /**
-     * Feedpolicygroup Model
-     *
-     * @var FeedpolicygroupModelBase
-     */
+    /** @var FeedpolicygroupModel */
     public $Feedpolicygroup;
 
-    /**
-     * Feedpolicyuser Model
-     *
-     * @var FeedpolicyuserModelBase
-     */
+    /** @var FeedpolicyuserModel */
     public $Feedpolicyuser;
 
-    /**
-     * Folder Model
-     *
-     * @var FolderModelBase
-     */
+    /** @var FolderModel */
     public $Folder;
 
-    /**
-     * Folderpolicygroup Model
-     *
-     * @var FolderpolicygroupModelBase
-     */
+    /** @var FolderpolicygroupModel */
     public $Folderpolicygroup;
 
-    /**
-     * Folderpolicyuser Model
-     *
-     * @var FolderpolicyuserModelBase
-     */
+    /** @var FolderpolicyuserModel */
     public $Folderpolicyuser;
 
-    /**
-     * Group Model
-     *
-     * @var GroupModelBase
-     */
+    /** @var object */
+    public $Form;
+
+    /** @var GroupModel */
     public $Group;
 
-    /**
-     * Item Model
-     *
-     * @var ItemModelBase
-     */
+    /** @var ItemModel */
     public $Item;
 
-    /**
-     * Itempolicygroup Model
-     *
-     * @var ItempolicygroupModelBase
-     */
+    /** @var ItempolicygroupModel */
     public $Itempolicygroup;
 
-    /**
-     * Itempolicyuser Model
-     *
-     * @var ItempolicyuserModelBase
-     */
+    /** @var ItempolicyuserModel */
     public $Itempolicyuser;
 
-    /**
-     * ItemRevision Model
-     *
-     * @var ItemRevisionModelBase
-     */
+    /** @var ItemRevisionModel */
     public $ItemRevision;
 
-    /**
-     * User Model
-     *
-     * @var UserModelBase
-     */
-    public $User;
+    /** @var LicenseModel */
+    public $License;
 
-    /**
-     * Setting Model
-     *
-     * @var SettingModelBase
-     */
+    /** @var MetadataModel */
+    public $Metadata;
+
+    /** @var NewUserInvitationModel */
+    public $NewUserInvitation;
+
+    /** @var PendingUserModel */
+    public $PendingUser;
+
+    /** @var ProgressModel */
+    public $Progress;
+
+    /** @var SettingModel */
     public $Setting;
 
-    /** end completion eclipse */
+    /** @var TokenModel */
+    public $Token;
+
+    /** @var UserModel */
+    public $User;
+
+    /** @var UserapiModel */
+    public $Userapi;
 }

@@ -21,7 +21,37 @@
 require_once dirname(__FILE__).'/TestsBootstrap.php';
 require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 
-/** main controller test element */
+/**
+ * @property ActivedownloadModel $Activedownload
+ * @property AssetstoreModel $Assetstore
+ * @property BitstreamModel $Bitstream
+ * @property CommunityModel $Community
+ * @property CommunityInvitationModel $CommunityInvitation
+ * @property object $Component
+ * @property ErrorlogModel $Errorlog
+ * @property FeedModel $Feed
+ * @property FeedpolicygroupModel $Feedpolicygroup
+ * @property FeedpolicyuserModel $Feedpolicyuser
+ * @property FolderModel $Folder
+ * @property FolderpolicygroupModel $Folderpolicygroup
+ * @property FolderpolicyuserModel $Folderpolicyuser
+ * @property object $Form
+ * @property GroupModel $Group
+ * @property ItemModel $Item
+ * @property ItempolicygroupModel $Itempolicygroup
+ * @property ItempolicyuserModel $Itempolicyuser
+ * @property ItemRevisionModel $ItemRevision
+ * @property LicenseModel $License
+ * @property MetadataModel $Metadata
+ * @property ModuleModel $Module
+ * @property NewUserInvitationModel $NewUserInvitation
+ * @property PendingUserModel $PendingUser
+ * @property ProgressModel $Progress
+ * @property SettingModel $Setting
+ * @property TokenModel $Token
+ * @property UserModel $User
+ * @property UserapiModel $Userapi;
+ */
 abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
 {
     protected $application;

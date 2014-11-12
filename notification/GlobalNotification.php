@@ -18,7 +18,41 @@
  limitations under the License.
 =========================================================================*/
 
-/** Provides global function to the notification managers */
+/**
+ * Provides global function to the notification managers.
+ *
+ * @property ActivedownloadModel $Activedownload
+ * @property AssetstoreModel $Assetstore
+ * @property BitstreamModel $Bitstream
+ * @property CommunityModel $Community
+ * @property CommunityInvitationModel $CommunityInvitation
+ * @property object $Component
+ * @property ErrorlogModel $Errorlog
+ * @property FeedModel $Feed
+ * @property FeedpolicygroupModel $Feedpolicygroup
+ * @property FeedpolicyuserModel $Feedpolicyuser
+ * @property FolderModel $Folder
+ * @property FolderpolicygroupModel $Folderpolicygroup
+ * @property FolderpolicyuserModel $Folderpolicyuser
+ * @property object $Form
+ * @property GroupModel $Group
+ * @property ItemModel $Item
+ * @property ItempolicygroupModel $Itempolicygroup
+ * @property ItempolicyuserModel $Itempolicyuser
+ * @property ItemRevisionModel $ItemRevision
+ * @property LicenseModel $License
+ * @property MetadataModel $Metadata
+ * @property object $ModuleComponent
+ * @property object $ModuleForm
+ * @property ModuleModel $Module
+ * @property NewUserInvitationModel $NewUserInvitation
+ * @property PendingUserModel $PendingUser
+ * @property ProgressModel $Progress
+ * @property SettingModel $Setting
+ * @property TokenModel $Token
+ * @property UserModel $User
+ * @property UserapiModel $Userapi;
+ */
 class MIDAS_Notification
 {
     private $_task = array();

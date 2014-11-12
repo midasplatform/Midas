@@ -21,7 +21,37 @@
 require_once dirname(__FILE__).'/TestsBootstrap.php';
 require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 
-/** main models test element */
+/**
+ * @property ActivedownloadModel $Activedownload
+ * @property AssetstoreModel $Assetstore
+ * @property BitstreamModel $Bitstream
+ * @property CommunityModel $Community
+ * @property CommunityInvitationModel $CommunityInvitation
+ * @property object $Component
+ * @property ErrorlogModel $Errorlog
+ * @property FeedModel $Feed
+ * @property FeedpolicygroupModel $Feedpolicygroup
+ * @property FeedpolicyuserModel $Feedpolicyuser
+ * @property FolderModel $Folder
+ * @property FolderpolicygroupModel $Folderpolicygroup
+ * @property FolderpolicyuserModel $Folderpolicyuser
+ * @property object $Form
+ * @property GroupModel $Group
+ * @property ItemModel $Item
+ * @property ItempolicygroupModel $Itempolicygroup
+ * @property ItempolicyuserModel $Itempolicyuser
+ * @property ItemRevisionModel $ItemRevision
+ * @property LicenseModel $License
+ * @property MetadataModel $Metadata
+ * @property ModuleModel $Module
+ * @property NewUserInvitationModel $NewUserInvitation
+ * @property PendingUserModel $PendingUser
+ * @property ProgressModel $Progress
+ * @property SettingModel $Setting
+ * @property TokenModel $Token
+ * @property UserModel $User
+ * @property UserapiModel $Userapi;
+ */
 abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
 {
     protected $application;
@@ -217,97 +247,4 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
             }
         }
     }
-
-    /** completion eclipse */
-    /**
-     * Assetstore Model
-     *
-     * @var AssetstoreModel
-     */
-    public $Assetstrore;
-    /**
-     * Bitstream Model
-     *
-     * @var BitstreamModel
-     */
-    public $Bitstream;
-    /**
-     * Community Model
-     *
-     * @var CommunityModel
-     */
-    public $Community;
-    /**
-     * Feed Model
-     *
-     * @var FeedModel
-     */
-    public $Feed;
-    /**
-     * Feedpolicygroup Model
-     *
-     * @var FeedpolicygroupModel
-     */
-    public $Feedpolicygroup;
-    /**
-     * Feedpolicyuser Model
-     *
-     * @var FeedpolicyuserModel
-     */
-    public $Feedpolicyuser;
-    /**
-     * Folder Model
-     *
-     * @var FolderModel
-     */
-    public $Folder;
-    /**
-     * Folderpolicygroup Model
-     *
-     * @var FolderpolicygroupModel
-     */
-    public $Folderpolicygroup;
-    /**
-     * Folderpolicyuser Model
-     *
-     * @var FolderpolicyuserModel
-     */
-    public $Folderpolicyuser;
-    /**
-     * Group Model
-     *
-     * @var GroupModel
-     */
-    public $Group;
-    /**
-     * Item Model
-     *
-     * @var ItemModel
-     */
-    public $Item;
-    /**
-     * Itempolicygroup Model
-     *
-     * @var ItempolicygroupModel
-     */
-    public $Itempolicygroup;
-    /**
-     * Itempolicyuser Model
-     *
-     * @var ItempolicyuserModel
-     */
-    public $Itempolicyuser;
-    /**
-     * ItemRevision Model
-     *
-     * @var ItemRevisionModel
-     */
-    public $ItemRevision;
-    /**
-     * User Model
-     *
-     * @var UserModel
-     */
-    public $User;
-    /** end completion eclipse */
 }
