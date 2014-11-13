@@ -170,23 +170,6 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     public function postDispatch()
     {
         parent::postDispatch();
-        if ($this->isDebug() && $this->getEnvironment() != 'testing') {
-            $timeEnd = microtime(true);
-            $writer = new Zend_Log_Writer_Firebug();
-            $logger = new Zend_Log($writer);
-            $logger->debug(
-                "---Timers--- Controller timer:".round(
-                    1000 * ($timeEnd - $this->_controllerTimer),
-                    3
-                )." ms - Global timer:".round(1000 * ($timeEnd - START_TIME), 3)." ms"
-            );
-
-            $logger->debug("---Memory Usage---".round((memory_get_usage() / (1024 * 1024)), 3)." MB");
-        }
-
-        if (Zend_Registry::get("configDatabase")->database->profiler == 1) {
-            $this->showProfiler();
-        }
         $this->view->addHelperPath(BASE_PATH."/core/views/helpers", "Zend_View_Helper_");
     }
 
@@ -249,60 +232,6 @@ class MIDAS_GlobalController extends Zend_Controller_Action
                     throw new Zend_Exception('Unable to find '.$nameForm);
                 }
                 $this->Form->$forms = new $nameForm();
-            }
-        }
-    }
-
-    /**
-     * Show profiler in the firebug console
-     */
-    public function showProfiler()
-    {
-        $writer = new Zend_Log_Writer_Firebug();
-        $logger = new Zend_Log($writer);
-        $configDatabase = Zend_Registry::get('configDatabase');
-        if ($configDatabase->database->profiler != '1') {
-            return;
-        }
-        $db = Zend_Registry::get('dbAdapter');
-
-        if (method_exists($db, "getProfiler")) {
-            $profiler = $db->getProfiler();
-            $totalTime = $profiler->getTotalElapsedSecs();
-            $queryCount = $profiler->getTotalNumQueries();
-            if ($queryCount == 0) {
-                return;
-            }
-        }
-
-        $longestTime = 0;
-        $longestQuery = null;
-        if (isset($profiler) && !empty($profiler)) {
-            $querys = $profiler->getQueryProfiles();
-            if (!empty($querys)) {
-                foreach ($profiler->getQueryProfiles() as $query) {
-                    if ($query->getElapsedSecs() > $longestTime) {
-                        $longestTime = $query->getElapsedSecs();
-                        $longestQuery = $query->getQuery();
-                    }
-                }
-                $stats = '--- Profiler --- Executed '.$queryCount.' queries in '.round(
-                        1000 * $totalTime,
-                        3
-                    ).' ms';
-                $stats .= ' Longest query length: '.round(1000 * $longestTime, 3).' ms : '.$longestQuery;
-                $logger->log(str_replace("'", "`", $stats), Zend_Log::INFO);
-
-                foreach ($profiler->getQueryProfiles() as $query) {
-                    $logger->log(
-                        str_replace(
-                            "'",
-                            "`",
-                            round(1000 * ($query->getElapsedSecs()), 3)." ms | ".$query->getQuery()
-                        ),
-                        Zend_Log::INFO
-                    );
-                }
             }
         }
     }

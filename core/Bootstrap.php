@@ -99,13 +99,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             }
         }
 
-        if ($configGlobal->environment == 'production') {
-            Zend_Loader::loadClass('ProductionDbProfiler', BASE_PATH.'/core/models/profiler');
-            $params['profiler'] = new ProductionDbProfiler();
-        }
-
         $db = Zend_Db::factory($configDatabase->database->adapter, $params);
-        $db->getProfiler()->setEnabled(true);
         Zend_Db_Table::setDefaultAdapter($db);
         Zend_Registry::set('dbAdapter', $db);
         Zend_Registry::set('configDatabase', $configDatabase);

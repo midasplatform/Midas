@@ -272,9 +272,8 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
             $errorComponent = new NotifyErrorComponent();
             $session = new Zend_Session_Namespace('Auth_User');
             $db = Zend_Registry::get('dbAdapter');
-            $profiler = $db->getProfiler();
             $environment = 'testing';
-            $errorComponent->initNotifier($environment, $error, $session, $profiler, $_SERVER);
+            $errorComponent->initNotifier($environment, $error, $session, $_SERVER);
 
             $this->fail($errorComponent->getFullErrorMessage());
         }

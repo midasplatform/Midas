@@ -34,8 +34,6 @@ if (isset($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'A
 define('BASE_PATH', realpath(dirname(__FILE__)));
 require_once BASE_PATH.'/vendor/autoload.php';
 require_once BASE_PATH.'/core/include.php';
-require_once 'Zend/Application.php';
-define('START_TIME', microtime(true));
 
 if (!is_writable(LOCAL_CONFIGS_PATH)) {
     echo '<p>To use Midas Platform, the folder "'.LOCAL_CONFIGS_PATH.'" must be writable by your web server.</p>';

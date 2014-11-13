@@ -24,20 +24,17 @@ class NotifyErrorComponent extends AppComponent
     protected $_environment;
     protected $_session;
     protected $_error;
-    protected $_profiler;
 
     /** Init */
     public function initNotifier(
         $environment,
         ArrayObject $error,
         Zend_Session_Namespace $session,
-        Zend_Db_Profiler $profiler,
         array $server
     ) {
         $this->_environment = $environment;
         $this->_error = $error;
         $this->_session = $session;
-        $this->_profiler = $profiler;
         $this->_server = $server;
     }
 
@@ -235,11 +232,6 @@ class NotifyErrorComponent extends AppComponent
             $message .= $key.": ".var_export($value, true)."\n";
         }
         $message .= "\n";
-
-        if ($this->_profiler->getLastQueryProfile() !== false) {
-            $query = $this->_profiler->getLastQueryProfile()->getQuery();
-            $message .= "Last database query: ".$query."\n\n";
-        }
 
         return $message;
     }

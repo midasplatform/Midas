@@ -40,14 +40,9 @@ class ErrorController extends AppController
         $session = new Zend_Session_Namespace('Auth_User');
         $db = Zend_Registry::get('dbAdapter');
 
-        if (method_exists($db, "getProfiler")) {
-            $profiler = $db->getProfiler();
-        } else {
-            $profiler = new Zend_Db_Profiler();
-        }
         $environment = Zend_Registry::get('configGlobal')->environment;
         $this->_environment = $environment;
-        $this->Component->NotifyError->initNotifier($environment, $error, $session, $profiler, $_SERVER);
+        $this->Component->NotifyError->initNotifier($environment, $error, $session, $_SERVER);
 
         $this->_error = $error;
 

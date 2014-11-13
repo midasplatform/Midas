@@ -73,9 +73,6 @@ function loadDbAdapter($testConfigDir, $dbType)
         }
     }
     $db = Zend_Db::factory($configDatabase->database->adapter, $params);
-    if ($configDatabase->database->profiler == '1') {
-        $db->getProfiler()->setEnabled(true);
-    }
     Zend_Db_Table::setDefaultAdapter($db);
     Zend_Registry::set('dbAdapter', $db);
     Zend_Registry::set('configDatabase', $configDatabase);
@@ -220,7 +217,6 @@ define('TESTS_PATH', BASE_PATH.'/tests');
 
 require_once BASE_PATH.'/vendor/autoload.php';
 require_once BASE_PATH.'/core/include.php';
-define('START_TIME', microtime(true));
 
 Zend_Session::$_unitTestEnabled = true;
 Zend_Session::start();
@@ -230,11 +226,6 @@ $logger = Zend_Log::factory(
         array(
             'writerName' => 'Stream',
             'writerParams' => array('stream' => LOGS_PATH.'/testing.log'),
-            'filterName' => 'Priority',
-            'filterParams' => array('priority' => Zend_Log::DEBUG),
-        ),
-        array(
-            'writerName' => 'Firebug',
             'filterName' => 'Priority',
             'filterParams' => array('priority' => Zend_Log::DEBUG),
         ),
