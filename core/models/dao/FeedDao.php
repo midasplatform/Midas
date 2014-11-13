@@ -29,6 +29,7 @@
  * @method void setUserId(int $userId)
  * @method int getType()
  * @method void setType(int $type)
+ * @method void setResource(string $resource)
  * @method array getCommunities()
  * @method void setCommunities(array $communities)
  * @method UserDao getUser()
@@ -47,7 +48,7 @@ class FeedDao extends AppDao
     /**
      * Return the resource.
      *
-     * @return string
+     * @return mixed
      * @throws Zend_Exception
      */
     public function getResource()
@@ -59,32 +60,32 @@ class FeedDao extends AppDao
             case MIDAS_FEED_UPDATE_COMMUNITY:
                 $model = MidasLoader::loadModel('Community');
 
-                return $model->load($this->ressource);
+                return $model->load($this->resource);
             case MIDAS_FEED_COMMUNITY_INVITATION:
                 $model = MidasLoader::loadModel('CommunityInvitation');
 
-                return $model->load($this->ressource);
+                return $model->load($this->resource);
             case MIDAS_FEED_CREATE_FOLDER:
                 $model = MidasLoader::loadModel('Folder');
 
-                return $model->load($this->ressource);
+                return $model->load($this->resource);
             case MIDAS_FEED_CREATE_ITEM:
             case MIDAS_FEED_CREATE_LINK_ITEM:
                 $model = MidasLoader::loadModel('Item');
 
-                return $model->load($this->ressource);
+                return $model->load($this->resource);
             case MIDAS_FEED_CREATE_REVISION:
                 $model = MidasLoader::loadModel('ItemRevision');
 
-                return $model->load($this->ressource);
+                return $model->load($this->resource);
             case MIDAS_FEED_CREATE_USER:
                 $model = MidasLoader::loadModel('User');
 
-                return $model->load($this->ressource);
+                return $model->load($this->resource);
             case MIDAS_FEED_DELETE_COMMUNITY:
             case MIDAS_FEED_DELETE_FOLDER:
             case MIDAS_FEED_DELETE_ITEM:
-                return $this->ressource;
+                return $this->resource;
             default:
                 throw new Zend_Exception('Unable to define the type of feed.');
         }
@@ -93,8 +94,8 @@ class FeedDao extends AppDao
     /**
      * Return the resource.
      *
-     * @deprecated
-     * @return string
+     * @deprecated since 3.3.0
+     * @return mixed
      */
     public function getRessource()
     {
@@ -104,18 +105,8 @@ class FeedDao extends AppDao
     /**
      * Set the resource.
      *
-     * @param $resource resource
-     */
-    public function setResource($resource)
-    {
-        $this->ressource = $resource;
-    }
-
-    /**
-     * Set the resource.
-     *
-     * @deprecated
-     * @param $resource resource
+     * @deprecated since 3.3.0
+     * @param string $resource resource
      */
     public function setRessource($resource)
     {

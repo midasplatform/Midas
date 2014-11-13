@@ -106,7 +106,7 @@ class ItemRevisionModel extends ItemRevisionModelBase
         // explicitly typecast the id to a string, for postgres
         $deleteType = array(MIDAS_FEED_CREATE_REVISION);
         $sql = $this->database->select()->setIntegrityCheck(false)->from(array('p' => 'feed'))->where(
-            'ressource = ?',
+            'resource = ?',
             (string) $revisiondao->getKey()
         );
 

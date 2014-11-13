@@ -45,47 +45,47 @@ if (!function_exists('createFeedElement')) {
         echo $view->linkuser($feed->getUser()).' ';
         switch ($type) {
             case MIDAS_FEED_CREATE_COMMUNITY:
-                echo "{$view->t("added the community")} <a href='{$view->webroot}/community/{$feed->getRessource(
+                echo "{$view->t("added the community")} <a href='{$view->webroot}/community/{$feed->getResource(
                     )->getKey()}'>".$view->slicename(
-                        $feed->getRessource()->getName(),
+                        $feed->getResource()->getName(),
                         30
                     )."</a>";
                 break;
             case MIDAS_FEED_COMMUNITY_INVITATION:
-                if ($view->loggedUser && $view->loggedUser->getKey() == $feed->getRessource()->getUser()->getKey()
+                if ($view->loggedUser && $view->loggedUser->getKey() == $feed->getResource()->getUser()->getKey()
                 ) {
                     echo $view->t('invited you to the community');
                 } else {
-                    echo $view->t('invited').' '.$view->linkuser($feed->getRessource()->getUser()).' '.$view->t(
+                    echo $view->t('invited').' '.$view->linkuser($feed->getResource()->getUser()).' '.$view->t(
                             'to the community'
                         );
                 }
-                echo " <a href='{$view->webroot}/community/{$feed->getRessource()->getCommunity()->getKey(
+                echo " <a href='{$view->webroot}/community/{$feed->getResource()->getCommunity()->getKey(
                     )}'>".$view->slicename(
-                        $feed->getRessource()->getCommunity()->getName(),
+                        $feed->getResource()->getCommunity()->getName(),
                         30
                     )."</a>";
                 break;
             case MIDAS_FEED_UPDATE_COMMUNITY:
             case MIDAS_FEED_CREATE_FOLDER:
             case MIDAS_FEED_CREATE_ITEM:
-                echo "{$view->t("added the item")} <a  href='{$view->webroot}/item/{$feed->getRessource()->getKey(
+                echo "{$view->t("added the item")} <a  href='{$view->webroot}/item/{$feed->getResource()->getKey(
                     )}'>".$view->slicename(
-                        $feed->getRessource()->getName(),
+                        $feed->getResource()->getName(),
                         30
                     )."</a>";
                 break;
             case MIDAS_FEED_CREATE_LINK_ITEM:
-                echo "{$view->t("added the link")} <a href='{$view->webroot}/item/{$feed->getRessource()->getKey(
+                echo "{$view->t("added the link")} <a href='{$view->webroot}/item/{$feed->getResource()->getKey(
                     )}'>".$view->slicename(
-                        $feed->getRessource()->getName(),
+                        $feed->getResource()->getName(),
                         30
                     )."</a>";
                 break;
             case MIDAS_FEED_CREATE_REVISION:
-                echo "{$view->t("added a new revision to")} <a href='{$view->webroot}/item/{$feed->getRessource(
+                echo "{$view->t("added a new revision to")} <a href='{$view->webroot}/item/{$feed->getResource(
                     )->getItem()->getKey()}'>".$view->slicename(
-                        $feed->getRessource()->getItem()->getName(),
+                        $feed->getResource()->getItem()->getName(),
                         30
                     )."</a>";
                 break;

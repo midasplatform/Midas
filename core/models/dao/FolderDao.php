@@ -23,10 +23,10 @@
  *
  * @method int getFolderId()
  * @method void setFolderId(int $folderId)
- * @method int getLeftIndice()
- * @method void setLeftIndice(int $leftIndex)
- * @method int getRightIndice()
- * @method void setRightIndice(int $rightIndex)
+ * @method int getLeftIndex()
+ * @method void setLeftIndex(int $leftIndex)
+ * @method int getRightIndex()
+ * @method void setRightIndex(int $rightIndex)
  * @method int getParentId()
  * @method void setParentId(int $parentId)
  * @method string getName()
@@ -61,4 +61,48 @@ class FolderDao extends AppDao
 {
     /** @var string */
     public $_model = 'Folder';
+
+    /**
+     * Return the left index.
+     *
+     * @deprecated since 3.3.0
+     * @return int
+     */
+    public function getLeftIndice()
+    {
+        return $this->getLeftIndex();
+    }
+
+    /**
+     * Set the left index.
+     *
+     * @deprecated since 3.3.0
+     * @param int $leftIndex left index
+     */
+    public function setLeftIndice($leftIndex)
+    {
+        $this->setLeftIndex($leftIndex);
+    }
+
+    /**
+     * Return the right index.
+     *
+     * @deprecated since 3.3.0
+     * @return int
+     */
+    public function getRightIndice()
+    {
+        return $this->getRightIndex();
+    }
+
+    /**
+     * Set the right index.
+     *
+     * @deprecated since 3.3.0
+     * @param int $rightIndex right index
+     */
+    public function setRightIndice($rightIndex)
+    {
+        $this->setRightIndex($rightIndex);
+    }
 }

@@ -189,9 +189,9 @@ class FolderModel extends FolderModelBase
             array('f' => 'folder'),
             array('count' => 'count(*)')
         )->where(
-            'left_indice > ?',
-            $folder->getLeftIndice()
-        )->where('right_indice < ?', $folder->getRightIndice());
+            'left_index > ?',
+            $folder->getLeftIndex()
+        )->where('right_index < ?', $folder->getRightIndex());
         $row = $this->database->fetchRow($sql);
         $folderChildCount = $row['count'];
 
@@ -203,9 +203,9 @@ class FolderModel extends FolderModelBase
                 $this->database->select()->setIntegrityCheck(false)->from(
                     array('f' => 'folder'),
                     array('folder_id')
-                )->where('left_indice > ?', $folder->getLeftIndice())->where(
-                    'right_indice < ?',
-                    $folder->getRightIndice()
+                )->where('left_index > ?', $folder->getLeftIndex())->where(
+                    'right_index < ?',
+                    $folder->getRightIndex()
                 )
             ).')'
         );
@@ -252,9 +252,9 @@ class FolderModel extends FolderModelBase
                     array()
                 );
             }
-            $subqueryUser->where('left_indice > ?', $folder->getLeftIndice())->where(
-                'right_indice < ?',
-                $folder->getRightIndice()
+            $subqueryUser->where('left_index > ?', $folder->getLeftIndex())->where(
+                'right_index < ?',
+                $folder->getRightIndex()
             );
 
             $subqueryGroup = $this->database->select()->setIntegrityCheck(false)->from(
@@ -283,9 +283,9 @@ class FolderModel extends FolderModelBase
                 );
             }
 
-            $subqueryGroup->where('left_indice > ?', $folder->getLeftIndice())->where(
-                'right_indice < ?',
-                $folder->getRightIndice()
+            $subqueryGroup->where('left_index > ?', $folder->getLeftIndex())->where(
+                'right_index < ?',
+                $folder->getRightIndex()
             );
 
             $subSqlFolders = $this->database->select()->union(array($subqueryUser, $subqueryGroup));
@@ -356,9 +356,9 @@ class FolderModel extends FolderModelBase
             array('f' => 'folder'),
             array('folder_id')
         )->where(
-            'left_indice > ?',
-            $folder->getLeftIndice()
-        )->where('right_indice < ?', $folder->getRightIndice());
+            'left_index > ?',
+            $folder->getLeftIndex()
+        )->where('right_index < ?', $folder->getRightIndex());
 
         $sql = $this->database->select()->distinct()->setIntegrityCheck(false)->from(array('i' => 'item'))->join(
             array('i2f' => 'item2folder'),
@@ -414,9 +414,9 @@ class FolderModel extends FolderModelBase
                 array()
             );
         }
-        $subqueryUser->where('left_indice > ?', $folder->getLeftIndice())->where(
-            'right_indice < ?',
-            $folder->getRightIndice()
+        $subqueryUser->where('left_index > ?', $folder->getLeftIndex())->where(
+            'right_index < ?',
+            $folder->getRightIndex()
         );
 
         $subqueryGroup = $this->database->select()->setIntegrityCheck(false)->from(array('f' => 'folder'));
@@ -442,9 +442,9 @@ class FolderModel extends FolderModelBase
             );
         }
 
-        $subqueryGroup->where('left_indice > ?', $folder->getLeftIndice())->where(
-            'right_indice < ?',
-            $folder->getRightIndice()
+        $subqueryGroup->where('left_index > ?', $folder->getLeftIndex())->where(
+            'right_index < ?',
+            $folder->getRightIndex()
         );
 
         $subSqlFolders = $this->database->select()->union(array($subqueryUser, $subqueryGroup));
@@ -511,16 +511,16 @@ class FolderModel extends FolderModelBase
             $policy_user_model->delete($policy);
         }
 
-        $leftIndice = $folder->getLeftIndice();
+        $leftIndex = $folder->getLeftIndex();
         $this->database->getDB()->update(
             'folder',
-            array('left_indice' => new Zend_Db_Expr('left_indice - 2')),
-            array('left_indice >= ?' => $leftIndice)
+            array('left_index' => new Zend_Db_Expr('left_index - 2')),
+            array('left_index >= ?' => $leftIndex)
         );
         $this->database->getDB()->update(
             'folder',
-            array('right_indice' => new Zend_Db_Expr('right_indice - 2')),
-            array('right_indice >= ?' => $leftIndice)
+            array('right_index' => new Zend_Db_Expr('right_index - 2')),
+            array('right_index >= ?' => $leftIndex)
         );
 
         Zend_Registry::get('notifier')->callback('CALLBACK_CORE_FOLDER_DELETED', array('folder' => $folder));
@@ -563,45 +563,45 @@ class FolderModel extends FolderModelBase
             throw new Zend_Exception('This name is already used');
         }
 
-        $node_pos_left = $folder->getLeftIndice();
-        $node_pos_right = $folder->getRightIndice();
+        $node_pos_left = $folder->getLeftIndex();
+        $node_pos_right = $folder->getRightIndex();
 
-        $parent_pos_right = $parent->getRightIndice();
+        $parent_pos_right = $parent->getRightIndex();
         $node_size = $node_pos_right - $node_pos_left + 1;
 
         // step 1: temporary "remove" moving node
         $this->database->getDB()->update(
             'folder',
             array(
-                'left_indice' => new Zend_Db_Expr('0 - left_indice'),
-                'right_indice' => new Zend_Db_Expr('0 - right_indice'),
+                'left_index' => new Zend_Db_Expr('0 - left_index'),
+                'right_index' => new Zend_Db_Expr('0 - right_index'),
             ),
-            'left_indice >= '.$node_pos_left.' AND right_indice <= '.$node_pos_right
+            'left_index >= '.$node_pos_left.' AND right_index <= '.$node_pos_right
         );
 
         // step 2: decrease left and/or right position values of currently 'lower' items (and parents)
         $this->database->getDB()->update(
             'folder',
-            array('left_indice' => new Zend_Db_Expr('left_indice - '.$node_size)),
-            array('left_indice > ?' => $node_pos_right)
+            array('left_index' => new Zend_Db_Expr('left_index - '.$node_size)),
+            array('left_index > ?' => $node_pos_right)
         );
         $this->database->getDB()->update(
             'folder',
-            array('right_indice' => new Zend_Db_Expr('right_indice - '.$node_size)),
-            array('right_indice > ?' => $node_pos_right)
+            array('right_index' => new Zend_Db_Expr('right_index - '.$node_size)),
+            array('right_index > ?' => $node_pos_right)
         );
 
         // step 3: increase left and/or right position values of future 'lower' items (and parents)
         $cond = ($parent_pos_right > $node_pos_right ? $parent_pos_right - $node_size : $parent_pos_right);
         $this->database->getDB()->update(
             'folder',
-            array('left_indice' => new Zend_Db_Expr('left_indice + '.$node_size)),
-            array('left_indice >= ?' => $cond)
+            array('left_index' => new Zend_Db_Expr('left_index + '.$node_size)),
+            array('left_index >= ?' => $cond)
         );
         $this->database->getDB()->update(
             'folder',
-            array('right_indice' => new Zend_Db_Expr('right_indice + '.$node_size)),
-            array('right_indice >= ?' => $cond)
+            array('right_index' => new Zend_Db_Expr('right_index + '.$node_size)),
+            array('right_index >= ?' => $cond)
         );
 
         // step 4: move node (ant it's subnodes) and update it's parent item id
@@ -609,10 +609,10 @@ class FolderModel extends FolderModelBase
         $this->database->getDB()->update(
             'folder',
             array(
-                'left_indice' => new Zend_Db_Expr('0 - left_indice + '.$cond),
-                'right_indice' => new Zend_Db_Expr('0 - right_indice + '.$cond),
+                'left_index' => new Zend_Db_Expr('0 - left_index + '.$cond),
+                'right_index' => new Zend_Db_Expr('0 - right_index + '.$cond),
             ),
-            'left_indice <= '.(0 - $node_pos_left).' AND right_indice >= '.(0 - $node_pos_right)
+            'left_index <= '.(0 - $node_pos_left).' AND right_index >= '.(0 - $node_pos_right)
         );
 
         $folder = $this->load($folder->getKey());
@@ -641,17 +641,17 @@ class FolderModel extends FolderModelBase
             if (!$parentFolder) {
                 return false; // deleting orphaned folder
             }
-            $rightParent = $parentFolder->getRightIndice();
+            $rightParent = $parentFolder->getRightIndex();
         }
         $data = array();
         foreach ($this->_mainData as $key => $var) {
             if (isset($folder->$key)) {
                 $data[$key] = $folder->$key;
             }
-            if ($key == 'right_indice') {
+            if ($key == 'right_index') {
                 $folder->$key = $rightParent + 1;
                 $data[$key] = $rightParent + 1;
-            } elseif ($key == 'left_indice') {
+            } elseif ($key == 'left_index') {
                 $data[$key] = $rightParent;
             } elseif ($key == 'description') {
                 $data[$key] = UtilityComponent::filterHtmlTags($folder->getDescription());
@@ -661,8 +661,8 @@ class FolderModel extends FolderModelBase
         if (isset($data['folder_id'])) {
             $key = $data['folder_id'];
             unset($data['folder_id']);
-            unset($data['left_indice']);
-            unset($data['right_indice']);
+            unset($data['left_index']);
+            unset($data['right_index']);
             $data['date_update'] = date('Y-m-d H:i:s');
             $this->database->update($data, array('folder_id = ?' => $key));
 
@@ -677,13 +677,13 @@ class FolderModel extends FolderModelBase
 
             $this->database->getDB()->update(
                 'folder',
-                array('right_indice' => new Zend_Db_Expr('2 + right_indice')),
-                array('right_indice >= ?' => $rightParent)
+                array('right_index' => new Zend_Db_Expr('2 + right_index')),
+                array('right_index >= ?' => $rightParent)
             );
             $this->database->getDB()->update(
                 'folder',
-                array('left_indice' => new Zend_Db_Expr('2 + left_indice')),
-                array('left_indice >= ?' => $rightParent)
+                array('left_index' => new Zend_Db_Expr('2 + left_index')),
+                array('left_index >= ?' => $rightParent)
             );
 
             $insertedid = $this->database->insert($data);
@@ -1312,7 +1312,7 @@ class FolderModel extends FolderModelBase
 
     /**
      * Call this to delete all folders whose parent folder no longer exists.
-     * After orphans are deleted, the tree indices will be recomputed so they
+     * After orphans are deleted, the tree indexes will be recomputed so they
      * will be consistent.  As such, server should not be written to
      * during this operation.
      */
@@ -1367,10 +1367,10 @@ class FolderModel extends FolderModelBase
             $progressDao->setMessage('Rebuilding entire folder tree index (0/'.$max.')');
             $this->Progress->save($progressDao);
         }
-        // Wipe the current tree indices from all rows
-        $this->database->update(array('left_indice' => 0, 'right_indice' => 0), array());
+        // Wipe the current tree indexes from all rows
+        $this->database->update(array('left_index' => 0, 'right_index' => 0), array());
 
-        // Recompute the indices for all rows
+        // Recompute the indexes for all rows
         $rootFolders = $this->getRootFolders();
         $count = 0;
         foreach ($rootFolders as $rootFolder) {
@@ -1379,7 +1379,7 @@ class FolderModel extends FolderModelBase
     }
 
     /**
-     * Will recompute the left and right indices of the subtree of the given node.
+     * Will recompute the left and right indexes of the subtree of the given node.
      */
     protected function _recomputeSubtree($folder, &$count, $max, $progressDao = null)
     {
@@ -1392,21 +1392,21 @@ class FolderModel extends FolderModelBase
             $rightParent = 0;
         } else {
             $parentFolder = $folder->getParent();
-            $rightParent = $parentFolder->getRightIndice();
+            $rightParent = $parentFolder->getRightIndex();
         }
 
-        $folder->setLeftIndice($rightParent);
-        $folder->setRightIndice($rightParent + 1);
+        $folder->setLeftIndex($rightParent);
+        $folder->setRightIndex($rightParent + 1);
 
         $this->database->getDB()->update(
             'folder',
-            array('right_indice' => new Zend_Db_Expr('2 + right_indice')),
-            array('right_indice >= ? AND left_indice != right_indice' => $rightParent)
+            array('right_index' => new Zend_Db_Expr('2 + right_index')),
+            array('right_index >= ? AND left_index != right_index' => $rightParent)
         );
         $this->database->getDB()->update(
             'folder',
-            array('left_indice' => new Zend_Db_Expr('2 + left_indice')),
-            array('left_indice >= ? AND left_indice != right_indice' => $rightParent)
+            array('left_index' => new Zend_Db_Expr('2 + left_index')),
+            array('left_index >= ? AND left_index != right_index' => $rightParent)
         );
 
         parent::save($folder);

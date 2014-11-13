@@ -18,22 +18,22 @@
     <group group_id="3002" community_id="2000" name="Community 1 Member"/>
 
     <folder folder_id="1000" name="user_1" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72760' description=""
-        left_indice="1000" right_indice="1005" parent_id="-1"/>
+        left_index="1000" right_index="1005" parent_id="-1"/>
     <folder folder_id="1001" name="User 1 public folder" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72761'
-        description="" left_indice="1001" right_indice="1002" parent_id="1000"/>
+        description="" left_index="1001" right_index="1002" parent_id="1000"/>
     <folder folder_id="1002" name="User 1 private folder" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72762'
-        description="" left_indice="1003" right_indice="1004" parent_id="1000"/>
+        description="" left_index="1003" right_index="1004" parent_id="1000"/>
     <folder folder_id="1003" name="community_2000" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72763' description=""
-        left_indice="1006" right_indice="10011" parent_id="-2"/>
+        left_index="1006" right_index="10011" parent_id="-2"/>
     <folder folder_id="1004" name="Community 1 public folder" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72764'
-        description="" left_indice="1007" right_indice="1008" parent_id="1003"/>
+        description="" left_index="1007" right_index="1008" parent_id="1003"/>
     <folder folder_id="1005" name="Community 1 private folder" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72765'
-        description="" left_indice="1009" right_indice="1010" parent_id="1003"/>
+        description="" left_index="1009" right_index="1010" parent_id="1003"/>
     <folder folder_id="1006" name="Community 1 private sub_1" uuid='5e311fdf82007c245b17e8d6a4fcb42c3f2621a482965'
-        description="" left_indice="1010" right_indice="1011" parent_id="1005"/>
+        description="" left_index="1010" right_index="1011" parent_id="1005"/>
 
     <folder folder_id="1007" name="User 1 private sub_1" uuid='5e311fdf82007c245b17e8d6a4fcb42c3f2621a482966'
-        description="" left_indice="1011" right_indice="1012" parent_id="1002"/>
+        description="" left_index="1011" right_index="1012" parent_id="1002"/>
 
     <user2group group_id="3000" user_id="3"/>
     <user2group group_id="3001" user_id="3"/>

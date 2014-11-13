@@ -1,6 +1,6 @@
 -- MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- SQLite core database, version 3.2.17
+-- SQLite core database, version 3.2.18
 
 CREATE TABLE IF NOT EXISTS "activedownload" (
     "activedownload_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS "feed" (
     "date" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" INTEGER NOT NULL,
     "type" INTEGER NOT NULL,
-    "ressource" TEXT NOT NULL
+    "resource" TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "feed2community" (
@@ -94,8 +94,8 @@ CREATE TABLE IF NOT EXISTS "feedpolicyuser" (
 
 CREATE TABLE IF NOT EXISTS "folder" (
     "folder_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    "left_indice" INTEGER NOT NULL,
-    "right_indice" INTEGER NOT NULL,
+    "left_index" INTEGER NOT NULL,
+    "right_index" INTEGER NOT NULL,
     "parent_id" INTEGER NOT NULL DEFAULT 0,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
@@ -107,9 +107,9 @@ CREATE TABLE IF NOT EXISTS "folder" (
     "date_creation" TEXT NOT NULL DEFAULT '0000-00-00 00:00:00'
 );
 
-CREATE INDEX IF NOT EXISTS "folder_left_indice_idx" ON "folder" ("left_indice");
+CREATE INDEX IF NOT EXISTS "folder_left_index_idx" ON "folder" ("left_index");
 CREATE INDEX IF NOT EXISTS "folder_parent_id_idx" ON "folder" ("parent_id");
-CREATE INDEX IF NOT EXISTS "folder_right_indice_idx" ON "folder" ("right_indice");
+CREATE INDEX IF NOT EXISTS "folder_right_index_idx" ON "folder" ("right_index");
 
 CREATE TABLE IF NOT EXISTS "folderpolicygroup" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,

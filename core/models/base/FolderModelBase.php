@@ -32,8 +32,8 @@ abstract class FolderModelBase extends AppModel
 
         $this->_mainData = array(
             'folder_id' => array('type' => MIDAS_DATA),
-            'left_indice' => array('type' => MIDAS_DATA),
-            'right_indice' => array('type' => MIDAS_DATA),
+            'left_index' => array('type' => MIDAS_DATA),
+            'right_index' => array('type' => MIDAS_DATA),
             'parent_id' => array('type' => MIDAS_DATA),
             'name' => array('type' => MIDAS_DATA),
             'description' => array('type' => MIDAS_DATA),

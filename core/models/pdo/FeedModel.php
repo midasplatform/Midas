@@ -32,7 +32,7 @@ class FeedModel extends FeedModelBase
             $typeArray = array($typeArray);
         }
         $sql = $this->database->select()->setIntegrityCheck(false)->from(array('p' => 'feed'))->where(
-            'ressource = ?',
+            'resource = ?',
             (string) $dao->getKey()
         );
 

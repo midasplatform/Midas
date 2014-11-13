@@ -1,6 +1,6 @@
 -- MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- PostgreSQL core database, version 3.2.17
+-- PostgreSQL core database, version 3.2.18
 
 SET client_encoding = 'UTF8';
 SET default_with_oids = FALSE;
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS "feed" (
     "date" timestamp without time zone NOT NULL,
     "user_id" bigint NOT NULL,
     "type" integer NOT NULL,
-    "ressource" character varying(256) NOT NULL
+    "resource" character varying(256) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "feed2community" (
@@ -97,8 +97,8 @@ CREATE TABLE IF NOT EXISTS "feedpolicyuser" (
 
 CREATE TABLE IF NOT EXISTS "folder" (
     "folder_id" serial PRIMARY KEY,
-    "left_indice" bigint NOT NULL,
-    "right_indice" bigint NOT NULL,
+    "left_index" bigint NOT NULL,
+    "right_index" bigint NOT NULL,
     "parent_id" bigint DEFAULT 0::bigint NOT NULL,
     "name" character varying(256) NOT NULL,
     "description" text NOT NULL,
@@ -110,9 +110,9 @@ CREATE TABLE IF NOT EXISTS "folder" (
     "date_creation" timestamp without time zone
 );
 
-CREATE INDEX "folder_idx_left_indice" ON "folder" ("left_indice");
+CREATE INDEX "folder_idx_left_index" ON "folder" ("left_index");
 CREATE INDEX "folder_idx_parent_id" ON "folder" ("parent_id");
-CREATE INDEX "folder_idx_right_indice" ON "folder" ("right_indice");
+CREATE INDEX "folder_idx_right_index" ON "folder" ("right_index");
 
 CREATE TABLE IF NOT EXISTS "folderpolicygroup" (
     "id" serial PRIMARY KEY,

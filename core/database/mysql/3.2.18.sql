@@ -1,6 +1,6 @@
 -- MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- MySQL core database, version 3.2.17
+-- MySQL core database, version 3.2.18
 
 CREATE TABLE IF NOT EXISTS `activedownload` (
     `activedownload_id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `feed` (
     `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `user_id` bigint(20) NOT NULL,
     `type` tinyint(4) NOT NULL,
-    `ressource` varchar(255) NOT NULL,
+    `resource` varchar(255) NOT NULL,
     PRIMARY KEY (`feed_id`)
 ) DEFAULT CHARSET=utf8;
 
@@ -101,8 +101,8 @@ CREATE TABLE IF NOT EXISTS `feedpolicyuser` (
 
 CREATE TABLE IF NOT EXISTS `folder` (
     `folder_id` bigint(20) NOT NULL AUTO_INCREMENT,
-    `left_indice` bigint(20) NOT NULL,
-    `right_indice` bigint(20) NOT NULL,
+    `left_index` bigint(20) NOT NULL,
+    `right_index` bigint(20) NOT NULL,
     `parent_id` bigint(20) NOT NULL DEFAULT '0',
     `name` varchar(255) NOT NULL,
     `description` text NOT NULL,
@@ -114,8 +114,8 @@ CREATE TABLE IF NOT EXISTS `folder` (
     `date_creation` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
     PRIMARY KEY (`folder_id`),
     KEY (`parent_id`),
-    KEY (`left_indice`),
-    KEY (`right_indice`)
+    KEY (`left_index`),
+    KEY (`right_index`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `folderpolicygroup` (

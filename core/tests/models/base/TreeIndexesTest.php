@@ -19,10 +19,10 @@
 =========================================================================*/
 
 /**
- * This test is for ensuring the integrity of the left_indices and right_indices of
+ * This test is for ensuring the integrity of the left and right indexes of
  * our folder tree.
  */
-class Core_TreeIndicesTest extends DatabaseTestCase
+class Core_TreeIndexesTest extends DatabaseTestCase
 {
     /** init tests */
     public function setUp()
@@ -33,12 +33,12 @@ class Core_TreeIndicesTest extends DatabaseTestCase
         $this->_models = array('Bitstream', 'Folder', 'Item', 'ItemRevision', 'Progress');
         parent::setUp();
 
-        $this->setupDatabase(array('treeIndices'));
+        $this->setupDatabase(array('treeIndexes'));
     }
 
     /**
      * Make sure that calling remove orphans correctly removes our orphaned folders,
-     * and also recomputes the tree indices and puts the tree in a correct state.
+     * and also recomputes the tree indexes and puts the tree in a correct state.
      */
     public function testRemoveOrphansFolder()
     {
@@ -58,7 +58,7 @@ class Core_TreeIndicesTest extends DatabaseTestCase
         $this->assertEquals($orphan0, null);
         $this->assertEquals($orphan1, null);
 
-        // Verify the state of our tree indices
+        // Verify the state of our tree indexes
         $user1 = $this->Folder->load(1001);
         $user1_public = $this->Folder->load(1005);
         $user1_private = $this->Folder->load(1006);
@@ -206,7 +206,7 @@ class Core_TreeIndicesTest extends DatabaseTestCase
      */
     protected function _assertSpan($folder, $span)
     {
-        $this->assertEquals($folder->getRightIndice() - $folder->getLeftIndice(), $span);
+        $this->assertEquals($folder->getRightIndex() - $folder->getLeftIndex(), $span);
     }
 
     /**
@@ -215,12 +215,12 @@ class Core_TreeIndicesTest extends DatabaseTestCase
      */
     protected function _assertNoOverlap($folder1, $folder2)
     {
-        $this->assertTrue($folder1->getLeftIndice() != $folder2->getRightIndice());
-        $this->assertTrue($folder2->getLeftIndice() != $folder1->getRightIndice());
-        if ($folder1->getLeftIndice() > $folder2->getRightIndice()) {
-            $this->assertTrue($folder1->getRightIndice() > $folder2->getLeftIndice());
+        $this->assertTrue($folder1->getLeftIndex() != $folder2->getRightIndex());
+        $this->assertTrue($folder2->getLeftIndex() != $folder1->getRightIndex());
+        if ($folder1->getLeftIndex() > $folder2->getRightIndex()) {
+            $this->assertTrue($folder1->getRightIndex() > $folder2->getLeftIndex());
         } else {
-            $this->assertTrue($folder1->getRightIndice() < $folder2->getLeftIndice());
+            $this->assertTrue($folder1->getRightIndex() < $folder2->getLeftIndex());
         }
     }
 
@@ -229,7 +229,7 @@ class Core_TreeIndicesTest extends DatabaseTestCase
      */
     protected function _assertDescendant($ancestor, $descendant)
     {
-        $this->assertTrue($ancestor->getLeftIndice() < $descendant->getLeftIndice());
-        $this->assertTrue($ancestor->getRightIndice() > $descendant->getRightIndice());
+        $this->assertTrue($ancestor->getLeftIndex() < $descendant->getLeftIndex());
+        $this->assertTrue($ancestor->getRightIndex() > $descendant->getRightIndex());
     }
 }

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <!-- Setup a hierarchy of folders with completely whacked out indexes. Do not change this file,
+         the tests for it depend on these id's and structure.  -->
+    <folder folder_id="1001" name="user_1" description="" left_index="11" right_index="14" uuid='0' parent_id="-1"/>
+    <folder folder_id="1005" name="Public" description="" left_index="-5" right_index="2" uuid='00' parent_id="1001"/>
+    <folder folder_id="1006" name="Private" description="" left_index="-5" right_index="8" uuid='01'
+        parent_id="1001"/>
+    <folder folder_id="1014" name="sub0" description="" left_index="-5" right_index="8" uuid='010' parent_id="1006"/>
+    <folder folder_id="1015" name="sub0.0" description="" left_index="-5" right_index="8" uuid='0100'
+        parent_id="1014"/>
+    <folder folder_id="1016" name="sub0.1" description="" left_index="0" right_index="-8" uuid='0101'
+        parent_id="1014"/>
+    <folder folder_id="1020" name="sub1" description="" left_index="81" right_index="100" uuid="011"
+        parent_id="1006"/>
+    <folder folder_id="1013" name="TopLevel" description="" left_index="-5" right_index="8" uuid='02'
+        parent_id="1001"/>
+    <folder folder_id="1017" name="sub0" description="" left_index="15" right_index="8" uuid='01' parent_id="1013"/>
+    <folder folder_id="1002" name="user_2" description="" left_index="3" right_index="14" uuid='1' parent_id="-1"/>
+    <folder folder_id="1007" name="Public" description="" left_index="-5" right_index="2" uuid='10' parent_id="1002"/>
+    <folder folder_id="1008" name="Private" description="" left_index="-5" right_index="8" uuid='11'
+        parent_id="1002"/>
+    <folder folder_id="1003" name="community_1" description="" left_index="9" right_index="3" uuid='2'
+        parent_id="-2"/>
+    <folder folder_id="1009" name="Public" description="" left_index="-5" right_index="2" uuid='20' parent_id="1003"/>
+    <folder folder_id="1010" name="Private" description="" left_index="-5" right_index="8" uuid='21'
+        parent_id="1003"/>
+    <folder folder_id="1004" name="community_2" description="" left_index="-12" right_index="-100" uuid="3"
+        parent_id="-2"/>
+    <folder folder_id="1011" name="Public" description="" left_index="-5" right_index="2" uuid='20' parent_id="1004"/>
+    <folder folder_id="1018" name="sub0" description="" left_index="5" right_index="12" uuid='200' parent_id="1011"/>
+    <folder folder_id="1019" name="sub1" description="" left_index="0" right_index="9" uuid='201' parent_id="1011"/>
+    <folder folder_id="1012" name="Private" description="" left_index="-5" right_index="8" uuid='21'
+        parent_id="1004"/>
+
+    <!-- Orphaned folders -->
+    <folder folder_id="5000" name="orphaned1" description="" left_index="55" right_index="100" uuid="a"
+        parent_id="4999"/>
+    <folder folder_id="5001" name="orphaned2" description="" left_index="56" right_index="101" uuid="b"
+        parent_id="4998"/>
+
+    <!-- OK items -->
+    <item item_id="1001" name="notOrphan" description="" type="1"/>
+    <item2folder item_id="1001" folder_id="1001"/>
+
+    <!-- Orphaned items -->
+    <item item_id="2001" name="anOrphan" description="" type="1"/>
+    <item item_id="2002" name="anotherOrphan" description="" type="1"/>
+
+    <!-- OK item revisions -->
+    <itemrevision itemrevision_id="1001" item_id="1001" revision="1" date="1999-10-20 00:00:00" changes="none"
+        user_id="1"/>
+
+    <!-- Orphaned item revisions -->
+    <itemrevision itemrevision_id="2001" item_id="781283" revision="1" date="1999-10-20 00:00:00" changes="none"
+        user_id="1"/>
+    <itemrevision itemrevision_id="2002" item_id="72368" revision="2" date="1999-10-20 00:00:00" changes="none"
+        user_id="1"/>
+
+    <!-- OK bitstreams -->
+    <bitstream bitstream_id="1001" itemrevision_id="1001" name="test.txt" mimetype="text/plain" sizebytes="259"
+        checksum="1234" path="12/34/1234" assetstore_id="1" date="1999-10-20 00:00:00"/>
+    <bitstream bitstream_id="1002" itemrevision_id="-1" name="thumbnail.jpeg" mimetype="image/jpeg" sizebytes="2805"
+        checksum="abcd" path="ab/cd/abcd" assetstore_id="1" date="1999-10-20 00:00:00"/>
+
+    <!-- Orphaned bitstreams -->
+    <bitstream bitstream_id="2001" itemrevision_id="658318" name="test.txt" mimetype="text/plain" sizebytes="259"
+        checksum="1234" path="12/34/1234" assetstore_id="1" date="1999-10-20 00:00:00"/>
+</dataset>

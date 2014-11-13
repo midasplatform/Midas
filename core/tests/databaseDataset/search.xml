@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-    <folder folder_id="1" name="name Folder 1" description="Description Folder 1" left_indice="1" right_indice="2"
+    <folder folder_id="1" name="name Folder 1" description="Description Folder 1" left_index="1" right_index="2"
         uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72800' parent_id="-1"/>
     <folderpolicygroup folder_id="1" group_id="0" policy='0'/>
-    <folder folder_id="2" name="name Folder 2" description="Description Folder 2" left_indice="3" right_indice="4"
+    <folder folder_id="2" name="name Folder 2" description="Description Folder 2" left_index="3" right_index="4"
         uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72801' parent_id="-1"/>
-    <folder folder_id="3" name="name Folder 3" description="Description Folder 3" left_indice="5" right_indice="6"
+    <folder folder_id="3" name="name Folder 3" description="Description Folder 3" left_index="5" right_index="6"
         uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72802' parent_id="-1"/>
 
     <community community_id="2000" name="Community test User 1" description="Community test User 1"
@@ -13,22 +13,22 @@
         membergroup_id="3002" uuid='4e311fdf82107d245f0798d654fc24205f2621eb72777'/>
 
     <folder folder_id="1000" name="User 1 name Folder 1" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72760'
-        description="Description Folder 1" left_indice="1000" right_indice="1005" parent_id="-1"/>
+        description="Description Folder 1" left_index="1000" right_index="1005" parent_id="-1"/>
     <folderpolicyuser folder_id="1000" user_id="1" policy='2'/>
     <folder folder_id="1001" name="User 1 name Folder 2" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72761'
-        description="Description Folder 2" left_indice="1001" right_indice="1002" parent_id="1000"/>
+        description="Description Folder 2" left_index="1001" right_index="1002" parent_id="1000"/>
     <folderpolicyuser folder_id="1001" user_id="1" policy='2'/>
     <folder folder_id="1002" name="User 1 name Folder 3" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72762'
-        description="Description Folder 3" left_indice="1003" right_indice="1004" parent_id="1000"/>
+        description="Description Folder 3" left_index="1003" right_index="1004" parent_id="1000"/>
     <folderpolicyuser folder_id="1002" user_id="1" policy='2'/>
     <folder folder_id="1003" name="community_2000" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72763'
-        description="Description Folder 1" left_indice="1006" right_indice="10011" parent_id="-2"/>
+        description="Description Folder 1" left_index="1006" right_index="10011" parent_id="-2"/>
     <folder folder_id="1004" name="Community test User 1 name Folder 2"
-        uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72764' description="Description Folder 2" left_indice="1007"
-        right_indice="1008" parent_id="1003"/>
+        uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72764' description="Description Folder 2" left_index="1007"
+        right_index="1008" parent_id="1003"/>
     <folder folder_id="1005" name="Community test User 1 name Folder 3"
-        uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72765' description="Description Folder 3" left_indice="1009"
-        right_indice="1010" parent_id="1003"/>
+        uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72765' description="Description Folder 3" left_index="1009"
+        right_index="1010" parent_id="1003"/>
 
     <group group_id="3000" community_id="2000" name="Community test User 1 Admin"/>
     <group group_id="3001" community_id="2000" name="Community test User 1 Moderator"/>
