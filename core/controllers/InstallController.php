@@ -237,7 +237,6 @@ class InstallController extends AppController
         $form = $this->Form->Install->createConfigForm();
         $formArray = $this->getFormAsArray($form);
         $formArray['description']->setValue($config->global->application->description);
-        $formArray['environment']->setValue($config->global->environment);
         $formArray['lang']->setValue($config->global->application->lang);
         $formArray['name']->setValue($config->global->application->name);
         $formArray['timezone']->setValue($config->global->default->timezone);

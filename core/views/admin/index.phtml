@@ -59,7 +59,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.clu
                 {$this->configForm['name']}
               </div>
               <div qtip='Provide a description for search engines.' class='description'>
-                <label for='name'>Description</label>
+                <label for='description'>Description</label>
                 {$this->configForm['description']}
               </div>
               <div class='httpProxy'>
@@ -77,12 +77,8 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.clu
                 <label for='lang'>Language</label>
                 {$this->configForm['lang']}
               </div>
-              <div qtip='Development is slower, but will display debug information.<br/><br/>Production is faster, but hides the errors.<br/><br/>Do not select development for web-accessible instances under any circumstances.' class='installEnvironment'>
-                <label for='environment'>Environment</label>
-                {$this->configForm['environment']}
-              </div>
               <div class='installTimezone'>
-                <label for='environment'>Time zone</label>
+                <label for='timezone'>Time zone</label>
                 {$this->configForm['timezone']}
               </div>
               <div qtip='If you enable this feature, Midas will show the users how to use the system.' class='installDynamichelp'>
@@ -90,7 +86,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.clu
                 {$this->configForm['dynamichelp']}
               </div>
               <div qtip='If you enable this feature, user registration will not be allowed.' class='closeRegistration'>
-                <label for='closeRegistration'>Close registration</label>
+                <label for='closeregistration'>Close registration</label>
                 {$this->configForm['closeregistration']}
               </div>
               <div qtip='If enabled, users will automatically have an icon if they have created one on gravatar.com'>

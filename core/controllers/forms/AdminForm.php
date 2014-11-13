@@ -49,9 +49,6 @@ class AdminForm extends AppForm
             )
         );
 
-        $environment = new Zend_Form_Element_Select('environment');
-        $environment->addMultiOptions(array('production' => 'Production', 'development' => 'Development'));
-
         $name = new Zend_Form_Element_Text('name');
         $name->setRequired(true)->addValidator('NotEmpty', true);
 
@@ -70,7 +67,6 @@ class AdminForm extends AppForm
                 $dynamichelp,
                 $description,
                 $timezone,
-                $environment,
                 $gravatar,
                 $lang,
                 $name,

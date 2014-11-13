@@ -7,7 +7,6 @@ $(document).ready(function () {
     helpText['name'] = '<h4>Name</h4>Please select the name of your installation of MIDAS';
     helpText['description'] = '<h4>Description</h4>Provide a description for search engines.';
     helpText['lang'] = '<h4>Language</h4>Please select the default language. Currently, English and French are available.';
-    helpText['env'] = '<h4>Environment</h4>Development is slower, but it will show you all the information needed to debug the application<br/><br/>Production is faster, but it hides the errors.';
     helpText['time'] = '<h4>Timezone</h4>Please select the timezone of your server.';
     helpText['assetstore'] = '<h4>Default Assetstore</h4>Please select a default assetstore. An assestore is the location where the uploaded files are stored.';
 
@@ -23,11 +22,6 @@ $(document).ready(function () {
     });
     $('.installLang').hover(function () {
         $('.installHelp').html(helpText['lang']);
-    }, function () {
-        $('.installHelp').html(defaultTest);
-    });
-    $('.installEnvironment').hover(function () {
-        $('.installHelp').html(helpText['env']);
     }, function () {
         $('.installHelp').html(defaultTest);
     });
