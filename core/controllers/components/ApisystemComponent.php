@@ -392,7 +392,6 @@ class ApisystemComponent extends AppComponent
         $uploadComponent = MidasLoader::loadComponent('Httpupload');
         $apiSetup = $apihelperComponent->getApiSetup();
         $uploadComponent->setTestingMode($apiSetup['testing']);
-        $uploadComponent->setTmpDirectory($apiSetup['tmpDirectory']);
 
         return $uploadComponent->generateToken($args, $userDao->getKey().'/'.$item->getKey());
     }
@@ -462,7 +461,6 @@ class ApisystemComponent extends AppComponent
         $httpUploadComponent = MidasLoader::loadComponent('Httpupload');
         $apiSetup = $apihelperComponent->getApiSetup();
         $httpUploadComponent->setTestingMode($apiSetup['testing']);
-        $httpUploadComponent->setTmpDirectory($apiSetup['tmpDirectory']);
 
         if (array_key_exists('testingmode', $args)) {
             $httpUploadComponent->setTestingMode(true);
@@ -558,7 +556,6 @@ class ApisystemComponent extends AppComponent
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apiSetup = $apihelperComponent->getApiSetup();
         $uploadComponent->setTestingMode($apiSetup['testing']);
-        $uploadComponent->setTmpDirectory($apiSetup['tmpDirectory']);
 
         return $uploadComponent->getOffset($args);
     }

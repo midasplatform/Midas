@@ -243,12 +243,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
      */
     public function isDebug()
     {
-        $config = Zend_Registry::get('config');
-        if ($config->environment == 'production') {
-            return true;
-        } else {
-            return false;
-        }
+        return Zend_Registry::get('configGlobal')->environment !== 'production';
     }
 
     /**
@@ -258,9 +253,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
      */
     public function getEnvironment()
     {
-        $config = Zend_Registry::get('configGlobal');
-
-        return $config->environment;
+        return Zend_Registry::get('configGlobal')->environment;
     }
 
     /**

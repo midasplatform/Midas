@@ -156,8 +156,7 @@ foreach ($this->customTabs as $moduleName => $module) {
         <input type="submit" name='modifyPicture' value="<?php echo $this->t('Upload new avatar') ?>">
         <br/>
         <?php
-        $useGravatar = Zend_Registry::get('configGlobal')->gravatar;
-        if ($useGravatar) {
+        if ($this->useGravatar) {
             echo "<br/>";
             if (strpos($this->thumbnail, 'http://') === false && $this->isGravatar
             ) {

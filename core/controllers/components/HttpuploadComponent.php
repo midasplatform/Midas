@@ -34,15 +34,8 @@ define('MIDAS_HTTPUPLOAD_PARAM_UNDEFINED', -150);
  */
 class HttpuploadComponent extends AppComponent
 {
-    public $tmpDirectory = '';
     public $tokenParamName = 'uploadtoken';
     public $testingEnable = false;
-
-    /** Set the upload temporary directory */
-    public function setTmpDirectory($dir)
-    {
-        $this->tmpDirectory = $dir;
-    }
 
     /** Set whether we are in testing mode or not (boolean) */
     public function setTestingMode($testing)
@@ -68,7 +61,7 @@ class HttpuploadComponent extends AppComponent
             throw new Exception('Parameter filename is not defined', MIDAS_HTTPUPLOAD_FILENAME_PARAM_UNDEFINED);
         }
         $dir = $dirname == '' ? '' : '/'.$dirname;
-        $dir = $this->tmpDirectory.$dir;
+        $dir = UtilityComponent::getTempDirectory().$dir;
 
         if (!file_exists($dir)) {
             if (!mkdir($dir, 0700, true)) {
@@ -79,10 +72,10 @@ class HttpuploadComponent extends AppComponent
         if ($dirname != '') {
             $unique_identifier = $dirname.'/'.$unique_identifier;
         }
-        if (file_exists($this->tmpDirectory.'/'.$unique_identifier)) {
+        if (file_exists(UtilityComponent::getTempDirectory().'/'.$unique_identifier)) {
             throw new Exception('Failed to generate upload token', MIDAS_HTTPUPLOAD_UPLOAD_TOKEN_GENERATION_FAILED);
         }
-        touch($this->tmpDirectory.'/'.$unique_identifier);
+        touch(UtilityComponent::getTempDirectory().'/'.$unique_identifier);
 
         return array('token' => $unique_identifier);
     }
@@ -113,7 +106,7 @@ class HttpuploadComponent extends AppComponent
         }
 
         // check if the temporary file exists
-        $pathTemporaryFilename = $this->tmpDirectory.'/'.$uploadToken;
+        $pathTemporaryFilename = UtilityComponent::getTempDirectory().'/'.$uploadToken;
         if (!file_exists($pathTemporaryFilename)) {
             throw new Exception(
                 'Invalid upload token '.$pathTemporaryFilename, MIDAS_HTTPUPLOAD_INVALID_UPLOAD_TOKEN
@@ -192,7 +185,7 @@ class HttpuploadComponent extends AppComponent
             );
         }
         $uploadToken = $args[$this->tokenParamName];
-        $offset = UtilityComponent::fileSize($this->tmpDirectory.'/'.$uploadToken);
+        $offset = UtilityComponent::fileSize(UtilityComponent::getTempDirectory().'/'.$uploadToken);
 
         return array('offset' => $offset);
     }

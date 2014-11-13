@@ -62,11 +62,6 @@ class InternationalizationComponent extends AppComponent
      */
     public static function isDebug()
     {
-        $config = Zend_Registry::get('config');
-        if ($config->mode->debug == 1) {
-            return true;
-        } else {
-            return false;
-        }
+        return Zend_Registry::get('configGlobal')->environment !== 'production';
     }
 }

@@ -235,7 +235,6 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
             throw new Zend_Exception('User id does not match upload token user id');
         }
 
-        $this->Component->Httpupload->setTmpDirectory($this->getTempDirectory());
         $this->Component->Httpupload->setTokenParamName('uploadUniqueIdentifier');
         $offset = $this->Component->Httpupload->getOffset($params);
         echo '[OK]'.$offset['offset'];
@@ -286,7 +285,6 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
             return;
         }
 
-        $this->Component->Httpupload->setTmpDirectory($this->getTempDirectory());
         $dir = $this->userSession->Dao->getUserId().'/'.$parentId;
 
         try {
@@ -338,7 +336,6 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
         }
 
         $testingMode = Zend_Registry::get('configGlobal')->environment == 'testing';
-        $this->Component->Httpupload->setTmpDirectory($this->getTempDirectory());
         $this->Component->Httpupload->setTestingMode($testingMode);
         $this->Component->Httpupload->setTokenParamName('uploadUniqueIdentifier');
         $data = $this->Component->Httpupload->process($params);
@@ -436,7 +433,6 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
         }
 
         $testingMode = Zend_Registry::get('configGlobal')->environment == 'testing';
-        $this->Component->Httpupload->setTmpDirectory($this->getTempDirectory());
         $this->Component->Httpupload->setTestingMode($testingMode);
         $this->Component->Httpupload->setTokenParamName('uploadUniqueIdentifier');
         $data = $this->Component->Httpupload->process($params);

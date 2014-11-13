@@ -146,7 +146,7 @@ class MIDASModel
      * Initialize a DAO.
      *
      * @param string $name name of the DAO
-     * @param array $data array of values
+     * @param array|Zend_Db_Table_Row_Abstract $data array or table row of values
      * @param string $module
      * @returns false|MIDAS_GlobalDao
      * @throws Zend_Exception

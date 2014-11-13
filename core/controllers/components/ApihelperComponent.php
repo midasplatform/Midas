@@ -61,8 +61,7 @@ class ApihelperComponent extends AppComponent
     {
         $apiSetup = array();
         $apiSetup['testing'] = Zend_Registry::get('configGlobal')->environment == 'testing';
-        $utilityComponent = MidasLoader::loadComponent('Utility');
-        $apiSetup['tmpDirectory'] = $utilityComponent->getTempDirectory();
+        $apiSetup['tmpDirectory'] = UtilityComponent::getTempDirectory();
 
         return $apiSetup;
     }

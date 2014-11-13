@@ -986,6 +986,7 @@ class UserController extends AppController
         $this->Component->Sortdao->order = 'asc';
         usort($communities, array($this->Component->Sortdao, 'sortByName'));
 
+        $this->view->useGravatar = Zend_Registry::get('configGlobal')->gravatar;
         $this->view->isGravatar = $this->User->getGravatarUrl($userDao->getEmail());
 
         $this->view->communities = $communities;

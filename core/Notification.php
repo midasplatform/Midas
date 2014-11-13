@@ -41,7 +41,6 @@ class Notification extends MIDAS_Notification
     public function getDasboard()
     {
         $return = array();
-        $return['Config Folder Writable'] = array(is_writable(LOCAL_CONFIGS_PATH));
         $return['Data Folder Writable'] = array(is_writable(UtilityComponent::getDataDirectory()));
         // pass in empty string since we want to check the overall root temp directory
         $return['Temporary Folder Writable'] = array(is_writable(UtilityComponent::getTempDirectory('')));
