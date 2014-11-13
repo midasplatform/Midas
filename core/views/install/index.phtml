@@ -47,16 +47,12 @@
         }
     }
 
-    if ($this->writable === false) {
-        echo "<li><span style=\"color:red\"> Unable to write to the application folder: {$this->basePath}. Please check your web server permissions.</span></li>";
-    }
-
-    if ($this->writable && empty($this->phpextension_missing)) {
+    if (empty($this->phpextension_missing)) {
         echo "<li><span style=\"color:green\"> Your system is OK.</span></li>";
     }
     echo "</ul>";
 
-    if ($this->writable !== false) {
+    if (empty($this->phpextension_missing)) {
         echo "<form method='post' action=''>";
         echo "<input type='submit' name='submit' value='Go to next step'>";
         echo "</form>";

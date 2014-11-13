@@ -99,7 +99,6 @@ class InstallController extends AppController
             }
         }
 
-        $this->view->writable = is_writable(BASE_PATH);
         $this->view->basePath = BASE_PATH;
 
         if ($this->_request->isPost()) {
