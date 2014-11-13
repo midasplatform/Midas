@@ -35,10 +35,5 @@ define('BASE_PATH', realpath(dirname(__FILE__)));
 require_once BASE_PATH.'/vendor/autoload.php';
 require_once BASE_PATH.'/core/include.php';
 
-if (!is_writable(LOCAL_CONFIGS_PATH)) {
-    echo '<p>To use Midas Platform, the folder "'.LOCAL_CONFIGS_PATH.'" must be writable by your web server.</p>';
-    exit();
-}
-
 $application = new Zend_Application('global', CORE_CONFIG);
 $application->bootstrap()->run();
