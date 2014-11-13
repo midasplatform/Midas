@@ -1,0 +1,10 @@
+# MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
+<IfModule authz_core_module>
+    Require all denied
+</IfModule>
+
+<IfModule !authz_core_module>
+    Order deny,allow
+    Deny from all
+</IfModule>
