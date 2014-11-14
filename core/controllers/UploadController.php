@@ -23,7 +23,7 @@ class UploadController extends AppController
 {
     public $_components = array('Upload');
     public $_forms = array('Upload');
-    public $_models = array('Assetstore', 'Folder', 'Folderpolicygroup', 'Folderpolicyuser', 'Item', 'License');
+    public $_models = array('Assetstore', 'Folder', 'Folderpolicygroup', 'Folderpolicyuser', 'Item', 'License', 'Setting');
 
     /** Init controller */
     public function init()
@@ -48,9 +48,7 @@ class UploadController extends AppController
             } else {
                 $assetstoreDao = $assetstores[0];
             }
-            $config = Zend_Registry::get('configGlobal');
-            $config->defaultassetstore->id = $assetstoreDao->getKey();
-            Zend_Registry::set('configGlobal', $config);
+            $this->Setting->setConfig('default_assetstore', $assetstoreDao->getKey());
         }
     }
 

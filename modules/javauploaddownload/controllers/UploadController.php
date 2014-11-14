@@ -22,7 +22,7 @@
 class Javauploaddownload_UploadController extends Javauploaddownload_AppController
 {
     public $_components = array('Httpupload', 'Upload');
-    public $_models = array('Assetstore', 'Folder', 'Item', 'License');
+    public $_models = array('Assetstore', 'Folder', 'Item', 'License', 'Setting');
 
     private function _is_https()
     {
@@ -45,10 +45,7 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
             } else {
                 $assetstoreDao = $assetstores[0];
             }
-
-            $config = Zend_Registry::get('configGlobal');
-            $config->defaultassetstore->id = $assetstoreDao->getKey();
-            Zend_Registry::set('configGlobal', $config);
+            $this->Setting->setConfig('default_assetstore', $assetstoreDao->getKey());
         }
     }
 

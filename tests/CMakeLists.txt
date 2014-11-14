@@ -17,6 +17,13 @@
 # limitations under the License.
 #=============================================================================
 
+if(MIDAS_RUN_TESTS_WITH_COVERAGE)
+    if(EXISTS ${CMAKE_BINARY_DIR}/cov)
+        file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/cov)
+    endif()
+    file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/cov)
+endif()
+
 macro(to_titlecase Arg Result)
     string(SUBSTRING ${Arg} 0 1 ArgHead)
     string(TOUPPER ${ArgHead} ArgHead)
@@ -32,9 +39,10 @@ endfunction()
 
 function(add_midas_mysql_test TestName TestFile)
     if(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/mysql.ini)
+        set(TestParams --debug --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php)
         add_test(
             MySQL${TestName}
-            ${PHP} ${CMAKE_SOURCE_DIR}/tests/PHPUnitMySQL.php --debug --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
+            ${PHP} ${CMAKE_SOURCE_DIR}/tests/PHPUnitMySQL.php ${TestParams} ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
         )
         set_tests_properties(
             MySQL${TestName} PROPERTIES
@@ -46,9 +54,10 @@ endfunction()
 
 function(add_midas_pgsql_test TestName TestFile)
     if(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/pgsql.ini)
+        set(TestParams --debug --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php)
         add_test(
             PgSQL${TestName}
-            ${PHP} ${CMAKE_SOURCE_DIR}/tests/PHPUnitPgSQL.php --debug --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
+            ${PHP} ${CMAKE_SOURCE_DIR}/tests/PHPUnitPgSQL.php ${TestParams} ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
         )
         set_tests_properties(
             PgSQL${TestName} PROPERTIES
@@ -60,9 +69,10 @@ endfunction()
 
 function(add_midas_sqlite_test TestName TestFile)
     if(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/sqlite.ini)
+        set(TestParams --debug --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php)
         add_test(
             SQLite${TestName}
-            ${PHP} ${CMAKE_SOURCE_DIR}/tests/PHPUnitSQLite.php --debug --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
+            ${PHP} ${CMAKE_SOURCE_DIR}/tests/PHPUnitSQLite.php ${TestParams} ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
         )
         set_tests_properties(
             SQLite${TestName} PROPERTIES

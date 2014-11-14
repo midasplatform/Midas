@@ -213,8 +213,11 @@ class UtilityComponent extends AppComponent
     public static function md5file($filename)
     {
         // If we have md5 sum
-        if (Zend_Registry::get('configGlobal')->md5sum->path) {
-            $result = exec(Zend_Registry::get('configGlobal')->md5sum->path.' '.$filename);
+        $settingModel = MidasLoader::loadModel('Setting');
+        $md5sumCommand = $settingModel->getValueByName('md5sum_command');
+
+        if (!empty($md5sumCommand)) {
+            $result = exec($md5sumCommand.' '.$filename);
             $resultarray = explode(' ', $result);
 
             return $resultarray[0];
