@@ -65,10 +65,9 @@ class Cleanup_PerformCleanupTest extends ControllerTestCase
         $jobs = $jobModel->getJobsByTask('TASK_CLEANUP_PERFORM_CLEANUP');
         $this->assertTrue(empty($jobs));
 
-        $this->request->setMethod('POST');
-        $this->params['olderThan'] = '5'; // 5 day limit on keeping files
-        $this->params['submitConfig'] = 'true';
-        $this->dispatchUrI('/cleanup/config/index', $userDao);
+        /** @var $adminComponent Cleanup_AdminComponent */
+        $adminComponent = MidasLoader::loadComponent('Admin', 'cleanup');
+        $adminComponent->schedulePerformCleanupJob(5, $tempDir, $userDao); // 5 day limit on keeping files
 
         // Assert that the task is now scheduled
         $jobs = $jobModel->getJobsByTask('TASK_CLEANUP_PERFORM_CLEANUP');
