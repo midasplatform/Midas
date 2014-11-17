@@ -18,20 +18,12 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Text DAO for the landingpage module.
- *
- * @method int getLandingpageId()
- * @method void setLandingpageId(int $landingpageId)
- * @method string getText()
- * @method void setText(string $text)
- * @package Modules\Landingpage\DAO
- */
-class Landingpage_TextDao extends AppDao
-{
-    /** @var string */
-    public $_model = 'Text';
+$this->declareVars('form', 'pageTitle');
+$this->headTitle($this->escape($this->pageTitle));
+?>
 
-    /** @var string */
-    public $_module = 'landingpage';
-}
+<div class="viewMain">
+    <h1><?php echo $this->escape($this->pageTitle); ?></h1>
+    <?php echo $this->form; ?>
+    <p><a href="<?php echo $this->url(array('controller' => 'admin', 'action' => 'index'), 'default'); ?>#tabs-modules">&laquo; Back to Modules Administration</a></p>
+</div>

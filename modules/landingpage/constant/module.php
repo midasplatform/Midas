@@ -18,20 +18,5 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Text DAO for the landingpage module.
- *
- * @method int getLandingpageId()
- * @method void setLandingpageId(int $landingpageId)
- * @method string getText()
- * @method void setText(string $text)
- * @package Modules\Landingpage\DAO
- */
-class Landingpage_TextDao extends AppDao
-{
-    /** @var string */
-    public $_model = 'Text';
-
-    /** @var string */
-    public $_module = 'landingpage';
-}
+define('LANDINGPAGE_TEXT_KEY', 'text');
+define('LANDINGPAGE_TEXT_DEFAULT_VALUE', 'Welcome to __Midas Platform__.');

@@ -18,26 +18,31 @@
  limitations under the License.
 =========================================================================*/
 
-/** Landingpage module config form */
-class Landingpage_ConfigForm extends AppForm
+/** Admin form for the landingpage module. */
+class Landingpage_Form_Admin extends Zend_Form
 {
-    /** main config form */
-    public function createForm()
+    /** Initialize this form. */
+    public function init()
     {
-        $form = new Zend_Form();
+        $this->setName('landingpage_admin');
+        $this->setMethod('POST');
 
-        $form->setAction("")->setMethod('post');
+        $csrf = new Midas_Form_Element_Hash('csrf');
+        $csrf->setSalt('kUjBumZdEykrY8JHB88uzZjv');
+        $csrf->setDecorators(array('ViewHelper'));
 
-        $name = new Zend_Form_Element_Textarea('text');
-        $name->setRequired(true)->setAttrib('cols', '120')->setAttrib('rows', '100')->setValue(
-            'Add some text or _Markdown_ here'
-        );
+        $text = new Zend_Form_Element_Textarea(LANDINGPAGE_TEXT_KEY);
+        $text->setLabel('Landing Page Text');
+        $text->setRequired(true);
+        $text->addValidator('NotEmpty', true);
+        $text->setAttrib('cols', '120');
+        $text->setAttrib('rows', '100');
 
-        $submit = new  Zend_Form_Element_Submit('submit');
-        $submit->setLabel('Edit');
+        $this->addDisplayGroup(array($text), 'global');
 
-        $form->addElements(array($name, $submit));
+        $submit = new Zend_Form_Element_Submit('submit');
+        $submit->setLabel('Save');
 
-        return $form;
+        $this->addElements(array($csrf, $text, $submit));
     }
 }

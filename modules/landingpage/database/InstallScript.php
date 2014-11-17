@@ -18,20 +18,19 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Text DAO for the landingpage module.
- *
- * @method int getLandingpageId()
- * @method void setLandingpageId(int $landingpageId)
- * @method string getText()
- * @method void setText(string $text)
- * @package Modules\Landingpage\DAO
- */
-class Landingpage_TextDao extends AppDao
+require_once BASE_PATH.'/modules/landingpage/constant/module.php';
+
+/** Install the landingpage module. */
+class Landingpage_InstallScript extends MIDASModuleInstallScript
 {
     /** @var string */
-    public $_model = 'Text';
+    public $moduleName = 'landingpage';
 
-    /** @var string */
-    public $_module = 'landingpage';
+    /** Post database install. */
+    public function postInstall()
+    {
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $settingModel->setConfig(LANDINGPAGE_TEXT_KEY, LANDINGPAGE_TEXT_DEFAULT_VALUE, $this->moduleName);
+    }
 }
