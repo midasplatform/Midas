@@ -18,8 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
-/** Upgrade the thumbnailcreator module to version 1.0.3. */
-class Thumbnailcreator_Upgrade_1_0_3 extends MIDASUpgrade
+/** Upgrade the thumbnailcreator module to version 1.1.0. */
+class Thumbnailcreator_Upgrade_1_1_0 extends MIDASUpgrade
 {
     /** @var string */
     public $moduleName = 'thumbnailcreator';
@@ -29,23 +29,15 @@ class Thumbnailcreator_Upgrade_1_0_3 extends MIDASUpgrade
     {
         /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
-        $settingModel->setConfig('provider', 'phmagick', $this->moduleName);
-        $settingModel->setConfig('format', 'jpg', $this->moduleName);
-
         $configPath = LOCAL_CONFIGS_PATH.DIRECTORY_SEPARATOR.$this->moduleName.'.local.ini';
 
         if (file_exists($configPath)) {
             $config = new Zend_Config_Ini($configPath, 'global');
-
-            if ($config->get('imagemagick')) {
-                $settingModel->setConfig('image_magick', $config->get('imagemagick'), $this->moduleName);
-            }
-
-            $settingModel->setConfig('use_thumbnailer', $config->get('useThumbnailer', 0), $this->moduleName);
-
-            if ($config->get('thumbnailer')) {
-                $settingModel->setConfig('thumbnailer', $config->get('thumbnailer'), $this->moduleName);
-            }
+            $settingModel->setConfig(MIDAS_THUMBNAILCREATOR_PROVIDER_KEY, MIDAS_THUMBNAILCREATOR_PROVIDER_PHMAGICK, $this->moduleName);
+            $settingModel->setConfig(MIDAS_THUMBNAILCREATOR_FORMAT_KEY, MIDAS_THUMBNAILCREATOR_FORMAT_JPG, $this->moduleName);
+            $settingModel->setConfig(MIDAS_THUMBNAILCREATOR_IMAGE_MAGICK_KEY, $config->get('imagemagick', MIDAS_THUMBNAILCREATOR_IMAGE_MAGICK_DEFAULT_VALUE), $this->moduleName);
+            $settingModel->setConfig(MIDAS_THUMBNAILCREATOR_USE_THUMBNAILER_KEY, $config->get('useThumbnailer', MIDAS_THUMBNAILCREATOR_USE_THUMBNAILER_DEFAULT_VALUE), $this->moduleName);
+            $settingModel->setConfig(MIDAS_THUMBNAILCREATOR_THUMBNAILER_KEY, $config->get('thumbnailer', MIDAS_THUMBNAILCREATOR_THUMBNAILER_DEFAULT_VALUE), $this->moduleName);
 
             $config = new Zend_Config_Ini($configPath, null, true);
             unset($config->global->imageFormats);
@@ -58,7 +50,11 @@ class Thumbnailcreator_Upgrade_1_0_3 extends MIDASUpgrade
             $writer->setFilename($configPath);
             $writer->write();
         } else {
-            $settingModel->setConfig('use_thumbnailer', 0, $this->moduleName);
+            $settingModel->setConfig(MIDAS_THUMBNAILCREATOR_PROVIDER_KEY, MIDAS_THUMBNAILCREATOR_PROVIDER_DEFAULT_VALUE, $this->moduleName);
+            $settingModel->setConfig(MIDAS_THUMBNAILCREATOR_FORMAT_KEY, MIDAS_THUMBNAILCREATOR_FORMAT_DEFAULT_VALUE, $this->moduleName);
+            $settingModel->setConfig(MIDAS_THUMBNAILCREATOR_IMAGE_MAGICK_KEY, MIDAS_THUMBNAILCREATOR_IMAGE_MAGICK_DEFAULT_VALUE, $this->moduleName);
+            $settingModel->setConfig(MIDAS_THUMBNAILCREATOR_USE_THUMBNAILER_KEY, MIDAS_THUMBNAILCREATOR_USE_THUMBNAILER_DEFAULT_VALUE, $this->moduleName);
+            $settingModel->setConfig(MIDAS_THUMBNAILCREATOR_THUMBNAILER_KEY, MIDAS_THUMBNAILCREATOR_THUMBNAILER_DEFAULT_VALUE, $this->moduleName);
         }
     }
 }

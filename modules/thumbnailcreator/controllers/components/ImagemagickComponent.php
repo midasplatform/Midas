@@ -87,8 +87,8 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
     {
         /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
-        $provider = $settingModel->getValueByName('provider', $this->moduleName);
-        $useThumbnailer = $settingModel->getValueByName('use_thumbnailer', $this->moduleName);
+        $provider = $settingModel->getValueByName(MIDAS_THUMBNAILCREATOR_PROVIDER_KEY, $this->moduleName);
+        $useThumbnailer = $settingModel->getValueByName(MIDAS_THUMBNAILCREATOR_USE_THUMBNAILER_KEY, $this->moduleName);
         $preprocessedFormats = array('mha', 'nrrd');
         $ext = strtolower(substr(strrchr($name, '.'), 1));
 
@@ -103,10 +103,10 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
 
         // create destination
         $tmpPath = UtilityComponent::getTempDirectory('thumbnailcreator');
-        $format = $settingModel->getValueByName('format', $this->moduleName);
+        $format = $settingModel->getValueByName(MIDAS_THUMBNAILCREATOR_FORMAT_KEY, $this->moduleName);
 
         if ($format === 'jpeg') {
-            $format = 'jpg';
+            $format = MIDAS_THUMBNAILCREATOR_FORMAT_JPG;
         }
 
         $destination = $tmpPath.'/'.mt_rand(1, 10000).'.'.$format;
@@ -118,7 +118,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
         $pathThumbnail = $destination;
 
         if ($provider === 'phmagick') {
-            $imageMagickPath = $settingModel->getValueByName('image_magick', $this->moduleName);
+            $imageMagickPath = $settingModel->getValueByName(MIDAS_THUMBNAILCREATOR_IMAGE_MAGICK_KEY, $this->moduleName);
 
             switch ($ext) {
                 case 'pdf':
@@ -167,7 +167,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
             if (isset($preprocessedJpeg) && file_exists($preprocessedJpeg)) {
                 unlink($preprocessedJpeg);
             }
-        } elseif ($provider === 'gd' || $provider === 'imagick') {
+        } elseif ($provider === MIDAS_THUMBNAILCREATOR_PROVIDER_GD || $provider === MIDAS_THUMBNAILCREATOR_PROVIDER_IMAGICK) {
             try {
                 $manager = new \Intervention\Image\ImageManager(array('driver' => $provider));
                 $image = $manager->make($fullPath);
@@ -212,15 +212,15 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
 
         $copyDestination = $tmpPath.'/'.$name;
         copy($fullPath, $copyDestination);
-        $jpegDestination = $tmpPath.'/'.$name.'.jpeg';
+        $jpegDestination = $tmpPath.'/'.$name.'.jpg';
 
         while (file_exists($jpegDestination)) {
-            $jpegDestination = $tmpPath.'/'.$name.mt_rand(1, 10000).'.jpeg';
+            $jpegDestination = $tmpPath.'/'.$name.mt_rand(1, 10000).'.jpg';
         }
 
         /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
-        $thumbnailerPath = $settingModel->getValueByName('thumbnailcreator', $this->moduleName);
+        $thumbnailerPath = $settingModel->getValueByName(MIDAS_THUMBNAILCREATOR_THUMBNAILER_KEY, $this->moduleName);
         $thumbnailerParams = array($copyDestination, $jpegDestination);
         $thumbnailerCmd = KWUtils::prepareExeccommand($thumbnailerPath, $thumbnailerParams);
 
@@ -253,9 +253,9 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
     {
         /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
-        $provider = $settingModel->getValueByName('provider', $this->moduleName);
+        $provider = $settingModel->getValueByName(MIDAS_THUMBNAILCREATOR_PROVIDER_KEY, $this->moduleName);
 
-        if ($provider === 'gd') {
+        if ($provider === MIDAS_THUMBNAILCREATOR_PROVIDER_GD) {
             if (extension_loaded('gd')) {
                 return array(true, 'GD PHP extension is loaded');
             }
@@ -263,7 +263,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
             return array(false, 'GD PHP extension is not loaded');
         }
 
-        if ($provider === 'imagick') {
+        if ($provider === MIDAS_THUMBNAILCREATOR_PROVIDER_IMAGICK) {
             if (extension_loaded('imagick')) {
                 return array(true, 'ImageMagick PHP extension is loaded');
             }
@@ -271,8 +271,8 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
             return array(false, 'ImageMagick PHP extension is not loaded');
         }
 
-        if ($provider === 'phmagick') {
-            $imageMagickPath = $settingModel->getValueByName('image_magick', $this->moduleName);
+        if ($provider === MIDAS_THUMBNAILCREATOR_PROVIDER_PHMAGICK) {
+            $imageMagickPath = $settingModel->getValueByName(MIDAS_THUMBNAILCREATOR_IMAGE_MAGICK_KEY, $this->moduleName);
 
             if (empty($imageMagickPath)) {
                 return array(false, 'No ImageMagick path has been set');

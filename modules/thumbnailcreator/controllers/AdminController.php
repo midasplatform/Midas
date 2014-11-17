@@ -39,7 +39,9 @@ class Thumbnailcreator_AdminController extends Thumbnailcreator_AppController
                 $values = $form->getValues();
 
                 foreach ($values as $key => $value) {
-                    $this->Setting->setConfig($key, $value, $this->moduleName);
+                    if ($value !== null) {
+                        $this->Setting->setConfig($key, $value, $this->moduleName);
+                    }
                 }
             }
 
@@ -50,7 +52,7 @@ class Thumbnailcreator_AdminController extends Thumbnailcreator_AppController
             foreach ($elements as $element) {
                 $name = $element->getName();
 
-                if ($name !== 'submit') {
+                if ($name !== 'csrf' && $name !== 'submit') {
                     $value = $this->Setting->getValueByName($name, $this->moduleName);
 
                     if (!is_null($value)) {
@@ -61,5 +63,6 @@ class Thumbnailcreator_AdminController extends Thumbnailcreator_AppController
         }
 
         $this->view->form = $form;
+        session_start();
     }
 }

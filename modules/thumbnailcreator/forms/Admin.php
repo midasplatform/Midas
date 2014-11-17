@@ -24,47 +24,51 @@ class Thumbnailcreator_Form_Admin extends Zend_Form
     /** Initialize this form. */
     public function init()
     {
-        $this->setName('thumbnailcreator_config');
+        $this->setName('thumbnailcreator_admin');
         $this->setMethod('POST');
 
-        $provider = new Zend_Form_Element_Select('provider');
+        $csrf = new Midas_Form_Element_Hash('csrf');
+        $csrf->setSalt('tKHLsBvnbLVYaWJNhrrafrBz');
+        $csrf->setDecorators(array('ViewHelper'));
+
+        $provider = new Zend_Form_Element_Select(MIDAS_THUMBNAILCREATOR_PROVIDER_KEY);
         $provider->setLabel('Provider');
-        $provider->addMultiOption('none', 'None');
         $provider->setRequired(true);
         $provider->addValidator('NotEmpty', true);
+        $provider->addMultiOption(MIDAS_THUMBNAILCREATOR_PROVIDER_NONE, 'None');
 
         if (extension_loaded('gd')) {
-            $provider->addMultiOption('gd', 'GD PHP Extension');
+            $provider->addMultiOption(MIDAS_THUMBNAILCREATOR_PROVIDER_GD, 'GD PHP Extension');
         }
 
         if (extension_loaded('imagick')) {
-            $provider->addMultiOption('imagick', 'ImageMagick PHP Extension');
+            $provider->addMultiOption(MIDAS_THUMBNAILCREATOR_PROVIDER_IMAGICK, 'ImageMagick PHP Extension');
         }
 
-        $isAppEngine = class_exists('\google\appengine\api\app_identity\AppIdentityService', false);
+        $provider->addMultiOption(MIDAS_THUMBNAILCREATOR_PROVIDER_PHMAGICK, 'ImageMagick Program');
 
-        if (!$isAppEngine) {
-            $provider->addMultiOption('phmagick', 'ImageMagick Program');
-        }
-
-        $format = new Zend_Form_Element_Select('format');
+        $format = new Zend_Form_Element_Select(MIDAS_THUMBNAILCREATOR_FORMAT_KEY);
         $format->setLabel('Format');
-        $format->addMultiOption('gif', 'GIF');
-        $format->addMultiOption('jpg', 'JPEG');
-        $format->addMultiOption('png', 'PNG');
         $format->setRequired(true);
         $format->addValidator('NotEmpty', true);
+        $format->addMultiOptions(
+            array(
+                MIDAS_THUMBNAILCREATOR_FORMAT_GIF => 'GIF',
+                MIDAS_THUMBNAILCREATOR_FORMAT_JPG => 'JPEG',
+                MIDAS_THUMBNAILCREATOR_FORMAT_PNG => 'PNG',
+            )
+        );
 
         $this->addDisplayGroup(array($provider, $format), 'global');
 
-        $imageMagick = new Zend_Form_Element_Text('image_magick');
+        $imageMagick = new Zend_Form_Element_Text(MIDAS_THUMBNAILCREATOR_IMAGE_MAGICK_KEY);
         $imageMagick->setLabel('ImageMagick program location (path)');
         $imageMagick->addValidator('NotEmpty', true);
 
-        $useThumbnailer = new Zend_Form_Element_Checkbox('use_thumbnailer');
+        $useThumbnailer = new Zend_Form_Element_Checkbox(MIDAS_THUMBNAILCREATOR_USE_THUMBNAILER_KEY);
         $useThumbnailer->setLabel('Have thumbnailer and want to use it to support more image formats');
 
-        $thumbnailer = new Zend_Form_Element_Text('thumbnailer');
+        $thumbnailer = new Zend_Form_Element_Text(MIDAS_THUMBNAILCREATOR_THUMBNAILER_KEY);
         $thumbnailer->setLabel('Thumbnailer program location (path)');
         $thumbnailer->addValidator('NotEmpty', true);
 
@@ -73,10 +77,6 @@ class Thumbnailcreator_Form_Admin extends Zend_Form
         $submit = new Zend_Form_Element_Submit('submit');
         $submit->setLabel('Save');
 
-        if ($isAppEngine) {
-            $this->addElements(array($provider, $format, $submit));
-        } else {
-            $this->addElements(array($provider, $format, $imageMagick, $useThumbnailer, $thumbnailer, $submit));
-        }
+        $this->addElements(array($csrf, $provider, $format, $imageMagick, $useThumbnailer, $thumbnailer, $submit));
     }
 }
