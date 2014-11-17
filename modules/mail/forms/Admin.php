@@ -24,64 +24,65 @@ class Mail_Form_Admin extends Zend_Form
     /** Initialize this form. */
     public function init()
     {
-        $this->setName('mail_config');
+        $this->setName('mail_admin');
         $this->setMethod('POST');
 
-        $provider = new Zend_Form_Element_Select('provider');
+        $csrf = new Midas_Form_Element_Hash('csrf');
+        $csrf->setSalt('5qzSHzCdNuPfYaT99Jq5WcKe');
+        $csrf->setDecorators(array('ViewHelper'));
+
+        $provider = new Zend_Form_Element_Select(MAIL_PROVIDER_KEY);
         $provider->setLabel('Provider');
         $provider->setRequired(true);
         $provider->addValidator('NotEmpty', true);
-
-        if (class_exists('\google\appengine\api\mail\Message', false)) {
-            $provider->addMultiOption('app_engine', 'Google App Engine');
-        }
-
         $provider->addMultiOptions(array(
-            'mail' => 'PHP Mail Function',
-            'send_grid' => 'SendGrid Service',
-            'smtp' => 'External SMTP Server',
+            MAIL_PROVIDER_APP_ENGINE => 'Google App Engine',
+            MAIL_PROVIDER_MAIL => 'PHP Mail Function',
+            MAIL_PROVIDER_SEND_GRID => 'SendGrid Service',
+            MAIL_PROVIDER_SMTP => 'External SMTP Server',
         ));
 
-        $fromAddress = new Zend_Form_Element_Text('from_address');
+        $fromAddress = new Zend_Form_Element_Text(MAIL_FROM_ADDRESS_KEY);
         $fromAddress->setLabel('From email address');
         $fromAddress->setRequired(true);
         $fromAddress->addValidator('NotEmpty', true);
         $fromAddress->addValidator('EmailAddress', true);
 
-        $addressVerification = new Zend_Form_Element_Checkbox('address_verification');
+        $addressVerification = new Zend_Form_Element_Checkbox(MAIL_ADDRESS_VERIFICATION_KEY);
         $addressVerification->setLabel('Require email address verification');
 
         $this->addDisplayGroup(array($provider, $fromAddress, $addressVerification), 'global');
 
-        $sendGridUsername = new Zend_Form_Element_Text('send_grid_username');
+        $sendGridUsername = new Zend_Form_Element_Text(MAIL_SEND_GRID_USERNAME_KEY);
         $sendGridUsername->setLabel('SendGrid User Name');
         $sendGridUsername->addValidator('NotEmpty', true);
 
-        $sendGridPassword = new Zend_Form_Element_Text('send_grid_password');
+        $sendGridPassword = new Zend_Form_Element_Text(MAIL_SEND_GRID_PASSWORD_KEY);
         $sendGridPassword->setLabel('SendGrid Password');
         $sendGridPassword->addValidator('NotEmpty', true);
 
         $this->addDisplayGroup(array($sendGridUsername, $sendGridPassword), 'send_grid');
 
-        $smtpHost = new Zend_Form_Element_Text('smtp_host');
+        $smtpHost = new Zend_Form_Element_Text(MAIL_SMTP_HOST_KEY);
         $smtpHost->setLabel('Server name');
         $smtpHost->addValidator('NotEmpty', true);
         $smtpHost->addValidator('Hostname', true);
 
-        $smtpPort = new Zend_Form_Element_Text('smtp_port');
+        $smtpPort = new Zend_Form_Element_Text(MAIL_SMTP_PORT_KEY);
         $smtpPort->setLabel('Port');
         $smtpPort->addValidator('NotEmpty', true);
         $smtpPort->addValidator('Digits', true);
-        $smtpPort->addValidator('Between', array('min' => 1, 'max' => 65535));
+        $smtpPort->addValidator('Between', true, array('min' => 1, 'max' => 65535));
+        $smtpPort->setAttrib('maxlength', 5);
 
-        $smtpUseSsl = new Zend_Form_Element_Checkbox('smtp_use_ssl');
+        $smtpUseSsl = new Zend_Form_Element_Checkbox(MAIL_SMTP_USE_SSL_KEY);
         $smtpUseSsl->setLabel('Use SSL');
 
-        $smtpUsername = new Zend_Form_Element_Text('smtp_username');
+        $smtpUsername = new Zend_Form_Element_Text(MAIL_SMTP_USERNAME_KEY);
         $smtpUsername->setLabel('User name');
         $smtpUsername->addValidator('NotEmpty', true);
 
-        $smtpPassword = new Zend_Form_Element_Text('smtp_password');
+        $smtpPassword = new Zend_Form_Element_Password(MAIL_SMTP_PASSWORD_KEY);
         $smtpPassword->setLabel('Password');
         $smtpPassword->addValidator('NotEmpty', true);
 
@@ -90,6 +91,6 @@ class Mail_Form_Admin extends Zend_Form
         $submit = new Zend_Form_Element_Submit('submit');
         $submit->setLabel('Save');
 
-        $this->addElements(array($provider, $fromAddress, $addressVerification, $smtpHost, $smtpPort, $smtpUseSsl, $smtpUsername, $smtpPassword, $submit));
+        $this->addElements(array($csrf, $provider, $fromAddress, $addressVerification, $smtpHost, $smtpPort, $smtpUseSsl, $smtpUsername, $smtpPassword, $submit));
     }
 }

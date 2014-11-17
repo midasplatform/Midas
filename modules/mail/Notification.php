@@ -41,22 +41,22 @@ class Mail_Notification extends MIDAS_Notification
      */
     protected function handleSendMailMessage($params)
     {
-        $provider = $this->Setting->getValueByName('provider', $this->moduleName);
+        $provider = $this->Setting->getValueByName(MAIL_PROVIDER_KEY, $this->moduleName);
 
-        if ($provider === 'app_engine') {
+        if ($provider === MAIL_PROVIDER_APP_ENGINE) {
             $service = new Midas_Service_AppEngine_Mail();
             $transport = new Midas_Mail_Transport_Service($service);
-        } elseif ($provider === 'send_grid') {
-            $username = $this->Setting->getValueByName('send_grid_username', $this->moduleName);
-            $password = $this->Setting->getValueByName('send_grid_password', $this->moduleName);
+        } elseif ($provider === MAIL_PROVIDER_SEND_GRID) {
+            $username = $this->Setting->getValueByName(MAIL_SEND_GRID_USERNAME_KEY, $this->moduleName);
+            $password = $this->Setting->getValueByName(MAIL_SEND_GRID_PASSWORD_KEY, $this->moduleName);
             $service = new Midas_Service_SendGrid_Mail($username, $password);
             $transport = new Midas_Mail_Transport_Service($service);
-        } elseif ($provider = 'smtp') {
-            $host = $this->Setting->getValueByName('smtp_host', $this->moduleName);
-            $port = $this->Setting->getValueByName('smtp_port', $this->moduleName);
-            $ssl = $this->Setting->getValueByName('smtp_use_ssl', $this->moduleName);
-            $username = $this->Setting->getValueByName('smtp_username', $this->moduleName);
-            $password = $this->Setting->getValueByName('smtp_password', $this->moduleName);
+        } elseif ($provider === MAIL_PROVIDER_SMTP) {
+            $host = $this->Setting->getValueByName(MAIL_SMTP_HOST_KEY, $this->moduleName);
+            $port = $this->Setting->getValueByName(MAIL_SMTP_PORT_KEY, $this->moduleName);
+            $ssl = $this->Setting->getValueByName(MAIL_SMTP_USE_SSL_KEY, $this->moduleName);
+            $username = $this->Setting->getValueByName(MAIL_SMTP_USERNAME_KEY, $this->moduleName);
+            $password = $this->Setting->getValueByName(MAIL_SMTP_PASSWORD_KEY, $this->moduleName);
             $config = array();
 
             if (!empty($port)) {
@@ -80,7 +80,7 @@ class Mail_Notification extends MIDAS_Notification
         }
 
         $mail = new Midas_Mail();
-        $mail->setFrom($this->Setting->getValueByName('from_address', $this->moduleName));
+        $mail->setFrom($this->Setting->getValueByName(MAIL_FROM_ADDRESS_KEY, $this->moduleName));
 
         if (isset($params['bcc'])) {
             $mail->addBcc($params['bcc']);
