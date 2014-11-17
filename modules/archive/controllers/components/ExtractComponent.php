@@ -21,6 +21,9 @@
 /** Helper utilities for extracting archives into the Midas hierarchy */
 class Archive_ExtractComponent extends AppComponent
 {
+    /** @var string */
+    public $moduleName = 'archive';
+
     /**
      * Extract an archive out of an item and into the hierarchy in place
      *
@@ -93,7 +96,7 @@ class Archive_ExtractComponent extends AppComponent
             throw new Zend_Exception('Could not write into temp directory');
         }
 
-        $nativeCommand = $this->Setting->getValueByName('unzipCommand', 'archive');
+        $nativeCommand = $this->Setting->getValueByName(ARCHIVE_UNZIP_COMMAND_KEY, $this->moduleName);
 
         if ($nativeCommand && $bitstreamDao->getSizebytes() > 1024 * 1024 * 1024
         ) { // Only use native exe on zips over 1GB
