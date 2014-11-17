@@ -18,23 +18,5 @@
  limitations under the License.
 =========================================================================*/
 
-/** api config form */
-class Api_ConfigForm extends AppForm
-{
-    /** create  form */
-    public function createConfigForm()
-    {
-        $form = new Zend_Form();
-
-        $form->setAction($this->webroot.'/api/config/index')->setMethod('post');
-
-        $methodprefix = new Zend_Form_Element_Text('methodprefix');
-
-        $submit = new  Zend_Form_Element_Submit('submitConfig');
-        $submit->setLabel('Save configuration');
-
-        $form->addElements(array($methodprefix, $submit));
-
-        return $form;
-    }
-}
+define('API_METHOD_PREFIX_KEY', 'method_prefix');
+define('API_METHOD_PREFIX_DEFAULT_VALUE', 'midas');

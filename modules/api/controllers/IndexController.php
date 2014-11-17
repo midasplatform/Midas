@@ -23,6 +23,7 @@ require_once BASE_PATH.'/modules/api/library/KwWebApiCore.php';
 /** Main controller for the web api module */
 class Api_IndexController extends Api_AppController
 {
+    public $_models = array('Setting');
     public $_moduleComponents = array('Api');
 
     public $kwWebApiCore = null;
@@ -40,10 +41,9 @@ class Api_IndexController extends Api_AppController
         $this->apiEnable = true;
 
         // define api parameters
-        $modulesConfig = Zend_Registry::get('configsModules');
         $this->apiSetup['testing'] = Zend_Registry::get('configGlobal')->environment == 'testing';
         $this->apiSetup['tmpDirectory'] = $this->getTempDirectory();
-        $this->apiSetup['apiMethodPrefix'] = $modulesConfig['api']->methodprefix;
+        $this->apiSetup['apiMethodPrefix'] = $this->Setting->getValueByName(API_METHOD_PREFIX_KEY, $this->moduleName);
 
         $this->action = $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
         switch ($this->action) {
