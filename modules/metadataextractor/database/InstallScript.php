@@ -18,33 +18,19 @@
  limitations under the License.
 =========================================================================*/
 
-/** Notification manager for the metadataextractor module */
-class Metadataextractor_Notification extends MIDAS_Notification
-{
-    /** @var array */
-    public $_moduleComponents = array('Extractor');
+require_once BASE_PATH.'/modules/metadataextractor/constant/module.php';
 
+/** Install the metadataextractor module. */
+class Metadataextractor_InstallScript extends MIDASModuleInstallScript
+{
     /** @var string */
     public $moduleName = 'metadataextractor';
 
-    /** Initialize the notification process. */
-    public function init()
+    /** Post database install. */
+    public function postInstall()
     {
-        $this->addTask(
-            'TASK_METADATAEXTRACTOR_EXTRACT',
-            'extractMetadata',
-            'Extract Metadata. Parameters: Item, Revision'
-        );
-        $this->addEvent('EVENT_CORE_UPLOAD_FILE', 'TASK_METADATAEXTRACTOR_EXTRACT');
-    }
-
-    /**
-     * Handle TASK_METADATAEXTRACTOR_EXTRACT.
-     *
-     * @param array $params parameters
-     */
-    public function extractMetadata($params)
-    {
-        $this->ModuleComponent->Extractor->extract($params[1]);
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $settingModel->setConfig(METADATAEXTRACTOR_HACHOIR_METADATA_COMMAND_KEY, METADATAEXTRACTOR_HACHOIR_METADATA_COMMAND_DEFAULT_VALUE, $this->moduleName);
     }
 }

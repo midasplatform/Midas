@@ -21,10 +21,14 @@
 /** Extractor component for the metadataextractor module */
 class Metadataextractor_ExtractorComponent extends AppComponent
 {
+    /** @var string */
+    public $moduleName = 'metadataextractor';
+
     /** extract metadata */
     public function extract($revision)
     {
-        $itemRevisionModel = MidasLoader::loadModel("ItemRevision");
+        /** @var ItemRevisionModel $itemRevisionModel */
+        $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
         $revision = $itemRevisionModel->load($revision['itemrevision_id']);
         if (!$revision) {
             return;
@@ -36,24 +40,26 @@ class Metadataextractor_ExtractorComponent extends AppComponent
         $bitstream = $bitstreams[0];
         $ext = strtolower(substr(strrchr($bitstream->getName(), '.'), 1));
 
-        $MetadataModel = MidasLoader::loadModel("Metadata");
+        /** @var MetadataModel $metadataModel */
+        $metadataModel = MidasLoader::loadModel('Metadata');
         if ($ext == 'pdf') {
             $pdf = Zend_Pdf::load($bitstream->getFullPath());
             foreach ($pdf->properties as $name => $property) {
                 $name = strtolower($name);
                 try {
-                    $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'misc', $name);
+                    $metadataDao = $metadataModel->getMetadata(MIDAS_METADATA_TEXT, 'misc', $name);
                     if (!$metadataDao) {
-                        $MetadataModel->addMetadata(MIDAS_METADATA_TEXT, 'misc', $name, '');
+                        $metadataModel->addMetadata(MIDAS_METADATA_TEXT, 'misc', $name, '');
                     }
-                    $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 'misc', $name, $property);
+                    $metadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 'misc', $name, $property);
                 } catch (Zend_Exception $exc) {
                     echo $exc->getMessage();
                 }
             }
         } else {
-            $modulesConfig = Zend_Registry::get('configsModules');
-            $command = $modulesConfig['metadataextractor']->hachoir;
+            /** @var SettingModel $settingModel */
+            $settingModel = MidasLoader::loadModel('Setting');
+            $command = $settingModel->getValueByName(METADATAEXTRACTOR_HACHOIR_METADATA_COMMAND_KEY, $this->moduleName);
             exec(str_replace("'", '"', $command).' "'.$bitstream->getFullPath().'"', $output);
 
             if (!isset($output[0]) || $output[0] != "Metadata:") {
@@ -66,17 +72,15 @@ class Metadataextractor_ExtractorComponent extends AppComponent
                 $name = strtolower(substr($out, 0, $pos));
                 $value = substr($out, $pos + 2);
                 try {
-                    $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'misc', $name);
+                    $metadataDao = $metadataModel->getMetadata(MIDAS_METADATA_TEXT, 'misc', $name);
                     if (!$metadataDao) {
-                        $MetadataModel->addMetadata(MIDAS_METADATA_TEXT, 'misc', $name, '');
+                        $metadataModel->addMetadata(MIDAS_METADATA_TEXT, 'misc', $name, '');
                     }
-                    $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 'misc', $name, $value);
+                    $metadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 'misc', $name, $value);
                 } catch (Zend_Exception $exc) {
                     echo $exc->getMessage();
                 }
             }
         }
-
-        return;
     }
 }

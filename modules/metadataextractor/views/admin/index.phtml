@@ -18,23 +18,12 @@
  limitations under the License.
 =========================================================================*/
 
-/** Config form for the metadataextractor module */
-class Metadataextractor_ConfigForm extends AppForm
-{
-    /** create  form */
-    public function createConfigForm()
-    {
-        $form = new Zend_Form();
+$this->declareVars('form', 'pageTitle');
+$this->headTitle(htmlspecialchars($this->pageTitle, ENT_QUOTES, 'UTF-8'));
+?>
 
-        $form->setAction($this->webroot.'/metadataextractor/config/index')->setMethod('post');
-
-        $hachoir = new Zend_Form_Element_Text('hachoir');
-
-        $submit = new  Zend_Form_Element_Submit('submitConfig');
-        $submit->setLabel('Save configuration');
-
-        $form->addElements(array($hachoir, $submit));
-
-        return $form;
-    }
-}
+<div class="viewMain">
+    <h1><?php echo htmlspecialchars($this->pageTitle, ENT_QUOTES, 'UTF-8'); ?></h1>
+    <?php echo $this->form; ?>
+    <p><a href="<?php echo $this->url(array('controller' => 'admin', 'action' => 'index'), 'default'); ?>#tabs-modules">&laquo; Back to Modules Administration</a></p>
+</div>
