@@ -23,12 +23,14 @@ include_once BASE_PATH.'/library/KWUtils.php';
 /** Extract dicom metadata */
 class Dicomextractor_ExtractorComponent extends AppComponent
 {
+    public $moduleName = 'dicomextractor';
+
     /**
      * Check whether a given application is configured properly.
      *
      * @param command the command to test with
      * @param appName the human-readable application name
-     * @appendVersion whether we need the --version flag
+     * @param appendVersion whether we need the --version flag
      * @return an array indicating whether the app is valid or not
      */
     public function getApplicationStatus($preparedCommand, $appName, $appendVersion = true)
@@ -76,8 +78,10 @@ class Dicomextractor_ExtractorComponent extends AppComponent
      */
     private function _prependDataDict(&$command)
     {
-        $modulesConfig = Zend_Registry::get('configsModules');
-        $dictPath = $modulesConfig['dicomextractor']->dcmdictpath;
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $dictPath = $settingModel->getValueByName(DICOMEXTRACTOR_DCMDICTPATH_KEY, $this->moduleName);
+
         if ($dictPath != "") {
             $command = 'DCMDICTPATH="'.$dictPath.'" '.$command;
         }
@@ -88,18 +92,24 @@ class Dicomextractor_ExtractorComponent extends AppComponent
      */
     public function isDCMTKWorking()
     {
-        $ret = array();
-        $modulesConfig = Zend_Registry::get('configsModules');
-        $dcm2xmlCommand = $modulesConfig['dicomextractor']->dcm2xml;
-        $dcmftestCommand = $modulesConfig['dicomextractor']->dcmftest;
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $dcm2xmlCommand = $settingModel->getValueByName(DICOMEXTRACTOR_DCM2XML_COMMAND_KEY, $this->moduleName);
+        $dcmftestCommand = $settingModel->getValueByName(DICOMEXTRACTOR_DCMFTEST_COMMAND_KEY, $this->moduleName);
+
         // dcmj2pnmCommand may have some params that will cause it to throw
         // an error when no input is given, hence for existence and configuration
         // testing just get the command itself, without params
-        $dcmj2pnmCommand = $this->_getExecutableArg($modulesConfig['dicomextractor']->dcmj2pnm);
+        $dcmj2pnmCommand = $this->_getExecutableArg($settingModel->getValueByName(DICOMEXTRACTOR_DCMJ2PNM_COMMAND_KEY, $this->moduleName));
+
+        $ret = array();
         $ret['dcm2xml'] = $this->getApplicationStatus($dcm2xmlCommand, 'dcm2xml');
         $ret['dcmftest'] = $this->getApplicationStatus($dcmftestCommand, 'dcmftest', false);
         $ret['dcmj2pnm'] = $this->getApplicationStatus($dcmj2pnmCommand, 'dcmj2pnm');
-        if ($modulesConfig['dicomextractor']->dcmdictpath == "") {
+
+        $dataDictVar = $settingModel->getValueByName(DICOMEXTRACTOR_DCMDICTPATH_KEY, $this->moduleName);
+
+        if ($dataDictVar == "") {
             if (is_readable('/usr/local/share/dcmtk/dicom.dic') ||  // default on OS X
                 is_readable('/usr/share/dcmtk/dicom.dic')
             ) { // default on Ubuntu
@@ -111,7 +121,6 @@ class Dicomextractor_ExtractorComponent extends AppComponent
                 );
             }
         } else {
-            $dataDictVar = $modulesConfig['dicomextractor']->dcmdictpath;
             $dictPaths = explode(":", $dataDictVar);
             $errorInDictVar = false;
             foreach ($dictPaths as $path) {
@@ -154,10 +163,12 @@ class Dicomextractor_ExtractorComponent extends AppComponent
         $bitstream = $bitstreams[$numBitstreams / 2];
 
         // Turn the DICOM into a JPEG
-        $modulesConfig = Zend_Registry::get('configsModules');
         $tempDirectory = $utilityComponent->getTempDirectory();
         $tmpSlice = $tempDirectory.'/'.$bitstream->getName().'.jpg';
-        $command = $modulesConfig['dicomextractor']->dcmj2pnm;
+
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $command = $settingModel->getValueByName(DICOMEXTRACTOR_DCMJ2PNM_COMMAND_KEY, $this->moduleName);
         $preparedCommand = str_replace("'", '"', $command);
         $preparedCommand .= ' "'.$bitstream->getFullPath().'" "'.$tmpSlice.'"';
         $this->_prependDataDict($preparedCommand);
@@ -183,8 +194,10 @@ class Dicomextractor_ExtractorComponent extends AppComponent
             return;
         }
         $bitstream = $bitstreams[0];
-        $modulesConfig = Zend_Registry::get('configsModules');
-        $command = $modulesConfig['dicomextractor']->dcm2xml;
+
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $command = $settingModel->getValueByName(DICOMEXTRACTOR_DCM2XML_COMMAND_KEY, $this->moduleName);
         $preparedCommand = str_replace("'", '"', $command);
         $preparedCommand .= ' "'.$bitstream->getFullPath().'"';
         $this->_prependDataDict($preparedCommand);

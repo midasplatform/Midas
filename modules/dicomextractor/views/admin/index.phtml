@@ -18,26 +18,16 @@
  limitations under the License.
 =========================================================================*/
 
-/** Configuration form for the dicom extractor */
-class Dicomextractor_ConfigForm extends AppForm
-{
-    /** create  form */
-    public function createConfigForm()
-    {
-        $form = new Zend_Form();
+$this->declareVars('form', 'pageTitle');
+$this->headTitle($this->escape($this->pageTitle));
+?>
 
-        $form->setAction($this->webroot.'/dicomextractor/config/index')->setMethod('post');
-
-        $dcm2xml = new Zend_Form_Element_Text('dcm2xml');
-        $dcmj2pnm = new Zend_Form_Element_Text('dcmj2pnm');
-        $dcmftest = new Zend_Form_Element_Text('dcmftest');
-        $dcmdictpath = new Zend_Form_Element_Text('dcmdictpath');
-
-        $submit = new  Zend_Form_Element_Submit('submitConfig');
-        $submit->setLabel('Save configuration');
-
-        $form->addElements(array($dcm2xml, $dcmj2pnm, $dcmftest, $dcmdictpath, $submit));
-
-        return $form;
-    }
-}
+<div class="viewMain">
+    <h1><?php echo $this->escape($this->pageTitle); ?></h1>
+    <p>
+        This module requires <i>dcm2xml</i> from DCMTK. To install DCMTK:<br />
+        <a href="http://support.dcmtk.org/redmine/projects/dcmtk/wiki/howto">support.dcmtk.org/redmine/projects/dcmtk/wiki/howto</a>.
+    </p>
+    <?php echo $this->form; ?>
+    <p><a href="<?php echo $this->url(array('controller' => 'admin', 'action' => 'index'), 'default'); ?>#tabs-modules">&laquo; Back to Modules Administration</a></p>
+</div>
