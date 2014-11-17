@@ -18,16 +18,19 @@
  limitations under the License.
 =========================================================================*/
 
-/** Upgrade the tracker module to version 1.1.0. */
-class Tracker_Upgrade_1_1_0 extends MIDASUpgrade
-{
-    /** Pre database upgrade. */
-    public function preUpgrade()
-    {
-    }
+require_once BASE_PATH.'/modules/tracker/constant/module.php';
 
-    /** Post database upgrade. */
-    public function postUpgrade()
+/** Install the tracker module. */
+class Tracker_InstallScript extends MIDASModuleInstallScript
+{
+    /** @var string */
+    public $moduleName = 'tracker';
+
+    /** Post database install. */
+    public function postInstall()
     {
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $settingModel->setConfig(MIDAS_TRACKER_TEMP_SCALAR_TTL_KEY, MIDAS_TRACKER_TEMP_SCALAR_TTL_DEFAULT_VALUE, $this->moduleName);
     }
 }

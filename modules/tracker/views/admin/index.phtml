@@ -18,24 +18,19 @@
  limitations under the License.
 =========================================================================*/
 
-$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
-$this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.index.js');
+$this->declareVars('form', 'pageTitle');
+$this->headTitle($this->escape($this->pageTitle));
 ?>
 
 <div class="viewMain">
-    <form id="configForm" class="genericForm" method="POST"
-          action="<?php echo $this->webroot; ?>/tracker/config/submit">
-        <div class="explanation">
-            <p>Set this field to the number of hours that unofficial submissions should be kept before being deleted
-                automatically
-                by the scheduler. The default value is 24 hours.</p>
-        </div>
-        <div>
-            <label for="tempScalarTtl">Unofficial Scalar TTL</label>
-            <input type="text" name="tempScalarTtl" value="<?php echo $this->tempScalarTtl; ?>"/>
-        </div>
-        <div>
-            <input type="submit" value="Save"/>
-        </div>
-    </form>
+    <h1><?php echo $this->escape($this->pageTitle); ?></h1>
+    <p>
+        Set the unofficial scalar TTL to the number of hours that unofficial submissions should be kept before being
+        deleted automatically by the scheduler.
+    </p>
+    <?php echo $this->form; ?>
+    <p><a href="<?php echo $this->url(array('controller' => 'admin', 'action' => 'index'), 'default'); ?>#tabs-modules">&laquo; Back to Modules Administration</a></p>
 </div>
+
+
+

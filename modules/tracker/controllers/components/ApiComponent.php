@@ -21,6 +21,9 @@
 /** Component for api methods */
 class Tracker_ApiComponent extends AppComponent
 {
+	/** @var string */
+	public $moduleName = 'tracker';
+
     /**
      * Helper function for verifying keys in an input array
      */
@@ -247,7 +250,7 @@ class Tracker_ApiComponent extends AppComponent
         if (!$official) {
             $jobModel = MidasLoader::loadModel('Job', 'scheduler');
             $settingModel = MidasLoader::loadModel('Setting');
-            $nHours = $settingModel->getValueByName('tempScalarTtl', 'tracker');
+            $nHours = $settingModel->getValueByName(MIDAS_TRACKER_TEMP_SCALAR_TTL_KEY, $this->moduleName);
             if (!$nHours) {
                 $nHours = 24; // default to 24 hours
             }
@@ -298,9 +301,9 @@ class Tracker_ApiComponent extends AppComponent
         if (!$official) {
             $jobModel = MidasLoader::loadModel('Job', 'scheduler');
             $settingModel = MidasLoader::loadModel('Setting');
-            $nHours = $settingModel->getValueByName('tempScalarTtl', 'tracker');
+            $nHours = $settingModel->getValueByName(MIDAS_TRACKER_TEMP_SCALAR_TTL_KEY, $this->moduleName);
             if (!$nHours) {
-                $nHours = 24; // default to 24 hours
+                $nHours = MIDAS_TRACKER_TEMP_SCALAR_TTL_DEFAULT_VALUE; // default to 24 hours
             }
         }
 
