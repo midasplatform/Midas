@@ -1,6 +1,6 @@
 -- MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- SQLite database for the statistics module, version 1.0.3
+-- SQLite database for the statistics module, version 1.1.0
 
 CREATE TABLE IF NOT EXISTS "statistics_download" (
   "download_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,

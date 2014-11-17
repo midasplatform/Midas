@@ -22,6 +22,7 @@
 class Statistics_Notification extends MIDAS_Notification
 {
     public $moduleName = 'statistics';
+    public $_models = array('Setting');
     public $_moduleModels = array('Download', 'IpLocation');
     public $_moduleComponents = array('Report');
 
@@ -86,9 +87,8 @@ class Statistics_Notification extends MIDAS_Notification
     /** get layout footer */
     public function getFooter()
     {
-        $modulesConfig = Zend_Registry::get('configsModules');
-        $url = $modulesConfig['statistics']->piwik->url;
-        $id = $modulesConfig['statistics']->piwik->id;
+        $url = $this->Setting->getValueByName(STATISTICS_PIWIK_URL_KEY, $this->moduleName);
+        $id = $this->Setting->getValueByName(STATISTICS_PIWIK_SITE_ID_KEY, $this->moduleName);
 
         $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
         $js = $baseUrl.'/modules/'.$this->moduleName.'/public/js/statistics.notify.js';

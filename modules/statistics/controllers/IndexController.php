@@ -22,7 +22,7 @@
 class Statistics_IndexController extends Statistics_AppController
 {
     public $_moduleModels = array('Download');
-    public $_models = array('Errorlog', 'Assetstore');
+    public $_models = array('Assetstore', 'Errorlog', 'Setting');
     public $_components = array('Utility');
 
     /** index action */
@@ -99,9 +99,9 @@ class Statistics_IndexController extends Statistics_AppController
 
         $this->view->json['stats']['errors'] = $jqplotArray;
         $this->view->json['stats']['assetstores'] = $jqplotAssetstoreArray;
-        $modulesConfig = Zend_Registry::get('configsModules');
-        $this->view->piwikUrl = $modulesConfig['statistics']->piwik->url;
-        $this->view->piwikId = $modulesConfig['statistics']->piwik->id;
-        $this->view->piwikKey = $modulesConfig['statistics']->piwik->apikey;
+
+        $this->view->piwikUrl = $this->Setting->getValueByName(STATISTICS_PIWIK_URL_KEY, $this->moduleName);
+        $this->view->piwikId = $this->Setting->getValueByName(STATISTICS_PIWIK_SITE_ID_KEY, $this->moduleName);
+        $this->view->piwikKey = $this->Setting->getValueByName(STATISTICS_PIWIK_API_KEY_KEY, $this->moduleName);
     }
 }

@@ -23,28 +23,34 @@
  */
 class Statistics_ReportComponent extends AppComponent
 {
+    /** @var string */
+    public $moduleName = 'statistics';
+
     /** generate report */
     public function generate()
     {
-        $errorModel = MidasLoader::loadModel('Errorlog');
-        $assetstoreModel = MidasLoader::loadModel('Assetstore');
+        /** @var ErrorlogModel $errorLogModel */
+        $errorLogModel = MidasLoader::loadModel('Errorlog');
+
+        /** @var AssetstoreModel $assetStoreModel */
+        $assetStoreModel = MidasLoader::loadModel('Assetstore');
         $reportContent = '';
         $reportContent .= '<b>Midas Report: '.Zend_Registry::get('configGlobal')->application->name.'</b>';
         $reportContent .= '<br/>http://'.$_SERVER['SERVER_NAME'];
 
         $reportContent .= '<br/><br/><b>Status</b>';
-        $errors = $errorModel->getLog(
+        $errors = $errorLogModel->getLog(
             date("Y-m-d H:i:s", strtotime('-1 day'.date('Y-m-j G:i:s'))),
             date("Y-m-d H:i:s"),
             'all',
             2
         );
         $reportContent .= "<br/>Yesterday Errors: ".count($errors);
-        $assetstores = $assetstoreModel->getAll();
-        foreach ($assetstores as $assetstore) {
-            $totalSpace = UtilityComponent::diskTotalSpace($assetstore->getPath());
-            $freeSpace = UtilityComponent::diskFreeSpace($assetstore->getPath());
-            $reportContent .= '<br/>Assetstore '.$assetstore->getName();
+        $assetStores = $assetStoreModel->getAll();
+        foreach ($assetStores as $assetStore) {
+            $totalSpace = UtilityComponent::diskTotalSpace($assetStore->getPath());
+            $freeSpace = UtilityComponent::diskFreeSpace($assetStore->getPath());
+            $reportContent .= '<br/>Assetstore '.$assetStore->getName();
             if ($totalSpace > 0) {
                 $reportContent .= ', Free space: '.round(($freeSpace / $totalSpace) * 100, 2).'%';
             }
@@ -72,9 +78,14 @@ class Statistics_ReportComponent extends AppComponent
             $reportContent .= '</table>';
         }
 
-        $modulesConfig = Zend_Registry::get('configsModules');
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $piwikUrl = $settingModel->getValueByName(STATISTICS_PIWIK_URL_KEY, $this->moduleName);
+        $piwikId = $settingModel->getValueByName(STATISTICS_PIWIK_SITE_ID_KEY, $this->moduleName);
+        $piwikApiKey = $settingModel->getValueByName(STATISTICS_PIWIK_API_KEY_KEY, $this->moduleName);
+
         $content = file_get_contents(
-            $modulesConfig['statistics']->piwik->url.'/?module=API&format=json&method=VisitsSummary.get&period=day&date=yesterday&idSite='.$modulesConfig['statistics']->piwik->id.'&token_auth='.$modulesConfig['statistics']->piwik->apikey
+            $piwikUrl.'/?module=API&format=json&method=VisitsSummary.get&period=day&date=yesterday&idSite='.$piwikId.'&token_auth='.$piwikApiKey
         );
         $piwik = json_decode($content);
         $reportContent .= '<br/><b>Statistics (yesterday)</b>';

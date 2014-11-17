@@ -18,27 +18,13 @@
  limitations under the License.
 =========================================================================*/
 
-/** Form for configuring the statistics module */
-class Statistics_ConfigForm extends AppForm
-{
-    /** create  form */
-    public function createConfigForm()
-    {
-        $form = new Zend_Form();
-
-        $form->setAction($this->webroot.'/statistics/config/index')->setMethod('post');
-
-        $piwik = new Zend_Form_Element_Text('piwikurl');
-        $piwikid = new Zend_Form_Element_Text('piwikid');
-        $piwikapikey = new Zend_Form_Element_Text('piwikapikey');
-        $ipinfodbapikey = new Zend_Form_Element_Text('ipinfodbapikey');
-        $report = new Zend_Form_Element_Checkbox('report');
-
-        $submit = new  Zend_Form_Element_Submit('submitConfig');
-        $submit->setLabel('Save configuration');
-
-        $form->addElements(array($report, $piwikapikey, $piwik, $piwikid, $ipinfodbapikey, $submit));
-
-        return $form;
-    }
-}
+define('STATISTICS_PIWIK_URL_KEY', 'piwik_url');
+define('STATISTICS_PIWIK_URL_DEFAULT_VALUE', '');
+define('STATISTICS_PIWIK_SITE_ID_KEY', 'piwik_site_id');
+define('STATISTICS_PIWIK_SITE_ID_DEFAULT_VALUE', '');
+define('STATISTICS_PIWIK_API_KEY_KEY', 'piwik_api_key');
+define('STATISTICS_PIWIK_API_KEY_DEFAULT_VALUE', '');
+define('STATISTICS_IP_INFO_DB_API_KEY_KEY', 'ip_info_db_api_key');
+define('STATISTICS_IP_INFO_DB_API_KEY_DEFAULT_VALUE', '');
+define('STATISTICS_SEND_DAILY_REPORTS_KEY', 'send_daily_reports');
+define('STATISTICS_SEND_DAILY_REPORTS_DEFAULT_VALUE', '');

@@ -54,10 +54,9 @@ class Statistics_GeolocationLookupTest extends ControllerTestCase
         $this->assertEquals($ipLocations[0]->getLongitude(), '');
         $ip = $ipLocations[0]->getIp();
 
-        $this->request->setMethod('POST');
-        $this->params['ipinfodbapikey'] = '1234';
-        $this->params['submitConfig'] = 'true';
-        $this->dispatchUrI('/statistics/config/index', $userDao);
+        /** @var $adminComponent Statistics_AdminComponent */
+        $adminComponent = MidasLoader::loadComponent('Admin', 'statistics');
+        $adminComponent->schedulePerformGeolocationJob('1234', $userDao);
 
         // Assert that the task is now scheduled
         $jobs = $jobModel->getJobsByTask('TASK_STATISTICS_PERFORM_GEOLOCATION');
