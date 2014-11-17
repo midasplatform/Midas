@@ -18,19 +18,19 @@
  limitations under the License.
 =========================================================================*/
 
-define('MIDAS_DEMO_ENABLED_KEY', 'enabled');
-define('MIDAS_DEMO_ENABLED_DEFAULT_VALUE', 1);
+require_once BASE_PATH.'/modules/demo/constant/module.php';
 
-define('MIDAS_DEMO_ADMIN_EMAIL', 'admin@kitware.com');
-define('MIDAS_DEMO_ADMIN_PASSWORD', 'admin');
-define('MIDAS_DEMO_USER_EMAIL', 'user@kitware.com');
-define('MIDAS_DEMO_USER_PASSWORD', 'user');
+/** Install the demo module. */
+class Demo_InstallScript extends MIDASModuleInstallScript
+{
+    /** @var string */
+    public $moduleName = 'demo';
 
-define('MIDAS_DEMO_DYNAMIC_HELP', '
-  <b>To authenticate:</b><br /><br />
-  Demo Administrator<br />
-  - Login: '.MIDAS_DEMO_ADMIN_EMAIL.'<br />
-  - Password: '.MIDAS_DEMO_ADMIN_PASSWORD.'<br /><br />
-  Demo User<br />
-  - Login: '.MIDAS_DEMO_USER_EMAIL.'<br />
-  - Password: '.MIDAS_DEMO_USER_PASSWORD);
+    /** Post database install. */
+    public function postInstall()
+    {
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $settingModel->setConfig(MIDAS_DEMO_ENABLED_KEY, MIDAS_DEMO_ENABLED_DEFAULT_VALUE, $this->moduleName);
+    }
+}

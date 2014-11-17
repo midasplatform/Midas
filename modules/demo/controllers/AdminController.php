@@ -18,12 +18,14 @@
  limitations under the License.
 =========================================================================*/
 
-/** Config controller for the demo module */
-class Demo_ConfigController extends Demo_AppController
+/** Admin controller for the demo module. */
+class Demo_AdminController extends Demo_AppController
 {
+    /** @var array */
     public $_models = array('Setting');
+
+    /** @var array */
     public $_moduleComponents = array('Demo');
-    public $_moduleForms = array('Config');
 
     /** Require admin privileges excluding demo admin */
     public function requireNonDemoAdminPrivileges()
@@ -38,12 +40,40 @@ class Demo_ConfigController extends Demo_AppController
     public function indexAction()
     {
         $this->requireNonDemoAdminPrivileges();
-        $configForm = $this->ModuleForm->Config->createConfigForm();
-        $formArray = $this->getFormAsArray($configForm);
-        $param = 'enabled';
-        $value = $this->Setting->getValueByName($param, $this->moduleName);
-        $formArray[$param]->setValue($value);
-        $this->view->configForm = $formArray;
+
+        $this->view->pageTitle = 'Demo Module Configuration';
+        $form = new Demo_Form_Admin();
+
+        if ($this->getRequest()->isPost()) {
+            $data = $this->getRequest()->getPost();
+
+            if ($form->isValid($data)) {
+                $values = $form->getValues();
+
+                foreach ($values as $key => $value) {
+                    $this->Setting->setConfig($key, $value, $this->moduleName);
+                }
+            }
+
+            $form->populate($data);
+        } else {
+            $elements = $form->getElements();
+
+            foreach ($elements as $element) {
+                $name = $element->getName();
+
+                if ($name !== 'csrf' && $name !== 'submit') {
+                    $value = $this->Setting->getValueByName($name, $this->moduleName);
+
+                    if (!is_null($value)) {
+                        $form->setDefault($name, $value);
+                    }
+                }
+            }
+        }
+
+        $this->view->form = $form;
+        session_start();
     }
 
     /** Reset action */
@@ -52,17 +82,5 @@ class Demo_ConfigController extends Demo_AppController
         $this->requireNonDemoAdminPrivileges();
         $this->ModuleComponent->Demo->reset();
         $this->_helper->Redirector->gotoSimple('index');
-    }
-
-    /** Submit action */
-    public function submitAction()
-    {
-        $this->requireNonDemoAdminPrivileges();
-        $this->disableLayout();
-        $this->disableView();
-        $param = 'enabled';
-        $value = $this->getParam($param);
-        $this->Setting->setConfig($param, $value, $this->moduleName);
-        echo JsonComponent::encode(array(true, 'Changes saved'));
     }
 }

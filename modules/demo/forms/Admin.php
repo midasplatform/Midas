@@ -18,20 +18,27 @@
  limitations under the License.
 =========================================================================*/
 
-/** Config form for the demo module */
-class Demo_ConfigForm extends AppForm
+/** Admin form for the demo module. */
+class Demo_Form_Admin extends Zend_Form
 {
-    /** Create form */
-    public function createConfigForm()
+    /** Initialize this form. */
+    public function init()
     {
-        $form = new Zend_Form();
-        $form->setAction($this->webroot.'/demo/config/submit')->setMethod('post');
-        $enabled = new Zend_Form_Element_Checkbox('enabled');
-        $enabled->setLabel($this->t('Enabled'));
-        $submit = new Zend_Form_Element_Submit('submit');
-        $submit->setLabel($this->t('Save'));
-        $form->addElements(array($enabled, $submit));
+        $this->setName('demo_admin');
+        $this->setMethod('POST');
 
-        return $form;
+        $csrf = new Midas_Form_Element_Hash('csrf');
+        $csrf->setSalt('25LPjLsarZvkFTK8t5ntWSDF');
+        $csrf->setDecorators(array('ViewHelper'));
+
+        $enabled = new Zend_Form_Element_Checkbox(MIDAS_DEMO_ENABLED_KEY);
+        $enabled->setLabel('Enabled');
+
+        $this->addDisplayGroup(array($enabled), 'global');
+
+        $submit = new Zend_Form_Element_Submit('submit');
+        $submit->setLabel('Save');
+
+        $this->addElements(array($csrf, $enabled, $submit));
     }
 }
