@@ -73,8 +73,8 @@ class Googleauth_CallbackController extends Googleauth_AppController
      */
     protected function _getUserInfo($code)
     {
-        $clientId = $this->Setting->getValueByName('client_id', $this->moduleName);
-        $clientSecret = $this->Setting->getValueByName('client_secret', $this->moduleName);
+        $clientId = $this->Setting->getValueByName(GOOGLE_AUTH_CLIENT_ID_KEY, $this->moduleName);
+        $clientSecret = $this->Setting->getValueByName(GOOGLE_AUTH_CLIENT_SECRET_KEY, $this->moduleName);
         $scheme = (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS']) ? 'https://' : 'http://';
         $redirectUri = $scheme.$_SERVER['HTTP_HOST'].Zend_Controller_Front::getInstance()->getBaseUrl(
             ).'/'.$this->moduleName.'/callback';
@@ -169,10 +169,8 @@ class Googleauth_CallbackController extends Googleauth_AppController
             $user = $this->User->getByEmail($info['email']);
             if (!$user) {
                 // Only create new user this way if registration is not closed.
-                if (isset(Zend_Registry::get('configGlobal')->closeregistration) && Zend_Registry::get(
-                        'configGlobal'
-                    )->closeregistration == "1"
-                ) {
+                $closeRegistration = Zend_Registry::get('configGlobal')->closeregistration;
+                if ($closeRegistration == '1') {
                     throw new Zend_Exception(
                         'Access to this instance is by invitation '.'only, please contact an administrator.'
                     );

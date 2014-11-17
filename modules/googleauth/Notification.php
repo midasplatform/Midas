@@ -41,7 +41,7 @@ class Googleauth_Notification extends MIDAS_Notification
      */
     public function googleAuthLink()
     {
-        $clientId = $this->Setting->getValueByName('client_id', $this->moduleName);
+        $clientId = $this->Setting->getValueByName(GOOGLE_AUTH_CLIENT_ID_KEY, $this->moduleName);
         $scheme = (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS']) ? 'https://' : 'http://';
         $fc = Zend_Controller_Front::getInstance();
         $csrfToken = UtilityComponent::generateRandomString(30);

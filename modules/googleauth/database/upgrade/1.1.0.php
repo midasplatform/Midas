@@ -18,12 +18,16 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the googleauth module to version 1.1.0. */
+class Googleauth_Upgrade_1_1_0 extends MIDASUpgrade
+{
+    /** Pre database upgrade. */
+    public function preUpgrade()
+    {
+    }
 
-define('GOOGLE_AUTH_CLIENT_ID_KEY', 'client_id');
-define('GOOGLE_AUTH_CLIENT_ID_DEFAULT_VALUE', '');
-
-define('GOOGLE_AUTH_CLIENT_SECRET_KEY', 'client_secret');
-define('GOOGLE_AUTH_CLIENT_SECRET_DEFAULT_VALUE', '');
-
-define('GOOGLE_AUTH_OAUTH2_URL', 'https://accounts.google.com/o/oauth2/token');
-define('GOOGLE_AUTH_PLUS_URL', 'https://www.googleapis.com/plus/v1/people/me');
+    /** Post database upgrade. */
+    public function postUpgrade()
+    {
+    }
+}

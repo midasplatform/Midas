@@ -18,12 +18,20 @@
  limitations under the License.
 =========================================================================*/
 
+require_once BASE_PATH.'/modules/googleauth/constant/module.php';
 
-define('GOOGLE_AUTH_CLIENT_ID_KEY', 'client_id');
-define('GOOGLE_AUTH_CLIENT_ID_DEFAULT_VALUE', '');
+/** Install the googleauth module. */
+class Googleauth_InstallScript extends MIDASModuleInstallScript
+{
+    /** @var string */
+    public $moduleName = 'googleauth';
 
-define('GOOGLE_AUTH_CLIENT_SECRET_KEY', 'client_secret');
-define('GOOGLE_AUTH_CLIENT_SECRET_DEFAULT_VALUE', '');
-
-define('GOOGLE_AUTH_OAUTH2_URL', 'https://accounts.google.com/o/oauth2/token');
-define('GOOGLE_AUTH_PLUS_URL', 'https://www.googleapis.com/plus/v1/people/me');
+    /** Post database install. */
+    public function postInstall()
+    {
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $settingModel->setConfig(GOOGLE_AUTH_CLIENT_ID_KEY, GOOGLE_AUTH_CLIENT_ID_DEFAULT_VALUE, $this->moduleName);
+        $settingModel->setConfig(GOOGLE_AUTH_CLIENT_SECRET_KEY, GOOGLE_AUTH_CLIENT_SECRET_DEFAULT_VALUE, $this->moduleName);
+    }
+}
