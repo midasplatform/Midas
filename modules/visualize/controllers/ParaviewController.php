@@ -21,7 +21,7 @@
 /** Paraview Controller */
 class Visualize_ParaviewController extends Visualize_AppController
 {
-    public $_models = array('Item', 'ItemRevision', 'Bitstream');
+    public $_models = array('Bitstream', 'Item', 'ItemRevision', 'Setting');
     public $_moduleComponents = array('Main');
 
     /**
@@ -45,28 +45,28 @@ class Visualize_ParaviewController extends Visualize_AppController
         $header .= ' Surface view: <a href="'.$this->view->webroot.'/item/'.$itemid.'">'.$item->getName().'</a>';
         $this->view->header = $header;
 
-        $modulesConfig = Zend_Registry::get('configsModules');
-        $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;
-        $useparaview = $modulesConfig['visualize']->useparaview;
-        $userwebgl = $modulesConfig['visualize']->userwebgl;
-        $usesymlinks = $modulesConfig['visualize']->usesymlinks;
-        $pwapp = $modulesConfig['visualize']->pwapp;
-        if (!isset($useparaview) || !$useparaview) {
+        $paraViewWorkDirectory = $this->Setting->getValueByName(VISUALIZE_PARAVIEW_WEB_WORK_DIRECTORY_KEY, $this->moduleName);
+        $useParaView = $this->Setting->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
+        $useWebGL = $this->Setting->getValueByName(VISUALIZE_USE_WEB_GL_KEY, $this->moduleName);
+        $useSymlinks = $this->Setting->getValueByName(VISUALIZE_USE_SYMLINKS_KEY, $this->moduleName);
+        $pwApp = $this->Setting->getValueByName(VISUALIZE_TOMCAT_ROOT_URL_KEY, $this->moduleName);
+
+        if (!isset($useParaView) || !$useParaView) {
             throw new Zend_Exception('Please enable the use of a ParaViewWeb server on the module configuration page');
         }
 
-        if (!isset($paraviewworkdir) || empty($paraviewworkdir)) {
+        if (!isset($paraViewWorkDirectory) || empty($paraViewWorkDirectory)) {
             throw new Zend_Exception('Please set the ParaView work directory');
         }
 
         $pathArray = $this->ModuleComponent->Main->createParaviewPath();
         $path = $pathArray['path'];
-        $tmpFolderName = $pathArray['foderName'];
+        $tmpFolderName = $pathArray['folderName'];
 
         $revision = $this->Item->getLastRevision($item);
         $bitstreams = $revision->getBitstreams();
         foreach ($bitstreams as $bitstream) {
-            if ($usesymlinks) {
+            if ($useSymlinks) {
                 symlink($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
             } else {
                 copy($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
@@ -74,11 +74,11 @@ class Visualize_ParaviewController extends Visualize_AppController
 
             $ext = strtolower(substr(strrchr($bitstream->getName(), '.'), 1));
             if ($ext != 'pvsm') {
-                $filePath = $paraviewworkdir.'/'.$tmpFolderName.'/'.$bitstream->getName();
+                $filePath = $paraViewWorkDirectory.'/'.$tmpFolderName.'/'.$bitstream->getName();
             }
         }
 
-        if (!$userwebgl || $item->getSizebytes() > 1 * 1024 * 1024) {
+        if (!$useWebGL || $item->getSizebytes() > 1 * 1024 * 1024) {
             $this->view->renderer = 'js';
         } else {
             $this->view->renderer = 'webgl';
@@ -86,10 +86,10 @@ class Visualize_ParaviewController extends Visualize_AppController
         $this->view->json['visualize']['url'] = $filePath;
         $this->view->json['visualize']['item'] = $item;
         $this->view->json['visualize']['hostname'] = $this->_getHostName();
-        $this->view->json['visualize']['wsport'] = $this->_getTomcatPort($pwapp);
+        $this->view->json['visualize']['wsport'] = $this->_getTomcatPort($pwApp);
         $this->view->fileLocation = $filePath;
         $this->view->jsImports = array(); // TODO
-        $this->view->usewebgl = $userwebgl;
+        $this->view->usewebgl = $useWebGL;
         $this->view->itemDao = $item;
     }
 
@@ -133,16 +133,18 @@ class Visualize_ParaviewController extends Visualize_AppController
         $header .= '<a href="'.$this->view->webroot.'/item/'.$right->getKey().'">'.$right->getName().'</a>';
         $this->view->header = $header;
 
-        $modulesConfig = Zend_Registry::get('configsModules');
-        $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;
-        $useparaview = $modulesConfig['visualize']->useparaview;
-        $usesymlinks = $modulesConfig['visualize']->usesymlinks;
-        $pwapp = $modulesConfig['visualize']->pwapp;
-        if (!isset($useparaview) || !$useparaview) {
+
+        $paraViewWorkDirectory = $this->Setting->getValueByName(VISUALIZE_PARAVIEW_WEB_WORK_DIRECTORY_KEY, $this->moduleName);
+        $useParaView = $this->Setting->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
+        $useSymlinks = $this->Setting->getValueByName(VISUALIZE_USE_SYMLINKS_KEY, $this->moduleName);
+        $pwApp = $this->Setting->getValueByName(VISUALIZE_TOMCAT_ROOT_URL_KEY, $this->moduleName);
+
+
+        if (!isset($useParaView) || !$useParaView) {
             throw new Zend_Exception('Please enable the use of a ParaViewWeb server on the module configuration page');
         }
 
-        if (!isset($paraviewworkdir) || empty($paraviewworkdir)) {
+        if (!isset($paraViewWorkDirectory) || empty($paraViewWorkDirectory)) {
             throw new Zend_Exception('Please set the ParaView work directory');
         }
 
@@ -156,7 +158,7 @@ class Visualize_ParaviewController extends Visualize_AppController
             $revision = $this->Item->getLastRevision($item);
             $bitstreams = $revision->getBitstreams();
             foreach ($bitstreams as $bitstream) {
-                if ($usesymlinks) {
+                if ($useSymlinks) {
                     symlink($bitstream->getFullPath(), $subPath.'/'.$bitstream->getName());
                 } else {
                     copy($bitstream->getFullPath(), $subPath.'/'.$bitstream->getName());
@@ -184,7 +186,7 @@ class Visualize_ParaviewController extends Visualize_AppController
         $this->view->json['visualize']['colorArrayNames'] = $colorArrayNames;
         $this->view->json['visualize']['items'] = $items;
         $this->view->json['visualize']['hostname'] = $this->_getHostName();
-        $this->view->json['visualize']['wsport'] = $this->_getTomcatPort($pwapp);
+        $this->view->json['visualize']['wsport'] = $this->_getTomcatPort($pwApp);
         $this->view->operations = $operations;
         $this->view->fileLocations = $filePaths;
         $this->view->items = $items;
@@ -223,27 +225,27 @@ class Visualize_ParaviewController extends Visualize_AppController
         $header .= ' Volume rendering: <a href="'.$this->view->webroot.'/item/'.$itemid.'">'.$item->getName().'</a>';
         $this->view->header = $header;
 
-        $modulesConfig = Zend_Registry::get('configsModules');
-        $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;
-        $useparaview = $modulesConfig['visualize']->useparaview;
-        $usesymlinks = $modulesConfig['visualize']->usesymlinks;
-        $pwapp = $modulesConfig['visualize']->pwapp;
-        if (!isset($useparaview) || !$useparaview) {
+        $paraViewWorkDirectory = $this->Setting->getValueByName(VISUALIZE_PARAVIEW_WEB_WORK_DIRECTORY_KEY, $this->moduleName);
+        $useParaView = $this->Setting->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
+        $useSymlinks = $this->Setting->getValueByName(VISUALIZE_USE_SYMLINKS_KEY, $this->moduleName);
+        $pwApp = $this->Setting->getValueByName(VISUALIZE_TOMCAT_ROOT_URL_KEY, $this->moduleName);
+
+        if (!isset($useParaView) || !$useParaView) {
             throw new Zend_Exception('Please enable the use of a ParaViewWeb server on the module configuration page');
         }
 
-        if (!isset($paraviewworkdir) || empty($paraviewworkdir)) {
+        if (!isset($paraViewWorkDirectory) || empty($paraViewWorkDirectory)) {
             throw new Zend_Exception('Please set the ParaView work directory');
         }
 
         $pathArray = $this->ModuleComponent->Main->createParaviewPath();
         $path = $pathArray['path'];
-        $tmpFolderName = $pathArray['foderName'];
+        $tmpFolderName = $pathArray['folderName'];
 
         $revision = $this->Item->getLastRevision($item);
         $bitstreams = $revision->getBitstreams();
         foreach ($bitstreams as $bitstream) {
-            if ($usesymlinks) {
+            if ($useSymlinks) {
                 symlink($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
             } else {
                 copy($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
@@ -261,7 +263,7 @@ class Visualize_ParaviewController extends Visualize_AppController
                     break;
             }
             if ($ext != 'pvsm') {
-                $filePath = $paraviewworkdir.'/'.$tmpFolderName.'/'.$bitstream->getName();
+                $filePath = $paraViewWorkDirectory.'/'.$tmpFolderName.'/'.$bitstream->getName();
             }
         }
 
@@ -281,7 +283,7 @@ class Visualize_ParaviewController extends Visualize_AppController
             $bitstreams = $revision->getBitstreams();
             foreach ($bitstreams as $bitstream) {
                 $otherFile = $path.'/'.$bitstream->getName();
-                if ($usesymlinks) {
+                if ($useSymlinks) {
                     symlink($bitstream->getFullPath(), $otherFile);
                 } else {
                     copy($bitstream->getFullPath(), $otherFile);
@@ -327,7 +329,7 @@ class Visualize_ParaviewController extends Visualize_AppController
         $this->view->json['visualize']['visible'] = true;
         $this->view->json['visualize']['colorArrayName'] = $colorArrayName;
         $this->view->json['visualize']['hostname'] = $this->_getHostName();
-        $this->view->json['visualize']['wsport'] = $this->_getTomcatPort($pwapp);
+        $this->view->json['visualize']['wsport'] = $this->_getTomcatPort($pwApp);
         $this->view->fileLocation = $filePath;
         $this->view->itemDao = $item;
     }
@@ -372,27 +374,27 @@ class Visualize_ParaviewController extends Visualize_AppController
         $header .= ' Slice view: <a href="'.$this->view->webroot.'/item/'.$itemid.'">'.$item->getName().'</a>';
         $this->view->header = $header;
 
-        $modulesConfig = Zend_Registry::get('configsModules');
-        $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;
-        $useparaview = $modulesConfig['visualize']->useparaview;
-        $usesymlinks = $modulesConfig['visualize']->usesymlinks;
-        $pwapp = $modulesConfig['visualize']->pwapp;
-        if (!isset($useparaview) || !$useparaview) {
+        $paraViewWorkDirectory = $this->Setting->getValueByName(VISUALIZE_PARAVIEW_WEB_WORK_DIRECTORY_KEY, $this->moduleName);
+        $useParaView = $this->Setting->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
+        $useSymlinks = $this->Setting->getValueByName(VISUALIZE_USE_SYMLINKS_KEY, $this->moduleName);
+        $pwApp = $this->Setting->getValueByName(VISUALIZE_TOMCAT_ROOT_URL_KEY, $this->moduleName);
+
+        if (!isset($useParaView) || !$useParaView) {
             throw new Zend_Exception('Please enable the use of a ParaViewWeb server on the module configuration page');
         }
 
-        if (!isset($paraviewworkdir) || empty($paraviewworkdir)) {
+        if (!isset($paraViewWorkDirectory) || empty($paraViewWorkDirectory)) {
             throw new Zend_Exception('Please set the ParaView work directory');
         }
 
         $pathArray = $this->ModuleComponent->Main->createParaviewPath();
         $path = $pathArray['path'];
-        $tmpFolderName = $pathArray['foderName'];
+        $tmpFolderName = $pathArray['folderName'];
 
         $revision = $this->Item->getLastRevision($item);
         $bitstreams = $revision->getBitstreams();
         foreach ($bitstreams as $bitstream) {
-            if ($usesymlinks) {
+            if ($useSymlinks) {
                 symlink($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
             } else {
                 copy($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
@@ -410,7 +412,7 @@ class Visualize_ParaviewController extends Visualize_AppController
                     break;
             }
             if ($ext != 'pvsm') {
-                $filePath = $paraviewworkdir.'/'.$tmpFolderName.'/'.$bitstream->getName();
+                $filePath = $paraViewWorkDirectory.'/'.$tmpFolderName.'/'.$bitstream->getName();
             }
         }
 
@@ -430,7 +432,7 @@ class Visualize_ParaviewController extends Visualize_AppController
             $bitstreams = $revision->getBitstreams();
             foreach ($bitstreams as $bitstream) {
                 $otherFile = $path.'/'.$bitstream->getName();
-                if ($usesymlinks) {
+                if ($useSymlinks) {
                     symlink($bitstream->getFullPath(), $otherFile);
                 } else {
                     copy($bitstream->getFullPath(), $otherFile);
@@ -475,7 +477,7 @@ class Visualize_ParaviewController extends Visualize_AppController
         $this->view->json['visualize']['colorArrayName'] = $colorArrayName;
         $this->view->json['visualize']['item'] = $item;
         $this->view->json['visualize']['hostname'] = $this->_getHostName();
-        $this->view->json['visualize']['wsport'] = $this->_getTomcatPort($pwapp);
+        $this->view->json['visualize']['wsport'] = $this->_getTomcatPort($pwApp);
         $this->view->operations = $operations;
         $this->view->fileLocation = $filePath;
         $this->view->itemDao = $item;

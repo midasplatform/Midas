@@ -23,19 +23,23 @@ require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 /** main  component */
 class Visualize_MainComponent extends AppComponent
 {
+    public $moduleName = 'visualize';
+
     /** convert to threejs */
     public function convertToThreejs($revision)
     {
-        $uploadComponent = MidasLoader::loadComponent('Upload');
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $useWebGL = $settingModel->getValueByName(VISUALIZE_USE_WEB_GL_KEY, $this->moduleName);
 
-        $modulesConfig = Zend_Registry::get('configsModules');
-        if (Zend_Registry::get('configGlobal')->environment != 'testing') {
-            $userwebgl = $modulesConfig['visualize']->userwebgl;
-            if (!isset($userwebgl) || !$userwebgl) {
-                return false;
-            }
+        if (!isset($useWebGL) || !$useWebGL) {
+            return false;
         }
+
+        /** @var ItemRevisionModel $itemRevisionModel */
         $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
 
         if (is_array($revision)) {
@@ -54,8 +58,8 @@ class Visualize_MainComponent extends AppComponent
             return;
         }
         $bitstream = $bitstreams[0];
-        $filnameArray = explode(".", $bitstream->getName());
-        $ext = end($filnameArray);
+        $filenameArray = explode(".", $bitstream->getName());
+        $ext = end($filenameArray);
         if ($ext != "obj") {
             return;
         }
@@ -72,8 +76,12 @@ class Visualize_MainComponent extends AppComponent
                 UtilityComponent::getTempDirectory()."/tmpThreeJs.bin"
             )
         ) {
+            /** @var AssetstoreModel $assetstoreModel */
             $assetstoreModel = MidasLoader::loadModel('Assetstore');
             $assetstoreDao = $assetstoreModel->getDefault();
+
+            /** @var UploadComponent $uploadComponent */
+            $uploadComponent = MidasLoader::loadComponent('Upload');
 
             $newItem = $uploadComponent->createUploadedItem(
                 $userDao,
@@ -112,15 +120,17 @@ class Visualize_MainComponent extends AppComponent
     /** Test whether we can visualize with slice viewer */
     public function canVisualizeWithSliceView($itemDao)
     {
-        $modulesConfig = Zend_Registry::get('configsModules');
-        if (Zend_Registry::get('configGlobal')->environment != 'testing') {
-            $useparaview = $modulesConfig['visualize']->useparaview;
-            if (!isset($useparaview) || !$useparaview) {
-                return false;
-            }
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $useParaView = $settingModel->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
+
+        if (!isset($useParaView) || !$useParaView) {
+            return false;
         }
+
         $extensions = array('mha', 'nrrd');
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
         if (empty($revision)) {
@@ -139,15 +149,17 @@ class Visualize_MainComponent extends AppComponent
     /** Test whether we can visualize with surface model viewer */
     public function canVisualizeWithSurfaceView($itemDao)
     {
-        $modulesConfig = Zend_Registry::get('configsModules');
-        if (Zend_Registry::get('configGlobal')->environment != 'testing') {
-            $useparaview = $modulesConfig['visualize']->useparaview;
-            if (!isset($useparaview) || !$useparaview) {
-                return false;
-            }
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $useParaView = $settingModel->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
+
+        if (!isset($useParaView) || !$useParaView) {
+            return false;
         }
+
         $extensions = array('vtk', 'vtp', 'ply');
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
         if (empty($revision)) {
@@ -166,16 +178,17 @@ class Visualize_MainComponent extends AppComponent
     /** can visualize */
     public function canVisualizeWithParaview($itemDao)
     {
-        $modulesConfig = Zend_Registry::get('configsModules');
-        if (Zend_Registry::get('configGlobal')->environment != 'testing') {
-            $useparaview = $modulesConfig['visualize']->useparaview;
-            if (!isset($useparaview) || !$useparaview) {
-                return false;
-            }
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $useParaView = $settingModel->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
+
+        if (!isset($useParaView) || !$useParaView) {
+            return false;
         }
 
         $extensions = array('vtk', 'ply', 'vtp', 'pvsm', 'mha', 'vtu');
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
         if (empty($revision)) {
@@ -196,6 +209,7 @@ class Visualize_MainComponent extends AppComponent
     {
         $extensions = array('txt', 'php', 'js', 'html', 'cpp', 'java', 'py', 'h', 'log');
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
         if (empty($revision)) {
@@ -215,6 +229,8 @@ class Visualize_MainComponent extends AppComponent
     public function canVisualizeWebgl($itemDao)
     {
         $extensions = array('bin');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
         if (empty($revision)) {
@@ -238,6 +254,8 @@ class Visualize_MainComponent extends AppComponent
     public function canVisualizePdf($itemDao)
     {
         $extensions = array('pdf');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
         if (empty($revision)) {
@@ -257,6 +275,8 @@ class Visualize_MainComponent extends AppComponent
     public function canVisualizeImage($itemDao)
     {
         $extensions = array('jpg', 'jpeg', 'gif', 'bmp', 'png');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
         if (empty($revision)) {
@@ -276,6 +296,8 @@ class Visualize_MainComponent extends AppComponent
     public function canVisualizeMedia($itemDao)
     {
         $extensions = array('m4a', 'm4v', 'mp3', 'mp4', 'avi');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
         if (empty($revision)) {
@@ -294,6 +316,7 @@ class Visualize_MainComponent extends AppComponent
     /** processParaviewData */
     public function processParaviewData($itemDao)
     {
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         if (!is_object($itemDao)) {
             $itemDao = $itemModel->load($itemDao['item_id']);
@@ -302,24 +325,25 @@ class Visualize_MainComponent extends AppComponent
             return;
         }
 
-        $modulesConfig = Zend_Registry::get('configsModules');
-        $pwapp = $modulesConfig['visualize']->pwapp;
-        $pvbatch = $modulesConfig['visualize']->pvbatch;
-        $usesymlinks = $modulesConfig['visualize']->usesymlinks;
-        $paraviewworkdir = $modulesConfig['visualize']->paraviewworkdir;
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $paraViewWorkDirectory = $settingModel->getValueByName(VISUALIZE_PARAVIEW_WEB_WORK_DIRECTORY_KEY, $this->moduleName);
+        $useSymlinks = $settingModel->getValueByName(VISUALIZE_USE_SYMLINKS_KEY, $this->moduleName);
+        $pwApp = $settingModel->getValueByName(VISUALIZE_TOMCAT_ROOT_URL_KEY, $this->moduleName);
+        $pvBatch = $settingModel->getValueByName(VISUALIZE_PVBATCH_COMMAND_KEY, $this->moduleName);
 
-        if (empty($pwapp) || empty($pvbatch)) {
+        if (empty($pwApp) || empty($pvBatch)) {
             return;
         }
 
         $pathArray = $this->createParaviewPath();
         $path = $pathArray['path'];
-        $tmpFolderName = $pathArray['foderName'];
+        $tmpFolderName = $pathArray['folderName'];
 
         $revision = $itemModel->getLastRevision($itemDao);
         $bitstreams = $revision->getBitstreams();
         foreach ($bitstreams as $bitstream) {
-            if ($usesymlinks) {
+            if ($useSymlinks) {
                 symlink($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
             } else {
                 copy($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
@@ -327,7 +351,7 @@ class Visualize_MainComponent extends AppComponent
 
             $ext = strtolower(substr(strrchr($bitstream->getName(), '.'), 1));
             if ($ext != 'pvsm') {
-                $filePath = $paraviewworkdir."/".$tmpFolderName.'/'.$bitstream->getName();
+                $filePath = $paraViewWorkDirectory."/".$tmpFolderName.'/'.$bitstream->getName();
                 $mainBitstream = $bitstream;
             }
         }
@@ -341,7 +365,7 @@ class Visualize_MainComponent extends AppComponent
                     '"'.$filePath,
                     $file_contents
                 );
-                $filePath = $paraviewworkdir."/".$tmpFolderName.'/'.$bitstream->getName();
+                $filePath = $paraViewWorkDirectory."/".$tmpFolderName.'/'.$bitstream->getName();
                 $inF = fopen($path.'/'.$bitstream->getName(), "w");
                 fwrite($inF, $file_contents);
                 fclose($inF);
@@ -365,65 +389,66 @@ class Visualize_MainComponent extends AppComponent
         }
 
         $return = file_get_contents(
-            str_replace("PWApp", 'processData', $pwapp)."?file=".$filePath."&pvbatch=".$pvbatch
+            str_replace("PWApp", 'processData', $pwApp)."?file=".$filePath."&pvbatch=".$pvBatch
         );
         if (strpos($return, 'PROBLEME') !== false) {
             return;
         }
-        copy(str_replace("PWApp", 'processData', $pwapp)."/screenshot1.png", $tmpPath.'/screenshot1.png');
-        copy(str_replace("PWApp", 'processData', $pwapp)."/screenshot2.png", $tmpPath.'/screenshot2.png');
-        copy(str_replace("PWApp", 'processData', $pwapp)."/screenshot4.png", $tmpPath.'/screenshot4.png');
-        copy(str_replace("PWApp", 'processData', $pwapp)."/screenshot3.png", $tmpPath.'/screenshot3.png');
+        copy(str_replace("PWApp", 'processData', $pwApp)."/screenshot1.png", $tmpPath.'/screenshot1.png');
+        copy(str_replace("PWApp", 'processData', $pwApp)."/screenshot2.png", $tmpPath.'/screenshot2.png');
+        copy(str_replace("PWApp", 'processData', $pwApp)."/screenshot4.png", $tmpPath.'/screenshot4.png');
+        copy(str_replace("PWApp", 'processData', $pwApp)."/screenshot3.png", $tmpPath.'/screenshot3.png');
 
-        $json = file_get_contents(str_replace("PWApp", 'processData', $pwapp)."/metadata.txt");
+        $json = file_get_contents(str_replace("PWApp", 'processData', $pwApp)."/metadata.txt");
 
         $metadata = json_decode($json);
 
-        $MetadataModel = MidasLoader::loadModel('Metadata');
+        /** @var MetadataModel $metadataModel */
+        $metadataModel = MidasLoader::loadModel('Metadata');
 
-        $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'image', 'type');
+        $metadataDao = $metadataModel->getMetadata(MIDAS_METADATA_TEXT, 'image', 'type');
         if (!$metadataDao) {
-            $MetadataModel->addMetadata(MIDAS_METADATA_TEXT, 'image', 'type', '');
+            $metadataModel->addMetadata(MIDAS_METADATA_TEXT, 'image', 'type', '');
         }
-        $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 'image', 'type', $metadata[0]);
+        $metadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 'image', 'type', $metadata[0]);
 
-        $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'image', 'points');
+        $metadataDao = $metadataModel->getMetadata(MIDAS_METADATA_TEXT, 'image', 'points');
         if (!$metadataDao) {
-            $MetadataModel->addMetadata(MIDAS_METADATA_TEXT, 'image', 'points', '');
+            $metadataModel->addMetadata(MIDAS_METADATA_TEXT, 'image', 'points', '');
         }
-        $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 'image', 'points', $metadata[1]);
+        $metadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 'image', 'points', $metadata[1]);
 
-        $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'image', 'cells');
+        $metadataDao = $metadataModel->getMetadata(MIDAS_METADATA_TEXT, 'image', 'cells');
         if (!$metadataDao) {
-            $MetadataModel->addMetadata(MIDAS_METADATA_TEXT, 'image', 'cells', '');
+            $metadataModel->addMetadata(MIDAS_METADATA_TEXT, 'image', 'cells', '');
         }
-        $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 'image', 'cells', $metadata[2]);
+        $metadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 'image', 'cells', $metadata[2]);
 
-        $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'image', 'polygons');
+        $metadataDao = $metadataModel->getMetadata(MIDAS_METADATA_TEXT, 'image', 'polygons');
         if (!$metadataDao) {
-            $MetadataModel->addMetadata(MIDAS_METADATA_TEXT, 'image', 'polygons', '');
-        }
-
-        $MetadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 'image', 'polygons', $metadata[3]);
-
-        $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'image', 'x-range');
-        if (!$metadataDao) {
-            $MetadataModel->addMetadata(MIDAS_METADATA_TEXT, 'image', 'x-range', '');
+            $metadataModel->addMetadata(MIDAS_METADATA_TEXT, 'image', 'polygons', '');
         }
 
-        $MetadataModel->addMetadataValue(
+        $metadataModel->addMetadataValue($revision, MIDAS_METADATA_TEXT, 'image', 'polygons', $metadata[3]);
+
+        $metadataDao = $metadataModel->getMetadata(MIDAS_METADATA_TEXT, 'image', 'x-range');
+        if (!$metadataDao) {
+            $metadataModel->addMetadata(MIDAS_METADATA_TEXT, 'image', 'x-range', '');
+        }
+
+        $metadataModel->addMetadataValue(
             $revision,
             MIDAS_METADATA_TEXT,
             'image',
             'x-range',
             $metadata[4][0].' to '.$metadata[4][1]
         );
-        $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'image', 'y-range');
+        $metadataDao = $metadataModel->getMetadata(MIDAS_METADATA_TEXT, 'image', 'y-range');
         if (!$metadataDao) {
-            $MetadataModel->addMetadata(MIDAS_METADATA_TEXT, 'image', 'y-range', '');
+            $metadataModel->addMetadata(MIDAS_METADATA_TEXT, 'image', 'y-range', '');
         }
 
-        $MetadataModel->addMetadataValue(
+        $metadataModel->addMetadataValue(
             $revision,
             MIDAS_METADATA_TEXT,
             'image',
@@ -491,10 +516,12 @@ class Visualize_MainComponent extends AppComponent
     /** createParaviewPath */
     public function createParaviewPath()
     {
-        $modulesConfig = Zend_Registry::get('configsModules');
-        $customtmp = $modulesConfig['visualize']->customtmp;
-        if (isset($customtmp) && !empty($customtmp)) {
-            $tmp_dir = $customtmp;
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $customTemporaryDirectory = $settingModel->getValueByName(VISUALIZE_TEMPORARY_DIRECTORY_KEY, $this->moduleName);
+
+        if (isset($customTemporaryDirectory) && !empty($customTemporaryDirectory)) {
+            $tmp_dir = $customTemporaryDirectory;
             if (!file_exists($tmp_dir) || !is_writable($tmp_dir)) {
                 throw new Zend_Exception('Unable to access temp dir');
             }
@@ -525,7 +552,7 @@ class Visualize_MainComponent extends AppComponent
             $path = $tmp_dir.'/'.$tmpFolderName;
         }
 
-        return array('path' => $path, 'foderName' => $tmpFolderName);
+        return array('path' => $path, 'folderName' => $tmpFolderName);
     }
 
     /** recursively delete a folder */

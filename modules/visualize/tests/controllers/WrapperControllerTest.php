@@ -43,7 +43,7 @@ class Visualize_WrapperControllerTest extends ControllerTestCase
         $userDao = $userModel->load($usersFile[0]->getKey());
 
         Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
-        Zend_Registry::set('configsModules', array());
+
         $privateFolder = $folderModel->load(1002);
         $item = $uploadComponent->createUploadedItem(
             $userDao,

@@ -21,7 +21,6 @@
 /** WebGL controller */
 class Visualize_WebglController extends Visualize_AppController
 {
-    public $_moduleForms = array('Config');
     public $_components = array('Utility', 'Date');
     public $_models = array('Item', 'Folder');
     public $_moduleModels = array();

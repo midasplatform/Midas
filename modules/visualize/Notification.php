@@ -21,6 +21,7 @@
 /** Notification manager for the visualize module */
 class Visualize_Notification extends MIDAS_Notification
 {
+    public $_models = array('Setting');
     public $_moduleComponents = array('Main');
     public $moduleName = 'visualize';
 
@@ -77,9 +78,9 @@ class Visualize_Notification extends MIDAS_Notification
     /** generate dashboard information */
     public function getDashboard()
     {
-        $modulesConfig = Zend_Registry::get('configsModules');
-        $useparaview = $modulesConfig['visualize']->useparaview;
-        if (!isset($useparaview) || !$useparaview) {
+        $useParaView = $this->Setting->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
+
+        if (!isset($useParaView) || !$useParaView) {
             return false;
         }
 
@@ -90,10 +91,10 @@ class Visualize_Notification extends MIDAS_Notification
                 '503 Service Temporarily Unavailable'
             ) !== false
         ) {
-            return array('ParaviewWeb Server' => array(false, 'Could not connect to paraview web server'));
+            return array('ParaViewWeb Server' => array(false, 'Could not connect to ParaViewWeb server'));
         }
 
-        return array('ParaviewWeb Server' => array(true, ''));
+        return array('ParaViewWeb Server' => array(true, ''));
     }
 
     /** get server's url */
