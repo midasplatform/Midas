@@ -18,27 +18,16 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Readmes_ConfigController
- *
- * @category   Midas modules
- * @package    readmes
- */
-class Readmes_ConfigController extends Readmes_AppController
+/** Admin controller for the readmes module. */
+class Readmes_AdminController extends Readmes_AppController
 {
-    public $_components = array('Breadcrumb');
+    /** @var array */
+    public $_models = array('Setting');
 
-    /**
-     * @throws Zend_Exception on invalid userSession
-     */
+    /** Index action */
     public function indexAction()
     {
         $this->requireAdminPrivileges();
-
-        $iconPath = $this->view->moduleWebroot.'/public/images/page_white_text.png';
-        $breadcrumbs = array();
-        $breadcrumbs[] = array('type' => 'moduleList');
-        $breadcrumbs[] = array('type' => 'custom', 'text' => 'Readme Module Configuration', 'icon' => $iconPath);
-        $this->Component->Breadcrumb->setBreadcrumbHeader($breadcrumbs, $this->view);
+        $this->view->pageTitle = 'READMEs Module Configuration';
     }
 }
