@@ -126,7 +126,7 @@ class UtilityComponent extends AppComponent
             ) {
                 $config = new Zend_Config_Ini($dir.$file.'/configs/module.ini', 'global', true);
                 $config->db = array();
-                if (!file_exists($dir.$file.'/database')) {
+                if (!file_exists($dir.$file.'/database') || (!file_exists($dir.$file.'/database/mysql') && !file_exists($dir.$file.'/database/pgsql') && !file_exists($dir.$file.'/database/sqlite'))) {
                     $config->db->PDO_MYSQL = true;
                     $config->db->PDO_PGSQL = true;
                     $config->db->PDO_SQLITE = true;
