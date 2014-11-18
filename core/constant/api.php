@@ -18,7 +18,6 @@
  limitations under the License.
 =========================================================================*/
 
-// Web API error codes
 define('MIDAS_INTERNAL_ERROR', -100);
 define('MIDAS_INVALID_TOKEN', -101);
 define('MIDAS_UPLOAD_FAILED', -105);
@@ -31,7 +30,6 @@ define('MIDAS_INVALID_POLICY', -151);
 define('MIDAS_HTTP_ERROR', -153);
 define('MIDAS_NOT_FOUND', -154);
 
-// List of permission scopes
 define('MIDAS_API_PERMISSION_SCOPE_ALL', 0);
 define('MIDAS_API_PERMISSION_SCOPE_READ_USER_INFO', 1);
 define('MIDAS_API_PERMISSION_SCOPE_WRITE_USER_INFO', 2);
@@ -40,6 +38,7 @@ define('MIDAS_API_PERMISSION_SCOPE_WRITE_DATA', 4);
 define('MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA', 5);
 define('MIDAS_API_PERMISSION_SCOPE_READ_GROUPS', 6);
 define('MIDAS_API_PERMISSION_SCOPE_MANAGE_GROUPS', 7);
+
 Zend_Registry::set(
     'permissionScopeMap',
     array(
