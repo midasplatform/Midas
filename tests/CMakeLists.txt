@@ -39,6 +39,7 @@ endfunction()
 
 function(add_midas_mysql_test TestName TestFile)
     if(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/mysql.ini)
+        set(Environment "midas_data_path=$ENV{midas_data_path};midas_local_configs_path=$ENV{midas_local_configs_path};midas_logs_path=$ENV{midas_logs_path};midas_temp_path=$ENV{midas_temp_path}")
         set(TestParams --debug --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php)
         add_test(
             MySQL${TestName}
@@ -48,12 +49,14 @@ function(add_midas_mysql_test TestName TestFile)
             MySQL${TestName} PROPERTIES
             FAIL_REGULAR_EXPRESSION ".*Failures: [1-9]+.*;.*Exceptions: [1-9]+.*"
             RESOURCE_LOCK MIDASDatabase
+            ENVIRONMENT "${Environment}"
         )
   endif()
 endfunction()
 
 function(add_midas_pgsql_test TestName TestFile)
     if(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/pgsql.ini)
+        set(Environment "midas_data_path=$ENV{midas_data_path};midas_local_configs_path=$ENV{midas_local_configs_path};midas_logs_path=$ENV{midas_logs_path};midas_temp_path=$ENV{midas_temp_path}")
         set(TestParams --debug --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php)
         add_test(
             PgSQL${TestName}
@@ -63,12 +66,14 @@ function(add_midas_pgsql_test TestName TestFile)
             PgSQL${TestName} PROPERTIES
             FAIL_REGULAR_EXPRESSION ".*Failures: [1-9]+.*;.*Exceptions: [1-9]+.*"
             RESOURCE_LOCK MIDASDatabase
+            ENVIRONMENT "${Environment}"
         )
     endif()
 endfunction()
 
 function(add_midas_sqlite_test TestName TestFile)
     if(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/sqlite.ini)
+        set(Environment "midas_data_path=$ENV{midas_data_path};midas_local_configs_path=$ENV{midas_local_configs_path};midas_logs_path=$ENV{midas_logs_path};midas_temp_path=$ENV{midas_temp_path}")
         set(TestParams --debug --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php)
         add_test(
             SQLite${TestName}
@@ -78,6 +83,7 @@ function(add_midas_sqlite_test TestName TestFile)
             SQLite${TestName} PROPERTIES
             FAIL_REGULAR_EXPRESSION ".*Failures: [1-9]+.*;.*Exceptions: [1-9]+.*"
             RESOURCE_LOCK MIDASDatabase
+            ENVIRONMENT "${Environment}"
         )
     endif()
 endfunction()

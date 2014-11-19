@@ -64,6 +64,21 @@ if(NOT COMPOSER_LOCK)
 endif()
 
 #-----------------------------------------------------------------------------
+# Create data, local configs, logs, and temporary directories for testing
+#-----------------------------------------------------------------------------
+set(ENV{midas_data_path} ${CMAKE_CURRENT_BINARY_DIR}/data)
+file(MAKE_DIRECTORY $ENV{midas_data_path})
+
+set(ENV{midas_local_configs_path} ${CMAKE_CURRENT_BINARY_DIR}/configs)
+file(MAKE_DIRECTORY $ENV{midas_local_configs_path})
+
+set(ENV{midas_logs_path} ${CMAKE_CURRENT_BINARY_DIR}/logs)
+file(MAKE_DIRECTORY $ENV{midas_logs_path})
+
+set(ENV{midas_temp_path} ${CMAKE_CURRENT_BINARY_DIR}/tmp)
+file(MAKE_DIRECTORY $ENV{midas_temp_path})
+
+#-----------------------------------------------------------------------------
 # Drop all tables from the testing database, then reinstall the database, set
 # a default asset store, and install all modules
 #-----------------------------------------------------------------------------
