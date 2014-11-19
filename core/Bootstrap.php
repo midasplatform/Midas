@@ -164,6 +164,32 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         return $config;
     }
 
+    /** Display the debug toolbar, if enabled. */
+    protected function _initZFDebug()
+    {
+        $this->bootstrap('config');
+        $zfDebugPath = BASE_PATH.'/vendor/jokkedk/zfdebug/library';
+
+        if (Zend_Registry::get('configGlobal')->debug_toolbar === '1' && file_exists($zfDebugPath)) {
+            set_include_path(get_include_path().PATH_SEPARATOR.$zfDebugPath);
+
+            $options = array(
+                'plugins' => array('Variables',
+                    'Database' => array('adapter' => Zend_Registry::get('dbAdapter')),
+                    'Exception',
+                    'File' => array('basePath' => BASE_PATH),
+                    'Html',
+                )
+            );
+
+            $debug = new ZFDebug_Controller_Plugin_Debug($options);
+
+            $this->bootstrap('frontController');
+            $frontController = $this->getResource('frontController');
+            $frontController->registerPlugin($debug);
+        }
+    }
+
     /** set up front */
     protected function _initFrontModules()
     {

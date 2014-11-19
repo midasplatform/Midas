@@ -28,6 +28,7 @@
     "require-dev": {
         "ext-curl": "*",
         "fabpot/php-cs-fixer": "~1.1",
+        "jokkedk/zfdebug": "~1.6.2",
         "phpcheckstyle/phpcheckstyle": "V0.14.1",
         "phpunit/dbunit": "1.3.*@dev",
         "phpunit/php-code-coverage": "~2.0.11",
