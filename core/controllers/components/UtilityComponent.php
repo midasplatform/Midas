@@ -444,24 +444,7 @@ class UtilityComponent extends AppComponent
 
         try {
             $configDatabase = Zend_Registry::get('configDatabase');
-            if (empty($configDatabase->database->params->driver_options)) {
-                $driverOptions = array();
-            } else {
-                $driverOptions = $configDatabase->database->params->driver_options->toArray();
-            }
-            $params = array(
-                'dbname' => $configDatabase->database->params->dbname,
-                'username' => $configDatabase->database->params->username,
-                'password' => $configDatabase->database->params->password,
-                'driver_options' => $driverOptions,
-            );
-            if (empty($configDatabase->database->params->unix_socket)) {
-                $params['host'] = $configDatabase->database->params->host;
-                $params['port'] = $configDatabase->database->params->port;
-            } else {
-                $params['unix_socket'] = $configDatabase->database->params->unix_socket;
-            }
-            $db = Zend_Db::factory($configDatabase->database->adapter, $params);
+            $db = Zend_Registry::get('dbAdapter');
 
             switch ($configDatabase->database->adapter) {
                 case 'PDO_MYSQL':
