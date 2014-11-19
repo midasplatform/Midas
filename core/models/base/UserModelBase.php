@@ -279,7 +279,7 @@ abstract class UserModelBase extends AppModel
         }
 
         // Check if the user already exists based on the email address
-        if ($this->getByEmail($email) != null) {
+        if ($this->getByEmail($email) !== false) {
             throw new Zend_Exception("User already exists.");
         }
 

@@ -164,10 +164,10 @@ class InstallController extends AppController
                 }
 
                 $db = Zend_Db::factory($dbtype, $params);
-                $this->Component->Utility->run_sql_from_file($db, $sqlFile);
-
                 Zend_Db_Table::setDefaultAdapter($db);
                 Zend_Registry::set('dbAdapter', $db);
+
+                $this->Component->Utility->run_sql_from_file($db, $sqlFile);
 
                 // Must generate and store our password salt before we create our first user
                 $options = array('allowModifications' => true);
@@ -183,7 +183,7 @@ class InstallController extends AppController
                 $configGlobal = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/application.local.ini', 'global');
                 Zend_Registry::set('configGlobal', $configGlobal);
 
-                $configDatabase = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/database.local.ini', $configGlobal->environment);
+                $configDatabase = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/database.local.ini', 'production');
                 Zend_Registry::set('configDatabase', $configDatabase);
 
                 require_once BASE_PATH.'/core/controllers/components/UpgradeComponent.php';
@@ -193,7 +193,8 @@ class InstallController extends AppController
                 $upgradeComponent->upgrade(str_replace('.sql', '', basename($sqlFile)));
 
                 session_start();
-                $userModel = MidasLoader::loadModel('User');
+                require_once BASE_PATH.'/core/models/pdo/UserModel.php';
+                $userModel = new UserModel();
                 $this->userSession->Dao = $userModel->createUser(
                     $form->getValue('email'),
                     $form->getValue('userpassword1'),
@@ -259,7 +260,7 @@ class InstallController extends AppController
             $config->global->application->name = $form->getValue('name');
             $config->global->default->timezone = $form->getValue('timezone');
             $config->global->defaultassetstore->id = $assetstores[0]->getKey();
-            $config->global->environment = $form->getValue('environment');
+            $config->global->environment = 'production';
 
             $writer = new Zend_Config_Writer_Ini();
             $writer->setConfig($config);
