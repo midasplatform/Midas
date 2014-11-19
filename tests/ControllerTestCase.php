@@ -168,7 +168,8 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
             }
         }
 
-        require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
+        $utilityComponent = MidasLoader::loadComponent('Utility');
+
         require_once BASE_PATH.'/core/ApiController.php';
         $frontController->addControllerDirectory(BASE_PATH.'/core/controllers/api', 'rest');
         // add RESTful route for web APIs
@@ -212,6 +213,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
             if (file_exists(BASE_PATH.'/modules/'.$route.'/models/AppModel.php')) {
                 require_once BASE_PATH.'/modules/'.$route.'/models/AppModel.php';
             }
+            $utilityComponent->installModule($m);
         }
         Zend_Registry::set('modulesEnable', $listeModule);
         Zend_Registry::set('modulesHaveApi', $apiModules);
