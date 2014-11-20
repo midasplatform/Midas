@@ -154,6 +154,26 @@ abstract class FolderModelBase extends AppModel
     /** Zip stream */
     abstract public function zipStream(&$zip, $path, $folder, &$userDao, &$overrideOutputFunction = null);
 
+
+    /** copy another folder's policies */
+    public function copyFolderPolicies($folderdao, $referenceFolderdao)
+    {
+        if (!$folderdao instanceof FolderDao || !$referenceFolderdao instanceof FolderDao) {
+            throw new Zend_Exception("Error in param folderdao or referenceFolderdao when copying parent policies.");
+        }
+        $groupPolicies = $referenceFolderdao->getFolderpolicygroup();
+        $userPolicies = $referenceFolderdao->getFolderpolicyuser();
+
+        $FolderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
+        foreach ($groupPolicies as $key => $policy) {
+            $FolderpolicygroupModel->createPolicy($policy->getGroup(), $folderdao, $policy->getPolicy());
+        }
+        $FolderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
+        foreach ($userPolicies as $key => $policy) {
+            $FolderpolicyuserModel->createPolicy($policy->getUser(), $folderdao, $policy->getPolicy());
+        }
+    }
+
     /** Get the root folder */
     public function getRoot($folder)
     {

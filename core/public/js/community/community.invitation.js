@@ -5,7 +5,7 @@
 var midas = midas || {};
 midas.invite = midas.invite || {};
 
-var jsonShare = $.parseJSON($('div.jsonShareContent').html());
+midas.invite.directAdd = $("#directAdd").val();
 
 /**
  * Render group selection dialog for the community

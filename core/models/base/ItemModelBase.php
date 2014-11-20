@@ -124,6 +124,36 @@ abstract class ItemModelBase extends AppModel
     /** Update item name */
     abstract public function updateItemName($name, $parent);
 
+    /** copy another item's policies */
+    public function copyItemPolicies($itemdao, $referenceItemdao, $feeddao = null)
+    {
+        if (!$itemdao instanceof ItemDao || !$referenceItemdao instanceof ItemDao) {
+            throw new Zend_Exception("Error in param itemdao or referenceItemdao when copying parent policies.");
+        }
+        $groupPolicies = $referenceItemdao->getItempolicygroup();
+        $userPolicies = $referenceItemdao->getItempolicyuser();
+
+        $ItempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
+        foreach ($groupPolicies as $key => $policy) {
+            $ItempolicygroupModel->createPolicy($policy->getGroup(), $itemdao, $policy->getPolicy());
+        }
+        $ItempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
+        foreach ($userPolicies as $key => $policy) {
+            $ItempolicyuserModel->createPolicy($policy->getUser(), $itemdao, $policy->getPolicy());
+        }
+
+        if ($feeddao != null && $feeddao instanceof FeedDao) {
+            $FeedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
+            foreach ($groupPolicies as $key => $policy) {
+                $FeedpolicygroupModel->createPolicy($policy->getGroup(), $feeddao, $policy->getPolicy());
+            }
+            $FeedpolicyuserModel = MidasLoader::loadModel('Feedpolicyuser');
+            foreach ($userPolicies as $key => $policy) {
+                $FeedpolicyuserModel->createPolicy($policy->getUser(), $feeddao, $policy->getPolicy());
+            }
+        }
+    }
+
     /** delete an item */
     public function delete($dao)
     {
