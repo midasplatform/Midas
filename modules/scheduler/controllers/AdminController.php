@@ -18,15 +18,22 @@
  limitations under the License.
 =========================================================================*/
 
-/** Config controller for the scheduler module */
-class Scheduler_ConfigController extends Scheduler_AppController
+/**
+ * Admin controller for the scheduler module.
+ *
+ * @property Scheduler_JobModel $Scheduler_Job
+ */
+class Scheduler_AdminController extends Scheduler_AppController
 {
-    public $_moduleModels = array('Job', 'JobLog');
+    /** @var array */
+    public $_moduleModels = array('Job');
 
     /** Index action */
     public function indexAction()
     {
         $this->requireAdminPrivileges();
+
+        $this->view->pageTitle = 'Scheduler Module Configuration';
         $this->view->jobs = $this->Scheduler_Job->getJobsToRun();
         $this->view->jobsErrors = $this->Scheduler_Job->getLastErrors();
     }

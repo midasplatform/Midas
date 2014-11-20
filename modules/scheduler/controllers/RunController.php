@@ -40,7 +40,7 @@ class Scheduler_RunController extends Scheduler_AppController
         }
         ignore_user_abort(true);
 
-        $this->Setting->setConfig('lastrun', ''.$startTime, $this->moduleName);
+        $this->Setting->setConfig('lastrun', $startTime, $this->moduleName);
 
         $id = $this->getParam('id');
         if (isset($id)) {
