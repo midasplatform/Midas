@@ -100,6 +100,7 @@ message(STATUS "Setting up database(s) for testing - done")
 #-----------------------------------------------------------------------------
 
 include(CTest)
+option(MIDAS_RUN_SECURITY_CHECKS  "Run security checks?" ON)
 option(MIDAS_RUN_STYLE_TESTS "Run PHP style tests?" ON)
 option(MIDAS_RUN_TESTS_WITH_COVERAGE "Run tests with coverage?" OFF)
 
