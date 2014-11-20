@@ -152,9 +152,11 @@
     <!--  ****************  -->
     <!--      Quotes        -->
     <!--  ****************  -->
+    <!--
     <test name="preferQuotes">
         <property name="type" value="single"/>
     </test>
+    -->
 
 
     <!--  ****************  -->
@@ -245,7 +247,7 @@
     <test name="useBooleanOperators"></test>
 
     <!-- Check for empty blocks -->
-    <!--<test name="checkEmptyBlock"></test> -->
+    <!-- <test name="checkEmptyBlock"></test> -->
 
     <!-- Check for empty statements -->
     <test name="checkEmptyStatement"></test>
