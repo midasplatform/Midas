@@ -17,6 +17,7 @@
         "ext-json": "*",
         "francodacosta/phmagick": "0.4.*@dev",
         "intervention/image": "~2.0.13",
+        "ircmaxell/random-lib": "1.0.*@dev",
         "leafo/scssphp": "~0.1.1",
         "maennchen/zipstream-php": "~0.2.2",
         "michelf/php-markdown": "~1.4.1",
