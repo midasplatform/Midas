@@ -402,13 +402,14 @@ function oai_exit()
     global $request;
     global $errors;
 
-    if (!Zend_Registry::get('configGlobal')->environment == 'testing') {
+    $environment = Zend_Registry::get('configGlobal')->environment;
+    if ($environment != 'testing') {
         header('Content-Type: text/plain');
     }
     echo $xmlheader;
     echo $request;
     echo $errors;
-    if (!Zend_Registry::get('configGlobal')->environment == 'testing') {
+    if ($environment != 'testing') {
         oai_close();
         exit();
     }

@@ -18,25 +18,21 @@
  limitations under the License.
 =========================================================================*/
 
-/** Forms */
-class Oai_ConfigForm extends AppForm
+require_once BASE_PATH.'/modules/oai/constant/module.php';
+
+/** Install the oai module. */
+class Oai_InstallScript extends MIDASModuleInstallScript
 {
-    /** create  form */
-    public function createConfigForm()
+    /** @var string */
+    public $moduleName = 'oai';
+
+    /** Post database install. */
+    public function postInstall()
     {
-        $form = new Zend_Form();
-
-        $form->setAction($this->webroot.'/oai/config/index')->setMethod('post');
-
-        $repositoryname = new Zend_Form_Element_Text('repositoryname');
-        $adminemail = new Zend_Form_Element_Text('adminemail');
-        $repositoryidentifier = new Zend_Form_Element_Text('repositoryidentifier');
-
-        $submit = new  Zend_Form_Element_Submit('submitConfig');
-        $submit->setLabel('Save configuration');
-
-        $form->addElements(array($repositoryidentifier, $adminemail, $repositoryname, $submit));
-
-        return $form;
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $settingModel->setConfig(OAI_REPOSITORY_IDENTIFIER_KEY, OAI_REPOSITORY_IDENTIFIER_DEFAULT_VALUE, $this->moduleName);
+        $settingModel->setConfig(OAI_REPOSITORY_NAME_KEY, OAI_REPOSITORY_NAME_DEFAULT_VALUE, $this->moduleName);
+        $settingModel->setConfig(OAI_ADMIN_EMAIL_KEY, OAI_ADMIN_EMAIL_DEFAULT_VALUE, $this->moduleName);
     }
 }

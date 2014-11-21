@@ -22,7 +22,7 @@
 class Oai_IndexController extends Oai_AppController
 {
     public $_moduleModels = array();
-    public $_models = array();
+    public $_models = array('Setting');
     public $_components = array();
 
     /** Before filter */
@@ -61,9 +61,6 @@ class Oai_IndexController extends Oai_AppController
         $output = '';
         $errors = '';
 
-        // configuration, sorry, that's not simple :)
-        $modulesConfig = Zend_Registry::get('configsModules');
-
         if ($this->isTestingEnv()) {
             $_SERVER['SERVER_NAME'] = 'localhost';
             $_SERVER['REQUEST_METHOD'] = 'GET';
@@ -80,16 +77,16 @@ class Oai_IndexController extends Oai_AppController
         $responseDate = gmstrftime('%Y-%m-%dT%H:%M:%S').'Z';
         $xmlheader = $XMLHEADER.' <responseDate>'.$responseDate."</responseDate>\n";
 
-        $repositoryName = $modulesConfig['oai']->repositoryname;
+        $repositoryName = $this->Setting->getValueByName(OAI_REPOSITORY_NAME_KEY, $this->moduleName);
         $baseURL = $MY_URI;
         $protocolVersion = '2.0';
-        $adminEmail = $modulesConfig['oai']->adminemail;
+        $adminEmail = $this->Setting->getValueByName(OAI_ADMIN_EMAIL_KEY, $this->moduleName);
         $earliestDatestamp = 'T00:00:00Z';
         $deletedRecord = 'persistent';
         $granularity = 'YYYY-MM-DDThh:mm:ssZ';
         $show_identifier = false;
 
-        $repositoryIdentifier = $modulesConfig['oai']->repositoryidentifier;
+        $repositoryIdentifier = $this->Setting->getValueByName(OAI_REPOSITORY_IDENTIFIER_KEY, $this->moduleName);
         $delimiter = ':';
         $idPrefix = '';
         $oaiprefix = "oai".$delimiter.$repositoryIdentifier.$delimiter.$idPrefix;
