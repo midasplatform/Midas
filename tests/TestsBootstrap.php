@@ -31,6 +31,8 @@ define('TESTS_PATH', BASE_PATH.'/tests');
 require_once BASE_PATH.'/vendor/autoload.php';
 require_once BASE_PATH.'/core/include.php';
 
+date_default_timezone_set('UTC');
+
 Zend_Session::$_unitTestEnabled = true;
 Zend_Session::start();
 

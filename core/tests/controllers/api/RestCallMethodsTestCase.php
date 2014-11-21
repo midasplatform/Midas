@@ -83,7 +83,7 @@ class RestCallMethodsTestCase extends ControllerTestCase
 
         $resp = $this->_callRestApi($method, $path);
         $this->_assertStatusOk($resp);
-        $this->assertEquals(strlen($resp['body']->data->token), 40);
+        $this->assertEquals(strlen($resp['body']->data->token), 32);
 
         // **IMPORTANT** This will clear any params that were set before this function was called
         $this->resetAll();

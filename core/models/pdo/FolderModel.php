@@ -628,7 +628,9 @@ class FolderModel extends FolderModelBase
         }
 
         if (!isset($folder->uuid) || empty($folder->uuid)) {
-            $folder->setUuid(uniqid().md5(mt_rand()));
+            /** @var UuidComponent $uuidComponent */
+            $uuidComponent = MidasLoader::loadComponent('Uuid');
+            $folder->setUuid($uuidComponent->generate());
         }
         $name = $folder->getName();
         if (empty($name) && $name !== '0') {

@@ -315,12 +315,7 @@ class UtilityComponent extends AppComponent
     /** Function to run a SQL script */
     public static function run_sql_from_file($db, $sqlfile)
     {
-        try {
-            $db->getConnection();
-        } catch (Zend_Exception $exception) {
-            throw new Zend_Exception("Unable to connect.");
-        }
-
+        $db->getConnection();
         $sql = '';
         $lines = file($sqlfile);
         foreach ($lines as $line) {
@@ -630,28 +625,19 @@ class UtilityComponent extends AppComponent
     }
 
     /**
-     * Generate a string of random characters. Seeds RNG within the function using microtime.
+     * Generate a medium-strength random string of the given length.
      *
-     * @param $length The length of the random string
-     * @param $alphabet (Optional) The alphabet string; if none provided, uses [a-zA-z0-9]
+     * @deprecated since 3.3.0
+     * @param int $length length of the generated string
+     * @param string $characters characters to use to generate the string
+     * @return string
      */
-    public static function generateRandomString($length, $alphabet = null)
+    public static function generateRandomString($length, $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
     {
-        if (!is_string($alphabet) || empty($alphabet)) {
-            $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        }
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
 
-        // Seed RNG with microtime (for lack of something more difficult to guess)
-        list($usec, $sec) = explode(' ', microtime());
-        srand((float) $sec + ((float) $usec * 100000));
-
-        $salt = '';
-        $max = strlen($alphabet) - 1;
-        for ($i = 0; $i < $length; $i++) {
-            $salt .= substr($alphabet, mt_rand(0, $max), 1);
-        }
-
-        return $salt;
+        return $randomComponent->generateString($length, $characters);
     }
 
     /**

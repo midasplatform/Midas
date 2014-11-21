@@ -60,7 +60,7 @@
     <!-- OK bitstreams -->
     <bitstream bitstream_id="1001" itemrevision_id="1001" name="test.txt" mimetype="text/plain" sizebytes="259"
         checksum="1234" path="12/34/1234" assetstore_id="1" date="1999-10-20 00:00:00"/>
-    <bitstream bitstream_id="1002" itemrevision_id="-1" name="thumbnail.jpeg" mimetype="image/jpeg" sizebytes="2805"
+    <bitstream bitstream_id="1002" itemrevision_id="-1" name="thumbnail.jpg" mimetype="image/jpeg" sizebytes="2805"
         checksum="abcd" path="ab/cd/abcd" assetstore_id="1" date="1999-10-20 00:00:00"/>
 
     <!-- Orphaned bitstreams -->

@@ -175,7 +175,9 @@ abstract class ItemModelBase extends AppModel
     public function save($dao, $metadataChanged = true)
     {
         if (!isset($dao->uuid) || empty($dao->uuid)) {
-            $dao->setUuid(uniqid().md5(mt_rand()));
+            /** @var UuidComponent $uuidComponent */
+            $uuidComponent = MidasLoader::loadComponent('Uuid');
+            $dao->setUuid($uuidComponent->generate());
         }
         if (!isset($dao->date_creation) || empty($dao->date_creation)) {
             $dao->setDateCreation(date('Y-m-d H:i:s'));

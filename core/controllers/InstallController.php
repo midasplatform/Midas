@@ -25,7 +25,7 @@ class InstallController extends AppController
 {
     public $_models = array('User', 'Assetstore');
     public $_daos = array('Assetstore');
-    public $_components = array('Utility');
+    public $_components = array('Random', 'Utility');
     public $_forms = array('Install');
 
     /**
@@ -172,7 +172,16 @@ class InstallController extends AppController
                 // Must generate and store our password salt before we create our first user
                 $options = array('allowModifications' => true);
                 $applicationConfig = new Zend_Config_Ini(CORE_CONFIGS_PATH.'/application.ini', null, $options);
-                $applicationConfig->global->password->prefix = UtilityComponent::generateRandomString(32);
+
+                if (extension_loaded('openssl')) {
+                    $factory = new \RandomLib\Factory();
+                    $generator = $factory->getHighStrengthGenerator();
+                    $prefix = $generator->generateString(32);
+                } else {
+                    $prefix = $this->Component->Random->generateString(32);
+                }
+
+                $applicationConfig->global->password->prefix = $prefix;
                 $applicationConfig->global->gravatar = $form->getValue('gravatar');
 
                 $writer = new Zend_Config_Writer_Ini();

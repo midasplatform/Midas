@@ -38,7 +38,7 @@ class UserController extends AppController
         'Setting',
     );
     public $_daos = array('User', 'Folder', 'Folderpolicygroup', 'Folderpolicyuser', 'Group');
-    public $_components = array('Breadcrumb', 'Date', 'Filter', 'Sortdao');
+    public $_components = array('Breadcrumb', 'Date', 'Filter', 'Random', 'Sortdao');
     public $_forms = array('User');
 
     /** Init Controller */
@@ -110,7 +110,7 @@ class UserController extends AppController
                 }
             }
 
-            $pass = UtilityComponent::generateRandomString(10);
+            $pass = $this->Component->Random->generateString(32);
             $this->User->changePassword($user, $pass);
 
             $url = $this->getServerURL().$this->view->webroot;
@@ -206,7 +206,7 @@ class UserController extends AppController
             $nopass = (bool) $this->getParam('nopassword');
             if ($adminCreate && $nopass) {
                 $form->populate($this->getRequest()->getPost());
-                $passwd = UtilityComponent::generateRandomString(32);
+                $passwd = $this->Component->Random->generateString(32);
                 $form->getElement('password1')->setValue($passwd);
                 $form->getElement('password2')->setValue($passwd);
 
@@ -891,7 +891,7 @@ class UserController extends AppController
                         return;
                     }
 
-                    $tmpPath = $this->getDataDirectory('thumbnail').'/'.mt_rand(1, 1000);
+                    $tmpPath = $this->getDataDirectory('thumbnail').'/'.$this->Component->Random->generateInt();
                     if (!file_exists($this->getDataDirectory('thumbnail'))) {
                         throw new Zend_Exception(
                             "Thumbnail path does not exist: ".$this->getDataDirectory('thumbnail')
@@ -900,15 +900,15 @@ class UserController extends AppController
                     if (!file_exists($tmpPath)) {
                         mkdir($tmpPath);
                     }
-                    $tmpPath .= '/'.mt_rand(1, 1000);
+                    $tmpPath .= '/'.$this->Component->Random->generateInt();
                     if (!file_exists($tmpPath)) {
                         mkdir($tmpPath);
                     }
-                    $destionation = $tmpPath."/".mt_rand(1, 1000).'.jpeg';
-                    while (file_exists($destionation)) {
-                        $destionation = $tmpPath."/".mt_rand(1, 1000).'.jpeg';
+                    $destination = $tmpPath."/".$this->Component->Random->generateInt().'.jpg';
+                    while (file_exists($destination)) {
+                        $destination = $tmpPath."/".$this->Component->Random->generateInt().'.jpg';
                     }
-                    $pathThumbnail = $destionation;
+                    $pathThumbnail = $destination;
 
                     list ($x, $y) = getimagesize($path);  //--- get size of img ---
                     $thumb = 32;  //--- max. size of thumb ---

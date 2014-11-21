@@ -105,22 +105,11 @@ class UserapiModel extends UserapiModelBase
             return $tokenDao;
         }
 
-        // We generate a token
-        $keychars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        $length = 40;
-
-        // seed with microseconds
-        list($usec, $sec) = explode(' ', microtime());
-        mt_srand((float) $sec + ((float) $usec * 100000));
-
-        $token = "";
-        $max = strlen($keychars) - 1;
-        for ($i = 0; $i < $length; $i++) {
-            $token .= substr($keychars, mt_rand(0, $max), 1);
-        }
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
+        $token = $randomComponent->generateString(32);
 
         // Find the API id
-
         $sql = $this->database->select()->setIntegrityCheck(false)->from(array('u' => 'userapi'))->where(
             'u.user_id = ?',
             $userDao->getKey()
@@ -130,19 +119,20 @@ class UserapiModel extends UserapiModelBase
         $userapiDao = $this->initDao('Userapi', $row);
 
         if (!$userapiDao) {
+            throw new Zend_Exception();
             return false;
         }
+
+        // We do some cleanup of all the other keys that have expired
+        $tokenModel = MidasLoader::loadModel('Token');
+        $tokenModel->cleanExpired();
 
         $tokenDao = MidasLoader::newDao('TokenDao');
         $tokenDao->setUserapiId($userapiDao->getKey());
         $tokenDao->setToken($token);
         $tokenDao->setExpirationDate(date('Y-m-d H:i:s', time() + $userapiDao->getTokenExpirationTime() * 60));
 
-        $tokenModel = MidasLoader::loadModel('Token');
         $tokenModel->save($tokenDao);
-
-        // We do some cleanup of all the other keys that have expired
-        $tokenModel->cleanExpired();
 
         return $tokenDao;
     }

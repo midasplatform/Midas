@@ -124,6 +124,9 @@ class ExportComponent extends AppComponent
 
         // process the items which pass the ITEM level policy check
         if (!empty($revisions)) {
+            /** @var RandomComponent $randomComponent */
+            $randomComponent = MidasLoader::loadComponent('Random');
+
             foreach ($revisions as $revision) {
                 $itemId = $revision->getItemId();
                 $this->_createItemDirectory($targetDir.'/'.$itemId);
@@ -142,7 +145,7 @@ class ExportComponent extends AppComponent
                             // for symbolic link option,if multiple bitstreams (in a single item revision)
                             // have the same file name, add a '.new' suffix to distinguish them
                             if (file_exists($dest)) {
-                                $dest .= '.'.mt_rand().'.new';
+                                $dest .= '.'.$randomComponent->generateInt().'.new';
                             }
                             if (!symlink($source, $dest)) {
                                 throw new Zend_Exception("Cannot create symlink: ".$dest."linked to".$source);

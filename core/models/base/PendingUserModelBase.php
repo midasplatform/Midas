@@ -57,11 +57,14 @@ abstract class PendingUserModelBase extends AppModel
     {
         $email = strtolower($email);
         $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
-        $userSalt = UtilityComponent::generateRandomString(32);
+
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
+        $userSalt = $randomComponent->generateString(32);
 
         $pendingUser = MidasLoader::newDao('PendingUserDao');
         $pendingUser->setEmail($email);
-        $pendingUser->setAuthKey(UtilityComponent::generateRandomString(64, '0123456789abcdef'));
+        $pendingUser->setAuthKey($randomComponent->generateString(64, '0123456789abcdef'));
         $pendingUser->setFirstname($firstName);
         $pendingUser->setLastname($lastName);
         $pendingUser->setSalt($userSalt);

@@ -137,7 +137,9 @@ abstract class UserModelBase extends AppModel
     public function save($dao)
     {
         if (!isset($dao->uuid) || empty($dao->uuid)) {
-            $dao->setUuid(uniqid().md5(mt_rand()));
+            /** @var UuidComponent $uuidComponent */
+            $uuidComponent = MidasLoader::loadComponent('Uuid');
+            $dao->setUuid($uuidComponent->generate());
         }
         parent::save($dao);
     }
@@ -242,7 +244,9 @@ abstract class UserModelBase extends AppModel
      */
     public function convertLegacyPasswordHash($userDao, $password)
     {
-        $userSalt = UtilityComponent::generateRandomString(32);
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
+        $userSalt = $randomComponent->generateString(32);
         $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
         $hashedPassword = hash('sha256', $instanceSalt.$userSalt.$password);
         $this->storePasswordHash($hashedPassword);
@@ -259,7 +263,10 @@ abstract class UserModelBase extends AppModel
     public function changePassword($userDao, $password)
     {
         $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
-        $userSalt = UtilityComponent::generateRandomString(32);
+
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
+        $userSalt = $randomComponent->generateString(32);
         $hashedPassword = hash('sha256', $instanceSalt.$userSalt.$password);
         $this->storePasswordHash($hashedPassword);
 
@@ -296,7 +303,10 @@ abstract class UserModelBase extends AppModel
             }
             // Generate a random salt for this new user
             $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
-            $userSalt = UtilityComponent::generateRandomString(32);
+
+            /** @var RandomComponent $randomComponent */
+            $randomComponent = MidasLoader::loadComponent('Random');
+            $userSalt = $randomComponent->generateString(32);
             $hashedPassword = hash('sha256', $instanceSalt.$userSalt.$password);
             $userDao->setSalt($userSalt);
             $this->storePasswordHash($hashedPassword);

@@ -71,7 +71,10 @@ abstract class UserapiModelBase extends AppModel
         if (!$userDao instanceof UserDao) {
             throw new Zend_Exception('Error parameter: must be a userDao object when creating default API key.');
         }
-        $key = UtilityComponent::generateRandomString(32);
+
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
+        $key = $randomComponent->generateString(32);
 
         $rowset = $this->database->fetchAll(
             $this->database->select()->where('user_id = ?', $userDao->getKey())->where(
@@ -115,7 +118,9 @@ abstract class UserapiModelBase extends AppModel
         }
         $now = date('Y-m-d H:i:s');
 
-        $key = UtilityComponent::generateRandomString(40);
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
+        $key = $randomComponent->generateString(32);
 
         $userApiDao = MidasLoader::newDao('UserapiDao');
         $userApiDao->setUserId($userDao->getKey());

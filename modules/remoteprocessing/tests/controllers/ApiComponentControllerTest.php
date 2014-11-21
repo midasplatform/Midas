@@ -36,7 +36,10 @@ class Remoteprocessing_ApiComponentControllerTest extends ControllerTestCase
         $usersFile = $this->loadData('User', 'adminUser');
         $userDao = $this->User->load($usersFile[0]->getKey());
         $this->params = array();
-        $securityKey = uniqid();
+
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
+        $securityKey = $randomComponent->generateString(40);
         $this->params['securitykey'] = $securityKey;
         $this->params['submitConfig'] = 'true';
         $this->request->setMethod('POST');

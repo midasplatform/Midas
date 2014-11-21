@@ -84,10 +84,12 @@ abstract class NewUserInvitationModelBase extends AppModel
      */
     public function createInvitation($email, $group, $inviter)
     {
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
         $email = strtolower($email);
         $newUserInvitation = MidasLoader::newDao('NewUserInvitationDao');
         $newUserInvitation->setEmail($email);
-        $newUserInvitation->setAuthKey(UtilityComponent::generateRandomString(64, '0123456789abcdef'));
+        $newUserInvitation->setAuthKey($randomComponent->generateString(64, '0123456789abcdef'));
         $newUserInvitation->setInviterId($inviter->getKey());
         $newUserInvitation->setGroupId($group->getKey());
         $newUserInvitation->setCommunityId($group->getCommunityId());

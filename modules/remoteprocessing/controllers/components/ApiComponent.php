@@ -64,8 +64,11 @@ class Remoteprocessing_ApiComponent extends AppComponent
             if (empty($os)) {
                 throw new Exception('Error os parameter.', MIDAS_INVALID_PARAMETER);
             }
-            $email = uniqid().'@foo.com';
-            $userDao = $userModel->createUser($email, uniqid(), 'Processing', 'Server');
+
+            /** @var RandomComponent $randomComponent */
+            $randomComponent = MidasLoader::loadComponent('Random');
+            $email = 'some.user@example.org';
+            $userDao = $userModel->createUser($email, $randomComponent->generateString(32), 'Processing', 'Server');
             $userDao->setPrivacy(MIDAS_USER_PRIVATE);
             $userDao->setCompany($os); // used to set operating system
             $userModel->save($userDao);
@@ -218,27 +221,29 @@ class Remoteprocessing_ApiComponent extends AppComponent
             mkdir(UtilityComponent::getTempDirectory().'/remoteprocessing');
         }
 
-        $destionation = UtilityComponent::getTempDirectory().'/remoteprocessing/'.mt_rand(1, 1000).time();
-        while (file_exists($destionation)) {
-            $destionation = UtilityComponent::getTempDirectory().'/remoteprocessing/'.mt_rand(1, 1000).time();
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
+        $destination = UtilityComponent::getTempDirectory().'/remoteprocessing/'.$randomComponent->generateInt();
+        while (file_exists($destination)) {
+            $destination = UtilityComponent::getTempDirectory().'/remoteprocessing/'.$randomComponent->generateInt();
         }
-        mkdir($destionation);
+        mkdir($destination);
 
         if (!$testingmode) {
-            move_uploaded_file($_FILES['file']['tmp_name'], $destionation."/results.zip");
+            move_uploaded_file($_FILES['file']['tmp_name'], $destination."/results.zip");
         }
 
         if ($testingmode) {
             return array();
         }
 
-        if (file_exists($destionation."/results.zip")) {
-            mkdir($destionation.'/content');
-            $target_directory = $destionation.'/content';
+        if (file_exists($destination."/results.zip")) {
+            mkdir($destination.'/content');
+            $target_directory = $destination.'/content';
             $filter = new Zend_Filter_Decompress(
                 array('adapter' => 'Zip', 'options' => array('target' => $target_directory))
             );
-            $compressed = $filter->filter($destionation."/results.zip");
+            $compressed = $filter->filter($destination."/results.zip");
             if ($compressed && file_exists($target_directory.'/parameters.txt')
             ) {
                 $info = file_get_contents($target_directory.'/parameters.txt');
@@ -248,7 +253,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
                 $jobDao = $jobModel->load($job_id);
                 $jobDao->setStatus(MIDAS_REMOTEPROCESSING_STATUS_DONE);
                 $jobModel->save($jobDao);
-                $info['pathResults'] = $destionation.'/content';
+                $info['pathResults'] = $destination.'/content';
                 $info['log'] = file_get_contents($target_directory.'/log.txt');
                 $info['userKey'] = $userDao->getKey();
                 Zend_Registry::get('notifier')->callback($info['resultCallback'], $info);
@@ -258,7 +263,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
         } else {
             throw new Exception('Error, unable to find results.', MIDAS_INVALID_PARAMETER);
         }
-        $this->_rrmdir($destionation);
+        $this->_rrmdir($destination);
 
         return array();
     }

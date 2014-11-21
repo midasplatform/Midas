@@ -31,8 +31,10 @@ class ImportForm extends AppForm
         $form->setMethod('post');
         $form->setAttrib('class', 'importForm');
 
+        $randomComponent = MidasLoader::loadComponent('Random');
+
         // Hidden upload id
-        $uploadId = new Zend_Form_Element_Hidden('uploadid', array('value' => mt_rand()));
+        $uploadId = new Zend_Form_Element_Hidden('uploadid', array('value' => $randomComponent->generateInt()));
         $uploadId->setDecorators(
             array(
                 'ViewHelper',

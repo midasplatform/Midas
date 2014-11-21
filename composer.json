@@ -21,9 +21,12 @@
         "leafo/scssphp": "~0.1.1",
         "maennchen/zipstream-php": "~0.2.2",
         "michelf/php-markdown": "~1.4.1",
+        "moontoast/math": "~1.1.0",
         "pear-pear.php.net/XML_Serializer": "~0.20.2",
         "reprovinci/solr-php-client": "~1.0.3",
+        "rhumsaa/uuid": "~2.8.0",
         "sendgrid/sendgrid": "~2.1.1",
+        "symfony/console": "~2.5.7",
         "zendframework/zendframework1": "~1.12.9"
     },
     "require-dev": {
@@ -42,6 +45,7 @@
         "ext-imagick": "*",
         "ext-ldap": "*",
         "ext-memcached": "*",
+        "ext-openssl": "*",
         "ext-zip": "*"
     },
     "autoload": {

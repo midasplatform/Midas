@@ -109,10 +109,12 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
             $format = MIDAS_THUMBNAILCREATOR_FORMAT_JPG;
         }
 
-        $destination = $tmpPath.'/'.mt_rand(1, 10000).'.'.$format;
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
+        $destination = $tmpPath.'/'.$randomComponent->generateInt().'.'.$format;
 
         while (file_exists($destination)) {
-            $destination = $tmpPath.'/'.mt_rand(1, 10000).'.'.$format;
+            $destination = $tmpPath.'/'.$randomComponent->generateInt().'.'.$format;
         }
 
         $pathThumbnail = $destination;
@@ -214,8 +216,11 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
         copy($fullPath, $copyDestination);
         $jpegDestination = $tmpPath.'/'.$name.'.jpg';
 
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
+
         while (file_exists($jpegDestination)) {
-            $jpegDestination = $tmpPath.'/'.$name.mt_rand(1, 10000).'.jpg';
+            $jpegDestination = $tmpPath.'/'.$name.$randomComponent->generateInt().'.jpg';
         }
 
         /** @var SettingModel $settingModel */

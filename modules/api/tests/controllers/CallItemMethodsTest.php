@@ -960,8 +960,12 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $this->params['method'] = 'midas.item.create';
         $this->params['name'] = 'created_item_2';
         $this->params['description'] = 'my item description';
-        $uuid = uniqid().md5(mt_rand());
+
+        /** @var UuidComponent $uuidComponent */
+        $uuidComponent = MidasLoader::loadComponent('Uuid');
+        $uuid = $uuidComponent->generate();
         $this->params['uuid'] = $uuid;
+
         $this->params['parentid'] = '1000';
         $resp = $this->_callJsonApi();
         $this->_assertStatusOk($resp);

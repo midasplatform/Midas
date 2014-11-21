@@ -75,10 +75,12 @@ abstract class Oauth_ClientModelBase extends Oauth_AppModel
         if (empty($name)) {
             throw new Zend_Exception('Client name must not be empty');
         }
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
         $clientDao = MidasLoader::newDao('ClientDao', $this->moduleName);
         $clientDao->setName($name);
         $clientDao->setOwnerId($userDao->getKey());
-        $clientDao->setSecret(UtilityComponent::generateRandomString(40));
+        $clientDao->setSecret($randomComponent->generateString(40));
         $clientDao->setCreationDate(date('Y-m-d H:i:s'));
         $this->save($clientDao);
 

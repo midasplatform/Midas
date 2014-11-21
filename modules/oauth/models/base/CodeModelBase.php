@@ -81,8 +81,10 @@ abstract class Oauth_CodeModelBase extends Oauth_AppModel
         if (!is_array($scopes)) {
             throw new Zend_Exception('Scopes must be an array');
         }
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
         $codeDao = MidasLoader::newDao('CodeDao', $this->moduleName);
-        $codeDao->setCode(UtilityComponent::generateRandomString(32));
+        $codeDao->setCode($randomComponent->generateString(32));
         $codeDao->setScopes(JsonComponent::encode($scopes));
         $codeDao->setUserId($userDao->getKey());
         $codeDao->setClientId($clientDao->getKey());

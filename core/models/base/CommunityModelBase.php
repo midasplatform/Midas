@@ -106,7 +106,9 @@ abstract class CommunityModelBase extends AppModel
     public function save($dao)
     {
         if (!isset($dao->uuid) || empty($dao->uuid)) {
-            $dao->setUuid(uniqid().md5(mt_rand()));
+            /** @var UuidComponent $uuidComponent */
+            $uuidComponent = MidasLoader::loadComponent('Uuid');
+            $dao->setUuid($uuidComponent->generate());
         }
         $name = $dao->getName();
         if (empty($name) && $name !== '0') {

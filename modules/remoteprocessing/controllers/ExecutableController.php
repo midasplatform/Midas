@@ -67,7 +67,10 @@ class Remoteprocessing_ExecutableController extends Remoteprocessing_AppControll
 
             $results = $_POST['results'];
             $xmlContent = $this->ModuleComponent->Executable->createDefinitionFile($results);
-            $pathFile = $this->getTempDirectory().'/'.uniqid().time();
+
+            /** @var RandomComponent $randomComponent */
+            $randomComponent = MidasLoader::loadComponent('Random');
+            $pathFile = $this->getTempDirectory().'/'.$randomComponent->generateString(32);
             file_put_contents($pathFile, $xmlContent);
 
             $revision = $this->Item->getLastRevision($itemDao);

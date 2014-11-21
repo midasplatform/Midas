@@ -42,7 +42,10 @@ class Remoteprocessing_ConfigControllerTest extends ControllerTestCase
         $this->resetAll();
 
         $this->params = array();
-        $securityKey = uniqid();
+
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
+        $securityKey = $randomComponent->generateString(32);
         $this->params['securitykey'] = $securityKey;
         $this->params['submitConfig'] = 'true';
         $this->request->setMethod('POST');

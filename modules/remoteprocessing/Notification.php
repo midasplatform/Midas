@@ -273,7 +273,10 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
         if (isset($params['log']) && !empty($params['log'])) {
             $jobComponenet = MidasLoader::loadComponent('Job', 'remoteprocessing');
             $xmlResults = $jobComponenet->computeLogs($job, $params['log'], $params);
-            $logFile = $pathFile = $this->getTempDirectory().'/'.uniqid();
+
+            /** @var RandomComponent $randomComponent */
+            $randomComponent = MidasLoader::loadComponent('Random');
+            $logFile = $this->getTempDirectory().'/'.$randomComponent->generateString(32);
             file_put_contents($logFile, $xmlResults);
             $item = $uploadComponent->createUploadedItem(
                 $userDao,

@@ -44,7 +44,10 @@ class Googleauth_Notification extends MIDAS_Notification
         $clientId = $this->Setting->getValueByName(GOOGLE_AUTH_CLIENT_ID_KEY, $this->moduleName);
         $scheme = (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS']) ? 'https://' : 'http://';
         $fc = Zend_Controller_Front::getInstance();
-        $csrfToken = UtilityComponent::generateRandomString(30);
+
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
+        $csrfToken = $randomComponent->generateString(30);
         $redirectUri = $scheme.$_SERVER['HTTP_HOST'].$fc->getBaseUrl().'/'.$this->moduleName.'/callback';
         $scopes = array('profile', 'email');
 

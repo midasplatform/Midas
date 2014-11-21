@@ -18,47 +18,72 @@
  limitations under the License.
 =========================================================================*/
 
-/** UuidComponent component */
+/** UUID component for generating UUIDs and searching by UUID. */
 class UuidComponent extends AppComponent
 {
-    /** Get using id */
+    /**
+     * Generate a version 4 UUID.
+     *
+     * @return string
+     */
+    public function generate()
+    {
+        return str_replace('-', '', \Rhumsaa\Uuid\Uuid::uuid4()->toString());
+    }
+
+    /**
+     * Return a resource given its unique id.
+     *
+     * @param string $uuid UUID
+     * @return false|CommunityDao|FolderDao|ItemDao|ItemRevisionDao|UserDao
+     */
     public function getByUid($uuid)
     {
+        /** @var CommunityModel $model */
         $model = MidasLoader::loadModel('Community');
         $dao = $model->getByUuid($uuid);
-        if ($dao != false) {
+
+        if ($dao !== false) {
             $dao->resourceType = MIDAS_RESOURCE_COMMUNITY;
 
             return $dao;
         }
 
+        /** @var FolderModel $model */
         $model = MidasLoader::loadModel('Folder');
         $dao = $model->getByUuid($uuid);
-        if ($dao != false) {
+
+        if ($dao !== false) {
             $dao->resourceType = MIDAS_RESOURCE_FOLDER;
 
             return $dao;
         }
 
+        /** @var ItemModel $model */
         $model = MidasLoader::loadModel('Item');
         $dao = $model->getByUuid($uuid);
-        if ($dao != false) {
+
+        if ($dao !== false) {
             $dao->resourceType = MIDAS_RESOURCE_ITEM;
 
             return $dao;
         }
 
+        /** @var ItemRevisionModel $model */
         $model = MidasLoader::loadModel('ItemRevision');
         $dao = $model->getByUuid($uuid);
-        if ($dao != false) {
+
+        if ($dao !== false) {
             $dao->resourceType = MIDAS_RESOURCE_REVISION;
 
             return $dao;
         }
 
+        /** @var UserModel $model */
         $model = MidasLoader::loadModel('User');
         $dao = $model->getByUuid($uuid);
-        if ($dao != false) {
+
+        if ($dao !== false) {
             $dao->resourceType = MIDAS_RESOURCE_USER;
 
             return $dao;

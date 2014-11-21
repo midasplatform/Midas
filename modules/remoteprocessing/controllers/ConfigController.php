@@ -77,7 +77,9 @@ class Remoteprocessing_ConfigController extends Remoteprocessing_AppController
         $configForm = $this->ModuleForm->Config->createConfigForm();
         $formArray = $this->getFormAsArray($configForm);
         if (empty($config->securitykey)) {
-            $config->securitykey = uniqid();
+            /** @var RandomComponent $randomComponent */
+            $randomComponent = MidasLoader::loadComponent('Random');
+            $config->securitykey = $randomComponent->generateString(32);
 
             $writer = new Zend_Config_Writer_Ini();
             $writer->setConfig($config);

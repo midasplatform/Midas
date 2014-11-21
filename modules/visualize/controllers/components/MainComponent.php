@@ -463,22 +463,24 @@ class Visualize_MainComponent extends AppComponent
             return;
         }
 
-        $thumbnailPath = UtilityComponent::getDataDirectory('thumbnail').'/'.mt_rand(1, 1000);
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
+        $thumbnailPath = UtilityComponent::getDataDirectory('thumbnail').'/'.$randomComponent->generateInt();
         if (!file_exists(UtilityComponent::getDataDirectory('thumbnail'))) {
             throw new Zend_Exception("Problem thumbnail path: ".UtilityComponent::getDataDirectory('thumbnail'));
         }
         if (!file_exists($thumbnailPath)) {
             mkdir($thumbnailPath);
         }
-        $thumbnailPath .= '/'.mt_rand(1, 1000);
+        $thumbnailPath .= '/'.$randomComponent->generateInt();
         if (!file_exists($thumbnailPath)) {
             mkdir($thumbnailPath);
         }
-        $destionation = $thumbnailPath."/".mt_rand(1, 1000).'.jpeg';
-        while (file_exists($destionation)) {
-            $destionation = $thumbnailPath."/".mt_rand(1, 1000).'.jpeg';
+        $destination = $thumbnailPath."/".$randomComponent->generateInt().'.jpg';
+        while (file_exists($destination)) {
+            $destination = $thumbnailPath."/".$randomComponent->generateInt().'.jpg';
         }
-        $pathThumbnail = $destionation;
+        $pathThumbnail = $destination;
 
         list ($x, $y) = getimagesize($tmpPath.'/screenshot1.png');  //--- get size of img ---
         $thumb = 100;  //--- max. size of thumb ---
@@ -545,10 +547,12 @@ class Visualize_MainComponent extends AppComponent
             }
         }
 
-        $tmpFolderName = 'ParaviewWeb_'.mt_rand(0, 9999999);
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
+        $tmpFolderName = 'ParaviewWeb_'.$randomComponent->generateInt();
         $path = $tmp_dir.'/'.$tmpFolderName;
         while (!mkdir($path)) {
-            $tmpFolderName = 'ParaviewWeb_'.mt_rand(0, 9999999);
+            $tmpFolderName = 'ParaviewWeb_'.$randomComponent->generateInt();
             $path = $tmp_dir.'/'.$tmpFolderName;
         }
 

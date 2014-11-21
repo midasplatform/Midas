@@ -134,9 +134,12 @@ abstract class ItemRevisionModelBase extends AppModel
                         "Problem thumbnail path: ".UtilityComponent::getDataDirectory('thumbnail')
                     );
                 }
-                $destination = $tmpPath.'/'.mt_rand(1, 10000).'.jpeg';
+
+                /** @var RandomComponent $randomComponent */
+                $randomComponent = MidasLoader::loadComponent('Random');
+                $destination = $tmpPath.'/'.$randomComponent->generateInt().'.jpg';
                 while (file_exists($destination)) {
-                    $destination = $tmpPath.'/'.mt_rand(1, 10000).'.jpeg';
+                    $destination = $tmpPath.'/'.$randomComponent->generateInt().'.jpg';
                 }
                 $pathThumbnail = $destination;
 
@@ -169,7 +172,9 @@ abstract class ItemRevisionModelBase extends AppModel
     public function save($dao)
     {
         if (!isset($dao->uuid) || empty($dao->uuid)) {
-            $dao->setUuid(uniqid().md5(mt_rand()));
+            /** @var UuidComponent $uuidComponent */
+            $uuidComponent = MidasLoader::loadComponent('Uuid');
+            $dao->setUuid($uuidComponent->generate());
         }
         if (!isset($dao->date) || empty($dao->date)) {
             $dao->setDate(date('Y-m-d H:i:s'));

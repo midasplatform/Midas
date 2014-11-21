@@ -68,16 +68,18 @@ class HttpuploadComponent extends AppComponent
                 throw new Exception('Failed to create temporary upload dir', MIDAS_HTTPUPLOAD_TMP_DIR_CREATION_FAILED);
             }
         }
-        $unique_identifier = 'midas'.uniqid().'-'.md5($args['filename']);
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
+        $uniqueIdentifier = $randomComponent->generateString(64);
         if ($dirname != '') {
-            $unique_identifier = $dirname.'/'.$unique_identifier;
+            $uniqueIdentifier = $dirname.'/'.$uniqueIdentifier;
         }
-        if (file_exists(UtilityComponent::getTempDirectory().'/'.$unique_identifier)) {
+        if (file_exists(UtilityComponent::getTempDirectory().'/'.$uniqueIdentifier)) {
             throw new Exception('Failed to generate upload token', MIDAS_HTTPUPLOAD_UPLOAD_TOKEN_GENERATION_FAILED);
         }
-        touch(UtilityComponent::getTempDirectory().'/'.$unique_identifier);
+        touch(UtilityComponent::getTempDirectory().'/'.$uniqueIdentifier);
 
-        return array('token' => $unique_identifier);
+        return array('token' => $uniqueIdentifier);
     }
 
     /** Handle the upload */

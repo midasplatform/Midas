@@ -52,7 +52,7 @@ def registerServer():
     interfaceMidas = apiMidas.Communicator (url)
 
     parameters = dict()
-    parameters['email'] = cfginternal['email']+'@foo.com'
+    parameters['email'] = cfginternal['email']+'@example.org'
     parameters['securitykey'] = cfg['securityKey']
     parameters['apikey'] = cfginternal['apikey']
     try: response = interfaceMidas.makeRequest('midas.remoteprocessing.registerserver', parameters)

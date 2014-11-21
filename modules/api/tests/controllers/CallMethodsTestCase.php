@@ -76,7 +76,7 @@ class Api_CallMethodsTestCase extends ControllerTestCase
 
         $resp = $this->_callJsonApi();
         $this->_assertStatusOk($resp);
-        $this->assertEquals(strlen($resp->data->token), 40);
+        $this->assertEquals(strlen($resp->data->token), 32);
 
         // **IMPORTANT** This will clear any params that were set before this function was called
         $this->resetAll();

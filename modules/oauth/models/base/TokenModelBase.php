@@ -94,8 +94,10 @@ abstract class Oauth_TokenModelBase extends Oauth_AppModel
      */
     private function _createToken($fromDao, $type, $expire = null)
     {
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
         $tokenDao = MidasLoader::newDao('TokenDao', $this->moduleName);
-        $tokenDao->setToken(UtilityComponent::generateRandomString(32));
+        $tokenDao->setToken($randomComponent->generateString(32));
         $tokenDao->setType($type);
         $tokenDao->setScopes($fromDao->getScopes());
         $tokenDao->setUserId($fromDao->getUserId());

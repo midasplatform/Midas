@@ -70,7 +70,10 @@ class Pvw_ParaviewComponent extends AppComponent
         $instance->setSid(''); // todo?
         $instance->setPid(0);
         $instance->setCreationDate(date('Y-m-d H:i:s'));
-        $instance->setSecret(UtilityComponent::generateRandomString(32, '0123456789abcdef'));
+
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
+        $instance->setSecret($randomComponent->generateString(32, '0123456789abcdef'));
 
         $instanceModel = MidasLoader::loadModel('Instance', 'pvw');
         $instanceModel->save($instance);
