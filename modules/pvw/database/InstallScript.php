@@ -18,25 +18,21 @@
  limitations under the License.
 =========================================================================*/
 
-/** config form */
-class Pvw_ConfigForm extends AppForm
+require_once BASE_PATH.'/modules/pvw/constant/module.php';
+
+/** Install the pvw module. */
+class Pvw_InstallScript extends MIDASModuleInstallScript
 {
-    /** create form */
-    public function createConfigForm()
+    /** @var string */
+    public $moduleName = 'pvw';
+
+    /** Post database install. */
+    public function postInstall()
     {
-        $form = new Zend_Form();
-
-        $form->setAction($this->webroot.'/pvw/config/submit')->setMethod('post');
-
-        $pvpython = new Zend_Form_Element_Text('pvpython');
-        $ports = new Zend_Form_Element_Text('ports');
-        $displayEnv = new Zend_Form_Element_text('displayEnv');
-
-        $submit = new Zend_Form_Element_Submit('submitConfig');
-        $submit->setLabel('Save configuration');
-
-        $form->addElements(array($pvpython, $ports, $displayEnv, $submit));
-
-        return $form;
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $settingModel->setConfig(MIDAS_PVW_PVPYTHON_KEY, MIDAS_PVW_PVPYTHON_DEFAULT_VALUE, $this->moduleName);
+        $settingModel->setConfig(MIDAS_PVW_PORTS_KEY, MIDAS_PVW_PORTS_DEFAULT_VALUE, $this->moduleName);
+        $settingModel->setConfig(MIDAS_PVW_DISPLAY_ENV_KEY, MIDAS_PVW_DISPLAY_ENV_DEFAULT_VALUE, $this->moduleName);
     }
 }

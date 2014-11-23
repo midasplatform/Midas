@@ -18,12 +18,14 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<script type="text/javascript" src="<?php echo $this->moduleWebroot ?>/public/js/config/config.status.js"></script>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/config/config.status.css"/>
+
+<script type="text/javascript" src="<?php echo $this->moduleWebroot ?>/public/js/admin/admin.status.js"></script>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/admin/admin.status.css"/>
 
 <div class="viewMain">
     <h3>ParaViewWeb instance list</h3>
-    <?php if (count($this->instances) == 0) {
+    <?php
+    if (count($this->instances) == 0) {
         echo 'There are no instances in the database at this time';
     } else {
         ?>
@@ -54,5 +56,6 @@
             </tbody>
         </table>
     <?php
-    } ?>
+    }
+    ?>
 </div>

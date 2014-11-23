@@ -18,13 +18,17 @@
  limitations under the License.
 =========================================================================*/
 
-define('MIDAS_PVW_PVPYTHON_KEY', 'pvpython');
-define('MIDAS_PVW_PVPYTHON_DEFAULT_VALUE', 'pvpython');
-define('MIDAS_PVW_PORTS_KEY', 'ports');
-define('MIDAS_PVW_PORTS_DEFAULT_VALUE', '9000,9001');
-define('MIDAS_PVW_DISPLAY_ENV_KEY', 'displayEnv');
-define('MIDAS_PVW_DISPLAY_ENV_DEFAULT_VALUE', '');
+$this->declareVars('form', 'pageTitle');
+$this->headTitle($this->escape($this->pageTitle));
+?>
 
-// Max amount of time in seconds to wait between starting pvpython and it binding to the TCP port.
-// If this time is surpassed, we stop waiting and alert the user that something failed.
-define('MIDAS_PVW_STARTUP_TIMEOUT', 5);
+<div class="viewMain">
+    <h1><?php echo $this->escape($this->pageTitle); ?></h1>
+    <p>For this module to work, you will need to build ParaView with Python enabled.
+    Instructions are <a href="http://www.paraview.org/Wiki/ParaView:Build_And_Install#Build_ParaView">here</a>.</p>
+    <p>You can turn off building with Qt when building ParaView. Make sure to
+    symlink the <b>www</b> directory of your ParaView build directory as
+    <b>modules/pvw/public/import</b>.</p>
+    <?php echo $this->form; ?>
+    <p><a href="<?php echo $this->url(array('controller' => 'admin', 'action' => 'index'), 'default'); ?>#tabs-modules">&laquo; Back to Modules Administration</a></p>
+</div>

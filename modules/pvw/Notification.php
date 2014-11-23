@@ -62,7 +62,7 @@ class Pvw_Notification extends MIDAS_Notification
     public function getDashboard()
     {
         $settingModel = MidasLoader::loadModel('Setting');
-        $pvpython = $settingModel->getValueByName('pvpython', 'pvw');
+        $pvpython = $settingModel->getValueByName(MIDAS_PVW_PVPYTHON_KEY, $this->moduleName);
 
         // Validate pvpython setting
         if (!$pvpython) {
@@ -85,6 +85,6 @@ class Pvw_Notification extends MIDAS_Notification
     {
         $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
 
-        return array('ParaViewWeb' => $webroot.'/'.$this->moduleName.'/config/status');
+        return array('ParaViewWeb' => $webroot.'/'.$this->moduleName.'/admin/status');
     }
 }

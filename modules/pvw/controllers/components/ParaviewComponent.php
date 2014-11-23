@@ -24,6 +24,9 @@
  */
 class Pvw_ParaviewComponent extends AppComponent
 {
+    /** @var string */
+	public $moduleName = 'pvw';
+
     /**
      * Creates a new pvpython instance and a corresponding database record for it.
      *
@@ -40,7 +43,7 @@ class Pvw_ParaviewComponent extends AppComponent
             $progressModel->updateProgress($progressDao, $step, 'Checking available ports...');
         }
         $settingModel = MidasLoader::loadModel('Setting');
-        $pvpython = $settingModel->getValueByName('pvpython', 'pvw');
+        $pvpython = $settingModel->getValueByName(MIDAS_PVW_PVPYTHON_KEY, $this->moduleName);
         $application = BASE_PATH.'/modules/pvw/apps/'.$appname.'.py';
         if (!is_file($application)) {
             throw new Zend_Exception('No such application: '.$appname, 400);
@@ -88,7 +91,7 @@ class Pvw_ParaviewComponent extends AppComponent
         ); // TODO --inactivity-timeout
 
         // Now start the instance
-        $displayEnv = $settingModel->getValueByName('displayEnv', 'pvw');
+        $displayEnv = $settingModel->getValueByName(MIDAS_PVW_DISPLAY_ENV_KEY, $this->moduleName);
         if (!empty($displayEnv)) {
             putenv('DISPLAY='.$displayEnv);
         }
@@ -165,7 +168,7 @@ class Pvw_ParaviewComponent extends AppComponent
     private function _getNextOpenPort()
     {
         $settingModel = MidasLoader::loadModel('Setting');
-        $ports = $settingModel->getValueByName('ports', 'pvw');
+        $ports = $settingModel->getValueByName(MIDAS_PVW_PORTS_KEY, $this->moduleName);
         if (!$ports) {
             $ports = '9000,9001'; // some reasonable default
         }
