@@ -21,8 +21,8 @@
 // need to include the module constant for this test
 require_once str_replace('tests', 'constant', str_replace('controllers', 'module.php', dirname(__FILE__)));
 
-/** config controller test */
-class Communityagreement_ConfigControllerTest extends ControllerTestCase
+/** Community controller test */
+class Communityagreement_CommunityControllerTest extends ControllerTestCase
 {
     /** set up tests */
     public function setUp()
@@ -42,11 +42,11 @@ class Communityagreement_ConfigControllerTest extends ControllerTestCase
         $community_id = $communitiesFile[0]->getKey();
 
         $this->getRequest()->setMethod('POST');
-        $page = '/communityagreement/config/agreementdialog?communityId='.$community_id;
+        $page = '/communityagreement/community/agreementdialog?communityId='.$community_id;
         $this->dispatchUrI($page);
 
         $this->assertModule("communityagreement");
-        $this->assertController("config");
+        $this->assertController("community");
         $this->assertAction("agreementdialog");
 
         $body = $this->getBody();
@@ -71,7 +71,7 @@ class Communityagreement_ConfigControllerTest extends ControllerTestCase
         $this->dispatchUrI("/user/login");
 
         $this->resetAll();
-        $page = '/communityagreement/config/agreementtab?communityId='.$community_id;
+        $page = '/communityagreement/community/agreementtab?communityId='.$community_id;
         $this->params = array();
         $this->getRequest()->setMethod('GET');
         $this->dispatchUrI($page, null, true);

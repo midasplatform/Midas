@@ -43,7 +43,7 @@ class Communityagreement_Notification extends MIDAS_Notification
         $fc = Zend_Controller_Front::getInstance();
         $moduleWebroot = $fc->getBaseUrl().'/communityagreement';
 
-        return array('Agreement' => $moduleWebroot.'/config/agreementtab');
+        return array('Agreement' => $moduleWebroot.'/community/agreementtab');
     }
 
     /**
@@ -56,7 +56,7 @@ class Communityagreement_Notification extends MIDAS_Notification
         $fc = Zend_Controller_Front::getInstance();
         $moduleUriroot = $fc->getBaseUrl().'/modules/communityagreement';
 
-        return array($moduleUriroot.'/public/js/config/config.agreementenforce.js');
+        return array($moduleUriroot.'/public/js/community/community.agreementenforce.js');
     }
 
     /**

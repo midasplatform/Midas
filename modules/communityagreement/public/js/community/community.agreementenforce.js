@@ -14,7 +14,7 @@ $(document).ready(function () {
 
     if (hasAgreement == 'true') {
         $('form#joinCommunityForm').unbind('submit').submit(function () {
-            midas.loadDialog('agreement', '/communityagreement/config/agreementdialog?communityId=' + json.community.community_id);
+            midas.loadDialog('agreement', '/communityagreement/community/agreementdialog?communityId=' + json.community.community_id);
             midas.showDialog('Community Agreement', false, {
                 width: 500
             });

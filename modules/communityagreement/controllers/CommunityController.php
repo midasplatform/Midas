@@ -18,25 +18,12 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Communityagreement_ConfigController
- *
- * @category   Midas modules
- * @package    communityagreement
- */
-class Communityagreement_ConfigController extends Communityagreement_AppController
+/** Community controller for the community agreement module. */
+class Communityagreement_CommunityController extends Communityagreement_AppController
 {
     public $_models = array('Community');
     public $_moduleModels = array('Agreement');
-    public $_moduleForms = array('Config');
-
-    /**
-     * @throws Zend_Exception on invalid userSession
-     */
-    public function indexAction()
-    {
-        $this->requireAdminPrivileges();
-    }
+    public $_moduleForms = array('Community');
 
     /** community agreement tab
      *
@@ -70,7 +57,7 @@ class Communityagreement_ConfigController extends Communityagreement_AppControll
             $agreementDao = $this->Communityagreement_Agreement->createAgreement($communityId, $agreement);
         }
 
-        $formAgreement = $this->ModuleForm->Config->createCreateAgreementForm($communityId);
+        $formAgreement = $this->ModuleForm->Community->createCreateAgreementForm($communityId);
         if ($this->_request->isPost() && $formAgreement->isValid($this->getRequest()->getPost())
         ) {
             $this->disableView();

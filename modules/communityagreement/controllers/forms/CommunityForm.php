@@ -17,19 +17,29 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-?>
 
-<div class="viewMain">
-    <div class="genericWrapperTopRight">
-        <?php
-        echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
-        echo "<a  href='{$this->webroot}/admin#tabs-modules'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
-        echo $this->t('Back');
-        echo "</a>";
-        echo '</div>';
-        ?>
-    </div>
-    <?php
-    echo $this->t('Community Agreement module is enabled.');
-    ?>
-</div>
+/** Community form for the communityagreement module. */
+class Communityagreement_CommunityForm extends AppForm
+{
+    /**
+     * Create create_agreement form
+     *
+     * @param  string $community_id
+     * @return Zend_Form
+     */
+    public function createCreateAgreementForm($community_id)
+    {
+        $form = new Zend_Form();
+        $form->setAction(
+            $this->webroot.'/communityagreement/community/agreementtab?communityId='.$community_id
+        )->setMethod('post');
+        $agreement = new Zend_Form_Element_Textarea('agreement');
+
+        $submit = new  Zend_Form_Element_Submit('submit');
+        $submit->setLabel($this->t("Save"));
+
+        $form->addElements(array($agreement, $submit));
+
+        return $form;
+    }
+}
