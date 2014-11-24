@@ -23,53 +23,64 @@ include_once BASE_PATH.'/library/KWUtils.php';
 /** Upload dicom files */
 class Dicomserver_ServerComponent extends AppComponent
 {
+    /** @var string */
+    public $moduleName = 'dicomserver';
+
     /**
      * Verify that DICOM server is setup properly
      */
     public function isDICOMServerWorking()
     {
-        $ret = array();
-        $modulesConfig = Zend_Registry::get('configsModules');
-        $dcm2xmlCommand = $modulesConfig['dicomserver']->dcm2xml;
-        $storescpCommand = $modulesConfig['dicomserver']->storescp;
-        $dcmqrscpCommand = $modulesConfig['dicomserver']->dcmqrscp;
-        $dcmqridxCommand = $modulesConfig['dicomserver']->dcmqridx;
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $dcm2xmlCommand = $settingModel->getValueByName(MIDAS_DICOMSERVER_DCM2XML_COMMAND_KEY, $this->moduleName);
+        $storescpCommand = $settingModel->getValueByName(MIDAS_DICOMSERVER_STORESCP_COMMAND_KEY, $this->moduleName);
+        $dcmqrscpCommand = $settingModel->getValueByName(MIDAS_DICOMSERVER_DCMQRSCP_COMMAND_KEY, $this->moduleName);
+        $dcmqridxCommand = $settingModel->getValueByName(MIDAS_DICOMSERVER_DCMQRIDX_COMMAND_KEY, $this->moduleName);
+
         $kwdicomextractorComponent = MidasLoader::loadComponent('Extractor', 'dicomextractor');
+        $ret = array();
         $ret['dcm2xml'] = $kwdicomextractorComponent->getApplicationStatus($dcm2xmlCommand, 'dcm2xml');
         $ret['storescp'] = $kwdicomextractorComponent->getApplicationStatus($storescpCommand, 'storescp');
         $ret['dcmqrscp'] = $kwdicomextractorComponent->getApplicationStatus($dcmqrscpCommand, 'dcmqrscp');
         $ret['dcmqridx'] = $kwdicomextractorComponent->getApplicationStatus($dcmqridxCommand, 'dcmqridx');
-        $receptionDir = $modulesConfig['dicomserver']->receptiondir;
+
+        $receptionDir =  $settingModel->getValueByName(MIDAS_DICOMSERVER_RECEPTION_DIRECTORY_KEY, $this->moduleName);
+
         if (empty($receptionDir)) {
             $receptionDir = $this->getDefaultReceptionDir();
         }
         $ret['Reception Directory Writable'] = array(is_writable($receptionDir));
-        $peer_aes = $modulesConfig['dicomserver']->peer_aes;
-        if (!empty($peer_aes) && strpos($peer_aes, '(') !== false && strpos($peer_aes, ')') !== false
+
+        $peerAes = $settingModel->getValueByName(MIDAS_DICOMSERVER_PEER_AES_KEY, $this->moduleName);
+
+        if (!empty($peerAes) && strpos($peerAes, '(') !== false && strpos($peerAes, ')') !== false
         ) {
             $ret['Peer AE List Not Empty'] = array(true, "At least one peer AE is given");
         } else {
             $ret['Peer AE List Not Empty'] = array(false, "Please input your peer AEs!");
         }
+
+        /** @var Dicomserver_ApiComponent $apiComponent */
         $apiComponent = MidasLoader::loadComponent('Api', 'dicomserver');
         $status_args['storescp_cmd'] = $storescpCommand;
         $status_args['dcmqrscp_cmd'] = $dcmqrscpCommand;
         $status_results = $apiComponent->status($status_args);
-        if ($status_results['status'] == MIDAS_DICOM_STORESCP_IS_RUNNING + MIDAS_DICOM_DCMQRSCP_IS_RUNNING) {
+        if ($status_results['status'] == MIDAS_DICOMSERVER_STORESCP_IS_RUNNING + MIDAS_DICOMSERVER_DCMQRSCP_IS_RUNNING) {
             $ret['Status'] = array(true, "DICOM Server is running");
-        } elseif ($status_results['status'] == MIDAS_DICOM_STORESCP_IS_RUNNING) {
+        } elseif ($status_results['status'] == MIDAS_DICOMSERVER_STORESCP_IS_RUNNING) {
             $ret['Status'] = array(
                 false,
                 'DICOM C-STORE receiver is running, but DICOM Query/Retrieve service are NOT running',
             );
-        } elseif ($status_results['status'] == MIDAS_DICOM_DCMQRSCP_IS_RUNNING) {
+        } elseif ($status_results['status'] == MIDAS_DICOMSERVER_DCMQRSCP_IS_RUNNING) {
             $ret['Status'] = array(
                 false,
                 'DICOM Query/Retrieve services are running, but DICOM C-STORE receiver is NOT running',
             );
-        } elseif ($status_results['status'] == MIDAS_DICOM_SERVER_NOT_RUNNING) {
+        } elseif ($status_results['status'] == MIDAS_DICOMSERVER_SERVER_NOT_RUNNING) {
             $ret['Status'] = array(false, "DICOM Server is not running");
-        } else { // MIDAS_DICOM_SERVER_NOT_SUPPORTED
+        } else { // MIDAS_DICOMSERVER_SERVER_NOT_SUPPORTED
             $ret['Status'] = array(false, 'This module is currently not supported in Windows.');
         }
 
@@ -81,18 +92,11 @@ class Dicomserver_ServerComponent extends AppComponent
      */
     public function getDefaultReceptionDir()
     {
+        /** @var UtilityComponent $utilityComponent */
         $utilityComponent = MidasLoader::loadComponent('Utility');
-        $default_reception_dir = $utilityComponent->getTempDirectory('');
-        if (substr($default_reception_dir, -1) == '/') {
-            $default_reception_dir = substr($default_reception_dir, 0, -1);
-        }
-        $default_reception_dir .= 'dicomserver';
-        if (!file_exists($default_reception_dir) && !KWUtils::mkDir($default_reception_dir, 0777)
-        ) {
-            throw new Zend_Exception("couldn't create dir ".$default_reception_dir);
-        }
+        $defaultReceptionDirectory = $utilityComponent->getTempDirectory('dicomserver');
 
-        return $default_reception_dir;
+        return $defaultReceptionDirectory;
     }
 
     /**
@@ -100,28 +104,32 @@ class Dicomserver_ServerComponent extends AppComponent
      */
     public function generateDcmqrscpConfig()
     {
-        $modulesConfig = Zend_Registry::get('configsModules');
-        $pacs_dir = $modulesConfig['dicomserver']->receptiondir.PACS_DIR;
-        $cfg_file = $pacs_dir.DCMQRSCP_CFG_FILE;
-        $cfg_file_content = "NetworkTCPPort  = ".$modulesConfig['dicomserver']->dcmqrscp_port."\n";
-        $cfg_file_content .= "MaxPDUSize      = 16384\n";
-        $cfg_file_content .= "MaxAssociations = 16\n\n";
-        $cfg_file_content .= "HostTable BEGIN\n";
-        $peer_aes = $modulesConfig['dicomserver']->peer_aes;
-        $peer_aes_arr = explode(";", $peer_aes);
-        $symblic_name_arr = array();
-        foreach ($peer_aes_arr as $index => $peer_ae) {
-            $cfg_file_content .= "ae".$index."       = ".$peer_ae."\n";
-            $symblic_name_arr[] = "ae".$index;
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $receptionDirectory = $settingModel->getValueByName(MIDAS_DICOMSERVER_RECEPTION_DIRECTORY_KEY, $this->moduleName);
+        $dcmqrscpPort = $settingModel->getValueByName(MIDAS_DICOMSERVER_DCMQRSCP_PORT_KEY, $this->moduleName);
+        $pacsDirectory = $receptionDirectory.MIDAS_DICOMSERVER_PACS_DIRECTORY;
+        $cfgFile = $pacsDirectory.MIDAS_DICOMSERVER_DCMQRSCP_CFG_FILE;
+        $cfgFileContent = "NetworkTCPPort  = ".$dcmqrscpPort."\n";
+        $cfgFileContent .= "MaxPDUSize      = 16384\n";
+        $cfgFileContent .= "MaxAssociations = 16\n\n";
+        $cfgFileContent .= "HostTable BEGIN\n";
+        $peerAes = $settingModel->getValueByName(MIDAS_DICOMSERVER_PEER_AES_KEY, $this->moduleName);
+        $peerAesArray = explode(";", $peerAes);
+        $symbolicNameArray = array();
+        foreach ($peerAesArray as $index => $peer_ae) {
+            $cfgFileContent .= "ae".$index."       = ".$peer_ae."\n";
+            $symbolicNameArray[] = "ae".$index;
         }
-        $cfg_file_content .= "AES = ".implode(",", $symblic_name_arr)."\n";
-        $cfg_file_content .= "HostTable END\n\n";
-        $cfg_file_content .= "VendorTable BEGIN\n";
-        $cfg_file_content .= "VendorTable END\n\n";
-        $cfg_file_content .= "AETable BEGIN\n";
-        $cfg_file_content .= $modulesConfig['dicomserver']->server_ae_title."    ".$pacs_dir."    R  (200, 1024mb) AES\n";
-        $cfg_file_content .= "AETable END\n";
-        file_put_contents($cfg_file, $cfg_file_content);
+        $serverAeTitle = $settingModel->getValueByName(MIDAS_DICOMSERVER_SERVER_AE_TITLE_KEY, $this->moduleName);
+        $cfgFileContent .= "AES = ".implode(",", $symbolicNameArray)."\n";
+        $cfgFileContent .= "HostTable END\n\n";
+        $cfgFileContent .= "VendorTable BEGIN\n";
+        $cfgFileContent .= "VendorTable END\n\n";
+        $cfgFileContent .= "AETable BEGIN\n";
+        $cfgFileContent .= $serverAeTitle."    ".$pacsDirectory."    R  (200, 1024mb) AES\n";
+        $cfgFileContent .= "AETable END\n";
+        file_put_contents($cfgFile, $cfgFileContent);
     }
 
     /**
@@ -133,30 +141,34 @@ class Dicomserver_ServerComponent extends AppComponent
         if (count($bitstreams) < 1) {
             return;
         }
-        $modulesConfig = Zend_Registry::get('configsModules');
-        $command = $modulesConfig['dicomserver']->dcmqridx;
+
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $command = $settingModel->getValueByName(MIDAS_DICOMSERVER_DCMQRIDX_COMMAND_KEY, $this->moduleName);
         $command = str_replace("'", '', $command);
-        $command_params = array();
-        $reciptionDir = $modulesConfig['dicomserver']->receptiondir;
-        if (!is_writable($reciptionDir)) {
+        $commandParams = array();
+        $receptionDirectory = $settingModel->getValueByName(MIDAS_DICOMSERVER_RECEPTION_DIRECTORY_KEY, $this->moduleName);
+        if (!is_writable($receptionDirectory)) {
             throw new Zend_Exception(
                 "Please configure Dicom Server module correctly. Its reception directory is NOT writable!",
                 MIDAS_INVALID_POLICY
             );
         }
-        $aeStorage = $reciptionDir.PACS_DIR;
+        $aeStorage = $receptionDirectory.MIDAS_DICOMSERVER_PACS_DIRECTORY;
         $aeStorage = str_replace("'", '', $aeStorage);
-        $command_params[] = $aeStorage;
+        $commandParams[] = $aeStorage;
         foreach ($bitstreams as $bitstream) {
-            $command_params[] = $bitstream->getFullPath();
-            $regisgterCommand = KWUtils::prepareExeccommand($command, $command_params);
+            $commandParams[] = $bitstream->getFullPath();
+            $registerCommand = KWUtils::prepareExeccommand($command, $commandParams);
             array_pop($command_params); // prepare for next iteration in the loop
-            KWUtils::exec($regisgterCommand, $output, '', $returnVal);
+            KWUtils::exec($registerCommand, $output, '', $returnVal);
             if ($returnVal) {
-                $exception_string = "Failed to register DICOM images! \n Reason:".implode("\n", $output);
-                throw new Zend_Exception(htmlspecialchars($exception_string, ENT_QUOTES), MIDAS_INVALID_POLICY);
+                $exceptionString = "Failed to register DICOM images! \n Reason:".implode("\n", $output);
+                throw new Zend_Exception(htmlspecialchars($exceptionString, ENT_QUOTES), MIDAS_INVALID_POLICY);
             }
         }
+
+        /** @var Dicomserver_RegistrationModel $registrationModel */
         $registrationModel = MidasLoader::loadModel('Registration', 'dicomserver');
         $itemId = $revision->getItemId();
         if (!$registrationModel->checkByItemId($itemId)) {

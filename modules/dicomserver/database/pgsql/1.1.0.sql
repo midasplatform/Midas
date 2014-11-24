@@ -1,6 +1,6 @@
 -- MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- PostgreSQL database for the dicomserver module, version 1.0.1
+-- PostgreSQL database for the dicomserver module, version 1.1.0
 
 SET client_encoding = 'UTF8';
 SET default_with_oids = FALSE;

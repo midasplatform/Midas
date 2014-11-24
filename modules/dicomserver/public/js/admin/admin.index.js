@@ -10,13 +10,13 @@ midas.dicomserver.start = function (email, apikey) {
     'use strict';
     var email_val = typeof email !== 'undefined' ? email : '';
     var apikey_val = typeof email !== 'undefined' ? apikey : '';
-    var dcm2xml_val = $(document).find('#dcm2xml').val();
-    var storescp_val = $(document).find('#storescp').val();
+    var dcm2xml_val = $(document).find('#dcm2xml_command').val();
+    var storescp_val = $(document).find('#storescp_command').val();
     var port_val = $(document).find('#storescp_port').val();
     var timeout_val = $(document).find('#storescp_study_timeout').val();
-    var incoming_dir_val = $(document).find('#receptiondir').val();
-    var dest_folder_val = $(document).find('#pydas_dest_folder').val();
-    var dcmqrscp_val = $(document).find('#dcmqrscp').val();
+    var incoming_dir_val = $(document).find('#reception_directory').val();
+    var dest_folder_val = $(document).find('#destination_folder').val();
+    var dcmqrscp_val = $(document).find('#dcmqrscp_command').val();
     ajaxWebApi.ajax({
         method: 'midas.dicomserver.start',
         args: 'email=' + email_val +
@@ -48,13 +48,13 @@ midas.dicomserver.manualstart = function (email, apikey) {
     'use strict';
     var email_val = typeof email !== 'undefined' ? email : '';
     var apikey_val = typeof email !== 'undefined' ? apikey : '';
-    var dcm2xml_val = $(document).find('#dcm2xml').val();
-    var storescp_val = $(document).find('#storescp').val();
+    var dcm2xml_val = $(document).find('#dcm2xml_command').val();
+    var storescp_val = $(document).find('#storescp_command').val();
     var port_val = $(document).find('#storescp_port').val();
     var timeout_val = $(document).find('#storescp_study_timeout').val();
-    var incoming_dir_val = $(document).find('#receptiondir').val();
-    var dest_folder_val = $(document).find('#pydas_dest_folder').val();
-    var dcmqrscp_val = $(document).find('#dcmqrscp').val();
+    var incoming_dir_val = $(document).find('#reception_directory').val();
+    var dest_folder_val = $(document).find('#destination_folder').val();
+    var dcmqrscp_val = $(document).find('#dcmqrscp_command').val();
     ajaxWebApi.ajax({
         method: 'midas.dicomserver.start',
         args: 'email=' + email_val +
@@ -76,9 +76,9 @@ midas.dicomserver.manualstart = function (email, apikey) {
 
 midas.dicomserver.stop = function () {
     'use strict';
-    var storescp_val = $(document).find('#storescp').val();
-    var dcmqrscp_val = $(document).find('#dcmqrscp').val();
-    var incoming_dir_val = $(document).find('#receptiondir').val();
+    var storescp_val = $(document).find('#storescp_command').val();
+    var dcmqrscp_val = $(document).find('#dcmqrscp_command').val();
+    var incoming_dir_val = $(document).find('#reception_directory').val();
     ajaxWebApi.ajax({
         method: 'midas.dicomserver.stop',
         args: 'storescp_cmd=' + storescp_val +
@@ -102,9 +102,9 @@ midas.dicomserver.stop = function () {
 
 midas.dicomserver.manualstop = function () {
     'use strict';
-    var storescp_val = $(document).find('#storescp').val();
-    var dcmqrscp_val = $(document).find('#dcmqrscp').val();
-    var incoming_dir_val = $(document).find('#receptiondir').val();
+    var storescp_val = $(document).find('#storescp_command').val();
+    var dcmqrscp_val = $(document).find('#dcmqrscp_command').val();
+    var incoming_dir_val = $(document).find('#reception_directory').val();
     ajaxWebApi.ajax({
         method: 'midas.dicomserver.stop',
         args: 'storescp_cmd=' + storescp_val +
@@ -120,8 +120,8 @@ midas.dicomserver.manualstop = function () {
 
 midas.dicomserver.checkStatus = function () {
     'use strict';
-    var storescp_val = $(document).find('#storescp').val();
-    var dcmqrscp_val = $(document).find('#dcmqrscp').val();
+    var storescp_val = $(document).find('#storescp_command').val();
+    var dcmqrscp_val = $(document).find('#dcmqrscp_command').val();
     ajaxWebApi.ajax({
         method: 'midas.dicomserver.status',
         args: 'storescp_cmd=' + storescp_val +
@@ -174,69 +174,15 @@ midas.dicomserver.checkStatus = function () {
     });
 };
 
-midas.dicomserver.validateConfig = function (formData, jqForm, options) {};
-
-midas.dicomserver.successConfig = function (responseText, statusText, xhr, form) {
-    'use strict';
-    var jsonResponse;
-    try {
-        jsonResponse = $.parseJSON(responseText);
-    }
-    catch (e) {
-        midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
-        return false;
-    }
-    if (jsonResponse === null) {
-        midas.createNotice('Error', 4000, 'error');
-        return;
-    }
-    if (jsonResponse[0]) {
-        midas.createNotice(jsonResponse[1], 4000);
-        window.location.reload();
-    }
-    else {
-        midas.createNotice(jsonResponse[1], 4000, 'error');
-    }
-};
-
 $(document).ready(function () {
     'use strict';
-    $("div#receptiondir").qtip({
-        content: 'The file-system location of the DICOM server work directory. (required)',
-        show: 'mouseover',
-        hide: 'mouseout',
-        position: {
-            target: 'mouse',
-            my: 'bottom left',
-            viewport: $(window), // Keep the qtip on-screen at all times
-            effect: true // Disable positioning animation
-        }
-    });
-
-    $("div#peer_aes").qtip({
-        content: 'Please follow the above instructions to define your Peer AE list and it cannot be empty. (required)',
-        show: 'mouseover',
-        hide: 'mouseout',
-        position: {
-            target: 'mouse',
-            my: 'bottom left',
-            viewport: $(window), // Keep the qtip on-screen at all times
-            effect: true // Disable positioning animation
-        }
-    });
-
-    $('#configForm').ajaxForm({
-        beforeSubmit: midas.dicomserver.validateConfig,
-        success: midas.dicomserver.successConfig
-    });
-
     midas.dicomserver.checkStatus();
 
     $('div#startServer').click(function () {
         var html = '';
         html += 'Do you want to use current logged-in user to start DICOM server?';
-        html += '<br/>';
-        html += '<br/>';
+        html += '<br />';
+        html += '<br />';
         html += '<input style="margin-left:140px;" class="globalButton startServerYes" type="button" value="' + json.global.Yes + '"/>';
         html += '<input style="margin-left:50px;" class="globalButton startServerNo" type="button" value="' + json.global.No + '"/>';
         midas.showDialogWithContent('Start DICOM server', html, false);
@@ -253,8 +199,8 @@ $(document).ready(function () {
     $('div#stopServer').click(function () {
         var html = '';
         html += 'Do you really want to stop DICOM server?';
-        html += '<br/>';
-        html += '<br/>';
+        html += '<br />';
+        html += '<br />';
         html += '<input style="margin-left:140px;" class="globalButton stopServerYes" type="button" value="' + json.global.Yes + '"/>';
         html += '<input style="margin-left:50px;" class="globalButton stopServerNo" type="button" value="' + json.global.No + '"/>';
         midas.showDialogWithContent('Stop DICOM server', html, false);
@@ -279,19 +225,18 @@ $(document).ready(function () {
         active: false,
         autoHeight: false,
         change: function () {
-            var dcm2xml_val = $(document).find('#dcm2xml').val();
-            var storescp_val = $(document).find('#storescp').val();
-            var dcmqrscp_val = $(document).find('#dcmqrscp').val();
-            var dcmqridx_val = $(document).find('#dcmqridx').val();
-            var incoming_dir_val = $(document).find('#receptiondir').val();
-            $('span#dcm2xml_command').html(dcm2xml_val);
-            $('span#storescp_command').html(storescp_val);
-            $('span#dcmqrscp_command').html(dcmqrscp_val);
-            $('span#dcmqridx_command').html(dcmqridx_val);
-            $('span#reception_dir').html(incoming_dir_val);
+            var dcm2xml_val = $(document).find('#dcm2xml_command').val();
+            var storescp_val = $(document).find('#storescp_command').val();
+            var dcmqrscp_val = $(document).find('#dcmqrscp_command').val();
+            var dcmqridx_val = $(document).find('#dcmqridx_command').val();
+            var incoming_dir_val = $(document).find('#reception_directory').val();
+            $('span#manual_dcm2xml_command').html(dcm2xml_val);
+            $('span#manual_storescp_command').html(storescp_val);
+            $('span#manual_dcmqrscp_command').html(dcmqrscp_val);
+            $('span#manual_dcmqridx_command').html(dcmqridx_val);
+            $('span#manual_reception_directory').html(incoming_dir_val);
             midas.dicomserver.manualstart();
             midas.dicomserver.manualstop();
         }
     }).show();
-
 });

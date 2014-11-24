@@ -58,7 +58,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
             $status_args['dcmqrscp_cmd'] = $args['dcmqrscp_cmd'];
         }
         $running_status = $this->status($status_args);
-        if ($running_status['status'] > MIDAS_DICOM_SERVER_NOT_RUNNING && !array_key_exists('get_command', $args)
+        if ($running_status['status'] > MIDAS_DICOMSERVER_SERVER_NOT_RUNNING && !array_key_exists('get_command', $args)
         ) {
             throw new Exception(
                 'At least one DICOM service is already running. Please stop all services first before start them again!',
@@ -105,11 +105,11 @@ class Dicomserver_ApiserverComponent extends AppComponent
             $serverComponent = MidasLoader::loadComponent('Server', 'dicomserver');
             $incoming_dir = $serverComponent->getDefaultReceptionDir();
         }
-        $processing_dir = $incoming_dir.PROCESSING_DIR;
+        $processing_dir = $incoming_dir.MIDAS_DICOMSERVER_PROCESSING_DIRECTORY;
         if (!file_exists($processing_dir)) {
             KWUtils::mkDir($processing_dir, 0777);
         }
-        $log_dir = $incoming_dir.LOG_DIR;
+        $log_dir = $incoming_dir.MIDAS_DICOMSERVER_LOGS_DIRECTORY;
         if (!file_exists($log_dir)) {
             KWUtils::mkDir($log_dir, 0777);
         }
@@ -117,7 +117,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
         if (!empty($args['dcmqrscp_cmd'])) {
             $dcmqrscp_cmd = $args['dcmqrscp_cmd'];
         }
-        $dcmqrscp_pacs_dir = $incoming_dir.PACS_DIR;
+        $dcmqrscp_pacs_dir = $incoming_dir.MIDAS_DICOMSERVER_PACS_DIRECTORY;
         if (!file_exists($dcmqrscp_pacs_dir)) {
             KWUtils::mkDir($dcmqrscp_pacs_dir, 0777);
         }
@@ -140,7 +140,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
         $python_params[] = '-d '.$dest_folder;
         // used by dcmqrscp
         $python_params[] = '-q '.$dcmqrscp_cmd;
-        $python_params[] = '-f '.$dcmqrscp_pacs_dir.DCMQRSCP_CFG_FILE;
+        $python_params[] = '-f '.$dcmqrscp_pacs_dir.MIDAS_DICOMSERVER_DCMQRSCP_CFG_FILE;
         $start_server_command = KWUtils::prepareExeccommand($python_cmd, $python_params);
         if (array_key_exists('get_command', $args)) {
             $start_server_command_string = str_replace("'", "", $start_server_command);
@@ -197,11 +197,11 @@ class Dicomserver_ApiserverComponent extends AppComponent
         $ret = array();
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             // currently not supported in windows
-            $ret['status'] = MIDAS_DICOM_SERVER_NOT_SUPPORTED;
+            $ret['status'] = MIDAS_DICOMSERVER_SERVER_NOT_SUPPORTED;
 
             return $ret;
         } else {
-            $ret['status'] = MIDAS_DICOM_SERVER_NOT_RUNNING;
+            $ret['status'] = MIDAS_DICOMSERVER_SERVER_NOT_RUNNING;
         }
         $ps_cmd = 'ps';
         $cmd_params = array();
@@ -214,7 +214,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
             $fields = preg_split("/\s+/", trim($line));
             $process = $fields[4];
             if (!strcmp($process, $storescp_cmd)) {
-                $ret['status'] = MIDAS_DICOM_STORESCP_IS_RUNNING;
+                $ret['status'] = MIDAS_DICOMSERVER_STORESCP_IS_RUNNING;
                 // need to be updated if python script is changed
                 $ret['user_email'] = $fields[21];
                 $runningSCPs += 1;
@@ -222,7 +222,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
                     break;
                 }
             } elseif (!strcmp($process, $dcmqrscp_cmd)) {
-                $ret['status'] += MIDAS_DICOM_DCMQRSCP_IS_RUNNING;
+                $ret['status'] += MIDAS_DICOMSERVER_DCMQRSCP_IS_RUNNING;
                 $runningSCPs += 1;
                 if ($runningSCPs == $totalSCPs) {
                     break;
@@ -261,7 +261,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
         }
 
         $running_status = $this->status($status_args);
-        if ($running_status['status'] == MIDAS_DICOM_SERVER_NOT_RUNNING && !array_key_exists('get_command', $args)
+        if ($running_status['status'] == MIDAS_DICOMSERVER_SERVER_NOT_RUNNING && !array_key_exists('get_command', $args)
         ) {
             $ret['message'] = 'DICOM server is not running now!';
 
@@ -282,7 +282,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
             $serverComponent = MidasLoader::loadComponent('Server', 'dicomserver');
             $incoming_dir = $serverComponent->getDefaultReceptionDir();
         }
-        $log_dir = $incoming_dir.LOG_DIR;
+        $log_dir = $incoming_dir.MIDAS_DICOMSERVER_LOGS_DIRECTORY;
         if (!file_exists($log_dir)) {
             KWUtils::mkDir($log_dir, 0777);
         }
