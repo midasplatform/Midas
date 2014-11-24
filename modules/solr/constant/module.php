@@ -18,24 +18,9 @@
  limitations under the License.
 =========================================================================*/
 
-/** module config form */
-class Solr_ConfigForm extends AppForm
-{
-    /** create the admin->modules page config form */
-    public function createConfigForm()
-    {
-        $form = new Zend_Form();
-        $form->setAction($this->webroot.'/solr/config/submit')->setMethod('post');
-
-        $host = new Zend_Form_Element_Text('host');
-        $port = new Zend_Form_Element_Text('port');
-        $webroot = new Zend_Form_Element_Text('webroot');
-
-        $submit = new Zend_Form_Element_Submit('submitConfig');
-        $submit->setLabel('Save configuration');
-
-        $form->addElements(array($host, $port, $webroot, $submit));
-
-        return $form;
-    }
-}
+define('SOLR_HOST_KEY', 'solrHost');
+define('SOLR_HOST_DEFAULT_VALUE', 'localhost');
+define('SOLR_PORT_KEY', 'solrPort');
+define('SOLR_PORT_DEFAULT_VALUE', 8983);
+define('SOLR_WEBROOT_KEY', 'solrWebroot');
+define('SOLR_WEBROOT_DEFAULT_VALUE', '/solr/');

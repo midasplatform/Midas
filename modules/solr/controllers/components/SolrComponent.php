@@ -27,9 +27,9 @@ class Solr_SolrComponent extends AppComponent
     public function getSolrIndex()
     {
         $settingModel = MidasLoader::loadModel('Setting');
-        $solrHost = $settingModel->getValueByName('solrHost', 'solr');
-        $solrPort = $settingModel->getValueByName('solrPort', 'solr');
-        $solrWebroot = $settingModel->getValueByName('solrWebroot', 'solr');
+        $solrHost = $settingModel->getValueByName(SOLR_HOST_KEY, 'solr');
+        $solrPort = $settingModel->getValueByName(SOLR_PORT_KEY, 'solr');
+        $solrWebroot = $settingModel->getValueByName(SOLR_WEBROOT_KEY, 'solr');
 
         if ($solrHost === null) {
             throw new Zend_Exception('Solr settings not saved');
