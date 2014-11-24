@@ -23,6 +23,8 @@ require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 /** Component for api methods */
 class Remoteprocessing_ApiComponent extends AppComponent
 {
+    public $moduleName = 'remoteprocessing';
+
     /**
      * Register a server
      *
@@ -35,32 +37,35 @@ class Remoteprocessing_ApiComponent extends AppComponent
     public function registerserver($args)
     {
         $os = '';
-        $apikey = '';
+        $apiKey = '';
         $email = '';
-        $securitykey = '';
+        $securityKey = '';
         if (isset($args['os'])) {
             $os = $args['os'];
         }
         if (isset($args['apikey'])) {
-            $apikey = $args['apikey'];
+            $apiKey = $args['apikey'];
         }
         if (isset($args['email'])) {
             $email = $args['email'];
         }
         if (isset($args['securitykey'])) {
-            $securitykey = $args['securitykey'];
+            $securityKey = $args['securitykey'];
         }
 
-        $modulesConfig = Zend_Registry::get('configsModules');
-        $checkSecuritykey = $modulesConfig['remoteprocessing']->securitykey;
-        if (empty($securitykey) || $securitykey != $checkSecuritykey) {
-            throw new Exception('Error security key.', MIDAS_INVALID_PARAMETER);
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $checkSecurityKey = $settingModel->getValueByName(MIDAS_REMOTEPROCESSING_SECURITY_KEY_KEY, $this->moduleName);
+
+        if (empty($securityKey) || $securityKey != $checkSecurityKey) {
+            throw new Exception('Error security key. '.$securityKey.' '.$checkSecurityKey, MIDAS_INVALID_PARAMETER);
         }
 
         $userModel = MidasLoader::loadModel('User');
         $groupModel = MidasLoader::loadModel('Group');
-        $UserapiModel = MidasLoader::loadModel('Userapi');
-        if (empty($apikey)) {
+        $userApiModel = MidasLoader::loadModel('Userapi');
+
+        if (empty($apiKey)) {
             if (empty($os)) {
                 throw new Exception('Error os parameter.', MIDAS_INVALID_PARAMETER);
             }
@@ -75,24 +80,24 @@ class Remoteprocessing_ApiComponent extends AppComponent
             $serverGroup = $groupModel->load(MIDAS_GROUP_SERVER_KEY);
             $groupModel->addUser($serverGroup, $userDao);
 
-            $userapiDao = $UserapiModel->getByAppAndUser('remoteprocessing', $userDao);
+            $userapiDao = $userApiModel->getByAppAndUser('remoteprocessing', $userDao);
             if ($userapiDao == false) {
-                $userapiDao = $UserapiModel->createKey($userDao, 'remoteprocessing', '100');
+                $userapiDao = $userApiModel->createKey($userDao, 'remoteprocessing', '100');
             }
 
-            $apikey = $userapiDao->getApikey();
+            $apiKey = $userapiDao->getApikey();
 
             Zend_Registry::get('notifier')->callback('CALLBACK_REMOTEPROCESSING_CREATESERVER', $userDao->toArray());
         }
 
-        $tokenDao = $UserapiModel->getToken($email, $apikey, 'remoteprocessing');
+        $tokenDao = $userApiModel->getToken($email, $apiKey, 'remoteprocessing');
         if (empty($tokenDao)) {
             throw new Exception('Unable to authenticate. Please check credentials.', MIDAS_INVALID_PARAMETER);
         }
 
         $data['token'] = $tokenDao->getToken();
         $data['email'] = $email;
-        $data['apikey'] = $apikey;
+        $data['apikey'] = $apiKey;
 
         return $data;
     }

@@ -21,6 +21,5 @@ set(module_name remoteprocessing)
 to_titlecase(${module_name} module_name_titlecase)
 
 add_midas_test(${module_name_titlecase}ApiComponentController ApiComponentControllerTest.php)
-add_midas_test(${module_name_titlecase}ConfigController ConfigControllerTest.php)
 # add_midas_test(${module_name_titlecase}ExecutableController ExecutableControllerTest.php)  # FIXME
 # add_midas_test(${module_name_titlecase}JobController JobControllerTest.php)  # FIXME

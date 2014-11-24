@@ -18,6 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
+define('MIDAS_REMOTEPROCESSING_SECURITY_KEY_KEY', 'security_key');
+define('MIDAS_REMOTEPROCESSING_SHOW_BUTTON_KEY', 'show_button');
+define('MIDAS_REMOTEPROCESSING_SHOW_BUTTON_DEFAULT_VALUE', 1);
+
 define('MIDAS_REMOTEPROCESSING_OS_WINDOWS', 'windows');
 define('MIDAS_REMOTEPROCESSING_OS_LINUX', 'linux');
 

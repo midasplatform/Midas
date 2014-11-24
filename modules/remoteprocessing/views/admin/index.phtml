@@ -18,24 +18,14 @@
  limitations under the License.
 =========================================================================*/
 
-/** form */
-class Remoteprocessing_ConfigForm extends AppForm
-{
-    /** create  form */
-    public function createConfigForm()
-    {
-        $form = new Zend_Form();
-        $form->setAction($this->webroot.'/remoteprocessing/config/index')->setMethod('post');
+$this->declareVars('form', 'pageTitle');
+$this->headTitle($this->escape($this->pageTitle));
+?>
 
-        $securitykey = new Zend_Form_Element_Text('securitykey');
-
-        $showbutton = new Zend_Form_Element_Checkbox('showbutton');
-
-        $submit = new Zend_Form_Element_Submit('submitConfig');
-        $submit->setLabel('Save configuration');
-
-        $form->addElements(array($securitykey, $showbutton, $submit));
-
-        return $form;
-    }
-}
+<div class="viewMain">
+    <h1><?php echo $this->escape($this->pageTitle); ?></h1>
+    <?php echo $this->form; ?>
+    <p><a href="<?php echo $this->url(array(module => 'remoteprocessing', 'controller' => 'admin', 'action' => 'download'), 'default'); ?>">Download Python script</a>.
+    This script should run on the remote servers.</p>
+    <p><a href="<?php echo $this->url(array('controller' => 'admin', 'action' => 'index'), 'default'); ?>#tabs-modules">&laquo; Back to Modules Administration</a></p>
+</div>

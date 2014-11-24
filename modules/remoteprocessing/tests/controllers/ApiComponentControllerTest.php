@@ -18,7 +18,9 @@
  limitations under the License.
 =========================================================================*/
 
-/** index controller tests */
+require_once BASE_PATH.'/modules/remoteprocessing/constant/module.php';
+
+/** API component controller tests for the remote processing module. */
 class Remoteprocessing_ApiComponentControllerTest extends ControllerTestCase
 {
     /** set up tests */
@@ -30,32 +32,16 @@ class Remoteprocessing_ApiComponentControllerTest extends ControllerTestCase
         parent::setUp();
     }
 
-    private function _getSecurityKey()
-    {
-        $this->resetAll();
-        $usersFile = $this->loadData('User', 'adminUser');
-        $userDao = $this->User->load($usersFile[0]->getKey());
-        $this->params = array();
-
-        /** @var RandomComponent $randomComponent */
-        $randomComponent = MidasLoader::loadComponent('Random');
-        $securityKey = $randomComponent->generateString(40);
-        $this->params['securitykey'] = $securityKey;
-        $this->params['submitConfig'] = 'true';
-        $this->request->setMethod('POST');
-        $this->dispatchUrI("/remoteprocessing/config", $userDao);
-        $this->resetAll();
-
-        return $securityKey;
-    }
-
-    /** test manage */
+    /** Test API submission process. */
     public function testAllApiSubmissionProcess()
     {
+        /** @var $settingModel SettingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+
         // register (create user)
         $this->resetAll();
         $this->params = array();
-        $this->params['securitykey'] = $this->_getSecurityKey();
+        $this->params['securitykey'] = $settingModel->getValueByName(MIDAS_REMOTEPROCESSING_SECURITY_KEY_KEY, 'remoteprocessing');
         $this->params['os'] = MIDAS_REMOTEPROCESSING_OS_WINDOWS;
         $this->request->setMethod('POST');
 
@@ -73,7 +59,7 @@ class Remoteprocessing_ApiComponentControllerTest extends ControllerTestCase
 
         // authenticate
         $this->params = array();
-        $this->params['securitykey'] = $this->_getSecurityKey();
+        $this->params['securitykey'] = $settingModel->getValueByName(MIDAS_REMOTEPROCESSING_SECURITY_KEY_KEY, 'remoteprocessing');
         $this->params['email'] = $email;
         $this->params['apikey'] = $apikey;
         $this->request->setMethod('POST');

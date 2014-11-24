@@ -26,7 +26,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     public $moduleName = 'remoteprocessing';
     public $_moduleComponents = array('Api');
     public $_moduleModels = array('Job');
-    public $_models = array('Item');
+    public $_models = array('Item', 'Setting');
     public $_moduleDaos = array('Job');
 
     /** init notification process */
@@ -63,8 +63,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     /** add a process button */
     public function getButton($params)
     {
-        $modulesConfig = Zend_Registry::get('configsModules');
-        if ($modulesConfig[$this->moduleName]->showbutton) {
+        if ($this->Setting->getValueByName(MIDAS_REMOTEPROCESSING_SHOW_BUTTON_KEY, $this->moduleName) == 1) {
             $html = "<li class='processButton' style='margin-left:5px;' title='Process' rel='".Zend_Registry::get(
                     'webroot'
                 )."/remoteprocessing/index/selectaction'>
