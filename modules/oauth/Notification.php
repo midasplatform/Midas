@@ -32,7 +32,7 @@ class Oauth_Notification extends MIDAS_Notification
         $this->addCallBack('CALLBACK_API_REQUIRE_PERMISSIONS', 'requirePermissions');
         $this->addCallBack('CALLBACK_CORE_GET_CONFIG_TABS', 'getUserTabs');
 
-        $this->addTask('TASK_CLEANUP_PERFORM_CLEANUP', 'cleanExpired', 'Delete expired codes and tokens');
+        $this->addTask('TASK_OAUTH_PERFORM_CLEANUP', 'cleanExpired', 'Delete expired codes and tokens');
     }
 
     /**
