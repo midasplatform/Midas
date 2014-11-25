@@ -19,20 +19,17 @@
 =========================================================================*/
 
 /** Slice name view helper. */
-class Zend_View_Helper_Slicename
+class Zend_View_Helper_Slicename extends Zend_View_Helper_Abstract
 {
-    /** Slice name view helper. */
+    /**
+     * Slice name view helper.
+     *
+     * @param string $name name
+     * @param int $nchar number of characters
+     * @return string sliced name
+     */
     public function slicename($name, $nchar)
     {
-        Zend_Loader::loadClass('UtilityComponent', BASE_PATH.'/core/controllers/components');
-        $component = new UtilityComponent();
-
-        return $component->sliceName($name, $nchar);
-    }
-
-    /** Set view */
-    public function setView(Zend_View_Interface $view)
-    {
-        $this->view = $view;
+        return htmlspecialchars(UtilityComponent::sliceName($name, $nchar), ENT_QUOTES, 'UTF-8');
     }
 }

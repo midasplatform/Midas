@@ -19,11 +19,19 @@
 =========================================================================*/
 
 /** User thumbnail view helper. */
-class Zend_View_Helper_Userthumbnail
+class Zend_View_Helper_Userthumbnail extends Zend_View_Helper_Abstract
 {
-    /** User thumbnail view helper. */
+    /**
+     * User thumbnail view helper.
+     *
+     * @param string $thumbnail link to thumbnail, if any
+     * @param string $id value of id attribute
+     */
     public function userthumbnail($thumbnail, $id = '')
     {
+        $id = htmlspecialchars($id, ENT_QUOTES, 'UTF-8');
+        $thumbnail = htmlspecialchars($thumbnail, ENT_QUOTES, 'UTF-8');
+
         if (empty($thumbnail)) {
             echo '<img id="'.$id.'" class="thumbnailSmall" src="'.$this->view->coreWebroot.'/public/images/icons/unknownUser.png" alt="" />';
         } elseif (preg_match("@^https?://@", $thumbnail)) {
@@ -31,11 +39,5 @@ class Zend_View_Helper_Userthumbnail
         } else {
             echo '<img id="'.$id.'" class="thumbnailSmall" src="'.$this->view->webroot.'/'.$thumbnail.'" alt="" />';
         }
-    }
-
-    /** Set the view. */
-    public function setView(Zend_View_Interface $view)
-    {
-        $this->view = $view;
     }
 }

@@ -19,20 +19,19 @@
 =========================================================================*/
 
 /** Duration view helper. */
-class Zend_View_Helper_Duration
+class Zend_View_Helper_Duration extends Zend_View_Helper_Abstract
 {
-    /** Duration view helper. */
+    /**
+     * Duration view helper.
+     *
+     * @param int|string $timestamp timestamp
+     * @return string duration as a formatted string
+     */
     public function duration($timestamp)
     {
-        Zend_Loader::loadClass('DateComponent', BASE_PATH.'/core/controllers/components');
-        $component = new DateComponent();
+        /** @var DateComponent $dateComponent */
+        $dateComponent = MidasLoader::loadComponent('Date');
 
-        return $component->duration($timestamp);
-    }
-
-    /** Set the view. */
-    public function setView(Zend_View_Interface $view)
-    {
-        $this->view = $view;
+        return htmlspecialchars($dateComponent->duration($timestamp), ENT_QUOTES, 'UTF-8');
     }
 }

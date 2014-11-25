@@ -18,20 +18,17 @@
  limitations under the License.
 =========================================================================*/
 
-/** Date ago view helper. */
-class Zend_View_Helper_Dateago extends Zend_View_Helper_Abstract
+/** Markdown view helper. */
+class Zend_View_Helper_Markdown extends Zend_View_Helper_Abstract
 {
     /**
-     * Date ago view helper.
+     * Markdown view helper.
      *
-     * @param int|string $timestamp timestamp
-     * @return string date ago as a formatted string
+     * @param string $text Markdown or Markdown Extra text
+     * @return string HTML text
      */
-    public function dateago($timestamp)
+    public function markdown($text)
     {
-        /** @var DateComponent $dateComponent */
-        $dateComponent = MidasLoader::loadComponent('Date');
-
-        return htmlspecialchars($dateComponent->ago($timestamp), ENT_QUOTES, 'UTF-8');
+        return UtilityComponent::markdown(htmlspecialchars($text, ENT_QUOTES, 'UTF-8'));
     }
 }

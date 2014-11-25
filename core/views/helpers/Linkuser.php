@@ -19,23 +19,22 @@
 =========================================================================*/
 
 /** Link user view helper. */
-class Zend_View_Helper_Linkuser
+class Zend_View_Helper_Linkuser extends Zend_View_Helper_Abstract
 {
-    /** Link user view helper. */
+    /**
+     * Link user view helper.
+     *
+     * @param UserDao $userDao user DAO
+     * @return string full name of the user, linked to their profile if it is public
+     */
     public function linkuser($userDao)
     {
         if ($userDao->getPrivacy() == MIDAS_USER_PUBLIC || isset($this->view->userDao) && $this->view->userDao->isAdmin(
             ) || isset($this->view->userDao) && $userDao->getKey() == $this->view->userDao->getKey()
         ) {
-            return '<a class="userTitle" href="'.$this->view->webroot.'/user/'.$userDao->getKey().'">'.$userDao->getFullName().'</a>';
+            return '<a class="userTitle" href="'.$this->view->webroot.'/user/'.htmlspecialchars($userDao->getKey(), ENT_QUOTES, 'UTF-8').'">'.htmlspecialchars($userDao->getFullName(), ENT_QUOTES, 'UTF-8').'</a>';
         }
 
-        return $userDao->getFullName();
-    }
-
-    /** Set the view. */
-    public function setView(Zend_View_Interface $view)
-    {
-        $this->view = $view;
+        return htmlspecialchars($userDao->getFullName(), ENT_QUOTES, 'UTF-8');
     }
 }
