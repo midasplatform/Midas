@@ -55,46 +55,6 @@ class Core_AdminControllerTest extends ControllerTestCase
         $this->assertAction('index');
     }
 
-    /** test show log action */
-    public function testShowLogAction()
-    {
-        $usersFile = $this->loadData('User', 'default');
-        $user1 = $this->User->load($usersFile[0]->getKey());
-        $adminUser = $this->User->load($usersFile[2]->getKey());
-
-        // Should get exception if we try to access logs while not logged in
-        $this->dispatchUrI('/admin/showlog', null, true);
-
-        // Should get exception if we try to access logs as non admin
-        $this->resetAll();
-        $this->dispatchUrI('/admin/showlog', $user1, true);
-
-        // Should be able to see log page as admin user
-        $this->resetAll();
-        $this->dispatchUrI('/admin/showlog', $adminUser);
-        $this->assertController('admin');
-        $this->assertAction('showlog');
-
-        // Should be able to see log page as admin user
-        $this->resetAll();
-        $this->getRequest()->setMethod('POST');
-        $this->dispatchUrI('/admin/showlog', $adminUser);
-        $this->assertController('admin');
-        $this->assertAction('showlog');
-        $resp = json_decode($this->getBody(), true);
-        $this->assertTrue($resp['currentFilter'] != null);
-        $this->assertTrue($resp['currentFilter']['start'] != null);
-        $this->assertTrue($resp['currentFilter']['end'] != null);
-        $this->assertEquals($resp['currentFilter']['module'], 'all');
-        $this->assertEquals($resp['currentFilter']['priority'], MIDAS_PRIORITY_WARNING);
-        $this->assertEquals($resp['currentFilter']['priorityOperator'], '<=');
-        $this->assertEquals($resp['currentFilter']['limit'], 100);
-        $this->assertEquals($resp['currentFilter']['offset'], 0);
-        $this->assertEquals($resp['total'], 0);
-        $this->assertTrue(is_array($resp['logs']));
-        $this->assertEquals(count($resp['logs']), 0);
-    }
-
     /** test dashboard action */
     public function testDashboardAction()
     {

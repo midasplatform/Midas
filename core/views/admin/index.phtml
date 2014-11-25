@@ -38,9 +38,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.clu
     <li><a href="#tabs-assetstore">Assetstores</a></li>
     <li><a href="<?php echo $this->webroot ?>/licenses/all">Licenses</a></li>
     <li><a href="<?php echo $this->webroot ?>/admin/upgrade">Upgrade</a></li>
-    <li><a href="<?php echo $this->webroot ?>/admin/dashboard">Dashboard</a>
-    </li>
-    <li><a href="<?php echo $this->webroot ?>/admin/showlog">Logs</a></li>
+    <li><a href="<?php echo $this->webroot ?>/admin/dashboard">Dashboard</a></li>
     <?php
     foreach ($this->extraTabs as $module => $tabs) {
         foreach ($tabs as $name => $link) {
@@ -92,10 +90,6 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.clu
               <div qtip='If enabled, users will automatically have an icon if they have created one on gravatar.com'>
                 <label for='gravatar'>Gravatar user icons</label>
                 {$this->configForm['gravatar']}
-              </div>
-              <div qtip='If you enable this feature, all requests will be logged to trace.log' class='logtrace'>
-                <label for='logtrace'>Log all requests</label>
-                {$this->configForm['logtrace']}
               </div>
               <div class='defaultLicense'>
                 <label for='licenseSelect'>Default license</label>

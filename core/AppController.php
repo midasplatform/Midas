@@ -131,25 +131,9 @@ class AppController extends MIDAS_GlobalController
 
             $this->userSession = $user;
             $this->view->recentItems = array();
-            $this->view->highNumberError = false;
             if ($user->Dao != null && $user->Dao instanceof UserDao) {
-                if ($user->Dao->isAdmin() && $fc->getRequest()->getControllerName() != 'install' && $fc->getRequest(
-                    )->getControllerName() != 'error'
-                ) {
-                    $errorlogModel = MidasLoader::loadModel('Errorlog');
-                    $count = $errorlogModel->countSince(
-                        date('Y-m-d H:i:s', strtotime('-24 hour')),
-                        array(MIDAS_PRIORITY_CRITICAL, MIDAS_PRIORITY_WARNING)
-                    );
-
-                    if ($count > 5) {
-                        $this->view->highNumberError = true;
-                    }
-                }
-
                 $this->logged = true;
                 $this->view->logged = true;
-
                 $this->view->userDao = $user->Dao;
                 $cookieData = $this->getRequest()->getCookie('recentItems'.$this->userSession->Dao->user_id);
                 $this->view->recentItems = array();
@@ -338,52 +322,6 @@ class AppController extends MIDAS_GlobalController
             $opts = array('http' => array('proxy' => $httpProxy));
             stream_context_set_default($opts);
         }
-
-        // For Logging
-        $logTrace = Zend_Registry::get('configGlobal')->logtrace;
-        if (isset($logTrace) && $logTrace) {
-            $this->_logRequest();
-        }
-    }
-
-    /**
-     * Call this to log the request parameters to logs/trace.log
-     */
-    private function _logRequest()
-    {
-        $fc = Zend_Controller_Front::getInstance();
-
-        $entry = date('Y-m-d H:i:s')."\n";
-        if (isset($_SERVER['REMOTE_ADDR'])) {
-            $entry .= 'IP='.$_SERVER['REMOTE_ADDR']."\n";
-        }
-        $entry .= 'Action=';
-        $module = $fc->getRequest()->getModuleName();
-        if ($module != 'default') {
-            $entry .= $module.'/';
-        }
-        $entry .= $fc->getRequest()->getControllerName();
-        $entry .= '/'.$fc->getRequest()->getActionName().' ';
-        $entry .= $fc->getRequest()->getMethod()."\n";
-
-        $entry .= "Params=\n";
-        $params = $this->getAllParams();
-        foreach ($params as $key => $value) {
-            if (strpos(strtolower($key), 'password') === false && is_scalar($value)
-            ) {
-                $entry .= '  '.$key.'='.$value."\n";
-            }
-        }
-
-        $entry .= 'User=';
-        if ($this->userSession && $this->userSession->Dao) {
-            $entry .= $this->userSession->Dao->getKey();
-        }
-        $entry .= "\n\n";
-
-        $fh = fopen(LOGS_PATH.'/trace.log', 'a');
-        fwrite($fh, $entry);
-        fclose($fh);
     }
 
     /** show dynamic help ? */

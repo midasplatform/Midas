@@ -23,7 +23,7 @@
  */
 class AdminController extends AppController
 {
-    public $_models = array('Assetstore', 'Bitstream', 'Errorlog', 'Item', 'ItemRevision', 'Folder', 'License');
+    public $_models = array('Assetstore', 'Bitstream', 'Item', 'ItemRevision', 'Folder', 'License');
     public $_daos = array();
     public $_components = array('Upgrade', 'Utility', 'MIDAS2Migration');
     public $_forms = array('Admin', 'Assetstore', 'Migrate');
@@ -93,9 +93,6 @@ class AdminController extends AppController
         if (isset($config->global->httpproxy)) {
             $formArray['httpProxy']->setValue($config->global->httpproxy);
         }
-        if (isset($config->global->logtrace)) {
-            $formArray['logtrace']->setValue($config->global->logtrace);
-        }
         $this->view->configForm = $formArray;
 
         $this->view->selectedLicense = $config->global->defaultlicense;
@@ -122,7 +119,6 @@ class AdminController extends AppController
                 $config->global->defaultlicense = $this->getParam('licenseSelect');
                 $config->global->dynamichelp = $this->getParam('dynamichelp');
                 $config->global->closeregistration = $this->getParam('closeregistration');
-                $config->global->logtrace = $this->getParam('logtrace');
                 $config->global->httpproxy = $this->getParam('httpProxy');
                 $config->global->gravatar = $this->getParam('gravatar');
 
@@ -267,120 +263,6 @@ class AdminController extends AppController
         $this->view->modulesList = $modulesList;
         $this->view->modulesEnable = $enabledModules;
         $this->view->databaseType = Zend_Registry::get('configDatabase')->database->adapter;
-    }
-
-    /**
-     * Used to display and filter the list of log messages
-     *
-     * @param startlog The start date to filter log entries by
-     * @param endlog The end date to filter log entries by
-     * @param modulelog What module to filter by
-     * @param prioritylog Priority to filter by
-     * @param priorityOperator Priority operator ('==' | '<=')
-     * @param limit Page limit
-     * @param offset Page offset
-     */
-    public function showlogAction()
-    {
-        $this->requireAdminPrivileges();
-        $this->disableLayout();
-
-        $start = $this->getParam('startlog');
-        $end = $this->getParam('endlog');
-        $module = $this->getParam('modulelog');
-        $priority = $this->getParam('prioritylog');
-        $priorityOperator = $this->getParam('priorityOperator');
-        $limit = $this->getParam('limit');
-        $offset = $this->getParam('offset');
-        if (!isset($start) || empty($start)) {
-            $start = date('Y-m-d H:i:s', strtotime('-24 hour'));
-        } else {
-            $start = date('Y-m-d H:i:s', strtotime($start));
-        }
-        if (!isset($end) || empty($end)) {
-            $end = date('Y-m-d H:i:s');
-        } else {
-            $end = date('Y-m-d H:i:s', strtotime($end));
-        }
-        if (!isset($module) || empty($module)) {
-            $module = 'all';
-        }
-        if (!isset($priority) || empty($priority)) {
-            $priority = MIDAS_PRIORITY_WARNING;
-        }
-        if (!isset($priorityOperator) || empty($priorityOperator)) {
-            $priorityOperator = '<=';
-        }
-        if (!isset($limit) || empty($limit)) {
-            $limit = 100;
-        }
-        if (!isset($offset) || empty($offset)) {
-            $offset = 0;
-        }
-
-        $results = $this->Errorlog->getLog($start, $end, $module, $priority, $limit, $offset, $priorityOperator);
-        $this->view->jsonContent = array();
-        $this->view->jsonContent['currentFilter'] = array(
-            'start' => $start,
-            'end' => $end,
-            'module' => $module,
-            'priority' => $priority,
-            'priorityOperator' => $priorityOperator,
-            'limit' => $limit,
-            'offset' => $offset,
-        );
-        $logs = $results['logs'];
-        foreach ($logs as $key => $log) {
-            $logs[$key] = $log->toArray();
-            if (substr($log->getMessage(), 0, 5) == 'Fatal') {
-                $shortMessage = substr($log->getMessage(), strpos($log->getMessage(), '[message]') + 13, 60);
-            } elseif (substr($log->getMessage(), 0, 6) == 'Server') {
-                $shortMessage = substr($log->getMessage(), strpos($log->getMessage(), 'Message:') + 9, 60);
-            } else {
-                $shortMessage = substr($log->getMessage(), 0, 60);
-            }
-            $logs[$key]['shortMessage'] = $shortMessage.' ...';
-        }
-
-        $this->view->jsonContent['logs'] = $logs;
-        $this->view->jsonContent['total'] = $results['total'];
-
-        if ($this->_request->isPost()) {
-            $this->disableView();
-            echo JsonComponent::encode($this->view->jsonContent);
-
-            return;
-        }
-
-        $enabledModules = Zend_Registry::get('modulesEnable');
-        $modules = array('all', 'core');
-        foreach ($enabledModules as $enabledModule) {
-            $modules[] = $enabledModule;
-        }
-        $this->view->modulesLog = $modules;
-    }
-
-    /** Used to delete a list of log entries */
-    public function deletelogAction()
-    {
-        $this->requireAdminPrivileges();
-        $this->disableLayout();
-        $this->_helper->viewRenderer->setNoRender();
-        $ids = $this->getParam('idList');
-        $count = 0;
-        foreach (explode(',', $ids) as $id) {
-            if (!empty($id) && is_numeric($id)) {
-                $count++;
-                $dao = $this->Errorlog->load($id);
-                if ($dao) {
-                    $this->Errorlog->delete($dao);
-                }
-            }
-        }
-
-        echo JsonComponent::encode(array('message' => 'Successfully deleted '.$count.' entries.'));
-
-        return;
     }
 
     /** admin dashboard view */
