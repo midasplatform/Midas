@@ -49,10 +49,11 @@ class Remoteprocessing_ApiComponentControllerTest extends ControllerTestCase
 
         $jsonResults = $this->getBody();
         $this->resetAll();
-        if (strpos($jsonResults, '{"stat":"ok"') === false) {
-            $this->fail('Error json');
-        }
         $results = JsonComponent::decode($jsonResults);
+
+        if ($results['stat'] !== 'ok') {
+            $this->fail($results['message']);
+        }
 
         $email = $results['data']['email'];
         $apikey = $results['data']['apikey'];
@@ -68,10 +69,11 @@ class Remoteprocessing_ApiComponentControllerTest extends ControllerTestCase
 
         $jsonResults = $this->getBody();
         $this->resetAll();
-        if (strpos($jsonResults, '{"stat":"ok"') === false) {
-            $this->fail('Error json');
-        }
         $results = JsonComponent::decode($jsonResults);
+
+        if ($results['stat'] !== 'ok') {
+            $this->fail($results['message']);
+        }
 
         $token = $results['data']['token'];
 
@@ -85,10 +87,11 @@ class Remoteprocessing_ApiComponentControllerTest extends ControllerTestCase
 
         $jsonResults = $this->getBody();
         $this->resetAll();
-        if (strpos($jsonResults, '{"stat":"ok"') === false) {
-            $this->fail('Error json');
-        }
         $results = JsonComponent::decode($jsonResults);
+
+        if ($results['stat'] !== 'ok') {
+            $this->fail($results['message']);
+        }
 
         if ($results['data']['action'] != 'wait') {
             $this->fail('Should be wait, was '.$results['data']['action']);
@@ -110,10 +113,11 @@ class Remoteprocessing_ApiComponentControllerTest extends ControllerTestCase
 
         $jsonResults = $this->getBody();
         $this->resetAll();
-        if (strpos($jsonResults, '{"stat":"ok"') === false) {
-            $this->fail('Error json');
-        }
         $results = JsonComponent::decode($jsonResults);
+
+        if ($results['stat'] !== 'ok') {
+            $this->fail($results['message']);
+        }
 
         if ($results['data']['action'] != 'process') {
             $this->fail('Should be process, was '.$results['data']['action']);
@@ -128,8 +132,10 @@ class Remoteprocessing_ApiComponentControllerTest extends ControllerTestCase
         $this->dispatchUrl('/api/json?method=midas.remoteprocessing.resultsserver&testingmode=1');
         $jsonResults = $this->getBody();
         $this->resetAll();
-        if (strpos($jsonResults, '{"stat":"ok"') === false) {
-            $this->fail('Error json');
+        $results = JsonComponent::decode($jsonResults);
+
+        if ($results['stat'] !== 'ok') {
+            $this->fail($results['message']);
         }
     }
 }

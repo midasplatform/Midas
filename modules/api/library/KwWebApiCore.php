@@ -18,723 +18,124 @@
  limitations under the License.
 =========================================================================*/
 
-require_once 'XML/Serializer.php';
-require_once BASE_PATH.'/modules/api/library/KwUploadAPI.php';
-
-/** Midas API core functionalities */
-abstract class KwWebApiCore
+/** API core functionality */
+class KwWebApiCore
 {
-    public $apiMethodPrefix = '';
-    public $apicallbacks = array();
-    public $capabilities;
-    public $currentApiMessage = null;
-    public static $defaultCallbackName = '';
+    /** @var array */
+    public $apiCallbacks;
 
-    public $testing_enable = false;
+    /** @var string */
+    public $apiMethodPrefix;
 
-    abstract protected function apiError($error, $message);
-
-    abstract protected function apiMessage($request_data, $defaultFormat = true);
-
-    abstract protected function setCapabilities();
-
-    public function __construct($apiSetup, $apicallbacks = false, $request_data = false)
+    /**
+     * Constructor.
+     *
+     * @param array $apiMethodPrefix method prefix
+     * @param array $apiCallbacks
+     * @param array $requestData request data
+     */
+    public function __construct($apiMethodPrefix, $apiCallbacks, $requestData)
     {
-        $this->apiMethodPrefix = KwWebApiCore::checkApiMethodPrefix($apiSetup['apiMethodPrefix']);
-        $this->setCapabilities();
-
-        $this->testing_enable = $apiSetup['testing'];
-
-        if ($apicallbacks) {
-            $this->apicallbacks = $apicallbacks;
-        }
-        $this->setSystemCallbacks();
-        $this->setDefaultCallback($this->apiMethodPrefix.'system.listMethods');
-        $this->handleRequest($request_data);
+        $this->apiMethodPrefix = self::checkApiMethodPrefix($apiMethodPrefix);
+        $this->apiCallbacks = $apiCallbacks;
+        $this->apiCallbacks[$this->apiMethodPrefix.'system.listMethods'] = 'this:listMethods';
+        $this->handleRequest($requestData);
     }
 
-    /** check if the $apiSetup provided is valid */
-    public function checkApiSetup($apiSetup)
+    /**
+     * If method prefix is not empty, append a dot.
+     *
+     * @param string $apiMethodPrefix method prefix
+     * @return string
+     */
+    public static function checkApiMethodPrefix($apiMethodPrefix)
     {
-        // Not Implemented
-    }
-
-    /** if method prefix is not empty, append a dot */
-    public static function checkApiMethodPrefix($prefix)
-    {
-        // If 'api.methodprefix' is not an empty string, add a dot
-        if (!empty($prefix)) {
-            $prefix .= '.';
+        if (!empty($apiMethodPrefix)) {
+            $apiMethodPrefix .= '.';
         }
 
-        return $prefix;
+        return $apiMethodPrefix;
     }
 
-    public static function setDefaultCallback($methodName)
-    {
-        self::$defaultCallbackName = $methodName;
-    }
-
-    /** Define the list of system methods */
-    private function setSystemCallbacks()
-    {
-        $this->apicallbacks[$this->apiMethodPrefix.'system.getCapabilities'] = 'this:getCapabilities';
-        $this->apicallbacks[$this->apiMethodPrefix.'system.listMethods'] = 'this:listMethods';
-        $this->apicallbacks[$this->apiMethodPrefix.'system.echo'] = 'this:apiEcho';
-    }
-
-    /** Get the list of available methods */
+    /**
+     * Return the list of available methods.
+     *
+     * @param array $args parameters
+     * @return array
+     */
     public function listMethods($args)
     {
-        // Returns a list of methods - uses array_reverse to ensure user defined
-        // methods are listed before server defined methods
-        return array_reverse(array_keys($this->apicallbacks));
+        // Use array_reverse to ensure that user-defined methods are listed before server-defined methods.
+        return array_reverse(array_keys($this->apiCallbacks));
     }
 
-    public function getCapabilities($args)
-    {
-        return $this->capabilities;
-    }
-
-    /** Return the method arguments - Useful for test purpose */
-    public function apiEcho($args)
-    {
-        return $args;
-    }
-
-    /** Process the request data */
-    protected function handleRequest($request_data = false)
+    /**
+     * Process the request data.
+     *
+     * @param array $requestData request data
+     */
+    protected function handleRequest($requestData)
     {
         try {
-            $this->currentApiMessage = $this->apiMessage($request_data);
-            $this->currentApiMessage->parse($request_data);
-            $result_data = $this->call($this->currentApiMessage->methodName, $this->currentApiMessage->params);
-            $this->apiMessage($request_data, false)->output($result_data);
-        } catch (Exception $e) {
-            $this->apiError($e->getCode(), $e->getMessage());
+            $methodName = isset($requestData['method']) ? $requestData['method'] : $this->apiMethodPrefix.'system.listMethods';
+            $resultData = $this->call($methodName, $requestData);
+
+            $output = array(
+                'code' => 0,
+                'data' => $resultData,
+                'message' => '',
+                'stat' => 'ok',
+            );
+        } catch (Exception $exception) {
+            $output = array(
+                'code' => $exception->getCode(),
+                'data' => '',
+                'message' => $exception->getMessage(),
+                'stat' => 'fail',
+            );
         }
+
+        echo JsonComponent::encode($output);
     }
 
-    /** Method wrapper - Check if the provided method name is valid and call it */
-    private function call($methodname, $args)
+    /**
+     * Check whether the provided method name is valid and then call it.
+     *
+     * @param string $methodName method name
+     * @param array $args parameters
+     * @return mixed
+     * @throws Exception
+     */
+    private function call($methodName, $args)
     {
-        if (!$this->hasMethod($methodname)) {
-            throw new Exception('Server error. Requested method '.$methodname.' does not exist.', -101);
+        if (!in_array($methodName, array_keys($this->apiCallbacks))) {
+            throw new Exception('Server error. Requested method '.$methodName.' does not exist.', -101);
         }
-        $method = $this->apicallbacks[$methodname];
+
+        $method = $this->apiCallbacks[$methodName];
 
         // Are we dealing with a function or a method?
         if (is_string($method) && substr($method, 0, 5) == 'this:') {
-            // It's a class method - check it exists
+            // It is a class method - check it exists
             $method = substr($method, 5);
+
             if (!method_exists($this, $method)) {
                 throw new Exception('Server error. Requested class method "'.$method.'" does not exist.', -102);
             }
+
             // Call the method
-            $result = $this->$method($args);
-        } else {
-            if (!is_callable($method)) {
-                throw new Exception(
-                    'Server error. Requested function "'.var_export($method, true).'" does not exist.', -103
-                );
-            }
-
-            // Call the function/method
-            if (is_array($method)) {
-                $result = call_user_func_array(array(&$method[0], $method[1]), array($args));
-            } else {
-                $result = call_user_func_array($method, array($args));
-            }
+            return $this->$method($args);
         }
 
-        return $result;
-    }
-
-    /** Instantiate an error object using the provided $format (rest, xmlrpc, soap, ... ), $message and $error code*/
-    protected static function apiErrorFactory($format, $error, $message)
-    {
-        switch ($format) {
-            case KwWebApiRestCore::formatName:
-                return new KwWebApiRestError($error, $message);
-                break;
-            case KwWebApiJsonCore::formatName:
-                return new KwWebApiJsonError($error, $message);
-                break;
-            case KwWebApiPhpSerialCore::formatName:
-                return new KwWebApiPhpSerialError($error, $message);
-                break;
-            case KwWebApiSoapCore::formatName:
-                return new KwWebApiSoapError($error, $message);
-                break;
-            case KwWebApiXmlRpcCore::formatName:
-                return new KwWebApiXmlRpcError($error, $message);
-                break;
-            default:
-                exit("Unknown response format: ".$format);
-                break;
+        if (!is_callable($method)) {
+            throw new Exception('Server error. Requested function "'.var_export($method, true).'" does not exist.', -103);
         }
-    }
 
-    /** Instantiate a Message object using the provided $format and data */
-    protected static function apiMessageFactory($format, $request_data = false)
-    {
-        switch ($format) {
-            case KwWebApiRestCore::formatName:
-                return new KwWebApiRestMessage($request_data);
-                break;
-            case KwWebApiJsonCore::formatName:
-                return new KwWebApiJsonMessage($request_data);
-                break;
-            case KwWebApiPhpSerialCore::formatName:
-                return new KwWebApiPhpSerialMessage($request_data);
-                break;
-            case KwWebApiSoapCore::formatName:
-                return new KwWebApiSoapMessage($request_data);
-                break;
-            case KwWebApiXmlRpcCore::formatName:
-                return new KwWebApiXmlRpcMessage($request_data);
-                break;
-            default:
-                exit("Unknown request format: ".$format);
-                break;
+        // Call the function/method
+        if (is_array($method)) {
+            return call_user_func_array(array(&$method[0], $method[1]), array($args));
         }
-    }
 
-    /** check if a $method has been referenced */
-    public function hasMethod($method)
-    {
-        return in_array($method, array_keys($this->apicallbacks));
-    }
-}
-
-class KwWebApiRestCore extends KwWebApiCore
-{
-    const formatName = 'rest';
-
-    public function __construct($apiMethodPrefix, $apicallbacks = false, $request_data = false)
-    {
-        parent::__construct($apiMethodPrefix, $apicallbacks, $request_data);
-    }
-
-    protected function setCapabilities()
-    {
-    }
-
-    public static function output($content)
-    {
-        $content = '<?xml version="1.0" encoding="UTF-8" ?>'."\n".$content;
-        $length = strlen($content);
-        header('Connection: close');
-        header('Content-Length: '.$length);
-        header('Content-Type: text/xml');
-        header('Date: '.date('r'));
-        echo $content;
-        exit();
-    }
-
-    protected function apiError($error, $message)
-    {
-        KwWebApiCore::apiErrorFactory($this->currentApiMessage->responseFormat, $error, $message)->output();
-    }
-
-    protected function apiMessage($request_data, $defaultFormat = true)
-    {
-        return KwWebApiCore::apiMessageFactory(
-            $defaultFormat ? self::formatName : $this->currentApiMessage->responseFormat,
-            $request_data
-        );
-    }
-}
-
-class KwWebApiXmlRpcCore extends KwWebApiCore
-{
-    const formatName = 'xmlrpc';
-
-    public function __construct($apiMethodPrefix, $apicallbacks = false, $request_data = false)
-    {
-        parent::__construct($apiMethodPrefix, $apicallbacks, $request_data);
-    }
-
-    protected function setCapabilities()
-    {
-        // Initializes capabilities array
-        $this->capabilities = array(
-            'xmlrpc' => array('specUrl' => 'http://www.xmlrpc.com/spec', 'specVersion' => 1),
-        );
-    }
-
-    public static function output($content)
-    {
-        $content = '<?xml version="1.0" encoding="UTF-8" ?>'."\n".$content;
-        $length = strlen($content);
-        header('Connection: close');
-        header('Content-Length: '.$length);
-        header('Content-Type: text/xml');
-        header('Date: '.date('r'));
-        echo $content;
-        exit();
-    }
-
-    protected function apiError($error, $message)
-    {
-        KwWebApiCore::apiErrorFactory($this->currentApiMessage->responseFormat, $error, $message)->output();
-    }
-
-    protected function apiMessage($request_data, $defaultFormat = true)
-    {
-        return KwWebApiCore::apiMessageFactory(
-            $defaultFormat ? self::formatName : $this->currentApiMessage->responseFormat,
-            $request_data
-        );
-    }
-}
-
-class KwWebApiSoapCore extends KwWebApiCore
-{
-    const formatName = 'soap';
-
-    public function __construct($apiMethodPrefix, $apicallbacks = false, $request_data = false)
-    {
-        parent::__construct($apiMethodPrefix, $apicallbacks, $request_data);
-    }
-
-    protected function setCapabilities()
-    {
-    }
-
-    public static function output($content)
-    {
-        $content = '<?xml version="1.0" encoding="UTF-8" ?>'."\n".$content;
-        $length = strlen($content);
-        header('Connection: close');
-        header('Content-Length: '.$length);
-        header('Content-Type: text/xml');
-        header('Date: '.date('r'));
-        echo $content;
-        exit();
-    }
-
-    protected function apiError($error, $message)
-    {
-        KwWebApiCore::apiErrorFactory($this->currentApiMessage->responseFormat, $error, $message)->output();
-    }
-
-    protected function apiMessage($request_data, $defaultFormat = true)
-    {
-        return KwWebApiCore::apiMessageFactory(
-            $defaultFormat ? self::formatName : $this->currentApiMessage->responseFormat,
-            $request_data
-        );
-    }
-}
-
-class KwWebApiJsonCore extends KwWebApiCore
-{
-    const formatName = 'json';
-
-    public function __construct($apiMethodPrefix, $apicallbacks = false, $request_data = false)
-    {
-        parent::__construct($apiMethodPrefix, $apicallbacks, $request_data);
-    }
-
-    protected function setCapabilities()
-    {
-    }
-
-    public static function output($content)
-    {
-        echo $content;
-    }
-
-    protected function apiError($error, $message)
-    {
-        KwWebApiCore::apiErrorFactory($this->currentApiMessage->responseFormat, $error, $message)->output();
-    }
-
-    protected function apiMessage($request_data, $defaultFormat = true)
-    {
-        return KwWebApiCore::apiMessageFactory(
-            $defaultFormat ? self::formatName : $this->currentApiMessage->responseFormat,
-            $request_data
-        );
-    }
-}
-
-class KwWebApiPhpSerialCore extends KwWebApiCore
-{
-    const formatName = 'php_serial';
-
-    public function __construct($apiMethodPrefix, $apicallbacks = false, $request_data = false)
-    {
-        parent::__construct($apiMethodPrefix, $apicallbacks, $request_data);
-    }
-
-    protected function setCapabilities()
-    {
-    }
-
-    public static function output($content)
-    {
-        // NOT IMPLEMENTED
-        echo $content;
-        exit();
-    }
-
-    protected function apiError($error, $message)
-    {
-        KwWebApiCore::apiErrorFactory($this->currentApiMessage->responseFormat, $error, $message)->output();
-    }
-
-    protected function apiMessage($request_data, $defaultFormat = true)
-    {
-        return KwWebApiCore::apiMessageFactory(
-            $defaultFormat ? self::formatName : $this->currentApiMessage->responseFormat,
-            $request_data
-        );
-    }
-}
-
-abstract class KwWebApiMessage
-{
-    public $methodName;
-    public $params = array();
-    public $request_data;
-    public $responseFormat;
-
-    abstract public function parse();
-
-    abstract public function output($result_data);
-
-    public function __construct($request_data)
-    {
-        $this->request_data = $request_data;
-    }
-}
-
-class KwWebApiRestMessage extends KwWebApiMessage
-{
-    public function __construct($request_data)
-    {
-        $this->responseFormat = KwWebApiRestCore::formatName;
-        parent::__construct($request_data);
-    }
-
-    public function parse()
-    {
-        if (!$this->request_data) {
-            // NOT IMPLEMENTED
-        }
-        // Get request parameters and set default
-        $this->methodName = array_key_exists(
-            'method',
-            $this->request_data
-        ) ? $this->request_data['method'] : KwWebApiCore::$defaultCallbackName;
-        $this->responseFormat = array_key_exists(
-            'format',
-            $this->request_data
-        ) ? $this->request_data['format'] : KwWebApiRestCore::formatName;
-
-        if (!empty($this->methodName)) {
-            // Get request parameters
-            $this->params = $this->request_data;
-        } else {
-            throw new Exception('Server error. Method parameter is not defined.', -100);
-        }
-    }
-
-    public function output($result_data)
-    {
-        // using the XML_SERIALIZER Pear Package
-        $options = array(
-            XML_SERIALIZER_OPTION_INDENT => '  ',
-            XML_SERIALIZER_OPTION_XML_DECL_ENABLED => false,
-            XML_SERIALIZER_OPTION_ROOT_NAME => 'rsp',
-            XML_SERIALIZER_OPTION_XML_ENCODING => 'UTF-8',
-            XML_SERIALIZER_OPTION_DEFAULT_TAG => 'data',
-            XML_SERIALIZER_OPTION_ROOT_ATTRIBS => array("stat" => "ok"),
-            XML_SERIALIZER_OPTION_RETURN_RESULT => true,
-        );
-        $serializer = new XML_Serializer($options);
-
-        $serialized_result = $serializer->serialize($result_data);
-        KwWebApiRestCore::output($serialized_result);
-    }
-}
-
-class KwWebApiXmlRpcMessage extends KwWebApiMessage
-{
-    public function __construct($request_data)
-    {
-        $this->responseFormat = KwWebApiXmlRpcCore::formatName;
-        parent::__construct($request_data);
-    }
-
-    public function parse()
-    {
-        if (!$this->request_data) {
-            // NOT IMPLEMENTED
-        }
-        exit('NOT IMPLEMENTED');
-    }
-
-    public function output($result_data)
-    {
-        // using the XML_SERIALIZER Pear Package
-        $options = array(
-            XML_SERIALIZER_OPTION_INDENT => '  ',
-            XML_SERIALIZER_OPTION_XML_DECL_ENABLED => false,
-            XML_SERIALIZER_OPTION_XML_ENCODING => 'UTF-8',
-            XML_SERIALIZER_OPTION_DEFAULT_TAG => 'data',
-            XML_SERIALIZER_OPTION_ROOT_NAME => 'response',
-            XML_SERIALIZER_OPTION_RETURN_RESULT => true,
-        );
-        $serializer = new XML_Serializer($options);
-        $serialized_result = htmlentities($serializer->serialize($result_data), ENT_QUOTES);
-
-        $serialized_result = <<<EOD
-<methodResponse>
-  <params>
-    <param>
-      <value>
-        <string>
-          {$serialized_result}
-        </string>
-      </value>
-    </param>
-  </params>
-</methodResponse>
-
-EOD;
-        KwWebApiXmlRpcCore::output($serialized_result);
-    }
-}
-
-class KwWebApiSoapMessage extends KwWebApiMessage
-{
-    public function __construct($request_data)
-    {
-        $this->responseFormat = KwWebApiSoapCore::formatName;
-        parent::__construct($request_data);
-    }
-
-    public function parse()
-    {
-        if (!$this->request_data) {
-            // NOT IMPLEMENTED
-        }
-        exit('NOT IMPLEMENTED');
-    }
-
-    public function output($result_data)
-    {
-        // using the XML_SERIALIZER Pear Package
-        $options = array(
-            XML_SERIALIZER_OPTION_INDENT => '  ',
-            XML_SERIALIZER_OPTION_XML_DECL_ENABLED => false,
-            XML_SERIALIZER_OPTION_XML_ENCODING => 'UTF-8',
-            XML_SERIALIZER_OPTION_DEFAULT_TAG => 'data',
-            XML_SERIALIZER_OPTION_ROOT_NAME => 'response',
-            XML_SERIALIZER_OPTION_RETURN_RESULT => true,
-        );
-        $serializer = new XML_Serializer($options);
-        $serialized_result = htmlentities($serializer->serialize($result_data), ENT_QUOTES);
-
-        $serialized_result = <<<EOD
-<s:Envelope
-  xmlns:s="http://www.w3.org/2003/05/soap-envelope"
-  xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance"
-  xmlns:xsd="http://www.w3.org/1999/XMLSchema"
->
-  <s:Body>
-    <x:MidasResponse xmlns:x="urn:midas">
-      {$serialized_result}
-    </x:MidasResponse>
-  </s:Body>
-</s:Envelope>
-
-EOD;
-        KwWebApiSoapCore::output($serialized_result);
-    }
-}
-
-class KwWebApiJsonMessage extends KwWebApiMessage
-{
-    public function __construct($request_data)
-    {
-        $this->responseFormat = KwWebApiJsonCore::formatName;
-        parent::__construct($request_data);
-    }
-
-    public function parse()
-    {
-        if (!$this->request_data) {
-            // NOT IMPLEMENTED
-        }
-        exit('NOT IMPLEMENTED');
-    }
-
-    public function output($result_data)
-    {
-        $outputJson = array();
-        $outputJson['stat'] = 'ok';
-        $outputJson['code'] = '0';
-        $outputJson['message'] = '';
-        $outputJson['data'] = $result_data;
-
-        KwWebApiJsonCore::output(JsonComponent::encode($outputJson));
-    }
-}
-
-class KwWebApiPhpSerialMessage extends KwWebApiMessage
-{
-    public function __construct($request_data)
-    {
-        $this->responseFormat = KwWebApiPhpSerialCore::formatName;
-        parent::__construct($request_data);
-    }
-
-    public function parse()
-    {
-        if (!$this->request_data) {
-            // NOT IMPLEMENTED
-        }
-        exit('NOT IMPLEMENTED');
-    }
-
-    public function output($result_data)
-    {
-        $serialized_result = 'NOT IMPLEMENTED';
-        // NOT IMPLEMENTED
-        KwWebApiPhpSerialCore::output($serialized_result);
-    }
-}
-
-abstract class KwWebApiError
-{
-    abstract public function output();
-
-    public $code;
-    public $message;
-
-    public function __construct($code, $message)
-    {
-        $this->code = $code;
-        $this->message = $message;
-    }
-}
-
-class KwWebApiRestError extends KwWebApiError
-{
-    public function __construct($code, $message)
-    {
-        parent::__construct($code, $message);
-    }
-
-    public function output()
-    {
-        $result = <<<EOD
-<rsp stat="fail">
-  <err code="{$this->code}" msg="{$this->message}" />
-</rsp>
-
-EOD;
-        KwWebApiRestCore::output($result);
-    }
-}
-
-class KwWebApiSoapError extends KwWebApiError
-{
-    public function __construct($code, $message)
-    {
-        parent::__construct($code, $message);
-    }
-
-    public function output()
-    {
-        $result = <<<EOD
-<s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope">
-  <s:Body>
-    <s:Fault>
-      <faultcode>midas.error.{$this->code}</faultcode>
-      <faultstring>{$this->message}</faultstring>
-      <faultactor>
-        http://XXXX/midas/api/soap/
-      </faultactor>
-      <details>
-        Please see
-        http://XXXX/midas/api/
-        for more details
-      </details>
-    </s:Fault>
-  </s:Body>
-</s:Envelope>
-
-EOD;
-        KwWebApiSoapCore::output($result);
-    }
-}
-
-class KwWebApiXmlRpcError extends KwWebApiError
-{
-    public function __construct($code, $message)
-    {
-        parent::__construct($code, $message);
-    }
-
-    public function output()
-    {
-        $result = <<<EOD
-<methodResponse>
-  <fault>
-    <value>
-      <struct>
-        <member>
-          <name>faultCode</name>
-          <value><int>{$this->code}</int></value>
-        </member>
-        <member>
-          <name>faultString</name>
-          <value><string>{$this->message}</string></value>
-        </member>
-      </struct>
-    </value>
-  </fault>
-</methodResponse>
-
-EOD;
-        KwWebApiXmlRpcCore::output($result);
-    }
-}
-
-class KwWebApiPhpSerialError extends KwWebApiError
-{
-    public function __construct($code, $message)
-    {
-        parent::__construct($code, $message);
-    }
-
-    public function output()
-    {
-        $result = '';
-        // NOT IMPLEMENTED
-        KwWebApiPhpSerialCore::output($result);
-    }
-}
-
-class KwWebApiJsonError extends KwWebApiError
-{
-    public function __construct($code, $message)
-    {
-        parent::__construct($code, $message);
-    }
-
-    public function output()
-    {
-        $result = array();
-        $result['stat'] = 'fail';
-        $result['message'] = $this->message;
-        $result['code'] = $this->code;
-
-        KwWebApiJsonCore::output(JsonComponent::encode($result));
+        return call_user_func_array($method, array($args));
     }
 }

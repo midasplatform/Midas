@@ -111,7 +111,7 @@ midas.upload.revision.initHtml5FileUpload = function () {
     var _streamFileContents = function (uploadToken) {
         var file = files[currentIndex];
         var blob = file.slice(startByte);
-        var url = json.global.webroot + '/api/rest?method=midas.upload.perform&uploadtoken=' +
+        var url = json.global.webroot + '/api/json?method=midas.upload.perform&uploadtoken=' +
             uploadToken + '&length=' + file.size + '&filename=' + encodeURIComponent(file.name);
         var changes = $('#revisionChanges').val();
         if(changes) {

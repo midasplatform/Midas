@@ -22,7 +22,6 @@
         "maennchen/zipstream-php": "~0.2.2",
         "michelf/php-markdown": "~1.4.1",
         "moontoast/math": "~1.1.0",
-        "pear-pear.php.net/XML_Serializer": "~0.20.2",
         "reprovinci/solr-php-client": "~1.0.3",
         "rhumsaa/uuid": "~2.8.0",
         "sendgrid/sendgrid": "~2.1.1",
@@ -57,12 +56,6 @@
     "include-path": [
         "core/dao",
         "library"
-    ],
-    "repositories": [
-        {
-            "type": "pear",
-            "url": "http://pear.php.net"
-        }
     ],
     "archive": {
         "exclude": [

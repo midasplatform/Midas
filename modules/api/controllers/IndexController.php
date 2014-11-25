@@ -46,16 +46,14 @@ class Api_IndexController extends Api_AppController
         $this->apiSetup['apiMethodPrefix'] = $this->Setting->getValueByName(API_METHOD_PREFIX_KEY, $this->moduleName);
 
         $this->action = $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
-        switch ($this->action) {
-            case "rest":
-            case "json":
-            case "php_serial":
-            case "xmlrpc":
-            case "soap":
-                $this->_initApiCommons();
-                break;
-            default:
-                break;
+
+        if ($this->action === 'json') {
+            $this->disableLayout();
+            $this->_helper->viewRenderer->setNoRender();
+
+            $this->ModuleComponent->Api->controller = &$this;
+            $this->ModuleComponent->Api->apiSetup = &$this->apiSetup;
+            $this->ModuleComponent->Api->userSession = &$this->userSession;
         }
     }
 
@@ -123,57 +121,22 @@ class Api_IndexController extends Api_AppController
         }
     }
 
-    /** Initialize property allowing to generate XML */
-    private function _initApiCommons()
-    {
-        // Disable debug information - Required to generate valid XML output
-        // Configure::write('debug', 0);
-
-        $this->disableLayout();
-        $this->_helper->viewRenderer->setNoRender();
-
-        $this->ModuleComponent->Api->controller = &$this;
-        $this->ModuleComponent->Api->apiSetup = &$this->apiSetup;
-        $this->ModuleComponent->Api->userSession = &$this->userSession;
-    }
-
-    /** Controller action handling REST request */
-    public function restAction()
-    {
-        $this->disableLayout();
-        $this->_helper->viewRenderer->setNoRender();
-
-        $method_name = $this->getParam('method');
-        if (!isset($method_name)) {
-            echo 'Inconsistent request: please set a method parameter';
-            exit;
-        }
-
-        $request_data = $this->getAllParams();
-        $this->_computeApiCallback($method_name, $this->apiSetup['apiMethodPrefix']);
-        // Handle XML-RPC request
-        $this->kwWebApiCore = new KwWebApiRestCore($this->apiSetup, $this->apicallbacks, $request_data);
-    }
-
     /** Controller action handling JSON request */
     public function jsonAction()
     {
         $this->disableLayout();
         $this->_helper->viewRenderer->setNoRender();
 
-        $method_name = $this->getParam('method');
-        if (!isset($method_name)) {
+        $methodName = $this->getParam('method');
+
+        if (!isset($methodName)) {
             echo 'Inconsistent request: please set a method parameter';
             exit;
         }
 
-        $request_data = $this->getAllParams();
-        $this->_computeApiCallback($method_name, $this->apiSetup['apiMethodPrefix']);
-        // Handle XML-RPC request
-        $this->kwWebApiCore = new KwWebApiRestCore(
-            $this->apiSetup,
-            $this->apicallbacks,
-            array_merge($request_data, array('format' => 'json'))
-        );
+        $requestData = $this->getAllParams();
+        $apiMethodPrefix = $this->apiSetup['apiMethodPrefix'];
+        $this->_computeApiCallback($methodName, $apiMethodPrefix);
+        $this->kwWebApiCore = new KwWebApiCore($apiMethodPrefix, $this->apicallbacks, $requestData);
     }
 }
