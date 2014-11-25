@@ -204,7 +204,7 @@ class AdminController extends AppController
         $this->view->assetstoreForm = $this->Form->Assetstore->createAssetstoreForm();
 
         // get modules
-        $modulesEnable = Zend_Registry::get('modulesEnable');
+        $enabledModules = Zend_Registry::get('modulesEnable');
         $adapter = Zend_Registry::get('configDatabase')->database->adapter;
         foreach ($allModules as $key => $module) {
             if (file_exists(BASE_PATH."/modules/".$key."/controllers/ConfigController.php")) {
@@ -265,7 +265,7 @@ class AdminController extends AppController
         ksort($modulesList);
         $this->view->countModules = $countModules;
         $this->view->modulesList = $modulesList;
-        $this->view->modulesEnable = $modulesEnable;
+        $this->view->modulesEnable = $enabledModules;
         $this->view->databaseType = Zend_Registry::get('configDatabase')->database->adapter;
     }
 
@@ -352,10 +352,10 @@ class AdminController extends AppController
             return;
         }
 
-        $modulesConfig = Zend_Registry::get('configsModules');
+        $enabledModules = Zend_Registry::get('modulesEnable');
         $modules = array('all', 'core');
-        foreach ($modulesConfig as $key => $module) {
-            $modules[] = $key;
+        foreach ($enabledModules as $enabledModule) {
+            $modules[] = $enabledModule;
         }
         $this->view->modulesLog = $modules;
     }

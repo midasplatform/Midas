@@ -42,7 +42,7 @@ class ApisystemComponent extends AppComponent
      */
     public function modulesList($args)
     {
-        return array('modules' => array_keys(Zend_Registry::get('configsModules')));
+        return array('modules' => Zend_Registry::get('modulesEnable'));
     }
 
     /**

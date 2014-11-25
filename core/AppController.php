@@ -131,15 +131,11 @@ class AppController extends MIDAS_GlobalController
 
             $this->userSession = $user;
             $this->view->recentItems = array();
-            $this->view->needUpgrade = false;
             $this->view->highNumberError = false;
             if ($user->Dao != null && $user->Dao instanceof UserDao) {
                 if ($user->Dao->isAdmin() && $fc->getRequest()->getControllerName() != 'install' && $fc->getRequest(
                     )->getControllerName() != 'error'
                 ) {
-                    if ($this->isUpgradeNeeded()) {
-                        $this->view->needUpgrade = true;
-                    }
                     $errorlogModel = MidasLoader::loadModel('Errorlog');
                     $count = $errorlogModel->countSince(
                         date('Y-m-d H:i:s', strtotime('-24 hour')),
@@ -311,14 +307,14 @@ class AppController extends MIDAS_GlobalController
             ) {
                 $this->_helper->layout->setLayout($layoutParam);
             } else {
-                $modulesConfig = Zend_Registry::get('configsModules');
-                foreach ($modulesConfig as $key => $module) {
-                    if (file_exists(BASE_PATH.'/modules/'.$key.'/layouts/layout-core.phtml')) {
-                        $this->_helper->layout->setLayoutPath(BASE_PATH.'/modules/'.$key.'/layouts/');
+                $enabledModules = Zend_Registry::get('modulesEnable');
+                foreach ($enabledModules as $enabledModule) {
+                    if (file_exists(BASE_PATH.'/modules/'.$enabledModule.'/layouts/layout-core.phtml')) {
+                        $this->_helper->layout->setLayoutPath(BASE_PATH.'/modules/'.$enabledModule.'/layouts/');
                         $this->_helper->layout->setLayout('layout-core');
                     }
-                    if (file_exists(BASE_PATH.'/privateModules/'.$key.'/layouts/layout-core.phtml')) {
-                        $this->_helper->layout->setLayoutPath(BASE_PATH.'/privateModules/'.$key.'/layouts/');
+                    if (file_exists(BASE_PATH.'/privateModules/'.$enabledModule.'/layouts/layout-core.phtml')) {
+                        $this->_helper->layout->setLayoutPath(BASE_PATH.'/privateModules/'.$enabledModule.'/layouts/');
                         $this->_helper->layout->setLayout('layout-core');
                     }
                 }
@@ -488,34 +484,6 @@ class AppController extends MIDAS_GlobalController
             $this->view->json['triggerNotification'] = array();
         }
         $this->view->json['triggerNotification'][] = $message;
-    }
-
-    /** check if midas needs to be upgraded */
-    public function isUpgradeNeeded()
-    {
-        require_once BASE_PATH.'/core/controllers/components/UpgradeComponent.php';
-        $upgradeComponent = new UpgradeComponent();
-        $db = Zend_Registry::get('dbAdapter');
-        $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
-
-        $upgradeComponent->initUpgrade('core', $db, $dbtype);
-        if ($upgradeComponent->getNewestVersion() > $upgradeComponent->transformVersionToNumeric(
-                Zend_Registry::get('configDatabase')->version
-            )
-        ) {
-            return true;
-        }
-        $modulesConfig = Zend_Registry::get('configsModules');
-        foreach ($modulesConfig as $key => $module) {
-            $upgradeComponent->initUpgrade($key, $db, $dbtype);
-            if ($upgradeComponent->getNewestVersion() != 0 && $upgradeComponent->getNewestVersion(
-                ) > $upgradeComponent->transformVersionToNumeric($module->version)
-            ) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /** zend post dispatch */

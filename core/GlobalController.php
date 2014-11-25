@@ -49,24 +49,24 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     public function preDispatch()
     {
         UtilityComponent::setTimeLimit(0);
-        $modulesEnable = Zend_Registry::get('modulesEnable');
+        $enabledModules = Zend_Registry::get('modulesEnable');
 
         if (Zend_Registry::get('configGlobal')->application->lang != 'en') {
             $translate = new Zend_Translate('csv', BASE_PATH.'/core/translation/fr-main.csv', 'en');
             Zend_Registry::set('translator', $translate);
             $translators = array();
 
-            foreach ($modulesEnable as $module) {
-                if (file_exists(BASE_PATH.'/modules/'.$module.'/translation/fr-main.csv')) {
-                    $translators[$module] = new Zend_Translate(
+            foreach ($enabledModules as $enabledModule) {
+                if (file_exists(BASE_PATH.'/modules/'.$enabledModule.'/translation/fr-main.csv')) {
+                    $translators[$enabledModule] = new Zend_Translate(
                         'csv',
-                        BASE_PATH.'/modules/'.$module.'/translation/fr-main.csv',
+                        BASE_PATH.'/modules/'.$enabledModule.'/translation/fr-main.csv',
                         'en'
                     );
-                } elseif (file_exists(BASE_PATH.'/privateModules/'.$module.'/translation/fr-main.csv')) {
-                    $translators[$module] = new Zend_Translate(
+                } elseif (file_exists(BASE_PATH.'/privateModules/'.$enabledModule.'/translation/fr-main.csv')) {
+                    $translators[$enabledModule] = new Zend_Translate(
                         'csv',
-                        BASE_PATH.'/privateModules/'.$module.'/translation/fr-main.csv',
+                        BASE_PATH.'/privateModules/'.$enabledModule.'/translation/fr-main.csv',
                         'en'
                     );
                 }
@@ -76,16 +76,16 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         }
 
         $configs = array();
-        foreach ($modulesEnable as $module) {
-            if (file_exists(LOCAL_CONFIGS_PATH.'/'.$module.'.local.ini')) {
-                $configs[$module] = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/'.$module.'.local.ini', 'global');
-            } elseif (file_exists(BASE_PATH.'/privateModules/'.$module.'/configs/module.ini')) {
-                $configs[$module] = new Zend_Config_Ini(
-                    BASE_PATH.'/privateModules/'.$module.'/configs/module.ini', 'global'
+        foreach ($enabledModules as $enabledModule) {
+            if (file_exists(LOCAL_CONFIGS_PATH.'/'.$enabledModule.'.local.ini')) {
+                $configs[$enabledModule] = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/'.$enabledModule.'.local.ini', 'global');
+            } elseif (file_exists(BASE_PATH.'/privateModules/'.$enabledModule.'/configs/module.ini')) {
+                $configs[$enabledModule] = new Zend_Config_Ini(
+                    BASE_PATH.'/privateModules/'.$enabledModule.'/configs/module.ini', 'global'
                 );
             } else {
-                $configs[$module] = new Zend_Config_Ini(
-                    BASE_PATH.'/modules/'.$module.'/configs/module.ini',
+                $configs[$enabledModule] = new Zend_Config_Ini(
+                    BASE_PATH.'/modules/'.$enabledModule.'/configs/module.ini',
                     'global'
                 );
             }

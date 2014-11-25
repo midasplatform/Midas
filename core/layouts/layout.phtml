@@ -253,9 +253,6 @@ echo $this->doctype().PHP_EOL;
 </div>
 <div class="Wrapper">
     <?php
-    if ($this->needUpgrade) {
-        echo '<span style="color:red;">Midas Platform needs to be upgraded. <a href="'.$this->webroot.'/admin/#ui-tabs-2">Upgrade</a></span><br/><br/>';
-    }
     if ($this->highNumberError) {
         echo '<span style="color:red;">More than 5 errors have occured in the last 24 hours. <a href="'.$this->webroot.'/admin/#ui-tabs-4">Check the logs</a></span><br/><br/>';
     }

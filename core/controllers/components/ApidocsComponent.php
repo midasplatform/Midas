@@ -37,13 +37,13 @@ class ApidocsComponent extends AppComponent
         }
 
         $modulesHaveApi = Zend_Registry::get('modulesHaveApi');
-        $modulesEnabled = Zend_Registry::get('modulesEnable');
-        $apiModules = array_intersect($modulesHaveApi, $modulesEnabled);
-        foreach ($apiModules as $module) {
-            foreach (glob(BASE_PATH.'/modules/'.$module.'/controllers/components/Api*.php') as $filename) {
-                $resoucename = preg_replace('/Component\.php/', '', substr(basename($filename), 3));
-                if (!in_array($resoucename, array(''))) {
-                    $apiResources[] = $module.'/'.$resoucename;
+        $enabledModules = Zend_Registry::get('modulesEnable');
+        $apiModules = array_intersect($modulesHaveApi, $enabledModules);
+        foreach ($apiModules as $apiModule) {
+            foreach (glob(BASE_PATH.'/modules/'.$apiModule.'/controllers/components/Api*.php') as $filename) {
+                $resourceName = preg_replace('/Component\.php/', '', substr(basename($filename), 3));
+                if (!in_array($resourceName, array(''))) {
+                    $apiResources[] = $apiModule.'/'.$resourceName;
                 }
             }
         }
