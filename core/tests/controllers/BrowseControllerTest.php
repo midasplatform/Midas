@@ -37,7 +37,7 @@ class Core_BrowseControllerTest extends ControllerTestCase
     public function testBatchDeleteAction()
     {
         // Anonymous access should throw an exception
-        $this->dispatchUrI('/browse/delete', null, true);
+        $this->dispatchUrl('/browse/delete', null, true);
 
         $usersFile = $this->loadData('User', 'default');
         $itemsFile = $this->loadData('Item', 'default');
@@ -47,7 +47,7 @@ class Core_BrowseControllerTest extends ControllerTestCase
         $this->resetAll();
         $this->params['items'] = '-';
         $this->params['folders'] = '-';
-        $this->dispatchUrI('/browse/delete', $userDao);
+        $this->dispatchUrl('/browse/delete', $userDao);
         $this->assertNotEmpty($this->getBody());
         $resp = json_decode($this->getBody());
         $this->assertNotEmpty($resp->success);
@@ -61,7 +61,7 @@ class Core_BrowseControllerTest extends ControllerTestCase
         $this->resetAll();
         $this->params['items'] = '999875-';
         $this->params['folders'] = '787134-';
-        $this->dispatchUrI('/browse/delete', $userDao);
+        $this->dispatchUrl('/browse/delete', $userDao);
         $this->assertNotEmpty($this->getBody());
         $resp = json_decode($this->getBody());
         $this->assertNotEmpty($resp->success);
@@ -85,7 +85,7 @@ class Core_BrowseControllerTest extends ControllerTestCase
         $this->resetAll();
         $this->params['items'] = $item->getKey().'-';
         $this->params['folders'] = $folder->getKey().'-';
-        $this->dispatchUrI('/browse/delete', $userDao);
+        $this->dispatchUrl('/browse/delete', $userDao);
         $item = $this->Item->load($item->getKey());
         $folder = $this->Folder->load($folder->getKey());
         $this->assertEquals($item, false);
@@ -107,7 +107,7 @@ class Core_BrowseControllerTest extends ControllerTestCase
      */
     public function testIndexAction()
     {
-        $this->dispatchUrI('/browse/index', null);
+        $this->dispatchUrl('/browse/index', null);
     }
 
     /**
@@ -120,7 +120,7 @@ class Core_BrowseControllerTest extends ControllerTestCase
         $userDao = $this->User->load($usersFile[0]->getKey());
 
         // First we go through the dialog rendering code
-        $this->dispatchUrI('/browse/movecopy?share=true&duplicate=true&move=true&items=1001-', $userDao);
+        $this->dispatchUrl('/browse/movecopy?share=true&duplicate=true&move=true&items=1001-', $userDao);
         $this->assertQueryCount('#moveCopyTable tr[type="community"]', 2);
         $this->assertQueryContentContains('#moveCopyTable tr[type="community"]', $commFile[0]->getName());
         $this->assertQueryContentContains('#moveCopyTable tr[type="community"]', $commFile[1]->getName());

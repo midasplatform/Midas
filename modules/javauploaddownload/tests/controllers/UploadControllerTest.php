@@ -49,7 +49,7 @@ class Javauploaddownload_UploadControllerTest extends ControllerTestCase
 
         copy(BASE_PATH.'/tests/testfiles/search.png', $identifier);
         $page = 'javauploaddownload/upload/gethttpuploadoffset/?uploadUniqueIdentifier='.$userDao->getUserId().'/1002/httpupload.png&testingmode=1';
-        $this->dispatchUrI($page, $userDao);
+        $this->dispatchUrl($page, $userDao);
         $content = $this->getBody();
 
         if (strpos($content, '[OK]') === false) {
@@ -75,12 +75,12 @@ class Javauploaddownload_UploadControllerTest extends ControllerTestCase
 
         copy(BASE_PATH.'/tests/testfiles/search.png', $identifier);
         $page = 'javauploaddownload/upload/gethttpuploaduniqueidentifier?filename=httpupload.png&testingmode=1';
-        $this->dispatchUrI($page, $userDao);
+        $this->dispatchUrl($page, $userDao);
         $this->assertEquals(trim($this->getBody()), '[ERROR]You must specify a parent folder or item.');
         $this->resetAll();
         $folders = $userDao->getFolder()->getFolders();
         $page .= '&parentFolderId='.$folders[0]->getKey();
-        $this->dispatchUrI($page, $userDao);
+        $this->dispatchUrl($page, $userDao);
         $content = $this->getBody();
 
         if (strpos($content, '[OK]') === false) {
@@ -115,15 +115,15 @@ class Javauploaddownload_UploadControllerTest extends ControllerTestCase
         chmod($identifier, 0777);
         $params = 'testingmode=1&filename=search.png&localinput='.$file.'&length='.filesize($file).'&uploadUniqueIdentifier='.$subdir.'/httpupload.png';
         $page = 'javauploaddownload/upload/processjavaupload?'.$params;
-        $this->dispatchUrI($page, $userDao, true);
+        $this->dispatchUrl($page, $userDao, true);
         $this->resetAll();
         $page .= '&parentId=1002';
-        $this->dispatchUrI($page, $userDao);
+        $this->dispatchUrl($page, $userDao);
         $this->assertTrue(strpos($this->getBody(), '[ERROR]') === 0);
         $this->resetAll();
         $params = 'testingmode=1&filename=search.png&localinput='.$file.'&length='.(filesize($file) + 1).'&uploadUniqueIdentifier='.$subdir.'/httpupload.png';
         $page = 'javauploaddownload/upload/processjavaupload?'.$params.'&parentId=1002';
-        $this->dispatchUrI($page, $userDao);
+        $this->dispatchUrl($page, $userDao);
         $this->assertTrue(strpos($this->getBody(), '[OK]') === 0);
         $search = $this->Item->getItemsFromSearch('search.png', $userDao);
 

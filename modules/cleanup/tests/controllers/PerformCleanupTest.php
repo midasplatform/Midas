@@ -99,7 +99,7 @@ class Cleanup_PerformCleanupTest extends ControllerTestCase
 
         // Run the scheduler
         $this->resetAll();
-        $this->dispatchUrI('/scheduler/run/index', $userDao);
+        $this->dispatchUrl('/scheduler/run/index', $userDao);
 
         // Make sure only files older than the cutoff were removed
         $this->assertTrue(file_exists($tempDir.'/145/272/shouldBeKept.txt'));

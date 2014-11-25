@@ -36,7 +36,7 @@ class Api_CallMethodsTestCase extends ControllerTestCase
     protected function _callJsonApi($sessionUser = null, $method = 'POST')
     {
         $this->request->setMethod($method);
-        $this->dispatchUrI($this->webroot.'api/json', $sessionUser);
+        $this->dispatchUrl($this->webroot.'api/json', $sessionUser);
 
         return json_decode($this->getBody());
     }

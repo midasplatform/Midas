@@ -55,19 +55,19 @@ class Batchmake_AdminControllerTest extends Batchmake_ControllerTestCase
         $page = '/batchmake/admin/index';
         $this->params = array();
         $this->getRequest()->setMethod('GET');
-        $this->dispatchUrI($page, $nullUserDao, $withException);
+        $this->dispatchUrl($page, $nullUserDao, $withException);
 
         // now login with a non-admin account, should get an exception
         $this->resetAll();
         $this->params = array();
         $this->getRequest()->setMethod('GET');
-        $this->dispatchUrI($page, $nonAdminUserDao, $withException);
+        $this->dispatchUrl($page, $nonAdminUserDao, $withException);
 
         // now login with an admin account
         $this->resetAll();
         $this->params = array();
         $this->getRequest()->setMethod('GET');
-        $this->dispatchUrI($page, $adminUserDao);
+        $this->dispatchUrl($page, $adminUserDao);
 
         $body = $this->getBody();
 

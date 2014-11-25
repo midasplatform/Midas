@@ -35,7 +35,7 @@ class Packages_NotificationTest extends ControllerTestCase
     /** Make sure that we get the slicer packages link in the left list */
     public function testLeftLinkAppears()
     {
-        $this->dispatchUrI('/community');
+        $this->dispatchUrl('/community');
         // TODO we need the full page layout, not just the community subview to be returned...
         // $this->assertQueryContentContains('div.SideBar a span', 'Slicer Packages');
     }

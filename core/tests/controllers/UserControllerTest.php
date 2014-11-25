@@ -33,7 +33,7 @@ class Core_UserControllerTest extends ControllerTestCase
     /** test index */
     public function testIndexAction()
     {
-        $this->dispatchUrI("/user");
+        $this->dispatchUrl("/user");
         $this->assertController("user");
 
         $this->assertQuery("div.userBlock");
@@ -42,7 +42,7 @@ class Core_UserControllerTest extends ControllerTestCase
     /** test register */
     public function testRegisterAction()
     {
-        $this->dispatchUrI("/user/register");
+        $this->dispatchUrl("/user/register");
         $this->assertController("user");
         $this->assertAction("register");
 
@@ -56,7 +56,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['lastname'] = 'Lastname';
         $this->params['submit'] = 'Register';
         $this->request->setMethod('POST');
-        $this->dispatchUrI("/user/register", null, true);
+        $this->dispatchUrl("/user/register", null, true);
 
         $this->params = array();
         $this->params['email'] = 'user2@user1.com';
@@ -67,7 +67,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['submit'] = 'Register';
 
         $this->request->setMethod('POST');
-        $this->dispatchUrI("/user/register");
+        $this->dispatchUrl("/user/register");
 
         $userDao = $this->User->getByEmail($this->params['email']);
         $this->assertTrue($userDao != false, 'Unable to register');
@@ -77,7 +77,7 @@ class Core_UserControllerTest extends ControllerTestCase
     public function testLoginAction()
     {
         $this->resetAll();
-        $this->dispatchUrI('/user/login');
+        $this->dispatchUrl('/user/login');
         $this->assertController('user');
         $this->assertAction('login');
 
@@ -88,7 +88,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['email'] = 'user1@user1.com';
         $this->params['password'] = 'wrong password';
         $this->request->setMethod('POST');
-        $this->dispatchUrI('/user/login');
+        $this->dispatchUrl('/user/login');
         $resp = json_decode($this->getBody());
         $this->assertTrue($resp->status == false);
         $this->assertTrue(is_string($resp->message) && strlen($resp->message) > 0);
@@ -103,7 +103,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['email'] = 'user1@user1.com';
         $this->params['password'] = 'test';
         $this->request->setMethod('POST');
-        $this->dispatchUrI('/user/login');
+        $this->dispatchUrl('/user/login');
         $resp = json_decode($this->getBody());
         $this->assertTrue($resp->status == true);
         $this->assertTrue(is_string($resp->redirect) && strlen($resp->redirect) > 0);
@@ -113,7 +113,7 @@ class Core_UserControllerTest extends ControllerTestCase
     public function testTermofserviceAction()
     {
         $this->resetAll();
-        $this->dispatchUrI("/user/termofservice");
+        $this->dispatchUrl("/user/termofservice");
         $this->assertController("user");
         $this->assertAction("termofservice");
     }
@@ -122,20 +122,20 @@ class Core_UserControllerTest extends ControllerTestCase
     public function testRecoverpasswordAction()
     {
         $this->resetAll();
-        $this->dispatchUrI("/user/recoverpassword", null, false);
+        $this->dispatchUrl("/user/recoverpassword", null, false);
 
         $this->assertQuery("form#recoverPasswordForm");
 
         $usersFile = $this->loadData('User', 'default');
         $userDao = $this->User->load($usersFile[0]->getKey());
-        $this->dispatchUrI("/user/recoverpassword", $userDao, true);
+        $this->dispatchUrl("/user/recoverpassword", $userDao, true);
 
         $this->resetAll();
         $this->params = array();
         $this->params['email'] = 'user1@user1.com';
         $this->request->setMethod('POST');
         $userDao = $this->User->getByEmail($this->params['email']);
-        $this->dispatchUrI("/user/recoverpassword", null);
+        $this->dispatchUrl("/user/recoverpassword", null);
 
         $userDao2 = $this->User->getByEmail($this->params['email']);
         $this->assertNotEquals($userDao->getSalt(), $userDao2->getSalt(), 'Salt should have changed');
@@ -213,7 +213,7 @@ class Core_UserControllerTest extends ControllerTestCase
     public function testSettingsAction()
     {
         $this->resetAll();
-        $this->dispatchUrI("/user/settings", null, false);
+        $this->dispatchUrl("/user/settings", null, false);
         $body = $this->getBody();
         $this->assertTrue(empty($body), 'Should return nothing');
 
@@ -224,12 +224,12 @@ class Core_UserControllerTest extends ControllerTestCase
 
         // Non admin user should not be able to edit other user's profiles
         $this->resetAll();
-        $this->dispatchUrI('/user/settings?userId='.$adminDao->getKey(), $userDao, true);
+        $this->dispatchUrl('/user/settings?userId='.$adminDao->getKey(), $userDao, true);
         $this->resetAll();
-        $this->dispatchUrI('/user/settings?userId='.$user2Dao->getKey(), $userDao, true);
+        $this->dispatchUrl('/user/settings?userId='.$user2Dao->getKey(), $userDao, true);
 
         $this->resetAll();
-        $this->dispatchUrI("/user/settings", $userDao);
+        $this->dispatchUrl("/user/settings", $userDao);
         $this->assertQuery("div#tabsSettings");
         $this->assertQuery("li.settingsCommunityList");
 
@@ -241,7 +241,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['oldPassword'] = 'test';
         $this->params['newPassword'] = 'newPassword';
         $this->request->setMethod('POST');
-        $this->dispatchUrI("/user/settings", $userDao);
+        $this->dispatchUrl("/user/settings", $userDao);
         $resp = json_decode($this->getBody());
         $this->assertTrue($resp[0] == true);
 
@@ -262,7 +262,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['privacy'] = MIDAS_USER_PRIVATE;
         $this->params['modifyAccount'] = 'true';
         $this->request->setMethod('POST');
-        $this->dispatchUrI("/user/settings", $userDao);
+        $this->dispatchUrl("/user/settings", $userDao);
 
         $userCheckDao = $this->User->load($userDao->getKey());
         $this->assertEquals(
@@ -275,7 +275,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params = array();
         $this->params['modifyPicture'] = 'true';
         $this->request->setMethod('POST');
-        $this->dispatchUrI("/user/settings", $userDao);
+        $this->dispatchUrl("/user/settings", $userDao);
 
         $userCheckDao = $this->User->load($userDao->getKey());
 
@@ -292,7 +292,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['privacy'] = MIDAS_USER_PRIVATE;
         $this->params['modifyAccount'] = 'true';
         $this->request->setMethod('POST');
-        $this->dispatchUrI("/user/settings", $userDao);
+        $this->dispatchUrl("/user/settings", $userDao);
         $userCheckDao = $this->User->load($userDao->getKey());
         $this->assertNotEquals($userCheckDao->getEmail(), 'invalid');
         $this->assertEquals($userCheckDao->getFirstname(), 'new First Name');
@@ -308,7 +308,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['privacy'] = MIDAS_USER_PRIVATE;
         $this->params['modifyAccount'] = 'true';
         $this->request->setMethod('POST');
-        $this->dispatchUrI("/user/settings", $userDao);
+        $this->dispatchUrl("/user/settings", $userDao);
         $userCheckDao = $this->User->load($userDao->getKey());
         $this->assertNotEquals($userCheckDao->getEmail(), $user2Dao->getEmail());
         $this->assertEquals($userCheckDao->getFirstname(), 'new First Name');
@@ -324,7 +324,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['privacy'] = MIDAS_USER_PRIVATE;
         $this->params['modifyAccount'] = 'true';
         $this->request->setMethod('POST');
-        $this->dispatchUrI("/user/settings", $userDao);
+        $this->dispatchUrl("/user/settings", $userDao);
         $userCheckDao = $this->User->load($userDao->getKey());
         $this->assertEquals($userCheckDao->getEmail(), 'valid@unique.com');
         $this->assertEquals($userCheckDao->getFirstname(), 'Good');
@@ -337,14 +337,14 @@ class Core_UserControllerTest extends ControllerTestCase
     public function testManageAction()
     {
         $this->resetAll();
-        $this->dispatchUrI("/user/manage", null, false);
+        $this->dispatchUrl("/user/manage", null, false);
 
         $body = $this->getBody();
         $this->assertTrue(empty($body), 'The page should be empty');
 
         $usersFile = $this->loadData('User', 'default');
         $userDao = $this->User->load($usersFile[0]->getKey());
-        $this->dispatchUrI("/user/manage", $userDao);
+        $this->dispatchUrl("/user/manage", $userDao);
 
         $this->assertQuery('div.genericInfo');
 
@@ -358,7 +358,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->resetAll();
         $usersFile = $this->loadData('User', 'default');
         $userDao = $this->User->load($usersFile[0]->getKey());
-        $this->dispatchUrI('/user/userpage', $userDao);
+        $this->dispatchUrl('/user/userpage', $userDao);
 
         $this->assertQuery('div.genericInfo');
 
@@ -367,18 +367,18 @@ class Core_UserControllerTest extends ControllerTestCase
 
         // Should be able to see this user page since user is public
         $this->resetAll();
-        $this->dispatchUrI('/user/'.$userDao->getKey(), null);
+        $this->dispatchUrl('/user/'.$userDao->getKey(), null);
 
         $userDao->setPrivacy(MIDAS_USER_PRIVATE);
         $this->User->save($userDao);
 
         // Should throw an exception since the user is now private
         $this->resetAll();
-        $this->dispatchUrI('/user/'.$userDao->getKey(), null, true);
+        $this->dispatchUrl('/user/'.$userDao->getKey(), null, true);
 
         // Private user should be able to view his own user page
         $this->resetAll();
-        $this->dispatchUrI('/user/'.$userDao->getKey(), $userDao);
+        $this->dispatchUrl('/user/'.$userDao->getKey(), $userDao);
         $this->assertController('user');
         $this->assertAction('userpage');
     }
@@ -387,19 +387,19 @@ class Core_UserControllerTest extends ControllerTestCase
     public function testUserexistsAction()
     {
         $this->resetAll();
-        $this->dispatchUrI('/user/userexists');
+        $this->dispatchUrl('/user/userexists');
         $this->assertTrue(strpos($this->getBody(), 'false') !== false);
 
         $this->resetAll();
         $this->params = array();
         $this->params['entry'] = 'user1@user1.com';
-        $this->dispatchUrI('/user/userexists');
+        $this->dispatchUrl('/user/userexists');
         $this->assertTrue(strpos($this->getBody(), 'true') !== false);
 
         $this->resetAll();
         $this->params = array();
         $this->params['entry'] = 'test_email_not_in_db';
-        $this->dispatchUrI('/user/userexists');
+        $this->dispatchUrl('/user/userexists');
         $this->assertTrue(strpos($this->getBody(), 'false') !== false);
 
         $this->resetAll();
@@ -407,7 +407,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['email'] = 'user1@user1.com';
         $this->params['password'] = 'wrong_password';
         $this->request->setMethod('POST');
-        $this->dispatchUrI('/user/login');
+        $this->dispatchUrl('/user/login');
         $resp = json_decode($this->getBody());
         $this->assertTrue($resp->status == false);
 
@@ -420,7 +420,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['email'] = 'user1@user1.com';
         $this->params['password'] = 'test';
         $this->request->setMethod('POST');
-        $this->dispatchUrI('/user/login');
+        $this->dispatchUrl('/user/login');
         $resp = json_decode($this->getBody());
         $this->assertTrue($resp->status == true);
     }
@@ -444,7 +444,7 @@ class Core_UserControllerTest extends ControllerTestCase
 
         // Render the delete dialog and make sure it has correct text
         $this->resetAll();
-        $this->dispatchUrI('/user/deletedialog?userId='.$user1->getKey(), $adminUser);
+        $this->dispatchUrl('/user/deletedialog?userId='.$user1->getKey(), $adminUser);
         $this->assertQuery('input[type="hidden"][name="userId"][value="'.$user1->getKey().'"]');
         $this->assertQueryContentContains(
             '#deleteDialogUserName',
@@ -453,15 +453,15 @@ class Core_UserControllerTest extends ControllerTestCase
 
         // Should fail if we aren't logged in
         $this->resetAll();
-        $this->dispatchUrI('/user/delete?userId='.$user1->getKey(), null, true);
+        $this->dispatchUrl('/user/delete?userId='.$user1->getKey(), null, true);
 
         // Should fail if we try to delete an admin user
         $this->resetAll();
-        $this->dispatchUrI('/user/delete?userId='.$adminUser->getKey(), $adminUser, true);
+        $this->dispatchUrl('/user/delete?userId='.$adminUser->getKey(), $adminUser, true);
 
         // Should fail if a non admin user tries to delete a different user
         $this->resetAll();
-        $this->dispatchUrI('/user/delete?userId='.$user2->getKey(), $user1, true);
+        $this->dispatchUrl('/user/delete?userId='.$user2->getKey(), $user1, true);
 
         // Make the item exist outside of the user's tree
         $commFolders = $comm->getFolder()->getFolders();
@@ -477,7 +477,7 @@ class Core_UserControllerTest extends ControllerTestCase
         // Delete user 1 as administrator
         $key = $user1->getKey();
         $this->resetAll();
-        $this->dispatchUrI('/user/delete?userId='.$user1->getKey(), $adminUser);
+        $this->dispatchUrl('/user/delete?userId='.$user1->getKey(), $adminUser);
 
         // Make sure user record is now gone
         $this->assertFalse($this->User->load($key));
@@ -512,7 +512,7 @@ class Core_UserControllerTest extends ControllerTestCase
 
         // Render the delete dialog and make sure it has correct text for self-deletion
         $this->resetAll();
-        $this->dispatchUrI('/user/deletedialog?userId='.$user1->getKey(), $user1);
+        $this->dispatchUrl('/user/deletedialog?userId='.$user1->getKey(), $user1);
         $this->assertQuery('input[type="hidden"][name="userId"][value="'.$user1->getKey().'"]');
         $this->assertTrue(strpos($this->getBody(), 'Are you sure you want to delete your user account?') !== false);
 
@@ -530,7 +530,7 @@ class Core_UserControllerTest extends ControllerTestCase
         // Delete user 1 as user 1
         $key = $user1->getKey();
         $this->resetAll();
-        $this->dispatchUrI('/user/delete?userId='.$user1->getKey(), $user1);
+        $this->dispatchUrl('/user/delete?userId='.$user1->getKey(), $user1);
 
         // Make sure user record is now gone
         $this->assertFalse($this->User->load($key));
@@ -560,19 +560,19 @@ class Core_UserControllerTest extends ControllerTestCase
 
         // Admin checkbox should be visible for an admin on his own view, it should be checked and disabled
         $this->resetAll();
-        $this->dispatchUrI('/user/settings', $adminUser);
+        $this->dispatchUrl('/user/settings', $adminUser);
         $this->assertQuery('input[type="checkbox"][name="adminStatus"][checked="checked"][disabled="disabled"]');
 
         // Admin checkbox should be visible for an admin on user 1's view, it should be unchecked and enabled
         $this->resetAll();
-        $this->dispatchUrI('/user/settings?userId='.$user1->getKey(), $adminUser);
+        $this->dispatchUrl('/user/settings?userId='.$user1->getKey(), $adminUser);
         $this->assertQuery('input[type="checkbox"][name="adminStatus"]');
         $this->assertNotQuery('input[type="checkbox"][name="adminStatus"][checked="checked"]');
         $this->assertNotQuery('input[type="checkbox"][name="adminStatus"][disabled="disabled"]');
 
         // Admin checkbox should not be visible on user 1's setting page at all
         $this->resetAll();
-        $this->dispatchUrI('/user/settings?userId='.$user1->getKey(), $user1);
+        $this->dispatchUrl('/user/settings?userId='.$user1->getKey(), $user1);
         $this->assertNotQuery('input[type="checkbox"][name="adminStatus"]');
 
         // If non admin user attempts to maliciously become admin, make sure we ignore it.
@@ -585,7 +585,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['adminStatus'] = 'on';
         $this->params['modifyAccount'] = 'true';
         $this->request->setMethod('POST');
-        $this->dispatchUrI('/user/settings', $user1);
+        $this->dispatchUrl('/user/settings', $user1);
 
         $user1 = $this->User->load($user1->getKey());
         $this->assertFalse($user1->isAdmin());
@@ -601,7 +601,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['adminStatus'] = 'on';
         $this->params['modifyAccount'] = 'true';
         $this->request->setMethod('POST');
-        $this->dispatchUrI('/user/settings?userId='.$user1->getKey(), $adminUser);
+        $this->dispatchUrl('/user/settings?userId='.$user1->getKey(), $adminUser);
 
         $user1 = $this->User->load($user1->getKey());
         $this->assertTrue($user1->isAdmin());
@@ -617,7 +617,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['adminStatus'] = '';
         $this->params['modifyAccount'] = 'true';
         $this->request->setMethod('POST');
-        $this->dispatchUrI('/user/settings?userId='.$user1->getKey(), $adminUser);
+        $this->dispatchUrl('/user/settings?userId='.$user1->getKey(), $adminUser);
 
         $user1 = $this->User->load($user1->getKey());
         $this->assertFalse($user1->isAdmin());
@@ -632,7 +632,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['adminStatus'] = '';
         $this->params['modifyAccount'] = 'true';
         $this->request->setMethod('POST');
-        $this->dispatchUrI('/user/settings?userId='.$adminUser->getKey(), $adminUser);
+        $this->dispatchUrl('/user/settings?userId='.$adminUser->getKey(), $adminUser);
 
         $adminUser = $this->User->load($adminUser->getKey());
         $this->assertTrue($adminUser->isAdmin());

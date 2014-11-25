@@ -52,7 +52,7 @@ class Validation_ApiComponentControllerTest extends ControllerTestCase
     /** Invoke the JSON web API */
     private function _callJsonApi($sessionUser = null)
     {
-        $this->dispatchUrI($this->webroot.'api/json', $sessionUser);
+        $this->dispatchUrl($this->webroot.'api/json', $sessionUser);
 
         return json_decode($this->getBody());
     }

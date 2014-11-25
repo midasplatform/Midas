@@ -40,6 +40,6 @@ class Batchmake_IndexControllerTest extends Batchmake_ControllerTestCase
         $page = '/batchmake/index/index';
         $this->params = array();
         $this->getRequest()->setMethod('GET');
-        $this->dispatchUrI($page);
+        $this->dispatchUrl($page);
     }
 }

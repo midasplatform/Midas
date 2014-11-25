@@ -87,19 +87,19 @@ class Core_AssetstoreControllerTest extends ControllerTestCase
         $this->params = array();
         $this->resetAll();
         $this->getRequest()->setMethod('POST');
-        $this->dispatchUrI($pageURI, $this->nullUserDao, $withException);
+        $this->dispatchUrl($pageURI, $this->nullUserDao, $withException);
 
         // now login with a non-admin account, should get an exception
         $this->resetAll();
         $this->params = array();
         $this->getRequest()->setMethod('POST');
-        $this->dispatchUrI($pageURI, $this->nonAdminUserDao, $withException);
+        $this->dispatchUrl($pageURI, $this->nonAdminUserDao, $withException);
 
         // now login with an admin account
         $this->resetAll();
         $this->params = array();
         $this->getRequest()->setMethod('POST');
-        $this->dispatchUrI($pageURI, $this->adminUserDao);
+        $this->dispatchUrl($pageURI, $this->adminUserDao);
     }
 
     /** test defaultassetstore action */
@@ -117,7 +117,7 @@ class Core_AssetstoreControllerTest extends ControllerTestCase
         $this->params['submitDefaultAssetstore'] = 'submitDefaultAssetstore';
         $this->params['element'] = $this->testAssetstoreDao->getKey();
         $this->getRequest()->setMethod('POST');
-        $this->dispatchUrI($pageURI, $this->adminUserDao);
+        $this->dispatchUrl($pageURI, $this->adminUserDao);
         $response = json_decode($this->getBody());
         $this->assertEquals(1, $response[0], "Expected true json response");
 
@@ -135,7 +135,7 @@ class Core_AssetstoreControllerTest extends ControllerTestCase
         $this->params['submitDefaultAssetstore'] = 'submitDefaultAssetstore';
         $this->params['element'] = $initialDefaultAssetstoreDao->getKey();
         $this->getRequest()->setMethod('POST');
-        $this->dispatchUrI($pageURI, $this->adminUserDao);
+        $this->dispatchUrl($pageURI, $this->adminUserDao);
         $response = json_decode($this->getBody());
         $this->assertEquals(1, $response[0], "Expected true json response");
 
@@ -149,7 +149,7 @@ class Core_AssetstoreControllerTest extends ControllerTestCase
         $this->resetAll();
         $this->params = array();
         $this->getRequest()->setMethod('POST');
-        $this->dispatchUrI($pageURI, $this->adminUserDao);
+        $this->dispatchUrl($pageURI, $this->adminUserDao);
         $response = json_decode($this->getBody());
         $this->assertEquals("", $response[0], "Expected false json response");
 
@@ -159,7 +159,7 @@ class Core_AssetstoreControllerTest extends ControllerTestCase
         $this->params['submitDefaultAssetstore'] = 'submitDefaultAssetstore';
         //$this->params['element'] = $initialDefaultAssetstoreDao->getKey();
         $this->getRequest()->setMethod('POST');
-        $this->dispatchUrI($pageURI, $this->adminUserDao);
+        $this->dispatchUrl($pageURI, $this->adminUserDao);
         $response = json_decode($this->getBody());
         $this->assertEquals("", $response[0], "Expected false json response");
     }
@@ -177,7 +177,7 @@ class Core_AssetstoreControllerTest extends ControllerTestCase
         $this->params = array();
         $this->params['assetstoreId'] = $testAssetstoreId;
         $this->getRequest()->setMethod('POST');
-        $this->dispatchUrI($pageURI, $this->adminUserDao);
+        $this->dispatchUrl($pageURI, $this->adminUserDao);
         $response = json_decode($this->getBody());
         $this->assertEquals(1, $response[0], "Expected true json response");
 
@@ -192,7 +192,7 @@ class Core_AssetstoreControllerTest extends ControllerTestCase
         $this->resetAll();
         $this->params = $params;
         $this->getRequest()->setMethod('POST');
-        $this->dispatchUrI($pageURI, $this->adminUserDao);
+        $this->dispatchUrl($pageURI, $this->adminUserDao);
         $response = json_decode($this->getBody());
 
         return $response;

@@ -57,22 +57,22 @@ class Visualize_IndexControllerTest extends ControllerTestCase
         $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
         $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
         $this->params['itemId'] = $item->getKey();
-        $this->dispatchUrI("/visualize/index/index");
+        $this->dispatchUrl("/visualize/index/index");
         $this->assertController("index");
 
-        $this->dispatchUrI("/visualize/image/index");
+        $this->dispatchUrl("/visualize/image/index");
         $this->assertController("image");
 
-        $this->dispatchUrI("/visualize/media/index");
+        $this->dispatchUrl("/visualize/media/index");
         $this->assertController("media");
 
-        $this->dispatchUrI("/visualize/pdf/index");
+        $this->dispatchUrl("/visualize/pdf/index");
         $this->assertController("pdf");
 
-        $this->dispatchUrI("/visualize/txt/index");
+        $this->dispatchUrl("/visualize/txt/index");
         $this->assertController("txt");
 
-        $this->dispatchUrI("/visualize/webgl/index");
+        $this->dispatchUrl("/visualize/webgl/index");
         $this->assertController("webgl");
     }
 }

@@ -43,7 +43,7 @@ class Communityagreement_CommunityControllerTest extends ControllerTestCase
 
         $this->getRequest()->setMethod('POST');
         $page = '/communityagreement/community/agreementdialog?communityId='.$community_id;
-        $this->dispatchUrI($page);
+        $this->dispatchUrl($page);
 
         $this->assertModule("communityagreement");
         $this->assertController("community");
@@ -68,13 +68,13 @@ class Communityagreement_CommunityControllerTest extends ControllerTestCase
         $this->params['email'] = 'user1@user1.com';
         $this->params['password'] = 'test';
         $this->request->setMethod('POST');
-        $this->dispatchUrI("/user/login");
+        $this->dispatchUrl("/user/login");
 
         $this->resetAll();
         $page = '/communityagreement/community/agreementtab?communityId='.$community_id;
         $this->params = array();
         $this->getRequest()->setMethod('GET');
-        $this->dispatchUrI($page, null, true);
+        $this->dispatchUrl($page, null, true);
 
         $this->assertController("error");
         $this->assertAction("error");
@@ -83,7 +83,7 @@ class Communityagreement_CommunityControllerTest extends ControllerTestCase
         $this->params['agreement'] = 'test agreement tab';
         $this->params['communityId'] = $community_id;
         $this->getRequest()->setMethod('POST');
-        $this->dispatchUrI($page, $admin);
+        $this->dispatchUrl($page, $admin);
 
         $agreementModel = MidasLoader::loadModel('Agreement', 'communityagreement');
         $saved_agreement = $agreementModel->getByCommunityId($community_id)->getAgreement();
@@ -94,7 +94,7 @@ class Communityagreement_CommunityControllerTest extends ControllerTestCase
         $this->params['agreement'] = 'should not work';
         $this->params['communityId'] = $community_id;
         $this->getRequest()->setMethod('POST');
-        $this->dispatchUrI($page, null, true);
+        $this->dispatchUrl($page, null, true);
 
         $saved_agreement = $agreementModel->getByCommunityId($community_id)->getAgreement();
         $this->assertNotEquals('should not work', $saved_agreement);

@@ -44,7 +44,7 @@ class Sizequota_ConfigControllerTest extends ControllerTestCase
         $userDao = $this->User->load($usersFile[2]->getKey());
 
         // Make sure we can render the config controller
-        $this->dispatchUrI('/sizequota/config/index', $userDao);
+        $this->dispatchUrl('/sizequota/config/index', $userDao);
         $this->assertController('config');
         $this->assertAction('index');
 
@@ -56,7 +56,7 @@ class Sizequota_ConfigControllerTest extends ControllerTestCase
         $this->params['communityQuotaUnit'] = '100';
         $this->params['userQuotaUnit'] = '1024';
         $this->params['submitConfig'] = 'true';
-        $this->dispatchUrI('/sizequota/config/index', $userDao);
+        $this->dispatchUrl('/sizequota/config/index', $userDao);
         $resp = JsonComponent::decode($this->getBody());
         $this->assertTrue($resp[0] == true);
 
@@ -78,24 +78,24 @@ class Sizequota_ConfigControllerTest extends ControllerTestCase
 
         // Exception if no folder id is set
         $this->resetAll();
-        $this->dispatchUrI('/sizequota/config/folder', null, true);
+        $this->dispatchUrl('/sizequota/config/folder', null, true);
 
         // Exception if invalid folder id is set
         $this->resetAll();
-        $this->dispatchUrI('/sizequota/config/folder?folderId=-2', null, true);
+        $this->dispatchUrl('/sizequota/config/folder?folderId=-2', null, true);
 
         // Exception if invalid policy
         $this->resetAll();
-        $this->dispatchUrI('/sizequota/config/folder?folderId='.$user1->getFolderId(), null, true);
+        $this->dispatchUrl('/sizequota/config/folder?folderId='.$user1->getFolderId(), null, true);
 
         // Exception if non-root folder is passed
         $subfolders = $user1->getFolder()->getFolders();
         $this->resetAll();
-        $this->dispatchUrI('/sizequota/config/folder?folderId='.$subfolders[0]->getKey(), $user1, true);
+        $this->dispatchUrl('/sizequota/config/folder?folderId='.$subfolders[0]->getKey(), $user1, true);
 
         // User 1 should be able to view their own root folder's quota info, but not see the form to change it
         $this->resetAll();
-        $this->dispatchUrI('/sizequota/config/folder?folderId='.$user1->getFolderId(), $user1);
+        $this->dispatchUrl('/sizequota/config/folder?folderId='.$user1->getFolderId(), $user1);
         $this->assertController('config');
         $this->assertAction('folder');
         $this->assertQueryContentRegex('span#hUsedSpaceValue', '/^0.0 KB$/');
@@ -108,7 +108,7 @@ class Sizequota_ConfigControllerTest extends ControllerTestCase
 
         // Admin user should be able to view user 1's quota info, and also see the form to change it
         $this->resetAll();
-        $this->dispatchUrI('/sizequota/config/folder?folderId='.$user1->getFolderId(), $adminUser);
+        $this->dispatchUrl('/sizequota/config/folder?folderId='.$user1->getFolderId(), $adminUser);
         $this->assertController('config');
         $this->assertAction('folder');
         $this->assertQueryContentRegex('span#hUsedSpaceValue', '/^0.0 KB$/');
@@ -123,7 +123,7 @@ class Sizequota_ConfigControllerTest extends ControllerTestCase
 
         // User 1 should not be able to change their own quota
         $this->resetAll();
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/sizequota/config/foldersubmit?quota=1234&unit=1usedefault='.MIDAS_USE_SPECIFIC_QUOTA.'&folderId='.$user1->getFolderId(
             ),
             $user1,
@@ -133,7 +133,7 @@ class Sizequota_ConfigControllerTest extends ControllerTestCase
 
         // Admin user should be able to change quota for a user
         $this->resetAll();
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/sizequota/config/foldersubmit?quota=1234&unit=100&usedefault='.MIDAS_USE_SPECIFIC_QUOTA.'&folderId='.$user1->getFolderId(
             ),
             $adminUser
@@ -141,7 +141,7 @@ class Sizequota_ConfigControllerTest extends ControllerTestCase
         $this->assertEquals($folderQuotaModel->getUserQuota($user1), '123400');
 
         $this->resetAll();
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/sizequota/config/foldersubmit?quota=1234&unit=1usedefault='.MIDAS_USE_DEFAULT_QUOTA.'&folderId='.$user1->getFolderId(
             ),
             $adminUser
@@ -153,11 +153,11 @@ class Sizequota_ConfigControllerTest extends ControllerTestCase
 
         // User 1 should not be able to see community quota (no privileges on the root folder)
         $this->resetAll();
-        $this->dispatchUrI('/sizequota/config/folder?folderId='.$comm->getFolderId(), $user1, true);
+        $this->dispatchUrl('/sizequota/config/folder?folderId='.$comm->getFolderId(), $user1, true);
 
         // Admin user should be able to see community quota
         $this->resetAll();
-        $this->dispatchUrI('/sizequota/config/folder?folderId='.$comm->getFolderId(), $adminUser);
+        $this->dispatchUrl('/sizequota/config/folder?folderId='.$comm->getFolderId(), $adminUser);
         $this->assertController('config');
         $this->assertAction('folder');
         $this->assertQueryContentRegex('span#hUsedSpaceValue', '/^0.0 KB$/');
@@ -170,7 +170,7 @@ class Sizequota_ConfigControllerTest extends ControllerTestCase
 
         // Admin should be able to set new community quota
         $this->resetAll();
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/sizequota/config/foldersubmit?quota=&unit=1024&usedefault='.MIDAS_USE_SPECIFIC_QUOTA.'&folderId='.$comm->getFolderId(
             ),
             $adminUser
@@ -178,7 +178,7 @@ class Sizequota_ConfigControllerTest extends ControllerTestCase
         $this->assertEquals($folderQuotaModel->getCommunityQuota($comm), '');
 
         $this->resetAll();
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/sizequota/config/foldersubmit?quota=&unit=1024&usedefault='.MIDAS_USE_DEFAULT_QUOTA.'&folderId='.$comm->getFolderId(
             ),
             $adminUser
@@ -202,41 +202,41 @@ class Sizequota_ConfigControllerTest extends ControllerTestCase
 
         // Exception if no folder id is set
         $this->resetAll();
-        $this->dispatchUrI('/sizequota/config/getfreespace', $adminUser);
+        $this->dispatchUrl('/sizequota/config/getfreespace', $adminUser);
         $resp = JsonComponent::decode($this->getBody());
         $this->assertTrue($resp['status'] == false);
         $this->assertEquals($resp['message'], 'Missing folderId parameter');
 
         // Exception if invalid folder id is set
         $this->resetAll();
-        $this->dispatchUrI('/sizequota/config/getfreespace?folderId=-7', $adminUser);
+        $this->dispatchUrl('/sizequota/config/getfreespace?folderId=-7', $adminUser);
         $resp = JsonComponent::decode($this->getBody());
         $this->assertTrue($resp['status'] == false);
         $this->assertEquals($resp['message'], 'Invalid folder');
 
         // Exception if no read privileges
         $this->resetAll();
-        $this->dispatchUrI('/sizequota/config/getfreespace?folderId='.$user1->getFolderId(), null);
+        $this->dispatchUrl('/sizequota/config/getfreespace?folderId='.$user1->getFolderId(), null);
         $resp = JsonComponent::decode($this->getBody());
         $this->assertTrue($resp['status'] == false);
         $this->assertEquals($resp['message'], 'Invalid policy');
 
         // User with read privileges should be able to get free space
         $this->resetAll();
-        $this->dispatchUrI('/sizequota/config/getfreespace?folderId='.$user1->getFolderId(), $user1);
+        $this->dispatchUrl('/sizequota/config/getfreespace?folderId='.$user1->getFolderId(), $user1);
         $resp = JsonComponent::decode($this->getBody());
         $this->assertTrue($resp['status'] == true);
 
         // This should also work on non-root folders
         $this->resetAll();
-        $this->dispatchUrI('/sizequota/config/getfreespace?folderId=1001', $user1);
+        $this->dispatchUrl('/sizequota/config/getfreespace?folderId=1001', $user1);
         $resp = JsonComponent::decode($this->getBody());
         $this->assertTrue($resp['status'] == true);
 
         // Should also work for community folders
         $this->resetAll();
         $commFolders = $comm->getFolder()->getFolders();
-        $this->dispatchUrI('/sizequota/config/getfreespace?folderId='.$commFolders[0]->getKey(), $adminUser);
+        $this->dispatchUrl('/sizequota/config/getfreespace?folderId='.$commFolders[0]->getKey(), $adminUser);
         $resp = JsonComponent::decode($this->getBody());
         $this->assertTrue($resp['status'] == true);
         $this->assertEquals($resp['freeSpace'], '10000');

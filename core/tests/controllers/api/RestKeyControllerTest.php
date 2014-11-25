@@ -51,7 +51,7 @@ class Core_RestKeyControllerTest extends ControllerTestCase
         $this->request->setMethod('POST');
 
         $page = $this->webroot.'user/settings';
-        $this->dispatchUrI($page, $userDao);
+        $this->dispatchUrl($page, $userDao);
 
         $postKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
         $this->assertNotEquals($preKey, $postKey);
@@ -69,7 +69,7 @@ class Core_RestKeyControllerTest extends ControllerTestCase
         $this->request->setMethod('POST');
 
         $page = $this->webroot.'user/register';
-        $this->dispatchUrI($page);
+        $this->dispatchUrl($page);
 
         // Check that their default api key was created
         $userApiModel = MidasLoader::loadModel('Userapi');

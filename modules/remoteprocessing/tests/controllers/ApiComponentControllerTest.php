@@ -45,7 +45,7 @@ class Remoteprocessing_ApiComponentControllerTest extends ControllerTestCase
         $this->params['os'] = MIDAS_REMOTEPROCESSING_OS_WINDOWS;
         $this->request->setMethod('POST');
 
-        $this->dispatchUrI('/api/json?method=midas.remoteprocessing.registerserver');
+        $this->dispatchUrl('/api/json?method=midas.remoteprocessing.registerserver');
 
         $jsonResults = $this->getBody();
         $this->resetAll();
@@ -64,7 +64,7 @@ class Remoteprocessing_ApiComponentControllerTest extends ControllerTestCase
         $this->params['apikey'] = $apikey;
         $this->request->setMethod('POST');
 
-        $this->dispatchUrI('/api/json?method=midas.remoteprocessing.registerserver');
+        $this->dispatchUrl('/api/json?method=midas.remoteprocessing.registerserver');
 
         $jsonResults = $this->getBody();
         $this->resetAll();
@@ -81,7 +81,7 @@ class Remoteprocessing_ApiComponentControllerTest extends ControllerTestCase
         $this->params['os'] = '123';
         $this->request->setMethod('POST');
 
-        $this->dispatchUrI('/api/json?method=midas.remoteprocessing.keepaliveserver');
+        $this->dispatchUrl('/api/json?method=midas.remoteprocessing.keepaliveserver');
 
         $jsonResults = $this->getBody();
         $this->resetAll();
@@ -106,7 +106,7 @@ class Remoteprocessing_ApiComponentControllerTest extends ControllerTestCase
         $this->params['os'] = MIDAS_REMOTEPROCESSING_OS_WINDOWS;
         $this->request->setMethod('POST');
 
-        $this->dispatchUrI('/api/json?method=midas.remoteprocessing.keepaliveserver');
+        $this->dispatchUrl('/api/json?method=midas.remoteprocessing.keepaliveserver');
 
         $jsonResults = $this->getBody();
         $this->resetAll();
@@ -125,7 +125,7 @@ class Remoteprocessing_ApiComponentControllerTest extends ControllerTestCase
         $this->params['os'] = MIDAS_REMOTEPROCESSING_OS_WINDOWS;
         $this->request->setMethod('POST');
 
-        $this->dispatchUrI('/api/json?method=midas.remoteprocessing.resultsserver&testingmode=1');
+        $this->dispatchUrl('/api/json?method=midas.remoteprocessing.resultsserver&testingmode=1');
         $jsonResults = $this->getBody();
         $this->resetAll();
         if (strpos($jsonResults, '{"stat":"ok"') === false) {

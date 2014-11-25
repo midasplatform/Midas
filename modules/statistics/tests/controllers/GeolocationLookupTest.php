@@ -71,7 +71,7 @@ class Statistics_GeolocationLookupTest extends ControllerTestCase
 
         // Run the scheduler
         $this->resetAll();
-        $this->dispatchUrI('/scheduler/run/index', $userDao);
+        $this->dispatchUrl('/scheduler/run/index', $userDao);
 
         // Assert that geolocation task was performed
         $ipLocations = $ipLocationModel->getAllUnlocated();

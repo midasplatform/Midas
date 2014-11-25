@@ -65,7 +65,7 @@ class Oauth_AuthorizeControllerTest extends ControllerTestCase
         $this->params = $params;
         $this->params['state'] = 'my_state_value';
         $this->params['scope'] = JsonComponent::encode($scopes);
-        $this->dispatchUrI('/oauth/authorize', null);
+        $this->dispatchUrl('/oauth/authorize', null);
         $this->assertQueryCount('ul.scopeList li', count($scopes));
         $scopeMap = Zend_Registry::get('permissionScopeMap');
 
@@ -101,7 +101,7 @@ class Oauth_AuthorizeControllerTest extends ControllerTestCase
         $this->params['state'] = 'my_state_value';
         $this->params['scope'] = JsonComponent::encode($scopes);
         $this->params['allowOrDeny'] = 'Allow';
-        $this->dispatchUrI('/oauth/authorize/submit', null);
+        $this->dispatchUrl('/oauth/authorize/submit', null);
         $json = JsonComponent::decode($this->getBody());
         $this->assertEquals($json['status'], 'error');
         $this->assertEquals($json['message'], 'Invalid username or password');
@@ -112,7 +112,7 @@ class Oauth_AuthorizeControllerTest extends ControllerTestCase
         $this->params['state'] = 'my_state_value';
         $this->params['scope'] = JsonComponent::encode($scopes);
         $this->params['allowOrDeny'] = 'Deny';
-        $this->dispatchUrI('/oauth/authorize/submit', null);
+        $this->dispatchUrl('/oauth/authorize/submit', null);
         $json = JsonComponent::decode($this->getBody());
         $this->assertEquals($json['status'], 'ok');
         $this->assertEquals(
@@ -127,7 +127,7 @@ class Oauth_AuthorizeControllerTest extends ControllerTestCase
         $this->params['scope'] = JsonComponent::encode($scopes);
         $this->params['allowOrDeny'] = 'Allow';
         $this->params['password'] = 'myPassword';
-        $this->dispatchUrI('/oauth/authorize/submit', null);
+        $this->dispatchUrl('/oauth/authorize/submit', null);
 
         $codeModel = MidasLoader::loadModel('Code', 'oauth');
         $codeDaos = $codeModel->getByUser($user);

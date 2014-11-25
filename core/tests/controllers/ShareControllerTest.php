@@ -37,23 +37,23 @@ class Core_ShareControllerTest extends ControllerTestCase
         $user2 = $this->User->load($usersFile[1]->getKey());
 
         // should throw an exception due to missing parameters
-        $this->dispatchUrI('/share/dialog', null, true);
+        $this->dispatchUrl('/share/dialog', null, true);
 
         // should throw an exception due to invalid element id
         $this->resetAll();
-        $this->dispatchUrI('/share/dialog?type=folder&id=834', null, true);
+        $this->dispatchUrl('/share/dialog?type=folder&id=834', null, true);
 
         // should throw an exception due to invalid permissions
         $this->resetAll();
-        $this->dispatchUrI('/share/dialog?type=folder&element=1000', null, true);
+        $this->dispatchUrl('/share/dialog?type=folder&element=1000', null, true);
 
         // should throw an exception due to invalid permissions (write permissions)
         $this->resetAll();
-        $this->dispatchUrI('/share/dialog?type=folder&element=1002', $user2, true);
+        $this->dispatchUrl('/share/dialog?type=folder&element=1002', $user2, true);
 
         // should render the dialog since the user has admin privileges
         $this->resetAll();
-        $this->dispatchUrI('/share/dialog?type=folder&element=1002', $user1);
+        $this->dispatchUrl('/share/dialog?type=folder&element=1002', $user1);
         $this->assertController('share');
         $this->assertAction('dialog');
         $this->assertQuery('div#permissionPrivate');
@@ -73,7 +73,7 @@ class Core_ShareControllerTest extends ControllerTestCase
         $this->request->setMethod('POST');
         $url = '/share/dialog?type=folder&element=1002&createPolicy&newPolicyType=user';
         $url .= '&newPolicyId='.$user2->getKey();
-        $this->dispatchUrI($url, $user1);
+        $this->dispatchUrl($url, $user1);
 
         // user 2 should now have read privileges, but not any higher
         $folder = $this->Folder->load(1002);
@@ -85,7 +85,7 @@ class Core_ShareControllerTest extends ControllerTestCase
         $this->request->setMethod('POST');
         $url = '/share/dialog?type=folder&element=1002&changePolicy&changeType=user';
         $url .= '&changeId='.$user2->getKey().'&changeVal='.MIDAS_POLICY_WRITE;
-        $this->dispatchUrI($url, $user1);
+        $this->dispatchUrl($url, $user1);
 
         // user 2 should now have write privileges, but not any higher
         $folder = $this->Folder->load(1002);
@@ -97,7 +97,7 @@ class Core_ShareControllerTest extends ControllerTestCase
         $this->request->setMethod('POST');
         $url = '/share/dialog?type=folder&element=1002&removePolicy&removeType=user';
         $url .= '&removeId='.$user2->getKey();
-        $this->dispatchUrI($url, $user1);
+        $this->dispatchUrl($url, $user1);
 
         // user 2 should no longer have any permissions
         $folder = $this->Folder->load(1002);
@@ -109,7 +109,7 @@ class Core_ShareControllerTest extends ControllerTestCase
         $this->resetAll();
         $this->request->setMethod('POST');
         $url = '/share/dialog?type=folder&element=1002&setPublic';
-        $this->dispatchUrI($url, $user1);
+        $this->dispatchUrl($url, $user1);
 
         // user 2 should now have read privileges, but no higher
         $folder = $this->Folder->load(1002);
@@ -120,7 +120,7 @@ class Core_ShareControllerTest extends ControllerTestCase
         $this->resetAll();
         $this->request->setMethod('POST');
         $url = '/share/dialog?type=folder&element=1002&setPrivate';
-        $this->dispatchUrI($url, $user1);
+        $this->dispatchUrl($url, $user1);
 
         // user 2 should now have no privileges
         $folder = $this->Folder->load(1002);
@@ -136,7 +136,7 @@ class Core_ShareControllerTest extends ControllerTestCase
         $this->request->setMethod('POST');
         $url = '/share/dialog?type=item&element=3&createPolicy&newPolicyType=user';
         $url .= '&newPolicyId='.$user2->getKey();
-        $this->dispatchUrI($url, $user1);
+        $this->dispatchUrl($url, $user1);
 
         // user 2 should now have read privileges, but not any higher
         $item = $this->Item->load(3);
@@ -148,7 +148,7 @@ class Core_ShareControllerTest extends ControllerTestCase
         $this->request->setMethod('POST');
         $url = '/share/dialog?type=item&element=3&changePolicy&changeType=user';
         $url .= '&changeId='.$user2->getKey().'&changeVal='.MIDAS_POLICY_WRITE;
-        $this->dispatchUrI($url, $user1);
+        $this->dispatchUrl($url, $user1);
 
         // user 2 should now have write privileges, but not any higher
         $item = $this->Item->load(3);
@@ -160,7 +160,7 @@ class Core_ShareControllerTest extends ControllerTestCase
         $this->request->setMethod('POST');
         $url = '/share/dialog?type=item&element=3&removePolicy&removeType=user';
         $url .= '&removeId='.$user2->getKey();
-        $this->dispatchUrI($url, $user1);
+        $this->dispatchUrl($url, $user1);
 
         // user 2 should no longer have any permissions
         $item = $this->Item->load(3);
@@ -172,7 +172,7 @@ class Core_ShareControllerTest extends ControllerTestCase
         $this->resetAll();
         $this->request->setMethod('POST');
         $url = '/share/dialog?type=item&element=3&setPublic';
-        $this->dispatchUrI($url, $user1);
+        $this->dispatchUrl($url, $user1);
 
         // user 2 should now have read privileges, but no higher
         $item = $this->Item->load(3);
@@ -183,7 +183,7 @@ class Core_ShareControllerTest extends ControllerTestCase
         $this->resetAll();
         $this->request->setMethod('POST');
         $url = '/share/dialog?type=item&element=3&setPrivate';
-        $this->dispatchUrI($url, $user1);
+        $this->dispatchUrl($url, $user1);
 
         // user 2 should now have no privileges
         $item = $this->Item->load(3);
@@ -198,11 +198,11 @@ class Core_ShareControllerTest extends ControllerTestCase
         $user2 = $this->User->load($usersFile[1]->getKey());
 
         // should throw an exception due to invalid folder id
-        $this->dispatchUrI('/share/dialog?folderId=834', null, true);
+        $this->dispatchUrl('/share/dialog?folderId=834', null, true);
 
         // render the dialog
         $this->resetAll();
-        $this->dispatchUrI('/share/applyrecursivedialog?folderId=1002', $user1);
+        $this->dispatchUrl('/share/applyrecursivedialog?folderId=1002', $user1);
         $this->assertController('share');
         $this->assertAction('applyrecursivedialog');
         $this->assertQuery('input[type="hidden"][id="folderId"][value="1002"]');
@@ -220,12 +220,12 @@ class Core_ShareControllerTest extends ControllerTestCase
         $this->request->setMethod('POST');
         $url = '/share/dialog?type=folder&element=1002&createPolicy&newPolicyType=user';
         $url .= '&newPolicyId='.$user2->getKey();
-        $this->dispatchUrI($url, $user1);
+        $this->dispatchUrl($url, $user1);
 
         // apply recursive policies
         $this->resetAll();
         $this->request->setMethod('POST');
-        $this->dispatchUrI('/share/applyrecursivedialog?folderId=1002', $user1);
+        $this->dispatchUrl('/share/applyrecursivedialog?folderId=1002', $user1);
 
         // user 2 should now be able to read the whole subtree
         $folder = $this->Folder->load(1002);
@@ -252,7 +252,7 @@ class Core_ShareControllerTest extends ControllerTestCase
         $this->request->setMethod('POST');
         $url = '/share/dialog?type=folder&element=1007&createPolicy&newPolicyType=user';
         $url .= '&newPolicyId='.$user2->getKey();
-        $this->dispatchUrI($url, $user1);
+        $this->dispatchUrl($url, $user1);
 
         // user 2 should now have read privileges, but not any higher
         $folder = $this->Folder->load(1007);
@@ -264,7 +264,7 @@ class Core_ShareControllerTest extends ControllerTestCase
         $this->request->setMethod('POST');
         $url = '/share/dialog?type=folder&element=1007&changePolicy&changeType=user';
         $url .= '&changeId='.$user2->getKey().'&changeVal='.MIDAS_POLICY_WRITE;
-        $this->dispatchUrI($url, $user1);
+        $this->dispatchUrl($url, $user1);
 
         // user 2 should now have write privileges, but not any higher
         $folder = $this->Folder->load(1007);
@@ -274,7 +274,7 @@ class Core_ShareControllerTest extends ControllerTestCase
         // Create a folder inside the parent where we have write access
         $this->resetAll();
         $this->request->setMethod('POST');
-        $this->dispatchUrI('/folder/createfolder?folderId=1007&createFolder&name=HelloWorld', $user2);
+        $this->dispatchUrl('/folder/createfolder?folderId=1007&createFolder&name=HelloWorld', $user2);
         $resp = json_decode($this->getBody());
         $this->assertTrue($resp[0] != false);
         $this->assertNotEmpty($resp[2]);
@@ -298,7 +298,7 @@ class Core_ShareControllerTest extends ControllerTestCase
         $this->params['folderid'] = 1007;
         $this->params['filename'] = $filename;
         $this->params['useSession'] = 1;
-        $this->dispatchUrI('/rest/system/uploadtoken', $user2);
+        $this->dispatchUrl('/rest/system/uploadtoken', $user2);
         $json = json_decode($this->getBody(), true);
         $uploadToken = $json['data']['token'];
 
@@ -312,7 +312,7 @@ class Core_ShareControllerTest extends ControllerTestCase
         $this->params['localinput'] = $path;
         $this->params['length'] = filesize($path);
         $this->params['useSession'] = 1;
-        $this->dispatchUrI('/rest/system/upload');
+        $this->dispatchUrl('/rest/system/upload');
 
         $search = $this->Item->getItemsFromSearch('search.png', $user2);
         $this->assertNotEmpty($search, 'Unable to find uploaded item');

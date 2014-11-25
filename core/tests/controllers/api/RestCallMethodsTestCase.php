@@ -45,7 +45,7 @@ class RestCallMethodsTestCase extends ControllerTestCase
     protected function _callRestApi($method, $path, $sessionUser = null)
     {
         $this->request->setMethod($method);
-        $this->dispatchUrI('/rest'.$path, $sessionUser, false, false);
+        $this->dispatchUrl('/rest'.$path, $sessionUser, false, false);
         $responseStatus = $this->_response->getHttpResponseCode();
         $responseBody = json_decode($this->getBody());
         $rtn = array('status' => $responseStatus, 'body' => $responseBody);

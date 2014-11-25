@@ -34,12 +34,12 @@ class Core_SearchControllerTest extends ControllerTestCase
     public function testIndexAction()
     {
         $this->resetAll();
-        $this->dispatchUrI('/search/?q=name');
+        $this->dispatchUrl('/search/?q=name');
         $this->assertController('search');
         $this->assertAction('index');
 
         $this->resetAll();
-        $this->dispatchUrI('/search/?q=name&ajax');
+        $this->dispatchUrl('/search/?q=name&ajax');
         $this->assertController('search');
         $this->assertAction('index');
 
@@ -79,7 +79,7 @@ class Core_SearchControllerTest extends ControllerTestCase
     public function testLiveSearch()
     {
         $this->resetAll();
-        $this->dispatchUrI('/search/live?term=name');
+        $this->dispatchUrl('/search/live?term=name');
         $this->assertController('search');
         $this->assertAction('live');
 
@@ -110,7 +110,7 @@ class Core_SearchControllerTest extends ControllerTestCase
 
         // Ensure we get community results from live search
         $this->resetAll();
-        $this->dispatchUrI('/search/live?term=Community');
+        $this->dispatchUrl('/search/live?term=Community');
         $this->assertController('search');
         $this->assertAction('live');
         $resp = json_decode($this->getBody());
@@ -122,7 +122,7 @@ class Core_SearchControllerTest extends ControllerTestCase
 
         // Ensure we get group results from live search with shareSearch enabled
         $this->resetAll();
-        $this->dispatchUrI('/search/live?term=Community&shareSearch');
+        $this->dispatchUrl('/search/live?term=Community&shareSearch');
         $this->assertController('search');
         $this->assertAction('live');
         $resp = json_decode($this->getBody());
@@ -136,7 +136,7 @@ class Core_SearchControllerTest extends ControllerTestCase
 
         // Ensure we get only user results from live search with userSearch enabled
         $this->resetAll();
-        $this->dispatchUrI('/search/live?term=name&userSearch');
+        $this->dispatchUrl('/search/live?term=name&userSearch');
         $this->assertController('search');
         $this->assertAction('live');
         $resp = json_decode($this->getBody());
@@ -150,14 +150,14 @@ class Core_SearchControllerTest extends ControllerTestCase
 
         // No good assertions about items for now, due to lucene database being in unknown state
         $this->resetAll();
-        $this->dispatchUrI('/search/live?term=name&itemSearch');
+        $this->dispatchUrl('/search/live?term=name&itemSearch');
         $this->assertController('search');
         $this->assertAction('live');
 
         $usersFile = $this->loadData('User', 'search');
         $userDao = $this->User->load($usersFile[2]->getKey());
         $this->resetAll();
-        $this->dispatchUrI('/search/live?term=invalid&itemSearch', $userDao);
+        $this->dispatchUrl('/search/live?term=invalid&itemSearch', $userDao);
         $this->assertController('search');
         $this->assertAction('live');
     }

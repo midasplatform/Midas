@@ -31,7 +31,7 @@ class Api_IndexControllerTest extends ControllerTestCase
     /** Make sure our index page lists out the methods */
     public function testWebApiHelpIndex()
     {
-        $this->dispatchUrI($this->webroot.'api');
+        $this->dispatchUrl($this->webroot.'api');
         $this->assertModule('api');
         $this->assertController('index');
         $this->assertAction('index');

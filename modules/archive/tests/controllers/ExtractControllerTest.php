@@ -36,7 +36,7 @@ class Archive_ExtractControllerTest extends ControllerTestCase
     /** Render the dialog for coverage */
     public function testDialogAction()
     {
-        $this->dispatchUrI('/archive/extract/dialog');
+        $this->dispatchUrl('/archive/extract/dialog');
     }
 
     /** Test extraction of a zip file */
@@ -53,11 +53,11 @@ class Archive_ExtractControllerTest extends ControllerTestCase
 
         // Should fail when we try without privileges
         $url = '/archive/extract/perform?deleteArchive=true&itemId='.$item->getKey();
-        $this->dispatchUrI($url, null, true);
+        $this->dispatchUrl($url, null, true);
 
         // Now run with proper privileges
         $this->resetAll();
-        $this->dispatchUrI($url, $adminUser);
+        $this->dispatchUrl($url, $adminUser);
 
         // The original item should have been deleted
         $item = $this->Item->load($item->getKey());

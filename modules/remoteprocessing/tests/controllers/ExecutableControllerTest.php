@@ -39,8 +39,8 @@ class Remoteprocessing_ExecutableControllerTest extends ControllerTestCase
 
         $revision = $this->Item->getLastRevision($itemFile[0]);
 
-        $this->dispatchUrI('/remoteprocessing/executable/define?itemId='.$itemFile[0]->getKey(), null, true);
-        $this->dispatchUrI('/remoteprocessing/executable/define?itemId='.$itemFile[0]->getKey(), $userDao, false);
+        $this->dispatchUrl('/remoteprocessing/executable/define?itemId='.$itemFile[0]->getKey(), null, true);
+        $this->dispatchUrl('/remoteprocessing/executable/define?itemId='.$itemFile[0]->getKey(), $userDao, false);
 
         $this->assertQuery('#jsonMetadataContent');
 
@@ -49,7 +49,7 @@ class Remoteprocessing_ExecutableControllerTest extends ControllerTestCase
         $this->params = array();
         $this->params['results'][0] = 'foo;foo;foo;foo;foo;foo';
         $this->request->setMethod('POST');
-        $this->dispatchUrI("/remoteprocessing/executable/define?itemId=".$itemFile[0]->getKey(), $userDao);
+        $this->dispatchUrl("/remoteprocessing/executable/define?itemId=".$itemFile[0]->getKey(), $userDao);
 
         $revisionNext = $this->Item->getLastRevision($itemFile[0]);
 

@@ -44,11 +44,11 @@ class Keyfiles_DownloadControllerTest extends ControllerTestCase
       $url = '/keyfiles/download/bitstream?bitstreamId='.$bitstreamDao->getKey();
 
     // Should throw an exception for no bitstream parameter
-    $this->dispatchUrI('/keyfiles/download/bitstream', null, true);
+    $this->dispatchUrl('/keyfiles/download/bitstream', null, true);
 
     // Make sure we get the checksum as the response
     $this->resetAll();
-      $this->dispatchUrI($url, $userDao);
+      $this->dispatchUrl($url, $userDao);
       $this->assertEquals($bitstreamDao->getChecksum(), $this->getBody());
   }
 
@@ -58,11 +58,11 @@ class Keyfiles_DownloadControllerTest extends ControllerTestCase
   public function testDownloadZip()
   {
       // Should throw an exception for no bitstream parameter
-    $this->dispatchUrI('/keyfiles/download/batch', null, true);
+    $this->dispatchUrl('/keyfiles/download/batch', null, true);
 
     // Get some coverage on the batch controller
     $this->resetAll();
-      $this->dispatchUrI('/keyfiles/download/batch?items=1-2-3-&folders=1000', null);
+      $this->dispatchUrl('/keyfiles/download/batch?items=1-2-3-&folders=1000', null);
       $this->assertController('download');
       $this->assertAction('batch');
   }

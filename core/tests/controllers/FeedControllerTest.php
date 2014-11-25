@@ -33,7 +33,7 @@ class Core_FeedControllerTest extends ControllerTestCase
     /** test index */
     public function testIndexAction()
     {
-        $this->dispatchUrI("/feed");
+        $this->dispatchUrl("/feed");
         $this->assertController("feed");
         $this->assertAction("index");
 
@@ -46,7 +46,7 @@ class Core_FeedControllerTest extends ControllerTestCase
         $usersFile = $this->loadData('User', 'default');
         $userDao = $this->User->load($usersFile[0]->getKey());
 
-        $this->dispatchUrI("/feed", $userDao);
+        $this->dispatchUrl("/feed", $userDao);
         $this->assertController("feed");
         $this->assertAction("index");
 
@@ -58,12 +58,12 @@ class Core_FeedControllerTest extends ControllerTestCase
     public function testDeleteajaxAction()
     {
         // test if we get an error
-        $this->dispatchUrI('/feed/deleteajax', null, true);
+        $this->dispatchUrl('/feed/deleteajax', null, true);
 
         $feedsFile = $this->loadData('Feed', 'default');
         $feedDao = $this->Feed->load($feedsFile[2]->getKey());
         $this->params['feed'] = $feedDao->getKey();
-        $this->dispatchUrI('/feed/deleteajax', null);
+        $this->dispatchUrl('/feed/deleteajax', null);
 
         $feedDao = $this->Feed->load($feedDao->getKey());
         if ($feedDao == false) {
@@ -73,7 +73,7 @@ class Core_FeedControllerTest extends ControllerTestCase
         $this->params['feed'] = $feedDao->getKey();
         $usersFile = $this->loadData('User', 'default');
         $userDao = $this->User->load($usersFile[0]->getKey());
-        $this->dispatchUrI('/feed/deleteajax', $userDao);
+        $this->dispatchUrl('/feed/deleteajax', $userDao);
 
         $feedDao = $this->Feed->load($feedDao->getKey());
         if ($feedDao != false) {

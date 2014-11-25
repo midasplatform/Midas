@@ -37,10 +37,10 @@ class Core_LicensesControllerTest extends ControllerTestCase
         $normalUser = $this->User->load($usersFile[0]->getKey());
         $adminUser = $this->User->load($usersFile[2]->getKey());
 
-        $this->dispatchUrI('/licenses/all', $normalUser, true);
+        $this->dispatchUrl('/licenses/all', $normalUser, true);
 
         $this->resetAll();
-        $this->dispatchUrI('/licenses/all', $adminUser);
+        $this->dispatchUrl('/licenses/all', $adminUser);
         $this->assertController('licenses');
         $this->assertAction('all');
         $this->assertQueryCount('form.existingLicense', count($licensesFile));
@@ -56,10 +56,10 @@ class Core_LicensesControllerTest extends ControllerTestCase
 
         $initialCount = count($this->License->getAll());
 
-        $this->dispatchUrI('/licenses/create', $normalUser, true);
+        $this->dispatchUrl('/licenses/create', $normalUser, true);
 
         $this->resetAll();
-        $this->dispatchUrI('/licenses/create?name=hello&fulltext=world', $adminUser);
+        $this->dispatchUrl('/licenses/create?name=hello&fulltext=world', $adminUser);
         $this->assertEquals(count($this->License->getAll()), $initialCount + 1);
         $resp = json_decode($this->getBody());
         $this->assertTrue($resp[0] != false);
@@ -75,14 +75,14 @@ class Core_LicensesControllerTest extends ControllerTestCase
         $all = $this->License->getAll();
         $license = $all[0];
 
-        $this->dispatchUrI('/licenses/save', $normalUser, true);
+        $this->dispatchUrl('/licenses/save', $normalUser, true);
 
         $this->resetAll();
         $this->getRequest()->setMethod('POST');
         $this->params['name'] = 'changed name';
         $this->params['fulltext'] = 'changed the fulltext';
         $this->params['licenseId'] = $license->getKey();
-        $this->dispatchUrI('/licenses/save', $adminUser);
+        $this->dispatchUrl('/licenses/save', $adminUser);
         $resp = json_decode($this->getBody());
         $this->assertTrue($resp[0] != false);
 
@@ -112,12 +112,12 @@ class Core_LicensesControllerTest extends ControllerTestCase
         $this->assertEquals($revision2->getLicenseId(), $license2->getKey());
         $this->assertEquals($revision3->getLicenseId(), null);
 
-        $this->dispatchUrI('/licenses/delete', $normalUser, true);
+        $this->dispatchUrl('/licenses/delete', $normalUser, true);
 
         $this->resetAll();
         $this->getRequest()->setMethod('POST');
         $this->params['licenseId'] = $license1->getKey();
-        $this->dispatchUrI('/licenses/delete', $adminUser);
+        $this->dispatchUrl('/licenses/delete', $adminUser);
         $resp = json_decode($this->getBody());
         $this->assertTrue($resp[0] != false);
 

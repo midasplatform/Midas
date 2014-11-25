@@ -58,7 +58,7 @@ class Visualize_WrapperControllerTest extends ControllerTestCase
         $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
 
         $this->params['itemId'] = $item->getKey();
-        $this->dispatchUrI("/visualize/wrapper");
+        $this->dispatchUrl("/visualize/wrapper");
 
         $this->assertAction("index");
         $this->assertModule("visualize");

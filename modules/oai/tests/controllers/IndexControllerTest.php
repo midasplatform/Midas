@@ -36,7 +36,7 @@ class Oai_IndexControllerTest extends ControllerTestCase
         $this->params['verb'] = 'GetRecord';
         $this->params['identifier'] = 'oai:midas.example.org:'.$itemsFile[0]->getUuid();
         $this->params['metadataPrefix'] = 'oai_dc';
-        $this->dispatchUrI("/oai");
+        $this->dispatchUrl("/oai");
         $this->assertAction("index");
         $this->assertModule("oai");
         $body = $this->getBody();
@@ -50,7 +50,7 @@ class Oai_IndexControllerTest extends ControllerTestCase
 
         $this->resetAll();
         $this->params['verb'] = 'Identify';
-        $this->dispatchUrI("/oai");
+        $this->dispatchUrl("/oai");
         $this->assertAction("index");
         $this->assertModule("oai");
         $body = $this->getBody();
@@ -61,7 +61,7 @@ class Oai_IndexControllerTest extends ControllerTestCase
         $this->resetAll();
         $this->params['verb'] = 'ListIdentifiers';
         $this->params['metadataPrefix'] = 'oai_dc';
-        $this->dispatchUrI("/oai");
+        $this->dispatchUrl("/oai");
         $this->assertAction("index");
         $this->assertModule("oai");
         $body = $this->getBody();
@@ -76,7 +76,7 @@ class Oai_IndexControllerTest extends ControllerTestCase
         $this->resetAll();
         $this->params['verb'] = 'ListMetadataFormats';
         $this->params['identifier'] = 'oai:midas.example.org:'.$itemsFile[0]->getUuid();
-        $this->dispatchUrI("/oai");
+        $this->dispatchUrl("/oai");
         $this->assertAction("index");
         $this->assertModule("oai");
         $body = $this->getBody();
@@ -90,7 +90,7 @@ class Oai_IndexControllerTest extends ControllerTestCase
 
         $this->resetAll();
         $this->params['verb'] = 'ListSets';
-        $this->dispatchUrI("/oai");
+        $this->dispatchUrl("/oai");
         $this->assertAction("index");
         $this->assertModule("oai");
         $body = $this->getBody();

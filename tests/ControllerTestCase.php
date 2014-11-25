@@ -237,14 +237,28 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     }
 
     /**
+     * Fetch the given page.
      *
-     * The method dispatchUrl fetches the page.
-     * Parameters:
-     * - $uri: page you want to render
-     * - $userDao : user you want to log in with
-     * - $withException : You may want to test if you will get an exception
+     * @param string $url URL of the page
+     * @param null|UserDao $userDao user with which to log in
+     * @param bool $withException if true, an exception is expected
+     * @param bool $assertNot404 if true, a status code that is not 404 is expected
+     * @deprecated
      */
-    public function dispatchUrI($uri, $userDao = null, $withException = false, $assertNot404 = true)
+    public function dispatchUrI($url, $userDao = null, $withException = false, $assertNot404 = true)
+    {
+        $this->dispatchUrl($url, $userDao, $withException, $assertNot404);
+    }
+
+    /**
+     * Fetch the given page.
+     *
+     * @param string $url URL of the page
+     * @param null|UserDao $userDao user with which to log in
+     * @param bool $withException if true, an exception is expected
+     * @param bool $assertNot404 if true, a status code that is not 404 is expected
+     */
+    public function dispatchUrl($url, $userDao = null, $withException = false, $assertNot404 = true)
     {
         if ($userDao != null) {
             $this->params['testingUserId'] = $userDao->getKey();
@@ -261,7 +275,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         } else {
             $this->request->setQuery($this->params);
         }
-        $this->dispatch($uri);
+        $this->dispatch($url);
         if ($assertNot404) {
             $this->assertNotResponseCode('404');
         }
@@ -273,7 +287,6 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
             Zend_Loader::loadClass('NotifyErrorComponent', BASE_PATH.'/core/controllers/components');
             $errorComponent = new NotifyErrorComponent();
             $session = new Zend_Session_Namespace('Auth_User');
-            $db = Zend_Registry::get('dbAdapter');
             $environment = 'testing';
             $errorComponent->initNotifier($environment, $error, $session, $_SERVER);
 

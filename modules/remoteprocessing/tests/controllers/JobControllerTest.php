@@ -37,8 +37,8 @@ class Remoteprocessing_JobControllerTest extends ControllerTestCase
         $userDao = $this->User->load($usersFile[0]->getKey());
         $itemFile = $this->loadData('Item', 'default');
 
-        $this->dispatchUrI('/remoteprocessing/job/manage?itemId='.$itemFile[0]->getKey(), null, true);
-        $this->dispatchUrI('/remoteprocessing/job/manage?itemId='.$itemFile[0]->getKey(), $userDao, false);
+        $this->dispatchUrl('/remoteprocessing/job/manage?itemId='.$itemFile[0]->getKey(), null, true);
+        $this->dispatchUrl('/remoteprocessing/job/manage?itemId='.$itemFile[0]->getKey(), $userDao, false);
 
         $jobModel = MidasLoader::loadModel('Job', 'remoteprocessing');
         $jobs = $jobModel->getRelatedJob($itemFile[0]);
@@ -57,17 +57,17 @@ class Remoteprocessing_JobControllerTest extends ControllerTestCase
         $itemFile = $this->loadData('Item', 'default');
 
         $this->resetAll();
-        $this->dispatchUrI('/remoteprocessing/job/init?itemId='.$itemFile[0]->getKey(), $userDao, false);
+        $this->dispatchUrl('/remoteprocessing/job/init?itemId='.$itemFile[0]->getKey(), $userDao, false);
 
         // create definition file
         $this->resetAll();
         $this->params = array();
         $this->params['results'][0] = 'foo;foo;foo;foo;foo;foo';
         $this->request->setMethod('POST');
-        $this->dispatchUrI("/remoteprocessing/executable/define?itemId=".$itemFile[0]->getKey(), $userDao);
+        $this->dispatchUrl("/remoteprocessing/executable/define?itemId=".$itemFile[0]->getKey(), $userDao);
 
         $this->resetAll();
-        $this->dispatchUrI('/remoteprocessing/job/init?itemId='.$itemFile[0]->getKey(), $userDao, false);
+        $this->dispatchUrl('/remoteprocessing/job/init?itemId='.$itemFile[0]->getKey(), $userDao, false);
 
         //$this->assertQuery('#creatJobLink');
     }

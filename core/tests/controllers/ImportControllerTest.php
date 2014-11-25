@@ -63,19 +63,19 @@ class Core_ImportControllerTest extends ControllerTestCase
         $this->params = array();
         $this->resetAll();
         $this->getRequest()->setMethod($method);
-        $this->dispatchUrI($pageURI, $this->nullUserDao, $withException);
+        $this->dispatchUrl($pageURI, $this->nullUserDao, $withException);
 
         // now login with a non-admin account, should get an exception
         $this->resetAll();
         $this->params = array();
         $this->getRequest()->setMethod($method);
-        $this->dispatchUrI($pageURI, $this->nonAdminUserDao, $withException);
+        $this->dispatchUrl($pageURI, $this->nonAdminUserDao, $withException);
 
         // now login with an admin account
         $this->resetAll();
         $this->params = array();
         $this->getRequest()->setMethod($method);
-        $this->dispatchUrI($pageURI, $this->adminUserDao);
+        $this->dispatchUrl($pageURI, $this->adminUserDao);
     }
 
     /**
@@ -152,7 +152,7 @@ class Core_ImportControllerTest extends ControllerTestCase
         $this->params = array();
         $this->params['validate'] = 1;
         $this->getRequest()->setMethod('POST');
-        $this->dispatchUrI($pageToTest, $this->adminUserDao);
+        $this->dispatchUrl($pageToTest, $this->adminUserDao);
         $invalidFormResponse = json_decode($this->getBody());
         $this->assertEquals(
             'The form is invalid. Missing values.',
@@ -172,7 +172,7 @@ class Core_ImportControllerTest extends ControllerTestCase
         $this->params['importFolder'] = '1007';
         $this->params['importstop'] = 'Stop import';
         $this->params['validate'] = '1';
-        $this->dispatchUrI($pageToTest, $this->adminUserDao);
+        $this->dispatchUrl($pageToTest, $this->adminUserDao);
         $validateFormResponse = json_decode($this->getBody());
         $this->assertEquals('validate', $validateFormResponse->stage, 'Expected a response of successful validation.');
 
@@ -188,7 +188,7 @@ class Core_ImportControllerTest extends ControllerTestCase
         $this->params['importFolder'] = '1007';
         $this->params['importstop'] = 'Stop import';
         $this->params['initialize'] = '1';
-        $this->dispatchUrI($pageToTest, $this->adminUserDao);
+        $this->dispatchUrl($pageToTest, $this->adminUserDao);
         $initializeFormResponse = json_decode($this->getBody());
         $this->assertEquals(
             'initialize',
@@ -213,7 +213,7 @@ class Core_ImportControllerTest extends ControllerTestCase
         $this->params['importFolder'] = '1007';
         $this->params['importstop'] = 'Stop import';
         $this->params['totalfiles'] = '3';
-        $this->dispatchUrI($pageToTest, $this->adminUserDao);
+        $this->dispatchUrl($pageToTest, $this->adminUserDao);
         $importFormResponse = json_decode($this->getBody());
         $this->assertEquals('Import successful.', $importFormResponse->message, 'Actual local import failed.');
         $folder = $this->Folder->load(1007);

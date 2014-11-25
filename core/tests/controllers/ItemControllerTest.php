@@ -40,17 +40,17 @@ class Core_ItemControllerTest extends ControllerTestCase
         $url = '/item/'.$itemDao->getItemId();
 
         // Should throw an exception for anonymous user (no read access)
-        $this->dispatchUrI($url, null, true);
+        $this->dispatchUrl($url, null, true);
         $this->assertController('error');
         $this->assertAction('error');
 
         // Should throw an exception for no item id parameter
         $this->resetAll();
-        $this->dispatchUrI('/item/view', null, true);
+        $this->dispatchUrl('/item/view', null, true);
         $this->assertController('error');
 
         $this->resetAll();
-        $this->dispatchUrI($url, $userWithPermission);
+        $this->dispatchUrl($url, $userWithPermission);
         $this->assertController('item');
         $this->assertAction('view');
         $this->assertQueryContentContains('a.licenseLink', 'Private License');
@@ -69,17 +69,17 @@ class Core_ItemControllerTest extends ControllerTestCase
         $url = '/item/edit?itemId='.$itemDao->getItemId();
 
         // Should throw an exception for anonymous user
-        $this->dispatchUrI($url, null, true);
+        $this->dispatchUrl($url, null, true);
         $this->assertController('error');
 
         // Should throw an exception for no item id parameter
         $this->resetAll();
-        $this->dispatchUrI('/item/edit', null, true);
+        $this->dispatchUrl('/item/edit', null, true);
         $this->assertController('error');
 
         // Test rendering the form
         $this->resetAll();
-        $this->dispatchUrI($url, $userWithPermission);
+        $this->dispatchUrl($url, $userWithPermission);
         $this->assertController('item');
         $this->assertAction('edit');
         $this->assertQuery('form#editItemForm');
@@ -97,7 +97,7 @@ class Core_ItemControllerTest extends ControllerTestCase
         $this->params['name'] = 'New name';
         $this->params['description'] = 'New description';
         $this->params['licenseSelect'] = '123';
-        $this->dispatchUrI($url, $userWithPermission);
+        $this->dispatchUrl($url, $userWithPermission);
         $this->assertController('item');
         $this->assertAction('edit');
         $this->assertRedirect();
@@ -119,7 +119,7 @@ class Core_ItemControllerTest extends ControllerTestCase
         $this->params['description'] = 'New description';
         $this->params['licenseSelect'] = '123';
         $this->params['updateBitstreamName'] = 'updateBitstreamName';
-        $this->dispatchUrI($url, $userWithPermission);
+        $this->dispatchUrl($url, $userWithPermission);
         $this->assertController('item');
         $this->assertAction('edit');
         $this->assertRedirect();
@@ -150,17 +150,17 @@ class Core_ItemControllerTest extends ControllerTestCase
         $url = '/item/delete?itemId='.$itemDao->getItemId();
 
         // Should throw an exception for anonymous user
-        $this->dispatchUrI($url, null, true);
+        $this->dispatchUrl($url, null, true);
         $this->assertController('error');
 
         // Should throw an exception for normal user
         $this->resetAll();
-        $this->dispatchUrI($url, $userWithoutPermission, true);
+        $this->dispatchUrl($url, $userWithoutPermission, true);
         $this->assertController('error');
 
         // User with proper privileges should be able to delete the item
         $this->resetAll();
-        $this->dispatchUrI($url, $userWithPermission);
+        $this->dispatchUrl($url, $userWithPermission);
         $this->assertController('item');
         $this->assertAction('delete');
 
@@ -179,16 +179,16 @@ class Core_ItemControllerTest extends ControllerTestCase
         $url = '/item/editmetadata?itemId='.$itemDao->getItemId().'&metadataId=1000';
 
         // Should throw an exception for anonymous user
-        $this->dispatchUrI($url, null, true);
+        $this->dispatchUrl($url, null, true);
         $this->assertController('error');
 
         // Should throw an exception for no item id parameter
         $this->resetAll();
-        $this->dispatchUrI('/item/editmetadata', null, true);
+        $this->dispatchUrl('/item/editmetadata', null, true);
         $this->assertController('error');
 
         $this->resetAll();
-        $this->dispatchUrI($url, $userWithPermission);
+        $this->dispatchUrl($url, $userWithPermission);
         $this->assertController('item');
         $this->assertAction('editmetadata');
         $this->assertQuery('form#editMetadataForm');
@@ -208,7 +208,7 @@ class Core_ItemControllerTest extends ControllerTestCase
         $itemDao = $this->Item->load($itemsFile[1]->getKey());
         $url = '/item/checkshared?itemId='.$itemDao->getItemId();
 
-        $this->dispatchUrI($url, $userWithPermission);
+        $this->dispatchUrl($url, $userWithPermission);
         $resp = JsonComponent::decode($this->getBody());
         $this->assertTrue($resp == false);
     }
@@ -226,15 +226,15 @@ class Core_ItemControllerTest extends ControllerTestCase
         $url = '/item/deleteitemrevision?itemId='.$itemDao->getKey().'&itemrevisionId='.$revisionToDelete->getKey();
 
         // Should throw an exception for anonymous user
-        $this->dispatchUrI($url, null, true);
+        $this->dispatchUrl($url, null, true);
         $this->assertController('error');
 
         // Should throw an exception for no item id parameter
         $this->resetAll();
-        $this->dispatchUrI('/item/deleteitemrevision', null, true);
+        $this->dispatchUrl('/item/deleteitemrevision', null, true);
         $this->assertController('error');
 
-        $this->dispatchUrI($url, $userWithPermission);
+        $this->dispatchUrl($url, $userWithPermission);
         $this->assertController('item');
         $this->assertAction('deleteitemrevision');
         $this->assertRedirect();
@@ -252,17 +252,17 @@ class Core_ItemControllerTest extends ControllerTestCase
         $url = '/item/editbitstream?bitstreamId='.$bitstreamToEditId;
 
         // Should throw an exception for anonymous user
-        $this->dispatchUrI($url, null, true);
+        $this->dispatchUrl($url, null, true);
         $this->assertController('error');
 
         // Should throw an exception for no item id parameter
         $this->resetAll();
-        $this->dispatchUrI('/item/editbitstream', null, true);
+        $this->dispatchUrl('/item/editbitstream', null, true);
         $this->assertController('error');
 
         // Test rendering the form
         $this->resetAll();
-        $this->dispatchUrI($url, $userWithPermission);
+        $this->dispatchUrl($url, $userWithPermission);
         $this->assertController('item');
         $this->assertAction('editbitstream');
         $this->assertQuery('form#editBitstreamForm');
@@ -277,7 +277,7 @@ class Core_ItemControllerTest extends ControllerTestCase
         $this->params = array();
         $this->params['name'] = 'newname.jpeg';
         $this->params['mimetype'] = 'image/jpeg';
-        $this->dispatchUrI($url, $userWithPermission);
+        $this->dispatchUrl($url, $userWithPermission);
         $this->assertController('item');
         $this->assertAction('editbitstream');
         $this->assertRedirect();
@@ -302,15 +302,15 @@ class Core_ItemControllerTest extends ControllerTestCase
         $url = '/item/deletebitstream?bitstreamId='.$bitstreamToDeleteId;
 
         // Should throw an exception for anonymous user
-        $this->dispatchUrI($url, null, true);
+        $this->dispatchUrl($url, null, true);
         $this->assertController('error');
 
         // Should throw an exception for no item id parameter
         $this->resetAll();
-        $this->dispatchUrI('/item/deletebitstream', null, true);
+        $this->dispatchUrl('/item/deletebitstream', null, true);
         $this->assertController('error');
 
-        $this->dispatchUrI($url, $userWithPermission);
+        $this->dispatchUrl($url, $userWithPermission);
         $this->assertController('item');
         $this->assertAction('deletebitstream');
         $this->assertRedirect();

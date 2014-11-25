@@ -35,7 +35,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
      */
     public function testIndexAction()
     {
-        $this->dispatchUrI('/community');
+        $this->dispatchUrl('/community');
         $this->assertController('community');
         $this->assertAction('index');
     }
@@ -46,7 +46,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
     public function testViewAction()
     {
         $commFile = $this->loadData('Community', 'default');
-        $this->dispatchUrI('/community/'.$commFile[0]->getKey());
+        $this->dispatchUrl('/community/'.$commFile[0]->getKey());
         $this->assertController('community');
         $this->assertAction('view');
     }
@@ -64,11 +64,11 @@ class Core_CommunityControllerTest extends ControllerTestCase
         $this->assertTrue($comm instanceof CommunityDao);
 
         // Anon should not be able to call this
-        $this->dispatchUrI('/community/delete?communityId='.$commFile[0]->getKey(), null, true);
+        $this->dispatchUrl('/community/delete?communityId='.$commFile[0]->getKey(), null, true);
 
         // Admin should be able to call this
         $this->resetAll();
-        $this->dispatchUrI('/community/delete?communityId='.$commFile[0]->getKey(), $adminUser);
+        $this->dispatchUrl('/community/delete?communityId='.$commFile[0]->getKey(), $adminUser);
         $comm = $this->Community->load($commFile[0]->getKey());
         $this->assertEquals($comm, null);
     }
@@ -93,11 +93,11 @@ class Core_CommunityControllerTest extends ControllerTestCase
         $this->assertTrue($this->Community->policyCheck($comm, $adminUser, MIDAS_POLICY_ADMIN));
 
         // User with no write (moderator) access should not be able to get to manage page
-        $this->dispatchUrI('/community/manage?communityId='.$comm->getKey(), $user2, true);
+        $this->dispatchUrl('/community/manage?communityId='.$comm->getKey(), $user2, true);
 
         // User with write access should be able to see manage page
         $this->resetAll();
-        $this->dispatchUrI('/community/manage?communityId='.$comm->getKey(), $user1);
+        $this->dispatchUrl('/community/manage?communityId='.$comm->getKey(), $user1);
         $this->assertController('community');
         $this->assertAction('manage');
 
@@ -110,7 +110,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
         $this->params['name'] = $newName;
         $this->params['description'] = $newDesc;
         $this->params['modifyInfo'] = 'true';
-        $this->dispatchUrI('/community/manage', $user1);
+        $this->dispatchUrl('/community/manage', $user1);
         $comm = $this->Community->load($comm->getCommunityId());
         $this->assertEquals($comm->getName(), $newName, 'changed community has wrong name');
         $this->assertEquals($comm->getDescription(), $newDesc, 'changed community has wrong description');
@@ -124,7 +124,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
             $this->params['name'] = $comm->getName();
             $this->params['privacy'] = (string) MIDAS_COMMUNITY_PUBLIC;
             $this->params['modifyPrivacy'] = 'true';
-            $this->dispatchUrI('/community/manage', $user, true);
+            $this->dispatchUrl('/community/manage', $user, true);
         }
 
         // exercise changing privacy status
@@ -144,7 +144,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
                 // strings, which is how they would be sent from an actual rendered page
                 $this->params['privacy'] = (string) $finalStatus;
                 $this->params['modifyPrivacy'] = 'true';
-                $this->dispatchUrI('/community/manage', $adminUser);
+                $this->dispatchUrl('/community/manage', $adminUser);
 
                 $comm = $this->Community->load($comm->getCommunityId());
                 $this->assertEquals($comm->getPrivacy(), $finalStatus, 'changed community has wrong privacy');
@@ -168,7 +168,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
         $this->Group->addUser($comm->getModeratorGroup(), $user1);
 
         // Dialog should not show for a user with no write privileges
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/community/promotedialog?community='.$comm->getKey().'&user='.$user2->getKey(),
             $user2,
             true
@@ -176,7 +176,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
 
         // Should get an error if trying to promote someone who isn't a community member
         $this->resetAll();
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/community/promotedialog?community='.$comm->getKey().'&user='.$user2->getKey(),
             $user1,
             true
@@ -188,7 +188,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
         // We should now be able to render a dialog for them
         $this->resetAll();
         // need admin perms to do this, so expect it to fail
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/community/promotedialog?community='.$comm->getKey().'&user='.$user2->getKey(),
             $user1,
             true
@@ -196,7 +196,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
 
         // Admin user should be able to promote to both moderator or admin group
         $this->resetAll();
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/community/promotedialog?community='.$comm->getKey().'&user='.$user2->getKey(),
             $adminUser
         );
@@ -208,7 +208,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
 
         // Anonymous promotion not allowed
         $this->resetAll();
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/community/promoteuser?communityId='.$comm->getKey().'&userId='.$user2->getKey(),
             null,
             true
@@ -217,7 +217,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
         // User with no write access should not be able to promote
         // Anonymous promotion not allowed
         $this->resetAll();
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/community/promoteuser?communityId='.$comm->getKey().'&userId='.$user1->getKey(),
             null,
             true
@@ -225,7 +225,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
 
         // User 1 should not be able to promote to admin
         $this->resetAll();
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/community/promoteuser?communityId='.$comm->getKey().'&userId='.$user2->getKey(
             ).'&groupCheckbox_'.$comm->getAdmingroupId().'=on',
             $user1,
@@ -235,7 +235,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
         // User 1 should not be able to promote to moderator
         $this->resetAll();
         $this->assertFalse($this->Community->policyCheck($comm, $user2, MIDAS_POLICY_WRITE));
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/community/promoteuser?communityId='.$comm->getKey().'&userId='.$user2->getKey(
             ).'&groupCheckbox_'.$comm->getModeratorgroupId().'=on',
             $user1,
@@ -245,7 +245,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
         // Admin user should be able to promote user 2 to moderator
         $this->resetAll();
         $this->assertFalse($this->Community->policyCheck($comm, $user2, MIDAS_POLICY_WRITE));
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/community/promoteuser?communityId='.$comm->getKey().'&userId='.$user2->getKey(
             ).'&groupCheckbox_'.$comm->getModeratorgroupId().'=on',
             $adminUser
@@ -254,7 +254,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
 
         // User 1 should not be able to remove moderator status on user 2
         $this->resetAll();
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/community/removeuserfromgroup?groupId='.$comm->getModeratorgroupId().'&userId='.$user2->getKey(),
             $user1,
             true
@@ -262,7 +262,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
 
         // User 1 should not be able to remove admin user as a member
         $this->resetAll();
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/community/removeuserfromgroup?groupId='.$comm->getMembergroupId().'&userId='.$adminUser->getKey(),
             $user1,
             true
@@ -271,7 +271,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
         // Admin user should be able to remove users from groups
         $this->resetAll();
         $this->assertTrue($this->Group->userInGroup($user2, $comm->getMemberGroup()));
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/community/removeuserfromgroup?groupId='.$comm->getMembergroupId().'&userId='.$user2->getKey(),
             $adminUser
         );
@@ -291,23 +291,23 @@ class Core_CommunityControllerTest extends ControllerTestCase
         $adminUser = $this->User->load($userFile[2]->getKey());
 
         // Not passing a communityId should throw exception
-        $this->dispatchUrI('/community/invitation', $adminUser, true);
+        $this->dispatchUrl('/community/invitation', $adminUser, true);
 
         // Anonymous users should get exception
         $this->resetAll();
-        $this->dispatchUrI('/community/invitation?communityId='.$comm->getKey(), null, true);
+        $this->dispatchUrl('/community/invitation?communityId='.$comm->getKey(), null, true);
 
         // Have user 1 join the community as a member; should not be able to see dialog
         $this->Group->removeUser($comm->getModeratorGroup(), $user1);
         $this->Group->removeUser($comm->getAdminGroup(), $user1);
         $this->Group->addUser($comm->getMemberGroup(), $user1);
         $this->resetAll();
-        $this->dispatchUrI('/community/invitation?communityId='.$comm->getKey(), $user1, true);
+        $this->dispatchUrl('/community/invitation?communityId='.$comm->getKey(), $user1, true);
 
         // Have user 1 join moderator group; now should be able to see dialog
         $this->Group->addUser($comm->getModeratorGroup(), $user1);
         $this->resetAll();
-        $this->dispatchUrI('/community/invitation?communityId='.$comm->getKey(), $user1);
+        $this->dispatchUrl('/community/invitation?communityId='.$comm->getKey(), $user1);
     }
 
     /**
@@ -322,23 +322,23 @@ class Core_CommunityControllerTest extends ControllerTestCase
         $adminUser = $this->User->load($userFile[2]->getKey());
 
         // Not passing a communityId should throw exception
-        $this->dispatchUrI('/community/selectgroup', $adminUser, true);
+        $this->dispatchUrl('/community/selectgroup', $adminUser, true);
 
         // Anonymous users should get exception
         $this->resetAll();
-        $this->dispatchUrI('/community/selectgroup?communityId='.$comm->getKey(), null, true);
+        $this->dispatchUrl('/community/selectgroup?communityId='.$comm->getKey(), null, true);
 
         // Have user 1 join the community as a member; should not be able to see dialog
         $this->Group->removeUser($comm->getModeratorGroup(), $user1);
         $this->Group->removeUser($comm->getAdminGroup(), $user1);
         $this->Group->addUser($comm->getMemberGroup(), $user1);
         $this->resetAll();
-        $this->dispatchUrI('/community/selectgroup?communityId='.$comm->getKey(), $user1, true);
+        $this->dispatchUrl('/community/selectgroup?communityId='.$comm->getKey(), $user1, true);
 
         // Have user 1 join moderator group; now should be able to see dialog
         $this->Group->addUser($comm->getModeratorGroup(), $user1);
         $this->resetAll();
-        $this->dispatchUrI('/community/selectgroup?communityId='.$comm->getKey(), $user1);
+        $this->dispatchUrl('/community/selectgroup?communityId='.$comm->getKey(), $user1);
         $this->assertQuery('option[value="'.$comm->getMembergroupId().'"]');
         $this->assertQuery('option[value="'.$comm->getModeratorgroupId().'"]');
         $this->assertNotQuery('option[value="'.$comm->getAdmingroupId().'"]');
@@ -346,7 +346,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
         // Have user 1 join admin group; now should be able to see admin group also
         $this->Group->addUser($comm->getAdminGroup(), $user1);
         $this->resetAll();
-        $this->dispatchUrI('/community/selectgroup?communityId='.$comm->getKey(), $user1);
+        $this->dispatchUrl('/community/selectgroup?communityId='.$comm->getKey(), $user1);
         $this->assertQuery('option[value="'.$comm->getMembergroupId().'"]');
         $this->assertQuery('option[value="'.$comm->getModeratorgroupId().'"]');
         $this->assertQuery('option[value="'.$comm->getAdmingroupId().'"]');
@@ -364,7 +364,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
         $user2 = $this->User->load($userFile[1]->getKey());
 
         // Anonymous users should get exception
-        $this->dispatchUrI('/community/addusertogroup?communityId='.$comm->getKey(), null, true);
+        $this->dispatchUrl('/community/addusertogroup?communityId='.$comm->getKey(), null, true);
 
         // Have user 1 join the community as a member; should not be able to see dialog
         $this->Group->removeUser($comm->getMemberGroup(), $user2);
@@ -372,7 +372,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
         $this->Group->addUser($comm->getMemberGroup(), $user1);
         $this->Group->addUser($comm->getAdminGroup(), $user1);
         $this->resetAll();
-        $this->dispatchUrI('/community/addusertogroup?communityId='.$comm->getKey()
+        $this->dispatchUrl('/community/addusertogroup?communityId='.$comm->getKey()
             .'&groupId='.$comm->getAdminGroup()->getKey()
             .'&userId='.$user2->getKey(), $user1);
 
@@ -392,23 +392,23 @@ class Core_CommunityControllerTest extends ControllerTestCase
         $adminUser = $this->User->load($userFile[2]->getKey());
 
         // Not passing a communityId should throw exception
-        $this->dispatchUrI('/community/sendinvitation', $adminUser, true);
+        $this->dispatchUrl('/community/sendinvitation', $adminUser, true);
 
         // Anonymous users should get exception
         $this->resetAll();
-        $this->dispatchUrI('/community/sendinvitation?communityId='.$comm->getKey(), null, true);
+        $this->dispatchUrl('/community/sendinvitation?communityId='.$comm->getKey(), null, true);
 
         // Have user 1 join the community as a member; should not be able to see dialog
         $this->Group->removeUser($comm->getModeratorGroup(), $user1);
         $this->Group->removeUser($comm->getAdminGroup(), $user1);
         $this->Group->addUser($comm->getMemberGroup(), $user1);
         $this->resetAll();
-        $this->dispatchUrI('/community/sendinvitation?communityId='.$comm->getKey(), $user1, true);
+        $this->dispatchUrl('/community/sendinvitation?communityId='.$comm->getKey(), $user1, true);
 
         // Have user 1 join moderator group; should not be able to invoke on admin group
         $this->Group->addUser($comm->getModeratorGroup(), $user1);
         $this->resetAll();
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/community/sendinvitation?communityId='.$comm->getKey().'&groupId='.$comm->getAdmingroupId(
             ).'&email=test@test.com',
             $user1,
@@ -416,7 +416,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
         );
         // Should be able to invoke on moderator group
         $this->resetAll();
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/community/sendinvitation?communityId='.$comm->getKey().'&groupId='.$comm->getModeratorgroupId(
             ).'&email=test@test.com',
             $user1
@@ -424,7 +424,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
 
         // Default to member group
         $this->resetAll();
-        $this->dispatchUrI('/community/sendinvitation?communityId='.$comm->getKey().'&email=test@test.com', $user1);
+        $this->dispatchUrl('/community/sendinvitation?communityId='.$comm->getKey().'&email=test@test.com', $user1);
         // Make sure we only have one record for test@test.com, and that it is the member group invitation
         $invites = $this->NewUserInvitation->getAllByParams(
             array('email' => 'test@test.com', 'community_id' => $comm->getKey())
@@ -434,7 +434,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
 
         // Test the case of inviting an existing user by email (should not create new user invitation)
         $this->resetAll();
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/community/sendinvitation?communityId='.$comm->getKey().'&email='.$user2->getEmail(
             ).'&groupId='.$comm->getModeratorgroupId(),
             $user1
@@ -449,7 +449,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
 
         // Test the case of inviting by user id
         $this->resetAll();
-        $this->dispatchUrI(
+        $this->dispatchUrl(
             '/community/sendinvitation?communityId='.$comm->getKey().'&userId='.$adminUser->getKey(
             ).'&groupId='.$comm->getModeratorgroupId(),
             $user1

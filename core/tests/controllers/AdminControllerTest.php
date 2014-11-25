@@ -41,16 +41,16 @@ class Core_AdminControllerTest extends ControllerTestCase
         $adminUser = $this->User->load($usersFile[2]->getKey());
 
         // Should get exception if we try to access admin controller unlogged
-        $this->dispatchUrI('/admin', null, true);
+        $this->dispatchUrl('/admin', null, true);
         $this->assertController('error');
         $this->assertAction('error');
 
         // If a non admin tries to access admin page, should throw exception
         $this->resetAll();
-        $this->dispatchUrI('/admin', $user1, true);
+        $this->dispatchUrl('/admin', $user1, true);
 
         $this->resetAll();
-        $this->dispatchUrI('/admin', $adminUser);
+        $this->dispatchUrl('/admin', $adminUser);
         $this->assertController('admin');
         $this->assertAction('index');
     }
@@ -63,21 +63,21 @@ class Core_AdminControllerTest extends ControllerTestCase
         $adminUser = $this->User->load($usersFile[2]->getKey());
 
         // Should get exception if we try to access logs while not logged in
-        $this->dispatchUrI('/admin/dashboard', null, true);
+        $this->dispatchUrl('/admin/dashboard', null, true);
 
         // Should get exception if we try to access logs as non admin
         $this->resetAll();
-        $this->dispatchUrI('/admin/dashboard', $user1, true);
+        $this->dispatchUrl('/admin/dashboard', $user1, true);
 
         // Should be able to see log page as admin user
         $this->resetAll();
-        $this->dispatchUrI('/admin/dashboard', $adminUser);
+        $this->dispatchUrl('/admin/dashboard', $adminUser);
         $this->assertController('admin');
         $this->assertAction('dashboard');
 
         // Test integrity check action
         $this->resetAll();
-        $this->dispatchUrI('/admin/integritycheck', $adminUser);
+        $this->dispatchUrl('/admin/integritycheck', $adminUser);
     }
 
     /**
@@ -88,16 +88,16 @@ class Core_AdminControllerTest extends ControllerTestCase
         $usersFile = $this->loadData('User', 'default');
         $user1 = $this->User->load($usersFile[0]->getKey());
         $adminUser = $this->User->load($usersFile[2]->getKey());
-        $this->dispatchUrI('/admin/removeorphans', $user1, true);
+        $this->dispatchUrl('/admin/removeorphans', $user1, true);
 
         $this->resetAll();
-        $this->dispatchUrI('/admin/removeorphans', $adminUser, true);
+        $this->dispatchUrl('/admin/removeorphans', $adminUser, true);
 
         $this->resetAll();
-        $this->dispatchUrI('/admin/removeorphans?model=Blah', $adminUser, true);
+        $this->dispatchUrl('/admin/removeorphans?model=Blah', $adminUser, true);
 
         $this->resetAll();
-        $this->dispatchUrI('/admin/removeorphans?model=Bitstream', $adminUser);
+        $this->dispatchUrl('/admin/removeorphans?model=Bitstream', $adminUser);
         $resp = json_decode($this->getBody());
         $this->assertEquals($resp->status, 'ok');
         $this->assertEquals($resp->message, 'Bitstream resources cleaned');
@@ -111,14 +111,14 @@ class Core_AdminControllerTest extends ControllerTestCase
         $usersFile = $this->loadData('User', 'default');
         $user1 = $this->User->load($usersFile[0]->getKey());
         $adminUser = $this->User->load($usersFile[2]->getKey());
-        $this->dispatchUrI('/admin/upgrade', $user1, true);
+        $this->dispatchUrl('/admin/upgrade', $user1, true);
 
         $this->resetAll();
-        $this->dispatchUrI('/admin/upgrade', $adminUser);
+        $this->dispatchUrl('/admin/upgrade', $adminUser);
 
         $this->resetAll();
         $this->getRequest()->setMethod('POST');
-        $this->dispatchUrI('/admin/upgrade', $adminUser);
+        $this->dispatchUrl('/admin/upgrade', $adminUser);
     }
 
     /**
@@ -129,9 +129,9 @@ class Core_AdminControllerTest extends ControllerTestCase
         $usersFile = $this->loadData('User', 'default');
         $user1 = $this->User->load($usersFile[0]->getKey());
         $adminUser = $this->User->load($usersFile[2]->getKey());
-        $this->dispatchUrI('/admin/migratemidas2', $user1, true);
+        $this->dispatchUrl('/admin/migratemidas2', $user1, true);
 
         $this->resetAll();
-        $this->dispatchUrI('/admin/migratemidas2', $adminUser);
+        $this->dispatchUrl('/admin/migratemidas2', $adminUser);
     }
 }
