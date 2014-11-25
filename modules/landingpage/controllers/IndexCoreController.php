@@ -37,7 +37,7 @@ class Landingpage_IndexCoreController extends Landingpage_AppController
         $textDaos = $this->Landingpage_Text->getAll();
         if (isset($textDaos[0])) {
             $textDao = $textDaos[0];
-            $this->view->landingText = $this->Component->Utility->markDown($textDao->getText());
+            $this->view->landingText = UtilityComponent::markdown($textDao->getText());
         } else {
             $this->callCoreAction();
         }

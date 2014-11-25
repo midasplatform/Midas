@@ -49,7 +49,7 @@ foreach ($this->otherCSSs as $uris) {
             <br/>
             <?php
             $rawDescription = $community->getDescription();
-            $description = $this->Utility->markDown($rawDescription);
+            $description = $this->Utility->markdown($rawDescription);
             $strippedDescription = strip_tags($description);
             if (!empty($rawDescription)) {
                 ?>

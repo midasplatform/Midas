@@ -520,12 +520,12 @@ class UtilityComponent extends AppComponent
     }
 
     /**
-     * Convert a body of text from markdown to html.
+     * Convert the given text from Markdown or Markdown Extra to HTML.
      *
-     * @param text The text to markdown
-     * @return The markdown rendered as HTML
+     * @param string $text Markdown or Markdown Extra text
+     * @return string HTML text
      */
-    public static function markDown($text)
+    public static function markdown($text)
     {
         return Michelf\MarkdownExtra::defaultTransform($text);
     }

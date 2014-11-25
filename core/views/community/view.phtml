@@ -42,7 +42,7 @@ foreach ($this->customCSSs as $Uris) {
     }
 }
 $rawDescription = $this->communityDao->getDescription();
-$description = $this->Utility->markDown($rawDescription);
+$description = $this->Utility->markdown($rawDescription);
 $strippedDescription = strip_tags($description);
 ?>
 

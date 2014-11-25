@@ -402,7 +402,7 @@ class CommunityController extends AppController
 
         $this->view->title .= ' - '.$communityDao->getName();
         $this->view->metaDescription = substr(
-            $this->Component->Utility->markDown($communityDao->getDescription()),
+            UtilityComponent::markdown($communityDao->getDescription()),
             0,
             160
         );
