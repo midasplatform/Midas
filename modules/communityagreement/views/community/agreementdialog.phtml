@@ -31,15 +31,14 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/com
     </div>
 
     <div class="licenseDisplay">
-        <?php echo $this->t(nl2br($this->agreementDao->getAgreement())); ?>
+        <?php echo $this->t(nl2br($this->escape($this->agreementDao->getAgreement()))); ?>
     </div>
 
-    <input type="checkbox" id="agreementAccepted">I have read and agree to the above terms</input>
+    <input type="checkbox" id="agreementAccepted" /> <label for="agreementAccepted">I have read and agree to the above terms</label>
     <div class="agreementButtons">
         <form class="genericForm">
-            <input type="button" id="confirmAgreement" value="Accept" disabled="disabled"/>
-            <input type="button" id="declineAgreement" style="margin-left: 10px;" value="Cancel"/>
+            <input type="button" id="confirmAgreement" value="Accept" disabled="disabled" />
+            <input type="button" id="declineAgreement" style="margin-left: 10px;" value="Cancel" />
         </form>
-        <div>
-
-        </div>
+    </div>
+</div>
