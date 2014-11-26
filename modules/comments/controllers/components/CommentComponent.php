@@ -35,7 +35,7 @@ class Comments_CommentComponent extends AppComponent
         foreach ($comments as $comment) {
             $commentArray = $comment->toArray();
             $commentArray['user'] = $comment->getUser()->toArray();
-            $commentArray['comment'] = htmlentities($commentArray['comment']);
+            $commentArray['comment'] = htmlspecialchars($commentArray['comment'], ENT_QUOTES, 'UTF-8');
             $commentArray['ago'] = $dateComponent->ago($commentArray['date']);
             $commentsList[] = $commentArray;
         }
