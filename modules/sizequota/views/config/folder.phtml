@@ -30,13 +30,13 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/con
 
 </div>
 <span><?php echo $this->t('Current used space:'); ?>
-    <span id='hUsedSpaceValue'><?php echo $this->hUsedSpace; ?></span></span>
+    <span id='hUsedSpaceValue'><?php echo $this->escape($this->hUsedSpace); ?></span></span>
 <br/>
 <span><?php echo $this->t('Total space:'); ?>
-    <span id='hQuotaValue'><?php echo $this->hQuota; ?></span></span>
-<span style="display: none;" id="hFreeSpaceValue"><?php echo $this->hFreeSpace; ?></span>
-<span style="display: none;" id="quotaValue"><?php echo $this->quota; ?></span>
-<span style="display: none;" id="usedSpaceValue"><?php echo $this->usedSpace; ?></span>
+    <span id='hQuotaValue'><?php echo $this->escape($this->hQuota); ?></span></span>
+<span style="display: none;" id="hFreeSpaceValue"><?php echo $this->escape($this->hFreeSpace); ?></span>
+<span style="display: none;" id="quotaValue"><?php echo $this->escape($this->quota); ?></span>
+<span style="display: none;" id="usedSpaceValue"><?php echo $this->escape($this->usedSpace); ?></span>
 <div id='quotaChart' style="height: 200px; width: 400px; display: none;"></div>
 <br/>
 <?php
@@ -55,11 +55,11 @@ if ($this->isAdmin) {
                 $value = 1;
                 foreach (array('KB', 'MB', 'GB', 'TB') as $unit) {
                     $value *= 1024;
-                    echo '<option value="'.$value.'"';
+                    echo '<option value="'.$this->escape($value).'"';
                     if ($this->unitFormValue == $unit) {
                         echo ' selected="selected"';
                     }
-                    echo '>'.$unit.'</option>';
+                    echo '>'.$this->escape($unit).'</option>';
                 }
                 ?>
             </select>
@@ -67,7 +67,7 @@ if ($this->isAdmin) {
             <div>
                 <?php echo $this->configForm['submitQuota']; ?>
             </div>
-            <input type="hidden" name="folderId" value="<?php echo $this->folder->getKey(); ?>"/>
+            <input type="hidden" name="folderId" value="<?php echo $this->escape($this->folder->getKey()); ?>"/>
     </form>
 <?php
 } ?>

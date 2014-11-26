@@ -108,7 +108,7 @@ class Sizequota_Notification extends ApiEnabled_Notification
         $free = number_format($free, 0, '.', '');
         $hFree = UtilityComponent::formatSize($free);
 
-        return '<div id="sizequotaFreeSpace" style="display:none;">'.$free.'</div>'.'<div id="sizequotaHFreeSpace" style="display:none;">'.$hFree.'</div>';
+        return '<div id="sizequotaFreeSpace" style="display:none;">'.htmlspecialchars($free, ENT_QUOTES, 'UTF-8').'</div>'.'<div id="sizequotaHFreeSpace" style="display:none;">'.htmlspecialchars($hFree, ENT_QUOTES, 'UTF-8').'</div>';
     }
 
     /**
@@ -143,7 +143,7 @@ class Sizequota_Notification extends ApiEnabled_Notification
             $free = number_format($free, 0, '.', '');
             $hFree = UtilityComponent::formatSize($free);
 
-            return '<div id="sizequotaFreeSpace" style="display:none;">'.$free.'</div>'.'<div id="sizequotaHFreeSpace" style="display:none;">'.$hFree.'</div>';
+            return '<div id="sizequotaFreeSpace" style="display:none;">'.htmlspecialchars($free, ENT_QUOTES, 'UTF-8').'</div>'.'<div id="sizequotaHFreeSpace" style="display:none;">'.htmlspecialchars($hFree, ENT_QUOTES, 'UTF-8').'</div>';
         }
     }
 

@@ -48,11 +48,11 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.i
     $value = 1;
     foreach (array('KB', 'MB', 'GB', 'TB') as $unit) {
         $value *= 1024;
-        echo '<option value="'.$value.'"';
+        echo '<option value="'.$this->escape($value).'"';
         if ($this->unitValueUser == $unit) {
             echo ' selected="selected"';
         }
-        echo '>'.$unit.'</option>';
+        echo '>'.$this->escape($unit).'</option>';
     }
     echo "
           </select>
@@ -64,11 +64,11 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.i
     $value = 1;
     foreach (array('KB', 'MB', 'GB', 'TB') as $unit) {
         $value *= 1024;
-        echo '<option value="'.$value.'"';
+        echo '<option value="'.$this->escape($value).'"';
         if ($this->unitValueCommunity == $unit) {
             echo ' selected="selected"';
         }
-        echo '>'.$unit.'</option>';
+        echo '>'.$this->escape($unit).'</option>';
     }
     echo "
           </select>
@@ -78,5 +78,4 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.i
         </div>
       </form>";
     ?>
-
 </div>
