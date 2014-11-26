@@ -64,7 +64,7 @@ class Googleauth_Notification extends MIDAS_Notification
         $userNs->oauthToken = $csrfToken;
         session_write_close();
 
-        return '<div style="margin-top: 10px; display: inline-block;">Or '.'<a class="googleauth-login" style="text-decoration: underline;" href="'.$href.'">'.'Login with your Google account</a></div><script type="text/javascript"'.' src="'.$fc->getBaseUrl(
+        return '<div style="margin-top: 10px; display: inline-block;">Or '.'<a class="googleauth-login" style="text-decoration: underline;" href="'.htmlspecialchars($href, ENT_QUOTES, 'UTF-8').'">'.'Login with your Google account</a></div><script type="text/javascript"'.' src="'.$fc->getBaseUrl(
         ).'/modules/'.$this->moduleName.'/public/js/login/googleauth.login.js"></script>';
     }
 
