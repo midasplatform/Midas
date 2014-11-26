@@ -33,7 +33,7 @@
 <div id="extractArchiveProgressMessage"></div>
 
 <div id="extractArchiveButtons" style="float: right">
-    <input type='hidden' id="itemId" value="<?php echo $this->itemId; ?>"/>
+    <input type='hidden' id="itemId" value="<?php echo $this->escape($this->itemId); ?>"/>
     <input class="globalButton" type='submit' name='submitButton' id='beginArchiveExtract' value='Extract'/>
     <input class="globalButton" style="margin-left: 15px;" type='button' name='declineArchiveExtract'
            id='declineArchiveExtract'
