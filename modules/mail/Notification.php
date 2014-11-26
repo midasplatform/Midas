@@ -80,14 +80,14 @@ class Mail_Notification extends MIDAS_Notification
         }
 
         $mail = new Midas_Mail();
-        $mail->setFrom($this->Setting->getValueByName(MAIL_FROM_ADDRESS_KEY, $this->moduleName));
+        $mail->setFrom(htmlspecialchars($this->Setting->getValueByName(MAIL_FROM_ADDRESS_KEY, $this->moduleName), ENT_QUOTES, 'UTF-8'));
 
         if (isset($params['bcc'])) {
-            $mail->addBcc($params['bcc']);
+            $mail->addBcc(htmlspecialchars($params['bcc'], ENT_QUOTES, 'UTF-8'));
         }
 
         if (isset($params['cc'])) {
-            $mail->addCc($params['cc']);
+            $mail->addCc(htmlspecialchars($params['cc'], ENT_QUOTES, 'UTF-8'));
         }
 
         if (isset($params['html'])) {
@@ -95,15 +95,15 @@ class Mail_Notification extends MIDAS_Notification
         }
 
         if (isset($params['subject'])) {
-            $mail->setSubject($params['subject']);
+            $mail->setSubject(htmlspecialchars($params['subject'], ENT_QUOTES, 'UTF-8'));
         }
 
         if (isset($params['text'])) {
-            $mail->setBodyText($params['text']);
+            $mail->setBodyText(htmlspecialchars($params['text'], ENT_QUOTES, 'UTF-8'));
         }
 
         if (isset($params['to'])) {
-            $mail->addTo($params['to']);
+            $mail->addTo(htmlspecialchars($params['to'], ENT_QUOTES, 'UTF-8'));
         }
 
         try {
