@@ -57,21 +57,21 @@ if ($this->job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_DONE) {
 }
 ?>
 
-<h4>Job Status: <?php echo $jobStatus ?></h4>
+<h4>Job Status: <?php echo $this->escape($jobStatus); ?></h4>
 
 <?php
 if ($this->executable != false) {
     ?>
     <h4>Executable:
-        <a href="<?php echo $this->webroot ?>/item/<?php echo $this->executable->getKey(
-        ) ?>"><?php echo $this->executable->getName() ?></a>
+        <a href="<?php echo $this->webroot ?>/item/<?php echo $this->escape($this->executable->getKey(
+        )); ?>"><?php echo $this->escape($this->executable->getName()); ?></a>
     </h4>
 <?php
 }
 if ($this->log != false) {
     ?>
     <a id="showLogLink">Toggle raw xml results</a><br/>
-    <pre id="hiddenLog"><?php echo htmlentities($this->log) ?></pre>
+    <pre id="hiddenLog"><?php echo $this->escape($this->log) ?></pre>
 
     <h4>Results and Metrics grid:</h4>
     <table id="tableXml">
@@ -109,29 +109,29 @@ if ($this->log != false) {
             foreach ($this->results['params']['parametersList'] as $key => $parameter) {
                 if (isset($result['parameters'][$key]) && isset($this->inputs[trim($result['parameters'][$key])])
                 ) {
-                    echo "<td><a href='".$this->webroot."/item/".$this->inputs[trim(
+                    echo "<td><a href='".$this->webroot."/item/".$this->escape($this->inputs[trim(
                             $result['parameters'][$key]
-                        )]->getKey()."' elementItem='".$this->inputs[trim($result['parameters'][$key])]->getKey(
-                        )."'>".$this->slicename(
-                            $result['parameters'][$key],
+                        )]->getKey())."' elementItem='".$this->escape($this->inputs[trim($result['parameters'][$key])]->getKey(
+                        ))."'>".$this->slicename(
+                            $this->escape($result['parameters'][$key]),
                             15
                         )."</a></td>";
                 } else {
                     if (isset($result['parameters'][$key])) {
-                        echo "<td>".$this->slicename($result['parameters'][$key], 15)."</td>";
+                        echo "<td>".$this->slicename($this->escape($result['parameters'][$key]), 15)."</td>";
                     } else {
                         echo "<td></td>";
                     }
                 }
             }
-            echo "<td class='xmlStatus'>".$result['status']."</td>";
+            echo "<td class='xmlStatus'>".$this->escape($result['status'])."</td>";
             echo "<td>".str_replace(' seconds', 's', $this->duration($result['time']))."</td>";
-            echo "<td class='showInDialog' output='".htmlentities($result['stdout'])."'><a>".$this->slicename(
-                    htmlentities($result['stdout']),
+            echo "<td class='showInDialog' output='".$this->escape($result['stdout'])."'><a>".$this->slicename(
+                    $this->escape($result['stdout']),
                     15
                 )."</a></td>";
-            echo "<td class='showInDialog' output='".htmlentities($result['stderr'])."'><a>".$this->slicename(
-                    htmlentities($result['stderr']),
+            echo "<td class='showInDialog' output='".$this->escape($result['stderr'])."'><a>".$this->slicename(
+                    $this->escape($result['stderr']),
                     15
                 )."</a></td>";
 
@@ -169,7 +169,7 @@ if ($this->job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_DONE && !empty($thi
             echo "<th><b>Thumbnail</b></th>";
 
             foreach ($this->parameters as $parameter) {
-                echo "<th><b>".ucfirst($parameter)."</b></th>";
+                echo "<th><b>".ucfirst($this->escape($parameter))."</b></th>";
             }
             ?>
         </tr>
@@ -179,26 +179,26 @@ if ($this->job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_DONE && !empty($thi
         foreach ($this->outputs as $output) {
             echo "<tr>";
             $metadata = $output->metadataParameters;
-            echo "<td><a href='".$this->webroot."/item/".$output->getKey()."' elementItem='".$output->getKey(
-                )."'>".$output->getName()."</a></td>";
+            echo "<td><a href='".$this->webroot."/item/".$this->escape($output->getKey())."' elementItem='".$this->escape($output->getKey(
+                ))."'>".$this->escape($output->getName())."</a></td>";
             $path = $output->getThumbnail();
             echo "<td>";
             if (!empty($path) && file_exists(BASE_PATH.'/'.$path)) {
                 echo "
-            <img class='infoLogo' alt='' src='{$this->webroot}/{$path}'/>
+            <img class='infoLogo' alt='' src='{$this->webroot}/{$this->escape($path)}'/>
             ";
             }
             echo "</td>";
             foreach ($this->parameters as $parameter) {
                 if (isset($metadata[$parameter]) && isset($this->inputs[trim($metadata[$parameter])])
                 ) {
-                    echo "<td><a href='".$this->webroot."/item/".$this->inputs[trim(
+                    echo "<td><a href='".$this->webroot."/item/".$this->escape($this->inputs[trim(
                             $metadata[$parameter]
-                        )]->getKey()."' elementItem='".$this->inputs[trim($metadata[$parameter])]->getKey(
-                        )."'>".$metadata[$parameter]."</a></td>";
+                        )]->getKey())."' elementItem='".$this->escape($this->inputs[trim($metadata[$parameter])]->getKey(
+                        ))."'>".$this->escape($metadata[$parameter])."</a></td>";
                 } else {
                     if (isset($metadata[$parameter])) {
-                        echo "<td>".$metadata[$parameter]."</td>";
+                        echo "<td>".$this->escape($metadata[$parameter])."</td>";
                     } else {
                         echo "<td></td>";
                     }
@@ -216,7 +216,7 @@ if ($this->job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_DONE && !empty($thi
         $itemsList .= $ouput->getKey().'-';
     }
     echo '<div class="genericBigButton ">';
-    echo "<a  href='{$this->webroot}/download?items={$itemsList}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/download.png'/>";
+    echo "<a  href='{$this->webroot}/download?items={$this->escape($itemsList)}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/download.png'/>";
     echo $this->t('Download Results');
     echo "</a>";
     echo '</div>';
@@ -224,5 +224,4 @@ if ($this->job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_DONE && !empty($thi
 <?php
 }
 ?>
-
 </div>

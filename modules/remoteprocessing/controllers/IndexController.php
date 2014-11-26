@@ -26,9 +26,4 @@ class Remoteprocessing_IndexController extends Remoteprocessing_AppController
     {
         $this->disableLayout();
     }
-
-    /** dashboard */
-    public function dashboardAction()
-    {
-    }
 }

@@ -55,9 +55,9 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/job/job.manage.
             </thead>
             <?php
             foreach ($this->relatedJobs as $job) {
-                echo "<tr element='".$job->getKey()."v'>";
-                echo "<td>".$job->getName()."</td>";
-                echo "<td>".$job->getCreationDate()."</td>";
+                echo "<tr element='".$this->escape($job->getKey())."v'>";
+                echo "<td>".$this->escape($job->getName())."</td>";
+                echo "<td>".$this->escape($job->getCreationDate())."</td>";
                 if ($job->getStatus() == MIDAS_REMOTEPROCESSING_STATUS_DONE) {
                     echo "<td class='elementStatus'>Done</td>";
                 } else {
@@ -104,9 +104,9 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/job/job.manage.
             <?php
             foreach ($this->scheduledJobs as $job) {
                 $params = JsonComponent::decode($job->getParams());
-                echo "<tr element='".$job->getKey()."v'>";
-                echo "<td>".$params['params']['job_name']."</td>";
-                echo "<td>".$job->getFireTime()."</td>";
+                echo "<tr element='".$this->escape($job->getKey())."v'>";
+                echo "<td>".$this->escape($params['params']['job_name'])."</td>";
+                echo "<td>".$this->escape($job->getFireTime())."</td>";
                 echo "<td>Scheduled</td>";
                 echo "</tr>";
             }

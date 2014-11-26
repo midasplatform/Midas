@@ -96,7 +96,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
             $html = "<li>
             <a href='".Zend_Registry::get(
                     'webroot'
-                )."/remoteprocessing/executable/define/?itemId=".$params['item']->getKey(
+                )."/remoteprocessing/executable/define/?itemId=".htmlspecialchars($params['item']->getKey(), ENT_QUOTES, 'UTF-8'
                 )."'><img alt='' src='".Zend_Registry::get(
                     'coreWebroot'
                 )."/public/images/icons/xml.png'/> ".$this->t('Define Executable')."</a>
@@ -104,7 +104,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
           <li>
             <a href='".Zend_Registry::get(
                     'webroot'
-                )."/remoteprocessing/job/init/?itemId=".$params['item']->getKey(
+                )."/remoteprocessing/job/init/?itemId=".htmlspecialchars($params['item']->getKey(), ENT_QUOTES, 'UTF-8'
                 )."'><img alt='' src='".Zend_Registry::get(
                     'coreWebroot'
                 )."/public/images/icons/job.png'/> ".$this->t('Create a Job')."</a>
@@ -158,10 +158,10 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
                 }
 
                 $html .= "<li>";
-                $html .= "<a  element='".$item->getKey()."' href='".Zend_Registry::get(
+                $html .= "<a  element='".htmlspecialchars($item->getKey(), ENT_QUOTES, 'UTF-8')."' href='".Zend_Registry::get(
                         'webroot'
-                    )."/item/".$item->getKey()."'>".$component->slicename(
-                        $item->getName(),
+                    )."/item/".htmlspecialchars($item->getKey(), ENT_QUOTES, 'UTF-8')."'>".$component->slicename(
+                        htmlspecialchars($item->getName(), ENT_QUOTES, 'UTF-8'),
                         25
                     )."</a>";
                 $html .= "</li>";
@@ -187,9 +187,9 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
                     $name = $job->getCreationDate();
                 }
                 $html .= "<li>";
-                $html .= "<a  element='".$job->getKey()."' href='".Zend_Registry::get(
+                $html .= "<a  element='".htmlspecialchars($job->getKey(), ENT_QUOTES, 'UTF-8')."' href='".Zend_Registry::get(
                         'webroot'
-                    )."/remoteprocessing/job/view/?jobId=".$job->getKey()."'>".$name."</a>";
+                    )."/remoteprocessing/job/view/?jobId=".htmlspecialchars($job->getKey(), ENT_QUOTES, 'UTF-8')."'>".htmlspecialchars($name, ENT_QUOTES, 'UTF-8')."</a>";
                 $html .= "</li>";
                 if ($i > 3) {
                     $html .= "<li>...</li>";

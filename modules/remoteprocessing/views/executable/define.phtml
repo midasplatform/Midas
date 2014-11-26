@@ -32,8 +32,8 @@ if ($this->isAjax) {
         <?php
         if (!$this->isAjax) {
             echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
-            echo "<a  href='{$this->webroot}/item/{$this->itemDao->getKey(
-            )}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+            echo "<a  href='{$this->webroot}/item/{$this->escape($this->itemDao->getKey(
+            ))}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
             echo $this->t('Back');
             echo "</a>";
             echo '</div>';
@@ -44,7 +44,7 @@ if ($this->isAjax) {
     </div>
 
     This page allow you to define the execution options of the item:
-    <b><?php echo $this->itemDao->getName() ?></b>.<br/>These option are used to defined how the MIDAS Platform will use
+    <b><?php echo $this->escape($this->itemDao->getName()); ?></b>.<br/>These option are used to defined how the Midas Platform will use
     the item to create remote processing tasks.
     <br/>
     <br/>
@@ -75,4 +75,4 @@ if ($this->isAjax) {
 </div>
 
 <div id="jsonMetadataContent"><?php echo $this->jsonMetadata ?></div>
-<input type="hidden" id="itemIdExecutable" value="<?php echo $this->itemDao->getKey() ?>"/>
+<input type="hidden" id="itemIdExecutable" value="<?php echo $this->escape($this->itemDao->getKey()); ?>"/>

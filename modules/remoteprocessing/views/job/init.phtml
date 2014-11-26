@@ -88,9 +88,9 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.sma
         </div>
         <br/><br/>
         <b>Selected Item:</b>
-        <span id="selectedExecutable"><?php echo (isset($this->itemDao)) ? $this->itemDao->getName() : 'None' ?></span>
+        <span id="selectedExecutable"><?php echo (isset($this->itemDao)) ? $this->escape($this->itemDao->getName()) : 'None' ?></span>
         <input type="hidden" id="selectedExecutableId"
-               value="<?php echo (isset($this->itemDao)) ? $this->itemDao->getKey() : '' ?>"/>
+               value="<?php echo (isset($this->itemDao)) ? $this->escape($this->itemDao->getKey()) : '' ?>"/>
 
         <div id="metaWrapper">
             <h3>Meta information</h3>
