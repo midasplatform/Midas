@@ -37,11 +37,11 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
                     <a class="itemTitle" qtip="<?php echo str_replace(
                         '"',
                         "'",
-                        $item->getDescription()
-                    ) ?>" href="<?php echo $this->webroot ?>/item/<?php echo $item->getItemId(
-                    ); ?>"><?php echo $item->getName(); ?></a>
+                        $this->escape($item->getDescription())
+                    ) ?>" href="<?php echo $this->webroot ?>/item/<?php echo $this->escape($item->getItemId(
+                    )); ?>"><?php echo $this->escape($item->getName()); ?></a>
 
-                    <div class="itemStats"><?php echo $item->getView(); ?> views, <?php echo $item->getDownload(); ?>
+                    <div class="itemStats"><?php echo $this->escape($item->getView()); ?> views, <?php echo $this->escape($item->getDownload()); ?>
                         downloads
                     </div>
                 </div>
@@ -81,9 +81,9 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
             echo '<div class="sideElementFirst feedThumbnail">';
             echo '<h1>Thumbnails</h1>';
             foreach ($this->itemThumbnails as $item) {
-                echo "<a href='{$this->webroot}/item/{$item->getKey()}'>";
-                echo "<img qtip='".$item->getName()."' src='{$this->webroot}/item/thumbnail?itemId={$item->getKey(
-                    )}' alt=''/>";
+                echo "<a href='{$this->webroot}/item/{$this->escape($item->getKey())}'>";
+                echo "<img qtip='".$this->escape($item->getName())."' src='{$this->webroot}/item/thumbnail?itemId={$this->escape($item->getKey(
+                    ))}' alt=''/>";
                 echo "</a>";
             }
             echo '</div>';
@@ -93,9 +93,9 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
             <h1>Stats</h1>
             <?php
             echo "<ul>";
-            echo "  <li>{$this->nUsers} user".(($this->nUsers > 1) ? 's' : '')."</li>";
-            echo "  <li>{$this->nCommunities} ".(($this->nCommunities > 1) ? 'communities' : 'community')."</li>";
-            echo "  <li>{$this->nItems} item".(($this->nItems > 1) ? 's' : '')."</li>";
+            echo "  <li>{$this->escape($this->nUsers)} user".(($this->nUsers > 1) ? 's' : '')."</li>";
+            echo "  <li>{$this->escape($this->nCommunities)} ".(($this->nCommunities > 1) ? 'communities' : 'community')."</li>";
+            echo "  <li>{$this->escape($this->nItems)} item".(($this->nItems > 1) ? 's' : '')."</li>";
             echo "</ul>";
             ?>
         </div>

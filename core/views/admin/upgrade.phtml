@@ -22,10 +22,10 @@
 <script type="text/javascript" src="<?php echo $this->coreWebroot ?>/public/js/admin/admin.upgrade.js"></script>
 
 <h3>Core:</h3>
-Current version: <?php echo $this->core['currentText'] ?><br/>
+Current version: <?php echo $this->escape($this->core['currentText']); ?><br/>
 <?php
 if ($this->core['current'] < $this->core['target']) {
-    echo "Need to upgrade to version: ".$this->core['targetText'];
+    echo "Need to upgrade to version: ".$this->escape($this->core['targetText']);
 } else {
     echo "Midas Platform is up to date.";
 }
@@ -33,10 +33,10 @@ if ($this->core['current'] < $this->core['target']) {
 <h3>Modules:</h3>
 <?php
 foreach ($this->modules as $name => $module) {
-    echo "<b>{$name}</b><br/>";
-    echo "Current version: {$module['currentText']} <br/>";
+    echo "<b>{$this->escape($name)}</b><br/>";
+    echo "Current version: {$this->escape($module['currentText'])} <br/>";
     if ($module['current'] < $module['target']) {
-        echo "Need to upgrade to version: ".$module['targetText'].'<br/>';
+        echo "Need to upgrade to version: ".$this->escape($module['targetText']).'<br/>';
     }
 }
 

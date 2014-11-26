@@ -47,8 +47,8 @@ class NotifyErrorComponent extends AppComponent
             switch ($environment) {
                 case 'production':
                     $message = "The system has encountered the following error:<br/><h3>";
-                    $message .= $e['message']."<br/>";
-                    $message .= "In ".$e['file'].", line: ".$e['line']."<br/>";
+                    $message .= htmlspecialchars($e['message'], ENT_QUOTES, 'UTF-8')."<br/>";
+                    $message .= "In ".htmlspecialchars($e['file'], ENT_QUOTES, 'UTF-8').", line: ".htmlspecialchars($e['line'], ENT_QUOTES, 'UTF-8')."<br/>";
                     $message .= "At ".date("H:i:s Y-m-d")."</h3><br/>";
                     $message .= "Please notify your administrator with this information.<br/>";
                     if ($e['type'] == E_NOTICE) {
@@ -123,14 +123,14 @@ class NotifyErrorComponent extends AppComponent
     {
         if ($errno == E_WARNING && Zend_Registry::get('configGlobal')->environment != 'production'
         ) {
-            $message = "Warning: ".$errstr."<br/>\n on line ".$errline." in file ".$errfile."<br/>\n";
+            $message = "Warning: ".htmlspecialchars($errstr, ENT_QUOTES, 'UTF-8')."<br/>\n on line ".htmlspecialchars($errline, ENT_QUOTES, 'UTF-8')." in file ".htmlspecialchars($errfile, ENT_QUOTES, 'UTF-8')."<br/>\n";
             $this->getLogger()->warn($message);
             echo $message;
         }
 
         if ($errno == E_NOTICE && Zend_Registry::get('configGlobal')->environment != 'production'
         ) {
-            $message = "Notice : ".$errstr."<br/>\non line ".$errline." in file ".$errfile."<br/>\n";
+            $message = "Notice : ".htmlspecialchars($errstr, ENT_QUOTES, 'UTF-8')."<br/>\non line ".htmlspecialchars($errline, ENT_QUOTES, 'UTF-8')." in file ".htmlspecialchars($errfile, ENT_QUOTES, 'UTF-8')."<br/>\n";
             $this->getLogger()->warn($message);
             echo $message;
         }
@@ -160,36 +160,36 @@ class NotifyErrorComponent extends AppComponent
     public function getFatalErrorMessage($e)
     {
         $message = "Fatal Error: ";
-        $message .= print_r($e, true);
+        $message .= htmlspecialchars(print_r($e, true), ENT_QUOTES, 'UTF-8');
         $message .= "\n\n";
-        $message .= "URL: ".$this->curPageURL();
+        $message .= "URL: ".htmlspecialchars($this->curPageURL(), ENT_QUOTES, 'UTF-8');
         $message .= "\n\n";
         if (!empty($this->_server['SERVER_ADDR'])) {
-            $message .= "Server IP: ".$this->_server['SERVER_ADDR']."\n";
+            $message .= "Server IP: ".htmlspecialchars($this->_server['SERVER_ADDR'], ENT_QUOTES, 'UTF-8')."\n";
         }
 
         if (!empty($this->_server['HTTP_USER_AGENT'])) {
-            $message .= "User agent: ".$this->_server['HTTP_USER_AGENT']."\n";
+            $message .= "User agent: ".htmlspecialchars($this->_server['HTTP_USER_AGENT'], ENT_QUOTES, 'UTF-8')."\n";
         }
 
         if (!empty($this->_server['HTTP_X_REQUESTED_WITH'])) {
-            $message .= "Request type: ".$this->_server['HTTP_X_REQUESTED_WITH']."\n";
+            $message .= "Request type: ".htmlspecialchars($this->_server['HTTP_X_REQUESTED_WITH'], ENT_QUOTES, 'UTF-8')."\n";
         }
 
         $message .= "Server time: ".date('Y-m-d H:i:s')."\n";
 
         if (!empty($this->_server['HTTP_REFERER'])) {
-            $message .= "Referer: ".$this->_server['HTTP_REFERER']."\n";
+            $message .= "Referer: ".htmlspecialchars($this->_server['HTTP_REFERER'], ENT_QUOTES, 'UTF-8')."\n";
         }
         $message .= "Parameters (post): Array\n(\n";
         foreach ($_POST as $key => $value) {
             if (strpos(strtolower($key), 'password') !== false) {
-                $message .= '    ['.$key."] => --redacted--\n";
+                $message .= '    ['.htmlspecialchars($key, ENT_QUOTES, 'UTF-8')."] => --redacted--\n";
             } else {
-                $message .= '    ['.$key.'] => '.$value."\n";
+                $message .= '    ['.htmlspecialchars($key, ENT_QUOTES, 'UTF-8').'] => '.htmlspecialchars($value, ENT_QUOTES, 'UTF-8')."\n";
             }
         }
-        $message .= ")\nParameters (get): ".print_r($_GET, true)."\n\n";
+        $message .= ")\nParameters (get): ".htmlspecialchars(print_r($_GET, true), ENT_QUOTES, 'UTF-8')."\n\n";
 
         return $message;
     }
@@ -200,36 +200,36 @@ class NotifyErrorComponent extends AppComponent
         $message = '';
 
         if (!empty($this->_server['SERVER_ADDR'])) {
-            $message .= "Server IP: ".$this->_server['SERVER_ADDR']."\n";
+            $message .= "Server IP: ".htmlspecialchars($this->_server['SERVER_ADDR'], ENT_QUOTES, 'UTF-8')."\n";
         }
         if (!empty($this->_server['REMOTE_ADDR'])) {
-            $message .= "Client IP: ".$this->_server['REMOTE_ADDR']."\n";
+            $message .= "Client IP: ".htmlspecialchars($this->_server['REMOTE_ADDR'], ENT_QUOTES, 'UTF-8')."\n";
         }
 
         if (!empty($this->_server['HTTP_USER_AGENT'])) {
-            $message .= "User agent: ".$this->_server['HTTP_USER_AGENT']."\n";
+            $message .= "User agent: ".htmlspecialchars($this->_server['HTTP_USER_AGENT'], ENT_QUOTES, 'UTF-8')."\n";
         }
 
         if (!empty($this->_server['HTTP_X_REQUESTED_WITH'])) {
-            $message .= "Request type: ".$this->_server['HTTP_X_REQUESTED_WITH']."\n";
+            $message .= "Request type: ".htmlspecialchars($this->_server['HTTP_X_REQUESTED_WITH'], ENT_QUOTES, 'UTF-8')."\n";
         }
 
         $message .= "Server time: ".date('Y-m-d H:i:s')."\n";
-        $message .= "RequestURI: ".$this->_error->request->getRequestUri()."\n";
+        $message .= "RequestURI: ".htmlspecialchars($this->_error->request->getRequestUri(), ENT_QUOTES, 'UTF-8')."\n";
 
         if (!empty($this->_server['HTTP_REFERER'])) {
-            $message .= "Referer: ".$this->_server['HTTP_REFERER']."\n";
+            $message .= "Referer: ".htmlspecialchars($this->_server['HTTP_REFERER'], ENT_QUOTES, 'UTF-8')."\n";
         }
 
-        $message .= "<b>Message: ".$this->_error->exception->getMessage()."</b>\n\n";
-        $message .= "Trace:\n".$this->_error->exception->getTraceAsString()."\n\n";
-        $message .= "Request data: ".var_export($this->_error->request->getParams(), true)."\n\n";
+        $message .= "<b>Message: ".htmlspecialchars($this->_error->exception->getMessage(), ENT_QUOTES, 'UTF-8')."</b>\n\n";
+        $message .= "Trace:\n".htmlspecialchars($this->_error->exception->getTraceAsString(), ENT_QUOTES, 'UTF-8')."\n\n";
+        $message .= "Request data: ".htmlspecialchars(var_export($this->_error->request->getParams(), true), ENT_QUOTES, 'UTF-8')."\n\n";
 
         $it = $this->_session->getIterator();
 
         $message .= "Session data:\n";
         foreach ($it as $key => $value) {
-            $message .= $key.": ".var_export($value, true)."\n";
+            $message .= htmlspecialchars($key, ENT_QUOTES, 'UTF-8').": ".htmlspecialchars(var_export($value, true), ENT_QUOTES, 'UTF-8')."\n";
         }
         $message .= "\n";
 
@@ -243,15 +243,15 @@ class NotifyErrorComponent extends AppComponent
         switch ($this->_environment) {
             case 'production':
                 $message = "The system has encountered the following error:<br/><h3>";
-                $message .= $this->_error->exception->getMessage()."<br/>";
-                $message .= "In ".$this->_error->exception->getFile().", line: ".$this->_error->exception->getLine(
-                    )."<br/>";
+                $message .= htmlspecialchars($this->_error->exception->getMessage(), ENT_QUOTES, 'UTF-8')."<br/>";
+                $message .= "In ".htmlspecialchars($this->_error->exception->getFile(), ENT_QUOTES, 'UTF-8').", line: ".htmlspecialchars($this->_error->exception->getLine(
+                    ), ENT_QUOTES, 'UTF-8')."<br/>";
                 $message .= "At ".date("H:i:s Y-m-d")."</h3><br/>";
                 $message .= "Please notify your administrator with this information.<br/>";
                 break;
             default:
-                $message .= "Message: ".$this->_error->exception->getMessage()."\n\n";
-                $message .= "Trace:\n".$this->_error->exception->getTraceAsString()."\n\n";
+                $message .= "Message: ".htmlspecialchars($this->_error->exception->getMessage(), ENT_QUOTES, 'UTF-8')."\n\n";
+                $message .= "Trace:\n".htmlspecialchars($this->_error->exception->getTraceAsString(), ENT_QUOTES, 'UTF-8')."\n\n";
         }
 
         return $message;

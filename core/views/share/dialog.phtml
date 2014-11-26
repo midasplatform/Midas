@@ -46,12 +46,12 @@ echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/share
             <?php
             foreach ($this->groupPolicies as $policy) {
                 ?>
-                <tr type='group' element='<?php echo $policy->group->getKey() ?>'>
+                <tr type='group' element='<?php echo $this->escape($policy->group->getKey()); ?>'>
                     <td>
                         <img src='<?php echo $this->coreWebroot ?>/public/images/icons/community.png'/>
                     </td>
                     <td class='changePermissionSelect'>
-                        <?php echo $policy->group->getCommunity()->getName().' ('.$policy->group->getName().')' ?>
+                        <?php echo $this->escape($policy->group->getCommunity()->getName()).' ('.$this->escape($policy->group->getName()).')' ?>
                     </td>
                     <td class='changePermissionSelectBox'>
                         <select class='changePermissionSelect'>
@@ -75,12 +75,12 @@ echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/share
 
             foreach ($this->userPolicies as $policy) {
                 ?>
-                <tr type='user' element='<?php echo $policy->user->getKey() ?>'>
+                <tr type='user' element='<?php echo $this->escape($policy->user->getKey()); ?>'>
                     <td>
                         <img src='<?php echo $this->coreWebroot ?>/public/images/icons/unknownUser-small.png'/>
                     </td>
                     <td class='changePermissionSelect'>
-                        <?php echo $policy->user->getFullName() ?>
+                        <?php echo $this->escape($policy->user->getFullName()); ?>
                     </td>
                     <td class='changePermissionSelectBox'>
                         <select class='changePermissionSelect'>

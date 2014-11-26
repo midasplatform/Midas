@@ -33,12 +33,12 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/install/install.s
     echo "<select id='databaseType'>";
     echo "<option value=''>Please select a database</option>";
     foreach ($this->databaseType as $d => $form) {
-        echo "<option value='{$d}'>$d</option>";
+        echo "<option value='{$this->escape($d)}'>{$this->escape($d)}</option>";
     }
     echo "</select>";
 
     foreach ($this->databaseType as $d => $form) {
-        echo "<div class='dbForm' id='form$d'>";
+        echo "<div class='dbForm' id='form{$this->escape($d)}'>";
         echo "<form class='genericForm' method='{$form['method']}'  action='{$form['action']}'>";
         echo "  {$form['type']}
               <div class='configDBForm'>

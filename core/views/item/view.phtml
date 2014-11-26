@@ -36,7 +36,7 @@ foreach ($jsArray as $module => $list) {
 }
 foreach ($cssArray as $module => $list) {
     foreach ($list as $stylesheet) {
-        echo '<link type="text/css" rel="stylesheet" href="'.$stylesheet.'" />';
+        echo '<link type="text/css" rel="stylesheet" href="'.$this->escape($stylesheet).'" />';
     }
 }
 ?>
@@ -73,9 +73,9 @@ foreach ($cssArray as $module => $list) {
     <div class="genericName <?php if (strlen($this->itemDao->getName()) > 30) {
         echo "tips";
     } ?>" <?php if (strlen($this->itemDao->getName()) > 30) {
-        echo "style='cursor:help;' title='".$this->itemDao->getName()."'";
-    } ?> ><?php echo $this->slicename($this->itemDao->getName(), 30); ?></div>
-    <div class="genericSubtitle" style="color:grey;"><?php echo $this->itemSize; ?></div>
+        echo "style='cursor:help;' title='".$this->escape($this->itemDao->getName())."'";
+    } ?> ><?php echo $this->slicename($this->escape($this->itemDao->getName()), 30); ?></div>
+    <div class="genericSubtitle" style="color:grey;"><?php echo $this->escape($this->itemSize); ?></div>
 </div>
 <div class="itemViewMainSection">
     <?php
@@ -99,9 +99,9 @@ foreach ($cssArray as $module => $list) {
             $licenseId = $this->itemDao->lastrevision->getLicenseId();
             if ($licenseId != null) {
                 $license = $this->itemDao->lastrevision->getLicense();
-                echo '<a name="'.$license->getName(
-                    ).'" class="licenseLink" href="javascript:;" element="'.$license->getKey().'">'.$license->getName(
-                    ).'</a>';
+                echo '<a name="'.$this->escape($license->getName(
+                    )).'" class="licenseLink" href="javascript:;" element="'.$this->escape($license->getKey()).'">'.$this->escape($license->getName(
+                    )).'</a>';
             } else {
                 echo 'No license set on the current revision.';
             }
@@ -119,7 +119,7 @@ if ($this->itemDao->getDescription() != '') {
         <h4>DESCRIPTION</h4>
 
         <div id="descriptionDiv">
-            <?php echo $this->itemDao->getDescription(); ?>
+            <?php echo $this->escape($this->itemDao->getDescription()); ?>
         </div>
     </div>
 <?php
@@ -134,31 +134,31 @@ if ($this->itemDao->getDescription() != '') {
         <?php
         foreach ($this->itemDao->revisions as $revision)
         {
-        echo '<h3><a href="#">Revision '.$revision->getRevision();
+        echo '<h3><a href="#">Revision '.$this->escape($revision->getRevision());
         if ($revision->getChanges() != '') {
-            echo ' ('.$revision->getChanges().')';
+            echo ' ('.$this->escape($revision->getChanges()).')';
         }
         echo '</a></h3>';
         echo '<div class="revisionEntry">';
-        echo '  <span>Uploaded '.$revision->getDate().' by '.$this->linkuser(
+        echo '  <span>Uploaded '.$this->escape($revision->getDate()).' by '.$this->linkuser(
                 $revision->getUser()
             ).'</span>';
 
         echo '<div style="float: right;">';
         echo '  <div class="genericBigButton downloadObject">';
-        echo '    <a href="'.$this->webroot.'/download/?items='.$this->itemDao->getKey().','.$revision->getRevision(
-            ).'">';
+        echo '    <a href="'.$this->webroot.'/download/?items='.$this->escape($this->itemDao->getKey()).','.$this->escape($revision->getRevision(
+            )).'">';
         echo '    <img alt="" src="'.$this->coreWebroot.'/public/images/icons/download.png" />';
         echo '    Download </a>';
         echo '  </div>';
         if ($this->isAdmin) {
             echo '  <div style="float: right; margin: 0 0 0 5px;">';
-            echo ' <form id="deleteItemrevisionForm'.$revision->getItemrevisionId(
-                ).'" class="genericForm" method="POST"  action="'.$this->webroot.'/item/deleteitemrevision">';
-            echo ' <input type="hidden" name="itemrevisionId" value="'.$revision->getItemrevisionId().'"/>';
-            echo ' <input type="hidden" name="itemId" value="'.$this->itemDao->getKey().'"/>';
-            echo '    <a qtip="Delete revision" href="javascript:;" class="deleteItemRevision" itemrevisionId="'.$revision->getItemrevisionId(
-                ).'" itemId="'.$this->itemDao->getKey().'">';
+            echo ' <form id="deleteItemrevisionForm'.$this->escape($revision->getItemrevisionId(
+                )).'" class="genericForm" method="POST"  action="'.$this->webroot.'/item/deleteitemrevision">';
+            echo ' <input type="hidden" name="itemrevisionId" value="'.$this->escape($revision->getItemrevisionId()).'"/>';
+            echo ' <input type="hidden" name="itemId" value="'.$this->escape($this->itemDao->getKey()).'"/>';
+            echo '    <a qtip="Delete revision" href="javascript:;" class="deleteItemRevision" itemrevisionId="'.$this->escape($revision->getItemrevisionId(
+                )).'" itemId="'.$this->escape($this->itemDao->getKey()).'">';
             echo '    <img alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png" /></a>';
             echo '  </form></div>';
         }
@@ -182,17 +182,17 @@ if ($this->itemDao->getDescription() != '') {
                 <?php
                 foreach ($revision->metadatavalues as $metadata) {
                     echo '<tr>';
-                    echo '  <td>'.$metadata->getElement().'</td>';
-                    echo '  <td>'.$metadata->getQualifier().'</td>';
-                    echo '  <td><span style="float: left;">'.$metadata->getValue().'</span>';
+                    echo '  <td>'.$this->escape($metadata->getElement()).'</td>';
+                    echo '  <td>'.$this->escape($metadata->getQualifier()).'</td>';
+                    echo '  <td><span style="float: left;">'.$this->escape($metadata->getValue()).'</span>';
                     if ($this->isModerator) {
                         echo "<span class='manageMetadata'>";
-                        echo "<a href='javascript:;' itemrevision='".$revision->getRevision(
-                            )."' element='".$metadata->getKey(
-                            )."' class='metadataEditLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/edit.png'/></a>";
-                        echo "<a href='javascript:;' itemrevision='".$revision->getRevision(
-                            )."' element='".$metadata->getKey(
-                            )."' class='metadataDeleteLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/></a>";
+                        echo "<a href='javascript:;' itemrevision='".$this->escape($revision->getRevision(
+                            ))."' element='".$this->escape($metadata->getKey(
+                            ))."' class='metadataEditLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/edit.png'/></a>";
+                        echo "<a href='javascript:;' itemrevision='".$this->escape($revision->getRevision(
+                            ))."' element='".$this->escape($metadata->getKey(
+                            ))."' class='metadataDeleteLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/></a>";
                         echo "</span>";
                     }
                     echo "  </td>";
@@ -228,27 +228,27 @@ if ($this->itemDao->getDescription() != '') {
             echo '<tr class="bitstreamRow">';
             echo '<td>';
             echo '  <div style="display: none;">';
-            echo '    <span name="bitstream_id">'.$bitstream->getKey().'</span>';
-            echo '    <span name="filename">'.$bitstream->getName().'</span>';
-            echo '    <span name="md5">'.$bitstream->getChecksum().'</span>';
-            echo '    <span name="sizeBytes">'.$bitstream->getSizebytes().'</span>';
-            echo '    <span name="mimeType">'.$bitstream->getMimetype().'</span>';
+            echo '    <span name="bitstream_id">'.$this->escape($bitstream->getKey()).'</span>';
+            echo '    <span name="filename">'.$this->escape($bitstream->getName()).'</span>';
+            echo '    <span name="md5">'.$this->escape($bitstream->getChecksum()).'</span>';
+            echo '    <span name="sizeBytes">'.$this->escape($bitstream->getSizebytes()).'</span>';
+            echo '    <span name="mimeType">'.$this->escape($bitstream->getMimetype()).'</span>';
             echo '  </div>';
-            echo '<a href="'.$linkDestination.'">';
-            echo $this->slicename($bitstream->getName(), 50);
+            echo '<a href="'.$this->escape($linkDestination).'">';
+            echo $this->slicename($this->escape($bitstream->getName()), 50);
             echo '</a>';
             if ($this->isModerator) {
-                echo '<img element="'.$bitstream->getKey(
-                    ).'" class="editBitstreamIcon" alt="" src="'.$this->coreWebroot.'/public/images/icons/edit.png" />';
+                echo '<img element="'.$this->escape($bitstream->getKey(
+                    )).'" class="editBitstreamIcon" alt="" src="'.$this->coreWebroot.'/public/images/icons/edit.png" />';
             }
             if ($this->isAdmin) {
-                echo '<img element="'.$bitstream->getKey(
-                    ).'" class="deleteBitstreamIcon" alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png" />';
+                echo '<img element="'.$this->escape($bitstream->getKey(
+                    )).'" class="deleteBitstreamIcon" alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png" />';
             }
-            echo '<img element="'.$bitstream->getKey(
-                ).'" class="bitstreamInfoIcon" alt="" src="'.$this->coreWebroot.'/public/images/icons/message.png" />';
+            echo '<img element="'.$this->escape($bitstream->getKey(
+                )).'" class="bitstreamInfoIcon" alt="" src="'.$this->coreWebroot.'/public/images/icons/message.png" />';
             echo '</td>';
-            echo '<td>'.UtilityComponent::formatSize($bitstream->getSizebytes()).'</td>';
+            echo '<td>'.$this->escape(UtilityComponent::formatSize($bitstream->getSizebytes())).'</td>';
             echo '</tr>';
         }
         ?>
@@ -307,8 +307,8 @@ foreach ($elements as $module => $elementList) {
                     )}</a>
         </li>
         <li>
-          <a href='javascript:;' type='item' element='{$this->itemDao->getKey(
-                    )}' class='uploadRevisionLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/upload.png'/> {$this->t(
+          <a href='javascript:;' type='item' element='{$this->escape($this->itemDao->getKey(
+                    ))}' class='uploadRevisionLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/upload.png'/> {$this->t(
                         'Upload new revision'
                     )}</a>
         </li>
@@ -317,8 +317,8 @@ foreach ($elements as $module => $elementList) {
                 if ($this->isAdmin) {
                     echo "
         <li>
-          <a href='javascript:;' type='item' element='{$this->itemDao->getKey(
-                    )}' class='sharingLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/lock.png'/> {$this->t(
+          <a href='javascript:;' type='item' element='{$this->escape($this->itemDao->getKey(
+                    ))}' class='sharingLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/lock.png'/> {$this->t(
                         'Permissions'
                     )}</a>
         </li>
@@ -346,7 +346,7 @@ foreach ($elements as $module => $elementList) {
                 ?>
                 <tr>
                     <td><?php echo $this->t('Created') ?></td>
-                    <td><?php echo $this->itemDao->creation ?></td>
+                    <td><?php echo $this->escape($this->itemDao->creation); ?></td>
                 </tr>
                 <tr>
                     <td><?php echo $this->t('Uploaded by'); ?></td>
@@ -354,19 +354,19 @@ foreach ($elements as $module => $elementList) {
                 </tr>
                 <tr>
                     <td>Views</td>
-                    <td><?php echo $this->itemDao->getView(); ?></td>
+                    <td><?php echo $this->escape($this->itemDao->getView()); ?></td>
                 </tr>
                 <tr>
                     <td>Downloads</td>
-                    <td><?php echo $this->itemDao->getDownload(); ?></td>
+                    <td><?php echo $this->escape($this->itemDao->getDownload()); ?></td>
                 </tr>
                 <tr>
                     <td>Revisions</td>
-                    <td><?php echo $this->itemDao->lastrevision->getRevision() ?></td>
+                    <td><?php echo $this->escape($this->itemDao->lastrevision->getRevision()); ?></td>
                 </tr>
                 <tr>
                     <td><?php echo $this->t('Files'); ?></td>
-                    <td><?php echo count($this->itemDao->lastrevision->getBitstreams()) ?></td>
+                    <td><?php echo $this->escape(count($this->itemDao->lastrevision->getBitstreams())); ?></td>
                 </tr>
             <?php
             } // check for $this->itemDao->lastRevision
@@ -380,8 +380,8 @@ foreach ($elements as $module => $elementList) {
         </table>
         <?php
         if ($this->itemDao->getThumbnailId()) {
-            echo '<h1>Preview</h1>'.'<img class="infoLogo" alt="" src="'.$this->webroot.'/item/thumbnail?itemId='.$this->itemDao->getKey(
-                ).'"/>';
+            echo '<h1>Preview</h1>'.'<img class="infoLogo" alt="" src="'.$this->webroot.'/item/thumbnail?itemId='.$this->escape($this->itemDao->getKey(
+                )).'"/>';
         }
         ?>
     </div>
@@ -394,9 +394,9 @@ foreach ($elements as $module => $elementList) {
             <div id="parentList">
                 <?php
                 foreach ($this->folders as $folder) {
-                    echo '<a href="'.$this->webroot.'/folder/'.$folder->getKey().'">';
+                    echo '<a href="'.$this->webroot.'/folder/'.$this->escape($folder->getKey()).'">';
                     echo '<img alt="" src="'.$this->coreWebroot.'/public/images/TreeTable/folder.png" />';
-                    echo ' '.$folder->getName().'</a>';
+                    echo ' '.$this->escape($folder->getName()).'</a>';
                     echo '<br />';
                 } ?>
             </div>

@@ -24,15 +24,15 @@ echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/share
 
 <div class="viewLinkContainer">
     You can use the following direct link to
-    <b>view</b> this <?php echo $this->type ?>:<br/>
-    <input type='text' id='resourceViewDisplay' readonly='readonly' value='<?php echo $this->viewUrl; ?>'/>
+    <b>view</b> this <?php echo $this->escape($this->type); ?>:<br/>
+    <input type='text' id='resourceViewDisplay' readonly='readonly' value='<?php echo $this->escape($this->viewUrl); ?>'/>
     <button id="selectViewUrl"></button>
 </div>
 
 <div class="downloadLinkContainer">
     You can use the following direct link to
-    <b>download</b> this <?php echo $this->type ?>:<br/>
-    <input type='text' id='resourceDownloadDisplay' readonly='readonly' value='<?php echo $this->downloadUrl; ?>'/>
+    <b>download</b> this <?php echo $this->escape($this->type); ?>:<br/>
+    <input type='text' id='resourceDownloadDisplay' readonly='readonly' value='<?php echo $this->escape($this->downloadUrl); ?>'/>
     <button id="selectDownloadUrl"></button>
 </div>
 

@@ -416,15 +416,15 @@ class AdminController extends AppController
                     )
                 ) {
                     if (is_dir($_POST['dir'].$file)) {
-                        echo "<li class=\"directory collapsed\"><a href=\"#\" rel=\"".htmlentities(
-                                $_POST['dir'].$file
-                            )."/\">".htmlentities($file)."</a></li>";
+                        echo "<li class=\"directory collapsed\"><a href=\"#\" rel=\"".htmlspecialchars(
+                                $_POST['dir'].$file, ENT_QUOTES, 'UTF-8'
+                            )."/\">".htmlspecialchars($file, ENT_QUOTES, 'UTF-8')."</a></li>";
                     } else {
                         // not a directory: a file!
                         $ext = preg_replace('/^.*\./', '', $file);
-                        echo "<li class=\"file ext_".$ext."\"><a href=\"#\" rel=\"".htmlentities(
-                                $_POST['dir'].$file
-                            )."\">".htmlentities($file)."</a></li>";
+                        echo "<li class=\"file ext_".$ext."\"><a href=\"#\" rel=\"".htmlspecialchars(
+                                $_POST['dir'].$file, ENT_QUOTES, 'UTF-8'
+                            )."\">".htmlspecialchars($file, ENT_QUOTES, 'UTF-8')."</a></li>";
                     }
                 }
             }

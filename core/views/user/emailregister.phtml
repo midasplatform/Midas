@@ -29,12 +29,12 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.emailre
     <div>
     </div>
     <form class="genericForm" id="registerForm" method="POST">
-        <input type="hidden" name="email" value="<?php echo $this->email ?>"/>
-        <input type="hidden" name="authKey" value="<?php echo $this->authKey ?>"/>
+        <input type="hidden" name="email" value="<?php echo $this->escape($this->email); ?>"/>
+        <input type="hidden" name="authKey" value="<?php echo $this->escape($this->authKey); ?>"/>
 
         <div class="emailLabelContainer">
             <label>Email</label>
-            <span class="emailDisplay"><?php echo $this->email ?></span>
+            <span class="emailDisplay"><?php echo $this->escape($this->email); ?></span>
         </div>
         <div>
             <label for="firstName">First name</label>

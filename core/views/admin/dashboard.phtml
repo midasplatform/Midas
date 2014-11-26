@@ -23,22 +23,22 @@
 
 <?php
 foreach ($this->dashboard as $module => $dasboard) {
-    echo "<h3>".ucfirst($module)."</h3>";
-    echo "<table>";
+    echo '<h3>'.ucfirst($this->escape($module)).'</h3>';
+    echo '<table>';
     foreach ($dasboard as $name => $status) {
-        echo "<tr>";
-        echo "  <td>$name </td>";
+        echo '<tr>';
+        echo '<td>'.$this->escape($name).'</td>';
         if ($status[0]) {
-            echo "  <td><img src='{$this->coreWebroot}/public/images/icons/ok.png' /></td>";
+            echo '<td><img src="'.$this->coreWebroot.'/public/images/icons/ok.png" /></td>';
         } else {
-            echo "  <td><img src='{$this->coreWebroot}/public/images/icons/nok.png' /></td>";
+            echo '<td><img src="'.$this->coreWebroot.'public/images/icons/nok.png" /></td>';
         }
         if (isset($status[1])) {
-            echo "  <td>$status[1]</td>";
+            echo '<td>'.$this->escape($status[1]).'</td>';
         }
-        echo "</tr>";
+        echo '</tr>';
     }
-    echo "</table>";
+    echo '</table>';
 }
 ?>
 

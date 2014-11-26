@@ -23,7 +23,7 @@
 
 <form id="editFolderForm" class="genericForm" method="<?php echo $this->form['method'] ?>"
       action="<?php echo $this->form['action'] ?>">
-    <input type="hidden" name="folderId" value="<?php echo $this->folderDao->getKey() ?>"/>
+    <input type="hidden" name="folderId" value="<?php echo $this->escape($this->folderDao->getKey()); ?>"/>
 
     <div>
         <label for="name"><?php echo $this->t("Name") ?></label>

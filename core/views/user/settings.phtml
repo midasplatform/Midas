@@ -19,7 +19,7 @@
 =========================================================================*/
 
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
-$this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.settings.js?'.time());
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.settings.js');
 ?>
 
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/user/user.settings.css"/>
@@ -40,7 +40,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.setting
     foreach ($this->customTabs as $moduleName => $module) {
         foreach ($module as $name => $url) {
             $subname = str_replace(' ', '_', $name);
-            echo "<li><a href='{$url}' title='tabs-{$moduleName}_${subname}'>{$name}</a></li>";
+            echo "<li><a href='{$this->escape($url)}' title='tabs-{$this->escape($moduleName)}_{$this->escape($subname)}'>{$this->escape($name)}</a></li>";
         }
     }
     ?>
@@ -51,7 +51,7 @@ foreach ($this->customTabs as $moduleName => $module) {
     $i = 1;
     foreach ($module as $name => $url) {
         $subname = str_replace(' ', '_', $name);
-        echo '<div id="tabs-'.$moduleName.'_'.$subname.'"></div>';
+        echo '<div id="tabs-'.$this->escape($moduleName).'_'.$this->escape($subname).'"></div>';
     }
 }
 ?>
@@ -60,12 +60,12 @@ foreach ($this->customTabs as $moduleName => $module) {
 
     <form class="genericForm" id="modifyAccount" method="<?php echo $this->accountForm['method'] ?>"
           action="<?php echo $this->accountForm['action'];
-          echo(isset($_GET['userId']) ? '?userId='.$_GET['userId'] : '') ?>">
+          echo(isset($_GET['userId']) ? '?userId='.$this->escape($_GET['userId']) : '') ?>">
         <table>
             <?php
             foreach ($this->prependFields as $field) {
-                echo '<tr><td><span>'.$field['label'].':</span>';
-                echo '<input type="'.$field['type'].'" name="'.$field['name'].'" value="'.$field['value'].'" /></td><td></td></tr>';
+                echo '<tr><td><span>'.$this->escape($field['label']).':</span>';
+                echo '<input type="'.$this->escape($field['type']).'" name="'.$this->escape($field['name']).'" value="'.$this->escape($field['value']).'" /></td><td></td></tr>';
             }
             ?>
             <tr>
@@ -123,8 +123,8 @@ foreach ($this->customTabs as $moduleName => $module) {
             <?php
             }
             foreach ($this->appendFields as $field) {
-                echo '<tr><td><span>'.$field['label'].':</span>';
-                echo '<input type="'.$field['type'].'" name="'.$field['name'].'" value="'.$field['value'].'" /></td><td></td></tr>';
+                echo '<tr><td><span>'.$this->escape($field['label']).':</span>';
+                echo '<input type="'.$this->escape($field['type']).'" name="'.$this->escape($field['name']).'" value="'.$this->escape($field['value']).'" /></td><td></td></tr>';
             }
             ?>
             <tr>
@@ -140,13 +140,13 @@ foreach ($this->customTabs as $moduleName => $module) {
     <div id="imageActual">
         <h4><?php echo $this->t('Current Avatar') ?>:</h4>
         <?php
-        echo $this->userthumbnail($this->thumbnail, 'userTopThumbnail');
+        echo $this->userthumbnail($this->escape($this->thumbnail), 'userTopThumbnail');
         ?>
     </div>
     <h3><?php echo $this->t('My Avatar') ?>:</h3>
 
     <form class="genericForm" id="modifyPicture"
-          action="<?php echo $this->webroot ?>/user/settings<?php echo(isset($_GET['userId']) ? '?userId='.$_GET['userId'] : '') ?>"
+          action="<?php echo $this->webroot ?>/user/settings<?php echo(isset($_GET['userId']) ? '?userId='.$this->escape($_GET['userId']) : '') ?>"
           method="POST" enctype="multipart/form-data">
 
         <?php echo $this->t('Please select an image file on your computer (2 MB maximum)') ?>
@@ -174,7 +174,7 @@ foreach ($this->customTabs as $moduleName => $module) {
         <h3><?php echo $this->t('My Password') ?>:</h3>
 
         <form class="genericForm" id="modifyPassword" method='POST'
-              action='<?php echo $this->webroot ?>/user/settings<?php echo(isset($_GET['userId']) ? '?userId='.$_GET['userId'] : '') ?>'>
+              action='<?php echo $this->webroot ?>/user/settings<?php echo(isset($_GET['userId']) ? '?userId='.$this->escape($_GET['userId']) : '') ?>'>
             <table>
                 <?php
                 if (!$this->userDao->isAdmin() || $this->user->isAdmin()) {
@@ -204,13 +204,13 @@ foreach ($this->customTabs as $moduleName => $module) {
 <div id="tabs-communities">
     <?php
     if (empty($this->communities)) {
-        echo $this->t('You don\'t belong to any community.');
+        echo $this->t('You do not belong to any community.');
     } else {
         echo "<h3>{$this->t('My Communities')}:</h3>";
         echo "<ul>";
         foreach ($this->communities as $community) {
-            echo "<li class='settingsCommunityList'><a href='{$this->webroot}/community/{$community->getKey(
-            )}'>{$community->getName()}</a>";
+            echo "<li class='settingsCommunityList'><a href='{$this->webroot}/community/{$this->escape($community->getKey(
+            ))}'>{$this->escape($community->getName())}</a>";
             echo "<ul>";
             foreach ($community->groups as $group) {
                 $name = $group->getName();
@@ -223,7 +223,7 @@ foreach ($this->customTabs as $moduleName => $module) {
                 if ($group->getKey() == $community->getMembergroupId()) {
                     continue;
                 }
-                echo "<li>{$name}";
+                echo "<li>{$this->escape($name)}";
                 echo "</li>";
             }
             echo "</ul>";

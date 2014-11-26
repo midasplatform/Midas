@@ -55,7 +55,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.for
                     <?php
                     echo $this->linkuser($user);
                     ?>
-                    <div class="userStats"><?php echo $user->getView(); ?> views
+                    <div class="userStats"><?php echo $this->escape($user->getView()); ?> views
                     </div>
                 </div>
             <?php
@@ -154,7 +154,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.for
     <div class="sideElementLast viewInfo">
         <h1>Info</h1>
         <?php
-        echo $this->nUsers.' '.$this->t('user').($this->nUsers > 1 ? 's' : '');
+        echo $this->escape($this->nUsers).' '.$this->t('user').($this->nUsers > 1 ? 's' : '');
         ?>
     </div>
 </div>

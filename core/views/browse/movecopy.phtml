@@ -47,35 +47,35 @@ echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/brows
     foreach ($this->communities as $community) {
         $folder = $community->getFolder();
         echo "<tr id='node--$node' valid='false' class='parent' privacy='".($community->getPrivacy(
-            ) == 1 ? MIDAS_PRIVACY_PRIVATE : MIDAS_PRIVACY_PUBLIC)."' type='community' element='{$folder->getFolderId(
-            )}'>";
-        echo "  <td class='treeBrowseElement'><span class='community'>{$community->getName()}</span></td>";
+            ) == 1 ? MIDAS_PRIVACY_PRIVATE : MIDAS_PRIVACY_PUBLIC)."' type='community' element='{$this->escape($folder->getFolderId(
+            ))}'>";
+        echo "  <td class='treeBrowseElement'><span class='community'>{$this->escape($community->getName())}</span></td>";
         echo "</tr>";
         $node++;
     }
 
     $folder = $this->user->getFolder();
     echo "<tr id='node--$node' class='parent' privacy='{$folder->getPrivacyStatus(
-    )}' type='folder' valid='false' element='{$folder->getFolderId()}'>";
-    echo "  <td class='treeBrowseElement'><span class='folder'>{$this->t('My Files')} ({$this->user->getFullName(
-    )})</span></td>";
+    )}' type='folder' valid='false' element='{$this->escape($folder->getFolderId())}'>";
+    echo "  <td class='treeBrowseElement'><span class='folder'>{$this->t('My Files')} ({$this->escape($this->user->getFullName(
+    ))})</span></td>";
     echo "</tr>";
     $node++;
     ?>
     </tbody>
 </table>
 <form class="genericForm" id="moveCopyForm" type='post' action="<?php echo $this->webroot ?>/browse/movecopy">
-    <input type='hidden' name='elements' value='<?php echo $this->folderIds ?>;<?php echo $this->itemIds ?>'/>
-    <input type='hidden' name='from' value='<?php echo $this->from ?>'/>
+    <input type='hidden' name='elements' value='<?php echo $this->escape($this->folderIds); ?>;<?php echo $this->escape($this->itemIds); ?>'/>
+    <input type='hidden' name='from' value='<?php echo $this->escape($this->from); ?>'/>
     <input type='hidden' id="selectedDestinationHidden" name='destination'/>
     <?php
     if ($this->shareEnabled || $this->duplicateEnabled) {
         ?>
         <div class="copySymlinkSelect">
             <input type="radio" checked="checked" name="copytype"
-                   value="reference"><?php echo $this->referenceMessage; ?>
+                   value="reference"><?php echo $this->escape($this->referenceMessage); ?>
             <br/>
-            <input type="radio" name="copytype" value="copy"><?php echo $this->copyMessage; ?>
+            <input type="radio" name="copytype" value="copy"><?php echo $this->escape($this->copyMessage); ?>
             <br/>
         </div>
     <?php

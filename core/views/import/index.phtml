@@ -19,10 +19,10 @@
 =========================================================================*/
 
 if (isset($this->errormessage)) {
-    echo $this->errormessage;
+    echo $this->escape($this->errormessage);
 }
 if (isset($this->statusmessage)) {
-    echo $this->statusmessage;
+    echo $this->escape($this->statusmessage);
 }
 ?>
 

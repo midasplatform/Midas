@@ -250,33 +250,33 @@ class AppController extends MIDAS_GlobalController
             if ($this->logged) {
                 $this->addDynamicHelp(
                     '#startingGuideLink',
-                    'Show the <b>Starting Guide</b>. You can disable these messages from this panel.'
+                    'Show the Starting Guide. You can disable these messages from this panel.'
                 );
             } else {
                 $this->addDynamicHelp(
                     '.HeaderLogo',
-                    'The <b>Midas Platform</b> integrates multimedia server technology with open-source data analysis and visualization clients.'
+                    'The Midas Platform integrates multimedia server technology with open-source data analysis and visualization clients.'
                 );
             }
 
             $this->addDynamicHelp(
                 '.HeaderSearch',
-                '<b>Quick search</b>. Use this tool to quickly find information and data.'
+                'Quick search. Use this tool to quickly find information and data.'
             );
-            $this->addDynamicHelp('li.uploadFile a', '<b>Upload</b> files, data using this button.');
+            $this->addDynamicHelp('li.uploadFile a', 'Upload files, data using this button.');
 
             if ($this->logged) {
-                $this->addDynamicHelp('#topUserName', '<b>Manage</b> your information.', 'bottom left', 'top right');
+                $this->addDynamicHelp('#topUserName', 'Manage your information.', 'bottom left', 'top right');
             } else {
                 $this->addDynamicHelp(
                     '.registerLink',
-                    '<b>Register</b> to create your personal space.',
+                    'Register to create your personal space.',
                     'bottom left',
                     'top right'
                 );
             }
 
-            $this->addDynamicHelp('.SideBar ul:first', '<b>Navigation menu</b>. Browse, explore and manage data.');
+            $this->addDynamicHelp('.SideBar ul:first', 'Navigation menu. Browse, explore and manage data.');
         }
 
         Zend_Loader::loadClass('JsonComponent', BASE_PATH.'/core/controllers/components');

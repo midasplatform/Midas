@@ -33,7 +33,7 @@ if ($this->deleteSelf) {
 } else {
     ?>
     Are you sure you want to delete the user
-    <span id="deleteDialogUserName"><?php echo $this->user->getFirstname().' '.$this->user->getLastname(); ?></span>?
+    <span id="deleteDialogUserName"><?php echo $this->escape($this->user->getFirstname()).' '.$this->escape($this->user->getLastname()); ?></span>?
 <?php
 } ?>
 <br/><br/>
@@ -51,7 +51,7 @@ if ($this->deleteSelf) {
     <br/>
 
     <form id="deleteDialogForm" class="genericForm" method="POST" action="<?php echo $this->webroot ?>/user/delete">
-        <input type='hidden' name="userId" value="<?php echo $this->user->getKey(); ?>"/>
+        <input type='hidden' name="userId" value="<?php echo $this->escape($this->user->getKey()); ?>"/>
         <input type="checkbox" id="deleteDialogAgreeCheckbox">I understand the implications and wish to proceed.</input>
         <br/><br/>
 

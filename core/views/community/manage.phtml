@@ -38,7 +38,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
     <?php
     $thumbnail = null;
     if (!empty($thumbnail)) {
-        echo "<img src='{$this->webroot}data/thumbnail/{$thumbnail}' alt=''/>";
+        echo "<img src='{$this->webroot}data/thumbnail/{$this->escape($thumbnail)}' alt=''/>";
     } else {
         echo "<img src='{$this->coreWebroot}/public/images/icons/community-big.png' alt=''/>";
     }
@@ -49,15 +49,15 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
 
         <?php
         echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
-        echo "<a  href='{$this->webroot}/community/{$this->communityDao->getKey(
-        )}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+        echo "<a  href='{$this->webroot}/community/{$this->escape($this->communityDao->getKey(
+        ))}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
         echo $this->t('Back');
         echo "</a>";
         echo '</div>';
 
         ?>
     </div>
-    <div class="genericName"><?php echo $this->communityDao->getName(); ?></div>
+    <div class="genericName"><?php echo $this->escape($this->communityDao->getName()); ?></div>
 </div>
 <img class="tabsLoading" alt="" src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>
 
@@ -77,7 +77,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
     <?php
     foreach ($this->customTabs as $modules) {
         foreach ($modules as $name => $url) {
-            echo "<li><a href='{$url}?communityId={$this->communityDao->getKey()}'>{$name}</a></li>";
+            echo "<li><a href='{$this->escape($url)}?communityId={$this->escape($this->communityDao->getKey())}'>{$this->escape($name)}</a></li>";
         }
     }
     ?>
@@ -95,7 +95,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
                 <?php echo $this->infoForm['description'] ?>
             </div>
             <div>Tip: You can use
-                <a target="_blank" href="https://daringfireball.net/projects/markdown/syntax">Markdown</a> in the
+                <a href="https://daringfireball.net/projects/markdown/syntax">Markdown</a> in the
                 description.
             </div>
         </div>
@@ -108,7 +108,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.tab
         foreach ($extraForm as $module => $value) {
             if ($value) {
                 foreach ($value as $sectionTitle => $content) {
-                    echo '<div class="extraManageFormContent"><h4>'.$sectionTitle.'</h4>'.$content.'</div>';
+                    echo '<div class="extraManageFormContent"><h4>'.$this->escape($sectionTitle).'</h4>'.$content.'</div>';
                 }
             }
         }
@@ -179,14 +179,14 @@ if ($this->isAdmin) {
                         foreach ($this->members as $user) {
                             $stripeIndex++;
                             $class = $stripeIndex % 2 ? 'odd' : 'even';
-                            echo '<tr class='.$class.'>';
+                            echo '<tr class='.$this->escape($class).'>';
                             echo '  <td width="80%">'.$this->linkuser($user).'</td>';
                             echo '  <td><span class="actionsList">';
-                            echo '  <a qtip="Add member to other groups" '.'     class="tableActions promoteMember" onclick="midas.community.manage.promoteMember('.$user->getKey(
-                                ).');">';
+                            echo '  <a qtip="Add member to other groups" '.'     class="tableActions promoteMember" onclick="midas.community.manage.promoteMember('.$this->escape($user->getKey(
+                                )).');">';
                             echo '    <img class="tableActions" alt="" src="'.$this->coreWebroot.'/public/images/icons/add.png" /></a>';
-                            echo '  <a qtip="Remove member from this community" '.'     class="tableActions removeMember" onclick="midas.community.manage.removeMember('.$user->getKey(
-                                ).','.$this->memberGroup->getKey().');">';
+                            echo '  <a qtip="Remove member from this community" '.'     class="tableActions removeMember" onclick="midas.community.manage.removeMember('.$this->escape($user->getKey(
+                                )).','.$this->escape($this->memberGroup->getKey()).');">';
                             echo '    <img class="tableActions" alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png" /></a>';
                             echo '  </span></td>';
                             echo '</tr>';
@@ -211,11 +211,11 @@ if ($this->isAdmin) {
                         foreach ($this->moderatorGroup->users as $user) {
                             $stripeIndex++;
                             $class = $stripeIndex % 2 ? 'odd' : 'even';
-                            echo '<tr class='.$class.'>';
+                            echo '<tr class='.$this->escape($class).'>';
                             echo '  <td width="80%">'.$this->linkuser($user).'</td>';
                             echo '  <td><span class="actionsList">';
-                            echo '  <a qtip="Remove member from moderators group" '.'     class="tableActions removeMember" onclick="midas.community.manage.removeFromGroup('.$user->getKey(
-                                ).','.$this->moderatorGroup->getKey().');">';
+                            echo '  <a qtip="Remove member from moderators group" '.'     class="tableActions removeMember" onclick="midas.community.manage.removeFromGroup('.$this->escape($user->getKey(
+                                )).','.$this->escape($this->moderatorGroup->getKey()).');">';
                             echo '    <img class="tableActions" alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png" /></a>';
                             echo '  </span></td>';
                             echo '</tr>';
@@ -240,13 +240,13 @@ if ($this->isAdmin) {
                         foreach ($this->adminGroup->users as $user) {
                             $stripeIndex++;
                             $class = $stripeIndex % 2 ? 'odd' : 'even';
-                            echo '<tr class='.$class.'>';
+                            echo '<tr class='.$this->escape($class).'>';
                             echo '  <td width="80%">'.$this->linkuser($user).'</td>';
                             echo '  <td><span class="actionsList">';
                             if ($this->isAdmin) //only admins can remove from admin group
                             {
-                                echo '<a qtip="Remove member from administrators group" '.'   class="tableActions removeMember" onclick="midas.community.manage.removeFromGroup('.$user->getKey(
-                                    ).','.$this->adminGroup->getKey().');">';
+                                echo '<a qtip="Remove member from administrators group" '.'   class="tableActions removeMember" onclick="midas.community.manage.removeFromGroup('.$this->escape($user->getKey(
+                                    )).','.$this->escape($this->adminGroup->getKey()).');">';
                                 echo '<img class="tableActions" alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png" /></a>';
                             }
                             echo '  </span></td>';
@@ -260,9 +260,9 @@ if ($this->isAdmin) {
             <div id="customGroupsList">
                 <?php
                 foreach ($this->groups as $group) {
-                    echo '<h4>'.$group->getName().': ';
-                    echo '[<a class="editGroupLink" groupid="'.$group->getKey().'" href="javascript:;">Edit</a>]';
-                    echo '[<a class="deleteGroupLink" groupid="'.$group->getKey().'" href="javascript:;">Delete</a>]';
+                    echo '<h4>'.$this->escape($group->getName()).': ';
+                    echo '[<a class="editGroupLink" groupid="'.$this->escape($group->getKey()).'" href="javascript:;">Edit</a>]';
+                    echo '[<a class="deleteGroupLink" groupid="'.$this->escape($group->getKey()).'" href="javascript:;">Delete</a>]';
                     echo '</h4>';
                     echo '<div><table class="tablesorter">';
                     echo '  <thead><tr><th width="80%">User</th><th>Actions</th></tr></thead>';
@@ -271,12 +271,12 @@ if ($this->isAdmin) {
                     foreach ($group->users as $user) {
                         $stripeIndex++;
                         $class = $stripeIndex % 2 ? 'odd' : 'even';
-                        echo '<tr class='.$class.'>';
+                        echo '<tr class='.$this->escape($class).'>';
                         echo '  <td width="80%">'.$this->linkuser($user).'</td>';
                         echo '  <td><span class="actionsList">';
-                        echo '  <a qtip="Remove user from group '.$group->getName(
-                            ).'" '.'     class="tableActions removeMember" onclick="midas.community.manage.removeFromGroup('.$user->getKey(
-                            ).','.$group->getKey().');">';
+                        echo '  <a qtip="Remove user from group '.$this->escape($group->getName(
+                            )).'" '.'     class="tableActions removeMember" onclick="midas.community.manage.removeFromGroup('.$this->escape($user->getKey(
+                            )).','.$this->escape($group->getKey()).');">';
                         echo '    <img class="tableActions" alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png" /></a>';
                         echo '  </span></td>';
                         echo '</tr>';
@@ -313,7 +313,7 @@ if ($this->isAdmin) {
     Drag and drop to move elements.
     <br/>
     <br/>
-    <table id="browseTable" class="midasTree" root="<?php echo $this->communityDao->getFolderId(); ?>">
+    <table id="browseTable" class="midasTree" root="<?php echo $this->escape($this->communityDao->getFolderId()); ?>">
         <thead>
         <th class="thData"><?php echo $this->t('Name'); ?></th>
         <th class="thSize"><?php echo $this->t('Size'); ?></th>
@@ -329,28 +329,28 @@ if ($this->isAdmin) {
         foreach ($this->folders as $folder) {
             $folderId = $folder->getFolderId();
             $privacyClass = $folder->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-            echo "<tr id='node--$node' class='parent' privacy='{$folder->getPrivacyStatus(
-            )}' type='folder' element='$folderId' ajax='$folderId'>";
-            echo "  <td class='treeBrowseElement'><span class='notdraggable folder{$privacyClass}'>{$folder->getName(
-            )}</span></td>";
-            echo "  <td><img class='folderLoading' element='$folderId' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
-            echo "  <td>{$this->Date->ago($folder->getDateUpdate(), true)}</td>";
-            echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='$folderId' /></td>";
+            echo "<tr id='node--$node' class='parent' privacy='{$this->escape($folder->getPrivacyStatus(
+            ))}' type='folder' element='{$this->escape($folderId)}' ajax='{$this->escape($folderId)}'>";
+            echo "  <td class='treeBrowseElement'><span class='notdraggable folder{$this->escape($privacyClass)}'>{$this->escape($folder->getName(
+            ))}</span></td>";
+            echo "  <td><img class='folderLoading' element='{$this->escape($folderId)}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
+            echo "  <td>{$this->dateago($folder->getDateUpdate())}</td>";
+            echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$this->escape($folderId)}' /></td>";
             echo "</tr>";
             $node++;
         }
 
         foreach ($this->items as $item) {
             $privacyClass = $item->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-            echo "<tr id='node--$node' privacy='{$item->getPrivacyStatus(
-            )}' class='' type='item' element='{$item->getItemId()}'>";
-            echo "  <td class='treeBrowseElement'><span class='file{$privacyClass}'>{$this->slicename(
+            echo "<tr id='node--$node' privacy='{$this->escape($item->getPrivacyStatus(
+            ))}' class='' type='item' element='{$this->escape($item->getItemId())}'>";
+            echo "  <td class='treeBrowseElement'><span class='file{$this->escape($privacyClass)}'>{$this->slicename(
                 $item->getName(),
                 40
             )}</span></td>";
-            echo "  <td>{$item->size}</td>";
-            echo "  <td>{$this->Date->ago($item->getDateUpdate(), true)}</td>";
-            echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$item->getItemId()}' /></td>";
+            echo "  <td>{$this->escape($item->size)}</td>";
+            echo "  <td>{$this->dateago($item->getDateUpdate())}</td>";
+            echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$this->escape($item->getItemId())}' /></td>";
             echo "</tr>";
             $node++;
         }
@@ -378,31 +378,31 @@ if ($this->isAdmin) {
 
             foreach ($this->userPersonalFolders as $folder) {
                 $privacyClass = $folder->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-                echo "<tr id='node--$node' class='parent' privacy='{$folder->getPrivacyStatus(
-                )}' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
-                echo "  <td class='treeBrowseElement'><span class='notdraggable folder{$privacyClass}'>{$folder->getName(
-                )}</span></td>";
-                echo "  <td><img class='folderLoading'  element='{$folder->getFolderId(
-                )}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
-                echo "  <td>{$this->Date->ago($folder->getDateUpdate(), true)}</td>";
-                echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$folder->getFolderId(
-                )}' /></td>";
+                echo "<tr id='node--$node' class='parent' privacy='{$this->escape($folder->getPrivacyStatus(
+                ))}' type='folder' element='{$this->escape($folder->getFolderId())}' ajax='{$this->escape($folder->getFolderId())}'>";
+                echo "  <td class='treeBrowseElement'><span class='notdraggable folder{$this->escape($privacyClass)}'>{$this->escape($folder->getName(
+                ))}</span></td>";
+                echo "  <td><img class='folderLoading'  element='{$this->escape($folder->getFolderId(
+                ))}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
+                echo "  <td>{$this->dateago($folder->getDateUpdate())}</td>";
+                echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$this->escape($folder->getFolderId(
+                ))}' /></td>";
                 echo "</tr>";
                 $node++;
             }
 
             foreach ($this->userPersonalItems as $item) {
                 $privacyClass = $item->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-                echo "<tr id='node--$node' privacy='{$item->getPrivacyStatus(
-                )}' class='' type='item' element='{$item->getItemId()}'>";
-                echo "  <td class='treeBrowseElement'><span class='file{$privacyClass}'>{$this->slicename(
+                echo "<tr id='node--$node' privacy='{$this->escape($item->getPrivacyStatus(
+                ))}' class='' type='item' element='{$this->escape($item->getItemId())}'>";
+                echo "  <td class='treeBrowseElement'><span class='file{$this->escape($privacyClass)}'>{$this->slicename(
                     $item->getName(),
                     40
                 )}</span></td>";
-                echo "  <td>{$item->size}</td>";
-                echo "  <td>{$this->Date->ago($item->getDateUpdate(), true)}</td>";
-                echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$item->getItemId(
-                )}' /></td>";
+                echo "  <td>{$this->escape($item->size)}</td>";
+                echo "  <td>{$this->dateago($item->getDateUpdate())}</td>";
+                echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$this->escape($item->getItemId(
+                ))}' /></td>";
                 echo "</tr>";
                 $node++;
             }
@@ -421,8 +421,8 @@ if ($this->isAdmin) {
     <div class='sideElementFirst genericAction'>
       <h1>Actions</h1>
         <ul>
-          <li><a onclick='midas.createNewFolder(".$this->mainFolder->getKey(
-            ).");'><img alt='' src='{$this->coreWebroot}/public/images/icons/folder_add.png'/> {$this->t(
+          <li><a onclick='midas.createNewFolder(".$this->escape($this->mainFolder->getKey(
+            )).");'><img alt='' src='{$this->coreWebroot}/public/images/icons/folder_add.png'/> {$this->t(
                 'Create a top-level folder'
             )}</a></li>
           <li><a href='javascript:;' id='communityDeleteLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/> {$this->t(
@@ -452,7 +452,7 @@ if ($this->isAdmin) {
 
         <?php
         echo "<ul>";
-        echo "  <li>".count($this->members)." {$this->t("member")}".((count(
+        echo "  <li>".$this->escape(count($this->members))." {$this->t("member")}".((count(
                     $this->members
                 ) > 1) ? 's' : '')."</li>";
         echo "</ul>";

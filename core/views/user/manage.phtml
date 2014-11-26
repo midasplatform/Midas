@@ -31,7 +31,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
     <div class="genericThumbnail">
         <?php
         $thumbnail = $this->user->getThumbnail();
-        echo $this->userthumbnail($thumbnail);
+        echo $this->userthumbnail($this->escape($thumbnail));
         ?>
     </div>
     <div class="genericInfo">
@@ -39,21 +39,21 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 
             <?php
             echo '<div style="float:right;margin-right:2px;" class="genericBigButton ">';
-            echo "<a  href='{$this->webroot}/user/{$this->user->getKey(
-            )}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+            echo "<a  href='{$this->webroot}/user/{$this->escape($this->user->getKey(
+            ))}'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
             echo $this->t('Back');
             echo "</a>";
             echo '</div>';
 
             ?>
         </div>
-        <div class="genericName"><?php echo $this->user->getFullName(); ?></div>
-        <div class="genericSubtitle"><?php echo $this->user->getCompany(); ?></div>
+        <div class="genericName"><?php echo $this->escape($this->user->getFullName()); ?></div>
+        <div class="genericSubtitle"><?php echo $this->escape($this->user->getCompany()); ?></div>
     </div>
 
     <img class="tableLoading" alt="" src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>
     Drag and drop to move elements.
-    <table id="browseTable" class="midasTree" root="<?php echo $this->user->getFolderId(); ?>">
+    <table id="browseTable" class="midasTree" root="<?php echo $this->escape($this->user->getFolderId()); ?>">
         <thead>
         <th class="thData"><?php echo $this->t('Name'); ?></th>
         <th class="thSize"><?php echo $this->t('Size'); ?></th>
@@ -67,28 +67,28 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
         foreach ($this->folders as $folder) {
             $folderId = $folder->getFolderId();
             $privacyClass = $folder->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-            echo "<tr id='node--$node' class='parent' privacy='{$folder->getPrivacyStatus(
-            )}' type='folder' element='$folderId' ajax='$folderId'>";
-            echo "  <td class='treeBrowseElement'><span class='notdraggable folder{$privacyClass}'>{$folder->getName(
-            )}</span></td>";
-            echo "  <td><img class='folderLoading' element='$folderId' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
-            echo "  <td>{$this->Date->ago($folder->getDateUpdate(), true)}</td>";
-            echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='$folderId' /></td>";
+            echo "<tr id='node--$node' class='parent' privacy='{$this->escape($folder->getPrivacyStatus(
+            ))}' type='folder' element='{$this->escape($folderId)}' ajax='{$this->escape($folderId)}'>";
+            echo "  <td class='treeBrowseElement'><span class='notdraggable folder{$this->escape($privacyClass)}'>{$this->escape($folder->getName(
+            ))}</span></td>";
+            echo "  <td><img class='folderLoading' element='{$this->escape($folderId)}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
+            echo "  <td>{$this->dateago($folder->getDateUpdate())}</td>";
+            echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$this->escape($folderId)}' /></td>";
             echo "</tr>";
             $node++;
         }
 
         foreach ($this->items as $item) {
             $privacyClass = $item->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-            echo "<tr id='node--$node' privacy='{$item->getPrivacyStatus(
-            )}' class='' type='item' element='{$item->getItemId()}'>";
-            echo "  <td class='treeBrowseElement'><span class='file{$privacyClass}'>{$this->slicename(
+            echo "<tr id='node--$node' privacy='{$this->escape($item->getPrivacyStatus(
+            ))}' class='' type='item' element='{$this->escape($item->getItemId())}'>";
+            echo "  <td class='treeBrowseElement'><span class='file{$this->escape($privacyClass)}'>{$this->slicename(
                 $item->getName(),
                 40
             )}</span></td>";
-            echo "  <td>{$item->size}</td>";
-            echo "  <td>{$this->Date->ago($item->getDateUpdate(), true)}</td>";
-            echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$item->getItemId()}' /></td>";
+            echo "  <td>{$this->escape($item->size)}</td>";
+            echo "  <td>{$this->dateago($item->getDateUpdate())}</td>";
+            echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$this->escape($item->getItemId())}' /></td>";
             echo "</tr>";
             $node++;
         }
@@ -104,17 +104,16 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
                 echo "<P>";?>
                 <div class="communityBlock">
       <span class="communityTitle">
-      <?php echo $communityDao->getName() ?></span>
+      <?php echo $this->escape($communityDao->getName()); ?></span>
                     <br/>
       <span class="communityShortDescription">
       <?php
-      echo substr($communityDao->getDescription(), 0, 270);
+      echo substr($this->escape($communityDao->getDescription()), 0, 270);
       ?>
       </span>
                     <br/>
                 </div>
                 <?php $communityId = $communityDao->getKey(); ?>
-                <!--<table id='<?php echo "browseTable".$communityId; ?>' class="midasTree"> -->
                 <table id="browseTable" class="midasTree">
                     <!--<table id="communityBrowseTable" class="midasTree">-->
                     <thead>
@@ -129,31 +128,31 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 
                     foreach ($this->userCommunityFolders[$communityId] as $folder) {
                         $privacyClass = $folder->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-                        echo "<tr id='node--$node' class='parent' privacy='{$folder->getPrivacyStatus(
-                        )}' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
-                        echo "  <td class='treeBrowseElement'><span class='notdraggable folder{$privacyClass}'>{$folder->getName(
-                        )}</span></td>";
-                        echo "  <td><img class='folderLoading'  element='{$folder->getFolderId(
-                        )}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
-                        echo "  <td>{$this->Date->ago($folder->getDateUpdate(), true)}</td>";
-                        echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$folder->getFolderId(
-                        )}' /></td>";
+                        echo "<tr id='node--$node' class='parent' privacy='{$this->escape($folder->getPrivacyStatus(
+                        ))}' type='folder' element='{$this->escape($folder->getFolderId())}' ajax='{$this->escape($folder->getFolderId())}'>";
+                        echo "  <td class='treeBrowseElement'><span class='notdraggable folder{$this->escape($privacyClass)}'>{$this->escape($folder->getName(
+                        ))}</span></td>";
+                        echo "  <td><img class='folderLoading'  element='{$this->escape($folder->getFolderId(
+                        ))}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
+                        echo "  <td>{$this->dateago($folder->getDateUpdate())}</td>";
+                        echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$this->escape($folder->getFolderId(
+                        ))}' /></td>";
                         echo "</tr>";
                         $node++;
                     }
 
                     foreach ($this->items as $item) {
                         $privacyClass = $item->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-                        echo "<tr id='node--$node' privacy='{$item->getPrivacyStatus(
-                        )}' class='' type='item' element='{$item->getItemId()}'>";
-                        echo "  <td class='treeBrowseElement'><span class='file{$privacyClass}'>{$this->slicename(
+                        echo "<tr id='node--$node' privacy='{$this->escape($item->getPrivacyStatus(
+                        ))}' class='' type='item' element='{$this->escape($item->getItemId())}'>";
+                        echo "  <td class='treeBrowseElement'><span class='file{$this->escape($privacyClass)}'>{$this->slicename(
                             $item->getName(),
                             40
                         )}</span></td>";
-                        echo "  <td>{$item->size}</td>";
-                        echo "  <td>{$this->Date->ago($item->getDateUpdate(), true)}</td>";
-                        echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$item->getItemId(
-                        )}' /></td>";
+                        echo "  <td>{$this->escape($item->size)}</td>";
+                        echo "  <td>{$this->dateago($item->getDateUpdate())}</td>";
+                        echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$this->escape($item->getItemId(
+                        ))}' /></td>";
                         echo "</tr>";
                         $node++;
                     }
@@ -174,8 +173,8 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
         <h1>Actions</h1>
         <ul>
             <?php
-            echo "<li><a onclick='midas.createNewFolder(".$this->mainFolder->getKey(
-                ).");'><img alt='' src='{$this->coreWebroot}/public/images/icons/folder_add.png'/> {$this->t(
+            echo "<li><a onclick='midas.createNewFolder(".$this->escape($this->mainFolder->getKey(
+                )).");'><img alt='' src='{$this->coreWebroot}/public/images/icons/folder_add.png'/> {$this->t(
                     'Create a top-level folder'
                 )}</a></li>";
             ?>

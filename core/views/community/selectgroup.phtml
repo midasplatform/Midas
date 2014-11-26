@@ -29,7 +29,7 @@
         <select id="groupSelect">
             <?php
             foreach ($this->groups as $group) {
-                echo '<option value="'.$group->getKey().'">'.$group->getName().'</option>';
+                echo '<option value="'.$this->escape($group->getKey()).'">'.$this->escape($group->getName()).'</option>';
             }
             ?>
         </select>

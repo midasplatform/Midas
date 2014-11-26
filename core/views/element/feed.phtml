@@ -100,7 +100,7 @@ if (!function_exists('createFeedElement')) {
         }
         echo "</div>";
         echo "<div class='feedDate'>";
-        echo $view->Dateago(strtotime($feed->getDate()));
+        echo $view->dateago(strtotime($feed->getDate()));
         echo "</div>";
         echo "<div style='clear:left;'></div>";
     }

@@ -18,8 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/folder/folder.createfolder.js?'.time(
-    ).'"></script>';
+echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/folder/folder.createfolder.js"></script>';
 echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/jquery/jquery.form.js"></script>';
 ?>
 
@@ -27,7 +26,7 @@ echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/jquer
       href="<?php echo $this->coreWebroot ?>/public/css/folder/folder.createfolder.css"/>
 
 <form id="createFolderForm" class="genericForm" method="POST" action="<?php echo $this->webroot ?>/folder/createFolder">
-    <input type="hidden" name="folderId" value="<?php echo $this->parentFolder->getKey() ?>"/>
+    <input type="hidden" name="folderId" value="<?php echo $this->escape($this->parentFolder->getKey()); ?>"/>
 
     <div>
         <label for="name"><?php echo $this->t("Name") ?></label>

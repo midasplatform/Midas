@@ -29,10 +29,10 @@ if (!function_exists('createFileElement')) {
         echo "<img class='thumbnailSmall' src='{$view->coreWebroot}/public/images/icons/document-big.png' alt=''/>";
         echo "</div>";
         echo "<div class='fileInfo'>";
-        echo " <a href='{$view->webroot}/item/{$file->getKey()}'>".trimFileName($file->getName())."</a>";
+        echo " <a href='{$view->webroot}/item/{$view->escape($file->getKey())}'>".trimFileName($view->escape($file->getName()))."</a>";
         echo "</div>";
         echo "<div class='fileDate'>";
-        echo $view->Dateago(strtotime($file->policy_date));
+        echo $view->dateago(strtotime($file->policy_date));
         echo "</div>";
         echo "<div style='clear:left;'></div>";
     }
@@ -56,7 +56,7 @@ if (empty($files)) {
 
 echo "<div class='listFilesContainer'>";
 foreach ($this->listFiles as $key => $file) {
-    echo "<div class='fileElement'  element='{$file->getKey()}'>";
+    echo "<div class='fileElement'  element='{$this->escape($file->getKey())}'>";
     createFileElement($this, $file);
     echo "</div>";
 }

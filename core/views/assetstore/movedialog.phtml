@@ -25,17 +25,17 @@
         src="<?php echo $this->coreWebroot ?>/public/js/assetstore/assetstore.movedialog.js"></script>
 
 <form id='moveBitstreamsForm' action="<?php echo $this->webroot ?>/assetstore/movecontents" method="post">
-    Destination assetstore:
+    Destination asset store:
     <select id="dstAssetstoreId">
         <?php
         foreach ($this->assetstores as $assetstore) {
             if ($assetstore->getKey() != $this->srcAssetstore->getKey()) {
-                echo '<option value="'.$assetstore->getKey().'">'.$assetstore->getName().'</option>';
+                echo '<option value="'.$this->escape($assetstore->getKey()).'">'.$this->escape($assetstore->getName()).'</option>';
             }
         }
         ?>
     </select>
-    <input type="hidden" id="srcAssetstoreId" value="<?php echo $this->srcAssetstore->getKey(); ?>"/>
+    <input type="hidden" id="srcAssetstoreId" value="<?php echo $this->escape($this->srcAssetstore->getKey()); ?>"/>
 
     <div id="moveBitstreamsProgressBar"></div>
     <div id="moveBitstreamsProgressMessage"></div>

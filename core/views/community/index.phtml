@@ -44,18 +44,18 @@ foreach ($this->otherCSSs as $uris) {
         {
         ?>
         <div class="communityBlock">
-            <a class="communityTitle" href="<?php echo $this->webroot.'/community/'.$community->getKey(); ?>">
-                <?php echo $community->getName() ?></a>
+            <a class="communityTitle" href="<?php echo $this->webroot.'/community/'.$this->escape($community->getKey()); ?>">
+                <?php echo $this->escape($community->getName()); ?></a>
             <br/>
             <?php
             $rawDescription = $community->getDescription();
-            $description = $this->Utility->markdown($rawDescription);
+            $description = $this->markdown($rawDescription);
             $strippedDescription = strip_tags($description);
             if (!empty($rawDescription)) {
                 ?>
                 <span class="communityDescription">
-<?php echo substr($strippedDescription, 0, 240); ?>
-                    <a class="more" href="<?php echo $this->webroot.'/community/'.$community->getKey(); ?>#tabs-info">More &raquo;</a>
+<?php echo $this->escape(substr($strippedDescription, 0, 240)); ?>
+                    <a class="more" href="<?php echo $this->webroot.'/community/'.$this->escape($community->getKey()); ?>#tabs-info">More &raquo;</a>
       </span>
             <?php
             }
@@ -90,13 +90,13 @@ foreach ($this->otherCSSs as $uris) {
                     foreach ($this->otherActions as $module => $actionList) {
                         if (is_array($actionList)) {
                             foreach ($actionList as $action) {
-                                echo '<li>'.$action.'</li>';
+                                echo '<li>'.$this->escape($action).'</li>';
                             }
                         } else {
                             if (is_string($actionList)) {
-                                echo '<li>'.$actionList.'</li>';
+                                echo '<li>'.$this->escape($actionList).'</li>';
                             } else {
-                                echo '<li>Invalid action list entry from '.$module.'</li>';
+                                echo '<li>Invalid action list entry from '.$this->escape($module).'</li>';
                             }
                         }
                     }
@@ -108,7 +108,7 @@ foreach ($this->otherCSSs as $uris) {
         <div class="sideElementLast viewInfo">
             <h1>Info</h1>
             <?php
-            echo count($this->userCommunities).' '.(count($this->userCommunities) > 1 ? $this->t(
+            echo $this->escape(count($this->userCommunities)).' '.(count($this->userCommunities) > 1 ? $this->t(
                     'communities'
                 ) : $this->t('community'));
             ?>

@@ -32,7 +32,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.for
 <div id="applyPoliciesRecursiveMessage"></div>
 
 <div id="applyPoliciesRecursiveForm" style="float: right">
-    <input type='hidden' id="folderId" value="<?php echo $this->folderId; ?>"/>
+    <input type='hidden' id="folderId" value="<?php echo $this->escape($this->folderId); ?>"/>
     <input class="globalButton" type='submit' name='submitButton' id='acceptApplyRecursive'
            value='<?php echo $this->t('Yes') ?>'/>
     <input class="globalButton" style="margin-left: 15px;" type='button' name='declineApplyRecursive'

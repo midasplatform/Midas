@@ -39,7 +39,7 @@ foreach ($jsArray as $module => $list) {
 }
 foreach ($cssArray as $module => $list) {
     foreach ($list as $stylesheet) {
-        echo '<link type="text/css" rel="stylesheet" href="'.$stylesheet.'" />';
+        echo '<link type="text/css" rel="stylesheet" href="'.$this->escape($stylesheet).'" />';
     }
 }
 ?>
@@ -81,34 +81,34 @@ foreach ($cssArray as $module => $list) {
 
                 foreach ($this->folders as $folder) {
                     $privacyClass = $folder->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-                    echo "<tr id='node--$node' privacy='{$folder->getPrivacyStatus(
-                    )}' class='parent' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId(
-                    )}'>";
-                    echo "  <td class='treeBrowseElement'><span class='folder{$privacyClass}'>{$this->slicename(
-                        $folder->getName(),
+                    echo "<tr id='node--$node' privacy='{$this->escape($folder->getPrivacyStatus(
+                    ))}' class='parent' type='folder' element='{$this->escape($folder->getFolderId())}' ajax='{$this->escape($folder->getFolderId(
+                    ))}'>";
+                    echo "  <td class='treeBrowseElement'><span class='folder{$this->escape($privacyClass)}'>{$this->slicename(
+                        $this->escape($folder->getName()),
                         40
                     )}</span></td>";
-                    echo "  <td><img class='folderLoading'  element='{$folder->getFolderId(
-                    )}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
-                    echo "  <td>{$this->Date->ago($folder->getDateUpdate(), true)}</td>";
-                    echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$folder->getFolderId(
-                    )}' /></td>";
+                    echo "  <td><img class='folderLoading'  element='{$this->escape($folder->getFolderId(
+                    ))}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
+                    echo "  <td>{$this->dateago($folder->getDateUpdate())}</td>";
+                    echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$this->escape($folder->getFolderId(
+                    ))}' /></td>";
                     echo "</tr>";
                     $node++;
                 }
 
                 foreach ($this->items as $item) {
                     $privacyClass = $item->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-                    echo "<tr id='node--$node' privacy='{$item->getPrivacyStatus(
-                    )}' class='' type='item' element='{$item->getItemId()}'>";
-                    echo "  <td class='treeBrowseElement'><span class='file{$privacyClass}'>{$this->slicename(
-                        $item->getName(),
+                    echo "<tr id='node--$node' privacy='{$this->escape($item->getPrivacyStatus(
+                    ))}' class='' type='item' element='{$this->escape($item->getItemId())}'>";
+                    echo "  <td class='treeBrowseElement'><span class='file{$this->escape($privacyClass)}'>{$this->slicename(
+                        $this->escape($item->getName()),
                         40
                     )}</span></td>";
-                    echo "  <td>{$item->size}</td>";
-                    echo "  <td>{$this->Date->ago($item->getDateUpdate(), true)}</td>";
-                    echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$item->getItemId(
-                    )}' /></td>";
+                    echo "  <td>{$this->escape($item->size)}</td>";
+                    echo "  <td>{$this->dateago($item->getDateUpdate())}</td>";
+                    echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$this->escape($item->getItemId(
+                    ))}' /></td>";
                     echo "</tr>";
                     $node++;
                 }
@@ -126,8 +126,7 @@ foreach ($cssArray as $module => $list) {
         </div>
         <div id="tabs-2">
             <?php
-            $descriptionMainFolder = $this->mainFolder->getDescription();
-            echo $descriptionMainFolder;
+            echo $this->escape($this->mainFolder->getDescription());
             ?>
         </div>
     </div>
@@ -137,10 +136,10 @@ foreach ($cssArray as $module => $list) {
 <div id="guideRobot">
     <?php
     foreach ($this->folders as $folder) {
-        echo "<a href='{$this->webroot}/folder/{$folder->getKey()}'>{$folder->getName()}</a> ";
+        echo "<a href='{$this->webroot}/folder/{$this->escape($folder->getKey())}'>{$this->escape($folder->getName())}</a> ";
     }
     foreach ($this->items as $item) {
-        echo "<a href='{$this->webroot}/item/{$item->getKey()}'>{$item->getName()}</a> ";
+        echo "<a href='{$this->webroot}/item/{$this->escape($item->getKey())}'>{$this->escape($item->getName())}</a> ";
     }
     ?>
 </div>
@@ -153,31 +152,31 @@ foreach ($cssArray as $module => $list) {
       <h1>Folder Actions</h1>
       <li class="downloadObject">
         <img alt="" src="'.$this->coreWebroot.'/public/images/icons/download.png"/>
-        <a href="javascript:;" class="downloadFolderLink" element="'.$this->mainFolder->getKey().'">Download</a>
+        <a href="javascript:;" class="downloadFolderLink" element="'.$this->escape($this->mainFolder->getKey()).'">Download</a>
       </li>
       <li>
         <img alt="" src="'.$this->coreWebroot.'/public/images/icons/link.png"/>
-        <a type="folder" element="'.$this->mainFolder->getKey().'" href="javascript:;" class="getResourceLinks">Share</a>
+        <a type="folder" element="'.$this->escape($this->mainFolder->getKey()).'" href="javascript:;" class="getResourceLinks">Share</a>
       </li>';
     if ($this->isModerator) {
         echo '
       <li>
         <img alt="" src="'.$this->coreWebroot.'/public/images/icons/folder_add.png"/>
-        <a onclick="midas.createNewFolder('.$this->mainFolder->getKey().');">Create new folder</a>
+        <a onclick="midas.createNewFolder('.$this->escape($this->mainFolder->getKey()).');">Create new folder</a>
       </li>
       <li>
         <img alt="" src="'.$this->coreWebroot.'/public/images/icons/upload.png"/>
-        <a rel="'.$this->webroot.'/upload/simpleupload/?parent='.$this->mainFolder->getKey().'" class="uploadInFolder">Upload here</a>
+        <a rel="'.$this->webroot.'/upload/simpleupload/?parent='.$this->escape($this->mainFolder->getKey()).'" class="uploadInFolder">Upload here</a>
       </li>';
         if ($this->deleteable) {
             echo '
         <li>
           <img alt="" src="'.$this->coreWebroot.'/public/images/icons/edit.png"/>
-          <a onclick="midas.editFolder('.$this->mainFolder->getKey().');">Edit</a>
+          <a onclick="midas.editFolder('.$this->escape($this->mainFolder->getKey()).');">Edit</a>
         </li>
         <li>
           <img alt="" src="'.$this->coreWebroot.'/public/images/icons/move.png"/>
-          <a onclick="midas.moveFolder('.$this->mainFolder->getKey().');">Move</a>
+          <a onclick="midas.moveFolder('.$this->escape($this->mainFolder->getKey()).');">Move</a>
         </li>';
         }
     }
@@ -185,13 +184,13 @@ foreach ($cssArray as $module => $list) {
         echo '
       <li>
         <img alt="" src="'.$this->coreWebroot.'/public/images/icons/lock.png"/>
-        <a type="folder" element="'.$this->mainFolder->getKey().'" class="sharingLink">Permissions</a>
+        <a type="folder" element="'.$this->escape($this->mainFolder->getKey()).'" class="sharingLink">Permissions</a>
       </li>';
         if ($this->deleteable) {
             echo '
         <li>
           <img alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png"/>
-          <a onclick="midas.deleteFolder('.$this->mainFolder->getKey().');">Delete</a>
+          <a onclick="midas.deleteFolder('.$this->escape($this->mainFolder->getKey()).');">Delete</a>
         </li>';
         }
     }

@@ -303,7 +303,7 @@ class CommunityController extends AppController
 
         $this->addDynamicHelp(
             '.communityList:first',
-            'List of current projects/communities hosted on MIDAS.',
+            'List of current projects/communities hosted on Midas.',
             'top right',
             'bottom left'
         );
@@ -402,7 +402,7 @@ class CommunityController extends AppController
 
         $this->view->title .= ' - '.$communityDao->getName();
         $this->view->metaDescription = substr(
-            UtilityComponent::markdown($communityDao->getDescription()),
+            UtilityComponent::markdown(htmlspecialchars($communityDao->getDescription(), ENT_QUOTES, 'UTF-8')),
             0,
             160
         );

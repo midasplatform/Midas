@@ -46,18 +46,18 @@ echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/brows
     foreach ($this->communities as $community) {
         $folder = $community->getFolder();
         echo "<tr id='node--$node' class='parent community' privacy='".($community->getPrivacy(
-            ) == 1 ? MIDAS_PRIVACY_PRIVATE : MIDAS_PRIVACY_PUBLIC)."' type='community' element='{$folder->getFolderId(
-            )}'>";
-        echo "  <td class='treeBrowseElement'><span class='community'>{$community->getName()}</span></td>";
+            ) == 1 ? MIDAS_PRIVACY_PRIVATE : MIDAS_PRIVACY_PUBLIC)."' type='community' element='{$this->escape($folder->getFolderId(
+            ))}'>";
+        echo "  <td class='treeBrowseElement'><span class='community'>{$this->escape($community->getName())}</span></td>";
         echo "</tr>";
         $node++;
     }
 
     $folder = $this->user->getFolder();
     echo "<tr id='node--$node' class='parent userTopLevel' privacy='{$folder->getPrivacyStatus(
-    )}' type='folder' element='{$folder->getFolderId()}'>";
-    echo "  <td class='treeBrowseElement'><span class='folder'>{$this->t('My Files')} ({$this->user->getFullName(
-    )})</span></td>";
+    )}' type='folder' element='{$this->escape($folder->getFolderId())}'>";
+    echo "  <td class='treeBrowseElement'><span class='folder'>{$this->t('My Files')} ({$this->escape($this->user->getFullName(
+    ))})</span></td>";
     echo "</tr>";
     $node++;
     ?>
@@ -78,7 +78,7 @@ echo '</div>';
 <br/>
 
 <form class="genericForm" type='post' action="<?php echo $this->webroot ?>/browse/selectitem">
-    <input type='hidden' name='elements' value='<?php echo $this->folderIds ?>;<?php echo $this->itemIds ?>'/>
+    <input type='hidden' name='elements' value='<?php echo $this->escape($this->folderIds); ?>;<?php echo $this->escape($this->itemIds); ?>'/>
     <input type='hidden' id="selectedDestinationHidden" name='destination'/>
     Destination: <span id="selectedDestination"> <?php echo $this->t('Please select a folder.') ?> </span> <br/>
 
@@ -88,4 +88,4 @@ echo '</div>';
     </div>
 </form>
 
-<input id="defaultPolicy" type="hidden" value="<?php echo $this->policy ?>"/>
+<input id="defaultPolicy" type="hidden" value="<?php echo $this->escape($this->policy); ?>"/>

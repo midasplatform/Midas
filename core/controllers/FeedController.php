@@ -61,7 +61,7 @@ class FeedController extends AppController
 
         $this->addDynamicHelp(
             '.feedContainer',
-            'The <b>Feed</b> shows recent actions and events.',
+            'The Feed shows recent actions and events.',
             'top right',
             'bottom left'
         );

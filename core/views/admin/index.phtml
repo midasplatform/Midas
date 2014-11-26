@@ -35,14 +35,14 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.clu
 <ul>
     <li><a href="#tabs-configuration">Configuration</a></li>
     <li><a href="#tabs-modules">Modules</a></li>
-    <li><a href="#tabs-assetstore">Assetstores</a></li>
+    <li><a href="#tabs-assetstore">Asset Stores</a></li>
     <li><a href="<?php echo $this->webroot ?>/licenses/all">Licenses</a></li>
     <li><a href="<?php echo $this->webroot ?>/admin/upgrade">Upgrade</a></li>
     <li><a href="<?php echo $this->webroot ?>/admin/dashboard">Dashboard</a></li>
     <?php
     foreach ($this->extraTabs as $module => $tabs) {
         foreach ($tabs as $name => $link) {
-            echo '<li><a href="'.$link.'">'.$name.'</a></li>';
+            echo '<li><a href="'.$this->escape($link).'">'.$this->escape($name).'</a></li>';
         }
     }
     ?>
@@ -106,27 +106,27 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.clu
     foreach ($this->assetstores as $assetstore) {
         echo "<div class='assetstoreElement'>
                <div class='assetstoreNameContainer'>
-                 <span class='assetstoreName'>{$assetstore->getName()}</span> ";
+                 <span class='assetstoreName'>{$this->escape($assetstore->getName())}</span> ";
         if ($assetstore->default) {
-            echo "(<span qtip='If set as default, the uploaded files will be stored in this assetstore.' class='defaultAssetstore' element='{$assetstore->getKey(
-            )}'>default assetstore</span>)";
+            echo "(<span qtip='If set as default, the uploaded files will be stored in this asset store.' class='defaultAssetstore' element='{$this->escape($assetstore->getKey(
+            ))}'>default asset store</span>)";
         } else {
-            echo "(<a qtip='If set as default, the uploaded files will be stored in this assetstore.' class='defaultAssetstoreLink' element='{$assetstore->getKey(
-            )}'>set as default</a>)";
+            echo "(<a qtip='If set as default, the uploaded files will be stored in this asset store.' class='defaultAssetstoreLink' element='{$this->escape($assetstore->getKey(
+            ))}'>set as default</a>)";
         }
         echo '</div>';
         if ($assetstore->totalSpaceText === false) {
-            echo "<span class='errorText'>Error: Unable to access assetstore</span><br/>";
+            echo "<span class='errorText'>Error: Unable to access asset store</span><br/>";
         } else {
             if ($assetstore->totalSpace > 0) {
-                echo "Space: {$assetstore->freeSpaceText} free of {$assetstore->totalSpaceText} total";
+                echo "Space: {$this->escape($assetstore->freeSpaceText)} free of {$this->escape($assetstore->totalSpaceText)} total";
                 if (($assetstore->freeSpace / $assetstore->totalSpace < 0.1)) {
                     echo " <span class='freeSpaceWarning'>(Warning: less than 10% free)</span>";
                 }
                 echo "<br/>";
             }
         }
-        echo "Path: <span class='assetstorePath'>{$assetstore->getPath()}</span>";
+        echo "Path: <span class='assetstorePath'>{$this->escape($assetstore->getPath())}</span>";
         echo "<br/>Type: ";
         switch ($assetstore->getType()) {
             case MIDAS_ASSETSTORE_LOCAL:
@@ -136,20 +136,20 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.clu
                 echo "Remote";
                 break;
             default:
-                echo $assetstore->getType();
+                echo $this->escape($assetstore->getType());
                 break;
         }
         echo "<div class='assetstoreActions'>
-               <button class='editAssetstoreLink' element='{$assetstore->getKey()}'>Edit</button>
-               <button class='removeAssetstoreLink' element='{$assetstore->getKey()}'>Delete</button>
-               <button class='moveBitstreamsLink' element='{$assetstore->getKey()}'>Move bitstreams</button>
+               <button class='editAssetstoreLink' element='{$this->escape($assetstore->getKey())}'>Edit</button>
+               <button class='removeAssetstoreLink' element='{$this->escape($assetstore->getKey())}'>Delete</button>
+               <button class='moveBitstreamsLink' element='{$this->escape($assetstore->getKey())}'>Move bitstreams</button>
              </div>
          </div>";
     }
     ?>
 
     <a class="load-newassetstore" href="#newassetstore-form" rel="#newassetstore-form"
-       title="<?php echo $this->t('Add assetstore') ?>">Add a new assetstore</a>
+       title="<?php echo $this->t('Add asset store') ?>">Add a new asset store</a>
     <br/>
     <a href="<?php echo $this->webroot ?>/import">Import local files</a>
 
@@ -164,28 +164,28 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.clu
         <?php
         $hidden = 0;
         foreach ($this->modulesList as $category => $list) {
-            echo "<tr><td colspan=3><span class='moduleCategoryArrow'>></span> <a class='moduleVisibleCategoryLink'>".$category."</a> (".$this->countModules[$category]['visible'].")</td></tr>";
+            echo "<tr><td colspan=3><span class='moduleCategoryArrow'>></span> <a class='moduleVisibleCategoryLink'>".$this->escape($category)."</a> (".$this->escape($this->countModules[$category]['visible']).")</td></tr>";
             echo "<div class='categoryWrapper' style='display:none;'>";
             foreach ($list as $key => $module) {
                 if ($module->dbOk && $module->dependenciesExist) {
                     echo "
-                 <tr class='moduleElement {$category}VisibleElement' style='display:none;'>
+                 <tr class='moduleElement {$this->escape($category)}VisibleElement' style='display:none;'>
                     <td style='width:30px;'>
                       <input type='checkbox' dependencies='".trim(
-                            $module->dependencies
-                        )."' class='moduleCheckbox' module='{$key}' name='module[{$key}]'   ".((in_array(
+                            $this->escape($module->dependencies)
+                        )."' class='moduleCheckbox' module='{$this->escape($key)}' name='module[{$this->escape($key)}]'   ".((in_array(
                             $key,
                             $this->modulesEnable
                         )) ? 'checked' : '')."/>
                     </td>
                     <td>
-                    <b>{$module->fullname}</b><br/>
-                    {$module->description}
+                    <b>{$this->escape($module->fullname)}</b><br/>
+                    {$this->escape($module->description)}
                     </td>";
                     if ($module->configPage) {
                         echo "
                     <td class='configLink' style='display:none;width:300px;'>
-                      <a href='{$this->webroot}/$key/{$module->configPage}'>View configuration</a>
+                      <a href='{$this->webroot}/{$this->escape($key)}/{$this->escape($module->configPage)}'>View configuration</a>
                     </td>";
                     }
                     echo "
@@ -203,17 +203,17 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.clu
         $hidden = 0;
         echo "<tr><td colspan=3><h4 style='margin-bottom:2px;'>Hidden modules</h4></td></tr>";
         foreach ($this->modulesList as $category => $list) {
-            echo "<tr><td colspan=3><span class='moduleCategoryArrow'>></span> <a class='moduleHiddenCategoryLink'>".$category."</a> (".$this->countModules[$category]['hidden'].")</td></tr>";
+            echo "<tr><td colspan=3><span class='moduleCategoryArrow'>></span> <a class='moduleHiddenCategoryLink'>".$category."</a> (".$this->escape($this->countModules[$category]['hidden']).")</td></tr>";
             echo "<div class='categoryWrapper' style='display:none;'>";
             foreach ($list as $key => $module) {
                 if (!$module->dbOk || !$module->dependenciesExist) {
                     $hidden++;
                     echo "
-                 <tr class='moduleElementError {$category}HiddenElement'  style='display:none;'>
+                 <tr class='moduleElementError {$this->escape($category)}HiddenElement'  style='display:none;'>
                     <td style='width:30px;'></td>
                     <td>
-                    <b>{$module->fullname}</b><br/>
-                    {$module->description}
+                    <b>{$this->escape($module->fullname)}</b><br/>
+                    {$this->escape($module->description)}
                     </td>";
                     if (!$module->dbOk) {
                         echo "
@@ -239,7 +239,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.clu
     </table>
 
     <?php if ($hidden != 0) {
-        echo "<br/><br/><a onclick=\"$('.tableElementError').show();$(this).remove();\">Show $hidden hidden modules</a>";
+        echo "<br/><br/><a onclick=\"$('.tableElementError').show();$(this).remove();\">Show $this->escape($hidden) hidden modules</a>";
     }?>
 
     <p>

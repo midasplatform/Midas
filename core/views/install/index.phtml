@@ -43,7 +43,7 @@
     echo "<ul>";
     if (!empty($this->phpextension_missing)) {
         foreach ($this->phpextension_missing as $missing) {
-            echo "<li><span style=\"color:#d48304\">$missing</span></li>";
+            echo "<li><span style=\"color:#d48304\">{$this->escape($missing)}</span></li>";
         }
     }
 

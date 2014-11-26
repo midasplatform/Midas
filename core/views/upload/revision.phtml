@@ -25,7 +25,7 @@
         <?php
         foreach ($this->customTabs as $module => $tabs) {
             foreach ($tabs as $tabName => $tabUrl) {
-                echo '<li><a href="'.$tabUrl.'">'.$tabName.'</a></li>';
+                echo '<li><a href="'.$this->escape($tabUrl).'">'.$this->escape($tabName).'</a></li>';
             }
         }
         ?>
@@ -59,7 +59,7 @@
                value="<?php echo $this->t('Start Upload'); ?>"/>
     </div>
 </div>
-<input type="hidden" id="destinationId" value="<?php echo $this->item->getKey(); ?>"/>
+<input type="hidden" id="destinationId" value="<?php echo $this->escape($this->item->getKey()); ?>"/>
 <input type="hidden" class="sessionId" value="<?php echo session_id(); ?>"/>
 <input type="hidden" class="uploadedSimple" value="0"/>
 <?php

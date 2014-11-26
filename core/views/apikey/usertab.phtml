@@ -50,14 +50,14 @@ echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/apike
         foreach ($this->userapiDaos as $userapiDao) {
             ?>
             <tr>
-                <td><?php echo $userapiDao->getApplicationName(); ?></td>
-                <td><?php echo $userapiDao->getApikey(); ?></td>
-                <td><?php echo $userapiDao->getTokenExpirationTime(); ?> minutes
+                <td><?php echo $this->escape($userapiDao->getApplicationName()); ?></td>
+                <td><?php echo $this->escape($userapiDao->getApikey()); ?></td>
+                <td><?php echo $this->escape($userapiDao->getTokenExpirationTime()); ?> minutes
                 </td>
-                <td><?php echo $this->Date->ago($userapiDao->getCreationDate()); ?></td>
+                <td><?php echo $this->dateago($userapiDao->getCreationDate()); ?></td>
                 <td>
                     <a style='text-decoration: underline;' class='deleteApiKeyLink'
-                       element='<?php echo $userapiDao->getKey() ?>'><?php echo $this->t('delete') ?></a>
+                       element='<?php echo $this->escape($userapiDao->getKey()); ?>'><?php echo $this->t('delete') ?></a>
                 </td>
             </tr>
         <?php
@@ -75,7 +75,7 @@ echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/apike
 
 <form class="genericForm" id="generateKeyForm" method="<?php echo $this->form['method'] ?>"
       action="<?php echo $this->form['action'] ?>">
-    <input type="hidden" id="apiUserId" name="userId" value="<?php echo $this->user->getKey(); ?>"/>
+    <input type="hidden" id="apiUserId" name="userId" value="<?php echo $this->escape($this->user->getKey()); ?>"/>
 
     <div>
         <label for="appplication_name"><?php echo $this->t('Application Name') ?>:</label>

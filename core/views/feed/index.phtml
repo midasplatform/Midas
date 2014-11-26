@@ -40,9 +40,9 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/feed/feed.index.j
         echo '<div class="sideElementFirst feedThumbnail">';
         echo '<h1>Thumbnails</h1>';
         foreach ($this->itemThumbnails as $item) {
-            echo "<a href='{$this->webroot}/item/{$item->getKey()}'>";
-            echo "<img qtip='".$item->getName()."' src='{$this->webroot}/item/thumbnail?itemId={$item->getKey(
-                )}' alt=''/>";
+            echo "<a href='{$this->webroot}/item/{$this->escape($item->getKey())}'>";
+            echo "<img qtip='".$this->escape($item->getName())."' src='{$this->webroot}/item/thumbnail?itemId={$this->escape($item->getKey(
+                ))}' alt=''/>";
             echo "</a>";
         }
         echo '</div>';
@@ -53,10 +53,10 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/feed/feed.index.j
         <?php
         echo "<ul>";
         echo "  <li>{$this->nUsers} {$this->t('user')}".(($this->nUsers > 1) ? 's' : '')."</li>";
-        echo "  <li>{$this->nCommunities} ".(($this->nCommunities > 1) ? "{$this->t('communities')}" : "{$this->t(
+        echo "  <li>{$this->escape($this->nCommunities)} ".(($this->nCommunities > 1) ? "{$this->t('communities')}" : "{$this->t(
                 'community'
             )}")."</li>";
-        echo "  <li>{$this->nItems} {$this->t('item')}".(($this->nItems > 1) ? 's' : '')."</li>";
+        echo "  <li>{$this->escape($this->nItems)} {$this->t('item')}".(($this->nItems > 1) ? 's' : '')."</li>";
         echo "</ul>";
         ?>
     </div>

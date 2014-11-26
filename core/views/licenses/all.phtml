@@ -30,16 +30,15 @@
 <div class="licenseList">
     <?php
     foreach ($this->licenses as $license) {
-        echo '<div class="licenseContainer" element="'.$license->getKey().'">';
+        echo '<div class="licenseContainer" element="'.$this->escape($license->getKey()).'">';
         echo '<form class="genericForm existingLicense" action="'.$this->webroot.'/licenses/save" method="POST">';
-        echo '  <div><input class="licenseName" type="text" name="name" value="'.$license->getName().'" /></div>';
-        echo '  <div><textarea class="licenseText" name="fulltext">'.htmlentities(
-                $license->getFulltext()
-            ).'</textarea></div>';
-        echo '  <input type="hidden" name="licenseId" value="'.$license->getKey().'" />';
+        echo '  <div><input class="licenseName" type="text" name="name" value="'.$this->escape($license->getName()).'" /></div>';
+        echo '  <div><textarea class="licenseText" name="fulltext">'.
+                $this->escape($license->getFulltext()).'</textarea></div>';
+        echo '  <input type="hidden" name="licenseId" value="'.$this->escape($license->getKey()).'" />';
         echo '  <div><input class="globalButton" style="margin-left: 0;" type="submit" name="submit" value="Save" /></form>';
-        echo '  <input element="'.$license->getKey(
-            ).'" class="globalButton deleteLicense" style="margin-left: 10px;" type="button" value="Delete" />';
+        echo '  <input element="'.$this->escape($license->getKey(
+            )).'" class="globalButton deleteLicense" style="margin-left: 10px;" type="button" value="Delete" />';
         echo '  </div>';
         echo '</div>';
     }

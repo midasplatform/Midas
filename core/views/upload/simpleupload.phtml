@@ -27,7 +27,7 @@
         <?php
         foreach ($this->customTabs as $module => $tabs) {
             foreach ($tabs as $tabName => $tabUrl) {
-                echo '<li><a href="'.$tabUrl.'">'.$tabName.'</a></li>';
+                echo '<li><a href="'.$this->escape($tabUrl).'">'.$this->escape($tabName).'</a></li>';
             }
         }
         ?>
@@ -56,8 +56,8 @@
         <div>
             <div class="upload-status-container">
                 <b><?php echo $this->t('Destination:'); ?></b>
-                <span id="destinationUpload"><?php echo $this->defaultUploadLocationText; ?></span>
-                <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->defaultUploadLocation; ?>"/>
+                <span id="destinationUpload"><?php echo $this->escape($this->defaultUploadLocationText); ?></span>
+                <input type="hidden" name="destinationId" id="destinationId" value="<?php echo $this->escape($this->defaultUploadLocation); ?>"/>
 
                 <div class="belowDestinationUpload" style="display: none;"></div>
             </div>
@@ -86,9 +86,9 @@
             <div>
                 <br/>
                 <b><?php echo $this->t('Curent selected location:'); ?></b>
-                <span class="destinationUpload"><?php echo $this->defaultUploadLocationText; ?></span>
+                <span class="destinationUpload"><?php echo $this->escape($this->defaultUploadLocationText); ?></span>
                 <input type="hidden" name="parent" class="destinationId"
-                       value="<?php echo $this->defaultUploadLocation; ?>"/>
+                       value="<?php echo $this->escape($this->defaultUploadLocation); ?>"/>
                 <br/>
                 <input style="margin-left:0;" class="browseMIDASLink globalButton" type="button"
                        value="Choose location"/>
@@ -103,8 +103,8 @@
 </div>
 
 <input type="hidden" class="buttonBrowse" value="<?php echo $this->t('Browse'); ?>"/>
-<input type="hidden" class="sessionId" value="<?php echo session_id(); ?>"/>
-<input type="hidden" class="maxSizeFile" value="<?php echo $this->maxSizeFile; ?>"/>
+<input type="hidden" class="sessionId" value="<?php echo $this->escape(session_id()); ?>"/>
+<input type="hidden" class="maxSizeFile" value="<?php echo $this->escape($this->maxSizeFile); ?>"/>
 <input type="hidden" class="uploadedSimple" value="0"/>
 <input type="hidden" class="uploadedLinks" value="0"/>
 

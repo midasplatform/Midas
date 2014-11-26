@@ -59,7 +59,7 @@ class UtilityComponent extends AppComponent
                 $this->toXml($value, $rootNodeName, $node);
             } else {
                 // add single node.
-                $value = htmlentities($value);
+                $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
                 $xml->addChild($key, $value);
             }
         }
