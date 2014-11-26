@@ -46,12 +46,12 @@
         <div class="authorizationText">
             <img class="secureImage" alt="" src="<?php echo $this->coreWebroot ?>/public/images/icons/lock.png"/>
             By logging in, you are authorizing
-            <b><?php echo $this->client->getName() ?></b>
+            <b><?php echo $this->escape($this->client->getName()); ?></b>
             to perform the following actions:
             <ul class="scopeList">
                 <?php
                 foreach ($this->scopeStrings as $scopeString) {
-                    echo '<li>'.$scopeString.'</li>';
+                    echo '<li>'.$this->escape($scopeString).'</li>';
                 }
                 ?>
             </ul>
@@ -65,10 +65,10 @@
             <input class="btn btn-primary loginSubmit" type="submit" name="allowOrDeny" value="Allow"/>
             <input class="btn loginDeny" type="submit" name="allowOrDeny" value="Deny"/>
         </div>
-        <input type="hidden" name="redirect_uri" value="<?php echo $this->redirectUri ?>"/>
-        <input type="hidden" name="state" value="<?php echo htmlspecialchars($this->state) ?>"/>
-        <input type="hidden" name="scope" value="<?php echo htmlspecialchars($this->scope) ?>"/>
-        <input type="hidden" name="client_id" value="<?php echo $this->client->getKey() ?>"/>
+        <input type="hidden" name="redirect_uri" value="<?php echo $this->escape($this->redirectUri); ?>"/>
+        <input type="hidden" name="state" value="<?php echo $this->escape($this->state) ?>"/>
+        <input type="hidden" name="scope" value="<?php echo $this->escape($this->scope) ?>"/>
+        <input type="hidden" name="client_id" value="<?php echo $this->escape($this->client->getKey()) ?>"/>
     </form>
 </div>
 </body>

@@ -40,8 +40,8 @@
         <tbody>
         <?php
         foreach ($this->clients as $client) {
-            echo '<tr><td>'.$client->getName().'</td><td>'.$client->getKey().'</td><td>'.$client->getSecret(
-                ).'</td><td><a class="deleteClientLink" element="'.$client->getKey().'">Delete</a></td></tr>';
+            echo '<tr><td>'.$this->escape($client->getName()).'</td><td>'.$client->getKey().'</td><td>'.$this->escape($client->getSecret(
+                )).'</td><td><a class="deleteClientLink" element="'.$this->escape($client->getKey()).'">Delete</a></td></tr>';
         }
         ?>
         </tbody>
@@ -66,10 +66,10 @@
         <tbody>
         <?php
         foreach ($this->codes as $code) {
-            echo '<tr><td>'.$code->getClient()->getName().'</td><td>Authorization Code</td><td></td></tr>';
+            echo '<tr><td>'.$this->escape($code->getClient()->getName()).'</td><td>Authorization Code</td><td></td></tr>';
         }
         foreach ($this->tokens as $token) {
-            echo '<tr><td>'.$token->getClient()->getName().'</td><td>';
+            echo '<tr><td>'.$this->escape($token->getClient()->getName()).'</td><td>';
             switch ($token->getType()) {
                 case MIDAS_OAUTH_TOKEN_TYPE_ACCESS:
                     echo 'Access token';
@@ -78,11 +78,11 @@
                     echo 'Refresh token';
                     break;
                 default:
-                    echo $token->getType();
+                    echo $this->escape($token->getType());
                     break;
             }
-            echo '</td><td><a class="deauthorizeTokenLink" type="'.$token->getType().'" element="'.$token->getKey(
-                ).'">'.'Deauthorize</a></td></tr>';
+            echo '</td><td><a class="deauthorizeTokenLink" type="'.$this->escape($token->getType()).'" element="'.$this->escape($token->getKey(
+                )).'">'.'Deauthorize</a></td></tr>';
         }
         ?>
         </tbody>
@@ -118,4 +118,4 @@
     </div>
 </div>
 
-<div class="userIdValue" style="display: none;"><?php echo $this->user->getKey() ?></div>
+<div class="userIdValue" style="display: none;"><?php echo $this->escape($this->user->getKey()); ?></div>
