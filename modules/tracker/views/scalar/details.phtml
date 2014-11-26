@@ -21,7 +21,7 @@
 <script type="text/javascript" src="<?php echo $this->moduleWebroot ?>/public/js/scalar/scalar.details.js"></script>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/scalar/scalar.details.css"/>
 
-<input type="hidden" class="scalarId" value="<?php echo $this->scalar->getKey(); ?>"/>
+<input type="hidden" class="scalarId" value="<?php echo $this->escape($this->scalar->getKey()); ?>"/>
 
 <div class="thisScalarInfo">
     <div class="sectionDivider"><span class="sectionTitle">Info</span></div>
@@ -29,23 +29,23 @@
         <tbody>
         <tr>
             <th>Metric:</th>
-            <td><span id="thisMetric"><?php echo $this->scalar->getTrend()->getMetricName(); ?></span>
+            <td><span id="thisMetric"><?php echo $this->escape($this->scalar->getTrend()->getMetricName()); ?></span>
             </td>
         </tr>
         <tr>
             <th>Value:</th>
-            <td><span id="thisValue"><?php echo $this->scalar->getValue().' '.$this->scalar->getTrend()->getUnit(
-                        ); ?></span>
+            <td><span id="thisValue"><?php echo $this->escape($this->scalar->getValue()).' '.$this->escape($this->scalar->getTrend()->getUnit(
+                        )); ?></span>
             </td>
         </tr>
         <tr>
             <th>Submitted:</th>
             <td>
-                <span id="thisSubmitTime"><?php echo $this->scalar->getSubmitTime(); ?></span>
+                <span id="thisSubmitTime"><?php echo $this->escape($this->scalar->getSubmitTime()); ?></span>
                 <?php
                 if ($this->submittedBy) {
-                    echo ' by <a href="'.$this->webroot.'/user/'.$this->submittedBy->getKey(
-                        ).'">'.$this->submittedBy->getFullName().'</a> ';
+                    echo ' by <a href="'.$this->webroot.'/user/'.$this->escape($this->submittedBy->getKey(
+                        )).'">'.$this->escape($this->submittedBy->getFullName()).'</a> ';
                 }
                 if (!$this->scalar->getOfficial()) {
                     echo '(unofficial)';
@@ -64,7 +64,7 @@
             ?>
             <tr>
                 <th>Branch:</th>
-                <td><?php echo $this->scalar->getBranch(); ?></td>
+                <td><?php echo $this->escape($this->scalar->getBranch()); ?></td>
             </tr>
         <?php
         }
@@ -74,15 +74,15 @@
                 <th>Build Results:</th>
                 <td>
                     <a target="_blank"
-                       href="<?php echo $this->scalar->getBuildResultsUrl(); ?>">Click here</a>
+                       href="<?php echo $this->escape($this->scalar->getBuildResultsUrl()); ?>">Click here</a>
                 </td>
             </tr>
         <?php
         }
         if ($this->extraUrls) {
             foreach ($this->extraUrls as $linkInfo) {
-                echo '<tr><th>'.$linkInfo['label'].':</th><td>';
-                echo '<a target="_blank" href="'.$linkInfo['href'].'">'.$linkInfo['text'].'</a>';
+                echo '<tr><th>'.$this->escape($linkInfo['label']).':</th><td>';
+                echo '<a target="_blank" href="'.$this->escape($linkInfo['href']).'">'.$this->escape($linkInfo['text']).'</a>';
                 echo '</td></tr>';
             }
         }
@@ -108,7 +108,7 @@
         <table class="scalarInfoTable">
             <tbody>
             <?php foreach ($this->extraParams as $key => $value) {
-                echo '<tr><th>'.$key.':</th><td>'.$value.'</td></tr>';
+                echo '<tr><th>'.$this->escape($key).':</th><td>'.$this->escape($value).'</td></tr>';
             }
             ?>
             </tbody>
@@ -123,7 +123,7 @@
         <tbody>
         <?php
         foreach ($this->otherValues as $metricName => $value) {
-            echo '<tr><th>'.$metricName.':</th><td>'.$value.'</td></tr>';
+            echo '<tr><th>'.$this->escape($metricName).':</th><td>'.$this->escape($value).'</td></tr>';
         }
         ?>
         </tbody>
@@ -136,10 +136,10 @@
     <?php
     foreach ($this->resultItems as $result) {
         $item = $result['item'];
-        echo '<div class="resultItemContainer"><span class="resultItemLabel">'.$result['label'].':</span> ';
-        echo '<a element="'.$item->getKey().'" class="resultItemLink" href="'.$this->webroot.'/item/'.$item->getKey(
-            ).'" ';
-        echo 'thumbnail="'.$item->getThumbnailId().'">'.$item->getName().'</a>';
+        echo '<div class="resultItemContainer"><span class="resultItemLabel">'.$this->escape($result['label']).':</span> ';
+        echo '<a element="'.$this->escape($item->getKey()).'" class="resultItemLink" href="'.$this->webroot.'/item/'.$this->escape($item->getKey(
+            )).'" ';
+        echo 'thumbnail="'.$this->escape($item->getThumbnailId()).'">'.$this->escape($item->getName()).'</a>';
         echo '</div>';
     }
     if (count($this->resultItems) === 0) {

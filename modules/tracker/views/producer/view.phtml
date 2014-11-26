@@ -27,13 +27,13 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/produc
     <div class="producerInfoContainer">
         <div class="sectionTitle">Producer Information</div>
         <div class="producerData"><b>Description:</b>
-            <span class="description"><?php echo $this->producer->getDescription(); ?></span>
+            <span class="description"><?php echo $this->escape($this->producer->getDescription()); ?></span>
         </div>
         <div class="producerData"><b>Repository:</b>
-            <span class="repository"><?php echo $this->producer->getRepository(); ?></span>
+            <span class="repository"><?php echo $this->escape($this->producer->getRepository()); ?></span>
         </div>
         <div class="producerData"><b>Executable:</b>
-            <span class="executable"><?php echo $this->producer->getExecutableName(); ?></span>
+            <span class="executable"><?php echo $this->escape($this->producer->getExecutableName()); ?></span>
         </div>
     </div>
 
@@ -45,20 +45,20 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/produc
     echo '<div class="trendGroupContainer">';
     if ($trendGroup['configItem']) {
         echo '<div class="datasetHeader"><b>Configuration:</b> ';
-        echo '<a href='.$this->webroot.'/item/'.$trendGroup['configItem']->getKey(
-            ).'>'.$trendGroup['configItem']->getName().'</a>';
+        echo '<a href='.$this->webroot.'/item/'.$this->escape($trendGroup['configItem']->getKey(
+            )).'>'.$this->escape($trendGroup['configItem']->getName()).'</a>';
         echo '</div>';
     }
     if ($trendGroup['testDataset']) {
         echo '<div class="datasetHeader"><b>Test Data:</b> ';
-        echo '<a href='.$this->webroot.'/item/'.$trendGroup['testDataset']->getKey(
-            ).'>'.$trendGroup['testDataset']->getName().'</a>';
+        echo '<a href='.$this->webroot.'/item/'.$this->escape($trendGroup['testDataset']->getKey(
+            )).'>'.$this->escape($trendGroup['testDataset']->getName()).'</a>';
         echo '</div>';
     }
     if ($trendGroup['truthDataset']) {
         echo '<div class="datasetHeader"><b>Ground Truth Data: </b>';
-        echo '<a href='.$this->webroot.'/item/'.$trendGroup['truthDataset']->getKey(
-            ).'>'.$trendGroup['truthDataset']->getName().'</a>';
+        echo '<a href='.$this->webroot.'/item/'.$this->escape($trendGroup['truthDataset']->getKey(
+            )).'>'.$this->escape($trendGroup['truthDataset']->getName()).'</a>';
         echo '</div>';
     }
     if ($trendGroup['configItem'] || $trendGroup['testDataset'] || $trendGroup['truthDataset']) {
@@ -69,9 +69,9 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/produc
         <?php
         foreach ($trendGroup['trends'] as $trend) {
             echo '<div class="trendContainer">';
-            echo '<input type="checkbox" class="selectTrend" element="'.$trend->getKey().'" />';
-            echo '<a class="trendLink" href="'.$this->webroot.'/tracker/trend/view?trendId='.$trend->getKey().'">';
-            echo $trend->getDisplayName().'</a>';
+            echo '<input type="checkbox" class="selectTrend" element="'.$this->escape($trend->getKey()).'" />';
+            echo '<a class="trendLink" href="'.$this->webroot.'/tracker/trend/view?trendId='.$this->escape($trend->getKey()).'">';
+            echo $this->escape($trend->getDisplayName()).'</a>';
             echo '</div>';
         }
         ?>

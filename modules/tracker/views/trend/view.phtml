@@ -44,8 +44,8 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
             Configuration data:
             <?php
             if ($this->trends[0]->getConfigItemId()) {
-                echo '<a href="'.$this->webroot.'/item/'.$this->trends[0]->getConfigItemId(
-                    ).'">'.$this->trends[0]->getConfigItem()->getName().'</a>';
+                echo '<a href="'.$this->webroot.'/item/'.$this->escape($this->trends[0]->getConfigItemId(
+                    )).'">'.$this->escape($this->trends[0]->getConfigItem()->getName()).'</a>';
             } else {
                 echo '<span class="itemLinkNone">none</span>';
             }
@@ -55,8 +55,8 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
             Test data:
             <?php
             if ($this->trends[0]->getTestDatasetId()) {
-                echo '<a href="'.$this->webroot.'/item/'.$this->trends[0]->getTestDatasetId(
-                    ).'">'.$this->trends[0]->getTestDatasetItem()->getName().'</a>';
+                echo '<a href="'.$this->webroot.'/item/'.$this->escape($this->trends[0]->getTestDatasetId(
+                    )).'">'.$this->escape($this->trends[0]->getTestDatasetItem()->getName()).'</a>';
             } else {
                 echo '<span class="itemLinkNone">none</span>';
             }
@@ -66,8 +66,8 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
             Ground truth data:
             <?php
             if ($this->trends[0]->getTruthDatasetId()) {
-                echo '<a href="'.$this->webroot.'/item/'.$this->trends[0]->getTruthDatasetId(
-                    ).'">'.$this->trends[0]->getTruthDatasetItem()->getName().'</a>';
+                echo '<a href="'.$this->webroot.'/item/'.$this->escape($this->trends[0]->getTruthDatasetId(
+                    )).'">'.$this->escape($this->trends[0]->getTruthDatasetItem()->getName()).'</a>';
             } else {
                 echo '<span class="itemLinkNone">none</span>';
             }
@@ -89,7 +89,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
         <select id="branchfilter" class="branchfilter">
             <option value="">[all branches]</option>
             <?php foreach ($this->allBranches as $branch) {
-                echo '<option>'.$branch.'</option>';
+                echo '<option>'.$this->escape($branch).'</option>';
             } ?>
         </select>
         <button class="add-branchfilter">Add branch trend</button>

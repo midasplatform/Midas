@@ -22,7 +22,7 @@
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/producer/producer.list.css"/>
 
 <div class="producersTabWrapper">
-    <div class="introText">The <?php echo $this->community->getName(); ?> community contains the following producers:
+    <div class="introText">The <?php echo $this->escape($this->community->getName()); ?> community contains the following producers:
     </div>
 
     <div class="producerList">
@@ -33,11 +33,11 @@
 
         foreach ($this->producers as $producer) {
             echo '<div class="producerContainer">';
-            echo '<a class="producerLink" href="'.$this->webroot.'/tracker/producer/view?producerId='.$producer->getKey(
-                ).'">';
+            echo '<a class="producerLink" href="'.$this->webroot.'/tracker/producer/view?producerId='.$this->escape($producer->getKey(
+                )).'">';
             echo $producer->getDisplayName().'</a>';
             if ($producer->getDescription() != '') {
-                echo '<div class="producerDescription">'.$producer->getDescription().'</div>';
+                echo '<div class="producerDescription">'.$this->escape($producer->getDescription()).'</div>';
             }
             echo '</div>';
         }
