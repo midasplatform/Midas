@@ -20,39 +20,65 @@
 
 require_once BASE_PATH.'/core/models/base/LicenseModelBase.php';
 
-/**
- * License model
- */
+/** License model. */
 class LicenseModel extends LicenseModelBase
 {
-    /** get all licenses */
+    /**
+     * Return all licenses.
+     *
+     * @return array list of license DAOs
+     */
     public function getAll()
     {
         return $this->database->getAll('License');
     }
 
     /**
-     * Delete the license. All revisions that pointed to
-     * this license will now have their license set to null.
+     * Return a license given its name.
+     *
+     * @param string $name name of the license
+     * @return array list of license DAOs
      */
-    public function delete($license)
+    public function getByName($name)
     {
-        if (!$license instanceof LicenseDao) {
-            throw new Zend_Exception('Should be a license');
+        $rows = $this->database->fetchAll($this->database->select()->where('name = ?', $name));
+        $licenseDaos = array();
+
+        foreach ($rows as $row) {
+            $licenseDaos[] = $this->initDao('License', $row);
         }
-        if (!$license->saved) {
-            throw new Zend_Exception('Dao must be saved');
+
+        return $licenseDaos;
+    }
+
+    /**
+     * Delete a license. All revisions that pointed to this license will now
+     * have their license set to null.
+     *
+     * @param LicenseDao $licenseDao license DAO
+     * @return true on success
+     * @throws Zend_Exception
+     */
+    public function delete($licenseDao)
+    {
+        if (!$licenseDao instanceof LicenseDao) {
+            throw new Zend_Exception('Must be a license DAO');
+        }
+
+        if (!$licenseDao->saved) {
+            throw new Zend_Exception('DAO must be saved');
         }
 
         // Replace references to this license with null values
         $this->database->getDB()->update(
             'itemrevision',
             array('license_id' => null),
-            array('license_id = ?' => $license->getKey())
+            array('license_id = ?' => $licenseDao->getKey())
         );
-        parent::delete($license);
-        unset($license->license_id);
-        $license->saved = false;
+
+        parent::delete($licenseDao);
+        unset($licenseDao->license_id);
+        $licenseDao->saved = false;
 
         return true;
     }

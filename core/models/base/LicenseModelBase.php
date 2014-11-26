@@ -18,10 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
-/** License Model Base */
+/** License model base. */
 abstract class LicenseModelBase extends AppModel
 {
-    /** Constructor */
+    /** Constructor. */
     public function __construct()
     {
         parent::__construct();
@@ -36,6 +36,18 @@ abstract class LicenseModelBase extends AppModel
         $this->initialize();
     }
 
-    /** Return all available licenses */
+    /**
+     * Return all licenses.
+     *
+     * @return array list of license DAOs
+     */
     abstract public function getAll();
+
+    /**
+     * Return a license given its name.
+     *
+     * @param string $name name of the license
+     * @return array list of license DAOs
+     */
+    abstract public function getByName($name);
 }
