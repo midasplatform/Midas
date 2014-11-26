@@ -59,7 +59,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.for
                     <input class="filterButton" type='submit' value='Apply Filter'/>
                     <img id="loadingStatistics" alt=""
                          src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>
-                    <input type="hidden" name="itemId" value="<?php echo $this->itemIds ?>"/>
+                    <input type="hidden" name="itemId" value="<?php echo $this->escape($this->itemIds); ?>"/>
                 </form>
             </div>
             <div id="map_canvas" style="width:800px; height:470px;"></div>

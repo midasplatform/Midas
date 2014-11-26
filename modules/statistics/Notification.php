@@ -92,20 +92,20 @@ class Statistics_Notification extends MIDAS_Notification
 
         $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
         $js = $baseUrl.'/modules/'.$this->moduleName.'/public/js/statistics.notify.js';
-        $html = '<script type="text/javascript" src="'.$js.'"></script>';
+        $html = '<script type="text/javascript" src="'.htmlspecialchars($js, ENT_QUOTES, 'UTF-8').'"></script>';
 
         return "
       <!-- Piwik -->
       <script type=\"text/javascript\">
-      var pkBaseURL = '".$url."/';
+      var pkBaseURL = '".htmlspecialchars($url, ENT_QUOTES, 'UTF-8')."/';
       document.write(unescape(\"%3Cscript src='\" + pkBaseURL + \"piwik.js' type='text/javascript'%3E%3C/script%3E\"));
       </script><script type=\"text/javascript\">
       try {
-      var piwikTracker = Piwik.getTracker(pkBaseURL + \"piwik.php\", ".$id.");
+      var piwikTracker = Piwik.getTracker(pkBaseURL + \"piwik.php\", ".htmlspecialchars($id, ENT_QUOTES, 'UTF-8').");
       piwikTracker.trackPageView();
       piwikTracker.enableLinkTracking();
     } catch ( err ) {}
-      </script><noscript><p><img src=\"".$url."/piwik.php?idsite=".$id."\" style=\"border:0\" alt=\"\" /></p></noscript>
+      </script><noscript><p><img src=\"".htmlspecialchars($url, ENT_QUOTES, 'UTF-8')."/piwik.php?idsite=".htmlspecialchars($id, ENT_QUOTES, 'UTF-8')."\" style=\"border:0\" alt=\"\" /></p></noscript>
       <!-- End Piwik Tracking Code -->
       ".$html;
     }
