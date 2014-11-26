@@ -43,6 +43,6 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/jquery/iviewer/
     <div class="wrapper">
         <div id="viewer" class="viewer"></div>
     </div>
-    <div id='urlImage' style="display:none;"><?php echo $this->imageUrl ?></div>
+    <div id='urlImage' style="display:none;"><?php echo $this->escape($this->imageUrl); ?></div>
 <?php
 echo $this->headScript();

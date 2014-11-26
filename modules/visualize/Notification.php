@@ -40,11 +40,11 @@ class Visualize_Notification extends MIDAS_Notification
         if ($this->ModuleComponent->Main->canVisualizeWithSliceView($item)) {
             $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
             $html = '<li><a href="'.$webroot.'/'.$this->moduleName.'/paraview/slice?itemId=';
-            $html .= $item->getKey().'"><img alt="" src="'.$webroot.'/modules/';
+            $html .= htmlspecialchars($item->getKey(), ENT_QUOTES, 'UTF-8').'"><img alt="" src="'.$webroot.'/modules/';
             $html .= $this->moduleName.'/public/images/sliceView.png" /> Slice Visualization</a></li>';
 
             $html .= '<li><a href="'.$webroot.'/'.$this->moduleName.'/paraview/volume?itemId=';
-            $html .= $item->getKey().'"><img alt="" src="'.$webroot.'/modules/';
+            $html .= htmlspecialchars($item->getKey(), ENT_QUOTES, 'UTF-8').'"><img alt="" src="'.$webroot.'/modules/';
             $html .= $this->moduleName.'/public/images/volume.png" /> Volume Visualization</a></li>';
 
             return $html;
@@ -52,7 +52,7 @@ class Visualize_Notification extends MIDAS_Notification
         ) {
             $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
             $html = '<li><a href="'.$webroot.'/'.$this->moduleName.'/paraview/surface?itemId=';
-            $html .= $item->getKey().'"><img alt="" src="'.$webroot.'/modules/';
+            $html .= htmlspecialchars($item->getKey(), ENT_QUOTES, 'UTF-8').'"><img alt="" src="'.$webroot.'/modules/';
             $html .= $this->moduleName.'/public/images/pqUnstructuredGrid16.png" /> Surface Visualization</a></li>';
 
             return $html;

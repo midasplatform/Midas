@@ -42,9 +42,9 @@ $this->headScript()->appendFile($this->webroot.'/modules/visualize/public/js/wra
                 <?php
                 foreach ($this->sameLocation as $item) {
                     echo "<li>";
-                    echo "<a class='linkedcontentLink' preview='{$item->preview}' element='{$item->getKey(
-                        )}' href='{$this->webroot}/item/{$item->getKey()}'>".$this->slicename(
-                            $item->getName(),
+                    echo "<a class='linkedcontentLink' preview='{$item->preview}' element='{$this->escape($item->getKey(
+                        ))}' href='{$this->webroot}/item/{$this->escape($item->getKey())}'>".$this->slicename(
+                            $this->escape($item->getName()),
                             45
                         )."</a>";
                     echo "</li>";
