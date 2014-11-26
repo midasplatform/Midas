@@ -26,8 +26,8 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/package/package
 <div class="viewMain">
     <div class="headerSection">
         <h2>Package Metadata</h2>
-        <a href="<?php echo $this->webroot.'/item/'.$this->package->getItem()->getKey(); ?>">
-            <?php echo $this->package->getItem()->getName(); ?>
+        <a href="<?php echo $this->webroot.'/item/'.$this->escape($this->package->getItem()->getKey()); ?>">
+            <?php echo $this->escape($this->package->getItem()->getName()); ?>
         </a>
     </div>
     <form class="genericForm packageEdit" method="POST" action="<?php echo $this->webroot; ?>/packages/package/save">
@@ -36,62 +36,62 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/package/package
             <tr>
                 <td>OS</td>
                 <td>
-                    <input type="text" name="os" value="<?php echo $this->package->getOs(); ?>"/>
+                    <input type="text" name="os" value="<?php echo $this->escape($this->package->getOs()); ?>"/>
                 </td>
             </tr>
             <tr>
                 <td>Architecture</td>
                 <td>
-                    <input type="text" name="arch" value="<?php echo $this->package->getArch(); ?>"/>
+                    <input type="text" name="arch" value="<?php echo $this->escape($this->package->getArch()); ?>"/>
                 </td>
             </tr>
             <tr>
                 <td>Revision</td>
                 <td>
-                    <input type="text" name="revision" value="<?php echo $this->package->getRevision(); ?>"/>
+                    <input type="text" name="revision" value="<?php echo $this->escape($this->package->getRevision()); ?>"/>
                 </td>
             </tr>
             <tr>
                 <td>Submission Type</td>
                 <td>
                     <input type="text" name="submissiontype"
-                           value="<?php echo $this->package->getSubmissiontype(); ?>"/>
+                           value="<?php echo $this->escape($this->package->getSubmissiontype()); ?>"/>
                 </td>
             </tr>
             <tr>
                 <td>Package Type</td>
                 <td>
-                    <input type="text" name="packagetype" value="<?php echo $this->package->getPackagetype(); ?>"/>
+                    <input type="text" name="packagetype" value="<?php echo $this->escape($this->package->getPackagetype()); ?>"/>
                 </td>
             </tr>
             <tr>
                 <td>Product Name</td>
                 <td>
-                    <input type="text" name="productname" value="<?php echo $this->package->getProductname(); ?>"/>
+                    <input type="text" name="productname" value="<?php echo$this->escape($this->package->getProductname()); ?>"/>
                 </td>
             </tr>
             <tr>
                 <td>Codebase</td>
                 <td>
-                    <input type="text" name="codebase" value="<?php echo $this->package->getCodebase(); ?>"/>
+                    <input type="text" name="codebase" value="<?php echo $this->escape($this->package->getCodebase()); ?>"/>
                 </td>
             </tr>
             <tr>
                 <td>Checkout Date</td>
                 <td>
-                    <input type="text" name="checkoutdate" value="<?php echo $this->package->getCheckoutdate(); ?>"/>
+                    <input type="text" name="checkoutdate" value="<?php echo $this->escape($this->package->getCheckoutdate()); ?>"/>
                 </td>
             </tr>
             <tr>
                 <td>Release Tag</td>
                 <td>
-                    <input type="text" name="release" value="<?php echo $this->package->getRelease(); ?>"/>
+                    <input type="text" name="release" value="<?php echo $this->escape($this->package->getRelease()); ?>"/>
                 </td>
             </tr>
             </tbody>
         </table>
         <br/>
-        <input type="hidden" name="packageId" value="<?php echo $this->package->getKey(); ?>"/>
+        <input type="hidden" name="packageId" value="<?php echo $this->escape($this->package->getKey()); ?>"/>
         <input class="globalButton" type="submit" value="Save"/>
     </form>
 </div>

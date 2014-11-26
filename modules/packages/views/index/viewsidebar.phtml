@@ -25,7 +25,7 @@
         <h1>Stats</h1>
         <ul>
             <?php
-            echo "  <li>{$this->nPackages} {$this->t('package')}".(($this->nPackages > 1) ? 's' : '')."</li>";
+            echo "  <li>{$this->escape($this->nPackages)} {$this->t('package')}".(($this->nPackages > 1) ? 's' : '')."</li>";
             ?>
         </ul>
     </div>

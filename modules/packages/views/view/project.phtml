@@ -26,7 +26,7 @@
       href="<?php echo $this->moduleWebroot ?>/public/css/view/packages.view.project.css"/>
 
 <div class="packagesTabWrapper">
-    <div class="introText">The <?php echo $this->community->getName(); ?> project hosts packages for the following
+    <div class="introText">The <?php echo $this->escape($this->community->getName()); ?> project hosts packages for the following
         applications:
     </div>
 
@@ -38,11 +38,11 @@
 
         foreach ($this->applications as $application) {
             echo '<div class="applicationContainer">';
-            echo '<a class="applicationLink" href="'.$this->webroot.'/packages/application/view?applicationId='.$application->getKey(
-                ).'">';
-            echo $application->getName().'</a>';
+            echo '<a class="applicationLink" href="'.$this->webroot.'/packages/application/view?applicationId='.$this->escape($application->getKey(
+                )).'">';
+            echo $this->escape($application->getName()).'</a>';
             if ($application->getDescription() != '') {
-                echo '<div class="applicationDescription">'.$application->getDescription().'</div>';
+                echo '<div class="applicationDescription">'.$this->escape($application->getDescription()).'</div>';
             }
             echo '</div>';
         }
@@ -75,7 +75,7 @@
                 </td>
             </tbody>
         </table>
-        <input type="hidden" name="projectId" value="<?php echo $this->project->getKey(); ?>"/>
+        <input type="hidden" name="projectId" value="<?php echo $this->escape($this->project->getKey()); ?>"/>
         <input type="submit" class="globalButton" value="Create"/>
     </form>
 </div>

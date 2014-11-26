@@ -32,8 +32,8 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/application/pac
         <div id="platformList" style="display: none;">
             <?php
             foreach ($this->platforms as $platform) {
-                echo '<h3 os="'.$platform['os'].'" arch="'.$platform['arch'].'"><a href="#"></a></h3>';
-                echo '<div class="platformContainer" os="'.$platform['os'].'" arch="'.$platform['arch'].'">';
+                echo '<h3 os="'.$this->escape($platform['os']).'" arch="'.$this->escape($platform['arch']).'"><a href="#"></a></h3>';
+                echo '<div class="platformContainer" os="'.$this->escape($platform['os']).'" arch="'.$this->escape($platform['arch']).'">';
                 echo '</div>';
             }
             ?>

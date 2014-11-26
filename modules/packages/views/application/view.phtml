@@ -28,11 +28,11 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/application/pac
 <div class="viewMain">
     <div class="titleWrapper">
         <div class="applicationName">
-            <?php echo $this->application->getName(); ?>
+            <?php echo $this->escape($this->application->getName()); ?>
         </div>
         <?php
         if ($this->application->getDescription() != '') {
-            echo '<div class="applicationDescription">'.$this->application->getDescription().'</div>';
+            echo '<div class="applicationDescription">'.$this->escape($this->application->getDescription()).'</div>';
         }
         ?>
     </div>
@@ -41,8 +41,8 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/application/pac
         <div id="packageList" style="display: none;">
             <?php
             foreach ($this->releases as $release) {
-                echo '<h3><a href="#">Version '.$release.'</a></h3>';
-                echo '<div class="releaseEntry" element="'.$release.'">';
+                echo '<h3><a href="#">Version '.$this->escape($release).'</a></h3>';
+                echo '<div class="releaseEntry" element="'.$this->escape($release).'">';
                 echo '</div>';
             }
             ?>
@@ -74,8 +74,8 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/application/pac
         <h1>Actions</h1>
         <ul>
             <li>
-                <a href="<?php echo $this->webroot; ?>/packages/application/latest?applicationId=<?php echo $this->application->getKey(
-                ); ?>">
+                <a href="<?php echo $this->webroot; ?>/packages/application/latest?applicationId=<?php echo $this->escape($this->application->getKey(
+                )); ?>">
                     <img alt="" src="<?php echo $this->coreWebroot; ?>/public/images/icons/time.png"/>
                     Latest nightly packages
                 </a>
@@ -102,18 +102,18 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/application/pac
             <tr>
                 <td>Name</td>
                 <td>
-                    <input type="text" name="name" value="<?php echo $this->application->getName(); ?>"/>
+                    <input type="text" name="name" value="<?php echo $this->escape($this->application->getName()); ?>"/>
                 </td>
             </tr>
             <tr>
                 <td>Description</td>
                 <td>
-                    <textarea class="expanding" name="description"><?php echo htmlentities(
+                    <textarea class="expanding" name="description"><?php echo $this->escape(
                             $this->application->getDescription()
                         ); ?></textarea></td>
             </tbody>
         </table>
-        <input type="hidden" name="applicationId" value="<?php echo $this->application->getKey(); ?>"/>
+        <input type="hidden" name="applicationId" value="<?php echo $this->escape($this->application->getKey()); ?>"/>
         <input type="submit" class="globalButton" value="Save"/>
     </form>
 </div>
@@ -126,7 +126,7 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/application/pac
             will be deleted, but the underlying item data will remain in place.
         </div>
         <br/><br/>
-        <input type="hidden" name="applicationId" value="<?php echo $this->application->getKey(); ?>"/>
+        <input type="hidden" name="applicationId" value="<?php echo $this->escape($this->application->getKey()); ?>"/>
 
         <div style="float: right;">
             <input style="margin-left: 0;" type="submit" class="globalButton" value="Delete"/>
