@@ -46,7 +46,7 @@ class Keyfiles_Notification extends MIDAS_Notification
         }
         $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
 
-        return '<li><a href="'.$webroot.'/'.$this->moduleName.'/download/item?itemId='.$params['item']->getKey().
+        return '<li><a href="'.$webroot.'/'.$this->moduleName.'/download/item?itemId='.htmlspecialchars($params['item']->getKey(), ENT_QUOTES, 'UTF-8').
         '"><img alt="" src="'.$webroot.'/core/public/images/icons/key.png" /> Download key files</a></li>';
     }
 
