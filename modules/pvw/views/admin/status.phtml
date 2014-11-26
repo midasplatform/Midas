@@ -45,12 +45,12 @@
             foreach ($this->instances as $row) {
                 $instance = $row['dao'];
                 $status = $row['status'];
-                echo '<tr key="'.$instance->getKey().'"><td>'.$instance->getKey().'</td><td>'.$instance->getPort(
-                    ).'</td><td>'.$instance->getPid().'</td><td>'.$instance->getCreationDate(
-                    ).'</td><td>'.($status ? '<span class="running">Running</span>' : '<span class="dead">Dead</span>');
+                echo '<tr key="'.$this->escape($instance->getKey()).'"><td>'.$this->escape($instance->getKey()).'</td><td>'.$this->escape($instance->getPort(
+                    )).'</td><td>'.$this->escape($instance->getPid()).'</td><td>'.$this->escape($instance->getCreationDate(
+                    )).'</td><td>'.($status ? '<span class="running">Running</span>' : '<span class="dead">Dead</span>');
 
-                echo '</td><td><img qtip="Kill instance" alt="" class="killInstance" key="'.$instance->getKey(
-                    ).'" src="'.$this->coreWebroot.'/public/images/icons/close.png"/></td></tr>';
+                echo '</td><td><img qtip="Kill instance" alt="" class="killInstance" key="'.$this->escape($instance->getKey(
+                    )).'" src="'.$this->coreWebroot.'/public/images/icons/close.png"/></td></tr>';
             }
             ?>
             </tbody>
