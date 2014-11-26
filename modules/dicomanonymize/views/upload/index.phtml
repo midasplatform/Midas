@@ -25,11 +25,11 @@
 <div>
     <br/>
     <b><?php echo $this->t('Destination:') ?></b>
-    <span class="destinationUpload"><?php echo $this->defaultUploadLocationText ?></span>
+    <span class="destinationUpload"><?php echo $this->escape($this->defaultUploadLocationText); ?></span>
     <br/><br/>
 
     <div class="belowDestinationUpload" style="display: none;"></div>
-    <input type="hidden" name="parent" class="destinationId" value="<?php echo $this->defaultUploadLocation ?>"/>
+    <input type="hidden" name="parent" class="destinationId" value="<?php echo $this->escape($this->defaultUploadLocation); ?>"/>
     <br/>
     <input style="margin-left: 0;" class="browseMIDASLink globalButton" type="button" value="Choose location"/>
     <br/><br/>
@@ -63,14 +63,14 @@
     <param name="type" value="application/x-java-applet;version=1.5"/>
     <param name="background" value="ffffff"/>
     <param name="loglevel" value="WARNING"/>
-    <param name="sessionId" value="<?php echo session_id(); ?>"/>
+    <param name="sessionId" value="<?php echo $this->escape(session_id()); ?>"/>
     <param name="baseURL"
-           value="<?php echo $this->protocol.'://'.$this->host.$this->webroot ?>/javauploaddownload/upload/"/>
-    <param name="webroot" value="<?php echo $this->protocol.'://'.$this->host.$this->webroot ?>"/>
+           value="<?php echo $this->escape($this->protocol).'://'.$this->escape($this->host.$this->webroot); ?>/javauploaddownload/upload/"/>
+    <param name="webroot" value="<?php echo $this->escape($this->protocol).'://'.$this->escape($this->host.$this->webroot); ?>"/>
     <param name="apiURL"
-           value="<?php echo $this->protocol.'://'.$this->host.$this->webroot ?>/api/json?useSession&method="/>
+           value="<?php echo $this->escape($this->protocol).'://'.$this->escape($this->host.$this->webroot); ?>/api/json?useSession&method="/>
     <param name="daScript"
-           value="<?php echo $this->protocol.'://'.$this->host.$this->webroot ?>/modules/dicomanonymize/public/java/upload/DA.script"/>
+           value="<?php echo $this->escape($this->protocol).'://'.$this->escape($this->host.$this->webroot); ?>/modules/dicomanonymize/public/java/upload/DA.script"/>
     <param name="getUploadFileOffsetBaseURL" value="gethttpuploadoffset/"/>
     <param name="onSuccessfulUploadRedirectEnable" value="true"/>
     <param name="onSuccessRedirectURL" value="/item/"/>
