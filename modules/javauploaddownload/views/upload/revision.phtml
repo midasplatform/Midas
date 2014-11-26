@@ -47,15 +47,15 @@
             code="com.kitware.utils.Main" mayscript="true">
         <param name="background" value="ffffff"/>
         <param name="baseURL"
-               value="<?php echo $this->protocol."://".$this->host.$this->webroot; ?>/javauploaddownload/upload/"/>
+               value="<?php echo $this->escape($this->protocol)."://".$this->escape($this->host.$this->webroot); ?>/javauploaddownload/upload/"/>
         <param name="getUploadFileOffsetBaseURL" value="gethttpuploadoffset/"/>
         <param name="loglevel" value="WARNING"/>
         <param name="onSuccessfulUploadRedirectEnable" value="true"/>
         <param name="onSuccessRedirectURL"
-               value="<?php echo $this->protocol."://".$this->host.$this->webroot ?>/item/<?php echo $this->item->getKey(
-               ); ?>"/>
-        <param name="parentItem" value="<?php echo $this->item->getKey(); ?>"/>
-        <param name="sessionId" value="<?php echo session_id(); ?>"/>
+               value="<?php echo $this->escape($this->protocol)."://".$this->escape($this->host.$this->webroot); ?>/item/<?php echo $this->escape($this->item->getKey(
+               )); ?>"/>
+        <param name="parentItem" value="<?php echo $this->escape($this->item->getKey()); ?>"/>
+        <param name="sessionId" value="<?php echo $this->escape(session_id()); ?>"/>
         <param name="type" value="application/x-java-applet;version=1.5"/>
         <param name="uploadFileBaseURL" value="processjavarevisionupload?sid="/>
         <param name="uploadType" value="revision"/>

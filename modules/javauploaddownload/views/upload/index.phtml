@@ -23,11 +23,11 @@
 <div>
     <br/>
     <b><?php echo $this->t('Destination:'); ?></b>
-    <span class="destinationUpload"><?php echo $this->defaultUploadLocationText; ?></span>
+    <span class="destinationUpload"><?php echo $this->escape($this->defaultUploadLocationText); ?></span>
     <br/>
 
     <div class="belowDestinationUpload"></div>
-    <input type="hidden" name="parent" class="destinationId" value="<?php echo $this->defaultUploadLocation; ?>"/>
+    <input type="hidden" name="parent" class="destinationId" value="<?php echo $this->escape($this->defaultUploadLocation); ?>"/>
     <br/>
     <input class="browseMIDASLink globalButton" type="button" value="Choose location"/>
     <br/><br/>
@@ -45,15 +45,15 @@
 <applet name="MidasUploader" class="uploadApplet" width="480" height="175"
         archive="<?php echo $this->moduleWebroot; ?>/public/java/upload/MidasUploader.jar?rev=3; ?>"
         code="com.kitware.utils.Main" mayscript="true">
-    <param name="apiURL" value="<?php echo $this->protocol."://".$this->host.$this->webroot; ?>/api/json"/>
+    <param name="apiURL" value="<?php echo $this->escape($this->protocol)."://".$this->escape($this->host.$this->webroot); ?>/api/json"/>
     <param name="background" value="ffffff"/>
     <param name="baseURL"
-           value="<?php echo $this->protocol."://".$this->host.$this->webroot; ?>/javauploaddownload/upload/"/>
+           value="<?php echo $this->escape($this->protocol)."://".$this->escape($this->host.$this->webroot); ?>/javauploaddownload/upload/"/>
     <param name="getUploadFileOffsetBaseURL" value="gethttpuploadoffset/"/>
     <param name="loglevel" value="WARNING"/>
     <param name="onSuccessfulUploadRedirectEnable" value="true"/>
     <param name="onSuccessRedirectURL" value="review"/>
-    <param name="sessionId" value="<?php echo session_id(); ?>"/>
+    <param name="sessionId" value="<?php echo $this->escape(session_id()); ?>"/>
     <param name="type" value="application/x-java-applet;version=1.5"/>
     <param name="uploadFileBaseURL" value="processjavaupload?sid="/>
     <param name="uploadType" value="item"/>

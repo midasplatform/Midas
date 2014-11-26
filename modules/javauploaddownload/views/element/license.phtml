@@ -18,8 +18,6 @@
  limitations under the License.
 =========================================================================*/
 
-$this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.license.js');
-
 if (!isset($this->selectedLicense) || $this->selectedLicense == null) {
     $this->selectedLicense = -1;
 }
@@ -29,8 +27,8 @@ if (!isset($this->selectedLicense) || $this->selectedLicense == null) {
     <select name="licenseSelect">
         <?php
         foreach ($this->allLicenses as $license) {
-            echo '<option value="'.$license->getKey().'" '.(($this->selectedLicense == $license->getKey(
-                    )) ? 'selected' : '').'>'.$license->getName().'</option>';
+            echo '<option value="'.$this->escape($license->getKey()).'" '.(($this->selectedLicense == $license->getKey(
+                    )) ? 'selected' : '').'>'.$this->escape($license->getName()).'</option>';
         }
         ?>
     </select>
