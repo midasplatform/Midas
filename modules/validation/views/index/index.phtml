@@ -36,10 +36,10 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/index/index.ind
         } ?>"/>
         <span class="dashIcon"><img
                 src="<?php echo $this->coreWebroot.'/public/images/icons/ok.png'; ?>"/></span><span
-            class="dashTitle"><?php echo $dashboard->getName(); ?></span>
+            class="dashTitle"><?php echo $this->escape($dashboard->getName()); ?></span>
         <span class="dashDeleteIcon"><img
                 src="<?php echo $this->coreWebroot.'/public/images/icons/nok.png'; ?>"/></span>
-        <span class="dashDescription"><?php echo $dashboard->getDescription(); ?></span>
+        <span class="dashDescription"><?php echo $this->escape($dashboard->getDescription()); ?></span>
     </div>
     <?php
     }
@@ -64,8 +64,8 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/index/index.ind
         <h1>Stats</h1>
         <?php
         echo "<ul>";
-        echo "  <li>{$this->nDashboards} {$this->t('dashboard')}".(($this->nDashboards > 1) ? 's' : '')."</li>";
-        echo "  <li>{$this->nSubmissions} {$this->t('submissions')}".(($this->nSubmissions > 1) ? 's' : '')."</li>";
+        echo "  <li>{$this->escape($this->nDashboards)} {$this->t('dashboard')}".(($this->nDashboards > 1) ? 's' : '')."</li>";
+        echo "  <li>{$this->escape($this->nSubmissions)} {$this->t('submissions')}".(($this->nSubmissions > 1) ? 's' : '')."</li>";
         echo "</ul>";
         ?>
     </div>
