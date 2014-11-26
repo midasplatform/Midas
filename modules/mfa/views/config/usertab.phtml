@@ -23,7 +23,7 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/con
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/config/config.usertab.css"/>
 
 <form class="genericForm" id="mfaConfigForm" method="POST" action="<?php echo $this->webroot ?>/mfa/config/usersubmit">
-    <input type="hidden" name="userId" value="<?php echo $this->user->getKey(); ?>"/>
+    <input type="hidden" name="userId" value="<?php echo $this->escape($this->user->getKey()); ?>"/>
 
     <div class="useOtpCheckboxContainer">
         <input id="useOtpCheckbox" type="checkbox" name="useOtp" <?php if ($this->useOtp) {
@@ -40,7 +40,7 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/con
                         if ($this->algorithm == $val) {
                             echo 'selected="selected" ';
                         }
-                        echo 'value="'.$val.'">'.$text.'</option>';
+                        echo 'value="'.$this->escape($val).'">'.$this->escape($text).'</option>';
                     }
                     ?>
                 </select></td>
@@ -49,14 +49,14 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/con
         <tr>
             <td>Key:</td>
             <td>
-                <input id="otpSecret" type="text" name="secret" value="<?php echo $this->secret; ?>"/>
+                <input id="otpSecret" type="text" name="secret" value="<?php echo $this->escape($this->secret); ?>"/>
             </td>
         </tr>
 
         <tr>
             <td>Token Length:</td>
             <td>
-                <input id="otpLength" type="text" name="length" value="<?php echo $this->length; ?>"/>
+                <input id="otpLength" type="text" name="length" value="<?php echo $this->escape($this->length); ?>"/>
             </td>
         </tr>
     </table>

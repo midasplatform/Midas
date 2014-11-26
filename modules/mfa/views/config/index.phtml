@@ -66,24 +66,24 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.i
             </div>
             <div class="formElement">
                 <label for="radiusServer">The IP or hostname of the RADIUS server</label>
-                <input id="radiusServer" name="radiusServer" value="<?php echo $this->radiusServer; ?>" autofocus/>
+                <input id="radiusServer" name="radiusServer" value="<?php echo $this->escape($this->radiusServer); ?>" autofocus/>
             </div>
             <div class="formElement">
                 <label for="radiusPort">The port of the RADIUS server</label>
-                <input id="radiusPort" name="radiusPort" value="<?php echo $this->radiusPort; ?>"/>
+                <input id="radiusPort" name="radiusPort" value="<?php echo $this->escape($this->radiusPort); ?>"/>
             </div>
             <div class="formElement">
                 <label for="radiusPassword">The password of the RADIUS server</label>
                 <input type="password" id="radiusPassword" name="radiusPassword"
-                       value="<?php echo $this->radiusPassword; ?>"/>
+                       value="<?php echo $this->escape($this->radiusPassword); ?>"/>
             </div>
             <div class="formElement">
                 <label for="radiusTimeout">The timeout when connecting to the RADIUS server</label>
-                <input id="radiusTimeout" name="radiusTimeout" value="<?php echo $this->radiusTimeout; ?>"/>
+                <input id="radiusTimeout" name="radiusTimeout" value="<?php echo $this->escape($this->radiusTimeout); ?>"/>
             </div>
             <div class="formElement">
                 <label for="radiusMaxTries">The maximum number of tries when connecting to the RADIUS server</label>
-                <input id="radiusMaxTries" name="radiusMaxTries" value="<?php echo $this->radiusMaxTries; ?>"/>
+                <input id="radiusMaxTries" name="radiusMaxTries" value="<?php echo $this->escape($this->radiusMaxTries); ?>"/>
             </div>
         </div>
         <div class="saveButton">
