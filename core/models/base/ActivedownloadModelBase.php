@@ -65,6 +65,7 @@ abstract class ActivedownloadModelBase extends AppModel
             }
         }
 
+        /** @var ActivedownloadDao $activeDownload */
         $activeDownload = MidasLoader::newDao('ActivedownloadDao');
         $activeDownload->setDateCreation(date('Y-m-d H:i:s'));
         $activeDownload->setLastUpdate(date('Y-m-d H:i:s'));

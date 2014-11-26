@@ -77,6 +77,8 @@ abstract class Oauth_ClientModelBase extends Oauth_AppModel
         }
         /** @var RandomComponent $randomComponent */
         $randomComponent = MidasLoader::loadComponent('Random');
+
+        /** @var Oauth_ClientDao $clientDao */
         $clientDao = MidasLoader::newDao('ClientDao', $this->moduleName);
         $clientDao->setName($name);
         $clientDao->setOwnerId($userDao->getKey());
@@ -93,6 +95,8 @@ abstract class Oauth_ClientModelBase extends Oauth_AppModel
     public function delete($clientDao)
     {
         $tokens = $clientDao->getTokens();
+
+        /** @var Oauth_TokenModel $tokenModel */
         $tokenModel = MidasLoader::loadModel('Token', 'oauth');
 
         foreach ($tokens as $token) {
@@ -101,6 +105,8 @@ abstract class Oauth_ClientModelBase extends Oauth_AppModel
         $tokens = null;
 
         $codes = $clientDao->getCodes();
+
+        /** @var Oauth_CodeModel $codeModel */
         $codeModel = MidasLoader::loadModel('Code', 'oauth');
 
         foreach ($codes as $code) {

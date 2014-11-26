@@ -30,6 +30,7 @@ class ApiuserComponent extends AppComponent
      */
     public function userFolders($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
         $userDao = $apihelperComponent->getUser($args);
@@ -38,6 +39,8 @@ class ApiuserComponent extends AppComponent
         }
 
         $userRootFolder = $userDao->getFolder();
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
 
         return $folderModel->getChildrenFoldersFiltered($userRootFolder, $userDao, MIDAS_POLICY_READ);
@@ -53,9 +56,11 @@ class ApiuserComponent extends AppComponent
      */
     public function userList($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('limit'));
 
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
 
         return $userModel->getAll(true, $args['limit']);
@@ -71,6 +76,7 @@ class ApiuserComponent extends AppComponent
      */
     public function userGet($args)
     {
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         if (array_key_exists('id', $args)) {
             return $userModel->getByUser_id($args['id']);
@@ -81,9 +87,13 @@ class ApiuserComponent extends AppComponent
 
     /**
      * Wrapper for correcting types on user get
+     *
+     * @param array $args
+     * @return array
      */
     public function userGetWrapper($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $in = $this->userGet($args);
         $in = $in->toArray();
@@ -123,6 +133,7 @@ class ApiuserComponent extends AppComponent
      */
     public function userSearch($args)
     {
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         if (array_key_exists('email', $args)) {
             return $userModel->getByEmail($args['email']);

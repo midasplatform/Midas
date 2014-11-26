@@ -28,7 +28,7 @@ class MIDAS_GlobalDao
     /** @var string */
     protected $key;
 
-    /** Constructor */
+    /** Constructor. */
     public function __construct()
     {
         if ($this->getModel()->getKey() !== '') {
@@ -176,7 +176,7 @@ class MIDAS_GlobalDao
      * Return a model.
      *
      * @param string|null $name name of the model
-     * @return object
+     * @return mixed|MIDASModel
      */
     public function getModel($name = null)
     {

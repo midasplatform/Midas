@@ -122,6 +122,8 @@ class Statistics_Notification extends MIDAS_Notification
             throw new Zend_Exception('Error: userDao parameter required');
         }
         $user = $params['userDao'];
+
+        /** @var Statistics_DownloadModel $downloadModel */
         $downloadModel = MidasLoader::loadModel('Download', $this->moduleName);
         $downloadModel->removeUserReferences($user->getKey());
     }

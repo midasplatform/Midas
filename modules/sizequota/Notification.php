@@ -88,7 +88,10 @@ class Sizequota_Notification extends ApiEnabled_Notification
      */
     public function getExtraHtmlSimple($args)
     {
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
+
+        /** @var Sizequota_FolderQuotaModel $folderQuotaModel */
         $folderQuotaModel = MidasLoader::loadModel('FolderQuota', $this->moduleName);
 
         $folder = $args['folder'];
@@ -118,7 +121,10 @@ class Sizequota_Notification extends ApiEnabled_Notification
      */
     public function getExtraHtmlRevision($args)
     {
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
+
+        /** @var Sizequota_FolderQuotaModel $folderQuotaModel */
         $folderQuotaModel = MidasLoader::loadModel('FolderQuota', $this->moduleName);
 
         $item = $args['item'];
@@ -157,7 +163,10 @@ class Sizequota_Notification extends ApiEnabled_Notification
      */
     public function validateUpload($args)
     {
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
+
+        /** @var Sizequota_FolderQuotaModel $folderQuotaModel */
         $folderQuotaModel = MidasLoader::loadModel('FolderQuota', $this->moduleName);
 
         $folder = $folderModel->load($args['folderId']);
@@ -192,8 +201,13 @@ class Sizequota_Notification extends ApiEnabled_Notification
      */
     public function validateUploadRevision($args)
     {
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var Sizequota_FolderQuotaModel $folderQuotaModel */
         $folderQuotaModel = MidasLoader::loadModel('FolderQuota', $this->moduleName);
 
         $item = $itemModel->load($args['itemId']);

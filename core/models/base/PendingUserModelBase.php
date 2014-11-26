@@ -62,6 +62,7 @@ abstract class PendingUserModelBase extends AppModel
         $randomComponent = MidasLoader::loadComponent('Random');
         $userSalt = $randomComponent->generateString(32);
 
+        /** @var PendingUserDao $pendingUser */
         $pendingUser = MidasLoader::newDao('PendingUserDao');
         $pendingUser->setEmail($email);
         $pendingUser->setAuthKey($randomComponent->generateString(64, '0123456789abcdef'));
@@ -70,6 +71,7 @@ abstract class PendingUserModelBase extends AppModel
         $pendingUser->setSalt($userSalt);
         $pendingUser->setDateCreation(date('Y-m-d H:i:s'));
 
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $existingUser = $userModel->getByEmail($email);
         if ($existingUser) {

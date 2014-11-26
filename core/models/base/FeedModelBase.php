@@ -115,6 +115,8 @@ abstract class FeedModelBase extends AppModel
         ) {
             throw new Zend_Exception("Error in parameters, userdao, type, and resource.");
         }
+
+        /** @var FeedDao $feed */
         $feed = MidasLoader::newDao('FeedDao');
         $feed->setUserId($userDao->getKey());
         $feed->setType($type);

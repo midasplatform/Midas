@@ -24,6 +24,8 @@ class ApidocsComponent extends AppComponent
     /**
      * This function is for getting the web API methods information defined in
      * all the API components of the implementing class.
+     *
+     * @return array
      */
     public function getEnabledResources()
     {
@@ -54,6 +56,10 @@ class ApidocsComponent extends AppComponent
     /**
      * This function is for getting the web API methods defined in the API
      * component (in given module) of the implementing class.
+     *
+     * @param string $resource
+     * @param string $module
+     * @return array
      */
     public function getWebApiDocs($resource, $module = '')
     {
@@ -124,6 +130,10 @@ class ApidocsComponent extends AppComponent
 
     /**
      * This function is for getting the Swagger Api docs for a single model
+     *
+     * @param string $resource
+     * @param string $module
+     * @return array
      */
     public function getResourceApiDocs($resource, $module = '')
     {

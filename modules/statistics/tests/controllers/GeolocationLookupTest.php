@@ -45,7 +45,10 @@ class Statistics_GeolocationLookupTest extends ControllerTestCase
         $usersFile = $this->loadData('User', 'default');
         $userDao = $this->User->load($usersFile[2]->getKey());
 
+        /** @var Scheduler_JobModel $jobModel */
         $jobModel = MidasLoader::loadModel('Job', 'scheduler');
+
+        /** @var Statistics_IpLocationModel $ipLocationModel */
         $ipLocationModel = MidasLoader::loadModel('IpLocation', 'statistics');
         $ipLocations = $ipLocationModel->getAllUnlocated();
 

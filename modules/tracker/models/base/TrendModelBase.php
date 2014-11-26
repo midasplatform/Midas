@@ -103,6 +103,7 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
     {
         $trend = $this->getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId);
         if (!$trend) {
+            /** @var Tracker_TrendDao $trend */
             $trend = MidasLoader::newDao('TrendDao', $this->moduleName);
             $trend->setProducerId($producerId);
             $trend->setMetricName($metricName);
@@ -128,9 +129,13 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
      */
     public function delete($trend, $progressDao = null)
     {
+        /** @var Tracker_ScalarModel $scalarModel */
         $scalarModel = MidasLoader::loadModel('Scalar', $this->moduleName);
+
+        /** @var Tracker_ThresholdNotificationModel $notificationModel */
         $notificationModel = MidasLoader::loadModel('ThresholdNotification', $this->moduleName);
         if ($progressDao) {
+            /** @var ProgressModel $progressModel */
             $progressModel = MidasLoader::loadModel('Progress');
             $progressDao->setMessage('Counting scalar points...');
             $progressModel->save($progressDao);

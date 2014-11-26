@@ -631,6 +631,8 @@ class ItemController extends AppController
         $this->disableView();
         if ($item->getThumbnailId() !== null) {
             $bitstream = $this->Bitstream->load($item->getThumbnailId());
+
+            /** @var DownloadBitstreamComponent $downloadBitstreamComponent */
             $downloadBitstreamComponent = MidasLoader::loadComponent('DownloadBitstream');
             $downloadBitstreamComponent->download($bitstream);
         }

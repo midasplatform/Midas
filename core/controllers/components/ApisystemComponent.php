@@ -55,6 +55,7 @@ class ApisystemComponent extends AppComponent
     public function resourcesList($args)
     {
         $data = array();
+        /** @var ApidocsComponent $docsComponent */
         $docsComponent = MidasLoader::loadComponent('Apidocs');
         $request = Zend_Controller_Front::getInstance()->getRequest();
         $baseUrl = $request->getScheme().'://'.$request->getHttpHost().$request->getBaseUrl();
@@ -103,6 +104,7 @@ class ApisystemComponent extends AppComponent
      */
     public function login($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('email', 'appname', 'apikey'));
 
@@ -110,8 +112,10 @@ class ApisystemComponent extends AppComponent
         $email = $args['email'];
         $appname = $args['appname'];
         $apikey = $args['apikey'];
-        $Userapi = MidasLoader::loadModel('Userapi');
-        $tokenDao = $Userapi->getToken($email, $apikey, $appname);
+
+        /** @var UserapiModel $userapiModel */
+        $userapiModel = MidasLoader::loadModel('Userapi');
+        $tokenDao = $userapiModel->getToken($email, $apikey, $appname);
         if (empty($tokenDao)) {
             throw new Exception('Unable to authenticate. Please check credentials.', MIDAS_INVALID_PARAMETER);
         }
@@ -141,6 +145,8 @@ class ApisystemComponent extends AppComponent
      */
     public function userApikeyDefault($args)
     {
+
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('email', 'password'));
         $request = Zend_Controller_Front::getInstance()->getRequest();
@@ -167,7 +173,10 @@ class ApisystemComponent extends AppComponent
             }
         }
 
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
+
+        /** @var UserapiModel $userApiModel */
         $userApiModel = MidasLoader::loadModel('Userapi');
         if (!$authModule) {
             $userDao = $userModel->getByEmail($email);
@@ -221,6 +230,8 @@ class ApisystemComponent extends AppComponent
         if (!$request->isPost()) {
             throw new Exception('POST method required', MIDAS_HTTP_ERROR);
         }
+
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('folderid', 'url'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
@@ -228,6 +239,8 @@ class ApisystemComponent extends AppComponent
         if (!$userDao) {
             throw new Exception('Anonymous users may not create a link', MIDAS_INVALID_POLICY);
         }
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $folder = $folderModel->load($args['folderid']);
         if ($folder === false) {
@@ -250,6 +263,8 @@ class ApisystemComponent extends AppComponent
         }
         $length = isset($args['length']) ? $args['length'] : 0;
         $checksum = isset($args['checksum']) ? $args['checksum'] : ' ';
+
+        /** @var UploadComponent $uploadComponent */
         $uploadComponent = MidasLoader::loadComponent('Upload');
         $item = $uploadComponent->createLinkItem($userDao, $itemname, $args['url'], $folder, $length, $checksum);
         if (!$item) {
@@ -295,6 +310,7 @@ class ApisystemComponent extends AppComponent
      */
     public function uploadGeneratetoken($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('filename'));
         if (!array_key_exists('itemid', $args) && !array_key_exists('folderid', $args)
@@ -312,6 +328,7 @@ class ApisystemComponent extends AppComponent
             throw new Exception('Anonymous users may not upload', MIDAS_INVALID_POLICY);
         }
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         if (array_key_exists('itemid', $args)) {
             $item = $itemModel->load($args['itemid']);
@@ -319,6 +336,7 @@ class ApisystemComponent extends AppComponent
                 throw new Exception('Invalid policy or itemid', MIDAS_INVALID_POLICY);
             }
         } elseif (array_key_exists('folderid', $args)) {
+            /** @var FolderModel $folderModel */
             $folderModel = MidasLoader::loadModel('Folder');
             $folder = $folderModel->load($args['folderid']);
             if ($folder == false) {
@@ -336,12 +354,15 @@ class ApisystemComponent extends AppComponent
                 throw new Exception('Create new item failed', MIDAS_INTERNAL_ERROR);
             }
             $itemModel->copyParentPolicies($item, $folder);
+
+            /** @var ItempolicyuserModel $itempolicyuserModel */
             $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
             $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
         }
 
         if (array_key_exists('checksum', $args)) {
             // If we already have a bitstream with this checksum, create a reference and return blank token
+            /** @var BitstreamModel $bitstreamModel */
             $bitstreamModel = MidasLoader::loadModel('Bitstream');
             $existingBitstream = $bitstreamModel->getByChecksum($args['checksum']);
             if ($existingBitstream) {
@@ -381,6 +402,8 @@ class ApisystemComponent extends AppComponent
                     $bitstream->setPath($existingBitstream->getPath());
                     $bitstream->setAssetstoreId($existingBitstream->getAssetstoreId());
                     $bitstream->setMimetype($existingBitstream->getMimetype());
+
+                    /** @var ItemRevisionModel $revisionModel */
                     $revisionModel = MidasLoader::loadModel('ItemRevision');
                     $revisionModel->addBitstream($revision, $bitstream);
 
@@ -389,6 +412,7 @@ class ApisystemComponent extends AppComponent
             }
         }
         // we don't already have this content, so create the token
+        /** @var HttpuploadComponent $uploadComponent */
         $uploadComponent = MidasLoader::loadComponent('Httpupload');
         $apiSetup = $apihelperComponent->getApiSetup();
         $uploadComponent->setTestingMode($apiSetup['testing']);
@@ -419,6 +443,7 @@ class ApisystemComponent extends AppComponent
      */
     public function uploadPerform($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('uploadtoken', 'filename', 'length'));
         $request = Zend_Controller_Front::getInstance()->getRequest();
@@ -428,7 +453,10 @@ class ApisystemComponent extends AppComponent
 
         list($userid, $itemid) = explode('/', $args['uploadtoken']);
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
 
         $userDao = $userModel->load($userid);
@@ -458,6 +486,7 @@ class ApisystemComponent extends AppComponent
 
         $mode = array_key_exists('mode', $args) ? $args['mode'] : 'stream';
 
+        /** @var HttpuploadComponent $httpUploadComponent */
         $httpUploadComponent = MidasLoader::loadComponent('Httpupload');
         $apiSetup = $apihelperComponent->getApiSetup();
         $httpUploadComponent->setTestingMode($apiSetup['testing']);
@@ -517,6 +546,8 @@ class ApisystemComponent extends AppComponent
                 throw new Exception($validation['message'], MIDAS_INVALID_POLICY);
             }
         }
+
+        /** @var UploadComponent $uploadComponent */
         $uploadComponent = MidasLoader::loadComponent('Upload');
         $license = null;
         $changes = array_key_exists('changes', $args) ? $args['changes'] : '';
@@ -552,7 +583,10 @@ class ApisystemComponent extends AppComponent
      */
     public function uploadGetoffset($args)
     {
+        /** @var HttpuploadComponent $uploadComponent */
         $uploadComponent = MidasLoader::loadComponent('Httpupload');
+
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apiSetup = $apihelperComponent->getApiSetup();
         $uploadComponent->setTestingMode($apiSetup['testing']);
@@ -573,8 +607,11 @@ class ApisystemComponent extends AppComponent
      */
     public function metadataQualifiersList($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('element'));
+
+        /** @var MetadataModel $metadataModel */
         $metadataModel = MidasLoader::loadModel('Metadata');
         $type = $apihelperComponent->checkMetadataTypeOrName($args, $metadataModel);
         $element = $args['element'];
@@ -590,6 +627,7 @@ class ApisystemComponent extends AppComponent
      */
     public function metadataTypesList()
     {
+        /** @var MetadataModel $metadataModel */
         $metadataModel = MidasLoader::loadModel('Metadata');
 
         return $metadataModel->getMetadataTypes();
@@ -606,7 +644,10 @@ class ApisystemComponent extends AppComponent
      */
     public function metadataElementsList($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
+
+        /** @var MetadataModel $metadataModel */
         $metadataModel = MidasLoader::loadModel('Metadata');
         $type = $apihelperComponent->checkMetadataTypeOrName($args, $metadataModel);
 
@@ -623,14 +664,17 @@ class ApisystemComponent extends AppComponent
      */
     public function adminDatabaseCleanup($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $userDao = $apihelperComponent->getUser($args);
 
         if (!$userDao || !$userDao->isAdmin()) {
             throw new Exception('Only admin users may call this method', MIDAS_INVALID_POLICY);
         }
-        foreach (array('Folder', 'Item', 'ItemRevision', 'Bitstream') as $model) {
-            MidasLoader::loadModel($model)->removeOrphans();
+        foreach (array('Folder', 'Item', 'ItemRevision', 'Bitstream') as $modelName) {
+            /** @var BitstreamModel|FolderModel|ItemModel|ItemRevisionModel $model */
+            $model = MidasLoader::loadModel($modelName);
+            $model->removeOrphans();
         }
     }
 }

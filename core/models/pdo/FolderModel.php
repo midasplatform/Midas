@@ -499,12 +499,14 @@ class FolderModel extends FolderModelBase
             $this->Progress->updateProgress($progressDao, $progressDao->getCurrent() + 1, $message);
         }
 
+        /** @var FolderpolicygroupModel $policy_group_model */
         $policy_group_model = MidasLoader::loadModel('Folderpolicygroup');
         $policiesGroup = $folder->getFolderpolicygroup();
         foreach ($policiesGroup as $policy) {
             $policy_group_model->delete($policy);
         }
 
+        /** @var FolderpolicyuserModel $policy_user_model */
         $policy_user_model = MidasLoader::loadModel('Folderpolicyuser');
         $policiesUser = $folder->getFolderpolicyuser();
         foreach ($policiesUser as $policy) {
@@ -978,6 +980,8 @@ class FolderModel extends FolderModelBase
         if (!$item instanceof ItemDao) {
             throw new Zend_Exception("Should be an item.");
         }
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         // Update item name to avoid duplicated names within the same folder
         if ($update) {
@@ -1001,6 +1005,7 @@ class FolderModel extends FolderModelBase
         }
         $this->database->removeLink('items', $folder, $item);
         if (count($item->getFolders()) == 0) {
+            /** @var ItemModel $itemModel */
             $itemModel = MidasLoader::loadModel('Item');
             $itemModel->delete($item);
         }

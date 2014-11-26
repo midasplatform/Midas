@@ -153,7 +153,9 @@ function installCore($db, $dbType, $utilityComponent)
 function createDefaultAssetstore()
 {
     Zend_Registry::set('models', array());
-    MidasLoader::loadModel('Assetstore');
+
+    /** @var AssetstoreModel $assetStoreModel */
+    $assetStoreModel = MidasLoader::loadModel('Assetstore');
 
     // path munging
     require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
@@ -176,8 +178,7 @@ function createDefaultAssetstore()
     $assetstoreDao->setName('Default');
     $assetstoreDao->setPath($testAssetstore);
     $assetstoreDao->setType(MIDAS_ASSETSTORE_LOCAL);
-    $assetstore = new AssetstoreModel();
-    $assetstore->save($assetstoreDao);
+    $assetStoreModel->save($assetstoreDao);
 }
 
 /** Install and upgrade modules */

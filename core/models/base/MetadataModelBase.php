@@ -76,6 +76,7 @@ abstract class MetadataModelBase extends AppModel
             throw new Zend_Exception("Metadata already exists.");
         }
 
+        /** @var MetadataDao $metadataDao */
         $metadataDao = MidasLoader::newDao('MetadataDao');
         $metadataDao->setMetadatatype($type);
         $metadataDao->setElement($element);
@@ -118,6 +119,7 @@ abstract class MetadataModelBase extends AppModel
 
         $item = $itemRevisionDao->getItem();
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $lastrevision = $itemModel->getLastRevision($item);
 

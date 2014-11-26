@@ -19,16 +19,21 @@
 =========================================================================*/
 
 /**
- * This utility class has static methods used to load Model, Component, and Dao objects.
- * It handles importing the required file and instantiating the object of the desired type.
+ * Static methods used to load model, component, and DAO objects. Handles
+ * importing the required file and instantiating the object of the desired
+ * type.
+ *
+ * @package Core
  */
 class MidasLoader
 {
     /**
-     * Load a component
+     * Load a component into the Zend registry.
      *
-     * @param component The name of the component to load
-     * @param module (Optional) The name of the module to load the component from. Defaults to core.
+     * @param string $component name of the component to load
+     * @param string $module name of the module from which to load the component, defaults to core
+     * @return mixed|AppComponent component that was loaded
+     * @throws Zend_Exception
      */
     public static function loadComponent($component, $module = '')
     {
@@ -49,6 +54,7 @@ class MidasLoader
                 } else {
                     throw new Zend_Exception("A component named ".$component." doesn't "."exist.");
                 }
+
                 $name = ucfirst($module).'_'.$component.'Component';
             }
             if (class_exists($name)) {
@@ -63,10 +69,12 @@ class MidasLoader
     }
 
     /**
-     * Load a model
+     * Load a model into the Zend registry.
      *
-     * @param model The name of the model to load
-     * @param module (Optional) The name of the module to load the model from. Defaults to core.
+     * @param string $model name of the model to load
+     * @param string $module name of the module from which to load the model, defaults to core
+     * @return mixed|MIDASModel model that was loaded
+     * @throws Zend_Exception
      */
     public static function loadModel($model, $module = '')
     {
@@ -77,6 +85,7 @@ class MidasLoader
                 if (file_exists(BASE_PATH.'/core/models/base/'.$model.'ModelBase.php')) {
                     include_once BASE_PATH.'/core/models/base/'.$model.'ModelBase.php';
                 }
+
                 include_once BASE_PATH.'/core/models/pdo/'.$model.'Model.php';
                 $name = $model.'Model';
             } else {
@@ -113,7 +122,10 @@ class MidasLoader
     }
 
     /**
-     * Loads multiple models into the zend registry
+     * Load multiple models into the Zend registry.
+     *
+     * @param array|string $models names of the models to load
+     * @param string $module name of the module from which to load the models, defaults to core
      */
     public static function loadModels($models, $module = '')
     {
@@ -127,15 +139,18 @@ class MidasLoader
     }
 
     /**
-     * Instantiate a new Dao
+     * Instantiate a new DAO.
      *
-     * @param name The base name of the dao class (no module prefix)
-     * @param module (Optional) If the dao is in a module, the name of the module
+     * @param string $name base name with no module prefix of the DAO to load
+     * @param string $module name of the module from which to instantiate the DAO, defaults to core
+     * @return mixed|MIDAS_GlobalDao DAO that was instantiated
+     * @throws Zend_Exception
      */
     public static function newDao($name, $module = 'core')
     {
         if ($module == 'core') {
             Zend_Loader::loadClass($name, BASE_PATH.'/core/models/dao');
+
             if (!class_exists($name)) {
                 throw new Zend_Exception('Unable to load dao class '.$name);
             }
@@ -151,6 +166,7 @@ class MidasLoader
             }
 
             $classname = ucfirst($module).'_'.$name;
+
             if (!class_exists($classname)) {
                 throw new Zend_Exception('Unable to load dao class '.$classname);
             }

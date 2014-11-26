@@ -40,7 +40,10 @@ class JobModelTest extends DatabaseTestCase
     /** test getRelatedJob($item)*/
     public function testGetRelatedJob()
     {
+        /** @var Remoteprocessing_JobModel $jobModel */
         $jobModel = MidasLoader::loadModel('Job', 'remoteprocessing');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
 
         $item = $itemModel->load(1000);
@@ -53,6 +56,8 @@ class JobModelTest extends DatabaseTestCase
     public function testGetBy()
     {
         include BASE_PATH.'/modules/remoteprocessing/constant/module.php';
+
+        /** @var Remoteprocessing_JobModel $jobModel */
         $jobModel = MidasLoader::loadModel('Job', 'remoteprocessing');
 
         $jobs = $jobModel->getBy(
@@ -83,6 +88,7 @@ class JobModelTest extends DatabaseTestCase
     /** test addItemRelation */
     public function testAddItemRelation()
     {
+        /** @var Remoteprocessing_JobModel $jobModel */
         $jobModel = MidasLoader::loadModel('Job', 'remoteprocessing');
         $itemsFile = $this->loadData('Item', 'default');
         $jobFile = $this->loadData('Job', 'default', 'remoteprocessing', 'remoteprocessing');

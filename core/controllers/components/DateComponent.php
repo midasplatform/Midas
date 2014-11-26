@@ -21,7 +21,12 @@
 /** Data management Component */
 class DateComponent extends AppComponent
 {
-    /** format date (ex: 01/14/2011 or 14/01/2011 (fr or en) */
+    /**
+     * Format date (ex: 01/14/2011 or 14/01/2011 (fr or en)
+     *
+     * @param int|string $timestamp
+     * @return string
+     */
     public static function formatDate($timestamp)
     {
         if (!is_numeric($timestamp)) {
@@ -37,8 +42,14 @@ class DateComponent extends AppComponent
         }
     }
 
-    /** format the date (ex: 5 days ago) */
-    public static function ago($timestamp, $only_time = false)
+    /**
+     * Format the date (ex: 5 days ago)
+     *
+     * @param int|string $timestamp
+     * @param bool $onlyTime
+     * @return string
+     */
+    public static function ago($timestamp, $onlyTime = false)
     {
         if (!is_numeric($timestamp)) {
             $timestamp = strtotime($timestamp);
@@ -61,7 +72,7 @@ class DateComponent extends AppComponent
             }
         }
 
-        if ($only_time) {
+        if ($onlyTime) {
             if (Zend_Registry::get('configGlobal')->application->lang == 'fr') {
                 return $difference.' '.$periodsFr[$j];
             } else {
@@ -77,7 +88,12 @@ class DateComponent extends AppComponent
         return $text;
     }
 
-    /** format the date (ex: 5 days ago) */
+    /**
+     * Format the date (ex: 5 days ago)
+     *
+     * @param int|string $timestamp
+     * @return string
+     */
     public static function duration($timestamp)
     {
         if (!is_numeric($timestamp)) {

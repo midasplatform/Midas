@@ -26,8 +26,10 @@ class Tracker_ThresholdNotificationComponent extends AppComponent
      */
     public function scheduleNotifications($scalar, $notifications)
     {
+        /** @var Scheduler_JobModel $jobModel */
         $jobModel = MidasLoader::loadModel('Job', 'scheduler');
         foreach ($notifications as $notification) {
+            /** @var Scheduler_JobDao $job */
             $job = MidasLoader::newDao('JobDao', 'scheduler');
             $job->setTask('TASK_TRACKER_SEND_THRESHOLD_NOTIFICATION');
             $job->setPriority(1);

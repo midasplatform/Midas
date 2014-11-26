@@ -58,6 +58,7 @@ class FolderpolicygroupModel extends FolderpolicygroupModelBase
         $row = $this->database->fetchRow($sql);
         $count = (int) $row['count'];
 
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         if ($count > 0) {
             $folder->setPrivacyStatus(MIDAS_PRIVACY_PUBLIC);

@@ -65,6 +65,7 @@ class Communityagreement_Notification extends MIDAS_Notification
      */
     public function getCommunityViewExtraHtml($params)
     {
+        /** @var Communityagreement_AgreementModel $agreementModel */
         $agreementModel = MidasLoader::loadModel('Agreement', 'communityagreement');
         $comm = $params['community'];
         $agreementDao = $agreementModel->getByCommunityId($comm->getKey());

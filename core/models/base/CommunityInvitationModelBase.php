@@ -73,13 +73,17 @@ class CommunityInvitationModelBase extends AppModel
             }
         }
 
+        /** @var CommunityInvitationDao $invitationDao */
         $invitationDao = MidasLoader::newDao('CommunityInvitationDao');
         $invitationDao->setCommunityId($communityDao->getKey());
         $invitationDao->setGroupId($groupDao->getKey());
         $invitationDao->setUserId($invitedUserDao->getKey());
         $this->save($invitationDao);
 
+        /** @var FeedModel $feedModel */
         $feedModel = MidasLoader::loadModel('Feed');
+
+        /** @var FeedpolicyuserModel $feedpolicyuserModel */
         $feedpolicyuserModel = MidasLoader::loadModel('Feedpolicyuser');
 
         $feed = $feedModel->createFeed($userDao, MIDAS_FEED_COMMUNITY_INVITATION, $invitationDao, $communityDao);
@@ -117,6 +121,7 @@ class CommunityInvitationModelBase extends AppModel
         $invitations = $userDao->getInvitations();
         foreach ($invitations as $invitation) {
             if ($invitation->getCommunityId() == $communityDao->getKey()) {
+                /** @var FeedModel $feedModel */
                 $feedModel = MidasLoader::loadModel('Feed');
                 $feeds = $feedModel->getFeedByResourceAndType(array(MIDAS_FEED_COMMUNITY_INVITATION), $invitation);
                 foreach ($feeds as $feed) {

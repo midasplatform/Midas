@@ -80,6 +80,7 @@ class Validation_ApiComponentControllerTest extends ControllerTestCase
         $usersFile = $this->loadData('User', 'default');
         $userDao = $this->User->load($usersFile[0]->getKey());
 
+        /** @var UserapiModel $userApiModel */
         $userApiModel = MidasLoader::loadModel('Userapi');
         $userApiModel->createDefaultApiKey($userDao);
         $apiKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
@@ -109,6 +110,7 @@ class Validation_ApiComponentControllerTest extends ControllerTestCase
         $userDao->setAdmin(1);
         $this->User->save($userDao);
 
+        /** @var UserapiModel $userApiModel */
         $userApiModel = MidasLoader::loadModel('Userapi');
         $userApiModel->createDefaultApiKey($userDao);
         $apiKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
@@ -654,8 +656,13 @@ class Validation_ApiComponentControllerTest extends ControllerTestCase
     public function testGetAllScores()
     {
         // Acquire the dashboard from the database
+        /** @var Validation_DashboardModel $dashboardModel */
         $dashboardModel = MidasLoader::loadModel('Dashboard', 'validation');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
 
         $dashboardDao = $dashboardModel->load(1);

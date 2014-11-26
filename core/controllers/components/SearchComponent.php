@@ -21,12 +21,26 @@
 /** Search component */
 class SearchComponent extends AppComponent
 {
-    /** search all the results */
+    /**
+     * Search all the results
+     *
+     * @param UserDao $userDao
+     * @param string $search
+     * @param string $order
+     * @return array
+     */
     public function searchAll($userDao, $search, $order)
     {
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
+
+        /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
+
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
 
         $ItemsDao = $itemModel->getItemsFromSearch($search, $userDao, 200, false, $order);
@@ -54,12 +68,13 @@ class SearchComponent extends AppComponent
     /**
      * Format search results
      *
-     * @param  string $order
-     * @param  Array $items
-     * @param  Array $folders
-     * @param  Array $communities
-     * @param  Array $users
-     * @return Array
+     * @param string $order
+     * @param array $items
+     * @param array $folders
+     * @param array $communities
+     * @param array $users
+     * @return array
+     * @throws Zend_Exception
      */
     private function _formatResults($order, $items, $folders, $communities, $users)
     {

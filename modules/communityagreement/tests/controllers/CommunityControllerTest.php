@@ -85,6 +85,7 @@ class Communityagreement_CommunityControllerTest extends ControllerTestCase
         $this->getRequest()->setMethod('POST');
         $this->dispatchUrl($page, $admin);
 
+        /** @var Communityagreement_AgreementModel $agreementModel */
         $agreementModel = MidasLoader::loadModel('Agreement', 'communityagreement');
         $saved_agreement = $agreementModel->getByCommunityId($community_id)->getAgreement();
         $this->assertEquals('test agreement tab', $saved_agreement);

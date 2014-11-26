@@ -66,6 +66,7 @@ abstract class Comments_ItemcommentModelBase extends Comments_AppModel
     /** Add a comment to an item */
     public function addComment($user, $item, $comment)
     {
+        /** @var Comments_ItemcommentDao $commentDao */
         $commentDao = MidasLoader::newDao('ItemcommentDao', 'comments');
         $commentDao->setUserId($user->getKey());
         $commentDao->setItemId($item->getKey());

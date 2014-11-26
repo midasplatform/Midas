@@ -37,10 +37,12 @@ class PolicyComponent extends AppComponent
      * Copy the permissions from the given folder to all child folders and items. Do not pass a results
      * parameter, that is for the recursive counting.
      *
-     * @param folder The folder dao
-     * @param user The user dao
-     * @return array('success' => number of resources whose policies were successfully changed,
-     *                         'failure' => number of resources failed to change due to invalid permissions
+     * @param FolderDao $folder folder DAO
+     * @param UserDao $user user DAO
+     * @param null|ProgressDao $progress progress DAO
+     * @param array $results
+     * @return array array('success' => number of resources whose policies were successfully changed,
+     *                     'failure' => number of resources failed to change due to invalid permissions
      */
     public function applyPoliciesRecursive(
         $folder,

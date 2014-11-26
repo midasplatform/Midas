@@ -161,6 +161,7 @@ class Batchmake_ExecuteComponentTest extends Batchmake_ControllerTestCase
         // need to falsify a HTTP_HOST
         $_SERVER['HTTP_HOST'] = 'localhost';
         // need to create a web api-key for the user
+        /** @var UserapiModel $userapiModel */
         $userapiModel = MidasLoader::loadModel('Userapi');
         $userapiModel->createDefaultApiKey($userDao);
 

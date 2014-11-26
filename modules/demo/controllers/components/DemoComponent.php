@@ -56,11 +56,13 @@ class Demo_DemoComponent extends AppComponent
             unlink(LOCAL_CONFIGS_PATH.'/ldap.local.ini');
         }
 
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
 
         $admin = $userModel->createUser(MIDAS_DEMO_ADMIN_EMAIL, MIDAS_DEMO_ADMIN_PASSWORD, 'Demo', 'Administrator', 1);
         $userModel->createUser(MIDAS_DEMO_USER_EMAIL, MIDAS_DEMO_USER_PASSWORD, 'Demo', 'User', 0);
 
+        /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
         $communityDao = $communityModel->createCommunity(
             'Demo',
@@ -70,6 +72,7 @@ class Demo_DemoComponent extends AppComponent
             MIDAS_COMMUNITY_CAN_JOIN
         );
 
+        /** @var AssetstoreModel $assetstoreModel */
         $assetstoreModel = MidasLoader::loadModel('Assetstore');
         $assetstoreDao = new AssetstoreDao();
         $assetstoreDao->setName('Default');
@@ -122,6 +125,7 @@ class Demo_DemoComponent extends AppComponent
         $configGlobal = new Zend_Config_Ini(APPLICATION_CONFIG, 'global', true);
         Zend_Registry::set('configGlobal', $configGlobal);
 
+        /** @var UploadComponent $uploadComponent */
         $uploadComponent = MidasLoader::loadComponent('Upload');
         $uploadComponent->createUploadedItem(
             $admin,

@@ -71,6 +71,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
             $api_key = $args['apikey'];
         } else {
             $user_email = $userDao->getEmail();
+            /** @var UserapiModel $userApiModel */
             $userApiModel = MidasLoader::loadModel('Userapi');
             $userApiDao = $userApiModel->getByAppAndUser('Default', $userDao);
             if (!$userApiDao) {
@@ -102,6 +103,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
         if (!empty($args['incoming_dir'])) {
             $incoming_dir = $args['incoming_dir'];
         } else {
+            /** @var Dicomserver_ServerComponent $serverComponent */
             $serverComponent = MidasLoader::loadComponent('Server', 'dicomserver');
             $incoming_dir = $serverComponent->getDefaultReceptionDir();
         }
@@ -148,6 +150,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
             return escapeshellarg($start_server_command_string);
         }
         if (!isset($serverComponent)) {
+            /** @var Dicomserver_ServerComponent $serverComponent */
             $serverComponent = MidasLoader::loadComponent('Server', 'dicomserver');
         }
         $returnVal = $serverComponent->generateDcmqrscpConfig();
@@ -279,6 +282,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
         if (!empty($args['incoming_dir'])) {
             $incoming_dir = $args['incoming_dir'];
         } else {
+            /** @var Dicomserver_ServerComponent $serverComponent */
             $serverComponent = MidasLoader::loadComponent('Server', 'dicomserver');
             $incoming_dir = $serverComponent->getDefaultReceptionDir();
         }
@@ -321,10 +325,14 @@ class Dicomserver_ApiserverComponent extends AppComponent
      */
     public function register($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('item'));
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel("Item");
+
+        /** @var AuthenticationComponent $authComponent */
         $authComponent = MidasLoader::loadComponent('Authentication');
         $itemDao = $itemModel->load($args['item']);
         $userDao = $authComponent->getUser($args, Zend_Registry::get('userSession')->Dao);
@@ -337,6 +345,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
 
         $revisionDao = $itemModel->getLastRevision($itemDao);
 
+        /** @var Dicomserver_ServerComponent $dicomComponent */
         $dicomComponent = MidasLoader::loadComponent('Server', 'dicomserver');
         $dicomComponent->register($revisionDao);
 
@@ -356,7 +365,10 @@ class Dicomserver_ApiserverComponent extends AppComponent
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('item'));
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel("Item");
+
+        /** @var AuthenticationComponent $authComponent */
         $authComponent = MidasLoader::loadComponent('Authentication');
         $itemDao = $itemModel->load($args['item']);
         $userDao = $authComponent->getUser($args, Zend_Registry::get('userSession')->Dao);
@@ -367,6 +379,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
             );
         }
 
+        /** @var Dicomserver_RegistrationModel $registrationModel */
         $registrationModel = MidasLoader::loadModel('Registration', 'dicomserver');
         if (!$registrationModel->checkByItemId($args['item'])) {
             return array('status' => false);

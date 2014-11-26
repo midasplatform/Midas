@@ -150,6 +150,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
      */
     public function thumbnail($item)
     {
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel("Item");
         $revision = $itemModel->getLastRevision($item);
         $bitstreams = $revision->getBitstreams();
@@ -158,7 +159,10 @@ class Dicomextractor_ExtractorComponent extends AppComponent
             return;
         }
 
+        /** @var Thumbnailcreator_ImagemagickComponent $thumbnailComponent */
         $thumbnailComponent = MidasLoader::loadComponent('Imagemagick', 'thumbnailcreator');
+
+        /** @var UtilityComponent $utilityComponent */
         $utilityComponent = MidasLoader::loadComponent('Utility');
         $bitstream = $bitstreams[$numBitstreams / 2];
 
@@ -230,6 +234,8 @@ class Dicomextractor_ExtractorComponent extends AppComponent
                     break;
             }
         }
+
+        /** @var MetadataModel $MetadataModel */
         $MetadataModel = MidasLoader::loadModel("Metadata");
         foreach ($tagArray as $row) {
             try {

@@ -59,6 +59,7 @@ abstract class ProgressModelBase extends AppModel
      */
     public function createProgress($max = 0, $message = '')
     {
+        /** @var ProgressDao $progress */
         $progress = MidasLoader::newDao('ProgressDao');
         $progress->setCurrent(0);
         $progress->setMaximum($max);

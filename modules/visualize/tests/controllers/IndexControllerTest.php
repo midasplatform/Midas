@@ -32,11 +32,19 @@ class Visualize_IndexControllerTest extends ControllerTestCase
     /** test index action */
     public function testIndexAction()
     {
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
+
+        /** @var ItempolicygroupModel $itempolicygroupModel */
         $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
+
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
 
+        /** @var UploadComponent $uploadComponent */
         $uploadComponent = MidasLoader::loadComponent('Upload');
 
         $usersFile = $this->loadData('User', 'default');

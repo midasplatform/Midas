@@ -26,6 +26,7 @@ class Solr_SolrComponent extends AppComponent
      */
     public function getSolrIndex()
     {
+        /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
         $solrHost = $settingModel->getValueByName(SOLR_HOST_KEY, 'solr');
         $solrPort = $settingModel->getValueByName(SOLR_PORT_KEY, 'solr');
@@ -43,8 +44,13 @@ class Solr_SolrComponent extends AppComponent
      */
     public function rebuildIndex($progressDao = null)
     {
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var ProgressModel $progressModel */
         $progressModel = MidasLoader::loadModel('Progress');
         if ($progressDao) {
             $progressDao->setMaximum($folderModel->getTotalCount() + $itemModel->getTotalCount());

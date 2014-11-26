@@ -19,14 +19,19 @@
 =========================================================================*/
 
 /**
- * @deprecated Use MidasLoader static method loadComponent() instead.
+ * Legacy component loader.
+ *
+ * @deprecated replaced by static methods of MidasLoader
+ * @package Core\Deprecated
  */
 class MIDAS_ComponentLoader
 {
     /**
-     * Loads components (array or string)
+     * Load multiple components into the Zend registry.
      *
-     * @deprecated
+     * @param array|string $components names of the components to load
+     * @param string $module name of the module from which to load the components, defaults to core
+     * @deprecated replaced by AppComponent MidasLoader::loadComponent(string $component, string $module)
      */
     public function loadComponents($components, $module = '')
     {
@@ -40,9 +45,13 @@ class MIDAS_ComponentLoader
     }
 
     /**
-     * Loads a component
+     * Load a component into the Zend registry.
      *
-     * @deprecated
+     * @param string $component name of the component to load
+     * @param string $module name of the module from which to load the component, defaults to core
+     * @return mixed|AppComponent component that was loaded
+     * @throws Zend_Exception
+     * @deprecated replaced by AppComponent MidasLoader::loadComponent(string $component, string $module)
      */
     public function loadComponent($component, $module = '')
     {

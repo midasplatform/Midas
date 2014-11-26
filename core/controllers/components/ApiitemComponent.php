@@ -33,12 +33,15 @@ class ApiitemComponent extends AppComponent
      */
     public function itemGetmetadata($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
         $itemid = $args['id'];
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $item = $itemModel->load($itemid);
 
@@ -48,6 +51,8 @@ class ApiitemComponent extends AppComponent
         }
 
         $revisionDao = $apihelperComponent->getItemRevision($item, isset($args['revision']) ? $args['revision'] : null);
+
+        /** @var ItemRevisionModel $itemRevisionModel */
         $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
         $metadata = $itemRevisionModel->getMetadata($revisionDao);
         $metadataArray = array();
@@ -74,11 +79,13 @@ class ApiitemComponent extends AppComponent
      */
     public function itemSetmetadata($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id', 'element', 'value'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $item = $itemModel->load($args['id']);
 
@@ -121,6 +128,7 @@ class ApiitemComponent extends AppComponent
      */
     public function itemSetmultiplemetadata($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id', 'count'));
         $metadataTuples = $apihelperComponent->parseMetadataTuples($args);
@@ -128,6 +136,7 @@ class ApiitemComponent extends AppComponent
 
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $item = $itemModel->load($args['id']);
         if ($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE)
@@ -170,11 +179,13 @@ class ApiitemComponent extends AppComponent
      */
     public function itemDeletemetadata($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id', 'element'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $item = $itemModel->load($args['id']);
 
@@ -189,12 +200,14 @@ class ApiitemComponent extends AppComponent
 
         $revisionDao = $apihelperComponent->getItemRevision($item, isset($args['revision']) ? $args['revision'] : null);
 
+        /** @var MetadataModel $metadataModel */
         $metadataModel = MidasLoader::loadModel('Metadata');
         $metadata = $metadataModel->getMetadata($type, $element, $qualifier);
         if (!isset($metadata) || $metadata === false) {
             return false;
         }
 
+        /** @var ItemRevisionModel $itemRevisionModel */
         $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
         $itemRevisionModel->deleteMetadata($revisionDao, $metadata->getMetadataId());
 
@@ -216,11 +229,13 @@ class ApiitemComponent extends AppComponent
      */
     public function itemDeletemetadataAll($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $item = $itemModel->load($args['id']);
 
@@ -229,6 +244,7 @@ class ApiitemComponent extends AppComponent
             throw new Exception("This item doesn't exist or you don't have write permission.", MIDAS_INVALID_POLICY);
         }
 
+        /** @var ItemRevisionModel $itemRevisionModel */
         $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
         if (array_key_exists('revision', $args) && $args['revision'] === 'all'
         ) {
@@ -263,11 +279,16 @@ class ApiitemComponent extends AppComponent
      */
     public function itemExists($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('name', 'parentid'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
         $userDao = $apihelperComponent->getUser($args);
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $folder = $folderModel->load($args['parentid']);
         if (!$folder) {
@@ -297,10 +318,13 @@ class ApiitemComponent extends AppComponent
      */
     public function itemSearch($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('name'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
         $userDao = $apihelperComponent->getUser($args);
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
 
         if (array_key_exists('folderId', $args)) {
@@ -311,6 +335,7 @@ class ApiitemComponent extends AppComponent
             $itemDaos = $itemModel->getByName($args['name']);
         }
 
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $matchList = array();
 
@@ -351,12 +376,15 @@ class ApiitemComponent extends AppComponent
      */
     public function itemGet($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
         $itemid = $args['id'];
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $item = $itemModel->load($itemid);
 
@@ -400,6 +428,9 @@ class ApiitemComponent extends AppComponent
 
     /**
      * Function for grabbing revision id (used in itemGetWrapper)
+     *
+     * @param array $revision
+     * @return int
      */
     public function getRevisionId($revision)
     {
@@ -408,6 +439,9 @@ class ApiitemComponent extends AppComponent
 
     /**
      * Function for grabbing bitstream id (used in itemGetWrapper)
+     *
+     * @param array $bitstream
+     * @return int
      */
     public function getBitstreamId($bitstream)
     {
@@ -416,6 +450,10 @@ class ApiitemComponent extends AppComponent
 
     /**
      * Wrapper for the item get that helps make our new API consistent.
+     *
+     * @param array $args
+     * @return array
+     * @throws Exception
      */
     public function itemGetWrapper($args)
     {
@@ -451,12 +489,16 @@ class ApiitemComponent extends AppComponent
      */
     public function itemListPermissions($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
+        /** @var ItempolicygroupModel $itempolicygroupModel */
         $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $itemId = $args['id'];
         $item = $itemModel->load($itemId);
@@ -494,6 +536,7 @@ class ApiitemComponent extends AppComponent
      */
     public function itemCreate($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('name'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
@@ -501,6 +544,8 @@ class ApiitemComponent extends AppComponent
         if ($userDao == false) {
             throw new Exception('Cannot create item anonymously', MIDAS_INVALID_POLICY);
         }
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $name = $args['name'];
         $description = isset($args['description']) ? $args['description'] : '';
@@ -508,6 +553,7 @@ class ApiitemComponent extends AppComponent
         $uuid = isset($args['uuid']) ? $args['uuid'] : '';
         $record = false;
         if (!empty($uuid)) {
+            /** @var UuidComponent $uuidComponent */
             $uuidComponent = MidasLoader::loadComponent('Uuid');
             $record = $uuidComponent->getByUid($uuid);
         }
@@ -535,7 +581,10 @@ class ApiitemComponent extends AppComponent
                 }
             }
             if (array_key_exists('updatebitstream', $args)) {
+                /** @var ItemRevisionModel $itemRevisionModel */
                 $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
+
+                /** @var BitstreamModel $bitstreamModel */
                 $bitstreamModel = MidasLoader::loadModel('Bitstream');
                 $revision = $itemRevisionModel->getLatestRevision($record);
                 $bitstreams = $revision->getBitstreams();
@@ -552,6 +601,8 @@ class ApiitemComponent extends AppComponent
             if (!array_key_exists('parentid', $args)) {
                 throw new Exception('Parameter parentid is not defined', MIDAS_INVALID_PARAMETER);
             }
+
+            /** @var FolderModel $folderModel */
             $folderModel = MidasLoader::loadModel('Folder');
             $folder = $folderModel->load($args['parentid']);
             if ($folder == false) {
@@ -565,6 +616,8 @@ class ApiitemComponent extends AppComponent
             if ($item === false) {
                 throw new Exception('Create new item failed', MIDAS_INTERNAL_ERROR);
             }
+
+            /** @var ItempolicyuserModel $itempolicyuserModel */
             $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
             $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
 
@@ -590,6 +643,7 @@ class ApiitemComponent extends AppComponent
      */
     public function itemMove($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id', 'srcfolderid', 'dstfolderid'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
@@ -597,7 +651,11 @@ class ApiitemComponent extends AppComponent
         if ($userDao == false) {
             throw new Exception('Cannot move item anonymously', MIDAS_INVALID_POLICY);
         }
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $id = $args['id'];
         $item = $itemModel->load($id);
@@ -649,6 +707,7 @@ class ApiitemComponent extends AppComponent
      */
     public function itemShare($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id', 'dstfolderid'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
@@ -656,7 +715,11 @@ class ApiitemComponent extends AppComponent
         if ($userDao == false) {
             throw new Exception('Cannot share item anonymously', MIDAS_INVALID_POLICY);
         }
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $id = $args['id'];
         $item = $itemModel->load($id);
@@ -706,6 +769,7 @@ class ApiitemComponent extends AppComponent
      */
     public function itemDuplicate($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id', 'dstfolderid'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
@@ -713,7 +777,11 @@ class ApiitemComponent extends AppComponent
         if ($userDao == false) {
             throw new Exception('Cannot duplicate item anonymously', MIDAS_INVALID_POLICY);
         }
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $id = $args['id'];
         $item = $itemModel->load($id);
@@ -752,11 +820,13 @@ class ApiitemComponent extends AppComponent
      */
     public function itemAddPolicygroup($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id', 'group_id', 'policy'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $itemId = $args['id'];
         $item = $itemModel->load($itemId);
@@ -767,6 +837,7 @@ class ApiitemComponent extends AppComponent
             throw new Exception("Admin privileges required on the item.", MIDAS_INVALID_POLICY);
         }
 
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
         $group = $groupModel->load($args['group_id']);
         if ($group === false) {
@@ -775,6 +846,7 @@ class ApiitemComponent extends AppComponent
 
         $policyCode = $apihelperComponent->getValidPolicyCode($args['policy']);
 
+        /** @var Itempolicygroup $itempolicygroupModel */
         $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
         $itempolicygroupModel->createPolicy($group, $item, $policyCode);
 
@@ -793,11 +865,13 @@ class ApiitemComponent extends AppComponent
      */
     public function itemRemovePolicygroup($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id', 'group_id'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $itemId = $args['id'];
         $item = $itemModel->load($itemId);
@@ -808,12 +882,14 @@ class ApiitemComponent extends AppComponent
             throw new Exception("Admin privileges required on the item.", MIDAS_INVALID_POLICY);
         }
 
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
         $group = $groupModel->load($args['group_id']);
         if ($group === false) {
             throw new Exception("This group doesn't exist.", MIDAS_INVALID_PARAMETER);
         }
 
+        /** @var ItempolicygroupModel $itempolicygroupModel */
         $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
         $itempolicygroup = $itempolicygroupModel->getPolicy($group, $item);
         if ($itempolicygroup !== false) {
@@ -837,11 +913,13 @@ class ApiitemComponent extends AppComponent
      */
     public function itemAddPolicyuser($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id', 'user_id', 'policy'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
         $adminUser = $apihelperComponent->getUser($args);
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $itemId = $args['id'];
         $item = $itemModel->load($itemId);
@@ -852,6 +930,7 @@ class ApiitemComponent extends AppComponent
             throw new Exception("Admin privileges required on the item.", MIDAS_INVALID_POLICY);
         }
 
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $targetUserId = $args['user_id'];
         $targetUser = $userModel->load($targetUserId);
@@ -861,6 +940,7 @@ class ApiitemComponent extends AppComponent
 
         $policyCode = $apihelperComponent->getValidPolicyCode($args['policy']);
 
+        /** @var ItempolicyuserModel $itempolicyuserModel */
         $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
         $itempolicyuserModel->createPolicy($targetUser, $item, $policyCode);
 
@@ -879,11 +959,13 @@ class ApiitemComponent extends AppComponent
      */
     public function itemRemovePolicyuser($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id', 'user_id'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $itemId = $args['id'];
         $item = $itemModel->load($itemId);
@@ -894,12 +976,14 @@ class ApiitemComponent extends AppComponent
             throw new Exception("Admin privileges required on the item.", MIDAS_INVALID_POLICY);
         }
 
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $user = $userModel->load($args['user_id']);
         if ($user === false) {
             throw new Exception("This user doesn't exist.", MIDAS_INVALID_PARAMETER);
         }
 
+        /** @var ItempolicyuserModel $itempolicyuserModel */
         $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
         $itempolicyuser = $itempolicyuserModel->getPolicy($user, $item);
         if ($itempolicyuser !== false) {
@@ -918,6 +1002,7 @@ class ApiitemComponent extends AppComponent
      */
     public function itemDelete($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
 
@@ -927,6 +1012,8 @@ class ApiitemComponent extends AppComponent
             throw new Exception('Unable to find user', MIDAS_INVALID_TOKEN);
         }
         $id = $args['id'];
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $item = $itemModel->load($id);
 
@@ -949,12 +1036,15 @@ class ApiitemComponent extends AppComponent
      */
     public function itemDownload($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
         $id = $args['id'];
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $item = $itemModel->load($id);
 

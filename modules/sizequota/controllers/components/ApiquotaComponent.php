@@ -40,7 +40,11 @@ class Sizequota_ApiquotaComponent extends AppComponent
         $apihelperComponent->validateParams($args, array('user'));
         $requestUser = $apihelperComponent->getUser($args);
 
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
+
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
 
         $user = $userModel->load($args['user']);
@@ -52,6 +56,8 @@ class Sizequota_ApiquotaComponent extends AppComponent
         ) {
             throw new Exception('Read permission required', MIDAS_SIZEQUOTA_INVALID_POLICY);
         }
+
+        /** @var Sizequota_FolderQuotaModel $quotaModel */
         $quotaModel = MidasLoader::loadModel('FolderQuota', 'sizequota');
         $quota = $quotaModel->getUserQuota($user);
         $used = $folderModel->getSize($user->getFolder());
@@ -74,7 +80,10 @@ class Sizequota_ApiquotaComponent extends AppComponent
         $apihelperComponent->validateParams($args, array('community'));
         $requestUser = $apihelperComponent->getUser($args);
 
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
+
+        /** @var CommunityModel $commModel */
         $commModel = MidasLoader::loadModel('Community');
 
         $comm = $commModel->load($args['community']);
@@ -86,6 +95,8 @@ class Sizequota_ApiquotaComponent extends AppComponent
         ) {
             throw new Exception('Read permission required', MIDAS_SIZEQUOTA_INVALID_POLICY);
         }
+
+        /** @var Sizequota_FolderQuotaModel $quotaModel */
         $quotaModel = MidasLoader::loadModel('FolderQuota', 'sizequota');
         $quota = $quotaModel->getCommunityQuota($comm);
         $used = $folderModel->getSize($comm->getFolder());
@@ -111,6 +122,8 @@ class Sizequota_ApiquotaComponent extends AppComponent
         if (!$user || !$user->isAdmin()) {
             throw new Exception('Must be super-admin', MIDAS_SIZEQUOTA_INVALID_POLICY);
         }
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $folder = $folderModel->load($args['folder']);
         if (!$folder) {
@@ -126,6 +139,8 @@ class Sizequota_ApiquotaComponent extends AppComponent
                 MIDAS_SIZEQUOTA_INVALID_PARAMETER
             );
         }
+
+        /** @var Sizequota_FolderQuotaModel $quotaModel */
         $quotaModel = MidasLoader::loadModel('FolderQuota', 'sizequota');
 
         return $quotaModel->setQuota($folder, $quota);

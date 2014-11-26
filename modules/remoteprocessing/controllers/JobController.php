@@ -34,6 +34,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
         }
         $this->view->header = $this->t("Manage Your Jobs");
 
+        /** @var Scheduler_JobModel $schedulerJobModel */
         $schedulerJobModel = MidasLoader::loadModel('Job', 'scheduler');
         $this->view->scheduledJobs = $schedulerJobModel->getJobsByTaskAndCreator(
             'TASK_REMOTEPROCESSING_ADD_JOB',

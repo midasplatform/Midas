@@ -168,6 +168,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
             }
         }
 
+        /** @var UtilityComponent $utilityComponent */
         $utilityComponent = MidasLoader::loadComponent('Utility');
 
         require_once BASE_PATH.'/core/ApiController.php';

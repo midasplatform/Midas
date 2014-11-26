@@ -34,6 +34,7 @@ class Batchmake_TaskModelTest extends DatabaseTestCase
     {
         $usersFile = $this->loadData('User', 'default', '', 'batchmake');
 
+        /** @var Batchmake_TaskModel $taskModel */
         $taskModel = MidasLoader::loadModel('Task', 'batchmake');
 
         $user1Dao = $usersFile[0];

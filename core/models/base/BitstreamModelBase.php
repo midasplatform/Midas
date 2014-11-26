@@ -103,6 +103,7 @@ abstract class BitstreamModelBase extends AppModel
      */
     public function createThumbnail($assetstore, $tempThumbnailFile)
     {
+        /** @var BitstreamDao $bitstreamDao */
         $bitstreamDao = MidasLoader::newDao('BitstreamDao');
 
         $md5 = md5_file($tempThumbnailFile);

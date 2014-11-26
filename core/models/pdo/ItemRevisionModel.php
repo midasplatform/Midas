@@ -77,6 +77,7 @@ class ItemRevisionModel extends ItemRevisionModelBase
             return;
         }
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $lastrevision = $itemModel->getLastRevision($item);
 
@@ -98,6 +99,8 @@ class ItemRevisionModel extends ItemRevisionModelBase
             throw new Zend_Exception("Error in param revisiondao when deleting an ItemRevision.");
         }
         $bitstreams = $revisiondao->getBitstreams();
+
+        /** @var BitstreamModel $bitstream_model */
         $bitstream_model = MidasLoader::loadModel('Bitstream');
         foreach ($bitstreams as $bitstream) {
             $bitstream_model->delete($bitstream);
@@ -112,6 +115,7 @@ class ItemRevisionModel extends ItemRevisionModelBase
 
         $rowset = $this->database->fetchAll($sql);
 
+        /** @var FeedModel $feed_model */
         $feed_model = MidasLoader::loadModel('Feed');
         foreach ($rowset as $row) {
             $feed = $this->initDao('Feed', $row);

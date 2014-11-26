@@ -83,6 +83,8 @@ abstract class Oauth_CodeModelBase extends Oauth_AppModel
         }
         /** @var RandomComponent $randomComponent */
         $randomComponent = MidasLoader::loadComponent('Random');
+
+        /** @var Oauth_CodeDao $codeDao */
         $codeDao = MidasLoader::newDao('CodeDao', $this->moduleName);
         $codeDao->setCode($randomComponent->generateString(32));
         $codeDao->setScopes(JsonComponent::encode($scopes));

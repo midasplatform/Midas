@@ -38,6 +38,7 @@ class Packages_ApiComponent extends AppComponent
      */
     private function _getUser($args)
     {
+        /** @var AuthenticationComponent $authComponent */
         $authComponent = MidasLoader::loadComponent('Authentication');
 
         return $authComponent->getUser($args, null);
@@ -91,7 +92,10 @@ class Packages_ApiComponent extends AppComponent
      */
     public function extensionList($args)
     {
+        /** @var Packages_ExtensionModel $extensionsModel */
         $extensionsModel = MidasLoader::loadModel('Extension', 'packages');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
 
         $extensions = $extensionsModel->get($args);
@@ -188,7 +192,10 @@ class Packages_ApiComponent extends AppComponent
 
         $tmpfile = $this->_readUploadedFile('extension');
 
+        /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $key = 'extensions.'.$args['submissiontype'].'.folder';
         $folderId = $settingModel->getValueByName($key, 'packages');
@@ -208,14 +215,20 @@ class Packages_ApiComponent extends AppComponent
             throw new Exception('Invalid policy on folder '.$folderId, -1);
         }
 
+        /** @var UploadComponent $uploadComponent */
         $uploadComponent = MidasLoader::loadComponent('Upload');
+
+        /** @var Packages_ExtensionModel $extensionModel */
         $extensionModel = MidasLoader::loadModel('Extension', 'packages');
         $extensionDao = $extensionModel->matchExistingExtension($args);
         if ($extensionDao == null) {
             $item = $uploadComponent->createUploadedItem($userDao, $args['name'], $tmpfile, $folder);
 
             // Set the revision comment to the extension's revision
+            /** @var ItemModel $itemModel */
             $itemModel = MidasLoader::loadModel('Item');
+
+            /** @var ItemRevisionModel $itemRevisionModel */
             $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
             $itemRevision = $itemModel->getLastRevision($item);
             $itemRevision->setChanges($args['revision']);
@@ -224,6 +237,8 @@ class Packages_ApiComponent extends AppComponent
             if (!$item) {
                 throw new Exception('Failed to create item', -1);
             }
+
+            /** @var Packages_ExtensionDao $extensionDao */
             $extensionDao = MidasLoader::newDao('ExtensionDao', 'packages');
         } else {
             $item = $extensionDao->getItem();
@@ -291,7 +306,10 @@ class Packages_ApiComponent extends AppComponent
      */
     public function packageList($args)
     {
+        /** @var Packages_PackageModel $packagesModel */
         $packagesModel = MidasLoader::loadModel('Package', 'packages');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
 
         $daos = $packagesModel->get($args);
@@ -373,8 +391,13 @@ class Packages_ApiComponent extends AppComponent
 
         $tmpfile = $this->_readUploadedFile('package');
 
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
+
+        /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
+
+        /** @var Packages_ApplicationModel $applicationModel */
         $applicationModel = MidasLoader::loadModel('Application', 'packages');
 
         $folderId = $args['folderId'];
@@ -401,13 +424,18 @@ class Packages_ApiComponent extends AppComponent
             throw new Exception('Must have write access into the project to upload packages to application');
         }
 
+        /** @var UploadComponent $uploadComponent */
         $uploadComponent = MidasLoader::loadComponent('Upload');
         $item = $uploadComponent->createUploadedItem($userDao, $args['name'], $tmpfile, $folder);
 
         if (!$item) {
             throw new Exception('Failed to create item', -1);
         }
+
+        /** @var Packages_PackageModel $packageModel */
         $packageModel = MidasLoader::loadModel('Package', 'packages');
+
+        /** @var Packages_PackageDao $packageDao */
         $packageDao = MidasLoader::newDao('PackageDao', 'packages');
         $packageDao->setItemId($item->getKey());
         $packageDao->setApplicationId($application->getKey());

@@ -27,6 +27,11 @@ class DownloadBitstreamComponent extends AppComponent
      * Calling this will stream the file to the client.
      * The parameter is a bitstream dao.
      * Optional second parameter is the download offset in bytes.
+     *
+     * @param BitstreamDao $bitstream
+     * @param int $offset
+     * @param bool $incrementDownload
+     * @throws Zend_Exception
      */
     public function download($bitstream, $offset = 0, $incrementDownload = false)
     {
@@ -134,6 +139,7 @@ class DownloadBitstreamComponent extends AppComponent
 
         if ($incrementDownload && feof($handle)
         ) { // Only record downloads that actually complete
+            /** @var ItemModel $itemModel */
             $itemModel = MidasLoader::loadModel('Item');
             $itemModel->incrementDownloadCount($bitstream->getItemrevision()->getItem());
         }
@@ -151,7 +157,7 @@ class DownloadBitstreamComponent extends AppComponent
  * IIS, or SCRIPT_NAME in CGI mode).  Also exposes some additional custom
  * environment information.
  *
- * @param  string $key Environment variable name.
+ * @param string $key Environment variable name.
  * @return string Environment variable setting.
  * @link http://book.cakephp.org/view/1130/env
  */

@@ -58,27 +58,33 @@ class FeedDao extends AppDao
         switch ($type) {
             case MIDAS_FEED_CREATE_COMMUNITY:
             case MIDAS_FEED_UPDATE_COMMUNITY:
+                /** @var CommunityModel $model */
                 $model = MidasLoader::loadModel('Community');
 
                 return $model->load($this->resource);
             case MIDAS_FEED_COMMUNITY_INVITATION:
+                /** @var CommunityInvitationModel $model */
                 $model = MidasLoader::loadModel('CommunityInvitation');
 
                 return $model->load($this->resource);
             case MIDAS_FEED_CREATE_FOLDER:
+                /** @var FolderModel $model */
                 $model = MidasLoader::loadModel('Folder');
 
                 return $model->load($this->resource);
             case MIDAS_FEED_CREATE_ITEM:
             case MIDAS_FEED_CREATE_LINK_ITEM:
+                /** @var ItemModel $model */
                 $model = MidasLoader::loadModel('Item');
 
                 return $model->load($this->resource);
             case MIDAS_FEED_CREATE_REVISION:
+                /** @var ItemRevisionModel $model */
                 $model = MidasLoader::loadModel('ItemRevision');
 
                 return $model->load($this->resource);
             case MIDAS_FEED_CREATE_USER:
+                /** @var UserModel $model */
                 $model = MidasLoader::loadModel('User');
 
                 return $model->load($this->resource);

@@ -21,7 +21,13 @@
 /** Sort Daos */
 class FilterComponent extends AppComponent
 {
-    /** get a filter */
+    /**
+     * Get a filter
+     *
+     * @param string $filter
+     * @return mixed
+     * @throws Zend_Exception
+     */
     public function getFilter($filter)
     {
         Zend_Loader::loadClass($filter, BASE_PATH.'/core/controllers/components/filters');

@@ -54,6 +54,7 @@ class Cleanup_PerformCleanupTest extends ControllerTestCase
         $usersFile = $this->loadData('User', 'default');
         $userDao = $this->User->load($usersFile[2]->getKey());
 
+        /** @var Scheduler_JobModel $jobModel */
         $jobModel = MidasLoader::loadModel('Job', 'scheduler');
 
         $jobs = $jobModel->getJobsByTask('TASK_CLEANUP_PERFORM_CLEANUP');
@@ -65,7 +66,7 @@ class Cleanup_PerformCleanupTest extends ControllerTestCase
         $jobs = $jobModel->getJobsByTask('TASK_CLEANUP_PERFORM_CLEANUP');
         $this->assertTrue(empty($jobs));
 
-        /** @var $adminComponent Cleanup_AdminComponent */
+        /** @var Cleanup_AdminComponent $adminComponent */
         $adminComponent = MidasLoader::loadComponent('Admin', 'cleanup');
         $adminComponent->schedulePerformCleanupJob(5, $tempDir, $userDao); // 5 day limit on keeping files
 

@@ -48,6 +48,7 @@ class Scheduler_JobLogModelBase extends Scheduler_AppModel
     /** save logs */
     public function saveLog($jobDao, $text)
     {
+        /** @var Scheduler_JobLogDao $joblog */
         $joblog = MidasLoader::newDao('JobLogDao', 'scheduler');
         $joblog->setJobId($jobDao->getKey());
         $joblog->setDate(date('Y-m-d H:i:s'));

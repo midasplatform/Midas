@@ -136,9 +136,10 @@ abstract class AssetstoreModelBase extends AppModel
             $items[$item->getKey()] = $item;
         }
 
-        $item_model = MidasLoader::loadModel('Item');
+        /** @var ItemModel $itemModel */
+        $itemModel = MidasLoader::loadModel('Item');
         foreach ($items as $item) {
-            $item_model->delete($item);
+            $itemModel->delete($item);
         }
         parent::delete($dao);
     }
@@ -151,7 +152,10 @@ abstract class AssetstoreModelBase extends AppModel
      */
     public function getDefault()
     {
+        /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
+
+        /** @var AssetstoreModel $assetstoreModel */
         $assetstoreModel = MidasLoader::loadModel('Assetstore');
         $defaultAssetstoreId = $settingModel->getValueByName('default_assetstore');
 

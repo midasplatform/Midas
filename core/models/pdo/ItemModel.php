@@ -329,7 +329,10 @@ class ItemModel extends ItemModelBase
         );
         $rowset = $this->database->fetchAll($sql);
 
+        /** @var FeedModel $feed_model */
         $feed_model = MidasLoader::loadModel('Feed');
+
+        /** @var ItemRevisionModel $revision_model */
         $revision_model = MidasLoader::loadModel('ItemRevision');
         foreach ($rowset as $row) {
             $feed = $this->initDao('Feed', $row);
@@ -348,12 +351,14 @@ class ItemModel extends ItemModelBase
             $revision_model->delete($revision);
         }
 
+        /** @var ItempolicygroupModel $policy_group_model */
         $policy_group_model = MidasLoader::loadModel('Itempolicygroup');
         $policiesGroup = $itemdao->getItempolicygroup();
         foreach ($policiesGroup as $policy) {
             $policy_group_model->delete($policy);
         }
 
+        /** @var ItempolicyuserModel $policy_user_model */
         $policy_user_model = MidasLoader::loadModel('Itempolicyuser');
         $policiesUser = $itemdao->getItempolicyuser();
         foreach ($policiesUser as $policy) {
@@ -362,6 +367,7 @@ class ItemModel extends ItemModelBase
 
         $thumbnailId = $itemdao->getThumbnailId();
         if ($thumbnailId !== null) {
+            /** @var BitstreamModel $bitstreamModel */
             $bitstreamModel = MidasLoader::loadModel('Bitstream');
             $thumbnail = $bitstreamModel->load($thumbnailId);
             $bitstreamModel->delete($thumbnail);

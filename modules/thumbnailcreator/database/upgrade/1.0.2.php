@@ -29,6 +29,7 @@ class Thumbnailcreator_Upgrade_1_0_2 extends MIDASUpgrade
     /** Pre database upgrade. */
     public function preUpgrade()
     {
+        /** @var AssetstoreModel $assetstoreModel */
         $assetstoreModel = MidasLoader::loadModel('Assetstore');
         $this->assetstore = $assetstoreModel->getDefault();
     }
@@ -69,6 +70,7 @@ class Thumbnailcreator_Upgrade_1_0_2 extends MIDASUpgrade
 
     private function _moveThumbnailToAssetstore($thumbnail)
     {
+        /** @var BitstreamModel $bitstreamModel */
         $bitstreamModel = MidasLoader::loadModel('Bitstream');
 
         $oldpath = BASE_PATH.'/'.$thumbnail;

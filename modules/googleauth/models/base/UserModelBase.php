@@ -60,6 +60,7 @@ abstract class Googleauth_UserModelBase extends Googleauth_AppModel
      */
     public function createGoogleUser($user, $googlePersonId)
     {
+        /** @var Googleauth_UserDao $guserDao */
         $guserDao = MidasLoader::newDao('UserDao', 'googleauth');
         $guserDao->setUserId($user->getKey());
         $guserDao->setGooglePersonId($googlePersonId);

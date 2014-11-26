@@ -52,6 +52,7 @@ abstract class Dicomserver_RegistrationModelBase extends Dicomserver_AppModel
      */
     public function createRegistration($item_id)
     {
+        /** @var Dicomserver_RegistrationDao $registrationDao */
         $registrationDao = MidasLoader::newDao('RegistrationDao', 'dicomserver');
         $registrationDao->setItemId($item_id);
         $this->save($registrationDao);

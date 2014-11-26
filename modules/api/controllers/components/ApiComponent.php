@@ -53,6 +53,7 @@ class Api_ApiComponent extends AppComponent
     /** Return the user dao */
     private function _getUser($args)
     {
+        /** @var AuthenticationComponent $authComponent */
         $authComponent = MidasLoader::loadComponent('Authentication');
 
         return $authComponent->getUser($args, $this->userSession->Dao);
@@ -148,6 +149,8 @@ class Api_ApiComponent extends AppComponent
         $this->_validateParams($args, array('uuid'));
 
         $uuid = $args['uuid'];
+
+        /** @var UuidComponent $uuidComponent */
         $uuidComponent = MidasLoader::loadComponent('Uuid');
         $resource = $uuidComponent->getByUid($uuid);
 
@@ -184,6 +187,7 @@ class Api_ApiComponent extends AppComponent
     {
         $this->_validateParams($args, array('uuid'));
 
+        /** @var UuidComponent $uuidComponent */
         $uuidComponent = MidasLoader::loadComponent('Uuid');
         $element = $uuidComponent->getByUid($args['uuid']);
 
@@ -238,6 +242,8 @@ class Api_ApiComponent extends AppComponent
         if (isset($args['folder'])) {
             $folder = $args['folder'];
         }
+
+        /** @var SearchComponent $searchComponent */
         $searchComponent = MidasLoader::loadComponent('Search');
 
         return $searchComponent->searchItems($userDao, $args['search'], $folder, $order);
@@ -260,6 +266,8 @@ class Api_ApiComponent extends AppComponent
         if (isset($args['order'])) {
             $order = $args['order'];
         }
+
+        /** @var SearchComponent $searchComponent */
         $searchComponent = MidasLoader::loadComponent('Search');
 
         return $searchComponent->searchAll($userDao, $args['search'], $order);
@@ -515,6 +523,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function folderListPermissions($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'folder_id', 'id');
 
@@ -532,6 +541,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function folderSetPrivacyRecursive($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'folder_id', 'id');
 
@@ -553,6 +563,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function folderAddPolicygroup($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'folder_id', 'id');
 
@@ -572,6 +583,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function folderRemovePolicygroup($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'folder_id', 'id');
 
@@ -593,6 +605,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function folderAddPolicyuser($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'folder_id', 'id');
 
@@ -612,6 +625,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function folderRemovePolicyuser($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'folder_id', 'id');
 
@@ -717,6 +731,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function itemSetmetadata($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'itemId', 'id');
 
@@ -745,6 +760,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function itemSetmultiplemetadata($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'itemid', 'id');
 
@@ -768,6 +784,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function itemDeletemetadata($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'itemid', 'id');
 
@@ -788,6 +805,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function itemDeletemetadataAll($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'itemid', 'id');
 
@@ -831,6 +849,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function itemListPermissions($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'item_id', 'id');
 
@@ -901,6 +920,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function itemAddPolicygroup($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'item_id', 'id');
 
@@ -917,6 +937,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function itemRemovePolicygroup($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'item_id', 'id');
 
@@ -935,6 +956,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function itemAddPolicyuser($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'item_id', 'id');
 
@@ -951,6 +973,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function itemRemovePolicyuser($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'item_id', 'id');
 
@@ -1003,6 +1026,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function userGet($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'user_id', 'id', false);
         if (array_key_exists('id', $args)) {
@@ -1128,6 +1152,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function groupAddUser($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'group_id', 'id');
 
@@ -1144,6 +1169,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function groupRemoveUser($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'group_id', 'id');
 
@@ -1172,6 +1198,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function groupRemove($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'group_id', 'id');
 
@@ -1188,6 +1215,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function groupListUsers($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'group_id', 'id');
 
@@ -1202,6 +1230,7 @@ class Api_ApiComponent extends AppComponent
      */
     public function communityListGroups($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'community_id', 'id');
 

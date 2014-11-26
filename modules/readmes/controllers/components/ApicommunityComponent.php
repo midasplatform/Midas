@@ -31,10 +31,14 @@ class Readmes_ApicommunityComponent extends AppComponent
      */
     public function get($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
+
+        /** @var Readmes_GetReadmeComponent $readmeComponent */
         $readmeComponent = MidasLoader::loadComponent('GetReadme', 'readmes');
         $apihelperComponent->validateParams($args, array('id'));
 
+        /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
 
         $communityDao = $communityModel->load($args['id']);

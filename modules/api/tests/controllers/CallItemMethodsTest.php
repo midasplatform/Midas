@@ -888,7 +888,10 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
     /** test item creation and deletion */
     public function testCreateitemDeleteitem()
     {
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $itemsFile = $this->loadData('Item', 'default');
 
@@ -1439,6 +1442,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $this->_callDeletemetadataAll($generatedItemId, "all", MIDAS_INVALID_POLICY);
 
         // add a revision to the item
+        /** @var ItemRevisionDao $revision */
         $revision = MidasLoader::newDao('ItemRevisionDao');
         $revision->setUser_id($usersFile[0]->getKey());
         $revision->setChanges('revision 1');
@@ -1517,6 +1521,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         );
 
         // add a revision 2 to the item
+        /** @var ItemRevisionDao $revision */
         $revision = MidasLoader::newDao('ItemRevisionDao');
         $revision->setUser_id($usersFile[0]->getKey());
         $revision->setChanges('revision 2');
@@ -1583,11 +1588,14 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         );
 
         // add a revision 3 to the item
+        /** @var ItemRevisionDao $revision */
         $revision = MidasLoader::newDao('ItemRevisionDao');
         $revision->setUser_id($usersFile[0]->getKey());
         $revision->setChanges('revision 3');
         $this->Item->addRevision($itemDao, $revision);
+
         // add a revision 4 to the item
+        /** @var ItemRevisionDao $revision */
         $revision = MidasLoader::newDao('ItemRevisionDao');
         $revision->setUser_id($usersFile[0]->getKey());
         $revision->setChanges('revision 3');
@@ -1624,16 +1632,21 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         );
 
         // add a revision 5 to the item
+        /** @var ItemRevisionDao $revision */
         $revision = MidasLoader::newDao('ItemRevisionDao');
         $revision->setUser_id($usersFile[0]->getKey());
         $revision->setChanges('revision 5');
         $this->Item->addRevision($itemDao, $revision);
+
         // add a revision 6 to the item
+        /** @var ItemRevisionDao $revision */
         $revision = MidasLoader::newDao('ItemRevisionDao');
         $revision->setUser_id($usersFile[0]->getKey());
         $revision->setChanges('revision 6');
         $this->Item->addRevision($itemDao, $revision);
+
         // add a revision 7 to the item
+        /** @var ItemRevisionDao $revision */
         $revision = MidasLoader::newDao('ItemRevisionDao');
         $revision->setUser_id($usersFile[0]->getKey());
         $revision->setChanges('revision 7');
@@ -1783,10 +1796,15 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
      */
     public function testItemAddRemovePolicygroup()
     {
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
+
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
 
         $userDao = $userModel->load('1');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $readItem = $itemModel->load('1004');
         $writeItem = $itemModel->load('1005');
@@ -1871,9 +1889,11 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
      */
     public function testItemAddRemovePolicyuser()
     {
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
-
         $userDao = $userModel->load('1');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $readItem = $itemModel->load('1004');
         $writeItem = $itemModel->load('1005');
@@ -1956,8 +1976,11 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
     /** Test the item.list.permissions method */
     public function testItemListPermissions()
     {
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $userDao = $userModel->load('1');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $adminItem = $itemModel->load('1006');
 

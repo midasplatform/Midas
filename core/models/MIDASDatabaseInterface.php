@@ -18,18 +18,42 @@
  limitations under the License.
 =========================================================================*/
 
-/** Database interface */
+/**
+ * Generic database interface.
+ *
+ * @package Core\Database
+ */
 interface MIDASDatabaseInterface
 {
-    /** generic save */
-    public function save($dataarray);
+    /**
+     * Save the an array of data to the database.
+     *
+     * @param array $dataArray array of data
+     */
+    public function save($dataArray);
 
-    /** generic delete */
+    /**
+     * Delete a DAO from the database.
+     *
+     * @param MIDAS_GlobalDao $dao DAO
+     */
     public function delete($dao);
 
-    /** generic get value */
+    /**
+     * Fetch a value from the database.
+     *
+     * @param string $var variable name
+     * @param string $key key
+     * @param MIDAS_GlobalDao $dao DAO
+     * @return mixed value
+     */
     public function getValue($var, $key, $dao);
 
-    /** generic get all by key */
+    /**
+     * Fetch all values from the database.
+     *
+     * @param array $keys list of keys
+     * @return array list of values
+     */
     public function getAllByKey($keys);
 }

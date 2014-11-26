@@ -62,6 +62,8 @@ class Mfa_Notification extends ApiEnabled_Notification
     public function authIntercept($params)
     {
         $user = $params['user'];
+
+        /** @var Mfa_OtpdeviceModel $otpDeviceModel */
         $otpDeviceModel = MidasLoader::loadModel('Otpdevice', $this->moduleName);
         $otpDevice = $otpDeviceModel->getByUser($user);
         if ($otpDevice) {
@@ -101,9 +103,11 @@ class Mfa_Notification extends ApiEnabled_Notification
             $tokenDao = $params['tokenDao'];
         }
 
+        /** @var Mfa_OtpdeviceModel $otpDeviceModel */
         $otpDeviceModel = MidasLoader::loadModel('Otpdevice', $this->moduleName);
         $otpDevice = $otpDeviceModel->getByUser($user);
         if ($otpDevice) {
+            /** @var Mfa_ApitokenModel $tempTokenModel */
             $tempTokenModel = MidasLoader::loadModel('Apitoken', $this->moduleName);
             // create an intermediate token mapping to the real api token
             $mfaToken = $tempTokenModel->createTempToken($user, $tokenDao);

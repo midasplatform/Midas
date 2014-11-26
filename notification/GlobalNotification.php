@@ -55,10 +55,18 @@
  */
 class MIDAS_Notification
 {
+    /** @var array */
     private $_task = array();
+
+    /** @var array */
     private $_notification = array();
 
-    /** translation */
+    /**
+     * Return the translation of a given string.
+     *
+     * @param string $text string to translate
+     * @return string translated string or the input string if there is no translation
+     */
     protected function t($text)
     {
         Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
@@ -66,7 +74,7 @@ class MIDAS_Notification
         return InternationalizationComponent::translate($text);
     }
 
-    /** constructor */
+    /** Constructor. */
     public function __construct()
     {
         $this->loadElements();
@@ -78,13 +86,24 @@ class MIDAS_Notification
         $this->init();
     }
 
-    /** register task */
+    /**
+     * Register task.
+     *
+     * @param string $name
+     * @param string $method
+     * @param string $comment
+     */
     public function addTask($name, $method, $comment)
     {
         $this->_task[$name] = array('method' => $method, 'comment' => $comment);
     }
 
-    /** register callback */
+    /**
+     * Register callback.
+     *
+     * @param string $name
+     * @param string $method
+     */
     public function addCallBack($name, $method)
     {
         if (isset($this->_notification[$name])) {
@@ -93,7 +112,13 @@ class MIDAS_Notification
         $this->_notification[$name][] = array('type' => 'callback', 'call' => $method);
     }
 
-    /** register callback */
+    /**
+     * Register event.
+     *
+     * @param string $name
+     * @param string $task
+     * @param int $priority
+     */
     public function addEvent($name, $task, $priority = MIDAS_EVENT_PRIORITY_NORMAL)
     {
         if (isset($this->_notification[$name])) {
@@ -102,20 +127,28 @@ class MIDAS_Notification
         $this->_notification[$name][] = array('type' => 'task', 'call' => $task, 'priority' => $priority);
     }
 
-    /** get Tasks */
+    /**
+     * Get Tasks.
+     *
+     * @return array
+     */
     public function getTasks()
     {
         return $this->_task;
     }
 
-    /** get Tasks */
+    /**
+     * Get notifications.
+     *
+     * @return array
+     */
     public function getNotifications()
     {
         return $this->_notification;
     }
 
     /**
-     * Get Logger
+     * Fetch the logger from the Zend registry.
      *
      * @return Zend_Log
      */
@@ -124,9 +157,7 @@ class MIDAS_Notification
         return Zend_Registry::get('logger');
     }
 
-    /**
-     * Loads model and components
-     */
+    /** Load core components, DAOs, forms, and models. */
     public function loadElements()
     {
         Zend_Registry::set('models', array());
@@ -172,7 +203,9 @@ class MIDAS_Notification
     }
 
     /**
-     * Loads model and components
+     * Load module components, DAOs, forms, and models.
+     *
+     * @throws Zend_Exception
      */
     public function loadModuleElements()
     {

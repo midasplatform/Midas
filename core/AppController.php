@@ -24,15 +24,29 @@ define('MIDAS_AJAX_REQUEST_ONLY', "This page should only be requested by ajax.")
 define('MIDAS_LOGIN_REQUIRED', "User should be logged in to access this page.");
 
 /**
- * @package Core
- * Provides global functions to the controllers
+ * Generic controller class.
+ *
+ * @package Core\Controller
  */
 class AppController extends MIDAS_GlobalController
 {
+    /** @var string */
+    protected $coreWebroot;
+
+    /** @var bool */
+    protected $logged = false;
+
+    /** @var null|ProgressDao */
+    protected $progressDao = null;
+
+    /** @var Zend_Session_Namespace */
+    protected $userSession;
+
     /**
-     * Pre-dispatch routines
+     * Pre-dispatch routines.
      *
      * @return void
+     * @throws Zend_Exception
      */
     public function preDispatch()
     {
@@ -78,6 +92,8 @@ class AppController extends MIDAS_GlobalController
             if (Zend_Registry::get('configGlobal')->environment == 'testing' && isset($testingUserId)
             ) {
                 $user = new Zend_Session_Namespace('Auth_User_Testing');
+
+                /** @var UserModel $userModel */
                 $userModel = MidasLoader::loadModel('User');
                 $user->Dao = $userModel->load($testingUserId);
                 if ($user->Dao == false) {
@@ -90,6 +106,7 @@ class AppController extends MIDAS_GlobalController
 
             if ($user->Dao == null && $fc->getRequest()->getControllerName() != 'install'
             ) {
+                /** @var UserModel $userModel */
                 $userModel = MidasLoader::loadModel('User');
                 $cookieData = $this->getRequest()->getCookie('midasUtil');
 
@@ -139,6 +156,7 @@ class AppController extends MIDAS_GlobalController
                 $this->view->recentItems = array();
                 if (isset($cookieData) && file_exists(LOCAL_CONFIGS_PATH.'/database.local.ini')
                 ) { // check if midas installed
+                    /** @var ItemModel $itemModel */
                     $itemModel = MidasLoader::loadModel('Item');
                     $tmpRecentItems = unserialize($cookieData);
                     $recentItems = array();
@@ -310,6 +328,7 @@ class AppController extends MIDAS_GlobalController
         $progressId = $this->getParam('progressId');
         if (isset($progressId) && $fc->getRequest()->getControllerName() != 'progress'
         ) {
+            /** @var ProgressModel $progressModel */
             $progressModel = MidasLoader::loadModel('Progress');
             $this->progressDao = $progressModel->load($progressId);
         } else {
@@ -324,7 +343,11 @@ class AppController extends MIDAS_GlobalController
         }
     }
 
-    /** show dynamic help ? */
+    /**
+     * Show dynamic help?
+     *
+     * @return bool
+     */
     public function isDynamicHelp()
     {
         try {
@@ -344,7 +367,11 @@ class AppController extends MIDAS_GlobalController
         }
     }
 
-    /** show starting guide ? */
+    /**
+     * Show starting guide?
+     *
+     * @return bool
+     */
     public function isStartingGuide()
     {
         try {
@@ -360,24 +387,33 @@ class AppController extends MIDAS_GlobalController
         }
     }
 
-    /** get server's url */
+    /**
+     * Return the URL of the server.
+     *
+     * @return string
+     */
     public function getServerURL()
     {
         return UtilityComponent::getServerURL();
     }
 
-    /** check if testing environment is set */
+    /**
+     * Check whether the testing environment is set.
+     *
+     * @return bool
+     */
     public function isTestingEnv()
     {
         return Zend_Registry::get('configGlobal')->environment == 'testing';
     }
 
-    /** Add a qtip help in the page
+    /**
+     * Add a help tooltip to the page.
      *
-     * @param type $selector (javascript selector)
-     * @param type $text
-     * @param type $location
-     * @param type $arrow
+     * @param string $selector JavaScript selector
+     * @param string $text
+     * @param string $location
+     * @param string $arrow
      */
     public function addDynamicHelp($selector, $text, $location = 'bottom right', $arrow = 'top left')
     {
@@ -389,10 +425,15 @@ class AppController extends MIDAS_GlobalController
         );
     }
 
-    /** check if demo mode is set */
+    /**
+     * Check if demo mode is set.
+     *
+     * @return bool
+     */
     public function isDemoMode()
     {
         if (in_array('demo', Zend_Registry::get('modulesEnable'))) {
+            /** @var SettingModel $settingModel */
             $settingModel = MidasLoader::loadModel('Setting');
 
             return $settingModel->getValueByName('enabled', 'demo');
@@ -401,7 +442,7 @@ class AppController extends MIDAS_GlobalController
         return false;
     }
 
-    /** disable layout */
+    /** Disable the layout. */
     public function disableLayout()
     {
         if ($this->_helper->hasHelper('layout')) {
@@ -409,13 +450,17 @@ class AppController extends MIDAS_GlobalController
         }
     }
 
-    /** disable view */
+    /** Disable the view. */
     public function disableView()
     {
         $this->_helper->viewRenderer->setNoRender();
     }
 
-    /** Show a jgrowl Message */
+    /**
+     * Show a notification message.
+     *
+     * @param string $message
+     */
     public function showNotificationMessage($message)
     {
         if (!isset($this->view->json['triggerNotification'])) {
@@ -424,7 +469,7 @@ class AppController extends MIDAS_GlobalController
         $this->view->json['triggerNotification'][] = $message;
     }
 
-    /** zend post dispatch */
+    /** Post-dispatch routines. */
     public function postDispatch()
     {
         parent::postDispatch();
@@ -434,12 +479,13 @@ class AppController extends MIDAS_GlobalController
         }
         if ($this->progressDao != null) {
             // delete progress object since execution is complete
+            /** @var ProgressModel $progressModel */
             $progressModel = MidasLoader::loadModel('Progress');
             $progressModel->delete($this->progressDao);
         }
     }
 
-    /** trigger logging (javascript) */
+    /** Trigger logging (JavaScript). */
     public function haveToBeLogged()
     {
         $this->view->header = $this->t(MIDAS_LOGIN_REQUIRED);
@@ -447,7 +493,11 @@ class AppController extends MIDAS_GlobalController
         $this->_helper->viewRenderer->setNoRender();
     }
 
-    /** ensure the request is ajax */
+    /**
+     * Ensure the request is AJAX.
+     *
+     * @throws Zend_Exception
+     */
     public function requireAjaxRequest()
     {
         if (!$this->getRequest()->isXmlHttpRequest()) {
@@ -455,7 +505,11 @@ class AppController extends MIDAS_GlobalController
         }
     }
 
-    /** ensure that the user is logged in and has admin privileges */
+    /**
+     * Ensure that the user is logged in and has admin privileges.
+     *
+     * @throws Zend_Exception
+     */
     public function requireAdminPrivileges()
     {
         if (!$this->logged || !$this->userSession->Dao->getAdmin() == 1) {
@@ -463,7 +517,12 @@ class AppController extends MIDAS_GlobalController
         }
     }
 
-    /** translation */
+    /**
+     * Return the translation of a given string.
+     *
+     * @param string $text string to translate
+     * @return string translated string or the input string if there is no translation
+     */
     protected function t($text)
     {
         Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');

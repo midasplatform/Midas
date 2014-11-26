@@ -31,10 +31,14 @@ class Dicomextractor_ApiitemComponent extends AppComponent
      */
     public function extract($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel("Item");
+
+        /** @var AuthenticationComponent $authComponent */
         $authComponent = MidasLoader::loadComponent('Authentication');
         $itemDao = $itemModel->load($args['id']);
         $userDao = $authComponent->getUser($args, Zend_Registry::get('userSession')->Dao);
@@ -47,6 +51,7 @@ class Dicomextractor_ApiitemComponent extends AppComponent
 
         $revisionDao = $itemModel->getLastRevision($itemDao);
 
+        /** @var Dicomextractor_ExtractorComponent $dicomComponent */
         $dicomComponent = MidasLoader::loadComponent('Extractor', 'dicomextractor');
         $dicomComponent->extract($revisionDao);
         $dicomComponent->thumbnail($itemDao);

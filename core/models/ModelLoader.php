@@ -19,14 +19,19 @@
 =========================================================================*/
 
 /**
- * @deprecated Use MidasLoader static methods loadModel() and loadModels() instead.
+ * Legacy model loader.
+ *
+ * @deprecated replaced by static methods of MidasLoader
+ * @package Core\Deprecated
  */
 class MIDAS_ModelLoader
 {
     /**
-     * Loads models (array or string)
+     * Load multiple models into the Zend registry.
      *
-     * @deprecated
+     * @param array|string $models names of the models to load
+     * @param string $module name of the module from which to load the models, defaults to core
+     * @deprecated replaced by void MidasLoader::loadModels(array|string $model, string $module)
      */
     public function loadModels($models, $module = '')
     {
@@ -34,9 +39,13 @@ class MIDAS_ModelLoader
     }
 
     /**
-     * Loads a model
+     * Load a model into the Zend registry.
      *
-     * @deprecated
+     * @param string $model name of the model to load
+     * @param string $module name of the module from which to load the model, defaults to core
+     * @return mixed|MIDASModel model that was loaded
+     * @throws Zend_Exception
+     * @deprecated replaced by MIDASModel MidasLoader::loadModel(string $model, string $module)
      */
     public function loadModel($model, $module = '')
     {

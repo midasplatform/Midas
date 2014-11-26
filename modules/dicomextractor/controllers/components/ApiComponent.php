@@ -41,6 +41,7 @@ class Dicomextractor_ApiComponent extends AppComponent
      */
     public function extract($args)
     {
+        /** @var ApihelperComponent $ApihelperComponent */
         $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
         $ApihelperComponent->renameParamKey($args, 'item', 'id');
 

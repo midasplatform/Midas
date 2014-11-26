@@ -61,6 +61,7 @@ class Pvw_Notification extends MIDAS_Notification
     /** generate Dashboard information */
     public function getDashboard()
     {
+        /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
         $pvpython = $settingModel->getValueByName(MIDAS_PVW_PVPYTHON_KEY, $this->moduleName);
 

@@ -31,12 +31,14 @@ class ApibitstreamComponent extends AppComponent
      */
     public function bitstreamGet($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
 
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
+        /** @var BitstreamModel $bitstreamModel */
         $bitstreamModel = MidasLoader::loadModel('Bitstream');
         $bitstream = $bitstreamModel->load($args['id']);
 
@@ -47,12 +49,16 @@ class ApibitstreamComponent extends AppComponent
         if (array_key_exists('name', $args)) {
             $bitstream->setName($args['name']);
         }
+
+        /** @var ItemRevisionModel $revisionModel */
         $revisionModel = MidasLoader::loadModel('ItemRevision');
         $revision = $revisionModel->load($bitstream->getItemrevisionId());
 
         if (!$revision) {
             throw new Exception('Invalid revision id', MIDAS_INTERNAL_ERROR);
         }
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $item = $itemModel->load($revision->getItemId());
         if (!$item || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ)
@@ -74,6 +80,9 @@ class ApibitstreamComponent extends AppComponent
 
     /**
      * Wrapper function to make our bitstream get sane
+     *
+     * @param array $args
+     * @return array
      */
     public function bitstreamGetWrapper($args)
     {
@@ -104,18 +113,22 @@ class ApibitstreamComponent extends AppComponent
      */
     public function bitstreamEdit($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
+        /** @var BitstreamModel $bitstreamModel */
         $bitstreamModel = MidasLoader::loadModel('Bitstream');
-        $itemModel = MidasLoader::loadModel('Item');
-
         $bitstream = $bitstreamModel->load($args['id']);
+
         if (!$bitstream) {
             throw new Exception('Invalid bitstream id', MIDAS_INVALID_PARAMETER);
         }
+
+        /** @var ItemModel $itemModel */
+        $itemModel = MidasLoader::loadModel('Item');
 
         if (!$itemModel->policyCheck($bitstream->getItemrevision()->getItem(), $userDao, MIDAS_POLICY_WRITE)
         ) {
@@ -142,18 +155,22 @@ class ApibitstreamComponent extends AppComponent
      */
     public function bitstreamDelete($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
+        /** @var BitstreamModel $bitstreamModel */
         $bitstreamModel = MidasLoader::loadModel('Bitstream');
-        $itemModel = MidasLoader::loadModel('Item');
-
         $bitstream = $bitstreamModel->load($args['id']);
+
         if (!$bitstream) {
             throw new Exception('Invalid bitstream id', MIDAS_INVALID_PARAMETER);
         }
+
+        /** @var ItemModel $itemModel */
+        $itemModel = MidasLoader::loadModel('Item');
 
         if (!$itemModel->policyCheck($bitstream->getItemrevision()->getItem(), $userDao, MIDAS_POLICY_ADMIN)
         ) {
@@ -173,11 +190,13 @@ class ApibitstreamComponent extends AppComponent
      */
     public function bitstreamCount($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('uuid'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
+        /** @var UuidComponent $uuidComponent */
         $uuidComponent = MidasLoader::loadComponent('Uuid');
         $resource = $uuidComponent->getByUid($args['uuid']);
 
@@ -187,6 +206,7 @@ class ApibitstreamComponent extends AppComponent
 
         switch ($resource->resourceType) {
             case MIDAS_RESOURCE_COMMUNITY:
+                /** @var CommunityModel $communityModel */
                 $communityModel = MidasLoader::loadModel('Community');
                 if (!$communityModel->policyCheck($resource, $userDao, MIDAS_POLICY_READ)
                 ) {
@@ -195,6 +215,7 @@ class ApibitstreamComponent extends AppComponent
 
                 return $communityModel->countBitstreams($resource, $userDao);
             case MIDAS_RESOURCE_FOLDER:
+                /** @var FolderModel $folderModel */
                 $folderModel = MidasLoader::loadModel('Folder');
                 if (!$folderModel->policyCheck($resource, $userDao, MIDAS_POLICY_READ)
                 ) {
@@ -203,6 +224,7 @@ class ApibitstreamComponent extends AppComponent
 
                 return $folderModel->countBitstreams($resource, $userDao);
             case MIDAS_RESOURCE_ITEM:
+                /** @var ItemModel $itemModel */
                 $itemModel = MidasLoader::loadModel('Item');
                 if (!$itemModel->policyCheck($resource, $userDao, MIDAS_POLICY_READ)
                 ) {
@@ -217,6 +239,9 @@ class ApibitstreamComponent extends AppComponent
 
     /**
      * Download a bitstream either by its id or by a checksum.
+     *
+     * @param array $args
+     * @throws Exception
      */
     public function bitstreamDownload($args)
     {
@@ -224,11 +249,15 @@ class ApibitstreamComponent extends AppComponent
         ) {
             throw new Exception('Either an id or checksum parameter is required', MIDAS_INVALID_PARAMETER);
         }
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
+        /** @var BitstreamModel $bitstreamModel */
         $bitstreamModel = MidasLoader::loadModel('Bitstream');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
 
         if (array_key_exists('id', $args)) {

@@ -23,6 +23,9 @@ class ApiitemrevisionComponent extends AppComponent
 {
     /**
      * Function for grabbing bitstream id (used in itemrevisionGet)
+     *
+     * @param BitstreamDao $bitstream
+     * @return int
      */
     public function getBitstreamId($bitstream)
     {
@@ -39,15 +42,19 @@ class ApiitemrevisionComponent extends AppComponent
      */
     public function itemrevisionGet($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
         $itemrevision_id = $args['id'];
+
+        /** @var ItemRevisionModel $itemRevisionModel */
         $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
         $itemRevision = $itemRevisionModel->load($itemrevision_id);
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $item = $itemModel->load($itemRevision->getItemId());
         if ($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ)

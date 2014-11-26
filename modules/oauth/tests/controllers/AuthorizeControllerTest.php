@@ -129,6 +129,7 @@ class Oauth_AuthorizeControllerTest extends ControllerTestCase
         $this->params['password'] = 'myPassword';
         $this->dispatchUrl('/oauth/authorize/submit', null);
 
+        /** @var Oauth_CodeModel $codeModel */
         $codeModel = MidasLoader::loadModel('Code', 'oauth');
         $codeDaos = $codeModel->getByUser($user);
         $codeDao = end($codeDaos);

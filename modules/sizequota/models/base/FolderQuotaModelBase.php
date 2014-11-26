@@ -51,6 +51,7 @@ abstract class Sizequota_FolderQuotaModelBase extends Sizequota_AppModel
     {
         $quotaDao = $this->getQuota($folder);
         if (!$quotaDao) {
+            /** @var SettingModel $settingModel */
             $settingModel = MidasLoader::loadModel('Setting');
             if ($folder->getParentId() == -1) { // user
                 $settingName = 'defaultuserquota';
@@ -69,6 +70,7 @@ abstract class Sizequota_FolderQuotaModelBase extends Sizequota_AppModel
     {
         $quotaDao = $this->getQuota($user->getFolder());
         if (!$quotaDao) {
+            /** @var SettingModel $settingModel */
             $settingModel = MidasLoader::loadModel('Setting');
 
             return $settingModel->getValueByName('defaultuserquota', $this->moduleName);
@@ -82,6 +84,7 @@ abstract class Sizequota_FolderQuotaModelBase extends Sizequota_AppModel
     {
         $quotaDao = $this->getQuota($community->getFolder());
         if (!$quotaDao) {
+            /** @var SettingModel $settingModel */
             $settingModel = MidasLoader::loadModel('Setting');
 
             return $settingModel->getValueByName('defaultcommunityquota', $this->moduleName);
@@ -105,6 +108,7 @@ abstract class Sizequota_FolderQuotaModelBase extends Sizequota_AppModel
             $this->delete($oldQuota);
         }
         if ($quota !== null && $quota !== false) {
+            /** @var Sizequota_FolderQuotaDao $folderQuota */
             $folderQuota = MidasLoader::newDao('FolderQuotaDao', 'sizequota');
             $folderQuota->setFolderId($folder->getKey());
             $folderQuota->setQuota($quota);

@@ -35,6 +35,8 @@ class UserapiModel extends UserapiModelBase
         if (!is_string($appname) || !is_string($email)) {
             throw new Zend_Exception("Error in parameter when getting a Userapi by app and email.");
         }
+
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $userDao = $userModel->getByEmail($email);
         if ($userDao == false) {
@@ -82,6 +84,7 @@ class UserapiModel extends UserapiModelBase
             throw new Zend_Exception("Error in parameter when getting Token.");
         }
         // Check if we don't have already a token
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $userDao = $userModel->getByEmail($email);
         if (!$userDao) {
@@ -124,9 +127,11 @@ class UserapiModel extends UserapiModelBase
         }
 
         // We do some cleanup of all the other keys that have expired
+        /** @var TokenModel $tokenModel */
         $tokenModel = MidasLoader::loadModel('Token');
         $tokenModel->cleanExpired();
 
+        /** @var TokenDao $tokenDao */
         $tokenDao = MidasLoader::newDao('TokenDao');
         $tokenDao->setUserapiId($userapiDao->getKey());
         $tokenDao->setToken($token);

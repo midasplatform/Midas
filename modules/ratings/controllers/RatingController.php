@@ -51,6 +51,7 @@ class Ratings_RatingController extends Ratings_AppController
         $this->disableView();
         $this->disableLayout();
 
+        /** @var Ratings_ItemratingModel $itemRatingModel */
         $itemRatingModel = MidasLoader::loadModel('Itemrating', $this->moduleName);
         $itemRatingModel->setRating($this->userSession->Dao, $item, $rating);
 

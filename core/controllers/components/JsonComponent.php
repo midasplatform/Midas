@@ -21,9 +21,14 @@
 /** Json Component */
 class JsonComponent extends AppComponent
 {
+    /** @var null|JsonComponent */
     private static $_instance = null;
 
-    /** Instance */
+    /**
+     * Instance
+     *
+     * @return JsonComponent
+     */
     public static function getInstance()
     {
         if (!self::$_instance instanceof self) {
@@ -37,8 +42,8 @@ class JsonComponent extends AppComponent
      * Decodes the given $encodedValue string which is
      * encoded in the JSON format
      *
-     * @param  string $encodedValue Encoded in JSON format
-     * @param boolean
+     * @param string $encodedValue Encoded in JSON format
+     * @param bool
      * @return mixed
      */
     public static function decode($encodedValue, $objectDecodeType = true)
@@ -66,7 +71,7 @@ class JsonComponent extends AppComponent
     /**
      * Encode the mixed $valueToEncode into the JSON format
      *
-     * @param  mixed $valueToEncode
+     * @param mixed $valueToEncode
      * @return string JSON encoded object
      */
     public static function encode($valueToEncode)
@@ -81,19 +86,32 @@ class JsonComponent extends AppComponent
         return json_encode($valueToEncode, JSON_HEX_TAG);
     }
 
-    /** Encore Array */
+    /**
+     * Encode array
+     *
+     * @param array $tab
+     */
     public function utf8_encode_array(&$tab)
     {
         array_walk($tab, array($this, '_utf8_encode_array'));
     }
 
-    /** Decode Array */
+    /**
+     * Decode Array
+     *
+     * @param array $tab
+     */
     public function utf8_decode_array(&$tab)
     {
         array_walk($tab, array($this, '_utf8_decode_array'));
     }
 
-    /** encode Array */
+    /**
+     * Encode array
+     *
+     * @param array $array
+     * @param mixed $key
+     */
     private function _utf8_encode_array(&$array, $key)
     {
         if (is_object($array) && method_exists($array, 'toArray')) {
@@ -106,7 +124,12 @@ class JsonComponent extends AppComponent
         }
     }
 
-    /** decode array */
+    /**
+     * Decode array
+     *
+     * @param array $array
+     * @param mixed $key
+     */
     private function _utf8_decode_array(&$array, $key)
     {
         if (is_array($array)) {

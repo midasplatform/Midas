@@ -39,30 +39,70 @@ define("MIDAS2_POLICY_REMOVE", 4);
 /** Migration tool */
 class MIDAS2MigrationComponent extends AppComponent
 {
-    /** These variables should be set by the UI */
-    public $midas2User = "midas";
-    public $midas2Password = "midas";
-    public $midas2Host = "localhost";
-    public $midas2Database = "midas";
-    public $midas2Port = "5432";
-    public $midas2Assetstore = "C:/xampp/midas/assetstore"; // without end slash
-    public $assetstoreId = '1';
+    // These variables should be set by the UI
 
-    /** Private variables */
+    /** @var string */
+    public $midas2User = "midas";
+
+    /** @var string */
+    public $midas2Password = "midas";
+
+    /** @var string */
+    public $midas2Host = "localhost";
+
+    /** @var string */
+    public $midas2Database = "midas";
+
+    /** @var int */
+    public $midas2Port = 5432;
+
+    /** @var string */
+    public $midas2Assetstore = "C:/xampp/midas/assetstore"; // without end slash
+
+    /** @var int */
+    public $assetstoreId = 1;
+
+    // Private variables
+
+    /** @var int */
     public $userId;
 
-    /** function to create the items */
+    /**
+     * Function to create the items
+     *
+     * @param int $collectionId
+     * @param int $parentFolderid
+     */
     private function _createFolderForItem($collectionId, $parentFolderid)
     {
+        /** @var FolderModel $Folder */
         $Folder = MidasLoader::loadModel("Folder");
+
+        /** @var ItemModel $Item */
         $Item = MidasLoader::loadModel("Item");
+
+        /** @var ItemRevisionModel $ItemRevision */
         $ItemRevision = MidasLoader::loadModel("ItemRevision");
+
+        /** @var GroupModel $Group */
         $Group = MidasLoader::loadModel("Group");
+
+        /** @var AssetstoreModel $Assetstore */
         $Assetstore = MidasLoader::loadModel("Assetstore");
+
+        /** @var FolderpolicygroupModel $Folderpolicygroup */
         $Folderpolicygroup = MidasLoader::loadModel("Folderpolicygroup");
+
+        /** @var FolderpolicyuserModel $Folderpolicyuser */
         $Folderpolicyuser = MidasLoader::loadModel("Folderpolicyuser");
+
+        /** @var ItempolicygroupModel $Itempolicygroup */
         $Itempolicygroup = MidasLoader::loadModel("Itempolicygroup");
+
+        /** @var ItempolicyuserModel $Itempolicyuser */
         $Itempolicyuser = MidasLoader::loadModel("Itempolicyuser");
+
+        /** @var UserModel $User */
         $User = MidasLoader::loadModel("User");
 
         $colquery = pg_query(
@@ -191,6 +231,7 @@ class MIDAS2MigrationComponent extends AppComponent
                     $Item->addRevision($itemdao, $itemRevisionDao);
 
                     // Add the metadata
+                    /** @var MetadataModel $MetadataModel */
                     $MetadataModel = MidasLoader::loadModel("Metadata");
 
                     //
@@ -311,12 +352,24 @@ class MIDAS2MigrationComponent extends AppComponent
         }
     }
 
-    /** function to create the collections */
+    /**
+     * Function to create the collections
+     *
+     * @param int $communityId
+     * @param int $parentFolderid
+     */
     private function _createFolderForCollection($communityId, $parentFolderid)
     {
+        /** @var FolderModel $Folder */
         $Folder = MidasLoader::loadModel("Folder");
+
+        /** @var UserModel $User */
         $User = MidasLoader::loadModel("User");
+
+        /** @var FolderpolicygroupModel $Folderpolicygroup */
         $Folderpolicygroup = MidasLoader::loadModel("Folderpolicygroup");
+
+        /** @var FolderpolicyuserModel $Folderpolicyuser */
         $Folderpolicyuser = MidasLoader::loadModel("Folderpolicyuser");
 
         $colquery = pg_query(
@@ -381,12 +434,24 @@ class MIDAS2MigrationComponent extends AppComponent
         }
     }
 
-    /** Recursive function to create the communities */
+    /**
+     * Recursive function to create the communities
+     *
+     * @param int $communityidMIDAS2
+     * @param int $parentFolderid
+     */
     private function _createFolderForCommunity($communityidMIDAS2, $parentFolderid)
     {
+        /** @var FolderModel $Folder */
         $Folder = MidasLoader::loadModel("Folder");
+
+        /** @var FolderpolicygroupModel $Folderpolicygroup */
         $Folderpolicygroup = MidasLoader::loadModel("Folderpolicygroup");
+
+        /** @var FolderpolicyuserModel $Folderpolicyuser */
         $Folderpolicyuser = MidasLoader::loadModel("Folderpolicyuser");
+
+        /** @var UserModel $User */
         $User = MidasLoader::loadModel("User");
 
         // Create the collections attached to this community
@@ -456,7 +521,12 @@ class MIDAS2MigrationComponent extends AppComponent
         }
     }
 
-    /** */
+    /**
+     * Migrate
+     *
+     * @param int $userid
+     * @throws Zend_Exception
+     */
     public function migrate($userid)
     {
         $this->userId = $userid;
@@ -482,7 +552,10 @@ class MIDAS2MigrationComponent extends AppComponent
         }
 
         // STEP 1: Import the users
+        /** @var UserModel $User */
         $User = MidasLoader::loadModel("User");
+
+        /** @var GroupModel $Group */
         $Group = MidasLoader::loadModel("Group");
         $query = pg_query("SELECT email, password, firstname, lastname FROM eperson");
         while ($query_array = pg_fetch_array($query)) {
@@ -500,6 +573,7 @@ class MIDAS2MigrationComponent extends AppComponent
         }
 
         // STEP 2: Import the communities. The MIDAS2 TopLevel communities are communities in MIDAS3
+        /** @var CommunityModel $Community */
         $Community = MidasLoader::loadModel("Community");
         $query = pg_query(
             "SELECT community_id, name, short_description, introductory_text FROM community WHERE owning_community = 0"

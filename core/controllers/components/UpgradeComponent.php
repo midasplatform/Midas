@@ -21,14 +21,32 @@
 /** Upgrade MIDAS */
 class UpgradeComponent extends AppComponent
 {
+    /** @var string */
     public $dir;
+
+    /** @var string */
     protected $module;
+
+    /** @var Zend_Db_Adapter_Abstract */
     protected $db;
+
+    /** @var string */
     protected $dbtype;
+
+    /** @var string */
     protected $dbtypeShort;
+
+    /** @var bool */
     public $init = false;
 
-    /** init upgrade Component */
+    /**
+     * Initialize the upgrade component
+     *
+     * @param string $module
+     * @param Zend_Db_Adapter_Abstract $db
+     * @param string $dbtype
+     * @throws Zend_Exception
+     */
     public function initUpgrade($module, $db, $dbtype)
     {
         if ($module == 'core') {
@@ -59,7 +77,13 @@ class UpgradeComponent extends AppComponent
         $this->init = true;
     }
 
-    /** get Newest version */
+    /**
+     * Get newest version
+     *
+     * @param bool $text
+     * @return int|string
+     * @throws Zend_Exception
+     */
     public function getNewestVersion($text = false)
     {
         if (!$this->init) {
@@ -80,7 +104,12 @@ class UpgradeComponent extends AppComponent
         return $version;
     }
 
-    /** get all migration files */
+    /**
+     * Get all migration files
+     *
+     * @return array
+     * @throws Zend_Exception
+     */
     public function getMigrationFiles()
     {
         if (!$this->init) {
@@ -116,7 +145,13 @@ class UpgradeComponent extends AppComponent
         return $files;
     }
 
-    /** transformVersionToNumeric */
+    /**
+     * Transform version to numeric
+     *
+     * @param string $text
+     * @return int
+     * @throws Zend_Exception
+     */
     public function transformVersionToNumeric($text)
     {
         $array = explode('.', $text);
@@ -127,7 +162,14 @@ class UpgradeComponent extends AppComponent
         return (int) $array[0] * 1000000 + (int) $array[1] * 1000 + (int) $array[2];
     }
 
-    /** upgrade */
+    /**
+     * Upgrade
+     *
+     * @param null|int|string $currentVersion
+     * @param bool $testing
+     * @return bool
+     * @throws Zend_Exception
+     */
     public function upgrade($currentVersion = null, $testing = false)
     {
         if ($currentVersion == null) {
@@ -217,7 +259,13 @@ class UpgradeComponent extends AppComponent
         return true;
     }
 
-    /** get Class Name */
+    /**
+     * Get class name
+     *
+     * @param string $filename
+     * @return string
+     * @throws Zend_Exception
+     */
     public function getClassName($filename)
     {
         $array = explode('.', str_replace('.php', '', basename($filename)));
@@ -236,7 +284,12 @@ class UpgradeComponent extends AppComponent
         return $classname.$array[0].'_'.$array[1].'_'.$array[2];
     }
 
-    /** execute de upgrade */
+    /**
+     * Execute the upgrade
+     *
+     * @param array $migration
+     * @throws Zend_Exception
+     */
     protected function _processFile($migration)
     {
         require_once BASE_PATH.'/core/models/MIDASUpgrade.php';

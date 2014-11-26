@@ -39,6 +39,7 @@ class ApifolderComponent extends AppComponent
      */
     public function folderCreate($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('name'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
@@ -47,6 +48,7 @@ class ApifolderComponent extends AppComponent
             throw new Exception('Cannot create folder anonymously', MIDAS_INVALID_POLICY);
         }
 
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $name = $args['name'];
         $description = isset($args['description']) ? $args['description'] : '';
@@ -54,6 +56,7 @@ class ApifolderComponent extends AppComponent
         $uuid = isset($args['uuid']) ? $args['uuid'] : '';
         $record = false;
         if (!empty($uuid)) {
+            /** @var UuidComponent $uuidComponent */
             $uuidComponent = MidasLoader::loadComponent('Uuid');
             $record = $uuidComponent->getByUid($uuid);
         }
@@ -109,7 +112,11 @@ class ApifolderComponent extends AppComponent
                 }
                 $policyGroup = $folder->getFolderpolicygroup();
                 $policyUser = $folder->getFolderpolicyuser();
+
+                /** @var FolderpolicygroupModel $folderpolicygroupModel */
                 $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
+
+                /** @var FolderpolicyuserModel $folderpolicyuserModel */
                 $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
                 foreach ($policyGroup as $policy) {
                     $folderpolicygroupModel->createPolicy($policy->getGroup(), $new_folder, $policy->getPolicy());
@@ -147,11 +154,13 @@ class ApifolderComponent extends AppComponent
      */
     public function folderMove($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id', 'dstfolderid'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $id = $args['id'];
         $folder = $folderModel->load($id);
@@ -190,11 +199,13 @@ class ApifolderComponent extends AppComponent
      */
     public function folderGet($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
 
         $id = $args['id'];
@@ -213,6 +224,9 @@ class ApifolderComponent extends AppComponent
 
     /**
      * Wrapper function for cleaning output of folderGet
+     *
+     * @param array $args
+     * @return array
      */
     public function folderGetWrapper($args)
     {
@@ -244,12 +258,16 @@ class ApifolderComponent extends AppComponent
      */
     public function folderListPermissions($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
+        /** @var FolderpolicygroupModel $folderpolicygroupModel */
         $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $folderId = $args['id'];
         $folder = $folderModel->load($folderId);
@@ -278,11 +296,14 @@ class ApifolderComponent extends AppComponent
      */
     public function folderChildren($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
         $userDao = $apihelperComponent->getUser($args);
 
         $id = $args['id'];
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $folder = $folderModel->load($id);
 
@@ -316,11 +337,13 @@ class ApifolderComponent extends AppComponent
      */
     public function folderSetPrivacyRecursive($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id', 'privacy'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $folderId = $args['id'];
         $folder = $folderModel->load($folderId);
@@ -336,6 +359,7 @@ class ApifolderComponent extends AppComponent
         $apihelperComponent->setFolderPrivacy($folder, $privacyCode);
 
         // now push down the privacy recursively
+        /** @var PolicyComponent $policyComponent */
         $policyComponent = MidasLoader::loadComponent('Policy');
         // send a null Progress since we aren't interested in progress
         // pre-populate results with 1 success for the folder we have already changed
@@ -366,11 +390,13 @@ class ApifolderComponent extends AppComponent
      */
     public function folderAddPolicygroup($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id', 'group_id', 'policy'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $folderId = $args['id'];
         $folder = $folderModel->load($folderId);
@@ -381,6 +407,7 @@ class ApifolderComponent extends AppComponent
             throw new Exception("Admin privileges required on the folder.", MIDAS_INVALID_POLICY);
         }
 
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
         $group = $groupModel->load($args['group_id']);
         if ($group === false) {
@@ -389,6 +416,7 @@ class ApifolderComponent extends AppComponent
 
         $policyCode = $apihelperComponent->getValidPolicyCode($args['policy']);
 
+        /** @var FolderpolicygroupModel $folderpolicygroupModel */
         $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
         $folderpolicygroupModel->createPolicy($group, $folder, $policyCode);
 
@@ -397,6 +425,7 @@ class ApifolderComponent extends AppComponent
 
         if (isset($args['recursive'])) {
             // now push down the privacy recursively
+            /** @var PolicyComponent $policyComponent */
             $policyComponent = MidasLoader::loadComponent('Policy');
             // send a null Progress since we aren't interested in progress
             $results = $policyComponent->applyPoliciesRecursive($folder, $userDao, null, $results);
@@ -420,11 +449,13 @@ class ApifolderComponent extends AppComponent
      */
     public function folderRemovePolicygroup($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id', 'group_id'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $folderId = $args['id'];
         $folder = $folderModel->load($folderId);
@@ -435,12 +466,14 @@ class ApifolderComponent extends AppComponent
             throw new Exception("Admin privileges required on the folder.", MIDAS_INVALID_POLICY);
         }
 
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
         $group = $groupModel->load($args['group_id']);
         if ($group === false) {
             throw new Exception("This group doesn't exist.", MIDAS_INVALID_PARAMETER);
         }
 
+        /** @var FolderpolicygroupModel $folderpolicygroupModel */
         $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
         $folderpolicygroup = $folderpolicygroupModel->getPolicy($group, $folder);
         if ($folderpolicygroup !== false) {
@@ -452,6 +485,7 @@ class ApifolderComponent extends AppComponent
 
         if (isset($args['recursive'])) {
             // now push down the privacy recursively
+            /** @var PolicyComponent $policyComponent */
             $policyComponent = MidasLoader::loadComponent('Policy');
             // send a null Progress since we aren't interested in progress
             $results = $policyComponent->applyPoliciesRecursive($folder, $userDao, null, $results);
@@ -477,11 +511,13 @@ class ApifolderComponent extends AppComponent
      */
     public function folderAddPolicyuser($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id', 'user_id', 'policy'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
         $adminUser = $apihelperComponent->getUser($args);
 
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $folderId = $args['id'];
         $folder = $folderModel->load($folderId);
@@ -493,6 +529,7 @@ class ApifolderComponent extends AppComponent
             throw new Exception("Admin privileges required on the folder.", MIDAS_INVALID_POLICY);
         }
 
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $targetUserId = $args['user_id'];
         $targetUser = $userModel->load($targetUserId);
@@ -502,6 +539,7 @@ class ApifolderComponent extends AppComponent
 
         $policyCode = $apihelperComponent->getValidPolicyCode($args['policy']);
 
+        /** @var FolderpolicyuserModel $folderpolicyuserModel */
         $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
         $folderpolicyuserModel->createPolicy($targetUser, $folder, $policyCode);
 
@@ -510,6 +548,7 @@ class ApifolderComponent extends AppComponent
 
         if (isset($args['recursive'])) {
             // now push down the privacy recursively
+            /** @var PolicyComponent $policyComponent */
             $policyComponent = MidasLoader::loadComponent('Policy');
             // send a null Progress since we aren't interested in progress
             $results = $policyComponent->applyPoliciesRecursive($folder, $adminUser, null, $results);
@@ -533,11 +572,13 @@ class ApifolderComponent extends AppComponent
      */
     public function folderRemovePolicyuser($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id', 'user_id'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_ADMIN_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $folderId = $args['id'];
         $folder = $folderModel->load($folderId);
@@ -548,12 +589,14 @@ class ApifolderComponent extends AppComponent
             throw new Exception("Admin privileges required on the folder.", MIDAS_INVALID_POLICY);
         }
 
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $user = $userModel->load($args['user_id']);
         if ($user === false) {
             throw new Exception("This user doesn't exist.", MIDAS_INVALID_PARAMETER);
         }
 
+        /** @var FolderpolicyuserModel $folderpolicyuserModel */
         $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
         $folderpolicyuser = $folderpolicyuserModel->getPolicy($user, $folder);
         if ($folderpolicyuser !== false) {
@@ -565,6 +608,7 @@ class ApifolderComponent extends AppComponent
 
         if (isset($args['recursive'])) {
             // now push down the privacy recursively
+            /** @var PolicyComponent $policyComponent */
             $policyComponent = MidasLoader::loadComponent('Policy');
             // send a null Progress since we aren't interested in progress
             $results = $policyComponent->applyPoliciesRecursive($folder, $userDao, null, $results);
@@ -582,6 +626,7 @@ class ApifolderComponent extends AppComponent
      */
     public function folderDelete($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
 
@@ -591,6 +636,8 @@ class ApifolderComponent extends AppComponent
             throw new Exception('Unable to find user', MIDAS_INVALID_TOKEN);
         }
         $id = $args['id'];
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $folder = $folderModel->load($id);
 
@@ -612,12 +659,15 @@ class ApifolderComponent extends AppComponent
      */
     public function folderDownload($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
         $id = $args['id'];
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $folder = $folderModel->load($id);
 

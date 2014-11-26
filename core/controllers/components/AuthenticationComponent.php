@@ -25,6 +25,11 @@ class AuthenticationComponent extends AppComponent
      * Gets the user dao from either the session (if via ajax)
      * or using token-based authentication otherwise.
      * Returns false for anonymous users.
+     *
+     * @param array $args
+     * @param UserDao $sessionDao
+     * @return false|UserDao
+     * @throws Zend_Exception
      */
     public function getUser($args, $sessionDao)
     {
@@ -48,15 +53,19 @@ class AuthenticationComponent extends AppComponent
                 return 0;
             }
             $token = $args['token'];
+
+            /** @var UserapiModel $userApiModel */
             $userApiModel = MidasLoader::loadModel('Userapi');
             $userapiDao = $userApiModel->getUserapiFromToken($token);
             if (!$userapiDao) {
-                throw new Exception('Invalid token', MIDAS_INVALID_TOKEN);
+                throw new Zend_Exception('Invalid token', MIDAS_INVALID_TOKEN);
             }
             $userid = $userapiDao->getUserId();
             if ($userid == 0) {
                 return false;
             }
+
+            /** @var UserModel $userModel */
             $userModel = MidasLoader::loadModel('User');
             $userDao = $userModel->load($userid);
 

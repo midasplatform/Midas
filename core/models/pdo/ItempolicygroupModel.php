@@ -34,6 +34,7 @@ class ItempolicygroupModel extends ItempolicygroupModelBase
         $row = $this->database->fetchRow($sql);
         $count = (int) $row['count'];
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         if ($count > 0) {
             $item->setPrivacyStatus(MIDAS_PRIVACY_PUBLIC);

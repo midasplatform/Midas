@@ -60,6 +60,7 @@ class Solr_ApisearchComponent extends AppComponent
             throw new Exception('Syntax error in query', -1);
         }
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $items = array();
         $count = 0;

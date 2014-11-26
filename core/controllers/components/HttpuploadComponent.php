@@ -34,16 +34,27 @@ define('MIDAS_HTTPUPLOAD_PARAM_UNDEFINED', -150);
  */
 class HttpuploadComponent extends AppComponent
 {
+    /** @var string */
     public $tokenParamName = 'uploadtoken';
+
+    /** @var bool */
     public $testingEnable = false;
 
-    /** Set whether we are in testing mode or not (boolean) */
+    /**
+     * Set whether we are in testing mode or not (boolean)
+     *
+     * @param bool $testing
+     */
     public function setTestingMode($testing)
     {
         $this->testingEnable = $testing;
     }
 
-    /** Set the name of the uploadtoken parameter that is being passed */
+    /**
+     * Set the name of the uploadtoken parameter that is being passed
+     *
+     * @param string $name
+     */
     public function setTokenParamName($name)
     {
         $this->tokenParamName = $name;
@@ -54,6 +65,11 @@ class HttpuploadComponent extends AppComponent
      * This token is the filename of a unique file which will be placed under the
      * directory specified by the dirname parameter, which should be used to ensure that
      * the user can only write into a certain logical space.
+     *
+     * @param array $args
+     * @param string $dirname
+     * @return array
+     * @throws Exception
      */
     public function generateToken($args, $dirname = '')
     {
@@ -82,7 +98,13 @@ class HttpuploadComponent extends AppComponent
         return array('token' => $uniqueIdentifier);
     }
 
-    /** Handle the upload */
+    /**
+     * Handle the upload
+     *
+     * @param array $args
+     * @return array
+     * @throws Exception
+     */
     public function process($args)
     {
         if (!array_key_exists('filename', $args)) {
@@ -176,7 +198,13 @@ class HttpuploadComponent extends AppComponent
         return $data;
     }
 
-    /** Get the amount of data already uploaded */
+    /**
+     * Get the amount of data already uploaded
+     *
+     * @param array $args
+     * @return array
+     * @throws Exception
+     */
     public function getOffset($args)
     {
         // check parameters

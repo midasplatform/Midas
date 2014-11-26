@@ -51,6 +51,7 @@ class Example_WalletModelBase extends Example_AppModel
      */
     public function createWallet($userDao, $dollars)
     {
+        /** @var Example_WalletDao $wallet */
         $wallet = MidasLoader::newDao('WalletDao', 'example');
         $wallet->setUserId($userDao->getKey());
         $wallet->setDollars($dollars);

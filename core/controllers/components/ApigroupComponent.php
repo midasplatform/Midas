@@ -33,6 +33,7 @@ class ApigroupComponent extends AppComponent
      */
     public function groupListUsers($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
 
@@ -43,12 +44,15 @@ class ApigroupComponent extends AppComponent
         }
 
         $groupId = $args['id'];
+
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
         $group = $groupModel->load($groupId);
         if ($group == false) {
             throw new Exception('This group does not exist', MIDAS_INVALID_PARAMETER);
         }
 
+        /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
         if (!$communityModel->policyCheck($group->getCommunity(), $userDao, MIDAS_POLICY_ADMIN)
         ) {
@@ -79,6 +83,7 @@ class ApigroupComponent extends AppComponent
      */
     public function groupAddUser($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         list($groupModel, $group, $addedUser) = $apihelperComponent->validateGroupUserChangeParams($args);
         $groupModel->addUser($group, $addedUser);
@@ -98,6 +103,7 @@ class ApigroupComponent extends AppComponent
      */
     public function groupRemoveUser($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         list($groupModel, $group, $removedUser) = $apihelperComponent->validateGroupUserChangeParams($args);
         $groupModel->removeUser($group, $removedUser);
@@ -106,7 +112,10 @@ class ApigroupComponent extends AppComponent
     }
 
     /**
-     * getIdFromUser for use in array_map in groupGet
+     * for use in array_map in groupGet
+     *
+     * @param UserDao $user
+     * @return mixed
      */
     public function getIdFromUser($user)
     {
@@ -123,6 +132,7 @@ class ApigroupComponent extends AppComponent
      */
     public function groupGet($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
 
@@ -134,6 +144,8 @@ class ApigroupComponent extends AppComponent
         }
 
         $groupId = $args['id'];
+
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
         $group = $groupModel->load($groupId);
         if ($group === false) {
@@ -161,6 +173,7 @@ class ApigroupComponent extends AppComponent
      */
     public function groupAdd($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('community_id', 'name'));
 
@@ -170,6 +183,7 @@ class ApigroupComponent extends AppComponent
             throw new Exception('You must be logged in to add group', MIDAS_INVALID_POLICY);
         }
 
+        /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
         $communityId = $args['community_id'];
         $community = $communityModel->load($communityId);
@@ -182,6 +196,8 @@ class ApigroupComponent extends AppComponent
         }
 
         $name = $args['name'];
+
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
         $group = $groupModel->createGroup($community, $name);
 
@@ -199,6 +215,7 @@ class ApigroupComponent extends AppComponent
      */
     public function groupRemove($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
 
@@ -209,12 +226,15 @@ class ApigroupComponent extends AppComponent
         }
 
         $groupId = $args['id'];
+
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
         $group = $groupModel->load($groupId);
         if ($group == false) {
             throw new Exception('This group does not exist', MIDAS_INVALID_PARAMETER);
         }
 
+        /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
         if (!$communityModel->policyCheck($group->getCommunity(), $userDao, MIDAS_POLICY_ADMIN)
         ) {

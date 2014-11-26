@@ -68,6 +68,7 @@ abstract class Tracker_ProducerModelBase extends Tracker_AppModel
     {
         $producer = $this->getByCommunityIdAndName($communityId, $displayName);
         if (!$producer) {
+            /** @var Tracker_ProducerDao $producer */
             $producer = MidasLoader::newDao('ProducerDao', $this->moduleName);
             $producer->setCommunityId($communityId);
             $producer->setDisplayName($displayName);
@@ -86,6 +87,7 @@ abstract class Tracker_ProducerModelBase extends Tracker_AppModel
      */
     public function delete($producer)
     {
+        /** @var Tracker_ScalarModel $trendModel */
         $trendModel = MidasLoader::loadModel('Trend', $this->moduleName);
         $trends = $producer->getTrends();
         foreach ($trends as $trend) {

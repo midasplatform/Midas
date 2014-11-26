@@ -71,6 +71,7 @@ class RestCallMethodsTestCase extends ControllerTestCase
     /** helper function to login as the passed in user. */
     protected function _loginAsUser($userDao)
     {
+        /** @var UserapiModel $userApiModel */
         $userApiModel = MidasLoader::loadModel('Userapi');
         $userApiModel->createDefaultApiKey($userDao);
         $apiKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
@@ -114,9 +115,14 @@ class RestCallMethodsTestCase extends ControllerTestCase
      */
     protected function initializePrivacyStatus($testFolders, $testItems, $desiredPrivacyStatus)
     {
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
         $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
+
+        /** @var FolderpolicygroupModel $folderpolicygroupModel */
         $folderpolicygroupModel = MidasLoader::loadModel("Folderpolicygroup");
+
+        /** @var ItempolicygroupModel $itempolicygroupModel */
         $itempolicygroupModel = MidasLoader::loadModel("Itempolicygroup");
 
         foreach ($testFolders as $folder) {
@@ -159,9 +165,16 @@ class RestCallMethodsTestCase extends ControllerTestCase
      */
     protected function assertPrivacyStatus($testFolders, $testItems, $expectedPrivacyStatus)
     {
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
+
+        /** @var FolderpolicygroupModel $folderpolicygroupModel */
         $folderpolicygroupModel = MidasLoader::loadModel("Folderpolicygroup");
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var ItempolicygroupModel $itempolicygroupModel */
         $itempolicygroupModel = MidasLoader::loadModel("Itempolicygroup");
         foreach ($testFolders as $folder) {
             $folder = $folderModel->load($folder->getFolderId());
@@ -187,9 +200,16 @@ class RestCallMethodsTestCase extends ControllerTestCase
      */
     protected function assertPolicygroupExistence($testFolders, $testItems, $group, $policyCode)
     {
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
+
+        /** @var FolderpolicygroupModel $folderpolicygroupModel */
         $folderpolicygroupModel = MidasLoader::loadModel("Folderpolicygroup");
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var ItempolicygroupModel $itempolicygroupModel */
         $itempolicygroupModel = MidasLoader::loadModel("Itempolicygroup");
         foreach ($testFolders as $folder) {
             $folder = $folderModel->load($folder->getFolderId());
@@ -225,9 +245,16 @@ class RestCallMethodsTestCase extends ControllerTestCase
      */
     protected function assertPolicygroupNonexistence($testFolders, $testItems, $group)
     {
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
+
+        /** @var FolderpolicygroupModel $folderpolicygroupModel */
         $folderpolicygroupModel = MidasLoader::loadModel("Folderpolicygroup");
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var ItempolicygroupModel $itempolicygroupModel */
         $itempolicygroupModel = MidasLoader::loadModel("Itempolicygroup");
         foreach ($testFolders as $folder) {
             $folder = $folderModel->load($folder->getFolderId());
@@ -253,9 +280,16 @@ class RestCallMethodsTestCase extends ControllerTestCase
      */
     protected function assertPolicyuserExistence($testFolders, $testItems, $user, $policyCode)
     {
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
+
+        /** @var FolderpolicyuserModel $folderpolicyuserModel */
         $folderpolicyuserModel = MidasLoader::loadModel("Folderpolicyuser");
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var ItempolicyuserModel $itempolicyuserModel */
         $itempolicyuserModel = MidasLoader::loadModel("Itempolicyuser");
         foreach ($testFolders as $folder) {
             $folder = $folderModel->load($folder->getFolderId());
@@ -290,9 +324,16 @@ class RestCallMethodsTestCase extends ControllerTestCase
      */
     protected function assertPolicyuserNonexistence($testFolders, $testItems, $user)
     {
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
+
+        /** @var FolderpolicyuserModel $folderpolicyuserModel */
         $folderpolicyuserModel = MidasLoader::loadModel("Folderpolicyuser");
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var ItempolicyuserModel $itempolicyuserModel */
         $itempolicyuserModel = MidasLoader::loadModel("Itempolicyuser");
         foreach ($testFolders as $folder) {
             $folder = $folderModel->load($folder->getFolderId());

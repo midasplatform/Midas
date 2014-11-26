@@ -41,6 +41,7 @@ class Tracker_ApiComponent extends AppComponent
      */
     private function _getUser($args)
     {
+        /** @var AuthenticationComponent $authComponent */
         $authComponent = MidasLoader::loadComponent('Authentication');
 
         return $authComponent->getUser($args, $this->userSession->Dao);
@@ -55,8 +56,13 @@ class Tracker_ApiComponent extends AppComponent
      */
     public function itemAssociate($args)
     {
+        /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var Tracker_ScalarModel $scalarModel */
         $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
         $this->_checkKeys(array('scalarIds', 'itemId', 'label'), $args);
         $user = $this->_getUser($args);
@@ -110,7 +116,10 @@ class Tracker_ApiComponent extends AppComponent
      */
     public function scalarAdd($args)
     {
+        /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $this->_checkKeys(
             array('communityId', 'producerDisplayName', 'metricName', 'value', 'producerRevision', 'submitTime'),
@@ -135,6 +144,7 @@ class Tracker_ApiComponent extends AppComponent
             throw new Exception('Producer display name must not be empty', -1);
         }
 
+        /** @var Tracker_ProducerModel $producerModel */
         $producerModel = MidasLoader::loadModel('Producer', 'tracker');
         $producer = $producerModel->createIfNeeded($community->getKey(), $producerDisplayName);
 
@@ -207,6 +217,7 @@ class Tracker_ApiComponent extends AppComponent
         $buildResultsUrl = isset($args['buildResultsUrl']) ? $args['buildResultsUrl'] : '';
         $branch = isset($args['branch']) ? $args['branch'] : '';
 
+        /** @var Tracker_TrendModel $trendModel */
         $trendModel = MidasLoader::loadModel('Trend', 'tracker');
         $trend = $trendModel->createIfNeeded(
             $producer->getKey(),
@@ -226,6 +237,7 @@ class Tracker_ApiComponent extends AppComponent
 
         $producerRevision = trim($args['producerRevision']);
 
+        /** @var Tracker_ScalarModel $scalarModel */
         $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
         $scalar = $scalarModel->addToTrend(
             $trend,
@@ -242,19 +254,24 @@ class Tracker_ApiComponent extends AppComponent
         );
 
         if (!isset($args['silent'])) {
+            /** @var Tracker_ThresholdNotificationModel $notificationModel */
             $notificationModel = MidasLoader::loadModel('ThresholdNotification', 'tracker');
             $notifications = $notificationModel->getNotifications($scalar);
             $notifyComponent = MidasLoader::loadComponent('ThresholdNotification', 'tracker');
             $notifyComponent->scheduleNotifications($scalar, $notifications);
         }
         if (!$official) {
+            /** @var Tracker_JobModel $jobModel */
             $jobModel = MidasLoader::loadModel('Job', 'scheduler');
+
+            /** @var SettingModel $settingModel */
             $settingModel = MidasLoader::loadModel('Setting');
             $nHours = $settingModel->getValueByName(MIDAS_TRACKER_TEMP_SCALAR_TTL_KEY, $this->moduleName);
             if (!$nHours) {
                 $nHours = 24; // default to 24 hours
             }
             while (each($notifications)) {
+                /** @var Scheduler_JobDao $job */
                 $job = MidasLoader::newDao('JobDao', 'scheduler');
                 $job->setTask('TASK_TRACKER_DELETE_TEMP_SCALAR');
                 $job->setPriority(1);
@@ -292,14 +309,20 @@ class Tracker_ApiComponent extends AppComponent
      */
     public function resultsUploadJson($args)
     {
+        /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $this->_checkKeys(array('communityId', 'producerDisplayName', 'producerRevision'), $args);
         $user = $this->_getUser($args);
 
         $official = !array_key_exists('unofficial', $args);
         if (!$official) {
+            /** @var Scheduler_JobModel $jobModel */
             $jobModel = MidasLoader::loadModel('Job', 'scheduler');
+
+            /** @var SettingModel $settingModel */
             $settingModel = MidasLoader::loadModel('Setting');
             $nHours = $settingModel->getValueByName(MIDAS_TRACKER_TEMP_SCALAR_TTL_KEY, $this->moduleName);
             if (!$nHours) {
@@ -323,6 +346,7 @@ class Tracker_ApiComponent extends AppComponent
             throw new Exception('Producer display name must not be empty', -1);
         }
 
+        /** @var Tracker_ProducerModel $producerModel */
         $producerModel = MidasLoader::loadModel('Producer', 'tracker');
         $producer = $producerModel->createIfNeeded($community->getKey(), $producerDisplayName);
         $buildResultsUrl = isset($args['buildResultsUrl']) ? $args['buildResultsUrl'] : '';
@@ -389,6 +413,7 @@ class Tracker_ApiComponent extends AppComponent
             $extraUrls = null;
         }
 
+        /** @var Tracker_TrendModel $trendModel */
         $trendModel = MidasLoader::loadModel('Trend', 'tracker');
 
         if (isset($args['submitTime'])) {
@@ -403,6 +428,7 @@ class Tracker_ApiComponent extends AppComponent
 
         $producerRevision = trim($args['producerRevision']);
 
+        /** @var Tracker_ScalarModel $scalarModel */
         $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
         $json = json_decode(file_get_contents('php://input'), true);
         if ($json === null) {
@@ -451,6 +477,7 @@ class Tracker_ApiComponent extends AppComponent
                     $scalars[] = $scalar;
 
                     if (!isset($args['silent'])) {
+                        /** @var Tracker_ThresholdNotificationModel $notificationModel */
                         $notificationModel = MidasLoader::loadModel('ThresholdNotification', 'tracker');
                         $notifications = $notificationModel->getNotifications($scalar);
                         $notifyComponent = MidasLoader::loadComponent('ThresholdNotification', 'tracker');
@@ -458,6 +485,7 @@ class Tracker_ApiComponent extends AppComponent
                     }
                     if (!$official) {
                         while (each($notifications)) {
+                            /** @var Scheduler_JobDao $job */
                             $job = MidasLoader::newDao('JobDao', 'scheduler');
                             $job->setTask('TASK_TRACKER_DELETE_TEMP_SCALAR');
                             $job->setPriority(1);
@@ -496,6 +524,7 @@ class Tracker_ApiComponent extends AppComponent
                 $scalars[] = $scalar;
 
                 if (!isset($args['silent'])) {
+                    /** @var Tracker_ThresholdNotificationModel $notificationModel */
                     $notificationModel = MidasLoader::loadModel('ThresholdNotification', 'tracker');
                     $notifications = $notificationModel->getNotifications($scalar);
                     $notifyComponent = MidasLoader::loadComponent('ThresholdNotification', 'tracker');
@@ -512,6 +541,7 @@ class Tracker_ApiComponent extends AppComponent
      */
     private function _createOrFindByName($itemName, $community)
     {
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $items = $itemModel->getByName($itemName);
         if (count($items) == 0) {

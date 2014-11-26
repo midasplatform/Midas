@@ -19,23 +19,23 @@
 =========================================================================*/
 
 /**
- * This is the base class for any script that should run when a module
- * is installed for the first time.
- * Subclasses may implement two callbacks, preInstall() and postInstall()
+ * Module installation script base class.
+ *
+ * @package Core\Database
  */
 class MIDASModuleInstallScript
 {
-    /** constructor */
+    /** Constructor. */
     public function __construct()
     {
     }
 
-    /** preInstall gets called before the tables are installed */
+    /** Pre database install. */
     public function preInstall()
     {
     }
 
-    /** postInstall gets called after the tables are installed */
+    /** Post database install. */
     public function postInstall()
     {
     }

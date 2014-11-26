@@ -35,6 +35,7 @@ class Pvw_ParaviewComponent extends AppComponent
      */
     public function createAndStartInstance($item, $meshItems, $appname, $progressDao = null)
     {
+        /** @var ProgressModel $progressModel */
         $progressModel = MidasLoader::loadModel('Progress');
         if ($progressDao) {
             $step = 1;
@@ -42,6 +43,8 @@ class Pvw_ParaviewComponent extends AppComponent
             $progressModel->save($progressDao);
             $progressModel->updateProgress($progressDao, $step, 'Checking available ports...');
         }
+
+        /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
         $pvpython = $settingModel->getValueByName(MIDAS_PVW_PVPYTHON_KEY, $this->moduleName);
         $application = BASE_PATH.'/modules/pvw/apps/'.$appname.'.py';
@@ -64,6 +67,7 @@ class Pvw_ParaviewComponent extends AppComponent
             $progressModel->updateProgress($progressDao, $step, 'Starting ParaView instance...');
         }
 
+        /** @var Pvw_InstanceDao $instance */
         $instance = MidasLoader::newDao('InstanceDao', 'pvw');
         $instance->setItemId($item->getKey());
         $instance->setPort($port);
@@ -75,6 +79,7 @@ class Pvw_ParaviewComponent extends AppComponent
         $randomComponent = MidasLoader::loadComponent('Random');
         $instance->setSecret($randomComponent->generateString(32, '0123456789abcdef'));
 
+        /** @var Pvw_InstanceModel $instanceModel */
         $instanceModel = MidasLoader::loadModel('Instance', 'pvw');
         $instanceModel->save($instance);
 
@@ -148,6 +153,7 @@ class Pvw_ParaviewComponent extends AppComponent
 
         UtilityComponent::rrmdir(UtilityComponent::getTempDirectory('pvw-data').'/'.$instance->getKey());
 
+        /** @var Pvw_InstanceModel $instanceModel */
         $instanceModel = MidasLoader::loadModel('Instance', 'pvw');
         $instanceModel->delete($instance);
     }
@@ -170,6 +176,7 @@ class Pvw_ParaviewComponent extends AppComponent
      */
     private function _getNextOpenPort()
     {
+        /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
         $ports = $settingModel->getValueByName(MIDAS_PVW_PORTS_KEY, $this->moduleName);
         if (!$ports) {
@@ -214,7 +221,10 @@ class Pvw_ParaviewComponent extends AppComponent
         mkdir($path.'/surfaces');
 
         // Symlink main item into the main subdir
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var ItemRevisionModel $revisionModel */
         $revisionModel = MidasLoader::loadModel('ItemRevision');
         $rev = $itemModel->getLastRevision($itemDao);
         $bitstreams = $rev->getBitstreams();

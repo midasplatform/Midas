@@ -41,7 +41,11 @@ class AssetstoreModel extends AssetstoreModelBase
     public function moveBitstreams($srcAssetstore, $dstAssetstore, $progressDao = null)
     {
         $current = 0;
+
+        /** @var ProgressModel $progressModel */
         $progressModel = MidasLoader::loadModel('Progress');
+
+        /** @var BitstreamModel $bitstreamModel */
         $bitstreamModel = MidasLoader::loadModel('Bitstream');
 
         $sql = $this->database->select()->setIntegrityCheck(false)->from('bitstream')->where(

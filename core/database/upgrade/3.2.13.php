@@ -81,7 +81,10 @@ class Upgrade_3_2_13 extends MIDASUpgrade
     /** Post database upgrade. */
     public function postUpgrade()
     {
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
+
+        /** @var UserapiModel $userapiModel */
         $userapiModel = MidasLoader::loadModel('Userapi');
 
         // limit this to 100 users; there should not be very many when API is installed

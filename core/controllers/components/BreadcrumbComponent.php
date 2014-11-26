@@ -26,9 +26,11 @@ class BreadcrumbComponent extends AppComponent
     /**
      * Build a breadcrumb bar for the header and set it on the view provided
      *
-     * @param nodes An ordered list of nodes.  Each node must have a 'type' key whose value is
+     * @param array $nodes ordered list of nodes. Each node must have a 'type' key whose value is
      * in the set {'community', 'folder', 'item', 'user', 'custom'}.
-     * @param view The view in which to set the header
+     * @param Zend_View $view view in which to set the header
+     * @return string
+     * @throws Zend_Exception
      */
     public function setBreadcrumbHeader($nodes, &$view)
     {
@@ -75,6 +77,11 @@ class BreadcrumbComponent extends AppComponent
      * -object The community dao from which to create the breadcrumb
      * -[link] (bool, default = true) Whether to render as a link or just text
      * -[tab] Which tab anchor to go to if this is a link
+     *
+     * @param array $node
+     * @param Zend_View $view
+     * @return string
+     * @throws Zend_Exception
      */
     protected function _createCommunityBreadcrumb($node, &$view)
     {
@@ -99,6 +106,11 @@ class BreadcrumbComponent extends AppComponent
      * -object The folder dao from which to create the breadcrumb
      * -[link] (bool, default = true) Whether to render as a link or just text
      * -[open] (bool, default = false) Whether the folder icon should be shown as open or closed
+     *
+     * @param array $node
+     * @param Zend_View $view
+     * @return string
+     * @throws Zend_Exception
      */
     protected function _createFolderBreadcrumb($node, &$view)
     {
@@ -123,6 +135,11 @@ class BreadcrumbComponent extends AppComponent
      * Create a user breadcrumb from the node. Node should have the following keys:
      * -object The user dao from which to create the breadcrumb
      * -[link] (bool, default = true) Whether to render as a link or just text
+     *
+     * @param array $node
+     * @param Zend_View $view
+     * @return string
+     * @throws Zend_Exception
      */
     protected function _createUserBreadcrumb($node, &$view)
     {
@@ -145,6 +162,11 @@ class BreadcrumbComponent extends AppComponent
      * Create an item breadcrumb from the node. Node should have the following keys:
      * -object The item dao from which to create the breadcrumb
      * -[link] (bool, default = true) Whether to render as a link or just text
+     *
+     * @param array $node
+     * @param Zend_View $view
+     * @return string
+     * @throws Zend_Exception
      */
     protected function _createItemBreadcrumb($node, &$view)
     {
@@ -167,6 +189,11 @@ class BreadcrumbComponent extends AppComponent
      * Create an item breadcrumb from the node. Node should have the following keys:
      * -object The item dao from which to create the breadcrumb
      * -[link] (bool, default = true) Whether to render as a link or just text
+     *
+     * @param array $node
+     * @param Zend_View $view
+     * @return string
+     * @throws Zend_Exception
      */
     protected function _createModuleListBreadcrumb($node, &$view)
     {
@@ -182,6 +209,11 @@ class BreadcrumbComponent extends AppComponent
      * -icon The icon of the breadcrumb
      * -[href] The URL to link to.  If not set, will just render text instead of a link.
      * -[maxLength] Number of characters to limit the text to
+     *
+     * @param array $node
+     * @param Zend_View $view
+     * @return string
+     * @throws Zend_Exception
      */
     protected function _createCustomBreadcrumb($node, &$view)
     {

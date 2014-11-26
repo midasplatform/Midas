@@ -69,6 +69,8 @@ abstract class ItempolicyuserModelBase extends AppModel
         if ($policyUser !== false) {
             $this->delete($policyUser);
         }
+
+        /** @var ItempolicyuserDao $policyUser */
         $policyUser = MidasLoader::newDao('ItempolicyuserDao');
         $policyUser->setUserId($user->getUserId());
         $policyUser->setItemId($item->getItemId());

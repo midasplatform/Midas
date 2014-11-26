@@ -26,6 +26,7 @@ class Api_CallCommunityMethodsTest extends Api_CallMethodsTestCase
     /** Test creation of a new community */
     public function testCommunityCreate()
     {
+        /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
         $communities = $communityModel->getAll();
         $originalCount = count($communities);
@@ -97,6 +98,8 @@ class Api_CallCommunityMethodsTest extends Api_CallMethodsTestCase
         );
 
         $comm2001 = $communityModel->load('2001');
+
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $commMember = $userModel->load('4');
         $commModerator = $userModel->load('5');
@@ -282,6 +285,8 @@ class Api_CallCommunityMethodsTest extends Api_CallMethodsTestCase
     {
         $validCommunityId = 2001;
         $invalidCommunityId = -10;
+
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $commMemberId = '4';
         $commModeratorId = '5';

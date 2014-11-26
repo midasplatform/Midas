@@ -35,6 +35,7 @@ class ApicommunityComponent extends AppComponent
      */
     public function communityCreate($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('name'));
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
@@ -46,7 +47,10 @@ class ApicommunityComponent extends AppComponent
         $name = $args['name'];
         $uuid = isset($args['uuid']) ? $args['uuid'] : '';
 
+        /** @var UuidComponent $uuidComponent */
         $uuidComponent = MidasLoader::loadComponent('Uuid');
+
+        /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
         $record = false;
         if (!empty($uuid)) {
@@ -119,10 +123,12 @@ class ApicommunityComponent extends AppComponent
         $hasId = array_key_exists('id', $args);
         $hasName = array_key_exists('name', $args);
 
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
         $userDao = $apihelperComponent->getUser($args);
 
+        /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
         if ($hasId) {
             $community = $communityModel->load($args['id']);
@@ -144,6 +150,9 @@ class ApicommunityComponent extends AppComponent
 
     /**
      * Wrapper for the community get to correct the return values.
+     *
+     * @param array $args
+     * @return array
      */
     public function communityGetWrapper($args)
     {
@@ -189,13 +198,17 @@ class ApicommunityComponent extends AppComponent
      */
     public function communityChildren($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
         $userDao = $apihelperComponent->getUser($args);
 
         $id = $args['id'];
 
+        /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $community = $communityModel->load($id);
         if (!$community) {
@@ -222,9 +235,14 @@ class ApicommunityComponent extends AppComponent
      */
     public function communityList($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
+
+        /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
+
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $userDao = $apihelperComponent->getUser($args);
 
@@ -237,6 +255,7 @@ class ApicommunityComponent extends AppComponent
             }
         }
 
+        /** @var SortdaoComponent $sortDaoComponent */
         $sortDaoComponent = MidasLoader::loadComponent('Sortdao');
         $sortDaoComponent->field = 'name';
         $sortDaoComponent->order = 'asc';
@@ -254,6 +273,7 @@ class ApicommunityComponent extends AppComponent
      */
     public function communityDelete($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
 
@@ -264,6 +284,7 @@ class ApicommunityComponent extends AppComponent
         }
         $id = $args['id'];
 
+        /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
         $community = $communityModel->load($id);
 
@@ -287,6 +308,7 @@ class ApicommunityComponent extends AppComponent
      */
     public function communityListGroups($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('id'));
 
@@ -297,6 +319,8 @@ class ApicommunityComponent extends AppComponent
         }
 
         $communityId = $args['id'];
+
+        /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
         $community = $communityModel->load($communityId);
         if (!$community) {

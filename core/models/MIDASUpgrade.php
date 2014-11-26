@@ -18,27 +18,40 @@
  limitations under the License.
 =========================================================================*/
 
-/** Upgrade the core or a module to a newer version. */
+/**
+ * Database upgrade base class.
+ *
+ * @package Core\Database
+ */
 class MIDASUpgrade
 {
+    /** @var Zend_Db_Adapter_Abstract */
     protected $db;
+
+    /** @var string */
     protected $dbtype;
 
     /**
-     * Construct model
+     * Constructor.
+     *
+     * @param Zend_Db_Adapter_Abstract $db database adapter
+     * @param string $module module name
+     * @param string $dbType database type
      */
     public function __construct($db, $module, $dbType)
     {
         $this->db = $db;
         $this->moduleName = $module;
         $this->loadElements();
+
         if ($module != 'core') {
             $this->loadModuleElements();
         }
+
         $this->dbtype = $dbType;
     }
 
-    /** preUpgrade called before the upgrade */
+    /** Pre database upgrade. */
     public function preUpgrade()
     {
     }
@@ -58,19 +71,22 @@ class MIDASUpgrade
     {
     }
 
-    /** called after the upgrade */
+    /** Post database upgrade. */
     public function postUpgrade()
     {
     }
 
     /**
-     * Loads model and components
+     * Load module components, DAOs, forms, and models.
+     *
+     * @throws Zend_Exception
      */
     public function loadModuleElements()
     {
         if (isset($this->_moduleModels)) {
             MidasLoader::loadModels($this->_moduleModels, $this->moduleName);
             $modelsArray = Zend_Registry::get('models');
+
             foreach ($this->_moduleModels as $value) {
                 if (isset($modelsArray[$this->moduleName.$value])) {
                     $tmp = ucfirst($this->moduleName).'_'.$value;
@@ -96,6 +112,7 @@ class MIDASUpgrade
         if (isset($this->_moduleComponents)) {
             foreach ($this->_moduleComponents as $component) {
                 $nameComponent = ucfirst($this->moduleName).'_'.$component."Component";
+
                 if (file_exists(
                     BASE_PATH."/modules/".$this->moduleName."/controllers/components/".$component."Component.php"
                 )) {
@@ -111,6 +128,7 @@ class MIDASUpgrade
                 if (!isset($this->ModuleComponent)) {
                     $this->ModuleComponent = new stdClass();
                 }
+
                 $this->ModuleComponent->$component = new $nameComponent();
             }
         }
@@ -118,6 +136,7 @@ class MIDASUpgrade
         if (isset($this->_moduleForms)) {
             foreach ($this->_moduleForms as $forms) {
                 $nameForm = ucfirst($this->moduleName).'_'.$forms."Form";
+
                 if (file_exists(
                     BASE_PATH."/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php"
                 )) {
@@ -133,21 +152,23 @@ class MIDASUpgrade
                 if (!isset($this->ModuleForm)) {
                     $this->ModuleForm = new stdClass();
                 }
+
                 $this->ModuleForm->$forms = new $nameForm();
             }
         }
     }
 
-    /**
-     * Loads model and components
-     */
+    /** Load core components, DAOs, forms, and models. */
     public function loadElements()
     {
         Zend_Registry::set('models', array());
+
         if (isset($this->_models)) {
             MidasLoader::loadModels($this->_models);
         }
+
         $modelsArray = Zend_Registry::get('models');
+
         foreach ($modelsArray as $key => $tmp) {
             $this->$key = $tmp;
         }
@@ -164,31 +185,43 @@ class MIDASUpgrade
             foreach ($this->_components as $component) {
                 $nameComponent = $component."Component";
                 Zend_Loader::loadClass($nameComponent, BASE_PATH.'/core/controllers/components');
+
                 if (!isset($this->Component)) {
                     $this->Component = new stdClass();
                 }
+
                 $this->Component->$component = new $nameComponent();
             }
         }
 
         Zend_Registry::set('forms', array());
+
         if (isset($this->_forms)) {
             foreach ($this->_forms as $forms) {
                 $nameForm = $forms."Form";
 
                 Zend_Loader::loadClass($nameForm, BASE_PATH.'/core/controllers/forms');
+
                 if (!isset($this->Form)) {
                     $this->Form = new stdClass();
                 }
+
                 $this->Form->$forms = new $nameForm();
             }
         }
     }
 
     /**
-     * Add a field to a table
+     * Add a given field to a given table.
+     *
+     * @param string $table name of the database table
+     * @param string $field name of the field
+     * @param string $mySqlType type of the field in a MySQL database
+     * @param string $pgSqlType type of the field in a PostgreSQL database
+     * @param string $default default value of the field
+     * @throws Zend_Exception
      */
-    public function addTableField($table, $field, $mySQLType, $pgSqlType, $default)
+    public function addTableField($table, $field, $mySqlType, $pgSqlType, $default)
     {
         $sql = '';
         if ($default !== false) {
@@ -196,7 +229,7 @@ class MIDASUpgrade
         }
 
         if ($this->dbtype === 'PDO_MYSQL') {
-            $this->db->query("ALTER TABLE ".$table." ADD ".$field." ".$mySQLType.$sql.";");
+            $this->db->query("ALTER TABLE ".$table." ADD ".$field." ".$mySqlType.$sql.";");
         } elseif ($this->dbtype === 'PDO_PGSQL') {
             $this->db->query("ALTER TABLE \"".$table."\" ADD \"".$field."\" ".$pgSqlType.$sql.";");
         } else {
@@ -205,7 +238,11 @@ class MIDASUpgrade
     }
 
     /**
-     * Remove a field from a table
+     * Remove a given field from a given table.
+     *
+     * @param string $table name of the database table
+     * @param string $field name of the field
+     * @throws Zend_Exception
      */
     public function removeTableField($table, $field)
     {
@@ -219,24 +256,32 @@ class MIDASUpgrade
     }
 
     /**
-     * Rename a field from a table
+     * Rename a given field of a given table.
+     *
+     * @param string $table name of the database table
+     * @param string $field current name of the field
+     * @param string $newField new name of the field
+     * @param string $mySqlType type of the field in a MySQL database
+     * @param string $pgSqlType type of the field in a PostgreSQL database
+     * @param string $default default value of the field
+     * @throws Zend_Exception
      */
-    public function renameTableField($table, $field, $newfield, $mySQLType, $pgSqlType, $default)
+    public function renameTableField($table, $field, $newField, $mySqlType, $pgSqlType, $default)
     {
         if ($this->dbtype === 'PDO_MYSQL') {
             if ($default !== false) {
                 $this->db->query(
-                    "ALTER TABLE ".$table." CHANGE ".$field." ".$newfield." ".$mySQLType." DEFAULT '".$default."';"
+                    "ALTER TABLE ".$table." CHANGE ".$field." ".$newField." ".$mySqlType." DEFAULT '".$default."';"
                 );
             } else {
-                $this->db->query("ALTER TABLE ".$table." CHANGE ".$field." ".$newfield." ".$mySQLType.";");
+                $this->db->query("ALTER TABLE ".$table." CHANGE ".$field." ".$newField." ".$mySqlType.";");
             }
         } elseif ($this->dbtype === 'PDO_PGSQL') {
-            $this->db->query("ALTER TABLE \"".$table."\" RENAME \"".$field."\" TO \"".$newfield."\";");
-            $this->db->query("ALTER TABLE \"".$table."\" ALTER COLUMN \"".$newfield."\" TYPE ".$pgSqlType.";");
+            $this->db->query("ALTER TABLE \"".$table."\" RENAME \"".$field."\" TO \"".$newField."\";");
+            $this->db->query("ALTER TABLE \"".$table."\" ALTER COLUMN \"".$newField."\" TYPE ".$pgSqlType.";");
             if ($default !== false) {
                 $this->db->query(
-                    "ALTER TABLE \"".$table."\" ALTER COLUMN \"".$newfield."\" SET DEFAULT ".$default.";"
+                    "ALTER TABLE \"".$table."\" ALTER COLUMN \"".$newField."\" SET DEFAULT ".$default.";"
                 );
             }
         } else {
@@ -245,15 +290,18 @@ class MIDASUpgrade
     }
 
     /**
-     * Check if the index exists.
-     * Only works for MySQL
+     * Check whether there is an index on a given field of a given table.
+     *
+     * @param string $table name of the database table
+     * @param string $field name of the field
+     * @return bool true if the index exists, false otherwise
      */
     public function checkIndexExists($table, $field)
     {
         if ($this->dbtype === 'PDO_MYSQL') {
-            $rowset = $this->db->fetchAll("SHOW INDEX FROM ".$tablename.";");
+            $rowset = $this->db->fetchAll("SHOW INDEX FROM ".$table.";");
             foreach ($rowset as $index_array) {
-                if ($index_array['Column_name'] === $columnname) {
+                if ($index_array['Column_name'] === $field) {
                     return true;
                 }
             }
@@ -263,7 +311,11 @@ class MIDASUpgrade
     }
 
     /**
-     * Add an index to a table
+     * Add an index on a given field to a given table.
+     *
+     * @param string $table name of the database table
+     * @param string $field name of the indexed field
+     * @throws Zend_Exception
      */
     public function addTableIndex($table, $field)
     {
@@ -281,7 +333,11 @@ class MIDASUpgrade
     }
 
     /**
-     * Remove an index from a table
+     * Remove an index on a given field of a given table.
+     *
+     * @param string $table name of the database table
+     * @param string $field name of the indexed field
+     * @throws Zend_Exception
      */
     public function removeTableIndex($table, $field)
     {
@@ -297,7 +353,11 @@ class MIDASUpgrade
     }
 
     /**
-     * Add a primary key to a table
+     * Add a primary key on a given field to a given table.
+     *
+     * @param string $table name of the database table
+     * @param string $field name of the primary key field
+     * @throws Zend_Exception
      */
     public function addTablePrimaryKey($table, $field)
     {
@@ -311,7 +371,10 @@ class MIDASUpgrade
     }
 
     /**
-     * Remove a primary key from a table
+     * Remove the primary key from a given table.
+     *
+     * @param string $table name of the database table
+     * @throws Zend_Exception
      */
     public function removeTablePrimaryKey($table)
     {

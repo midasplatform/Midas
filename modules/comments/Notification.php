@@ -67,6 +67,8 @@ class Comments_Notification extends MIDAS_Notification
         if ($this->userSession->Dao != null) {
             $json['user'] = $this->userSession->Dao;
         }
+
+        /** @var Comments_CommentComponent $commentComponent */
         $commentComponent = MidasLoader::loadComponent('Comment', $this->moduleName);
         list($comments, $total) = $commentComponent->getComments($params['item'], $json['limit'], $json['offset']);
         $json['comments'] = $comments;
@@ -80,6 +82,7 @@ class Comments_Notification extends MIDAS_Notification
      */
     public function handleUserDeleted($params)
     {
+        /** @var Comments_ItemcommentModel $itemCommentModel */
         $itemCommentModel = MidasLoader::loadModel('Itemcomment', $this->moduleName);
         $itemCommentModel->deleteByUser($params['userDao']);
     }
@@ -89,6 +92,7 @@ class Comments_Notification extends MIDAS_Notification
      */
     public function handleItemDeleted($params)
     {
+        /** @var Comments_ItemcommentModel $itemCommentModel */
         $itemCommentModel = MidasLoader::loadModel('Itemcomment', $this->moduleName);
         $itemCommentModel->deleteByItem($params['item']);
     }

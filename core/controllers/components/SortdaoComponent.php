@@ -21,10 +21,20 @@
 /** Sort Daos */
 class SortdaoComponent extends AppComponent
 {
+    /** @var string */
     public $field = '';
+
+    /** @var string */
     public $order = 'asc';
 
-    /** sort daos */
+    /**
+     * Sort by date.
+     *
+     * @param MIDAS_GlobalDao $a
+     * @param MIDAS_GlobalDao $b
+     * @return int
+     * @throws Zend_Exception
+     */
     public function sortByDate($a, $b)
     {
         $field = $this->field;
@@ -46,7 +56,14 @@ class SortdaoComponent extends AppComponent
         }
     }
 
-    /** sort by name */
+    /**
+     * Sort by name.
+     *
+     * @param MIDAS_GlobalDao $a
+     * @param MIDAS_GlobalDao $b
+     * @return int
+     * @throws Zend_Exception
+     */
     public function sortByName($a, $b)
     {
         $field = $this->field;
@@ -67,7 +84,14 @@ class SortdaoComponent extends AppComponent
         }
     }
 
-    /** sort the results by number then by name */
+    /**
+     * Sort by number then by name.
+     *
+     * @param MIDAS_GlobalDao $a
+     * @param MIDAS_GlobalDao $b
+     * @return int
+     * @throws Zend_Exception
+     */
     public function sortByNumberThenName($a, $b)
     {
         $field = $this->field;
@@ -107,7 +131,14 @@ class SortdaoComponent extends AppComponent
         }
     }
 
-    /** sort by number */
+    /**
+     * Sort by number.
+     *
+     * @param MIDAS_GlobalDao $a
+     * @param MIDAS_GlobalDao $b
+     * @return int
+     * @throws Zend_Exception
+     */
     public function sortByNumber($a, $b)
     {
         $field = $this->field;
@@ -128,7 +159,13 @@ class SortdaoComponent extends AppComponent
         }
     }
 
-    /** Unique */
+    /**
+     * Unique
+     *
+     * @param array $array
+     * @param bool $keep_key_assoc
+     * @return array
+     */
     public function arrayUniqueDao($array, $keep_key_assoc = false)
     {
         $duplicate_keys = array();

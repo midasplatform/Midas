@@ -81,6 +81,7 @@ class Ratings_Notification extends MIDAS_Notification
     /** Get json to pass to the view */
     public function getJson($params)
     {
+        /** @var Ratings_ItemratingModel $itemRatingModel */
         $itemRatingModel = MidasLoader::loadModel('Itemrating', $this->moduleName);
         $data = $itemRatingModel->getAggregateInfo($params['item']);
         if ($this->userSession->Dao) {
@@ -95,6 +96,7 @@ class Ratings_Notification extends MIDAS_Notification
      */
     public function handleUserDeleted($params)
     {
+        /** @var Ratings_ItemratingModel $itemRatingModel */
         $itemRatingModel = MidasLoader::loadModel('Itemrating', $this->moduleName);
         $itemRatingModel->deleteByUser($params['userDao']);
     }
@@ -104,6 +106,7 @@ class Ratings_Notification extends MIDAS_Notification
      */
     public function handleItemDeleted($params)
     {
+        /** @var Ratings_ItemratingModel $itemRatingModel */
         $itemRatingModel = MidasLoader::loadModel('Itemrating', $this->moduleName);
         $itemRatingModel->deleteByItem($params['item']);
     }

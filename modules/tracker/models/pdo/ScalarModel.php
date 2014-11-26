@@ -49,6 +49,8 @@ class Tracker_ScalarModel extends Tracker_ScalarModelBase
         );
         $rows = $this->database->fetchAll($sql);
         $results = array();
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         foreach ($rows as $row) {
             $item = $itemModel->load($row['item_id']);

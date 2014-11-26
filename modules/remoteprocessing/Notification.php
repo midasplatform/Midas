@@ -209,11 +209,22 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     /** Process results */
     public function processProcessingResults($params)
     {
+        /** @var ItempolicyuserModel $itempolicyuserModel */
         $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
+
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var MetadataModel $metadataModel */
         $metadataModel = MidasLoader::loadModel('Metadata');
+
+        /** @var Remoteprocessing_JobModel $jobModel */
         $jobModel = MidasLoader::loadModel('Job', 'remoteprocessing');
         $job = $jobModel->load($params['job_id']);
 

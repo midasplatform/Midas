@@ -49,6 +49,7 @@ class Comments_CommentController extends Comments_AppController
         $this->disableView();
         $this->disableLayout();
 
+        /** @var Comments_ItemcommentModel $itemCommentModel */
         $itemCommentModel = MidasLoader::loadModel('Itemcomment', $this->moduleName);
         $itemCommentModel->addComment($this->userSession->Dao, $item, $comment);
 
@@ -78,6 +79,7 @@ class Comments_CommentController extends Comments_AppController
         $this->disableView();
         $this->disableLayout();
 
+        /** @var Comments_CommentComponent $commentComponent */
         $commentComponent = MidasLoader::loadComponent('Comment', $this->moduleName);
         list($comments, $total) = $commentComponent->getComments($item, $limit, $offset);
 

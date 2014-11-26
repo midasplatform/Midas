@@ -53,6 +53,7 @@ class Validation_DashboardModelTest extends DatabaseTestCase
     /** testGetAll */
     public function testGetAll()
     {
+        /** @var Validation_DashboardModel $dashboardModel */
         $dashboardModel = MidasLoader::loadModel('Dashboard', 'validation');
         $daos = $dashboardModel->getAll();
         $this->assertEquals(1, count($daos));
@@ -63,6 +64,7 @@ class Validation_DashboardModelTest extends DatabaseTestCase
      */
     public function testGetResults()
     {
+        /** @var Validation_DashboardModel $dashboardModel */
         $dashboardModel = MidasLoader::loadModel('Dashboard', 'validation');
         $daos = $dashboardModel->getAll();
         $dao = $daos[0];
@@ -74,6 +76,7 @@ class Validation_DashboardModelTest extends DatabaseTestCase
      */
     public function testGetTestingTrainingAndTruth()
     {
+        /** @var Validation_DashboardModel $dashboardModel */
         $dashboardModel = MidasLoader::loadModel('Dashboard', 'validation');
         $daos = $dashboardModel->getAll();
         $dao = $daos[0];
@@ -134,6 +137,7 @@ class Validation_DashboardModelTest extends DatabaseTestCase
         }
 
         // Acquire the dashboard from the database
+        /** @var Validation_DashboardModel $dashboardModel */
         $dashboardModel = MidasLoader::loadModel('Dashboard', 'validation');
         $daos = $dashboardModel->getAll();
         $dao = $daos[0];
@@ -231,6 +235,7 @@ class Validation_DashboardModelTest extends DatabaseTestCase
         }
 
         // Acquire the dashboard from the database
+        /** @var Validation_DashboardModel $dashboardModel */
         $dashboardModel = MidasLoader::loadModel('Dashboard', 'validation');
         $daos = $dashboardModel->getAll();
         $dao = $daos[0];
@@ -320,6 +325,7 @@ class Validation_DashboardModelTest extends DatabaseTestCase
         }
 
         // Acquire the dashboard from the database
+        /** @var Validation_DashboardModel $dashboardModel */
         $dashboardModel = MidasLoader::loadModel('Dashboard', 'validation');
         $daos = $dashboardModel->getAll();
         $dao = $daos[0];
@@ -418,6 +424,7 @@ class Validation_DashboardModelTest extends DatabaseTestCase
         }
 
         // Acquire the dashboard from the database
+        /** @var Validation_DashboardModel $dashboardModel */
         $dashboardModel = MidasLoader::loadModel('Dashboard', 'validation');
         $daos = $dashboardModel->getAll();
         $dao = $daos[0];
@@ -541,6 +548,7 @@ class Validation_DashboardModelTest extends DatabaseTestCase
         }
 
         // Acquire the dashboard from the database
+        /** @var Validation_DashboardModel $dashboardModel */
         $dashboardModel = MidasLoader::loadModel('Dashboard', 'validation');
         $daos = $dashboardModel->getAll();
         $dao = $daos[0];

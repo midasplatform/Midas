@@ -102,6 +102,8 @@ class Statistics_ReportComponent extends AppComponent
     {
         $subject = 'Statistics Report';
         $body = $this->report;
+
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $admins = $userModel->getAdmins();
         foreach ($admins as $admin) {

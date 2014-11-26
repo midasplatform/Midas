@@ -64,6 +64,7 @@ abstract class GroupModelBase extends AppModel
     public function load($key = null)
     {
         if ($key == MIDAS_GROUP_ANONYMOUS_KEY) {
+            /** @var GroupDao $dao */
             $dao = MidasLoader::newDao('GroupDao');
             $dao->setGroupId(MIDAS_GROUP_ANONYMOUS_KEY);
             $dao->setCommunityId(0);
@@ -72,6 +73,7 @@ abstract class GroupModelBase extends AppModel
 
             return $dao;
         } elseif ($key == MIDAS_GROUP_SERVER_KEY) {
+            /** @var GroupDao $dao */
             $dao = MidasLoader::newDao('GroupDao');
             $dao->setGroupId(MIDAS_GROUP_SERVER_KEY);
             $dao->setCommunityId(0);
@@ -95,12 +97,19 @@ abstract class GroupModelBase extends AppModel
             $this->removeUser($group, $user);
         }
 
+        /** @var FeedpolicygroupModel $feedpolicygroupModel */
         $feedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
         $feedpolicygroupModel->deleteGroupPolicies($group);
+
+        /** @var ItempolicygroupModel $itempolicygroupModel */
         $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
         $itempolicygroupModel->deleteGroupPolicies($group);
+
+        /** @var FolderpolicygroupModel $folderpolicygroupModel */
         $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
         $folderpolicygroupModel->deleteGroupPolicies($group);
+
+        /** @var NewUserInvitationModel $newUserInvitationModel */
         $newUserInvitationModel = MidasLoader::loadModel('NewUserInvitation');
         $newUserInvitationModel->deleteByGroup($group);
 
@@ -121,6 +130,8 @@ abstract class GroupModelBase extends AppModel
         if (!is_string($name)) {
             throw new Zend_Exception("Should be a string.");
         }
+
+        /** @var GroupDao $group */
         $group = MidasLoader::newDao('GroupDao');
         $group->setName($name);
         $group->setCommunityId($communityDao->getCommunityId());

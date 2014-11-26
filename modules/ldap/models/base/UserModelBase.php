@@ -64,12 +64,14 @@ abstract class Ldap_UserModelBase extends Ldap_AppModel
      */
     public function createLdapUser($ldapLogin, $email, $password, $firstName, $lastName)
     {
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $userDao = $userModel->createUser($email, $password, $firstName, $lastName);
 
         $userDao->setSalt('x'); // place invalid salt so normal authentication will fail
         $userModel->save($userDao);
 
+        /** @var Ldap_UserDao $ldapUserDao */
         $ldapUserDao = MidasLoader::newDao('UserDao', 'ldap');
         $ldapUserDao->setUserId($userDao->getKey());
         $ldapUserDao->setLogin($ldapLogin);

@@ -21,11 +21,23 @@
 /** Error management */
 class NotifyErrorComponent extends AppComponent
 {
+    /** @var string */
     protected $_environment;
+
+    /** @var Zend_Session_Namespace */
     protected $_session;
+
+    /** @var ArrayObject */
     protected $_error;
 
-    /** Init */
+    /**
+     * Initialize notifier
+     *
+     * @param string $environment
+     * @param ArrayObject $error
+     * @param Zend_Session_Namespace $session
+     * @param array $server
+     */
     public function initNotifier(
         $environment,
         ArrayObject $error,
@@ -38,7 +50,11 @@ class NotifyErrorComponent extends AppComponent
         $this->_server = $server;
     }
 
-    /** Handle fatal errors */
+    /**
+     * Handle fatal errors
+     *
+     * @param Zend_Log $logger
+     */
     public function fatalError($logger)
     {
         if (!is_null(error_get_last())) {
@@ -118,7 +134,15 @@ class NotifyErrorComponent extends AppComponent
         }
     }
 
-    /** handle warning */
+    /**
+     * Handle warning
+     *
+     * @param int $errno
+     * @param string $errstr
+     * @param string $errfile
+     * @param int $errline
+     * @throws Zend_Exception
+     */
     public function warningError($errno, $errstr, $errfile, $errline)
     {
         if ($errno == E_WARNING && Zend_Registry::get('configGlobal')->environment != 'production'
@@ -136,7 +160,11 @@ class NotifyErrorComponent extends AppComponent
         }
     }
 
-    /** Page url */
+    /**
+     * Page url
+     *
+     * @return string
+     */
     public function curPageURL()
     {
         if (Zend_Registry::get('configGlobal')->environment == 'testing') {
@@ -156,7 +184,12 @@ class NotifyErrorComponent extends AppComponent
         return $pageURL;
     }
 
-    /** create Fatal Error Message */
+    /**
+     * create fatal error message
+     *
+     * @param array $e
+     * @return string
+     */
     public function getFatalErrorMessage($e)
     {
         $message = "Fatal Error: ";
@@ -194,7 +227,11 @@ class NotifyErrorComponent extends AppComponent
         return $message;
     }
 
-    /** Create exception message error */
+    /**
+     * Create exception message error
+     *
+     * @return string
+     */
     public function getFullErrorMessage()
     {
         $message = '';
@@ -236,7 +273,11 @@ class NotifyErrorComponent extends AppComponent
         return $message;
     }
 
-    /** Create short error message */
+    /**
+     * Create short error message
+     *
+     * @return string
+     */
     public function getShortErrorMessage()
     {
         $message = '';

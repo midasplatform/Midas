@@ -61,8 +61,13 @@ class Remoteprocessing_ApiComponent extends AppComponent
             throw new Exception('Error security key. '.$securityKey.' '.$checkSecurityKey, MIDAS_INVALID_PARAMETER);
         }
 
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
+
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
+
+        /** @var UserapiModel $userApiModel */
         $userApiModel = MidasLoader::loadModel('Userapi');
 
         if (empty($apiKey)) {
@@ -122,6 +127,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
             throw new Exception('Please set the os', MIDAS_INVALID_PARAMETER);
         }
 
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
         $groupServer = $groupModel->load(MIDAS_GROUP_SERVER_KEY);
         $users = $groupServer->getUsers();
@@ -139,6 +145,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
             );
         }
 
+        /** @var Remoteprocessing_JobModel $jobModel */
         $jobModel = MidasLoader::loadModel('Job', 'remoteprocessing');
         $jobs = $jobModel->getBy($args['os'], '');
 
@@ -155,9 +162,16 @@ class Remoteprocessing_ApiComponent extends AppComponent
             $jobs[0]->setStatus(MIDAS_REMOTEPROCESSING_STATUS_STARTED);
             $jobModel->save($jobs[0]);
 
+            /** @var ItempolicyuserModel $itempolicyuserModel */
             $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
+
+            /** @var FolderpolicyuserModel $folderpolicyuserModel */
             $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
+
+            /** @var ItemModel $itemModel */
             $itemModel = MidasLoader::loadModel('Item');
+
+            /** @var FolderModel $folderModel */
             $folderModel = MidasLoader::loadModel('Folder');
 
             // set policies
@@ -204,6 +218,8 @@ class Remoteprocessing_ApiComponent extends AppComponent
                 'Unable to authenticate as a server. Please check credentials.', MIDAS_INVALID_PARAMETER
             );
         }
+
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
         $groupServer = $groupModel->load(MIDAS_GROUP_SERVER_KEY);
         $users = $groupServer->getUsers();
@@ -254,6 +270,8 @@ class Remoteprocessing_ApiComponent extends AppComponent
                 $info = file_get_contents($target_directory.'/parameters.txt');
                 $info = JsonComponent::decode($info);
                 $job_id = $info['job_id'];
+
+                /** @var Remoteprocessing_JobModel $jobModel */
                 $jobModel = MidasLoader::loadModel('Job', 'remoteprocessing');
                 $jobDao = $jobModel->load($job_id);
                 $jobDao->setStatus(MIDAS_REMOTEPROCESSING_STATUS_DONE);

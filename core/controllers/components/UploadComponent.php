@@ -21,7 +21,12 @@
 /** This class handles the upload of files into the different assetstores */
 class UploadComponent extends AppComponent
 {
-    /** Helper function to create the two-level hierarchy */
+    /**
+     * Helper function to create the two-level hierarchy
+     *
+     * @param string $directorypath
+     * @throws Zend_Exception
+     */
     private function _createAssetstoreDirectory($directorypath)
     {
         if (!file_exists($directorypath)) {
@@ -32,7 +37,14 @@ class UploadComponent extends AppComponent
         }
     }
 
-    /** Upload local bitstream */
+    /**
+     * Upload local bitstream
+     *
+     * @param BitstreamDao $bitstreamdao
+     * @param AssetstoreDao $assetstoredao
+     * @param bool $copy
+     * @throws Zend_Exception
+     */
     private function _uploadLocalBitstream($bitstreamdao, $assetstoredao, $copy = false)
     {
         // Check if the type of the assetstore is suitable
@@ -52,6 +64,7 @@ class UploadComponent extends AppComponent
         }
 
         // If we already have a file of this checksum in any assetstore, we point to it
+        /** @var BitstreamModel $bitstreamModel */
         $bitstreamModel = MidasLoader::loadModel('Bitstream');
         $existing = $bitstreamModel->getByChecksum($checksum);
         if ($existing) {
@@ -84,7 +97,15 @@ class UploadComponent extends AppComponent
         $bitstreamdao->setPath($path);
     }
 
-    /** Upload a bitstream */
+    /**
+     * Upload a bitstream
+     *
+     * @param BitstreamDao $bitstreamdao
+     * @param AssetstoreDao $assetstoredao
+     * @param bool $copy
+     * @return bool
+     * @throws Zend_Exception
+     */
     public function uploadBitstream($bitstreamdao, $assetstoredao, $copy = false)
     {
         $assetstoretype = $assetstoredao->getType();
@@ -102,12 +123,30 @@ class UploadComponent extends AppComponent
         return true;
     }
 
-    /** save upload item in the DB */
+    /**
+     * Save upload item in the database
+     *
+     * @param UserDao $userDao
+     * @param string $name
+     * @param string $url
+     * @param null|int $parent
+     * @param int $sizebytes
+     * @param string $checksum
+     * @return ItemDao
+     * @throws Zend_Exception
+     */
     public function createLinkItem($userDao, $name, $url, $parent = null, $sizebytes = 0, $checksum = ' ')
     {
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
+
+        /** @var AssetstoreModel $assetstoreModel */
         $assetstoreModel = MidasLoader::loadModel('Assetstore');
+
+        /** @var ItemRevisionModel $itemRevisionModel */
         $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
 
         if ($userDao == null) {
@@ -132,13 +171,8 @@ class UploadComponent extends AppComponent
         $item->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE); // Must set this flag private initially
         $itemModel->save($item, false);
 
-        //$feed = $feedModel->createFeed($userDao, MIDAS_FEED_CREATE_ITEM, $item);
-
         $folderModel->addItem($parent, $item);
         $itemModel->copyParentPolicies($item, $parent /*, $feed */);
-
-        //$feedpolicyuserModel->createPolicy($userDao, $feed, MIDAS_POLICY_ADMIN);
-        //$itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
 
         Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH.'/core/models/dao');
         $itemRevisionDao = new ItemRevisionDao();
@@ -170,14 +204,16 @@ class UploadComponent extends AppComponent
     /**
      * Save an uploaded file in the database as an item with a new revision
      *
-     * @param userDao The user who is uploading the item
-     * @param name The name of the item
-     * @param path The path of the uploaded file on disk
-     * @param parent The id of the parent folder to create the item in
-     * @param license [optional][default=null] License text for the item
-     * @param filemd5 [optional][default=''] If passed, will be used instead of calculating it ourselves
-     * @param copy [optional][default=false] Boolean value for whether to copy or just move the item into the assetstore
-     * @param revOnCollision [optional][default=false] Boolean value for whether to create a new revision on item name collision
+     * @param UserDao $userDao The user who is uploading the item
+     * @param string $name The name of the item
+     * @param string $path The path of the uploaded file on disk
+     * @param null|int $parent The id of the parent folder to create the item in
+     * @param null|int $license [optional][default=null] License text for the item
+     * @param string $filemd5 [optional][default=''] If passed, will be used instead of calculating it ourselves
+     * @param bool $copy [optional][default=false] Boolean value for whether to copy or just move the item into the assetstore
+     * @param bool $revOnCollision [optional][default=false] Boolean value for whether to create a new revision on item name collision
+     * @return ItemDao
+     * @throws Zend_Exception
      */
     public function createUploadedItem(
         $userDao,
@@ -189,10 +225,19 @@ class UploadComponent extends AppComponent
         $copy = false,
         $revOnCollision = false
     ) {
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
+
+        /** @var AssetstoreModel $assetstoreModel */
         $assetstoreModel = MidasLoader::loadModel('Assetstore');
+
+        /** @var ItemRevisionModel $itemRevisionModel */
         $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
+
+        /** @var ItempolicyuserModel $itempolicyuserModel */
         $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
 
         if ($userDao == null) {
@@ -279,14 +324,17 @@ class UploadComponent extends AppComponent
     /**
      * Save new revision in the database
      *
-     * @param userDao The user who is creating the revision
-     * @param name The name of the file being used to create the revision
-     * @param changes The changes comment by the user
-     * @param itemId The item to create the new revision in
-     * @param itemRevisionNumber [optional][default=null] Revision number for the item
-     * @param license [optional][default=null] License text for the revision
-     * @param filemd5 [optional][default=''] If passed, will use it instead of calculating it ourselves
-     * @param copy [optional][default=false] If true, will copy the file. Otherwise it will just move it into the assetstore.
+     * @param UserDao $userDao The user who is creating the revision
+     * @param string $name The name of the file being used to create the revision
+     * @param string $path
+     * @param string $changes The changes comment by the user
+     * @param int $itemId The item to create the new revision in
+     * @param null|int $itemRevisionNumber [optional][default=null] Revision number for the item
+     * @param null|int $license [optional][default=null] License text for the revision
+     * @param string $filemd5 [optional][default=''] If passed, will use it instead of calculating it ourselves
+     * @param bool $copy [optional][default=false] If true, will copy the file. Otherwise it will just move it into the assetstore.
+     * @return ItemDao
+     * @throws Zend_Exception
      */
     public function createNewRevision(
         $userDao,
@@ -303,9 +351,16 @@ class UploadComponent extends AppComponent
             throw new Zend_Exception('Please log in');
         }
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var BitstreamModel $bitstreamModel */
         $bitstreamModel = MidasLoader::loadModel('Bitstream');
+
+        /** @var AssetstoreModel $assetstoreModel */
         $assetstoreModel = MidasLoader::loadModel('Assetstore');
+
+        /** @var ItemRevisionModel $itemRevisionModel */
         $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
 
         $item = $itemModel->load($itemId);

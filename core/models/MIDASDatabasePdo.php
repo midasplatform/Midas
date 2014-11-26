@@ -19,24 +19,39 @@
 =========================================================================*/
 
 /**
- *  MIDASDatabasePdo
- *  Global model methods
+ * PDO database interface.
+ *
+ * @package Core\Database
  */
 class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseInterface
 {
+    /** @var string */
     protected $_name;
+
+    /** @var array */
     protected $_mainData;
+
+    /** @var string */
     protected $_key;
 
     /**
-     * Construct model
+     * Constructor.
+     *
+     * @param array $config
      */
     public function __construct($config = array())
     {
         parent::__construct($config);
     }
 
-    /** Initialize */
+    /**
+     * Initialize the PDO database interface.
+     *
+     * @param string $name
+     * @param string $key
+     * @param array $data
+     * @throws Zend_Exception
+     */
     public function initialize($name, $key, $data)
     {
         $this->_name = $name;
@@ -51,18 +66,24 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
         }
     }
 
-    /** Return the database */
+    /**
+     * Return the database.
+     *
+     * @return Zend_Db_Adapter_Abstract
+     */
     public function getDB()
     {
         return $this->_db;
     }
 
     /**
-     * Generic get function. You can define custom function.
+     * Generic get function. You can define custom functions.
      *
-     * @param $var name of the element we want to get
-     * @param $key of the table
-     * @return value
+     * @param string $var name of the element we want to get
+     * @param string $key key of the table
+     * @param MIDAS_GlobalDao $dao
+     * @return null|mixed
+     * @throws Zend_Exception
      */
     public function getValue($var, $key, $dao)
     {
@@ -125,11 +146,11 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     }
 
     /**
-     * get linked objects
+     * Get linked objects.
      *
-     * @param $var What object
-     * @param $dao Using dao data
-     * @return An array of object
+     * @param string $var what object
+     * @param MIDAS_GlobalDao $dao using DAO data
+     * @return array array of objects
      */
     protected function getLinkedObject($var, $dao)
     {
@@ -159,12 +180,12 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     }
 
     /**
-     * create a link between 2 tables
+     * Create a link between two tables.
      *
-     * @param $var name of the attribute we search
-     * @param $daoParent
-     * @param $daoSon
-     * @return sql result
+     * @param string $var name of the attribute we search
+     * @param MIDAS_GlobalDao $daoParent
+     * @param MIDAS_GlobalDao $daoSon
+     * @return false|int SQL result
      */
     public function link($var, $daoParent, $daoSon)
     {
@@ -205,12 +226,12 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     }
 
     /**
-     * remove a link between 2 tables
+     * Remove a link between two tables.
      *
-     * @param $var name of the attribute we search
-     * @param $daoParent
-     * @param $daoSon
-     * @return sql result
+     * @param string $var name of the attribute we search
+     * @param MIDAS_GlobalDao $daoParent
+     * @param MIDAS_GlobalDao $daoSon
+     * @return int SQL result
      */
     public function removeLink($var, $daoParent, $daoSon)
     {
@@ -233,11 +254,11 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     }
 
     /**
-     * find all DAO by $var = $value
+     * Find all DAOs by $var = $value.
      *
-     * @param $var name of the attribute we search
-     * @param $value
-     * @return daos
+     * @param string $var name of the attribute we search
+     * @param mixed $value
+     * @return array list of DAOs
      */
     public function findBy($var, $value)
     {
@@ -245,9 +266,11 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     }
 
     /**
-     * find all DAO
+     * Find all DAOs.
      *
-     * @return daos
+     * @param string $modelName
+     * @param string $module
+     * @return array list of DAOs
      */
     public function getAll($modelName, $module = '')
     {
@@ -262,47 +285,51 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     }
 
     /**
-     * Get all the value of a model
+     * Get all the values of a model.
      *
-     * @param $key
-     * @return An array with all the values
+     * @param string $key
+     * @return array list of values
      */
+
     public function getValues($key)
     {
         return $this->fetchRow($this->select()->where($this->_key.' = ?', $key));
     }
 
     /**
-     * Save or update
+     * Save or update.
      *
-     * @param $data array with dao information
-     * @return boolean
+     * @param $dataArray array with dao information
+     * @return false|int
      */
-    public function save($dataarray)
+    public function save($dataArray)
     {
-        if (isset($this->_key) && isset($dataarray[$this->_key])) {
-            $key = $dataarray[$this->_key];
-            unset($dataarray[$this->_key]);
-            $nupdated = $this->update($dataarray, array($this->_key.'=?' => $key));
-            if ($nupdated == 0) {
+        if (isset($this->_key) && isset($dataArray[$this->_key])) {
+            $key = $dataArray[$this->_key];
+            unset($dataArray[$this->_key]);
+            $numUpdated = $this->update($dataArray, array($this->_key.'=?' => $key));
+            if ($numUpdated == 0) {
                 return false;
             }
 
             return $key;
         } else {
-            $insertedid = $this->insert($dataarray);
-            if (!$insertedid) {
+            $insertedId = $this->insert($dataArray);
+
+            if (!$insertedId) {
                 return false;
             }
 
-            return $insertedid;
+            return $insertedId;
         }
     }
 
     /**
-     * Delete in the db
+     * Delete from the database.
      *
-     * @param $dao
+     * @param MIDAS_GlobalDao $dao
+     * @return true
+     * @throws Zend_Exception
      */
     public function delete($dao)
     {
@@ -330,13 +357,18 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
         }
         parent::delete(array($this->_key.' = ?' => $dao->getKey()));
         $key = $dao->_key;
-        unset($dao->$key);
+        $dao->set($key, null);
         $dao->saved = false;
 
         return true;
     }
 
-    /** getAllByKey() */
+    /**
+     * Return all by key.
+     *
+     * @param array $keys
+     * @return array
+     */
     public function getAllByKey($keys)
     {
         // Make sure we have only numeric values
@@ -352,14 +384,15 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
         return $this->fetchAll($this->select()->where($this->_key.' IN (?)', $keys));
     }
 
-    /** return the number row in the table
+    /**
+     * Return the number of rows in the table.
      *
      * @return int
      */
     public function getCountAll()
     {
-        $count = $this->fetchRow($this->select()->from($this->_name, 'count(*) as COUNT'));
+        $row = $this->fetchRow($this->select()->from($this->_name, 'count(*) as COUNT'));
 
-        return $count['COUNT'];
+        return $row['COUNT'];
     }
 }

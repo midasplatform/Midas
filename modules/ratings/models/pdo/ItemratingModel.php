@@ -37,6 +37,8 @@ class Ratings_ItemratingModel extends Ratings_ItemratingModelBase
             if ($rating == 0) {
                 return; // no need to save this rating at all
             }
+
+            /** @var Ratings_ItemratingDao $dao */
             $dao = MidasLoader::newDao('ItemratingDao', 'ratings');
             $dao->setUserId($user->getKey());
             $dao->setItemId($item->getKey());

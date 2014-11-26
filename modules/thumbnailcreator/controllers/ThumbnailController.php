@@ -60,6 +60,8 @@ class Thumbnailcreator_ThumbnailController extends Thumbnailcreator_AppControlle
 
             return;
         }
+
+        /** @var Thumbnailcreator_ImagemagickComponent $imComponent */
         $imComponent = MidasLoader::loadComponent('Imagemagick', 'thumbnailcreator');
 
         $itemThumbnail = $this->Thumbnailcreator_Itemthumbnail->getByItemId($item->getKey());
@@ -124,6 +126,7 @@ class Thumbnailcreator_ThumbnailController extends Thumbnailcreator_AppControlle
         if ($itemthumbnail->getThumbnailId() !== null) {
             $bitstream = $this->Bitstream->load($itemthumbnail->getThumbnailId());
 
+            /** @var DownloadBitstreamComponent $downloadBitstreamComponent */
             $downloadBitstreamComponent = MidasLoader::loadComponent('DownloadBitstream');
             $downloadBitstreamComponent->download($bitstream);
         }

@@ -31,10 +31,14 @@ class Readmes_ApifolderComponent extends AppComponent
      */
     public function get($args)
     {
+        /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
+
+        /** @var Readmes_GetReadmeComponent $readmeComponent */
         $readmeComponent = MidasLoader::loadComponent('GetReadme', 'readmes');
         $apihelperComponent->validateParams($args, array('id'));
 
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
 
         $folderDao = $folderModel->load($args['id']);

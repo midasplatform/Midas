@@ -26,7 +26,10 @@ class Api_CallFolderMethodsTest extends Api_CallMethodsTestCase
     /** Test creating a folder */
     public function testFolderCreate()
     {
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
 
         $this->resetAll();
@@ -305,8 +308,11 @@ class Api_CallFolderMethodsTest extends Api_CallMethodsTestCase
     /** Test the folder.list.permissions method */
     public function testFolderListPermissions()
     {
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $userDao = $userModel->load('1');
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $readFolder = $folderModel->load('1012');
         $writeFolder = $folderModel->load('1013');
@@ -383,13 +389,21 @@ class Api_CallFolderMethodsTest extends Api_CallMethodsTestCase
     /** Test the folder.set.privacy.recursive method */
     public function testFolderSetPrivacyRecursive()
     {
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
 
+        /** @var FolderpolicyuserModel $folderpolicyuserModel */
         $folderpolicyuserModel = MidasLoader::loadModel("Folderpolicyuser");
+
+        /** @var ItempolicyuserModel $itempolicyuserModel */
         $itempolicyuserModel = MidasLoader::loadModel("Itempolicyuser");
 
         $userDao = $userModel->load('1');
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $readFolder = $folderModel->load('1012');
         $writeFolder = $folderModel->load('1013');
@@ -469,14 +483,24 @@ class Api_CallFolderMethodsTest extends Api_CallMethodsTestCase
      */
     public function testFolderAddRemovePolicygroup()
     {
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
 
+        /** @var FolderpolicyuserModel $folderpolicyuserModel */
         $folderpolicyuserModel = MidasLoader::loadModel("Folderpolicyuser");
+
+        /** @var ItempolicyuserModel $itempolicyuserModel */
         $itempolicyuserModel = MidasLoader::loadModel("Itempolicyuser");
 
         $userDao = $userModel->load('1');
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $readFolder = $folderModel->load('1012');
         $writeFolder = $folderModel->load('1013');
@@ -690,10 +714,16 @@ class Api_CallFolderMethodsTest extends Api_CallMethodsTestCase
      */
     public function testFolderAddRemovePolicyuser()
     {
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
 
+        /** @var FolderpolicyuserModel $folderpolicyuserModel */
         $folderpolicyuserModel = MidasLoader::loadModel("Folderpolicyuser");
+
+        /** @var ItempolicyuserModel $itempolicyuserModel */
         $itempolicyuserModel = MidasLoader::loadModel("Itempolicyuser");
 
         $userDao = $userModel->load('1');

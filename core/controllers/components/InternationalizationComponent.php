@@ -21,9 +21,14 @@
 /** Internationalization tools */
 class InternationalizationComponent extends AppComponent
 {
+    /** @var null|InternationalizationComponent */
     private static $_instance = null;
 
-    /** Instance */
+    /**
+     * Instance
+     *
+     * @return InternationalizationComponent
+     */
     public static function getInstance()
     {
         if (!self::$_instance instanceof self) {
@@ -33,7 +38,12 @@ class InternationalizationComponent extends AppComponent
         return self::$_instance;
     }
 
-    /** translate */
+    /**
+     * Translate
+     *
+     * @param string $text
+     * @return string
+     */
     public static function translate($text)
     {
         if (Zend_Registry::get('configGlobal')->application->lang != 'en') {
@@ -58,7 +68,7 @@ class InternationalizationComponent extends AppComponent
     /**
      * Is Debug mode ON
      *
-     * @return boolean
+     * @return bool
      */
     public static function isDebug()
     {

@@ -45,6 +45,7 @@ class Packages_NotificationTest extends ControllerTestCase
     {
         Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
 
+        /** @var Packages_PackageModel $packageModel */
         $packageModel = MidasLoader::loadModel('Package', 'packages');
         $packagesFile = $this->loadData('Package', 'default', 'packages', 'packages');
         $packageDao = $packageModel->load($packagesFile[0]->getKey());

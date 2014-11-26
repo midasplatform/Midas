@@ -39,6 +39,7 @@ class Batchmake_ItemmetricModelTest extends DatabaseTestCase
     /** Test that ItemmetricModel::createTask($userDao) works */
     public function testCreateItemmetric()
     {
+        /** @var Batchmake_ItemmetricModel $itemmetricModel */
         $itemmetricModel = MidasLoader::loadModel('Itemmetric', 'batchmake');
 
         // create an itemmetric
@@ -88,6 +89,7 @@ class Batchmake_ItemmetricModelTest extends DatabaseTestCase
     {
         $itemmetricFileDaos = $this->loadData('Itemmetric', 'default', 'batchmake', 'batchmake');
 
+        /** @var Batchmake_ItemmetricModel $itemmetricModel */
         $itemmetricModel = MidasLoader::loadModel('Itemmetric', 'batchmake');
         $modelDaos = $itemmetricModel->getAll();
 

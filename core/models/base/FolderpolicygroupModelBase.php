@@ -88,6 +88,8 @@ abstract class FolderpolicygroupModelBase extends AppModel
         if ($policyGroupDao !== false) {
             $this->delete($policyGroupDao);
         }
+
+        /** @var FolderpolicygroupDao $policyGroupDao */
         $policyGroupDao = MidasLoader::newDao('FolderpolicygroupDao');
         $policyGroupDao->setGroupId($group->getGroupId());
         $policyGroupDao->setFolderId($folder->getFolderId());

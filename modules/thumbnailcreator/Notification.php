@@ -52,6 +52,7 @@ class Thumbnailcreator_Notification extends ApiEnabled_Notification
     /** createThumbnail */
     public function createThumbnail($params)
     {
+        /** @var Thumbnailcreator_ImagemagickComponent $thumbnailComponent */
         $thumbnailComponent = MidasLoader::loadComponent('Imagemagick', $this->moduleName);
         $thumbnailComponent->createThumbnail($params[0]);
     }
@@ -88,6 +89,7 @@ class Thumbnailcreator_Notification extends ApiEnabled_Notification
         $itemthumbnailModel = MidasLoader::loadModel('Itemthumbnail', $this->moduleName);
         $itemthumbnail = $itemthumbnailModel->getByItemId($params['item']->getKey());
         if ($itemthumbnail && $itemthumbnail->getThumbnailId() !== null) {
+            /** @var BitstreamModel $bitstreamModel */
             $bitstreamModel = MidasLoader::loadModel('Bitstream');
             $thumbnail = $bitstreamModel->load($itemthumbnail->getThumbnailId());
             $bitstreamModel->delete($thumbnail);

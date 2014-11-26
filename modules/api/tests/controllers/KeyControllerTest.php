@@ -40,6 +40,7 @@ class Api_KeyControllerTest extends ControllerTestCase
         $this->User->changePassword($userDao, 'test');
         $this->User->save($userDao);
 
+        /** @var UserapiModel $userApiModel */
         $userApiModel = MidasLoader::loadModel('Userapi');
         $userApiModel->createDefaultApiKey($userDao);
         $preKey = $userApiModel->getByAppAndUser('Default', $userDao)->getApikey();
@@ -73,6 +74,7 @@ class Api_KeyControllerTest extends ControllerTestCase
         $this->dispatchUrl($page);
 
         // Check that their default api key was created
+        /** @var UserapiModel $userApiModel */
         $userApiModel = MidasLoader::loadModel('Userapi');
         $key = $userApiModel->getByAppAndEmail('Default', 'some.user@server.com')->getApikey();
         $this->assertNotEmpty($key);

@@ -66,6 +66,7 @@ abstract class Packages_ProjectModelBase extends Packages_AppModel
     {
         $project = $this->getByCommunityId($community->getKey());
         if (!$project) {
+            /** @var Packages_ProjectDao $project */
             $project = MidasLoader::newDao('ProjectDao', $this->moduleName);
             $project->setCommunityId($community->getKey());
         }
@@ -78,6 +79,7 @@ abstract class Packages_ProjectModelBase extends Packages_AppModel
      */
     public function delete($project)
     {
+        /** @var Packages_ApplicationModel $applicationModel */
         $applicationModel = MidasLoader::loadModel('Application', 'packages');
         $applications = $project->getApplications();
         foreach ($applications as $application) {

@@ -428,9 +428,16 @@ class Core_UserControllerTest extends ControllerTestCase
     /** Test admin ability to delete a user */
     public function testDeleteUserAction()
     {
+        /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
+
+        /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $adminuserSetting = $settingModel->getValueByName('adminuser');
         $usersFile = $this->loadData('User', 'default');

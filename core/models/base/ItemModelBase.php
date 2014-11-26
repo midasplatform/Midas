@@ -133,20 +133,27 @@ abstract class ItemModelBase extends AppModel
         $groupPolicies = $referenceItemdao->getItempolicygroup();
         $userPolicies = $referenceItemdao->getItempolicyuser();
 
+        /** @var ItempolicygroupModel $ItempolicygroupModel */
         $ItempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
         foreach ($groupPolicies as $key => $policy) {
             $ItempolicygroupModel->createPolicy($policy->getGroup(), $itemdao, $policy->getPolicy());
         }
+
+        /** @var ItempolicyuserModel $ItempolicyuserModel */
         $ItempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
         foreach ($userPolicies as $key => $policy) {
             $ItempolicyuserModel->createPolicy($policy->getUser(), $itemdao, $policy->getPolicy());
         }
 
         if ($feeddao != null && $feeddao instanceof FeedDao) {
+
+            /** @var FeedpolicygroupModel $FeedpolicygroupModel */
             $FeedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
             foreach ($groupPolicies as $key => $policy) {
                 $FeedpolicygroupModel->createPolicy($policy->getGroup(), $feeddao, $policy->getPolicy());
             }
+
+            /** @var FeedpolicyuserModel $FeedpolicyuserModel */
             $FeedpolicyuserModel = MidasLoader::loadModel('Feedpolicyuser');
             foreach ($userPolicies as $key => $policy) {
                 $FeedpolicyuserModel->createPolicy($policy->getUser(), $feeddao, $policy->getPolicy());
@@ -204,20 +211,26 @@ abstract class ItemModelBase extends AppModel
         $groupPolicies = $folderdao->getFolderpolicygroup();
         $userPolicies = $folderdao->getFolderpolicyuser();
 
+        /** @var ItempolicygroupModel $ItempolicygroupModel */
         $ItempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
         foreach ($groupPolicies as $policy) {
             $ItempolicygroupModel->createPolicy($policy->getGroup(), $itemdao, $policy->getPolicy());
         }
+
+        /** @var ItempolicyuserModel $ItempolicyuserModel */
         $ItempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
         foreach ($userPolicies as $policy) {
             $ItempolicyuserModel->createPolicy($policy->getUser(), $itemdao, $policy->getPolicy());
         }
 
         if ($feeddao != null && $feeddao instanceof FeedDao) {
+            /** @var FeedpolicygroupModel $FeedpolicygroupModel */
             $FeedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
             foreach ($groupPolicies as $policy) {
                 $FeedpolicygroupModel->createPolicy($policy->getGroup(), $feeddao, $policy->getPolicy());
             }
+
+            /** @var FeedpolicyuserModel $FeedpolicyuserModel */
             $FeedpolicyuserModel = MidasLoader::loadModel('Feedpolicyuser');
             foreach ($userPolicies as $policy) {
                 $FeedpolicyuserModel->createPolicy($policy->getUser(), $feeddao, $policy->getPolicy());
@@ -249,6 +262,7 @@ abstract class ItemModelBase extends AppModel
             }
         }
 
+        /** @var ItempolicygroupModel $ItempolicygroupModel */
         $ItempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
         foreach ($groupPolicies as $policy) {
             $newGroup = $policy->getGroup();
@@ -279,6 +293,8 @@ abstract class ItemModelBase extends AppModel
         if (!$userDao instanceof UserDao) {
             throw new Zend_Exception("Should be an user.");
         }
+
+        /** @var BitstreamModel $BitstreamModel */
         $BitstreamModel = MidasLoader::loadModel('Bitstream');
 
         $name = $itemDao->getName();
@@ -305,9 +321,16 @@ abstract class ItemModelBase extends AppModel
             $newItem->setThumbnailId($newThumb->getKey());
         }
 
+        /** @var ItemRevisionModel $ItemRevisionModel */
         $ItemRevisionModel = MidasLoader::loadModel('ItemRevision');
+
+        /** @var BitstreamModel $BitstreamModel */
         $BitstreamModel = MidasLoader::loadModel('Bitstream');
+
+        /** @var MetadataModel $MetadataModel */
         $MetadataModel = MidasLoader::loadModel('Metadata');
+
+        /** @var ItempolicygroupModel $ItemPolicyGroupModel */
         $ItemPolicyGroupModel = MidasLoader::loadModel('Itempolicygroup');
         $ItemPolicyGroupModel->computePolicyStatus($newItem);
 
@@ -393,6 +416,7 @@ abstract class ItemModelBase extends AppModel
             throw new Zend_Exception("Second argument should be an item revision");
         }
 
+        /** @var ItemRevisionModel $ItemRevisionModel */
         $ItemRevisionModel = MidasLoader::loadModel('ItemRevision');
 
         // Should check the latest revision for this item
@@ -425,6 +449,7 @@ abstract class ItemModelBase extends AppModel
             throw new Zend_Exception("Revision needs to be associated with Item");
         }
 
+        /** @var ItemRevisionModel $itemRevisionModel */
         $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
 
         $lastRevisionDao = $this->getLastRevision($itemdao);
@@ -476,6 +501,8 @@ abstract class ItemModelBase extends AppModel
             $parentId = $parent;
             $parent = $this->load($parentId);
         }
+
+        /** @var ItemDao $item */
         $item = MidasLoader::newDao('ItemDao');
         $item->setName($name);
         $item->setDescription($description);
@@ -484,6 +511,7 @@ abstract class ItemModelBase extends AppModel
         $item->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE); // Must set this flag private initially
         $this->save($item, true);
 
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $folderModel->addItem($parent, $item);
         $this->copyParentPolicies($item, $parent);
@@ -519,6 +547,8 @@ abstract class ItemModelBase extends AppModel
     {
         if ($progress) {
             $current = 0;
+
+            /** @var ProgressModel $progressModel */
             $progressModel = MidasLoader::loadModel('Progress');
         }
 
@@ -558,7 +588,11 @@ abstract class ItemModelBase extends AppModel
 
         $mainItem = $items[0];
         $mainItemLastResision = $this->getLastRevision($mainItem);
+
+        /** @var BitstreamModel $bitstreamModel */
         $bitstreamModel = MidasLoader::loadModel('Bitstream');
+
+        /** @var ItemRevisionModel $revisionModel */
         $revisionModel = MidasLoader::loadModel('ItemRevision');
         foreach ($items as $key => $item) {
             if ($key != 0) {
@@ -595,7 +629,10 @@ abstract class ItemModelBase extends AppModel
      */
     public function replaceThumbnail($item, $tempThumbnailFile)
     {
+        /** @var AssetstoreModel $assetstoreModel */
         $assetstoreModel = MidasLoader::loadModel('Assetstore');
+
+        /** @var BitstreamModel $bitstreamModel */
         $bitstreamModel = MidasLoader::loadModel('Bitstream');
 
         // Remove the existing thumbnail bitstream

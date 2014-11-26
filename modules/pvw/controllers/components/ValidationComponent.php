@@ -40,6 +40,7 @@ class Pvw_ValidationComponent extends AppComponent
     /** Helper function to test if an item matches a list of extensions */
     private function _testItem($itemDao, $extensions)
     {
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
         if (empty($revision)) {

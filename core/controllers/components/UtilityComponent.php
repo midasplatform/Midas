@@ -25,10 +25,10 @@ class UtilityComponent extends AppComponent
      * The main function for converting to an XML document.
      * Pass in a multi dimensional array and this recursively loops through and builds up an XML document.
      *
-     * @param  array $data
-     * @param  string $rootNodeName - what you want the root node to be - defaults to data.
-     * @param  SimpleXMLElement $xml - should only be used recursively
-     * @return string           XML
+     * @param array $data
+     * @param string $rootNodeName what you want the root node to be - defaults to data.
+     * @param null|SimpleXMLElement $xml should only be used recursively
+     * @return string XML
      */
     public function toXml($data, $rootNodeName = 'data', $xml = null)
     {
@@ -68,7 +68,11 @@ class UtilityComponent extends AppComponent
         return $xml->asXML();
     }
 
-    /** Get all the modules */
+    /**
+     * Get all the modules
+     *
+     * @return array
+     */
     public function getAllModules()
     {
         $modules = array();
@@ -91,6 +95,8 @@ class UtilityComponent extends AppComponent
      * Helper method to extract tokens from request URI's in path form,
      * e.g. download/folder/123/folder_name, starting after the action name.
      * Returns the token as a list.
+     *
+     * @return array
      */
     public static function extractPathParams()
     {
@@ -116,7 +122,12 @@ class UtilityComponent extends AppComponent
         return $tokens;
     }
 
-    /** find modules configuration in a folder */
+    /**
+     * find modules configuration in a folder
+     *
+     * @param string $dir
+     * @return array
+     */
     private function _initModulesConfig($dir)
     {
         $handle = opendir($dir);
@@ -160,7 +171,13 @@ class UtilityComponent extends AppComponent
         return $modules;
     }
 
-    /** format long names */
+    /**
+     * format long names
+     *
+     * @param string  $name
+     * @param int $nchar
+     * @return string
+     */
     public static function sliceName($name, $nchar)
     {
         if (strlen($name) > $nchar) {
@@ -176,7 +193,14 @@ class UtilityComponent extends AppComponent
         return $name;
     }
 
-    /** create init file */
+    /**
+     * create init file
+     *
+     * @param string $path
+     * @param array $data
+     * @return string
+     * @throws Zend_Exception
+     */
     public static function createInitFile($path, $data)
     {
         if (!is_writable(dirname($path))) {
@@ -209,10 +233,16 @@ class UtilityComponent extends AppComponent
         return $text;
     }
 
-    /** PHP md5_file is very slow on large file. If md5 sum is on the system we use it. */
+    /**
+     * PHP md5_file is very slow on large file. If md5 sum is on the system we use it.
+     *
+     * @param string $filename
+     * @return string
+     */
     public static function md5file($filename)
     {
         // If we have md5 sum
+        /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
         $md5sumCommand = $settingModel->getValueByName('md5sum_command');
 
@@ -229,12 +259,14 @@ class UtilityComponent extends AppComponent
     /**
      * Check if the php function/extension are available
      *
-     * $phpextensions should have the following format:
+     * @param array $phpextensions should have the following format:
      *   array(
      *     "ExtensionOrFunctionName" => array( EXT_CRITICAL , $message or EXT_DEFAULT_MSG ),
      *   );
      *
      * The unavailable function/extension are returned (array of string)
+     * @return array
+     * @throws Zend_Exception
      */
     public static function checkPhpExtensions($phpextensions)
     {
@@ -260,7 +292,8 @@ class UtilityComponent extends AppComponent
      * Get size in bytes of the file. This also supports files over 2GB in Windows,
      * which is not supported by PHP's filesize()
      *
-     * @param path Path of the file to check
+     * @param string $path path of the file to check
+     * @return int
      */
     public static function fileSize($path)
     {
@@ -277,6 +310,11 @@ class UtilityComponent extends AppComponent
     /**
      * Format file size. Rounds to 1 decimal place and makes sure
      * to use 3 or less digits before the decimal place.
+     *
+     * @param int $sizeInBytes
+     * @param string $separator
+     * @return string
+     * @throws Zend_Exception
      */
     public static function formatSize($sizeInBytes, $separator = ',')
     {
@@ -303,7 +341,12 @@ class UtilityComponent extends AppComponent
         }
     }
 
-    /** Safe delete function. Checks if the file can be deleted. */
+    /**
+     * Safe delete function. Checks if the file can be deleted.
+     *
+     * @param string $filename
+     * @return false|void
+     */
     public static function safedelete($filename)
     {
         if (!file_exists($filename)) {
@@ -312,7 +355,14 @@ class UtilityComponent extends AppComponent
         unlink($filename);
     }
 
-    /** Function to run a SQL script */
+    /**
+     * Function to run a SQL script
+     *
+     * @param Zend_Db_Adapter_Abstract $db
+     * @param string $sqlfile
+     * @return true
+     * @throws Zend_Exception
+     */
     public static function run_sql_from_file($db, $sqlfile)
     {
         $db->getConnection();
@@ -338,9 +388,17 @@ class UtilityComponent extends AppComponent
         return true;
     }
 
-    /** Get the data directory */
+    /**
+     * Get the data directory
+     *
+     * @param string $subDirectory
+     * @param bool $createDirectory
+     * @return string
+     * @throws Zend_Exception
+     */
     public static function getDataDirectory($subDirectory = '', $createDirectory = true)
     {
+        /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
 
         try {
@@ -371,13 +429,17 @@ class UtilityComponent extends AppComponent
     }
 
     /**
-     * @param $subDirectory
      * get the midas temporary directory, appending the param $subdir, which
      * defaults to "misc"
+     *
+     * @param string $subDirectory
+     * @param bool $createDirectory
      * @return string
+     * @throws Zend_Exception
      */
     public static function getTempDirectory($subDirectory = 'misc', $createDirectory = true)
     {
+        /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
 
         try {
@@ -415,7 +477,12 @@ class UtilityComponent extends AppComponent
         return self::getTempDirectory('cache');
     }
 
-    /** install a module */
+    /**
+     * install a module
+     *
+     * @param string $moduleName
+     * @throws Zend_Exception
+     */
     public function installModule($moduleName)
     {
         // TODO, The module installation process needs some improvement.
@@ -488,8 +555,9 @@ class UtilityComponent extends AppComponent
     /**
      * Will remove all "unsafe" html tags from the text provided.
      *
-     * @param text The text to filter
-     * @return The text stripped of all unsafe tags
+     * @deprecated since 3.3.0
+     * @param string $text text to filter
+     * @return string text stripped of all unsafe tags
      */
     public static function filterHtmlTags($text)
     {
@@ -534,6 +602,12 @@ class UtilityComponent extends AppComponent
      * INTERNAL FUNCTION
      * This is used to suppress warnings from being written to the output and the
      * error log. Users should not call this function; see beginIgnoreWarnings().
+     *
+     * @param int $errno
+     * @param string $errstr
+     * @param string $errfile
+     * @param int $errline
+     * @return true
      */
     public static function ignoreErrorHandler($errno, $errstr, $errfile, $errline)
     {
@@ -559,7 +633,11 @@ class UtilityComponent extends AppComponent
         restore_error_handler();
     }
 
-    /** Recursively delete a directory on disk */
+    /**
+     * Recursively delete a directory on disk
+     *
+     * @param string $dir
+     */
     public static function rrmdir($dir)
     {
         if (!file_exists($dir) || !is_dir($dir)) {
@@ -604,7 +682,10 @@ class UtilityComponent extends AppComponent
     }
 
     /**
-     * Get the hostname for this instance
+     * Get the host name of this instance
+     *
+     * @return string
+     * @throws Zend_Exception
      */
     public static function getServerURL()
     {
@@ -652,8 +733,9 @@ class UtilityComponent extends AppComponent
      * Test whether the specified port is listening on the specified host.
      * Return true if the connection is accepted, false otherwise.
      *
-     * @param port The port to test (integer)
-     * @param [host] The hostname; default is localhost
+     * @param int $port port to test
+     * @param string $host host name, default is localhost
+     * @return bool
      */
     public static function isPortListening($port, $host = 'localhost')
     {
@@ -670,7 +752,11 @@ class UtilityComponent extends AppComponent
         return false;
     }
 
-    /** Limits the maximum execution time. */
+    /**
+     * Limits the maximum execution time.
+     *
+     * @param int $seconds
+     */
     public static function setTimeLimit($seconds)
     {
         UtilityComponent::beginIgnoreWarnings();
@@ -678,7 +764,12 @@ class UtilityComponent extends AppComponent
         UtilityComponent::endIgnoreWarnings();
     }
 
-    /** Returns available space on filesystem or disk partition. */
+    /**
+     * Returns available space on filesystem or disk partition.
+     *
+     * @param string $directory
+     * @return float
+     */
     public static function diskFreeSpace($directory)
     {
         UtilityComponent::beginIgnoreWarnings();
@@ -688,7 +779,12 @@ class UtilityComponent extends AppComponent
         return $result;
     }
 
-    /** Returns the total size of a filesystem or disk partition.  */
+    /**
+     * Returns the total size of a filesystem or disk partition.
+     *
+     * @param string $directory
+     * @return float
+     */
     public static function diskTotalSpace($directory)
     {
         UtilityComponent::beginIgnoreWarnings();

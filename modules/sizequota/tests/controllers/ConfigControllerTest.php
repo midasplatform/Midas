@@ -119,6 +119,7 @@ class Sizequota_ConfigControllerTest extends ControllerTestCase
         $this->assertQuery('form.quotaConfigForm');
         $this->assertQuery('input[type="submit"][name="submitQuota"]');
 
+        /** @var Sizequota_FolderQuotaModel $folderQuotaModel */
         $folderQuotaModel = MidasLoader::loadModel('FolderQuota', 'sizequota');
 
         // User 1 should not be able to change their own quota

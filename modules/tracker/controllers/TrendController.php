@@ -336,6 +336,8 @@ class Tracker_TrendController extends Tracker_AppController
             throw new Zend_Exception('Permission denied', 403);
         }
         $this->view->trend = $trend;
+
+        /** @var Tracker_ThresholdNotificationModel $notificationModel */
         $notificationModel = MidasLoader::loadModel('ThresholdNotification', $this->moduleName);
         $this->view->setting = $notificationModel->getUserSetting($this->userSession->Dao, $trend);
     }
@@ -383,6 +385,8 @@ class Tracker_TrendController extends Tracker_AppController
 
                 return;
             }
+
+            /** @var Tracker_ThresholdNotificationDao $threshold */
             $threshold = MidasLoader::newDao('ThresholdNotificationDao', $this->moduleName);
             $threshold->setTrendId($trend->getKey());
             $threshold->setValue((float) $value);

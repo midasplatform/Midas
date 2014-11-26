@@ -31,6 +31,7 @@ class ImportForm extends AppForm
         $form->setMethod('post');
         $form->setAttrib('class', 'importForm');
 
+        /** @var RandomComponent $randomComponent */
         $randomComponent = MidasLoader::loadComponent('Random');
 
         // Hidden upload id

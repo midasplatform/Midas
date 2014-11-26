@@ -18,27 +18,48 @@
  limitations under the License.
 =========================================================================*/
 
-/** Notify modules using this class */
+/** Notify modules using this class. */
 class MIDAS_Notifier
 {
+    /** @var array */
     public $modules = array();
+
+    /** @var array */
     public $tasks = array();
+
+    /** @var array */
     private $tasksByModule = array();
+
+    /** @var array */
     public $notifications = array();
 
-    /** get Notification */
+    /**
+     * Get notifications.
+     *
+     * @return array
+     */
     public function getNotifications()
     {
         return $this->notifications;
     }
 
-    /** get Tasks */
+    /**
+     * Get tasks.
+     *
+     * @return array
+     */
     public function getTasks()
     {
         return $this->tasks;
     }
 
-    /** init the notifier */
+    /**
+     * Initialize the notifier.
+     *
+     * @param bool $logged
+     * @param Zend_Session_Namespace $session
+     * @throws Zend_Exception
+     */
     public function __construct($logged, $session)
     {
         $modules = Zend_Registry::get('modulesEnable');
@@ -129,10 +150,10 @@ class MIDAS_Notifier
      * If the scheduler module is enabled, the event will be scheduled to run asynchronously.
      * Otherwise, it will be called synchronously like a normal callback.
      *
-     * @param $name The name of the event. Must start with "EVENT_".
-     * @param $params (Optional) Array of parameters to be passed to the registered handlers.
-     * @param $moduleFilter (Optional) Only the listed modules will receive the notification.
-     * @return null
+     * @param string $name name of the event. Must start with "EVENT_"
+     * @param null|array $params array of parameters to be passed to the registered handlers
+     * @param array $moduleFilter only the listed modules will receive the notification
+     * @throws Zend_Exception
      */
     public function notifyEvent($name, $params = null, $moduleFilter = array())
     {
@@ -156,6 +177,10 @@ class MIDAS_Notifier
     /**
      * If the scheduler module is enabled, schedule the task for asynchronous execution.
      * Otherwise, run it now synchronously.
+     *
+     * @param string $name
+     * @param array $params
+     * @param int $priority
      */
     private function _setTask($name, $params, $priority)
     {
@@ -187,10 +212,11 @@ class MIDAS_Notifier
      * handlers called by this function. Handlers will be executed synchronously and serially,
      * in the order that the enabled modules are listed in application.local.ini.
      *
-     * @param $name The name of the callback (must begin with "CALLBACK_")
-     * @param $params (Optional) The array of parameters to pass to each registered handler
-     * @param $moduleFilter (Optional) Only the listed modules will receive the notification.
-     * @return An array mapping module names to the return values from their registered handlers for the callback.
+     * @param string $name name of the callback (must begin with "CALLBACK_")
+     * @param null|array $params  array of parameters to pass to each registered handler
+     * @param array $moduleFilter only the listed modules will receive the notification
+     * @return array an array mapping module names to the return values from their registered handlers for the callback
+     * @throws Zend_Exception
      */
     public function callback($name, $params = null, $moduleFilter = array())
     {
@@ -218,7 +244,7 @@ class MIDAS_Notifier
     }
 
     /**
-     * Get Logger
+     * Fetch the logger from the Zend registry.
      *
      * @return Zend_Log
      */

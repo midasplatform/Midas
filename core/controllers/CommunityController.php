@@ -581,6 +581,7 @@ class CommunityController extends AppController
             if ($existingUser) {
                 $this->_sendUserInvitation($existingUser, $group);
             } else {
+                /** @var NewUserInvitationModel $newuserModel */
                 $newuserModel = MidasLoader::loadModel('NewUserInvitation');
                 $newuserinvite = $newuserModel->createInvitation($email, $group, $this->userSession->Dao);
 

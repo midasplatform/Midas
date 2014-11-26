@@ -18,9 +18,14 @@
  limitations under the License.
 =========================================================================*/
 
-/** Web Api Controller */
+/**
+ * API controller base class.
+ *
+ * @package Core\Controller
+ */
 class ApiController extends REST_Controller
 {
+    /** @var array */
     private $httpSuccessCode = array(
         'index' => 200, // 200 OK
         'get' => 200,
@@ -29,7 +34,7 @@ class ApiController extends REST_Controller
         'delete' => 200,
     );
 
-    /** init api actions */
+    /** Initialize the API controller. */
     public function init()
     {
         $this->disableLayout();
@@ -38,19 +43,30 @@ class ApiController extends REST_Controller
         $this->_response->setHttpResponseCode(200); // 200 OK
     }
 
-    /** Return the user dao */
+    /**
+     * Return the user DAO.
+     *
+     * @param array $args parameters from the HTTP request
+     * @return UserDao user DAO
+     */
     protected function _getUser($args)
     {
+        /** @var AuthenticationComponent $authComponent */
         $authComponent = MidasLoader::loadComponent('Authentication');
 
         return $authComponent->getUser($args, $this->userSession->Dao);
     }
 
-    /** Convert Midas internal error code to standard HTTP status code */
-    protected function _exceptionHandler(Exception $e)
+    /**
+     * Convert a Midas Server internal error code to standard HTTP status code.
+     *
+     * @param Exception $exception
+     * @return array error message and HTTP code
+     */
+    protected function _exceptionHandler(Exception $exception)
     {
-        $errorInfo['code'] = $e->getCode();
-        $errorInfo['msg'] = $e->getMessage();
+        $errorInfo['code'] = $exception->getCode();
+        $errorInfo['msg'] = $exception->getMessage();
         switch ($errorInfo['code']) {
             case MIDAS_INVALID_PARAMETER:
             case MIDAS_INVALID_POLICY:
@@ -77,32 +93,30 @@ class ApiController extends REST_Controller
     }
 
     /**
-     * Generic wrapper function called by RESTful actions.
-     * With the given arguments, it calls the related function in the corresponding
-     * ApiComponent and then fill http status code and results in the response.
+     * Generic wrapper function called by RESTful actions. With the given
+     * arguments, it calls the related function in the corresponding
+     * ApiComponent and then fills the HTTP status code and results in the
+     * response.
+     * @param array $args parameters from the HTTP request
+     * @param string $resource name of the resource
+     * @param string $restAction RESTful actions: get, index, post, put or delete
+     * @param array $apiFunctions An array of method name in RESTful action
+     *   => function name in the corresponding ApiComponent. This array must have
+     *   'default' in its keys.
+     * @param null|string $moduleName module from which to get the ApiComponent
      *
-     * @param array $args Parameters got from http request.
-     * @param string $restAction RESTful actions: get, index, post, put or delete.
-     * @param array $apiFunctions An array of
-     *                             method name in RESTful action  =>  function name in corresponding ApiComponent
-     *                             This array must have 'default' in its keys.
-     * @param string $moduleName Which module to get the ApiComponent
-     *
-     * Example:
-     * _genericAction(array('id' => 2), 'get', $apiFunctionArray) is called
-     *  and $apiFunctionArray is
-     *   $apiFunctions = array(
-     *     'default' => 'itemMove',
-     *     'move' => 'itemMove',
-     *     'duplicate' => 'itemDuplicate'
-     *     );
-     *
-     * for 'curl -v {base_path}/rest/item/move/2' command, Midas will call
-     *   'itemMove' in ApiComponent (in core module) to do the api work;
-     * for given url: {base_path}/rest/item/2, Midas will call
-     *   'itemMove' in ApiComponent (in core module) to do the api;
-     * for given url: {base_path}/rest/item/duplicate/2, Midas will call
-     *   'itemDuplicate' in ApiComponent (in core module) to do the api;
+     * {@example
+     * _genericAction(array('id' => 2), 'get', $apiFunctionArray) is called and
+     * $apiFunctionArray is $apiFunctions = array('default' => 'itemMove',
+     *                                            'move' => 'itemMove',
+     *                                            'duplicate' => 'itemDuplicate');
+     * for 'curl -v {base_path}/rest/item/move/2' command, Midas Server will call
+     * 'itemMove' in the ApiComponent (in core module) to do the API work.
+     * for given url {base_path}/rest/item/2, Midas Server will call 'itemMove'
+     * in the ApiComponent (in core module) to do the API work.
+     * for given url {base_path}/rest/item/duplicate/2, Midas Server will call
+     * 'itemDuplicate' in ApiComponent (in core module) to do the API work.
+     * }
      */
     protected function _genericAction($args, $resource, $restAction, $apiFunctions, $moduleName = null)
     {

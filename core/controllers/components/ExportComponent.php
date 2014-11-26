@@ -34,6 +34,7 @@ class ExportComponent extends AppComponent
      * Helper function to create a directory for an item
      *
      * @param string $directorypath Directory to be created
+     * @throws Zend_Exception
      */
     private function _createItemDirectory($directorypath)
     {
@@ -68,12 +69,14 @@ class ExportComponent extends AppComponent
      *                               the 2nd is revision_number (optional)
      * @param bool $shouldSymLink Should we create symbolic links?
      *                               If not, the bitstreams will be copied to the target directory
+     * @throws Zend_Exception
      */
     public function exportBitstreams($userDao, $targetDir, $itemIds, $shouldSymLink)
     {
         // if the path has a slash at the end, remove it here
         $targetDir = rtrim($targetDir, '/');
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
 
         // Get items

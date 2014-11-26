@@ -107,6 +107,7 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
             $extraUrls = json_encode($extraUrls);
         }
 
+        /** @var Tracker_ScalarDao $scalar */
         $scalar = MidasLoader::newDao('ScalarDao', $this->moduleName);
         $scalar->setTrendId($trend->getKey());
         $scalar->setSubmitTime($submitTime);

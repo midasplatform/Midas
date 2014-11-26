@@ -19,13 +19,14 @@
 =========================================================================*/
 
 /**
- * Provides common functionality for most bootstrapping needs, including dependency checking algorithms and the ability to load bootstrap resources on demand. *
+ * Bootstrap. Provides common functionality including dependency checking
+ * algorithms and the ability to load bootstrap resources on demand.
+ *
+ * @package Core
  */
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
-    /**
-     * Send the HTML Doc Type to the view
-     */
+    /** Send the HTML DOCTYPE to the view. */
     protected function _initDoctype()
     {
         $this->bootstrap('view');
@@ -34,7 +35,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     }
 
     /**
-     * set the configuration  and save it in the registry
+     * Load the configuration files into the Zend registry.
+     *
+     * @return Zend_Config_Ini configuration file
+     * @throws Zend_Exception
      */
     protected function _initConfig()
     {
@@ -190,7 +194,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
     }
 
-    /** set up front */
+    /** Register the module directories. */
     protected function _initFrontModules()
     {
         $this->bootstrap('frontController');
@@ -201,7 +205,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
     }
 
-    /** Initialize the SASS compiler */
+    /** Initialize the SASS compiler. */
     protected function _initSass()
     {
         $this->bootstrap('Config');
@@ -255,7 +259,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
     }
 
-    /** init routes */
+    /**
+     * Initialize the router.
+     *
+     * @return Zend_Controller_Router_Interface
+     */
     protected function _initRouter()
     {
         $router = Zend_Controller_Front::getInstance()->getRouter();
@@ -377,7 +385,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         return $router;
     }
 
-    /** register plugins and helpers for REST_Controller */
+    /** Register the plugins and helpers for the REST controllers. */
     protected function _initREST()
     {
         $frontController = Zend_Controller_Front::getInstance();

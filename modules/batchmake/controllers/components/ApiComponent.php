@@ -40,6 +40,7 @@ class Batchmake_ApiComponent extends AppComponent
     /** Return the user dao */
     private function _getUser($args)
     {
+        /** @var AuthenticationComponent $authComponent */
         $authComponent = MidasLoader::loadComponent('Authentication');
 
         return $authComponent->getUser($args, Zend_Registry::get('userSession')->Dao);
@@ -68,6 +69,7 @@ class Batchmake_ApiComponent extends AppComponent
             }
         }
 
+        /** @var Batchmake_KWBatchmakeComponent $kwbatchmakeComponent */
         $kwbatchmakeComponent = MidasLoader::loadComponent('KWBatchmake', 'batchmake');
 
         return $kwbatchmakeComponent->testconfig($configParams);
@@ -96,7 +98,10 @@ class Batchmake_ApiComponent extends AppComponent
             throw new Exception('Anonymous users may not add condor dags', MIDAS_BATCHMAKE_INVALID_POLICY);
         }
 
+        /** @var Batchmake_TaskModel $taskModel */
         $taskModel = MidasLoader::loadModel('Task', 'batchmake');
+
+        /** @var Batchmake_CondorDagModel $condorDagModel */
         $condorDagModel = MidasLoader::loadModel('CondorDag', 'batchmake');
 
         $batchmakeTaskId = $params["batchmaketaskid"];
@@ -151,8 +156,13 @@ class Batchmake_ApiComponent extends AppComponent
             throw new Exception('Anonymous users may not add condor jobs', MIDAS_BATCHMAKE_INVALID_POLICY);
         }
 
+        /** @var Batchmake_TaskModel $taskModel */
         $taskModel = MidasLoader::loadModel('Task', 'batchmake');
+
+        /** @var Batchmake_CondorDagModel $condorDagModel */
         $condorDagModel = MidasLoader::loadModel('CondorDag', 'batchmake');
+
+        /** @var Batchmake_CondorJobModel $condorJobModel */
         $condorJobModel = MidasLoader::loadModel('CondorJob', 'batchmake');
 
         $batchmakeTaskId = $params["batchmaketaskid"];

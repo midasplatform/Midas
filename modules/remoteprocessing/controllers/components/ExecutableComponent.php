@@ -29,6 +29,7 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
     /** get Meta file */
     public function getMetaIoFile($itemDao)
     {
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
         $bitstreams = $revision->getBitstreams();
@@ -47,6 +48,8 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
     public function getExecutable($itemDao)
     {
         $executable = false;
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
         $bitstreams = $revision->getBitstreams();
@@ -104,7 +107,11 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
         $cmdOptions = $params['params']['cmdOptions'];
 
         $jobComponent = MidasLoader::loadComponent('Job', 'remoteprocessing');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $executable = $itemModel->load($params['params']['executable']);
 

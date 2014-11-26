@@ -38,6 +38,7 @@ class Dicomserver_ServerComponent extends AppComponent
         $dcmqrscpCommand = $settingModel->getValueByName(MIDAS_DICOMSERVER_DCMQRSCP_COMMAND_KEY, $this->moduleName);
         $dcmqridxCommand = $settingModel->getValueByName(MIDAS_DICOMSERVER_DCMQRIDX_COMMAND_KEY, $this->moduleName);
 
+        /** @var Dicomextractor_ExtractorComponent $kwdicomextractorComponent */
         $kwdicomextractorComponent = MidasLoader::loadComponent('Extractor', 'dicomextractor');
         $ret = array();
         $ret['dcm2xml'] = $kwdicomextractorComponent->getApplicationStatus($dcm2xmlCommand, 'dcm2xml');

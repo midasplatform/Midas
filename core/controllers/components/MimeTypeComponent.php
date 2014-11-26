@@ -21,7 +21,12 @@
 /** MineType Management */
 class MimeTypeComponent extends AppComponent
 {
-    /** Get mime type */
+    /**
+     * Get mime type
+     *
+     * @param string $filename
+     * @return string
+     */
     public function getType($filename)
     {
         if (file_exists($filename)) {
@@ -45,7 +50,12 @@ class MimeTypeComponent extends AppComponent
         return $this->privFindType($filename);
     }
 
-    /** privFindType */
+    /**
+     * privFindType
+     *
+     * @param string $ext
+     * @return string
+     */
     public function privFindType($ext)
     {
         // create MIME types array
@@ -60,7 +70,11 @@ class MimeTypeComponent extends AppComponent
         }
     }
 
-    /** privBuildMimeArray */
+    /**
+     * privBuildMimeArray
+     *
+     * @return array
+     */
     public function privBuildMimeArray()
     {
         return array(

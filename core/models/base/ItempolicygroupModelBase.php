@@ -76,6 +76,8 @@ abstract class ItempolicygroupModelBase extends AppModel
         if ($policyGroupDao !== false) {
             $this->delete($policyGroupDao);
         }
+
+        /** @var ItempolicygroupDao $policyGroupDao */
         $policyGroupDao = MidasLoader::newDao('ItempolicygroupDao');
         $policyGroupDao->setGroupId($group->getGroupId());
         $policyGroupDao->setItemId($item->getItemId());

@@ -19,13 +19,14 @@
 =========================================================================*/
 
 /**
- *  GlobalComponent
- *  Provides global function to the components
+ * Generic component base class.
+ *
+ * @package Core\Component
  */
 class MIDAS_GlobalComponent extends Zend_Controller_Action_Helper_Abstract
 {
     /**
-     * Get Logger
+     * Fetch the logger from the Zend registry.
      *
      * @return Zend_Log
      */

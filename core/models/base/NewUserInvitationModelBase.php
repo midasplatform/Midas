@@ -87,6 +87,8 @@ abstract class NewUserInvitationModelBase extends AppModel
         /** @var RandomComponent $randomComponent */
         $randomComponent = MidasLoader::loadComponent('Random');
         $email = strtolower($email);
+
+        /** @var NewUserInvitationDao $newUserInvitation */
         $newUserInvitation = MidasLoader::newDao('NewUserInvitationDao');
         $newUserInvitation->setEmail($email);
         $newUserInvitation->setAuthKey($randomComponent->generateString(64, '0123456789abcdef'));
@@ -95,6 +97,7 @@ abstract class NewUserInvitationModelBase extends AppModel
         $newUserInvitation->setCommunityId($group->getCommunityId());
         $newUserInvitation->setDateCreation(date('Y-m-d H:i:s'));
 
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $existingUser = $userModel->getByEmail($email);
         if ($existingUser) {

@@ -92,6 +92,7 @@ abstract class UserapiModelBase extends AppModel
         }
 
         // Otherwise save new default key
+        /** @var UserapiDao $userApiDao */
         $userApiDao = MidasLoader::newDao('UserapiDao');
         $userApiDao->setUserId($userDao->getKey());
         $userApiDao->setApplicationName('Default');
@@ -122,6 +123,7 @@ abstract class UserapiModelBase extends AppModel
         $randomComponent = MidasLoader::loadComponent('Random');
         $key = $randomComponent->generateString(32);
 
+        /** @var UserapiDao $userApiDao */
         $userApiDao = MidasLoader::newDao('UserapiDao');
         $userApiDao->setUserId($userDao->getKey());
         $userApiDao->setApikey($key);

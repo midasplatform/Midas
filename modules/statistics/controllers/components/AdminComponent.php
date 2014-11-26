@@ -32,7 +32,7 @@ class Statistics_AdminComponent extends AppComponent
      */
     public function schedulePerformGeolocationJob($apiKey, $userDao = null)
     {
-        /** @var $jobModel Scheduler_JobModel */
+        /** @var Scheduler_JobModel $jobModel */
         $jobModel = MidasLoader::loadModel('Job', 'scheduler');
         $jobDaos = $jobModel->getJobsByTask('TASK_STATISTICS_PERFORM_GEOLOCATION');
         $geolocationJobDao = false;
@@ -74,7 +74,7 @@ class Statistics_AdminComponent extends AppComponent
      */
     public function scheduleOrCancelSendReportJob($schedule, $userDao = null)
     {
-        /** @var $jobModel Scheduler_JobModel */
+        /** @var Scheduler_JobModel $jobModel */
         $jobModel = MidasLoader::loadModel('Job', 'scheduler');
         $jobDaos = $jobModel->getJobsByTask('TASK_STATISTICS_SEND_REPORT');
         $reportJobDao = false;

@@ -23,21 +23,28 @@ require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 /** global midas model library */
 class MIDASModel
 {
+    /** @var MIDASDatabasePdo */
     protected $database;
-    protected $_name = ''; // I don't like this (should be protected)
+
+    /** @var string */
+    protected $_name = '';
+
+    /** @var string */
     protected $_key = '';
+
+    /** @var array */
     protected $_mainData = array();
+
+    /** @var array */
     protected $_components = array();
 
-    /**
-     * Constructor
-     */
+    /** Constructor. */
     public function __construct()
     {
         $this->database = new MIDASDatabasePdo();
     }
 
-    /** Initializing */
+    /** Initialize this model. */
     public function initialize()
     {
         $this->loadElements(); // load the components for the models
@@ -47,6 +54,8 @@ class MIDASModel
     /**
      * get the midas temporary directory
      *
+     * @param string $subDirectory
+     * @param bool $createDirectory
      * @return string
      */
     protected function getTempDirectory($subDirectory = 'misc', $createDirectory = true)
@@ -55,9 +64,12 @@ class MIDASModel
     }
 
     /**
-     * Save a Dao to the database.
+     * Save a DAO to the database.
      * If you want to explicitly save null and unset fields as "NULL" in the database,
      * set the member "setExplicitNullFields" on the dao to true.
+     *
+     * @param MIDAS_GlobalDao $dao DAO
+     * @throws Zend_Exception
      */
     public function save($dao)
     {
@@ -89,15 +101,18 @@ class MIDASModel
         }
     }
 
-    /** Delete a Dao */
+    /**
+     * Delete a DAO.
+     *
+     * @param MIDAS_GlobalDao $dao DAO
+     * @throws Zend_Exception
+     */
     public function delete($dao)
     {
         $this->database->delete($dao);
     }
 
-    /**
-     * Loads model and components
-     */
+    /** Load components. */
     public function loadElements()
     {
         Zend_Registry::set('components', array());
@@ -114,19 +129,31 @@ class MIDASModel
         }
     }
 
-    /** Return the key */
+    /**
+     * Return the key.
+     *
+     * @return string
+     */
     public function getKey()
     {
         return $this->_key;
     }
 
-    /** Return the name */
+    /**
+     * Return the name.
+     *
+     * @return string
+     */
     public function getName()
     {
         return $this->_name;
     }
 
-    /** Return the maindata */
+    /**
+     * Return the main data.
+     *
+     * @return array
+     */
     public function getMainData()
     {
         return $this->_mainData;
@@ -190,9 +217,10 @@ class MIDASModel
     /**
      * Catch if the method does not exist and create a method dynamically
      *
-     * @param $method method name
-     * @param $params array of param
-     * @return return the result of the function dynamically created
+     * @param string $method method name
+     * @param array $params array of param
+     * @return mixed return the result of the function dynamically created
+     * @throws Zend_Exception
      */
     public function __call($method, $params)
     {
@@ -221,9 +249,10 @@ class MIDASModel
     /**
      * find all DAO by $var = $value
      *
-     * @param $var name of the attribute we search
-     * @param $value
-     * @return daos
+     * @param string $var name of the attribute we search
+     * @param mixed $value
+     * @return array DAOs
+     * @throws Zend_Exception
      */
     public function findBy($var, $value)
     {
@@ -265,7 +294,10 @@ class MIDASModel
     }
 
     /**
-     * @deprecated Use MidasLoader::newDao to load the class and instantiate a dao
+     * @deprecated Use MidasLoader::newDao to load the class and instantiate a DAO
+     * @param string $name
+     * @param string $module
+     * @throws Zend_Exception
      */
     public function loadDaoClass($name, $module = 'core')
     {
@@ -297,7 +329,9 @@ class MIDASModel
     /**
      * Load a dao
      *
-     * @return return dao
+     * @param null|array|mixed $key
+     * @return array|bool|MIDAS_GlobalDao|mixed
+     * @throws Zend_Exception
      */
     public function load($key = null)
     {
@@ -352,33 +386,45 @@ class MIDASModel
     /**
      * Generic get function. You can define custom function.
      *
-     * @param $var name of the element we want to get
-     * @param $key of the table
-     * @return value
+     * @param string $var name of the element we want to get
+     * @param string $key key of the table
+     * @param MIDAS_GlobalDao $dao DAO
+     * @return mixed
+     * @throws Zend_Exception
      */
     public function getValue($var, $key, $dao)
     {
         return $this->database->getValue($var, $key, $dao);
     }
 
-    /** Function getValues */
+    /**
+     * Function getValues.
+     *
+     * @param $key
+     * @return array
+     */
     public function getValues($key)
     {
         return $this->database->getValues($key);
     }
 
-    /** Returns the number of rows */
+    /**
+     * Returns the number of rows.
+     *
+     * @return int
+     */
     public function getCountAll()
     {
         return $this->database->getCountAll();
     }
 
     /**
-     * Compare 2 dao (only the MIDAS_DATA
+     * Compare two DAO (only the MIDAS_DATA
      *
      * @param $dao1
      * @param $dao2
-     * @return True if they are the same one
+     * @param bool $juggleTypes
+     * @return bool true if they are the same one
      */
     public function compareDao($dao1, $dao2, $juggleTypes = false)
     {

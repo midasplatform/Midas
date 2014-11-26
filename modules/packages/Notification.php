@@ -84,6 +84,7 @@ class Packages_Notification extends ApiEnabled_Notification
     {
         $community = $args['community'];
 
+        /** @var Packages_ProjectModel $projectModel */
         $projectModel = MidasLoader::loadModel('Project', $this->moduleName);
         $project = $projectModel->getByCommunityId($community->getKey());
         if ($project) {
@@ -98,12 +99,14 @@ class Packages_Notification extends ApiEnabled_Notification
     {
         $itemDao = $args['item'];
 
+        /** @var Packages_PackageModel $packageModel */
         $packageModel = MidasLoader::loadModel('Package', $this->moduleName);
         $package = $packageModel->getByItemId($itemDao->getKey());
         if ($package) {
             $packageModel->delete($package);
         }
 
+        /** @var Packages_ExtensionModel $extensionModel */
         $extensionModel = MidasLoader::loadModel('Extension', $this->moduleName);
         $extension = $extensionModel->getByItemId($itemDao->getKey());
         if ($extension) {
@@ -146,7 +149,11 @@ class Packages_Notification extends ApiEnabled_Notification
     public function getItemMenuLink($params)
     {
         $item = $params['item'];
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var Packages_PackageModel $packageModel */
         $packageModel = MidasLoader::loadModel('Package', $this->moduleName);
         $package = $packageModel->getByItemId($item->getKey());
 
@@ -158,6 +165,7 @@ class Packages_Notification extends ApiEnabled_Notification
             $type = 'package';
             $id = $package->getKey();
         } else {
+            /** @var Packages_ExtensionModel $extensionModel */
             $extensionModel = MidasLoader::loadModel('Extension', $this->moduleName);
             $extension = $extensionModel->getByItemId($item->getKey());
             if ($extension) {

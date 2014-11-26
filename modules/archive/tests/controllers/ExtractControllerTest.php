@@ -43,6 +43,7 @@ class Archive_ExtractControllerTest extends ControllerTestCase
     public function testPerformAction()
     {
         // Simulate uploading our zip file into the assetstore (cp instead of mv)
+        /** @var UploadComponent $uploadComponent */
         $uploadComponent = MidasLoader::loadComponent('Upload');
 
         $adminUser = $this->User->load(3);
@@ -64,6 +65,7 @@ class Archive_ExtractControllerTest extends ControllerTestCase
         $this->assertFalse($item);
 
         // It should be replaced by the expected hierarchy
+        /** @var SortdaoComponent $sortDaoComponent */
         $sortDaoComponent = MidasLoader::loadComponent('Sortdao');
         $sortDaoComponent->field = 'name';
 

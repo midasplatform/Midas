@@ -62,6 +62,8 @@ class Readmes_ApiComponentControllerTest extends RestCallMethodsTestCase
 
         $rootFolder = $comm->getFolder();
         $publicFolder = $this->Folder->createFolder('Public', '', $rootFolder);
+
+        /** @var UploadComponent $uploadComponent */
         $uploadComponent = MidasLoader::loadComponent('Upload');
         $uploadComponent->createUploadedItem($adminUser, 'readme.md', $newPath, $publicFolder);
 
@@ -98,6 +100,8 @@ class Readmes_ApiComponentControllerTest extends RestCallMethodsTestCase
 
         $rootFolder = $comm->getFolder();
         $publicFolder = $this->Folder->createFolder('Public', '', $rootFolder);
+
+        /** @var UploadComponent $uploadComponent */
         $uploadComponent = MidasLoader::loadComponent('Upload');
         $uploadComponent->createUploadedItem($adminUser, 'readme.md', $newPath, $publicFolder);
 

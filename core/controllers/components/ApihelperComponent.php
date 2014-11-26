@@ -26,16 +26,22 @@ class ApihelperComponent extends AppComponent
      * are required for the current API endpoint. If this is not called and _getUser is called,
      * the default behavior is to require PERMISSION_SCOPE_ALL.
      *
-     * @param scopes A list of scope constants that are required for the operation
+     * @param array $scopes A list of scope constants that are required for the operation
      */
     public function requirePolicyScopes($scopes)
     {
         Zend_Registry::get('notifier')->callback('CALLBACK_API_REQUIRE_PERMISSIONS', array('scopes' => $scopes));
     }
 
-    /** Return the user dao */
+    /**
+     * Return the user DAO
+     *
+     * @param array $args
+     * @return false|UserDao
+     */
     public function getUser($args)
     {
+        /** @var AuthenticationComponent $authComponent */
         $authComponent = MidasLoader::loadComponent('Authentication');
 
         return $authComponent->getUser($args, Zend_Registry::get('userSession')->Dao);
@@ -44,6 +50,10 @@ class ApihelperComponent extends AppComponent
     /**
      * Pass the args and a list of required parameters.
      * Will throw an exception if a required one is missing.
+     *
+     * @param array $args
+     * @param array $requiredList
+     * @throws Exception
      */
     public function validateParams($args, $requiredList)
     {
@@ -56,6 +66,8 @@ class ApihelperComponent extends AppComponent
 
     /**
      * Get the global configuration in order to set up the api.
+     *
+     * @return array
      */
     public function getApiSetup()
     {
@@ -69,7 +81,8 @@ class ApihelperComponent extends AppComponent
     /**
      * Helper function to return any extra fields that should be passed with an item
      *
-     * @param item The item dao
+     * @param ItemDao $item item DAO
+     * @return array
      */
     public function getItemExtraFields($item)
     {
@@ -91,9 +104,16 @@ class ApihelperComponent extends AppComponent
      * by the metadata calls and so has exception handling built in for them.
      *
      * will return a valid ItemRevision or else throw an exception.
+     *
+     *
+     * @param ItemDao $item
+     * @param null|int $revisionNumber
+     * @return ItemRevisionDao
+     * @throws Exception
      */
     public function getItemRevision($item, $revisionNumber = null)
     {
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         if (!isset($revisionNumber)) {
             $revisionDao = $itemModel->getLastRevision($item);
@@ -133,8 +153,9 @@ class ApihelperComponent extends AppComponent
      * helper method to validate passed in privacy status params and
      * map them to valid privacy codes.
      *
-     * @param  string $privacyStatus , should be 'Private' or 'Public'
-     * @return valid  privacy code
+     * @param string $privacyStatus privacy status, should be 'Private' or 'Public'
+     * @return int privacy code
+     * @throws Exception
      */
     public function getValidPrivacyCode($privacyStatus)
     {
@@ -152,10 +173,16 @@ class ApihelperComponent extends AppComponent
 
     /**
      * helper function to set the privacy code on a passed in item.
+     *
+     * @param ItemDao $item
+     * @param int $privacyCode
      */
     public function setItemPrivacy($item, $privacyCode)
     {
+        /** @var ItempolicygroupModel $itempolicygroupModel */
         $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
+
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
         $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
         $itempolicygroupDao = $itempolicygroupModel->getPolicy($anonymousGroup, $item);
@@ -172,9 +199,18 @@ class ApihelperComponent extends AppComponent
     /**
      * Helper function to set metadata on an item.
      * Does not perform permission checks; these should be done in advance.
+     *
+     * @param ItemDao $item
+     * @param int $type
+     * @param string $element
+     * @param string $qualifier
+     * @param mixed $value
+     * @param null|ItemRevisionDao $revisionDao
+     * @throws Exception
      */
     public function setMetadata($item, $type, $element, $qualifier, $value, $revisionDao = null)
     {
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         if ($revisionDao === null) {
             $revisionDao = $itemModel->getLastRevision($item);
@@ -202,6 +238,7 @@ class ApihelperComponent extends AppComponent
             throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
         }
 
+        /** @var MetadataModel $metadataModel */
         $metadataModel = MidasLoader::loadModel('Metadata');
         $metadataDao = $metadataModel->getMetadata($type, $element, $qualifier);
         if ($metadataDao == false) {
@@ -213,6 +250,10 @@ class ApihelperComponent extends AppComponent
     /**
      * helper function to parse out the metadata tuples from the params for a
      * call to setmultiplemetadata, will validate matching tuples to count.
+     *
+     * @param array $args
+     * @return array
+     * @throws Exception
      */
     public function parseMetadataTuples($args)
     {
@@ -266,7 +307,10 @@ class ApihelperComponent extends AppComponent
      */
     public function setFolderPrivacy($folder, $privacyCode)
     {
+        /** @var FolderpolicygroupModel $folderpolicygroupModel */
         $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
+
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
         $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
         $folderpolicygroupDao = $folderpolicygroupModel->getPolicy($anonymousGroup, $folder);
@@ -361,12 +405,15 @@ class ApihelperComponent extends AppComponent
         }
 
         $groupId = $args['id'];
+
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
         $group = $groupModel->load($groupId);
         if ($group == false) {
             throw new Exception('This group does not exist', MIDAS_INVALID_PARAMETER);
         }
 
+        /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
         if (!$communityModel->policyCheck($group->getCommunity(), $userDao, MIDAS_POLICY_ADMIN)
         ) {
@@ -374,6 +421,8 @@ class ApihelperComponent extends AppComponent
         }
 
         $groupUserId = $args['user_id'];
+
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $groupUser = $userModel->load($groupUserId);
         if ($groupUser == false) {

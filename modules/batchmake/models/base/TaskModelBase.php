@@ -49,6 +49,8 @@ class Batchmake_TaskModelBase extends Batchmake_AppModel
         if (!$userDao instanceof UserDao) {
             throw new Zend_Exception("Error parameters.");
         }
+
+        /** @var Batchmake_TaskDao $task */
         $task = MidasLoader::newDao('TaskDao', 'batchmake');
         $task->setUserId($userDao->getKey());
         $this->save($task);

@@ -30,6 +30,7 @@ class Api_CallGroupMethodsTest extends Api_CallMethodsTestCase
         $removeMethod = "midas.group.remove.user";
         $methods = array($addMethod, $removeMethod);
 
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $commMember = $userModel->load('4');
         $commModerator = $userModel->load('5');
@@ -54,6 +55,7 @@ class Api_CallGroupMethodsTest extends Api_CallMethodsTestCase
         }
 
         // ensure the user isn't already in the group
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
         $changedUser = $userModel->load($validUserId);
         $group = $groupModel->load($validGroupId);
@@ -95,8 +97,11 @@ class Api_CallGroupMethodsTest extends Api_CallMethodsTestCase
         $validCommunityId = 2001;
         $invalidCommunityId = -10;
 
+        /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
         $comm2001 = $communityModel->load('2001');
+
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $commMember = $userModel->load('4');
         $commModerator = $userModel->load('5');
@@ -116,6 +121,7 @@ class Api_CallGroupMethodsTest extends Api_CallMethodsTestCase
 
         $this->exerciseInvalidCases($addMethod, $commAdmin, $invalidUsers, $addMethodRequiredParams);
 
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
         $existingGroups = $groupModel->findByCommunity($comm2001);
 
@@ -180,6 +186,7 @@ class Api_CallGroupMethodsTest extends Api_CallMethodsTestCase
         $commAdminGroupId = 3003;
         $invalidGroupId = -10;
 
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $commMemberId = '4';
         $commModeratorId = '5';
@@ -226,7 +233,7 @@ class Api_CallGroupMethodsTest extends Api_CallMethodsTestCase
         }
 
         // add some users, test again
-
+        /** @var GroupModel $groupModel */
         $groupModel = MidasLoader::loadModel('Group');
         $commAdminGroup = $groupModel->load($commAdminGroupId);
         $groupModel->addUser($commAdminGroup, $commMember);

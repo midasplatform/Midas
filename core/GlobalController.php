@@ -21,14 +21,23 @@
 require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 
 /**
- *  GlobalAction
- *  Provides global function to the controllers
+ * Generic controller base class.
+ *
+ * @package Core\Controller
  */
 class MIDAS_GlobalController extends Zend_Controller_Action
 {
+    /** @var array */
     protected $Models = array();
 
-    /** constructor */
+    /**
+     * Constructor.
+     *
+     * @param Zend_Controller_Request_Abstract $request request
+     * @param Zend_Controller_Response_Abstract $response response
+     * @param array $invokeArgs parameters
+     * @throws Zend_Exception
+     */
     public function __construct(
         Zend_Controller_Request_Abstract $request,
         Zend_Controller_Response_Abstract $response,
@@ -174,7 +183,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     }
 
     /**
-     * Get Logger
+     * Fetch the logger from the Zend registry.
      *
      * @return Zend_Log
      */
@@ -183,9 +192,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         return Zend_Registry::get('logger');
     }
 
-    /**
-     * Loads model and components
-     */
+    /** Load components, forms, and models. */
     public function loadElements()
     {
         Zend_Registry::set('models', array());
@@ -237,9 +244,9 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     }
 
     /**
-     * Is Debug mode ON
+     * Is Debug mode on.
      *
-     * @return boolean
+     * @return bool
      */
     public function isDebug()
     {
@@ -247,7 +254,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     }
 
     /**
-     * get environnement set in the config
+     * Get environnement set in the config.
      *
      * @return string
      */
@@ -257,8 +264,10 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     }
 
     /**
-     * get the midas data directory
+     * Return a data directory.
      *
+     * @param string $subDirectory
+     * @param bool $createDirectory
      * @return string
      */
     protected function getDataDirectory($subDirectory = '', $createDirectory = true)
@@ -267,8 +276,10 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     }
 
     /**
-     * get the midas temporary directory
+     * Return a temporary directory.
      *
+     * @param string $subDirectory
+     * @param bool $createDirectory
      * @return string
      */
     protected function getTempDirectory($subDirectory = 'misc', $createDirectory = true)
@@ -276,7 +287,12 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         return UtilityComponent::getTempDirectory($subDirectory, $createDirectory);
     }
 
-    /** return an array of form element     */
+    /**
+     * Return an array of form elements.
+     *
+     * @param Zend_Form $form
+     * @return array
+     */
     public function getFormAsArray(Zend_Form $form)
     {
         $array = array();

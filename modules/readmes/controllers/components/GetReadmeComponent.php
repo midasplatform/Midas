@@ -26,7 +26,10 @@ class Readmes_GetReadmeComponent extends AppComponent
      */
     public function fromFolder($folder)
     {
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
+
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $readmeItem = null;
         $candidates = array('readme.md', 'readme.txt', 'readme');
@@ -59,6 +62,8 @@ class Readmes_GetReadmeComponent extends AppComponent
         if ($community == null) {
             throw new Zend_Exception('Invalid Community');
         }
+
+        /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
         $rootFolder = $community->getFolder();
         $publicFolder = $folderModel->getFolderByName($rootFolder, 'Public');

@@ -159,6 +159,7 @@ abstract class CommunityModelBase extends AppModel
             }
         }
 
+        /** @var CommunityDao $communityDao */
         $communityDao = MidasLoader::newDao('CommunityDao');
         $communityDao->setName($name);
         $communityDao->setDescription($description);

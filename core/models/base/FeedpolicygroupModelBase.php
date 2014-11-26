@@ -75,6 +75,8 @@ abstract class FeedpolicygroupModelBase extends AppModel
         if ($this->getPolicy($group, $feed) !== false) {
             $this->delete($this->getPolicy($group, $feed));
         }
+
+        /** @var FeedpolicygroupDao $policyGroupDao */
         $policyGroupDao = MidasLoader::newDao('FeedpolicygroupDao');
         $policyGroupDao->setGroupId($group->getGroupId());
         $policyGroupDao->setFeedId($feed->getFeedId());

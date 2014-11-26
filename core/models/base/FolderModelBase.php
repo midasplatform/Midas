@@ -164,10 +164,13 @@ abstract class FolderModelBase extends AppModel
         $groupPolicies = $referenceFolderdao->getFolderpolicygroup();
         $userPolicies = $referenceFolderdao->getFolderpolicyuser();
 
+        /** @var FolderpolicygroupModel $FolderpolicygroupModel */
         $FolderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
         foreach ($groupPolicies as $key => $policy) {
             $FolderpolicygroupModel->createPolicy($policy->getGroup(), $folderdao, $policy->getPolicy());
         }
+
+        /** @var FolderpolicyuserModel $FolderpolicyuserModel */
         $FolderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
         foreach ($userPolicies as $key => $policy) {
             $FolderpolicyuserModel->createPolicy($policy->getUser(), $folderdao, $policy->getPolicy());
@@ -239,6 +242,7 @@ abstract class FolderModelBase extends AppModel
             return $existingfolder;
         }
 
+        /** @var FolderDao $folder */
         $folder = MidasLoader::newDao('FolderDao');
         $folder->setName($name);
         $folder->setDescription($description);
@@ -265,6 +269,7 @@ abstract class FolderModelBase extends AppModel
             $totalCount += $subtotal['count'];
         }
 
+        /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $items = $this->getItemsFiltered($folderDao, $userDao);
         foreach ($items as $item) {

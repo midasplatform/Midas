@@ -80,7 +80,10 @@ abstract class ItemRevisionModelBase extends AppModel
     /** Add a bitstream to a revision */
     public function addBitstream($itemRevisionDao, $bitstreamDao)
     {
+        /** @var BitstreamModel $BitstreamModel */
         $BitstreamModel = MidasLoader::loadModel('Bitstream');
+
+        /** @var ItemModel $ItemModel */
         $ItemModel = MidasLoader::loadModel('Item');
 
         $bitstreamDao->setItemrevisionId($itemRevisionDao->getItemrevisionId());

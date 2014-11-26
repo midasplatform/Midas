@@ -51,7 +51,10 @@ class Oauth_TokenControllerTest extends ControllerTestCase
      */
     public function testIndexAction()
     {
+        /** @var Oauth_ClientModel $clientModel */
         $clientModel = MidasLoader::loadModel('Client', 'oauth');
+
+        /** @var Oauth_CodeModel $codeModel */
         $codeModel = MidasLoader::loadModel('Code', 'oauth');
 
         // I. Test exchanging a code for tokens
@@ -199,8 +202,14 @@ class Oauth_TokenControllerTest extends ControllerTestCase
     public function testApiAccess()
     {
         $adminUser = $this->User->load(3);
+
+        /** @var Oauth_ClientModel $clientModel */
         $clientModel = MidasLoader::loadModel('Client', 'oauth');
+
+        /** @var Oauth_CodeModel $codeModel */
         $codeModel = MidasLoader::loadModel('Code', 'oauth');
+
+        /** @var Oauth_TokenModel $tokenModel */
         $tokenModel = MidasLoader::loadModel('Token', 'oauth');
         $client = $clientModel->load(1000);
         $codeDao = $codeModel->create($adminUser, $client, array(1, 2, 3));
@@ -256,8 +265,14 @@ class Oauth_TokenControllerTest extends ControllerTestCase
     {
         $adminUser = $this->User->load(3);
         $normalUser = $this->User->load(2);
+
+        /** @var Oauth_ClientModel $clientModel */
         $clientModel = MidasLoader::loadModel('Client', 'oauth');
+
+        /** @var Oauth_CodeModel $codeModel */
         $codeModel = MidasLoader::loadModel('Code', 'oauth');
+
+        /** @var Oauth_TokenModel $tokenModel */
         $tokenModel = MidasLoader::loadModel('Token', 'oauth');
         $client = $clientModel->load(1000);
         $codeDao = $codeModel->create($adminUser, $client, array(1, 2, 3));
