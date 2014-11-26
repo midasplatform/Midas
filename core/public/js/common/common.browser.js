@@ -546,6 +546,11 @@ midas.createAction = function (node) {
     $('div.viewAction ul').show();
 };
 
+midas.escape = function (text) {
+    'use strict';
+    return $('<div/>').text(text).html()
+};
+
 midas.createInfo = function (jsonContent) {
     'use strict';
     var arrayElement = $.parseJSON(jsonContent);
@@ -560,7 +565,7 @@ midas.createInfo = function (jsonContent) {
         html += '<img class="infoLogo" alt="Data Type" src="' + json.global.coreWebroot + '/public/images/icons/document-big.png" />';
     }
 
-    html += '<span class="infoTitle" >' + arrayElement['name'] + '</span>';
+    html += '<span class="infoTitle" >' + midas.escape(arrayElement['name']) + '</span>';
     html += '<table>';
     html += '  <tr>';
     html += '    <td>' + arrayElement.translation.Created + '</td>';
@@ -570,7 +575,7 @@ midas.createInfo = function (jsonContent) {
         html += '  <tr>';
         html += '    <td>Members';
         html += '</td>';
-        html += '    <td>' + arrayElement['members'] + '</td>';
+        html += '    <td>' + midas.escape(arrayElement['members']) + '</td>';
         html += '  </tr>';
     }
     if (arrayElement['type'] == 'item') {
@@ -583,19 +588,19 @@ midas.createInfo = function (jsonContent) {
         else {
             html += '  <tr>';
             html += '    <td>' + arrayElement.translation.Uploaded + '</td>';
-            html += '    <td><a href="' + json.global.webroot + '/user/' + arrayElement['uploaded']['user_id'] + '">' + arrayElement['uploaded']['firstname'] + ' ' + arrayElement['uploaded']['lastname'] + '</a></td>';
+            html += '    <td><a href="' + json.global.webroot + '/user/' + midas.escape(arrayElement['uploaded']['user_id']) + '">' + midas.escape(arrayElement['uploaded']['firstname']) + ' ' + midas.escape(arrayElement['uploaded']['lastname']) + '</a></td>';
             html += '  </tr>';
             html += '  <tr>';
             html += '    <td>Revisions</td>';
-            html += '    <td>' + arrayElement['revision']['revision'] + '</td>';
+            html += '    <td>' + midas.escape(arrayElement['revision']['revision']) + '</td>';
             html += '  </tr>';
             html += '  <tr>';
             html += '    <td>Files</td>';
-            html += '    <td>' + arrayElement['nbitstream'] + '</td>';
+            html += '    <td>' + midas.escape(arrayElement['nbitstream']) + '</td>';
             html += '  </tr>';
             html += '  </tr>';
             html += '    <td>Size</td>';
-            html += '    <td>' + arrayElement['size'] + '</td>';
+            html += '    <td>' + midas.escape(arrayElement['size']) + '</td>';
             html += '  </tr>';
         }
     }
@@ -603,11 +608,11 @@ midas.createInfo = function (jsonContent) {
     if (arrayElement['type'] == 'folder') {
         html += '  <tr>';
         html += '    <td>Last Updated</td>';
-        html += '    <td>' + arrayElement['updated'] + '</td>';
+        html += '    <td>' + midas.escape(arrayElement['updated']) + '</td>';
         html += '  </tr>';
         html += '  <tr>';
         html += '    <td>Size</td>';
-        html += '    <td>' + arrayElement['size'] + '</td>';
+        html += '    <td>' + midas.escape(arrayElement['size']) + '</td>';
         html += '  </tr>';
     }
     html += '</table>';
@@ -616,7 +621,7 @@ midas.createInfo = function (jsonContent) {
     }
 
     if (arrayElement['thumbnail_id'] !== undefined && arrayElement['thumbnail_id'] != '') {
-        html += '<h1>' + json.browse.preview + '</h1><a href="' + json.global.webroot + '/item/' + arrayElement['item_id'] + '"><img class="infoLogo" alt="" src="' + json.global.webroot + '/item/thumbnail?itemId=' + arrayElement['item_id'] + '" /></a>';
+        html += '<h1>' + json.browse.preview + '</h1><a href="' + json.global.webroot + '/item/' + midas.escape(arrayElement['item_id']) + '"><img class="infoLogo" alt="" src="' + json.global.webroot + '/item/thumbnail?itemId=' + midas.escape(arrayElement['item_id']) + '" /></a>';
     }
 
     $('div.ajaxInfoElement').html(html);
