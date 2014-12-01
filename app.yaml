@@ -25,9 +25,9 @@ api_version: 1
 threadsafe: yes
 
 handlers:
-- url: /(.*\.(css|gif|ico|jpg|js|png))$
+- url: /(.*\.(css|gif|ico|jpeg|jpg|js|map|png))$
   static_files: \1
-  upload: .*\.(css|gif|ico|jpg|js|png)$
+  upload: .*\.(css|gif|ico|jpeg|jpg|js|map|png)$
   secure: always
 
 - url: /scheduler/run
@@ -47,9 +47,8 @@ env_variables:
 
 skip_files:
 - ^(.*/)?.*/(\.DS_Store|\.htaccess|\.gitignore|CMakeLists\.txt|.*\.java)$
-- ^(.*/)?(\.coveralls.yml|\.travis.yml|composer\.json|composer\.lock|COPYRIGHT|CTestConfig\.cmake|cron-sample\.yaml|LICENSE|README\.md|Vagrantfile)$
+- ^(.*/)?(\.coveralls\.yml|\.travis\.yml|bower\.json|composer\.json|composer\.lock|COPYRIGHT|CTestConfig\.cmake|cron-sample\.yaml|LICENSE|README\.md|Vagrantfile)$
 - ^(.*/)?core/configs/.*\.local\.ini$
 - ^(.*/)?(\.git|\.idea|\.vagrant|data|log|provisioning|tests|tmp|utils)/.*
-- ^(.*/)?(core|modules/.*)/(database/pgsql|sqlite|tests)/.*
-- ^(.*/)?library/CMake/.*
-- ^(.*/)?modules/(batchmake|dicom.*|example|javauploaddownload|metadataextractor|pvw|remoteprocessing|solr|visualize)/.*
+- ^(.*/)?(core|modules/.*)/(database/(pgsql|sqlite)|tests)/.*
+- ^(.*/)?modules/(archive|batchmake|dicom.*|example|javauploaddownload|metadataextractor|pvw|remoteprocessing|solr|statistics|visualize)/.*
