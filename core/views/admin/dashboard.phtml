@@ -31,7 +31,7 @@ foreach ($this->dashboard as $module => $dasboard) {
         if ($status[0]) {
             echo '<td><img src="'.$this->coreWebroot.'/public/images/icons/ok.png" /></td>';
         } else {
-            echo '<td><img src="'.$this->coreWebroot.'public/images/icons/nok.png" /></td>';
+            echo '<td><img src="'.$this->coreWebroot.'/public/images/icons/nok.png" /></td>';
         }
         if (isset($status[1])) {
             echo '<td>'.$this->escape($status[1]).'</td>';
