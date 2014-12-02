@@ -36,6 +36,9 @@ class ApifolderComponent extends AppComponent
      * @param reuseExisting (Optional) If this parameter is set, will just return the existing folder if there is one with the name provided
      * @param parentid The id of the parent folder. Set this to -1 to create a top level user folder.
      * @return The folder object that was created
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function folderCreate($args)
     {
@@ -151,6 +154,9 @@ class ApifolderComponent extends AppComponent
      * @param id The id of the folder
      * @param dstfolderid The id of destination folder (new parent folder) where the folder is moved to
      * @return The folder object
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function folderMove($args)
     {
@@ -196,6 +202,9 @@ class ApifolderComponent extends AppComponent
      * @http GET
      * @param id The id of the folder
      * @return The folder object, including its parent object
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function folderGet($args)
     {
@@ -251,10 +260,13 @@ class ApifolderComponent extends AppComponent
      * @path /folder/permission/{id}
      * @http GET
      * @param id The id of the folder
-     * @return A list with three keys: privacy, user, group; privacy will be the
+     * @return Array with three keys: privacy, user, group; privacy will be the
      *           folder's privacy string [Public|Private]; user will be a list of
      *           (user_id, policy, email); group will be a list of (group_id, policy, name).
      *           policy for user and group will be a policy string [Admin|Write|Read].
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function folderListPermissions($args)
     {
@@ -293,6 +305,9 @@ class ApifolderComponent extends AppComponent
      * @http GET
      * @param id The id of the folder
      * @return The items and folders in the given folder
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function folderChildren($args)
     {
@@ -332,8 +347,11 @@ class ApifolderComponent extends AppComponent
      * @http PUT
      * @param id The id of the folder.
      * @param privacy Desired privacy status, one of [Public|Private].
-     * @return An array with keys 'success' and 'failure' indicating a count
+     * @return Array with keys 'success' and 'failure' indicating a count
      *            of children resources that succeeded or failed the permission change.
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function folderSetPrivacyRecursive($args)
     {
@@ -385,8 +403,11 @@ class ApifolderComponent extends AppComponent
      * @param policy Desired policy status, one of [Admin|Write|Read].
      * @param recursive If included will push all policies from
      * the passed in folder down to its child folders and items, default is non-recursive.
-     * @return An array with keys 'success' and 'failure' indicating a count of
+     * @return Array with keys 'success' and 'failure' indicating a count of
      *            resources affected by the addition.
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function folderAddPolicygroup($args)
     {
@@ -444,8 +465,11 @@ class ApifolderComponent extends AppComponent
      * @param group_id The id of the group.
      * @param recursive If included will push all policies after the removal from
      * the passed in folder down to its child folders and items, default is non-recursive.
-     * @return An array with keys 'success' and 'failure' indicating a count of
+     * @return Array with keys 'success' and 'failure' indicating a count of
      *            resources affected by the removal.
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function folderRemovePolicygroup($args)
     {
@@ -506,8 +530,11 @@ class ApifolderComponent extends AppComponent
      * @param policy Desired policy status, one of [Admin|Write|Read].
      * @param recursive If included will push all policies from
      * the passed in folder down to its child folders and items, default is non-recursive.
-     * @return An array with keys 'success' and 'failure' indicating a count of
+     * @return Array with keys 'success' and 'failure' indicating a count of
      *            resources affected by the addition.
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function folderAddPolicyuser($args)
     {
@@ -567,8 +594,11 @@ class ApifolderComponent extends AppComponent
      * @param user_id The id of the target user.
      * @param recursive If included will push all policies after the removal from
      * the passed in folder down to its child folders and items, default is non-recursive.
-     * @return An array with keys 'success' and 'failure' indicating a count of
+     * @return Array with keys 'success' and 'failure' indicating a count of
      *            resources affected by the removal.
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function folderRemovePolicyuser($args)
     {
@@ -623,6 +653,9 @@ class ApifolderComponent extends AppComponent
      * @path /folder/{id}
      * @http DELETE
      * @param id The id of the folder
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function folderDelete($args)
     {
@@ -656,6 +689,9 @@ class ApifolderComponent extends AppComponent
      * @http GET
      * @param id The id of the folder
      * @return A zip archive of the folder's contents
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function folderDownload($args)
     {

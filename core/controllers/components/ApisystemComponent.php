@@ -27,6 +27,8 @@ class ApisystemComponent extends AppComponent
      * @path /system/version
      * @http GET
      * @return Server version in the form {major}.{minor}.{patch}
+     *
+     * @param array $args parameters
      */
     public function version($args)
     {
@@ -39,6 +41,8 @@ class ApisystemComponent extends AppComponent
      * @path /system/module
      * @http GET
      * @return List of enabled modules on the server
+     *
+     * @param array $args parameters
      */
     public function modulesList($args)
     {
@@ -51,6 +55,8 @@ class ApisystemComponent extends AppComponent
      * @path /system/resource
      * @http GET
      * @return List of api resources names and their corresponding url
+     *
+     * @param array $args parameters
      */
     public function resourcesList($args)
     {
@@ -78,6 +84,8 @@ class ApisystemComponent extends AppComponent
      * @path /system/info
      * @http GET
      * @return Server information
+     *
+     * @param array $args parameters
      */
     public function info($args)
     {
@@ -101,6 +109,9 @@ class ApisystemComponent extends AppComponent
      * @param email The user email
      * @param apikey The API key corresponding to the given application name
      * @return A web api token that will be valid for a set duration
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function login($args)
     {
@@ -142,6 +153,9 @@ class ApisystemComponent extends AppComponent
      * @param email The user's email
      * @param password The user's password
      * @return Array with a single key, 'apikey', whose value is the user's default api key
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function userApikeyDefault($args)
     {
@@ -223,6 +237,9 @@ class ApisystemComponent extends AppComponent
      * @param checksum (Optional)
      * The md5 checksum of the file to which the link points.
      * @return The item information of the item created.
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function linkCreate($args)
     {
@@ -307,6 +324,9 @@ class ApisystemComponent extends AppComponent
      *            call with a call to <b>/system/upload</b>, as the passed in
      *            file will have been added as a bitstream to the item's latest
      *            revision, creating a new revision if one doesn't exist.
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function uploadGeneratetoken($args)
     {
@@ -440,6 +460,9 @@ class ApisystemComponent extends AppComponent
      * The changes field on the affected item revision,
      * e.g. for recording what has changed since the previous revision.
      * @return The item information of the item created or changed.
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function uploadPerform($args)
     {
@@ -579,7 +602,9 @@ class ApisystemComponent extends AppComponent
      * @path /system/uploadoffset
      * @http GET
      * @param uploadtoken The upload token for the file
-     * @return [offset] The size of the file currently on the server
+     * @return The size of the file currently on the server
+     *
+     * @param array $args parameters
      */
     public function uploadGetoffset($args)
     {
@@ -604,6 +629,10 @@ class ApisystemComponent extends AppComponent
      * @param type the metadata type index
      * @param element the metadata element under which the qualifier is collated
      * @param typename (Optional) the metadata type name
+     * @return Array of metadata qualifiers
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function metadataQualifiersList($args)
     {
@@ -624,6 +653,9 @@ class ApisystemComponent extends AppComponent
      *
      * @path /system/metadatatypes
      * @http GET
+     * @return Array of metadata types
+     *
+     * @param array $args parameters
      */
     public function metadataTypesList()
     {
@@ -641,6 +673,9 @@ class ApisystemComponent extends AppComponent
      * @http GET
      * @param type the metadata type index
      * @param typename (Optional) the metadata type name
+     * @return Array of metadata elements
+     *
+     * @param array $args parameters
      */
     public function metadataElementsList($args)
     {
@@ -661,6 +696,9 @@ class ApisystemComponent extends AppComponent
      * @http POST
      * @param useSession (Optional) Authenticate using the current Midas session
      * @param token (Optional) Authentication token
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function adminDatabaseCleanup($args)
     {

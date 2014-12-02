@@ -30,6 +30,9 @@ class ApiitemComponent extends AppComponent
      * @param revision (Optional) Revision of the item. Defaults to latest revision
      * @return the sought metadata array on success,
      *             will fail if there are no revisions or the specified revision is not found.
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function itemGetmetadata($args)
     {
@@ -76,6 +79,9 @@ class ApiitemComponent extends AppComponent
      * @param revision (Optional) Revision of the item. Defaults to latest revision.
      * @return true on success,
      *              will fail if there are no revisions or the specified revision is not found.
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function itemSetmetadata($args)
     {
@@ -125,6 +131,9 @@ class ApiitemComponent extends AppComponent
      * @param type_i (Optional) metadata type (integer constant). Defaults to MIDAS_METADATA_TEXT type (0).
      * @return true on success,
      *              will fail if there are no revisions or the specified revision is not found.
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function itemSetmultiplemetadata($args)
     {
@@ -176,6 +185,9 @@ class ApiitemComponent extends AppComponent
      * @return true on success,
      *              false if the metadata was not found on the item revision,
      *              will fail if there are no revisions or the specified revision is not found.
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function itemDeletemetadata($args)
     {
@@ -226,6 +238,9 @@ class ApiitemComponent extends AppComponent
      * Revision of the item. Defaults to latest revision; pass <b>all</b> to delete all metadata from all revisions.
      * @return true on success,
      *              will fail if there are no revisions or the specified revision is not found.
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function itemDeletemetadataAll($args)
     {
@@ -276,6 +291,9 @@ class ApiitemComponent extends AppComponent
      * @param parentid The id of the parent folder
      * @param name The name of the item
      * @return array('exists' => bool)
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function itemExists($args)
     {
@@ -314,7 +332,9 @@ class ApiitemComponent extends AppComponent
      * @param name The name of the item to search by
      * @param folderName (Optional) The name of the parent folder to search by
      * @param folderId (Optional) The id of the parent folder to search by
-     * @return A list of all items with the given name and parent folder name or id
+     * @return Array of all items with the given name and parent folder name or id
+     *
+     * @param array $args parameters
      */
     public function itemSearch($args)
     {
@@ -373,6 +393,9 @@ class ApiitemComponent extends AppComponent
      * @param id The item id
      * @param head (Optional) only list the most recent revision
      * @return The item object
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function itemGet($args)
     {
@@ -451,7 +474,7 @@ class ApiitemComponent extends AppComponent
     /**
      * Wrapper for the item get that helps make our new API consistent.
      *
-     * @param array $args
+     * @param array $args parameters
      * @return array
      * @throws Exception
      */
@@ -482,10 +505,13 @@ class ApiitemComponent extends AppComponent
      * @path /item/permission/{id}
      * @http GET
      * @param item_id The id of the item
-     * @return A list with three keys: privacy, user, group; privacy will be the
+     * @return Array with three keys: privacy, user, group; privacy will be the
      *           item's privacy string [Public|Private]; user will be a list of
      *           (user_id, policy, email); group will be a list of (group_id, policy, name).
      *           policy for user and group will be a policy string [Admin|Write|Read].
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function itemListPermissions($args)
     {
@@ -533,6 +559,9 @@ class ApiitemComponent extends AppComponent
      * simultaneously with the item's name if and only if the item has already
      * existed and its latest revision contains only one bitstream.
      * @return The item object that was created
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function itemCreate($args)
     {
@@ -640,6 +669,9 @@ class ApiitemComponent extends AppComponent
      * @param srcfolderid The id of source folder where the item is located
      * @param dstfolderid The id of destination folder where the item is moved to
      * @return The item object
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function itemMove($args)
     {
@@ -704,6 +736,9 @@ class ApiitemComponent extends AppComponent
      * @param id The id of the item
      * @param dstfolderid The id of destination folder where the item is shared to
      * @return The item object
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function itemShare($args)
     {
@@ -766,6 +801,9 @@ class ApiitemComponent extends AppComponent
      * @param id The id of the item
      * @param dstfolderid The id of destination folder where the item is duplicated to
      * @return The item object that was created
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function itemDuplicate($args)
     {
@@ -817,6 +855,9 @@ class ApiitemComponent extends AppComponent
      * @param group_id The id of the group.
      * @param policy Desired policy status, one of [Admin|Write|Read].
      * @return success = true on success.
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function itemAddPolicygroup($args)
     {
@@ -862,6 +903,9 @@ class ApiitemComponent extends AppComponent
      * @param id The id of the item.
      * @param group_id The id of the group.
      * @return success = true on success.
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function itemRemovePolicygroup($args)
     {
@@ -910,6 +954,9 @@ class ApiitemComponent extends AppComponent
      * @param user_id The id of the targeted user to create the policy for.
      * @param policy Desired policy status, one of [Admin|Write|Read].
      * @return success = true on success.
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function itemAddPolicyuser($args)
     {
@@ -956,6 +1003,9 @@ class ApiitemComponent extends AppComponent
      * @param id The id of the item.
      * @param user_id The id of the target user.
      * @return success = true on success.
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function itemRemovePolicyuser($args)
     {
@@ -999,6 +1049,9 @@ class ApiitemComponent extends AppComponent
      * @path /item/{id}
      * @http DELETE
      * @param id The id of the item
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function itemDelete($args)
     {
@@ -1033,6 +1086,9 @@ class ApiitemComponent extends AppComponent
      * @param id The id of the item
      * @param revision (Optional) Revision to download. Defaults to latest revision
      * @return The bitstream(s) in the item
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function itemDownload($args)
     {

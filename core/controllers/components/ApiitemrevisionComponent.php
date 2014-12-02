@@ -39,6 +39,9 @@ class ApiitemrevisionComponent extends AppComponent
      * @http GET
      * @param id The id of the ItemRevision
      * @return ItemRevision object
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function itemrevisionGet($args)
     {

@@ -30,6 +30,9 @@ class ApigroupComponent extends AppComponent
      * @param id id of group
      * @return array users => a list of user ids mapped to a two element list of
      *               user first name and last name
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function groupListUsers($args)
     {
@@ -80,6 +83,8 @@ class ApigroupComponent extends AppComponent
      * @param id the group to add the user to
      * @param user_id the user to add to the group
      * @return success = true on success.
+     *
+     * @param array $args parameters
      */
     public function groupAddUser($args)
     {
@@ -100,6 +105,8 @@ class ApigroupComponent extends AppComponent
      * @param id the group to remove the user from
      * @param user_id the user to remove from the group
      * @return success = true on success.
+     *
+     * @param array $args parameters
      */
     public function groupRemoveUser($args)
     {
@@ -129,6 +136,9 @@ class ApigroupComponent extends AppComponent
      * @http GET
      * @param id the group id
      * @return the group object
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function groupGet($args)
     {
@@ -170,6 +180,9 @@ class ApigroupComponent extends AppComponent
      * @param community_id the id of the community the group will associate with
      * @param name the name of the new group
      * @return group_id of the newly created group on success.
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function groupAdd($args)
     {
@@ -192,7 +205,7 @@ class ApigroupComponent extends AppComponent
         }
         if (!$communityModel->policyCheck($community, $userDao, MIDAS_POLICY_ADMIN)
         ) {
-            throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+            throw new Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
         }
 
         $name = $args['name'];
@@ -212,6 +225,9 @@ class ApigroupComponent extends AppComponent
      * @http DELETE
      * @param id the id of the group to be removed
      * @return success = true on success.
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function groupRemove($args)
     {
@@ -238,7 +254,7 @@ class ApigroupComponent extends AppComponent
         $communityModel = MidasLoader::loadModel('Community');
         if (!$communityModel->policyCheck($group->getCommunity(), $userDao, MIDAS_POLICY_ADMIN)
         ) {
-            throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+            throw new Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
         }
 
         $groupModel->delete($group);

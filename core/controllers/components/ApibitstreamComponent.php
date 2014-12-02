@@ -28,6 +28,9 @@ class ApibitstreamComponent extends AppComponent
      * @http GET
      * @param id The id of the bitstream
      * @return Bitstream dao
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function bitstreamGet($args)
     {
@@ -110,6 +113,10 @@ class ApibitstreamComponent extends AppComponent
      * @param name (Optional) New name for the bitstream
      * @param mimetype (Optional) New MIME type for the bitstream
      * @return The bitstream dao
+     *
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function bitstreamEdit($args)
     {
@@ -152,6 +159,9 @@ class ApibitstreamComponent extends AppComponent
      * @path /bitstream/{id}
      * @http DELETE
      * @param id The id of the bitstream to delete
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function bitstreamDelete($args)
     {
@@ -187,6 +197,9 @@ class ApibitstreamComponent extends AppComponent
      * @http GET
      * @param uuid The uuid of the containing resource
      * @return array(size=>total_size_in_bytes, count=>total_number_of_files)
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function bitstreamCount($args)
     {
@@ -240,7 +253,7 @@ class ApibitstreamComponent extends AppComponent
     /**
      * Download a bitstream either by its id or by a checksum.
      *
-     * @param array $args
+     * @param array $args parameters
      * @throws Exception
      */
     public function bitstreamDownload($args)
@@ -314,6 +327,8 @@ class ApibitstreamComponent extends AppComponent
      * @param id The id of the bitstream
      * @param name (Optional) Alternate filename to download as
      * @param offset (Optional) The download offset in bytes (used for resume)
+     *
+     * @param array $args parameters
      */
     public function bitstreamDownloadById($args)
     {
@@ -328,6 +343,8 @@ class ApibitstreamComponent extends AppComponent
      * @param checksum The checksum of the bitstream
      * @param name (Optional) Alternate filename to download as
      * @param offset (Optional) The download offset in bytes (used for resume)
+     *
+     * @param array $args parameters
      */
     public function bitstreamDownloadByChecksum($args)
     {

@@ -92,6 +92,11 @@ class ApidocsComponent extends AppComponent
                     $splitParam = explode(' ', $doc);
                     $paramName = trim($splitParam[1]);
                     $paramValue = trim(implode(' ', array_slice($splitParam, 2)));
+
+                    if (strpos($paramName, '$') === 0 || strpos($paramValue, '$') === 0) {
+                        continue;
+                    }
+
                     $params[$paramName] = $paramValue;
                 } elseif (strpos($doc, 'return') === 0) {
                     $return = trim(substr($doc, 6));
@@ -101,6 +106,8 @@ class ApidocsComponent extends AppComponent
                     $http = trim(substr($doc, 5));
                 } elseif (strpos($doc, 'idparam') === 0) {
                     $idParam = trim(substr($doc, 8));
+                } elseif (strpos($doc, 'throws') === 0) {
+                   continue;
                 } else {
                     $description = $doc;
                 }

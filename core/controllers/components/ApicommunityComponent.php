@@ -32,6 +32,9 @@ class ApicommunityComponent extends AppComponent
      * @param privacy (Optional) Default 'Public', possible values [Public|Private].
      * @param canjoin (Optional) Default 'Everyone', possible values [Everyone|Invitation].
      * @return The community dao that was created
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function communityCreate($args)
     {
@@ -117,6 +120,9 @@ class ApicommunityComponent extends AppComponent
      * @http GET
      * @param id The id of the community
      * @return The community information
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function communityGet($args)
     {
@@ -182,6 +188,8 @@ class ApicommunityComponent extends AppComponent
      * @http GET
      * @param name the name of the community
      * @return The community information
+     *
+     * @param array $args parameters
      */
     public function communitySearch($args)
     {
@@ -195,6 +203,9 @@ class ApicommunityComponent extends AppComponent
      * @http GET
      * @param id The id of the community
      * @return The folders in the community
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function communityChildren($args)
     {
@@ -232,6 +243,8 @@ class ApicommunityComponent extends AppComponent
      * @path /community
      * @http GET
      * @return A list of all communities
+     *
+     * @param array $args parameters
      */
     public function communityList($args)
     {
@@ -270,6 +283,9 @@ class ApicommunityComponent extends AppComponent
      * @path /community/{id}
      * @http DELETE
      * @param id The id of the community
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function communityDelete($args)
     {
@@ -305,6 +321,9 @@ class ApicommunityComponent extends AppComponent
      * @http GET
      * @param id id of community
      * @return array groups => a list of group ids mapped to group names
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function communityListGroups($args)
     {
@@ -328,7 +347,7 @@ class ApicommunityComponent extends AppComponent
         }
         if (!$communityModel->policyCheck($community, $userDao, MIDAS_POLICY_ADMIN)
         ) {
-            throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+            throw new Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
         }
 
         $groups = $community->getGroups();
