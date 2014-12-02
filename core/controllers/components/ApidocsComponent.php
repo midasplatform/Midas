@@ -31,21 +31,26 @@ class ApidocsComponent extends AppComponent
     {
         $apiResources = array();
 
-        foreach (glob(BASE_PATH.'/core/controllers/components/Api*.php') as $filename) {
-            $resoucename = preg_replace('/Component\.php/', '', substr(basename($filename), 3));
-            if (!in_array($resoucename, array('helper', 'docs'))) {
-                $apiResources[] = '/'.$resoucename;
+        $directory = new DirectoryIterator(BASE_PATH.'/core/controllers/components');
+        $matches = new RegexIterator($directory, '#Api(.*)Component\.php$#', RegexIterator::GET_MATCH);
+
+        foreach ($matches as $match) {
+            if (!in_array($match[1], array('helper', 'docs'))) {
+                $apiResources[] = '/'.$match[1];
             }
         }
 
         $modulesHaveApi = Zend_Registry::get('modulesHaveApi');
         $enabledModules = Zend_Registry::get('modulesEnable');
         $apiModules = array_intersect($modulesHaveApi, $enabledModules);
+
         foreach ($apiModules as $apiModule) {
-            foreach (glob(BASE_PATH.'/modules/'.$apiModule.'/controllers/components/Api*.php') as $filename) {
-                $resourceName = preg_replace('/Component\.php/', '', substr(basename($filename), 3));
-                if (!in_array($resourceName, array(''))) {
-                    $apiResources[] = $apiModule.'/'.$resourceName;
+            $directory = new DirectoryIterator(BASE_PATH.'/modules/'.$apiModule.'/controllers/components');
+            $matches = new RegexIterator($directory, '#Api(.*)Component\.php$#', RegexIterator::GET_MATCH);
+
+            foreach ($matches as $match) {
+                if (!in_array($match[1], array(''))) {
+                    $apiResources[] = $apiModule.'/'.$match[1];
                 }
             }
         }
@@ -147,7 +152,7 @@ class ApidocsComponent extends AppComponent
             'name' => 'useSession',
             'paramType' => 'query',
             'required' => false,
-            'description' => 'Authenticate using the current Midas session',
+            'description' => 'Authenticate using the current session',
             'allowMultiple' => false,
             'dataType' => 'string',
         );

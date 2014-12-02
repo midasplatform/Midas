@@ -49,7 +49,7 @@ class ApidocsController extends AppController
             }
             $curResource = array();
             $curResource['path'] = $resourcePath;
-            $curResource['discription'] = 'Operations about '.$resourcePath;
+            $curResource['description'] = 'Operations on the '.$resourcePath.' resource';
             array_push($results['apis'], $curResource);
         }
         echo JsonComponent::encode($results);
