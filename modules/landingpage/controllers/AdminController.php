@@ -61,7 +61,9 @@ class Landingpage_AdminController extends Landingpage_AppController
                 unset($values[LANDINGPAGE_TEXT_KEY]);
 
                 foreach ($values as $key => $value) {
-                    $this->Setting->setConfig($key, $value, $this->moduleName);
+                    if ($key !== 'csrf' && !is_null($value)) {
+                        $this->Setting->setConfig($key, $value, $this->moduleName);
+                    }
                 }
             }
 

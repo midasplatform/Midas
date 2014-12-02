@@ -49,7 +49,7 @@ class Cleanup_AdminController extends Cleanup_AppController
                 $values = $form->getValues();
 
                 foreach ($values as $key => $value) {
-                    if ($value !== null) {
+                    if ($key !== 'csrf' && !is_null($value)) {
                         $this->Setting->setConfig($key, $value, $this->moduleName);
                     }
                 }

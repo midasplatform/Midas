@@ -39,7 +39,9 @@ class Remoteprocessing_AdminController extends Remoteprocessing_AppController
                 $values = $form->getValues();
 
                 foreach ($values as $key => $value) {
-                    $this->Setting->setConfig($key, $value, $this->moduleName);
+                    if ($key !== 'csrf' && !is_null($value)) {
+                        $this->Setting->setConfig($key, $value, $this->moduleName);
+                    }
                 }
             }
 
