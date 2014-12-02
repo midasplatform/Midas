@@ -23,7 +23,7 @@
  */
 class InstallController extends AppController
 {
-    public $_models = array('User', 'Assetstore');
+    public $_models = array('User', 'Assetstore', 'Setting');
     public $_daos = array('Assetstore');
     public $_components = array('Random', 'Utility');
     public $_forms = array('Install');
@@ -268,13 +268,14 @@ class InstallController extends AppController
             $config->global->application->lang = $form->getValue('lang');
             $config->global->application->name = $form->getValue('name');
             $config->global->default->timezone = $form->getValue('timezone');
-            $config->global->defaultassetstore->id = $assetstores[0]->getKey();
             $config->global->environment = 'production';
 
             $writer = new Zend_Config_Writer_Ini();
             $writer->setConfig($config);
             $writer->setFilename(APPLICATION_CONFIG);
             $writer->write();
+
+            $this->Setting->setConfig('default_assetstore', $assetstores[0]->getKey());
 
             $this->redirect('/admin#tabs-modules');
         }

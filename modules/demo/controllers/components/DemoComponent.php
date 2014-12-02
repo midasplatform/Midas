@@ -80,9 +80,12 @@ class Demo_DemoComponent extends AppComponent
         $assetstoreDao->setType(MIDAS_ASSETSTORE_LOCAL);
         $assetstoreModel->save($assetstoreDao);
 
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $settingModel->setConfig('default_assetstore', $assetstoreDao->getKey());
+
         $options = array('allowModifications' => true);
         $config = new Zend_Config_Ini(CORE_CONFIGS_PATH.'/application.ini', null, $options);
-        $config->global->defaultassetstore->id = $assetstoreDao->getKey();
         $config->global->dynamichelp = 1;
         $config->global->environment = 'production';
         $config->global->application->name = 'Midas Platform - Demo';

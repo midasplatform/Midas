@@ -23,7 +23,7 @@
  */
 class AdminController extends AppController
 {
-    public $_models = array('Assetstore', 'Bitstream', 'Item', 'ItemRevision', 'Folder', 'License');
+    public $_models = array('Assetstore', 'Bitstream', 'Item', 'ItemRevision', 'Folder', 'License', 'Setting');
     public $_daos = array();
     public $_components = array('Upgrade', 'Utility', 'MIDAS2Migration');
     public $_forms = array('Admin', 'Assetstore', 'Migrate');
@@ -187,7 +187,7 @@ class AdminController extends AppController
         if (!$defaultSet) {
             foreach ($assetstores as $key => $assetstore) {
                 $assetstores[$key]->default = true;
-                $config->global->defaultassetstore->id = $assetstores[$key]->getKey();
+                $this->Setting->setConfig('default_assetstore', $assetstores[$key]->getKey());
 
                 $writer = new Zend_Config_Writer_Ini();
                 $writer->setConfig($config);
