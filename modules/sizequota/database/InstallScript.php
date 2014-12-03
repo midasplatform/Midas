@@ -18,17 +18,20 @@
  limitations under the License.
 =========================================================================*/
 
-define('MIDAS_SIZEQUOTA_DEFAULT_USER_QUOTA_KEY', 'defaultuserquota');
-define('MIDAS_SIZEQUOTA_DEFAULT_USER_QUOTA_DEFAULT_VALUE', '');
+require_once BASE_PATH.'/modules/sizequota/constant/module.php';
 
-define('MIDAS_SIZEQUOTA_DEFAULT_USER_QUOTA_UNIT_KEY', 'default_user_quota_unit');
-define('MIDAS_SIZEQUOTA_DEFAULT_USER_QUOTA_VALUE_KEY', 'default_user_quota_value');
+/** Install the sizequota module. */
+class Sizequota_InstallScript extends MIDASModuleInstallScript
+{
+    /** @var string */
+    public $moduleName = 'sizequota';
 
-define('MIDAS_SIZEQUOTA_DEFAULT_COMMUNITY_QUOTA_KEY', 'defaultcommunityquota');
-define('MIDAS_SIZEQUOTA_DEFAULT_COMMUNITY_QUOTA_DEFAULT_VALUE', '');
-
-define('MIDAS_SIZEQUOTA_DEFAULT_COMMUNITY_QUOTA_UNIT_KEY', 'default_community_quota_unit');
-define('MIDAS_SIZEQUOTA_DEFAULT_COMMUNITY_QUOTA_VALUE_KEY', 'default_community_quota_value');
-
-define('MIDAS_SIZEQUOTA_USE_DEFAULT_QUOTA', 0);
-define('MIDAS_SIZEQUOTA_USE_SPECIFIC_QUOTA', 1);
+    /** Post database install. */
+    public function postInstall()
+    {
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $settingModel->setConfig(MIDAS_SIZEQUOTA_DEFAULT_USER_QUOTA_KEY, MIDAS_SIZEQUOTA_DEFAULT_USER_QUOTA_DEFAULT_VALUE, $this->moduleName);
+        $settingModel->setConfig(MIDAS_SIZEQUOTA_DEFAULT_COMMUNITY_QUOTA_KEY, MIDAS_SIZEQUOTA_DEFAULT_COMMUNITY_QUOTA_DEFAULT_VALUE, $this->moduleName);
+    }
+}

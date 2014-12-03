@@ -64,7 +64,7 @@ midas.sizequota.folderChanged = function (args) {
     'use strict';
     $.ajax({
         type: 'POST',
-        url: json.global.webroot + '/sizequota/config/getfreespace',
+        url: json.global.webroot + '/sizequota/folder/getfreespace',
         data: {
             folderId: args.folderId
         },

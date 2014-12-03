@@ -20,4 +20,4 @@
 set(module_name sizequota)
 to_titlecase(${module_name} module_name_titlecase)
 
-add_midas_test(${module_name_titlecase}ConfigController ConfigControllerTest.php)
+add_midas_test(${module_name_titlecase}FolderController FolderControllerTest.php)

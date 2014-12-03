@@ -4,8 +4,8 @@ var midas = midas || {};
 midas.sizequota = midas.sizequota || {};
 midas.sizequota.folder = midas.sizequota.folder || {};
 midas.sizequota.constant = {
-    MIDAS_USE_DEFAULT_QUOTA: "0",
-    MIDAS_USE_SPECIFIC_QUOTA: "1"
+    MIDAS_SIZEQUOTA_USE_DEFAULT_QUOTA: "0",
+    MIDAS_SIZEQUOTA_USE_SPECIFIC_QUOTA: "1"
 };
 
 midas.sizequota.folder.validateConfig = function (formData, jqForm, options) {};
@@ -32,27 +32,29 @@ midas.sizequota.folder.successConfig = function (responseText, statusText, xhr, 
     }
 };
 
-midas.sizequota.folder.radioButtonChanged = function () {
+midas.sizequota.folder.useDefaultFolderQuotaChanged = function () {
     'use strict';
-    var selected = $('input[name="usedefault"]:checked');
+    var selected = $('input[id="use_default_folder_quota"]:checked');
 
-    if (selected.val() == midas.sizequota.constant.MIDAS_USE_DEFAULT_QUOTA) {
-        $('input#quota').attr('disabled', 'disabled');
+    if (selected.val() == 1) {
+        $('input#folder_quota_value').attr('disabled', 'disabled');
+        $('select#folder_quota_unit').attr('disabled', 'disabled');
     }
     else {
-        $('input#quota').removeAttr('disabled');
+        $('input#folder_quota_value').removeAttr('disabled');
+        $('select#folder_quota_unit').removeAttr('disabled');
     }
 };
 
 $(document).ready(function () {
     'use strict';
-    $('#configForm').ajaxForm({
+    $('#sizequota_folder').ajaxForm({
         beforeSubmit: midas.sizequota.folder.validateConfig,
         success: midas.sizequota.folder.successConfig
     });
 
-    $('input[name="usedefault"]').change(midas.sizequota.folder.radioButtonChanged);
-    midas.sizequota.folder.radioButtonChanged();
+    $('input[id="use_default_folder_quota"]').change(midas.sizequota.folder.useDefaultFolderQuotaChanged);
+    midas.sizequota.folder.useDefaultFolderQuotaChanged();
 
     var content = $('#quotaValue').html();
     if (content != '' && content !== 0) {

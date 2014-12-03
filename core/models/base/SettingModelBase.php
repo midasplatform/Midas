@@ -46,7 +46,7 @@ abstract class SettingModelBase extends AppModel
     public function getValueByName($name, $module = 'core')
     {
         $dao = $this->getDaoByName($name, $module);
-        if ($dao == false) {
+        if ($dao === false) {
             return null;
         }
 
@@ -66,12 +66,12 @@ abstract class SettingModelBase extends AppModel
             throw new Zend_Exception('Module name is not a string.');
         }
         $dao = $this->getDaoByName($name, $module);
-        if ($dao != false && $dao->getValue() == $value) {
+        if ($dao !== false && $dao->getValue() === $value) {
             return;
         }
-        if ($dao != false && $value === null) {
+        if ($dao !== false && $value === null) {
             $this->delete($dao);
-        } elseif ($dao != false) {
+        } elseif ($dao !== false) {
             $dao->setValue($value);
             $this->save($dao);
         } else {

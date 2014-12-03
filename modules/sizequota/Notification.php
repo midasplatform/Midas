@@ -61,7 +61,7 @@ class Sizequota_Notification extends ApiEnabled_Notification
         $moduleWebroot = $fc->getBaseUrl().'/'.$this->moduleName;
 
         return array(
-            $this->t('Storage Quota') => $moduleWebroot.'/config/folder?folderId='.$community->getFolderId(),
+            $this->t('Storage Quota') => $moduleWebroot.'/folder/index?folderId='.$community->getFolderId(),
         );
     }
 
@@ -81,7 +81,7 @@ class Sizequota_Notification extends ApiEnabled_Notification
             $moduleWebroot = $fc->getBaseUrl().'/'.$this->moduleName;
 
             return array(
-                $this->t('Storage Quota') => $moduleWebroot.'/config/folder?folderId='.$user->getFolderId(),
+                $this->t('Storage Quota') => $moduleWebroot.'/folder/index?folderId='.$user->getFolderId(),
             );
         } else {
             return array();
@@ -122,7 +122,7 @@ class Sizequota_Notification extends ApiEnabled_Notification
         }
         $rootFolder = $folderModel->getRoot($folder);
         $quota = $folderQuotaModel->getFolderQuota($rootFolder);
-        $assetstoreFree = disk_free_space($this->Assetstore->getDefault()->getPath());
+        $assetstoreFree = UtilityComponent::diskFreeSpace($this->Assetstore->getDefault()->getPath());
         if ($quota == '') {
             $free = $assetstoreFree;
         } else {
@@ -162,7 +162,7 @@ class Sizequota_Notification extends ApiEnabled_Notification
         } else {
             $rootFolder = $folderModel->getRoot($folders[0]);
             $quota = $folderQuotaModel->getFolderQuota($rootFolder);
-            $assetstoreFree = disk_free_space($this->Assetstore->getDefault()->getPath());
+            $assetstoreFree = UtilityComponent::diskFreeSpace($this->Assetstore->getDefault()->getPath());
             if ($quota == '') {
                 $free = $assetstoreFree;
             } else {
