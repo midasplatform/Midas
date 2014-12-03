@@ -55,6 +55,13 @@ define('MIDAS_BATCHMAKE_APP_DIR_PROPERTY', 'app_dir');
 define('MIDAS_BATCHMAKE_DATA_DIR_PROPERTY', 'data_dir');
 define('MIDAS_BATCHMAKE_CONDOR_BIN_DIR_PROPERTY', 'condor_bin_dir');
 
+// default subdirectories for the properties
+define('MIDAS_BATCHMAKE_DEFAULT_TMP_DIR', 'batchmake/tmp');
+define('MIDAS_BATCHMAKE_DEFAULT_BIN_DIR', 'batchmake/bin');
+define('MIDAS_BATCHMAKE_DEFAULT_SCRIPT_DIR', 'batchmake/script');
+define('MIDAS_BATCHMAKE_DEFAULT_APP_DIR', 'batchmake/bin');
+define('MIDAS_BATCHMAKE_DEFAULT_DATA_DIR', 'batchmake/data');
+
 // key for global config
 define('MIDAS_BATCHMAKE_GLOBAL_CONFIG_NAME', 'global');
 
@@ -72,6 +79,9 @@ define('MIDAS_BATCHMAKE_CONFIG_ERROR', 'Configuration is in error');
 define('MIDAS_BATCHMAKE_MODULE', 'batchmake');
 define('MIDAS_BATCHMAKE_CONFIGS_PATH', LOCAL_CONFIGS_PATH.'/'.MIDAS_BATCHMAKE_MODULE);
 define('MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG', MIDAS_BATCHMAKE_CONFIGS_PATH.'.local.ini');
+
+// name of csrf token
+define('MIDAS_BATCHMAKE_CSRF_TOKEN', 'csrf');
 
 // submit button name for config
 define('MIDAS_BATCHMAKE_SUBMIT_CONFIG', 'submitConfig');

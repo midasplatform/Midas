@@ -22,10 +22,10 @@
 require_once BASE_PATH.'/modules/batchmake/constant/module.php';
 require_once BASE_PATH.'/modules/batchmake/tests/controllers/ControllerTestCase.php';
 
-/** config controller tests */
-class Batchmake_ConfigControllerTest extends Batchmake_ControllerTestCase
+/** Admin controller tests for the batchmake module. */
+class Batchmake_AdminControllerTest extends Batchmake_ControllerTestCase
 {
-    /** set up tests */
+    /** Set up tests. */
     public function setUp()
     {
         $this->setupDatabase(array('default'));
@@ -35,12 +35,14 @@ class Batchmake_ConfigControllerTest extends Batchmake_ControllerTestCase
         parent::setUp();
     }
 
-    /** test index action */
+    /** Test index action. */
     public function testIndexAction()
     {
         // first try to bring up the page without logging in, should get an exception
         $usersFile = $this->loadData('User', 'default');
         $nullUserDao = null;
+
+        /** @var UserDao $userDao */
         foreach ($usersFile as $userDao) {
             if ($userDao->getFirstname() === 'Admin') {
                 $adminUserDao = $userDao;
@@ -50,7 +52,7 @@ class Batchmake_ConfigControllerTest extends Batchmake_ControllerTestCase
         }
 
         $withException = true;
-        $page = '/batchmake/config/index';
+        $page = '/batchmake/admin/index';
         $this->params = array();
         $this->getRequest()->setMethod('GET');
         $this->dispatchUrI($page, $nullUserDao, $withException);
@@ -69,13 +71,14 @@ class Batchmake_ConfigControllerTest extends Batchmake_ControllerTestCase
 
         $body = $this->getBody();
 
-        $this->assertModule("batchmake");
-        $this->assertController('config');
-        $this->assertAction("index");
-        if (strpos($body, "Batchmake Configuration") === false) {
-            $this->fail('Unable to find body element');
+        $this->assertModule('batchmake');
+        $this->assertController('admin');
+        $this->assertAction('index');
+
+        if (strpos($body, 'BatchMake Module Configuration') === false) {
+            $this->fail('Unable to find the body element');
         }
 
-        $this->assertQuery("form#configForm");
+        $this->assertQuery('form');
     }
 }
