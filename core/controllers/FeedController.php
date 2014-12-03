@@ -46,17 +46,26 @@ class FeedController extends AppController
         $this->view->header = $this->t('Feed');
 
         if ($this->logged && !$this->isTestingEnv()) {
+            $cookieName = hash('sha1', MIDAS_FEED_COOKIE_NAME.$this->userSession->Dao->getKey());
+
+            /** @var Zend_Controller_Request_Http $request */
             $request = $this->getRequest();
-            $cookieData = $request->getCookie('newFeed'.$this->userSession->Dao->getKey());
+            $cookieData = $request->getCookie($cookieName);
+
             if (isset($cookieData) && is_numeric($cookieData)) {
                 $this->view->lastFeedVisit = $cookieData;
             }
+            $date = new DateTime();
+            $interval = new DateInterval('P1M');
             setcookie(
-                'newFeed'.$this->userSession->Dao->getKey(),
-                strtotime("now"),
-                time() + 60 * 60 * 24 * 300,
-                '/'
-            ); // 30 days
+                $cookieName,
+                $date->getTimestamp(),
+                $date->add($interval)->getTimestamp(),
+                '/',
+                $request->getHttpHost(),
+                (int) Zend_Registry::get('configGlobal')->get('cookie_secure', 1) === 1,
+                true
+            );
         }
 
         $this->addDynamicHelp(

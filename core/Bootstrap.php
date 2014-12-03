@@ -44,16 +44,27 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     {
         // init language
         $configGlobal = new Zend_Config_Ini(APPLICATION_CONFIG, 'global', true);
-        if (isset($_COOKIE['lang'])) {
-            $configGlobal->application->lang = $_COOKIE['lang'];
+        if (isset($_COOKIE[MIDAS_LANGUAGE_COOKIE_NAME])) {
+            $configGlobal->application->lang = $_COOKIE[MIDAS_LANGUAGE_COOKIE_NAME];
         }
 
         if (isset($_GET['lang'])) {
-            if ($_GET['lang'] != 'en' && $_GET['lang'] != 'fr') {
-                $_GET['lang'] = 'en';
+            $language = $_GET['lang'];
+            if ($language !== 'en' && $language !== 'fr') {
+                $language = 'en';
             }
-            $configGlobal->application->lang = $_GET['lang'];
-            setcookie("lang", $_GET['lang'], time() + 60 * 60 * 24 * 30 * 20, '/'); // 30 days *20
+            $configGlobal->application->lang = $language;
+            $date = new DateTime();
+            $interval = new DateInterval('P1M');
+            setcookie(
+                MIDAS_LANGUAGE_COOKIE_NAME,
+                $language,
+                $date->add($interval)->getTimestamp(),
+                '/',
+                !empty($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'],
+                (int) $configGlobal->get('cookie_secure', 1) === 1,
+                true
+            );
         }
 
         Zend_Registry::set('configGlobal', $configGlobal);
@@ -400,5 +411,18 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // add restContexts helper
         $restContexts = new REST_Controller_Action_Helper_RestContexts();
         Zend_Controller_Action_HelperBroker::addHelper($restContexts);
+    }
+
+    /** Configure the session. */
+    protected function _initSession()
+    {
+        $this->bootstrap('Config');
+        $config = Zend_Registry::get('configGlobal');
+        $options = array(
+            'cookie_httponly' => true,
+            'cookie_secure' => (int) $config->get('cookie_secure', 1) === 1,
+            'gc_maxlifetime' => 600,
+        );
+        Zend_Session::setOptions($options);
     }
 }

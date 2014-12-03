@@ -30,6 +30,7 @@ define('MIDAS_LOGIN_REQUIRED', "User should be logged in to access this page.");
  */
 class AppController extends MIDAS_GlobalController
 {
+
     /** @var string */
     protected $coreWebroot;
 
@@ -104,11 +105,14 @@ class AppController extends MIDAS_GlobalController
                 $user->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
             }
 
+            /** @var Zend_Controller_Request_Http $request */
+            $request = $this->getRequest();
+
             if ($user->Dao == null && $fc->getRequest()->getControllerName() != 'install'
             ) {
                 /** @var UserModel $userModel */
                 $userModel = MidasLoader::loadModel('User');
-                $cookieData = $this->getRequest()->getCookie('midasUtil');
+                $cookieData = $request->getCookie(MIDAS_USER_COOKIE_NAME);
 
                 if (!empty($cookieData)) {
                     $notifier = new MIDAS_Notifier(false, null);
@@ -152,7 +156,8 @@ class AppController extends MIDAS_GlobalController
                 $this->logged = true;
                 $this->view->logged = true;
                 $this->view->userDao = $user->Dao;
-                $cookieData = $this->getRequest()->getCookie('recentItems'.$this->userSession->Dao->user_id);
+                $cookieName = hash('sha1', MIDAS_ITEM_COOKIE_NAME.$this->userSession->Dao->user_id);
+                $cookieData = $request->getCookie($cookieName);
                 $this->view->recentItems = array();
                 if (isset($cookieData) && file_exists(LOCAL_CONFIGS_PATH.'/database.local.ini')
                 ) { // check if midas installed

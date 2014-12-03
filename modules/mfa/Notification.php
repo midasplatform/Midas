@@ -70,7 +70,7 @@ class Mfa_Notification extends ApiEnabled_Notification
             // write temp user into session for asynchronous confirmation
             Zend_Session::start();
             $userSession = new Zend_Session_Namespace('Mfa_Temp_User');
-            $userSession->setExpirationSeconds(600); // "limbo" state should invalidate after 10 minutes
+            $userSession->setExpirationSeconds(60 * min(10, Zend_Registry::get('configGlobal')->session->lifetime)); // "limbo" state should invalidate after 10 minutes
             $userSession->Dao = $user;
             $userSession->lock();
 

@@ -206,9 +206,9 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
         $this->disableLayout();
 
         if (Zend_Registry::get('configGlobal')->environment != 'testing') {
-            // give a week-long session cookie in case the download lasts a long time
+            // give a three day session cookie in case the download lasts a long time
             session_start();
-            $this->userSession->setExpirationSeconds(60 * 60 * 24 * 7);
+            $this->userSession->setExpirationSeconds(60 * max(60 * 24 * 3, Zend_Registry::get('configGlobal')->session->lifetime));
             session_write_close();
         }
 

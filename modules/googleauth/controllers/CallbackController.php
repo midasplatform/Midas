@@ -191,12 +191,19 @@ class Googleauth_CallbackController extends Googleauth_AppController
         }
 
         $userapi = $this->Userapi->getByAppAndUser('Default', $user);
+        $request = $this->getRequest();
+        $date = new DateTime();
+        $interval = new DateInterval('P1M');
         setcookie(
-            'midasUtil',
+            MIDAS_USER_COOKIE_NAME,
             'googleauth:'.$user->getKey().':'.md5($userapi->getApikey()),
-            time() + 60 * 60 * 24 * 30,
-            '/'
+            $date->add($interval)->getTimestamp(),
+            '/',
+            $request->getHttpHost(),
+            (int) Zend_Registry::get('configGlobal')->get('cookie_secure', 1) === 1,
+            true
         );
+
 
         return $user;
     }

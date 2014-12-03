@@ -158,9 +158,12 @@ class ItemController extends AppController
                 }
             }
         }
-        if ($this->logged) {
+        if ($this->logged && !$this->isTestingEnv()) {
+            $cookieName = hash('sha1', MIDAS_ITEM_COOKIE_NAME.$this->userSession->Dao->getKey());
+
+            /** @var Zend_Controller_Request_Http $request */
             $request = $this->getRequest();
-            $cookieData = $request->getCookie('recentItems'.$this->userSession->Dao->getKey());
+            $cookieData = $request->getCookie($cookieName);
             $recentItems = array();
             if (isset($cookieData)) {
                 $recentItems = unserialize($cookieData);
@@ -179,15 +182,17 @@ class ItemController extends AppController
             }
             $recentItems = array_reverse($tmp);
             $recentItems[] = $itemDao->getKey();
-
-            if (!headers_sent()) {
-                setcookie(
-                    'recentItems'.$this->userSession->Dao->getKey(),
-                    serialize($recentItems),
-                    time() + 60 * 60 * 24 * 30,
-                    '/'
-                ); // 30 days
-            }
+            $date = new DateTime();
+            $interval = new DateInterval('P1M');
+            setcookie(
+                $cookieName,
+                serialize($recentItems),
+                $date->add($interval)->getTimestamp(),
+                '/',
+                $request->getHttpHost(),
+                (int) Zend_Registry::get('configGlobal')->get('cookie_secure', 1) === 1,
+                true
+            );
         }
 
         $this->Item->incrementViewCount($itemDao);
