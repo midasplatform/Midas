@@ -1,6 +1,6 @@
 -- MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- MySQL core database, version 3.2.19
+-- MySQL core database, version 3.2.20
 
 CREATE TABLE IF NOT EXISTS `activedownload` (
     `activedownload_id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS `folder` (
     `description` text NOT NULL,
     `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `view` bigint(20) NOT NULL DEFAULT '0',
-    `teaser` varchar(250) DEFAULT '',
+    `teaser` varchar(255) DEFAULT '',
     `privacy_status` int(11) DEFAULT '0',
     `uuid` varchar(255) DEFAULT '',
     `date_creation` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -144,7 +144,7 @@ CREATE TABLE IF NOT EXISTS `group` (
 
 CREATE TABLE IF NOT EXISTS `item` (
     `item_id` int(11) NOT NULL AUTO_INCREMENT,
-    `name` varchar(250) NOT NULL,
+    `name` varchar(255) NOT NULL,
     `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `description` text NOT NULL,
     `type` int(11) NOT NULL,
@@ -296,7 +296,7 @@ CREATE TABLE IF NOT EXISTS `setting` (
 CREATE TABLE IF NOT EXISTS `token` (
     `token_id` bigint(20) NOT NULL AUTO_INCREMENT,
     `userapi_id` bigint(20) NOT NULL,
-    `token` varchar(40) NOT NULL,
+    `token` varchar(64) NOT NULL,
     `expiration_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`token_id`)
 ) DEFAULT CHARSET=utf8;
@@ -317,7 +317,7 @@ CREATE TABLE IF NOT EXISTS `user` (
     `city` varchar(100) DEFAULT '',
     `country` varchar(100) DEFAULT '',
     `website` varchar(255) DEFAULT '',
-    `biography` varchar(255) DEFAULT '',
+    `biography` text,
     `dynamichelp` tinyint(4) DEFAULT '1',
     `hash_alg` varchar(32) NOT NULL DEFAULT '',
     `salt` varchar(64) NOT NULL DEFAULT '',
@@ -334,8 +334,8 @@ CREATE TABLE IF NOT EXISTS `user2group` (
 CREATE TABLE IF NOT EXISTS `userapi` (
     `userapi_id` bigint(20) NOT NULL AUTO_INCREMENT,
     `user_id` bigint(20) NOT NULL,
-    `apikey` varchar(40) NOT NULL,
-    `application_name` varchar(256) NOT NULL,
+    `apikey` varchar(64) NOT NULL,
+    `application_name` varchar(255) NOT NULL,
     `token_expiration_time` int(11) NOT NULL,
     `creation_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`userapi_id`)

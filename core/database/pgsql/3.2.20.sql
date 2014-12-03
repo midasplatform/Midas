@@ -1,6 +1,6 @@
 -- MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- PostgreSQL core database, version 3.2.19
+-- PostgreSQL core database, version 3.2.20
 
 SET client_encoding = 'UTF8';
 SET default_with_oids = FALSE;
@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS "folder" (
     "description" text NOT NULL,
     "view" bigint DEFAULT 0::bigint NOT NULL,
     "date_update" timestamp without time zone NOT NULL DEFAULT now(),
-    "teaser" character varying(250) DEFAULT ''::character varying,
+    "teaser" character varying(256) DEFAULT ''::character varying,
     "privacy_status" integer DEFAULT 0 NOT NULL,
     "uuid" character varying(512) DEFAULT ''::character varying,
     "date_creation" timestamp without time zone
@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS "group" (
 
 CREATE TABLE IF NOT EXISTS "item" (
     "item_id" serial PRIMARY KEY,
-    "name" character varying(250) NOT NULL,
+    "name" character varying(256) NOT NULL,
     "date_update" timestamp without time zone NOT NULL DEFAULT now(),
     "description" text NOT NULL,
     "type" integer NOT NULL,
@@ -240,8 +240,8 @@ CREATE TABLE IF NOT EXISTS "metadatavalue" (
 
 CREATE TABLE IF NOT EXISTS "newuserinvitation" (
     "newuserinvitation_id" serial PRIMARY KEY,
-    "auth_key" character varying(255) NOT NULL,
-    "email" character varying(255) NOT NULL,
+    "auth_key" character varying(256) NOT NULL,
+    "email" character varying(256) NOT NULL,
     "inviter_id" bigint NOT NULL,
     "community_id" bigint NOT NULL,
     "group_id" bigint NOT NULL,
@@ -257,10 +257,10 @@ ALTER TABLE "password" CLUSTER ON "password_hash";
 
 CREATE TABLE IF NOT EXISTS "pendinguser" (
     "pendinguser_id" serial PRIMARY KEY,
-    "auth_key" character varying(255) NOT NULL,
-    "email" character varying(255) NOT NULL,
-    "firstname" character varying(255) NOT NULL,
-    "lastname" character varying(255) NOT NULL,
+    "auth_key" character varying(256) NOT NULL,
+    "email" character varying(256) NOT NULL,
+    "firstname" character varying(256) NOT NULL,
+    "lastname" character varying(256) NOT NULL,
     "date_creation" timestamp without time zone NOT NULL DEFAULT now(),
     "salt" character varying(64) DEFAULT ''::character varying NOT NULL
 );
@@ -284,7 +284,7 @@ CREATE TABLE IF NOT EXISTS "setting" (
 CREATE TABLE IF NOT EXISTS "token" (
     "token_id" serial PRIMARY KEY,
     "userapi_id" bigint NOT NULL,
-    "token" character varying(40) NOT NULL,
+    "token" character varying(64) NOT NULL,
     "expiration_date" timestamp without time zone NOT NULL DEFAULT now()
 );
 
@@ -303,8 +303,8 @@ CREATE TABLE IF NOT EXISTS "user" (
     "uuid" character varying(512) DEFAULT ''::character varying,
     "city" character varying(100) DEFAULT ''::character varying,
     "country" character varying(100) DEFAULT ''::character varying,
-    "website" character varying(255) DEFAULT ''::character varying,
-    "biography" character varying(255) DEFAULT ''::character varying,
+    "website" character varying(256) DEFAULT ''::character varying,
+    "biography" text,
     "dynamichelp" integer DEFAULT 1,
     "hash_alg" character varying(32) DEFAULT ''::character varying NOT NULL,
     "salt" character varying(64) DEFAULT ''::character varying NOT NULL
@@ -319,7 +319,7 @@ CREATE TABLE IF NOT EXISTS "user2group" (
 CREATE TABLE IF NOT EXISTS "userapi" (
     "userapi_id" serial PRIMARY KEY,
     "user_id" bigint NOT NULL,
-    "apikey" character varying(40) NOT NULL,
+    "apikey" character varying(64) NOT NULL,
     "application_name" character varying(256) NOT NULL,
     "token_expiration_time" integer NOT NULL,
     "creation_date" timestamp without time zone
