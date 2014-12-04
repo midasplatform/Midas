@@ -27,6 +27,9 @@ class NewUserInvitationModel extends NewUserInvitationModelBase
 {
     /**
      * Search the table for a matching record.  If any exists, returns the first dao.  Otherwise returns false.
+     *
+     * @param array $params
+     * @return false|NewUserInvitationDao
      */
     public function getByParams($params)
     {
@@ -41,6 +44,9 @@ class NewUserInvitationModel extends NewUserInvitationModelBase
 
     /**
      * Search the table for a matching record. Returns the matching set of daos.
+     *
+     * @param array $params
+     * @return array
      */
     public function getAllByParams($params)
     {
@@ -59,9 +65,10 @@ class NewUserInvitationModel extends NewUserInvitationModelBase
     }
 
     /**
-     * Deletes all new user invitations corresponding to a group
+     * Deletes all new user invitations corresponding to a group.
      *
-     * @param group GroupDao
+     * @param GroupDao $group
+     * @throws Zend_Exception
      */
     public function deleteByGroup($group)
     {
@@ -72,9 +79,10 @@ class NewUserInvitationModel extends NewUserInvitationModelBase
     }
 
     /**
-     * Deletes all new user invitations corresponding to a community
+     * Deletes all new user invitations corresponding to a community.
      *
-     * @param community communityDao
+     * @param CommunityDao $community
+     * @throws Zend_Exception
      */
     public function deleteByCommunity($community)
     {

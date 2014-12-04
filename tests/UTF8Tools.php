@@ -21,12 +21,20 @@
 /** tools for detecting non UTF-8 files and transforming non UTF-8 files to UTF-8. */
 class UTF8Tools
 {
+    /** @var array */
     protected $excludedDirs = array('_build', '_test', '.git', 'bin', 'bower_components', 'build', 'data', 'library', 'log', 'node_modules', 'tmp', 'vendor');
+
+    /** @var array */
     protected $excludedExts = array('db', 'gif', 'ico', 'ini', 'jar', 'jpeg', 'jpg', 'keystore', 'phar', 'png', 'psd', 'swc', 'swf', 'zip');
+
+    /** @var array */
     protected $excludedFiles = array('.coveralls.yml', '.DS_Store', '.htaccess', '.gitignore', '.travis.yml', 'appveyor.yml');
 
     /**
      * return true if the string is UTF8 encoded.
+     *
+     * @param string $str
+     * @return bool
      */
     protected function isUTF8($str)
     {
@@ -65,6 +73,10 @@ class UTF8Tools
     /**
      * gets a list of all files rooted at the src, excluding
      * certain subdirectories, extensions, and filenames.
+     *
+     * @param string $src
+     * @param string $dir
+     * @return array
      */
     public function getMatchingFilesRecursive($src, $dir = '')
     {
@@ -114,6 +126,9 @@ class UTF8Tools
      * will create another file in the same dir alongside any non-UTF-8 file
      * that is UTF-8 encoded and has the same name as the non-UTF-8 file, with
      * an extension of .utf8.
+     *
+     * @param string $srcDir
+     * @param bool $createUtf8Version
      */
     public function listNonUtf8Files($srcDir, $createUtf8Version = false)
     {

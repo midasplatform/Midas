@@ -30,6 +30,9 @@ class Thumbnailcreator_ApiitemComponent extends AppComponent
      * @param id The item to set the thumbnail on
      * @param width (Optional) The width in pixels to resize to (aspect ratio will be preserved). Defaults to 575
      * @return The ItemthumbnailDao object that was created
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function createBigThumbnail($args)
     {
@@ -112,6 +115,9 @@ class Thumbnailcreator_ApiitemComponent extends AppComponent
      * @http PUT
      * @param id The item to set the thumbnail on
      * @return The Item object (with the new thumbnail_id) and the path where the newly created thumbnail is stored
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function createSmallThumbnail($args)
     {

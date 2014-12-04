@@ -29,6 +29,10 @@ class Solr_ApisearchComponent extends AppComponent
      * @param query The Lucene search query
      * @param limit (Optional) The limit of the search; defaults to 25
      * @return The list of items matching the search query
+     *
+     * @param array $args parameters
+     * @return array
+     * @throws Exception
      */
     public function searchAdvanced($args)
     {

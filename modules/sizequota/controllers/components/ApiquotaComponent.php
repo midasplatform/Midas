@@ -33,6 +33,9 @@ class Sizequota_ApiquotaComponent extends AppComponent
      * @param user Id of the user to check
      * @return array('quota' => The size quota in bytes for the user, or empty string if unlimited,
      *                       'used' => Size in bytes currently used)
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function userGet($args)
     {
@@ -73,6 +76,9 @@ class Sizequota_ApiquotaComponent extends AppComponent
      * @param community Id of the community to check
      * @return array('quota' => The size quota in bytes for the community, or empty string if unlimited,
      *                       'used' => Size in bytes currently used)
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function communityGet($args)
     {
@@ -112,6 +118,9 @@ class Sizequota_ApiquotaComponent extends AppComponent
      * @param folder The folder id
      * @param quota (Optional) The quota. Pass a number of bytes or the empty string for unlimited.
      * If this parameter isn't specified, deletes the current quota entry if one exists.
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function set($args)
     {

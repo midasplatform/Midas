@@ -25,9 +25,13 @@ require_once BASE_PATH.'/core/models/base/ItempolicyuserModelBase.php';
  */
 class ItempolicyuserModel extends ItempolicyuserModelBase
 {
-    /** getPolicy
+    /**
+     * Get policy.
      *
-     * @return ItempolicyuserDao
+     * @param UserDao $user
+     * @param ItemDao $item
+     * @return false|ItempolicyuserDao
+     * @throws Zend_Exception
      */
     public function getPolicy($user, $item)
     {

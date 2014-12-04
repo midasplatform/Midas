@@ -28,6 +28,7 @@ class Visualize_ParaviewController extends Visualize_AppController
      * Surface (mesh) model viewer action
      *
      * @param itemId The id of the item to view
+     * @throws Zend_Exception
      */
     public function surfaceAction()
     {

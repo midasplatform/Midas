@@ -25,7 +25,12 @@ require_once BASE_PATH.'/core/models/base/FolderModelBase.php';
  */
 class FolderModel extends FolderModelBase
 {
-    /** get All */
+    /**
+     * Get all.
+     *
+     * @return array
+     * @throws Zend_Exception
+     */
     public function getAll()
     {
         $rowset = $this->database->fetchAll($this->database->select()->order(array('folder_id DESC')));
@@ -37,7 +42,11 @@ class FolderModel extends FolderModelBase
         return $results;
     }
 
-    /** Get the total number of folders in the database */
+    /**
+     * Get the total number of folders in the database.
+     *
+     * @return int
+     */
     public function getTotalCount()
     {
         $row = $this->database->fetchRow($this->database->select()->from('folder', array('count' => 'count(*)')));
@@ -45,7 +54,12 @@ class FolderModel extends FolderModelBase
         return $row['count'];
     }
 
-    /** get by uuid */
+    /**
+     * Get by UUID.
+     *
+     * @param string $uuid
+     * @return false|FolderDao
+     */
     public function getByUuid($uuid)
     {
         $row = $this->database->fetchRow($this->database->select()->where('uuid = ?', $uuid));
@@ -54,7 +68,12 @@ class FolderModel extends FolderModelBase
         return $dao;
     }
 
-    /** get by name */
+    /**
+     * Get by name.
+     *
+     * @param string $name
+     * @return false|FolderDao
+     */
     public function getByName($name)
     {
         $row = $this->database->fetchRow($this->database->select()->where('name = ?', $name));
@@ -64,10 +83,11 @@ class FolderModel extends FolderModelBase
     }
 
     /**
-     * Call a callback function on every folder in the database
+     * Call a callback function on every folder in the database.
      *
-     * @param callback Name of the Midas callback to call
-     * @param paramName what parameter name the folder should be passed as to the callback (default is 'folder')
+     * @param string $callback Name of the Midas callback to call
+     * @param string $paramName what parameter name the folder should be passed as to the callback (default is 'folder')
+     * @param array $otherParams
      */
     public function iterateWithCallback($callback, $paramName = 'folder', $otherParams = array())
     {
@@ -79,7 +99,15 @@ class FolderModel extends FolderModelBase
         }
     }
 
-    /** check if the policy is valid */
+    /**
+     * Check if the policy is valid.
+     *
+     * @param FolderDao $folderDao
+     * @param null|UserDao $userDao
+     * @param int $policy
+     * @return bool
+     * @throws Zend_Exception
+     */
     public function policyCheck($folderDao, $userDao = null, $policy = 0)
     {
         if (!$folderDao instanceof FolderDao || !is_numeric($policy)) {
@@ -134,6 +162,10 @@ class FolderModel extends FolderModelBase
 
     /**
      * Get the maximum policy level for the given folder and user.
+     *
+     * @param int $folderId
+     * @param UserDao $user
+     * @return int
      */
     public function getMaxPolicy($folderId, $user)
     {
@@ -181,7 +213,10 @@ class FolderModel extends FolderModelBase
 
     /**
      * Get the total number of folders and items contained within this folder,
-     * irrespective of policies
+     * irrespective of policies.
+     *
+     * @param FolderDao $folder
+     * @return string
      */
     public function getRecursiveChildCount($folder)
     {
@@ -215,7 +250,15 @@ class FolderModel extends FolderModelBase
         return $folderChildCount + $itemChildCount;
     }
 
-    /** get the size and the number of item in a folder */
+    /**
+     * Get the size and the number of item in a folder.
+     *
+     * @param array $folders
+     * @param null|UserDao $userDao
+     * @param int $policy
+     * @return array
+     * @throws Zend_Exception
+     */
     public function getSizeFiltered($folders, $userDao = null, $policy = 0)
     {
         $isAdmin = false;
@@ -346,7 +389,13 @@ class FolderModel extends FolderModelBase
         return $folders;
     }
 
-    /** get the total size for a folder (with no filtered results) */
+    /**
+     * Get the total size for a folder (with no filtered results).
+     *
+     * @param FolderDao $folder
+     * @return string
+     * @throws Zend_Exception
+     */
     public function getSize($folder)
     {
         if (!$folder instanceof FolderDao) {
@@ -379,7 +428,16 @@ class FolderModel extends FolderModelBase
         return $row['sum'];
     }
 
-    /** Get the folder tree */
+    /**
+     * Get the folder tree.
+     *
+     * @param FolderDao $folder
+     * @param UserDao $userDao
+     * @param bool $admin
+     * @param int $policy
+     * @return array
+     * @throws Zend_Exception
+     */
     public function getAllChildren($folder, $userDao, $admin = false, $policy = 0)
     {
         $isAdmin = false;
@@ -462,7 +520,12 @@ class FolderModel extends FolderModelBase
 
     /**
      * Custom delete function.
-     * Pass a progressDao with pre-computed maximum to keep track of delete progress
+     * Pass a progressDao with pre-computed maximum to keep track of delete progress.
+     *
+     * @param FolderDao $folder
+     * @param null|ProgressDao $progressDao
+     * @return true
+     * @throws Zend_Exception
      */
     public function delete($folder, $progressDao = null)
     {
@@ -533,7 +596,13 @@ class FolderModel extends FolderModelBase
         return true;
     }
 
-    /** move a folder */
+    /**
+     * Move a folder.
+     *
+     * @param FolderDao $folder
+     * @param FolderDao $parent
+     * @throws Zend_Exception
+     */
     public function move($folder, $parent)
     {
         if ($folder->getKey() == $parent->getKey()) {
@@ -622,7 +691,13 @@ class FolderModel extends FolderModelBase
         parent::save($folder);
     }
 
-    /** Custom save function */
+    /**
+     * Custom save function.
+     *
+     * @param FolderDao $folder
+     * @return bool
+     * @throws Zend_Exception
+     */
     public function save($folder)
     {
         if (!$folder instanceof FolderDao) {
@@ -703,7 +778,13 @@ class FolderModel extends FolderModelBase
         }
     }
 
-    /** Get community if the folder is the main folder of one */
+    /**
+     * Get community if the folder is the main folder of one.
+     *
+     * @param FolderDao $folder
+     * @return false|CommunityDao
+     * @throws Zend_Exception
+     */
     public function getCommunity($folder)
     {
         if (!$folder instanceof FolderDao) {
@@ -722,7 +803,13 @@ class FolderModel extends FolderModelBase
         return $dao;
     }
 
-    /** Get user if the folder is the main folder of one */
+    /**
+     * Get user if the folder is the main folder of one.
+     *
+     * @param FolderDao $folder
+     * @return false|UserDao
+     * @throws Zend_Exception
+     */
     public function getUser($folder)
     {
         if (!$folder instanceof FolderDao) {
@@ -744,6 +831,10 @@ class FolderModel extends FolderModelBase
     /**
      * Check whether folder exists by name in the given parent folder. If so, returns the dao,
      * otherwise returns false.
+     *
+     * @param string $name
+     * @param FolderDao $parent
+     * @return false|FolderDao
      */
     public function getFolderExists($name, $parent)
     {
@@ -759,15 +850,17 @@ class FolderModel extends FolderModelBase
     }
 
     /**
-     * Get child items of a folder filtered by policy check for the provided user
+     * Get child items of a folder filtered by policy check for the provided user.
      *
-     * @param folder The parent folder
-     * @param [userDao] The user requesting the folder children (default anonymous)
-     * @param [policy] What policy to filter by (default MIDAS_POLICY_READ)
-     * @param [sortfield] What field to sort the results by (name | date_update | sizebytes, default = name)
-     * @param [sortdir] Sort direction (asc | desc, default = asc)
-     * @param [limit] Result limit. Default is no limit.
-     * @param [offset] Offset into result list. Default is 0.
+     * @param FolderDao $folder parent folder
+     * @param null|UserDao $userDao user requesting the folder children (default anonymous)
+     * @param int $policy policy to filter by (default MIDAS_POLICY_READ)
+     * @param string $sortfield field to sort the results by (name | date_update | sizebytes, default = name)
+     * @param string $sortdir sort direction (asc | desc, default = asc)
+     * @param int $limit result limit. Default is no limit
+     * @param int $offset offset into result list. Default is 0
+     * @return array
+     * @throws Zend_Exception
      */
     public function getItemsFiltered(
         $folder,
@@ -805,10 +898,14 @@ class FolderModel extends FolderModelBase
     }
 
     /**
-     * Helper function to build the child selection query
+     * Helper function to build the child selection query.
      *
-     * @param userDao The current user
-     * @param folderIds Array of parent folder ids
+     * @param UserDao $userDao current user
+     * @param array $folderIds parent folder ids
+     * @param int $policy
+     * @param string $sortfield
+     * @param string $sortdir
+     * @return Zend_Db_Select
      */
     private function _buildChildItemsQuery(&$userDao, &$folderIds, $policy, $sortfield = 'name', $sortdir = 'asc')
     {
@@ -857,13 +954,16 @@ class FolderModel extends FolderModelBase
     }
 
     /**
-     * Get child folders of a folder filtered by policy check for the provided user
+     * Get child folders of a folder filtered by policy check for the provided user.
      *
-     * @param folder The parent folder
-     * @param userDao The user requesting the folder children (default anonymous)
-     * @param policy What policy to filter by (default MIDAS_POLICY_READ)
-     * @param sortfield What field to sort the results by (name | date, default = name)
-     * @param sortdir Sort direction (asc | desc, default = asc)
+     * @param FolderDao $folder parent folder
+     * @param null $userDao user requesting the folder children (default anonymous)
+     * @param int $policy policy to filter by (default MIDAS_POLICY_READ)
+     * @param string $sortfield field to sort the results by (name | date, default = name)
+     * @param string $sortdir sort direction (asc | desc, default = asc)
+     * @param int $limit result limit. Default is no limit
+     * @param int $offset offset into result list. Default is 0
+     * @return array
      */
     public function getChildrenFoldersFiltered(
         $folder,
@@ -899,10 +999,14 @@ class FolderModel extends FolderModelBase
     }
 
     /**
-     * Helper function to build the child selection query
+     * Helper function to build the child selection query.
      *
-     * @param userDao The current user
-     * @param folderIds Array of parent folder ids
+     * @param UserDao $userDao current user
+     * @param array $folderIds parent folder ids
+     * @param int $policy
+     * @param string $sortfield
+     * @param string $sortdir
+     * @return Zend_Db_Select
      */
     private function _buildChildFoldersQuery(&$userDao, &$folderIds, $policy, $sortfield = 'name', $sortdir = 'asc')
     {
@@ -949,9 +1053,12 @@ class FolderModel extends FolderModelBase
     }
 
     /**
-     * Get the child folder
+     * Get the child folder.
      *
-     * @return FolderDao
+     * @param FolderDao $folder
+     * @param string $foldername
+     * @return false|FolderDao
+     * @throws Zend_Exception
      */
     public function getFolderByName($folder, $foldername)
     {
@@ -968,9 +1075,13 @@ class FolderModel extends FolderModelBase
         return $this->initDao('Folder', $row);
     }
 
-    /** Add an item to a folder
+    /**
+     * Add an item to a folder.
      *
-     * @return void
+     * @param FolderDao $folder
+     * @param ItemDao $item
+     * @param bool $update
+     * @throws Zend_Exception
      */
     public function addItem($folder, $item, $update = true)
     {
@@ -991,9 +1102,12 @@ class FolderModel extends FolderModelBase
         $this->database->link('items', $folder, $item);
     }
 
-    /** Remove an item from a folder
+    /**
+     * Remove an item from a folder.
      *
-     * @return void
+     * @param FolderDao $folder
+     * @param ItemDao $item
+     * @throws Zend_Exception
      */
     public function removeItem($folder, $item)
     {
@@ -1011,9 +1125,14 @@ class FolderModel extends FolderModelBase
         }
     }
 
-    /** Return an item by its name
+    /**
+     * Return an item by its name.
      *
-     * @return ItemDao
+     * @param FolderDao $folder
+     * @param string $itemname
+     * @param bool $caseSensitive
+     * @return false|ItemDao
+     * @throws Zend_Exception
      */
     public function getItemByName($folder, $itemname, $caseSensitive = true)
     {
@@ -1040,9 +1159,16 @@ class FolderModel extends FolderModelBase
         return $this->initDao('Item', $row);
     }
 
-    /** Return a list of folders corresponding to the search
+    /**
+     * Return a list of folders corresponding to the search.
      *
-     * @return Array of FolderDao
+     * @param string $search
+     * @param UserDao $userDao
+     * @param int $limit
+     * @param bool $group
+     * @param string $order
+     * @return array
+     * @throws Zend_Exception
      */
     public function getFoldersFromSearch($search, $userDao, $limit = 14, $group = true, $order = 'view')
     {
@@ -1176,6 +1302,10 @@ class FolderModel extends FolderModelBase
      * Returns whether the folder is able to be deleted.
      * Any folder can be deleted unless it is a base Folder
      * of a User or Community.
+     *
+     * @param FolderDao $folder
+     * @return bool
+     * @throws Zend_Exception
      */
     public function isDeleteable($folder)
     {
@@ -1203,11 +1333,11 @@ class FolderModel extends FolderModelBase
     /**
      * This will zip stream the filtered contents of the fold
      *
-     * @param zip ZipStream object to write to (pass-by-reference, should already be started)
-     * @param path The current path in the zip archive
-     * @param folder The folder to recurse through
-     * @param userDao The session user dao (pass-by-reference)
-     * @param overrideOutputFunction A PHP callable object to call that will override
+     * @param ZipStream $zip ZipStream object to write to (pass-by-reference, should already be started)
+     * @param string $path current path in the zip archive
+     * @param FolderDao $folder folder to recurse through
+     * @param UserDao $userDao The session user dao (pass-by-reference)
+     * @param callable $overrideOutputFunction A PHP callable object to call that will override
      * the default behavior of writing out the bitstream's contents
      */
     public function zipStream(&$zip, $path, $folder, &$userDao, &$overrideOutputFunction = null)
@@ -1265,6 +1395,8 @@ class FolderModel extends FolderModelBase
     /**
      * Will return all root folder daos.  There is a root folder for each
      * user, and one for each community.
+     *
+     * @return array
      */
     public function getRootFolders()
     {
@@ -1279,7 +1411,9 @@ class FolderModel extends FolderModelBase
     }
 
     /**
-     * Return the total number of folders in this Midas instance (for admin use)
+     * Return the total number of folders in this Midas instance (for admin use).
+     *
+     * @return int
      */
     public function countAll()
     {
@@ -1295,6 +1429,8 @@ class FolderModel extends FolderModelBase
     /**
      * Used by the admin dashboard page. Counts the number of orphaned folder
      * records in the database.
+     *
+     * @return int
      */
     public function countOrphans()
     {
@@ -1322,6 +1458,8 @@ class FolderModel extends FolderModelBase
      * After orphans are deleted, the tree indexes will be recomputed so they
      * will be consistent.  As such, server should not be written to
      * during this operation.
+     *
+     * @param null|ProgressDao $progressDao
      */
     public function removeOrphans($progressDao = null)
     {
@@ -1387,6 +1525,11 @@ class FolderModel extends FolderModelBase
 
     /**
      * Will recompute the left and right indexes of the subtree of the given node.
+     *
+     * @param FolderDao $folder
+     * @param int $count
+     * @param int $max
+     * @param null|ProgressDao $progressDao
      */
     protected function _recomputeSubtree($folder, &$count, $max, $progressDao = null)
     {

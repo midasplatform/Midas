@@ -24,7 +24,11 @@ require_once BASE_PATH.'/modules/oauth/models/base/CodeModelBase.php';
 class Oauth_CodeModel extends Oauth_CodeModelBase
 {
     /**
-     * Return all auth code records for the given user
+     * Return all code DAOs for the given user.
+     *
+     * @param UserDao $userDao
+     * @return array
+     * @throws Zend_Exception
      */
     public function getByUser($userDao)
     {
@@ -39,7 +43,11 @@ class Oauth_CodeModel extends Oauth_CodeModelBase
     }
 
     /**
-     * Return the dao corresponding to this code string if it exists
+     * Return the code DAO corresponding to this code string if it exists.
+     *
+     * @param string $code
+     * @return false|Oauth_CodeDao
+     * @throws Zend_Exception
      */
     public function getByCode($code)
     {
@@ -48,9 +56,7 @@ class Oauth_CodeModel extends Oauth_CodeModelBase
         return $this->initDao('Code', $row, $this->moduleName);
     }
 
-    /**
-     * Removes expired access tokens from the database
-     */
+    /** Remove expired access tokens from the database. */
     public function cleanExpired()
     {
         $sql = $this->database->select()->setIntegrityCheck(false)->where('expiration_date < ?', date('Y-m-d H:i:s'));

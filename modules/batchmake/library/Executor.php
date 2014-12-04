@@ -30,10 +30,11 @@ class Batchmake_Executor
      * forwards a call to this method on to KWUtils.exec, with the same
      * method signature.
      *
-     * @param type $command
-     * @param type $output
-     * @param type $chdir
-     * @param type $return_val
+     * @param string $command
+     * @param null|mixed $output
+     * @param string $chdir
+     * @param null|mixed $return_val
+     * @throws Zend_Exception
      */
     public function exec($command, &$output = null, $chdir = "", &$return_val = null)
     {

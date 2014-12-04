@@ -27,6 +27,8 @@ class MetadataModel extends MetadataModelBase
 {
     /**
      * Get all metadata types currently stored in the database.
+     *
+     * @return array
      */
     public function getMetadataTypes()
     {
@@ -42,7 +44,10 @@ class MetadataModel extends MetadataModelBase
     }
 
     /**
-     * Get all the valid elements for a given metadata type
+     * Get all the valid elements for a given metadata type.
+     *
+     * @param int $type
+     * @return array
      */
     public function getMetadataElements($type)
     {
@@ -58,7 +63,11 @@ class MetadataModel extends MetadataModelBase
     }
 
     /**
-     * Get all of the valid qualifiers for a given type and element
+     * Get all of the valid qualifiers for a given type and element.
+     *
+     * @param int $type
+     * @param string $element
+     * @return array
      */
     public function getMetadataQualifiers($type, $element)
     {
@@ -80,6 +89,12 @@ class MetadataModel extends MetadataModelBase
      *
      * @return MetadataDao
      */
+    /**
+     * @param int $type
+     * @param string $element
+     * @param string $qualifier
+     * @return false|MetadataDao
+     */
     public function getMetadata($type, $element, $qualifier)
     {
         $row = $this->database->fetchRow(
@@ -92,7 +107,11 @@ class MetadataModel extends MetadataModelBase
         return $this->initDao('Metadata', $row);
     }
 
-    /** get all the metadata */
+    /**
+     * Get all the metadata
+     *
+     * @return array
+     */
     public function getAllMetadata()
     {
         $rowset = $this->database->fetchAll($this->database->select());
@@ -111,13 +130,24 @@ class MetadataModel extends MetadataModelBase
         return $metadata;
     }
 
-    /** Return the table name based on the type of metadata */
+    /**
+     * Return the table name based on the type of metadata.
+     *
+     * @param int $metadatatype
+     * @return string
+     */
     public function getTableValueName($metadatatype)
     {
         return 'metadatavalue';
     }
 
-    /** Return true if a metadata value exists for this metadata. */
+    /**
+     * Return true if a metadata value exists for this metadata.
+     *
+     * @param MetadataDao $metadataDao
+     * @return bool
+     * @throws Zend_Exception
+     */
     public function getMetadataValueExists($metadataDao)
     {
         if (!$metadataDao instanceof MetadataDao) {
@@ -141,7 +171,11 @@ class MetadataModel extends MetadataModelBase
     }
 
     /**
-     * Save a metadata value, will update the row if it exists, otherwise insert
+     * Save a metadata value, will update the row if it exists, otherwise insert.
+     *
+     * @param MetadataDao $metadataDao
+     * @return bool
+     * @throws Zend_Exception
      */
     public function saveMetadataValue($metadataDao)
     {

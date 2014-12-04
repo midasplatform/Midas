@@ -27,6 +27,9 @@ class PendingUserModel extends PendingUserModelBase
 {
     /**
      * Search the table for a matching record.  If any exists, returns the first dao.  Otherwise returns false.
+     *
+     * @param array $params
+     * @return false|PendingUserDao
      */
     public function getByParams($params)
     {
@@ -41,6 +44,9 @@ class PendingUserModel extends PendingUserModelBase
 
     /**
      * Search the table for a matching record. Returns the matching set of daos.
+     *
+     * @param array $params
+     * @return array
      */
     public function getAllByParams($params)
     {

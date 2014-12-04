@@ -28,11 +28,11 @@ class Packages_ExtensionModel extends Packages_ExtensionModelBase
     /**
      * Return all the records in the table
      *
-     * @param params Optional associative array specifying 'extension_id', 'os', 'arch',
-     *               'submissiontype', 'packagetype', 'slicer_revision', 'revision',
-     *               'productname', 'codebase', 'release' and 'category'.
-     *               Can also specify 'order', 'direction', 'limit', and 'offset'.
-     * @return array('extensions' => list of matching extensions,
+     * @param array $params Optional associative array specifying 'extension_id', 'os', 'arch',
+     *                      'submissiontype', 'packagetype', 'slicer_revision', 'revision',
+     *                      'productname', 'codebase', 'release' and 'category'.
+     *                      Can also specify 'order', 'direction', 'limit', and 'offset'.
+     * @return array array('extensions' => list of matching extensions,
      *                            'total' => number of total matching extensions
      */
     public function get(
@@ -101,14 +101,22 @@ class Packages_ExtensionModel extends Packages_ExtensionModelBase
         return array('extensions' => $rowsetAnalysed, 'total' => $countRow['count']);
     }
 
-    /** get all extension records */
+    /**
+     * Get all extension records.
+     *
+     * @return array
+     */
     public function getAll()
     {
         return $this->database->getAll('Extension', 'packages');
     }
 
     /**
-     * Return a slicerpackage_extension dao based on an itemId.
+     * Return a an extension DAO based on an itemId.
+     *
+     * @param int $itemId
+     * @return false|Packages_ExtensionDao
+     * @throws Zend_Exception
      */
     public function getByItemId($itemId)
     {
@@ -120,7 +128,10 @@ class Packages_ExtensionModel extends Packages_ExtensionModelBase
     }
 
     /**
-     * Return a list of all distinct categories for the given application
+     * Return a list of all distinct categories for the given application.
+     *
+     * @param int $applicationId
+     * @return array
      */
     public function getAllCategories($applicationId)
     {
@@ -141,9 +152,10 @@ class Packages_ExtensionModel extends Packages_ExtensionModelBase
     }
 
     /**
-     * Return a list of all distinct releases
+     * Return a list of all distinct releases.
      *
-     * @param applicationId What application id to search on
+     * @param int $applicationId application id to search on
+     * @return array
      */
     public function getAllReleases($applicationId)
     {

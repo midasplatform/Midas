@@ -24,8 +24,12 @@ require_once BASE_PATH.'/modules/oauth/models/base/TokenModelBase.php';
 class Oauth_TokenModel extends Oauth_TokenModelBase
 {
     /**
-     * Retrieve a token dao based on the token value. Checking if it has expired
+     * Retrieve a token DAO based on the token value. Checking if it has expired
      * is left up to the caller.
+     *
+     * @param string $token
+     * @return false|Oauth_TokenDao
+     * @throws Zend_Exception
      */
     public function getByToken($token)
     {
@@ -37,7 +41,12 @@ class Oauth_TokenModel extends Oauth_TokenModelBase
     }
 
     /**
-     * Return all auth code records for the given user
+     * Return all token DAOs for the given user.
+     *
+     * @param UserDao $userDao
+     * @param bool $onlyValid
+     * @return array
+     * @throws Zend_Exception
      */
     public function getByUser($userDao, $onlyValid = true)
     {
@@ -55,10 +64,10 @@ class Oauth_TokenModel extends Oauth_TokenModelBase
     }
 
     /**
-     * Expire all existing tokens for the given user and client
+     * Expire all existing tokens for the given user and client.
      *
-     * @param userDao The user dao
-     * @param clientDao The client dao
+     * @param UserDao $userDao user DAO
+     * @param Oauth_ClientDao $clientDao client DAO
      */
     public function expireTokens($userDao, $clientDao)
     {
@@ -70,9 +79,7 @@ class Oauth_TokenModel extends Oauth_TokenModelBase
         );
     }
 
-    /**
-     * Removes expired access tokens from the database
-     */
+    /** Remove expired access tokens from the database. */
     public function cleanExpired()
     {
         $sql = $this->database->select()->setIntegrityCheck(false)->where(

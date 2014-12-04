@@ -33,7 +33,11 @@ class @MN_CAP@_Notification extends MIDAS_Notification
         $this->addCallBack('CALLBACK_CORE_ITEM_DELETED', 'handleItemDeleted');
     }
 
-    /** STUB: Example of receiving a callback when an item is deleted */
+    /**
+     * STUB: Example of receiving a callback when an item is deleted
+     *
+     * @param array $params parameters
+     */
     public function handleItemDeleted($params)
     {
         $itemDao = $params['item'];

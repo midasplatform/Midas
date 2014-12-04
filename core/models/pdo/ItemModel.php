@@ -25,9 +25,16 @@ require_once BASE_PATH.'/core/models/base/ItemModelBase.php';
  */
 class ItemModel extends ItemModelBase
 {
-    /** Get the keyword from the search.
+    /**
+     * Get the keyword from the search.
      *
-     * @return Array of ItemDao
+     * @param string $searchterm
+     * @param UserDao $userDao
+     * @param int $limit
+     * @param bool $group
+     * @param string $order
+     * @return array
+     * @throws Zend_Exception
      */
     public function getItemsFromSearch($searchterm, $userDao, $limit = 14, $group = true, $order = 'view')
     {
@@ -92,7 +99,12 @@ class ItemModel extends ItemModelBase
         return $results;
     }
 
-    /** get All */
+    /**
+     * Get all
+     *
+     * @return array
+     * @throws Zend_Exception
+     */
     public function getAll()
     {
         $rowset = $this->database->fetchAll($this->database->select()->order(array('item_id DESC')));
@@ -104,7 +116,11 @@ class ItemModel extends ItemModelBase
         return $results;
     }
 
-    /** Get the total number of items in the database */
+    /**
+     * Get the total number of items in the database
+     *
+     * @return int
+     */
     public function getTotalCount()
     {
         $row = $this->database->fetchRow($this->database->select()->from('item', array('count' => 'count(*)')));
@@ -112,7 +128,13 @@ class ItemModel extends ItemModelBase
         return $row['count'];
     }
 
-    /** get by uuid */
+    /**
+     * get by UUID
+     *
+     * @param string $uuid
+     * @return false|ItemDao
+     * @throws Zend_Exception
+     */
     public function getByUuid($uuid)
     {
         $row = $this->database->fetchRow($this->database->select()->where('uuid = ?', $uuid));
@@ -121,7 +143,13 @@ class ItemModel extends ItemModelBase
         return $dao;
     }
 
-    /** Get all items with the name provided */
+    /**
+     * Get all items with the name provided
+     *
+     * @param string $name
+     * @return array
+     * @throws Zend_Exception
+     */
     public function getByName($name)
     {
         $rowset = $this->database->fetchAll($this->database->select()->where('name = ?', $name));
@@ -133,7 +161,14 @@ class ItemModel extends ItemModelBase
         return $daos;
     }
 
-    /** Get all items with the given name and parent folder id */
+    /**
+     * Get all items with the given name and parent folder id
+     *
+     * @param string $name
+     * @param int $folderId
+     * @return array
+     * @throws Zend_Exception
+     */
     public function getByNameAndFolderId($name, $folderId)
     {
         $select = $this->database->select()->from('item')->join(
@@ -153,7 +188,14 @@ class ItemModel extends ItemModelBase
         return $daos;
     }
 
-    /** Get all items with the given name and parent folder name */
+    /**
+     * Get all items with the given name and parent folder name
+     *
+     * @param string $name
+     * @param string $folderName
+     * @return array
+     * @throws Zend_Exception
+     */
     public function getByNameAndFolderName($name, $folderName)
     {
         $select = $this->database->select()->from('item')->join(
@@ -177,6 +219,11 @@ class ItemModel extends ItemModelBase
     /**
      * Check whether an item exists with the given name in the given folder.
      * If it does, returns the existing item dao. Otherwise returns false.
+     *
+     * @param string $name
+     * @param FolderDao $folder
+     * @return false|ItemDao
+     * @throws Zend_Exception
      */
     public function existsInFolder($name, $folder)
     {
@@ -196,11 +243,12 @@ class ItemModel extends ItemModelBase
     }
 
     /**
-     * Get Items where user policy exists and is != admin
+     * Get items shared to the given community
      *
-     * @param  type $userDao
-     * @param  type $limit
-     * @return Array
+     * @param CommunityDao $communityDao
+     * @param int $limit
+     * @return array
+     * @throws Zend_Exception
      */
     public function getSharedToCommunity($communityDao, $limit = 20)
     {
@@ -226,10 +274,12 @@ class ItemModel extends ItemModelBase
     }
 
     /**
-     * Get most popular items
+     * Get the most popular items
      *
-     * @param  type $limit
-     * @return Array
+     * @param UserDao $userDao
+     * @param int $limit
+     * @return array
+     * @throws Zend_Exception
      */
     public function getMostPopulars($userDao, $limit = 20)
     {
@@ -248,11 +298,12 @@ class ItemModel extends ItemModelBase
     }
 
     /**
-     * Get Items where user policy = Admin
+     * Get items owned by the given user
      *
-     * @param  type $userDao
-     * @param  type $limit
-     * @return Array
+     * @param UserDao $userDao
+     * @param int $limit
+     * @return array
+     * @throws Zend_Exception
      */
     public function getOwnedByUser($userDao, $limit = 20)
     {
@@ -281,11 +332,12 @@ class ItemModel extends ItemModelBase
     }
 
     /**
-     * Get Items where user policy exists and is != admin
+     * Get items shared to the given user
      *
-     * @param  type $userDao
-     * @param  type $limit
-     * @return Array
+     * @param UserDao $userDao
+     * @param int $limit
+     * @return array
+     * @throws Zend_Exception
      */
     public function getSharedToUser($userDao, $limit = 20)
     {
@@ -313,7 +365,12 @@ class ItemModel extends ItemModelBase
         return $results;
     }
 
-    /** Delete an item */
+    /**
+     * Delete an item
+     *
+     * @param ItemDao $itemdao
+     * @throws Zend_Exception
+     */
     public function delete($itemdao)
     {
         if (!$itemdao instanceof ItemDao) {
@@ -380,6 +437,10 @@ class ItemModel extends ItemModelBase
 
     /**
      * Get the maximum policy level for the given item and user.
+     *
+     * @param int $itemId
+     * @param UserDao $user
+     * @return int|string
      */
     public function getMaxPolicy($itemId, $user)
     {
@@ -425,7 +486,15 @@ class ItemModel extends ItemModelBase
         return $maxPolicy;
     }
 
-    /** check if the policy is valid */
+    /**
+     * Check if the policy is valid
+     *
+     * @param ItemDao $itemdao
+     * @param null|UserDao $userDao
+     * @param int $policy
+     * @return bool
+     * @throws Zend_Exception
+     */
     public function policyCheck($itemdao, $userDao = null, $policy = 0)
     {
         if (!$itemdao instanceof ItemDao || !is_numeric($policy)) {
@@ -475,12 +544,15 @@ class ItemModel extends ItemModelBase
         return true;
     }
 
-    /** get random items
+    /**
+     * Get random items.
      *
-     * @param  UserDao $userDao
-     * @param  type $policy
-     * @param  type $limit
-     * @return array   of ItemDao
+     * @param null|UserDao $userDao
+     * @param int $policy
+     * @param int $limit
+     * @param bool $thumbnailFilter
+     * @return array
+     * @throws Zend_Exception
      */
     public function getRandomThumbnails($userDao = null, $policy = 0, $limit = 10, $thumbnailFilter = false)
     {
@@ -566,9 +638,11 @@ class ItemModel extends ItemModelBase
         return $rowsetAnalysed;
     }
 
-    /** Get the last revision
+    /**
+     * Get the last revision.
      *
-     * @return ItemRevisionDao
+     * @return false|ItemRevisionDao
+     * @throws Zend_Exception
      */
     public function getLastRevision($itemdao)
     {
@@ -587,9 +661,13 @@ class ItemModel extends ItemModelBase
         );
     }
 
-    /** Get  revision
+    /**
+     * Get revision.
      *
-     * @return ItemRevisionDao
+     * @param ItemDao $itemdao
+     * @param int $number
+     * @return false|ItemRevisionDao
+     * @throws Zend_Exception
      */
     public function getRevision($itemdao, $number)
     {
@@ -609,10 +687,12 @@ class ItemModel extends ItemModelBase
     }
 
     /**
-     * Call a callback function on every item in the database
+     * Call a callback function on every item in the database.
      *
-     * @param callback Name of the Midas callback to call
-     * @param paramName what parameter name the item should be passed as to the callback (default is 'item')
+     * @param string $callback name of the callback
+     * @param string $paramName parameter name the item should be passed as to the callback (default is 'item')
+     * @param array $otherParams other parameters
+     * @throws Zend_Exception
      */
     public function iterateWithCallback($callback, $paramName = 'item', $otherParams = array())
     {
@@ -627,6 +707,8 @@ class ItemModel extends ItemModelBase
     /**
      * Used by the admin dashboard page. Counts the number of orphaned item
      * records in the database.
+     *
+     * @return int
      */
     public function countOrphans()
     {
@@ -647,7 +729,10 @@ class ItemModel extends ItemModelBase
     }
 
     /**
-     * Call this to remove all orphaned item records
+     * Remove all orphaned item records
+     *
+     * @param null|ProgressDao $progressDao
+     * @throws Zend_Exception
      */
     public function removeOrphans($progressDao = null)
     {
@@ -702,9 +787,10 @@ class ItemModel extends ItemModelBase
      * This item's real name should be 'aaa.txt' which does not have / \(d+\)/ like appendix .
      * So when an item named "aaa.txt (1)" is duplicated, the newly created item will be called "aaa.txt (2)" instead of "aaa.txt (1) (1)"
      *
-     * @param  string $name name of the item
-     * @param  FolderDao $parent parent folder of the item
-     * @return string    $updatedName new unique(within its parent folder) name assigned to the item
+     * @param string $name name of the item
+     * @param FolderDao $parent parent folder of the item
+     * @return string new unique (within its parent folder) name assigned to the item
+     * @throws Zend_Exception
      */
     public function updateItemName($name, $parent)
     {

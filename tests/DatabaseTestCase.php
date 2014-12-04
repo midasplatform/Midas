@@ -43,7 +43,6 @@ require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
  * @property ItemRevisionModel $ItemRevision
  * @property LicenseModel $License
  * @property MetadataModel $Metadata
- * @property ModuleModel $Module
  * @property NewUserInvitationModel $NewUserInvitation
  * @property PendingUserModel $PendingUser
  * @property ProgressModel $Progress
@@ -57,7 +56,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
     protected $application;
 
     /**
-     * get the Midas temporary directory
+     * Fet the temporary directory.
      *
      * @return string
      */
@@ -66,7 +65,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
         return UtilityComponent::getTempDirectory();
     }
 
-    /** init tests */
+    /** Setup. */
     public function setUp()
     {
         $this->bootstrap = array($this, 'appBootstrap');
@@ -88,20 +87,25 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
         parent::setUp();
     }
 
-    /** end tests */
+    /** Teardown. */
     public function tearDown()
     {
         parent::tearDown();
     }
 
-    /** init Midas */
+    /** Bootstrap the application. */
     public function appBootstrap()
     {
         $this->application = new Zend_Application(APPLICATION_ENV, CORE_CONFIG);
         $this->application->bootstrap();
     }
 
-    /** setup database using xml files */
+    /**
+     * Setup the database using XML files.
+     *
+     * @param string|array $files
+     * @param null|string $module
+     */
     public function setupDatabase($files, $module = null)
     {
         $db = Zend_Registry::get('dbAdapter');
@@ -143,7 +147,11 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
         }
     }
 
-    /** create mock database connection */
+    /**
+     * Get the mock database connection.
+     *
+     * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection|Zend_Test_PHPUnit_Db_Connection
+     */
     protected function getConnection()
     {
         if (!isset($this->_connectionMock) || $this->_connectionMock == null) {
@@ -174,7 +182,11 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
     }
 
     /**
-     * @return PHPUnit_Extensions_Database_DataSet_IDataSet
+     * Get the data set.
+     *
+     * @param string $name
+     * @param null|string $module
+     * @return PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet
      */
     protected function getDataSet($name = 'default', $module = null)
     {
@@ -186,12 +198,14 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
         return $this->createFlatXmlDataSet($path);
     }
 
-    /** loadData
+    /**
+     * Load data.
      *
-     * @param modelName of model to load
-     * @param file that the test data is defined in
-     * @param modelModule the module of the model, or '' if in core
-     * @param fileModule the module the test data file is in, or '' if in core
+     * @param string $modelName name of the model to load
+     * @param null|string $file file that the test data is defined in
+     * @param string $modelModule module of the model, or '' if in core
+     * @param string $fileModule module the test data file is in, or '' if in core
+     * @return false|array|mixed
      */
     protected function loadData($modelName, $file = null, $modelModule = '', $fileModule = '')
     {
@@ -209,9 +223,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
         return $model->load($key);
     }
 
-    /**
-     *  Loads model and components
-     */
+    /** Load model and components. */
     public function loadElements()
     {
         Zend_Registry::set('models', array());

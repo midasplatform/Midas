@@ -28,7 +28,7 @@
  */
 abstract class Validation_DashboardModelBase extends Validation_AppModel
 {
-    /** constructor */
+    /** Constructor. */
     public function __construct()
     {
         parent::__construct();
@@ -196,61 +196,53 @@ abstract class Validation_DashboardModelBase extends Validation_AppModel
      * Add a result folder to the dashboard. The names of the items in the
      * folder should correspond to the ones in testing, training, and truth.
      *
-     * @param dashboard the target dashboard
-     * @param folder the folder of result items
-     * @return void
+     * @param Validation_DashboardDao $dashboard
+     * @param FolderDao $folder
      */
     abstract public function addResult($dashboard, $folder);
 
     /**
-     * Remove a result folder from the dashboard
+     * Remove a result folder from the dashboard.
      *
-     * @param dashboard the target dashboard
-     * @param folder the folder of result items to be take off of the dashboard
-     * @return void
+     * @param Validation_DashboardDao $dashboard
+     * @param FolderDao $folder
      */
     abstract public function removeResult($dashboard, $folder);
 
     /**
      * Set a single row of result values for a dashboard.
      *
-     * @param dashboard the target dashboard
-     * @param folder the result folder with which the values are associated
-     * @param values an array where the keys are item ids and the values are
-     *        scalar results
-     * @return void
+     * @param Validation_DashboardDao $dashboard
+     * @param FolderDao $folder
+     * @param array $values
      */
     abstract public function setScores($dashboard, $folder, $values);
 
     /**
-     * Set a single result value
+     * Set a single result value.
      *
-     * @param dashboard the target dashboard
-     * @param folder the result folder with which the value is associated
-     * @param item the item associated with the result
-     * @param value a scalar value representing a result
-     *        scalar results
-     * @return void
+     * @param Validation_DashboardDao $dashboard
+     * @param FolderDao $folder
+     * @param ItemDao $item
+     * @param array $values
+     * @return Validation_ScalarResultDao
      */
     abstract public function setScore($dashboard, $folder, $item, $values);
 
     /**
-     * Get a single set of scores for a dashboard
+     * Get a single set of scores for a dashboard.
      *
-     * @param dashboard the target dashboard
-     * @param folder the folder that corresponds to the results
-     * @return an array where the keys are item ids and the values are
-     *            scores
+     * @param Validation_DashboardDao $dashboard
+     * @param FolderDao $folder
+     * @return array
      */
     abstract public function getScores($dashboard, $folder);
 
     /**
-     * Get all sets of scores for a dashboard
+     * Get all sets of scores for a dashboard.
      *
-     * @param dashboard the target dashboard
-     * @return an array of arrays where the keys are folder ids and the values
-     *            are arrays where the keys are item ids and the values are
-     *            scores
+     * @param Validation_DashboardDao $dashboard
+     * @return array
      */
     abstract public function getAllScores($dashboard);
 }

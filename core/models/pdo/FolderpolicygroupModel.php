@@ -25,9 +25,13 @@ require_once BASE_PATH.'/core/models/base/FolderpolicygroupModelBase.php';
  */
 class FolderpolicygroupModel extends FolderpolicygroupModelBase
 {
-    /** getPolicy
+    /**
+     * Get policy
      *
-     * @return FolderpolicygroupDao
+     * @param GroupDao $group
+     * @param FolderDao $folder
+     * @return false|FolderpolicygroupDao
+     * @throws Zend_Exception
      */
     public function getPolicy($group, $folder)
     {
@@ -73,9 +77,10 @@ class FolderpolicygroupModel extends FolderpolicygroupModelBase
     }
 
     /**
-     * deletes all folderpolicygroup rows associated with the passed in group
+     * Deletes all folderpolicygroup rows associated with the passed in group
      *
-     * @param GroupDao
+     * @param GroupDao $group
+     * @throws Zend_Exception
      */
     public function deleteGroupPolicies($group)
     {

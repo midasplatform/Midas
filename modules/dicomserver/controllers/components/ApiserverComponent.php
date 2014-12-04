@@ -38,7 +38,10 @@ class Dicomserver_ApiserverComponent extends AppComponent
      * @param dest_folder (Optional) Pydas upload destination folder
      * @param dcmqrscp_cmd (Optional) The command to run dcmqrscp
      * @param get_command (Optional) If set, will not start DICOM server, but only get command used to start DICOM server in command line.
-     * @return
+     * @return array
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function start($args)
     {
@@ -75,7 +78,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
             $userApiModel = MidasLoader::loadModel('Userapi');
             $userApiDao = $userApiModel->getByAppAndUser('Default', $userDao);
             if (!$userApiDao) {
-                throw new Zend_Exception('You need to create a web API key for this user for application: Default');
+                throw new Exception('You need to create a web API key for this user for application: Default');
             }
             $api_key = $userApiDao->getApikey();
         }
@@ -161,7 +164,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
         }
         if ($returnVal) {
             $exception_string = "Failed to start DICOM server! \n Reason:".implode("\n", $output);
-            throw new Zend_Exception(htmlspecialchars($exception_string, ENT_QUOTES), MIDAS_INVALID_POLICY);
+            throw new Exception(htmlspecialchars($exception_string, ENT_QUOTES), MIDAS_INVALID_POLICY);
         }
 
         $ret = array();
@@ -178,6 +181,9 @@ class Dicomserver_ApiserverComponent extends AppComponent
      * @param storescp_cmd (Optional) The command to run storescp
      * @param dcmqrscp_cmd (Optional) The command to run dcmqrscp
      * @return array('status' => string)
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function status($args)
     {

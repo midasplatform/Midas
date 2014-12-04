@@ -26,7 +26,11 @@ define('MIDAS_BATCHMAKE_INVALID_PARAMETER', -150);
 class Batchmake_ApiComponent extends AppComponent
 {
     /**
-     * Helper function for verifying keys in an input array
+     * Helper function for verifying keys in an input array.
+     *
+     * @param array $keys
+     * @param array $values
+     * @throws Exception
      */
     private function _checkKeys($keys, $values)
     {
@@ -37,7 +41,12 @@ class Batchmake_ApiComponent extends AppComponent
         }
     }
 
-    /** Return the user dao */
+    /**
+     * Return the user DAO.
+     *
+     * @param array $args
+     * @return false|UserDao
+     */
     private function _getUser($args)
     {
         /** @var AuthenticationComponent $authComponent */
@@ -83,6 +92,7 @@ class Batchmake_ApiComponent extends AppComponent
      * @param dagfilename The filename of the dagfile
      * @param outfilename The filename of the dag processing output
      * @return The created CondorDagDao.
+     * @throws Exception
      */
     public function addCondorDag($params)
     {
@@ -138,6 +148,7 @@ class Batchmake_ApiComponent extends AppComponent
      * @param logfilename The filename of the log file for the job
      * @param postfilename The filename of the post script log file for the job
      * @return The created CondorJobDao.
+     * @throws Exception
      */
     public function addCondorJob($params)
     {

@@ -26,6 +26,7 @@ class Tracker_ApiComponent extends AppComponent
 
     /**
      * Helper function for verifying keys in an input array
+     * @throws Exception
      */
     private function _checkKeys($keys, $values)
     {
@@ -53,6 +54,7 @@ class Tracker_ApiComponent extends AppComponent
      * @param scalarIds Comma separated list of scalar ids to associate the item with
      * @param itemId The id of the item to associate with the scalar
      * @param label The label describing the nature of the association
+     * @throws Exception
      */
     public function itemAssociate($args)
     {
@@ -113,6 +115,7 @@ class Tracker_ApiComponent extends AppComponent
      * @param silent (Optional) If set, do not perform threshold-based email notifications for this scalar
      * @param unofficial (Optional) If passed, creates an unofficial scalar visible only to the user performing the submission
      * @return The scalar dao that was created
+     * @throws Exception
      */
     public function scalarAdd($args)
     {
@@ -306,6 +309,7 @@ class Tracker_ApiComponent extends AppComponent
      * @param silent (Optional) If set, do not perform threshold-based email notifications for this scalar
      * @param unofficial (Optional) If passed, creates an unofficial scalar visible only to the user performing the submission
      * @return The list of scalars that were created.  Non-numeric values are ignored.
+     * @throws Exception
      */
     public function resultsUploadJson($args)
     {
@@ -537,7 +541,9 @@ class Tracker_ApiComponent extends AppComponent
     }
 
     /**
-     * Find an item by name within the community, or create it in the community's private folder if it does not exist
+     * @param string $itemName
+     * @param CommunityDao $community
+     * @return ItemDao
      */
     private function _createOrFindByName($itemName, $community)
     {

@@ -31,6 +31,7 @@ class Statistics_ItemController extends Statistics_AppController
      * @param [startDate] The start of the date range (inclusive, default = 1 month ago)
      * @param [endDate] The end of the date range (inclusive, default = today)
      * @param [limit] Result limit for the map (default = 1000)
+     * @throws Zend_Exception
      */
     public function indexAction()
     {
@@ -116,6 +117,7 @@ class Statistics_ItemController extends Statistics_AppController
      *            -latitude
      *            -longitude
      *            -date
+     * @throws Zend_Exception
      */
     public function filterAction()
     {

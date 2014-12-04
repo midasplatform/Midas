@@ -24,7 +24,9 @@ require_once BASE_PATH.'/modules/batchmake/models/base/ItemmetricModelBase.php';
 class Batchmake_ItemmetricModel extends Batchmake_ItemmetricModelBase
 {
     /**
-     * @return all rows stored.
+     * Get all rows stored.
+     *
+     * @return array
      */
     public function getAll()
     {

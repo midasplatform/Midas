@@ -280,9 +280,10 @@ abstract class ItemModelBase extends AppModel
      * input userDao parameter (who run this operation) and access policy is based on
      * the input folderDao parameter (destination folder)
      *
-     * @param  ItemDao $itemDao the item to be duplicated
-     * @param  UserDao $userDao the user who run this operation
-     * @param  FolderDao $folderDao destination folder
+     * @param ItemDao $itemDao the item to be duplicated
+     * @param UserDao $userDao the user who run this operation
+     * @param FolderDao $folderDao destination folder
+     * @return ItemDao
      * @throws Zend_Exception on invalid input parameters (itemDao, userDao and folderDao)
      */
     public function duplicateItem($itemDao, $userDao, $folderDao)
@@ -403,9 +404,12 @@ abstract class ItemModelBase extends AppModel
         Zend_Registry::get('notifier')->callback("CALLBACK_CORE_PLUS_ONE_DOWNLOAD", array('item' => $itemdao));
     }
 
-    /** Add a revision to an item
+    /**
+     * Add a revision to an item.
      *
-     * @return void
+     * @param ItemDao $itemdao
+     * @param ItemRevisionDao $revisiondao
+     * @throws Zend_Exception
      */
     public function addRevision($itemdao, $revisiondao)
     {
@@ -435,7 +439,9 @@ abstract class ItemModelBase extends AppModel
      * Delete an itemrevision from an item, will reduce all other
      * itemrevision revision numbers appropriately.
      *
-     * @return void
+     * @param ItemDao $itemdao
+     * @param ItemRevisionDao $revisiondao
+     * @throws Zend_Exception
      */
     public function removeRevision($itemdao, $revisiondao)
     {

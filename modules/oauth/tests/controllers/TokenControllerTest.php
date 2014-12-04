@@ -36,7 +36,7 @@ class Oauth_TokenControllerTest extends ControllerTestCase
     /**
      * Helper function for asserting error responses from the token endpoint
      *
-     * @param errorName The error name as specified in the IETF spec draft
+     * @param string $errorName The error name as specified in the IETF spec draft
      */
     private function _assertErrorResponse($errorName)
     {

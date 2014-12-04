@@ -23,9 +23,7 @@ include_once BASE_PATH.'/modules/batchmake/constant/module.php';
 /** TaskModel Base class */
 class Batchmake_TaskModelBase extends Batchmake_AppModel
 {
-    /**
-     * constructor
-     */
+    /** Constructor. */
     public function __construct()
     {
         parent::__construct();
@@ -40,9 +38,13 @@ class Batchmake_TaskModelBase extends Batchmake_AppModel
         $this->initialize(); // required
     }
 
-    /** Create a task
+    /**
+     * Create a task.
      *
-     * @return TaskDao
+     * @param UserDao $userDao
+     * @param string $tmpWorkDirRoot
+     * @return Batchmake_TaskDao
+     * @throws Zend_Exception
      */
     public function createTask($userDao, $tmpWorkDirRoot)
     {

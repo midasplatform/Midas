@@ -18,7 +18,12 @@
  limitations under the License.
 =========================================================================*/
 
-/** Get database types */
+/**
+ * Get database types.
+ *
+ * @param string $testConfigDir
+ * @return array
+ */
 function getSqlDbTypes($testConfigDir)
 {
     // setup testing for whichever db config testing files exist
@@ -38,7 +43,14 @@ function getSqlDbTypes($testConfigDir)
     return $dbTypes;
 }
 
-/** Load database adapter */
+/**
+ * Load database adapter.
+ *
+ * @param string $testConfigDir
+ * @param string $dbType
+ * @return Zend_Db_Adapter_Abstract
+ * @throws Zend_Exception
+ */
 function loadDbAdapter($testConfigDir, $dbType)
 {
     // create the lockfile for this dbType
@@ -80,7 +92,13 @@ function loadDbAdapter($testConfigDir, $dbType)
     return $db;
 }
 
-/** Drop database tables */
+/**
+ * Drop database tables.
+ *
+ * @param Zend_Db_Adapter_Abstract $db
+ * @param string $dbType
+ * @throws Zend_Exception
+ */
 function dropTables($db, $dbType)
 {
     $db->beginTransaction();
@@ -104,7 +122,14 @@ function dropTables($db, $dbType)
     }
 }
 
-/** Install and upgrade core */
+/**
+ * Install and upgrade core.
+ *
+ * @param Zend_Db_Adapter_Abstract $db
+ * @param string $dbType
+ * @param UtilityComponent $utilityComponent
+ * @throws Zend_Exception
+ */
 function installCore($db, $dbType, $utilityComponent)
 {
     require_once BASE_PATH.'/core/controllers/components/UpgradeComponent.php';
@@ -149,7 +174,7 @@ function installCore($db, $dbType, $utilityComponent)
     $upgradeComponent->upgrade(str_replace('.sql', '', basename($sqlFile)), true /* true for testing */);
 }
 
-/** Create default assetstore */
+/** Create default asset store. */
 function createDefaultAssetstore()
 {
     Zend_Registry::set('models', array());
@@ -181,7 +206,11 @@ function createDefaultAssetstore()
     $assetStoreModel->save($assetstoreDao);
 }
 
-/** Install and upgrade modules */
+/**
+ * Install and upgrade modules.
+ *
+ * @param UtilityComponent $utilityComponent
+ */
 function installModules($utilityComponent)
 {
     // What to do about module config files, these should be copied into
@@ -197,7 +226,11 @@ function installModules($utilityComponent)
     }
 }
 
-/** Release lock file */
+/**
+ * Release lock file.
+ *
+ * @param string $dbType
+ */
 function releaseLock($dbType)
 {
     if (file_exists(BASE_PATH.'/tests/configs/lock.'.$dbType.'.ini')) {

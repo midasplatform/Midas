@@ -491,6 +491,7 @@ class BrowseController extends AppController
      * @param type The type of the resource: (folder | item)
      * @return JSON object with the "policy" field set to the max policy on the resource.
      *              Throws exception if the user has no access to the resource
+     * @throws Zend_Exception
      */
     public function getmaxpolicyAction()
     {

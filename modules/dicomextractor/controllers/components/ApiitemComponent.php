@@ -28,6 +28,9 @@ class Dicomextractor_ApiitemComponent extends AppComponent
      * @http PUT
      * @param id the id of the item to be extracted
      * @return the id of the revision
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function extract($args)
     {

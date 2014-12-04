@@ -24,7 +24,7 @@
  */
 abstract class Validation_ScalarResultModelBase extends Validation_AppModel
 {
-    /** constructor */
+    /** Constructor. */
     public function __construct()
     {
         parent::__construct();
@@ -59,11 +59,11 @@ abstract class Validation_ScalarResultModelBase extends Validation_AppModel
     }
 
     /**
-     * Set the folder of the scalar result
+     * Set the folder of the scalar result.
      *
-     * @param scalarResult the target scalar result
-     * @param folder the target folder
-     * @return void
+     * @param Validation_ScalarResultDao $scalarResult target scalar result
+     * @param FolderDao $folder target folder
+     * @throws Zend_Exception
      */
     public function setFolder($scalarResult, $folder)
     {
@@ -78,11 +78,11 @@ abstract class Validation_ScalarResultModelBase extends Validation_AppModel
     }
 
     /**
-     * Set the item of the scalar result
+     * Set the item of the scalar result.
      *
-     * @param scalarResult the target scalar result
-     * @param item the target item
-     * @return void
+     * @param Validation_ScalarResultDao $scalarResult target scalar result
+     * @param ItemDao $item target item
+     * @throws Zend_Exception
      */
     public function setItem($scalarResult, $item)
     {

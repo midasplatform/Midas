@@ -574,6 +574,7 @@ class ItemController extends AppController
      * @param metadatatype
      * @param element
      * @param qualifier
+     * @throws Zend_Exception
      */
     public function getmetadatavalueexistsAction()
     {
@@ -613,6 +614,7 @@ class ItemController extends AppController
      * otherwise the request produces no output.
      *
      * @param itemId The item whose thumbnail you wish to download
+     * @throws Zend_Exception
      */
     public function thumbnailAction()
     {

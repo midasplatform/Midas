@@ -24,18 +24,14 @@
  */
 class Mfa_OtpComponent extends AppComponent
 {
-    /** Constructor */
-    public function __construct()
-    {
-    }
-
     /**
      * Call this function to perform the authentication if a user has an OTP device.
      * It will determine which technology to use and switch to the appropriate method accordingly.
      *
-     * @param otpDevice The Otpdevice_Dao corresponding to the user
-     * @param token The current one-time password displayed on the device
+     * @param Mfa_OtpdeviceDao $otpDevice The one-time password device DAO corresponding to the user
+     * @param Mfa_ApitokenDao $token The current one-time password displayed on the device
      * @return true If authentication is successful, false otherwise
+     * @throws Zend_Exception
      */
     public function authenticate($otpDevice, $token)
     {
@@ -55,9 +51,13 @@ class Mfa_OtpComponent extends AppComponent
     }
 
     /**
-     * Perform RSA SecurID Authentication
-     * In the current implementation, we rely on a correctly configured PAM setup
+     * Perform RSA SecurID authentication. In the current implementation, we rely on a correctly configured PAM setup
      * on the server.
+     *
+     * @param Mfa_OtpdeviceDao $otpDevice
+     * @param Mfa_ApitokenDao $token
+     * @return bool
+     * @throws Zend_Exception
      */
     protected function _pamAuth($otpDevice, $token)
     {
@@ -70,7 +70,12 @@ class Mfa_OtpComponent extends AppComponent
     }
 
     /**
-     * STUB: Perform OATH HOTP authentication
+     * Perform OATH HOTP authentication.
+     *
+     * @todo
+     * @param Mfa_OtpdeviceDao $otpDevice
+     * @param Mfa_ApitokenDao $token
+     * @return true
      */
     protected function _hotpAuth($otpDevice, $token)
     {
@@ -78,7 +83,12 @@ class Mfa_OtpComponent extends AppComponent
     }
 
     /**
-     * STUB: Perform RSA SecurID Authentication
+     * Perform RSA SecurID authentication.
+     *
+     * @todo
+     * @param Mfa_OtpdeviceDao $otpDevice
+     * @param Mfa_ApitokenDao $token
+     * @return true
      */
     protected function _securIdAuth($otpDevice, $token)
     {
@@ -87,6 +97,10 @@ class Mfa_OtpComponent extends AppComponent
 
     /**
      * Perform authentication using a RADIUS server.
+     *
+     * @param Mfa_OtpdeviceDao $otpDevice
+     * @param Mfa_ApitokenDao $token
+     * @throws Zend_Exception
      */
     protected function _radiusauth($otpDevice, $token)
     {

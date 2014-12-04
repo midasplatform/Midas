@@ -21,14 +21,20 @@
 /** Apikey controller for Web Api */
 class ApikeyController extends AppController
 {
+    /** @var array */
     public $_models = array('User', 'Userapi');
+
+    /** @var array */
     public $_forms = array('Apikey');
+
+    /** @var array */
     public $_components = array('Date');
 
     /**
      * Configuration action for a user's api keys
      *
      * @param userId The id of the user to display
+     * @throws Zend_Exception
      */
     public function usertabAction()
     {

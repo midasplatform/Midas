@@ -26,7 +26,12 @@ require_once BASE_PATH.'/core/models/base/UserModelBase.php';
  */
 class UserModel extends UserModelBase
 {
-    /** get by uuid */
+    /**
+     * Get by UUID.
+     *
+     * @param string $uuid
+     * @return false|UserDao
+     */
     public function getByUuid($uuid)
     {
         $row = $this->database->fetchRow($this->database->select()->where('uuid = ?', $uuid));
@@ -35,7 +40,12 @@ class UserModel extends UserModelBase
         return $dao;
     }
 
-    /** Get a user by email */
+    /**
+     * Get a user by email.
+     *
+     * @param $email
+     * @return false|UserDao
+     */
     public function getByEmail($email)
     {
         $row = $this->database->fetchRow($this->database->select()->where('email = ?', $email));

@@ -21,7 +21,7 @@
 /** Client base model for the oauth module */
 abstract class Oauth_ClientModelBase extends Oauth_AppModel
 {
-    /** constructor */
+    /** Constructor. */
     public function __construct()
     {
         parent::__construct();
@@ -58,14 +58,21 @@ abstract class Oauth_ClientModelBase extends Oauth_AppModel
         $this->initialize(); // required
     }
 
-    /** Get by user */
+    /**
+     * Return all client records owned by the given user.
+     *
+     * @param UserDao $userDao
+     * @return array
+     */
     abstract public function getByUser($userDao);
 
     /**
      * Create and return a new oauth client owned by the given user.
      *
-     * @param userDao The owner of the client
-     * @param name The human readable name of the client
+     * @param UserDao $userDao owner of the client
+     * @param string $name human readable name of the client
+     * @return Oauth_ClientDao
+     * @throws Zend_Exception
      */
     public function create($userDao, $name)
     {
@@ -90,7 +97,10 @@ abstract class Oauth_ClientModelBase extends Oauth_AppModel
     }
 
     /**
-     * Delete a client.  Deletes all associated tokens and codes
+     * Delete a client. Deletes all associated tokens and codes.
+     *
+     * @param Oauth_ClientDao $clientDao
+     * @throws Zend_Exception
      */
     public function delete($clientDao)
     {

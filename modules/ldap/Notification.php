@@ -25,8 +25,13 @@
  */
 class Ldap_Notification extends MIDAS_Notification
 {
+    /** @var array */
     public $_models = array('Setting', 'User');
+
+    /** @var array */
     public $_moduleModels = array('User');
+
+    /** @var string */
     public $moduleName = 'ldap';
 
     /** init notification process */
@@ -44,6 +49,9 @@ class Ldap_Notification extends MIDAS_Notification
 
     /**
      * Add an LDAP login field to the user profile form
+     *
+     * @param array $params parameters
+     * @return array
      */
     public function getLdapLoginField($params)
     {
@@ -72,8 +80,9 @@ class Ldap_Notification extends MIDAS_Notification
      * deletes any existing ldap_user for the user. Otherwise will update or create an ldap_user record
      * with the new value. The user will then use that on subsequent logins.
      *
-     * @param fields The HTTP fields from the settings form
-     * @param user The user dao being changed
+     * @param array $params parameters, including "fields", the HTTP fields from the settings form,
+     * and "user", the user DAO being changed
+     * @throws Zend_Exception
      */
     public function userSettingsChanged($params)
     {
@@ -104,7 +113,11 @@ class Ldap_Notification extends MIDAS_Notification
         }
     }
 
-    /** generate admin Dashboard information */
+    /**
+     * Generate admin dashboard information.
+     *
+     * @return array
+     */
     public function getDashboard()
     {
         $hostName = $this->Setting->getValueByName(LDAP_HOST_NAME_KEY, $this->moduleName);
@@ -152,9 +165,10 @@ class Ldap_Notification extends MIDAS_Notification
     }
 
     /**
-     * Look up whether the user exists in the ldap_user table
+     * Look up whether the user exists in the ldap_user table.
      *
-     * @return true or false
+     * @param array $params parameters
+     * @return bool
      */
     public function userExists($params)
     {
@@ -166,7 +180,12 @@ class Ldap_Notification extends MIDAS_Notification
         return false;
     }
 
-    /** login using ldap instead of the normal mechanism */
+    /**
+     * Login using ldap instead of the normal mechanism.
+     *
+     * @param array $params parameters
+     * @throws Zend_Exception
+     */
     public function ldapLogin($params)
     {
         if (!isset($params['email']) || !isset($params['password'])) {
@@ -293,7 +312,9 @@ class Ldap_Notification extends MIDAS_Notification
     }
 
     /**
-     * If a user is deleted, we must delete any corresponding ldap_user entries
+     * If a user is deleted, we must delete any corresponding ldap_user entries.
+     *
+     * @param array $params parameters
      */
     public function handleUserDeleted($params)
     {
@@ -304,6 +325,10 @@ class Ldap_Notification extends MIDAS_Notification
      * If a user requests a password reset and they are an ldap user, we have to
      * send them an alternate email telling them how they should actually reset
      * their password.
+     *
+     * @param array $params parameters
+     * @return array
+     * @throws Zend_Exception
      */
     public function handleResetPassword($params)
     {
@@ -332,7 +357,10 @@ class Ldap_Notification extends MIDAS_Notification
     }
 
     /**
-     * We must disable password changes for ldap users
+     * We must disable password changes for ldap users.
+     *
+     * @param array $params parameters
+     * @return array
      */
     public function allowPasswordChange($params)
     {
@@ -347,6 +375,12 @@ class Ldap_Notification extends MIDAS_Notification
     /**
      * This is used to suppress warnings from being written to the output and the
      * error log.  When searching, we don't want warnings to appear for invalid searches.
+     *
+     * @param int $errno
+     * @param string $errstr
+     * @param string $errfile
+     * @param int $errline
+     * @return true
      */
     public static function eatWarnings($errno, $errstr, $errfile, $errline)
     {

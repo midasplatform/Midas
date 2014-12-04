@@ -24,7 +24,12 @@ require_once BASE_PATH.'/core/models/base/ActivedownloadModelBase.php';
  */
 class ActivedownloadModel extends ActivedownloadModelBase
 {
-    /** Check whether an active download exists for the given ip */
+    /**
+     * Check whether an active download exists for the given IP address.
+     *
+     * @param string $ip
+     * @return false|ActivedownloadDao
+     */
     public function getByIp($ip)
     {
         $sql = $this->database->select()->setIntegrityCheck(false)->from(array('a' => 'activedownload'))->where(

@@ -25,9 +25,13 @@ require_once BASE_PATH.'/core/models/base/FeedpolicygroupModelBase.php';
  */
 class FeedpolicygroupModel extends FeedpolicygroupModelBase
 {
-    /** getPolicy
+    /**
+     * Get policy
      *
-     * @return FeedpolicygroupDao
+     * @param GroupDao $group
+     * @param FeedDao $feed
+     * @return false|FeedpolicygroupDao
+     * @throws Zend_Exception
      */
     public function getPolicy($group, $feed)
     {
@@ -50,9 +54,10 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
     }
 
     /**
-     * deletes all feedpolicygroup rows associated with the passed in group
+     * Deletes all feedpolicygroup rows associated with the passed in group
      *
-     * @param GroupDao
+     * @param GroupDao $group
+     * @throws Zend_Exception
      */
     public function deleteGroupPolicies($group)
     {

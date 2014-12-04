@@ -295,9 +295,11 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
     }
 
     /**
-     * @param array $alternateConfigValues an alternative set of values to test,
+     * @param null|array $alternateConfigValues an alternative set of values to test,
      *                                     usually testing a possible configuration set to be saved.
      *                                     performs validation on current config setup.
+     * @return array
+     * @throws Zend_Exception
      */
     public function testconfig($alternateConfigValues = null)
     {
@@ -624,8 +626,10 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
      * will create condor scripts and a condor dag
      * from the batchmake script $bmScript, in the directory $workDir.
      *
-     * @param type $workDir
-     * @param type $bmScript
+     * @param string $workDir
+     * @param string $bmScript
+     * @return string
+     * @throws Zend_Exception
      */
     public function generateCondorDag($workDir, $bmScript)
     {
@@ -665,8 +669,9 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
      * will submit the passed in $dagScript to condor,
      * executing in the passed in $workDir
      *
-     * @param type $workDir
-     * @param type $dagScript
+     * @param string $workDir
+     * @param string $dagScript
+     * @throws Zend_Exception
      */
     public function condorSubmitDag($workDir, $dagScript)
     {

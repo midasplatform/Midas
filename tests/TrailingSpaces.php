@@ -52,7 +52,13 @@ foreach ($files as $file) {
     fclose($fh);
 }
 
-/** Recursively get matching files */
+/**
+ * Recursively get matching files.
+ *
+ * @param string $src
+ * @param string $dir
+ * @return array
+ */
 function getMatchingFilesRecursive($src, $dir = '')
 {
     $files = array();

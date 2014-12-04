@@ -27,7 +27,10 @@ class KWUtils
      * @TODO what to do with errors in a way that is consistent with error reporting
      * Will create the directory $dir and set the filemode so that the newly
      * created dir is writable by the current user.
-     * @return true on success, false otherwise
+     *
+     * @param string $dir
+     * @param int $mode
+     * @return bool true on success, false otherwise
      */
     public static function mkDir($dir, $mode = self::DEFAULT_MKDIR_MODE)
     {
@@ -49,11 +52,13 @@ class KWUtils
      * baseDirectory, sequentially creating each of the directories in the
      * subDirectories array, according to the passed in mode.
      *
-     * @param $baseDirectory the first directory to create
-     * @param $subDirectories an array of directories that will be created in a
+     * @param string $baseDirectory the first directory to create
+     * @param array $subDirectories an array of directories that will be created in a
      * recursive fashion, each one appending to the last as a deeper subdirectory
      * of baseDirectory
-     * @param the mode to create the new directories
+     * @param int $mode mode to create the new directories
+     * @return string
+     * @throws Zend_Exception
      */
     public static function createSubDirectories($baseDirectory, $subDirectories, $mode = self::DEFAULT_MKDIR_MODE)
     {
@@ -73,7 +78,9 @@ class KWUtils
     }
 
     /**
-     * @return True if the current platform is windows
+     * Return true if the current platform is Windows.
+     *
+     * @return bool
      */
     public static function isWindows()
     {
@@ -81,11 +88,11 @@ class KWUtils
     }
 
     /**
-     * will escape a command respecting the format of the current platform
+     * Will escape a command respecting the format of the current platform.
      *
-     * @param $command , the command to be escaped
-     * @return the $command, $escaped for the current platform
      * @TODO, how to test this?
+     * @param string $command, the command to be escaped
+     * @return string command escaped for the current platform
      */
     public static function escapeCommand($command)
     {
@@ -93,12 +100,12 @@ class KWUtils
     }
 
     /**
-     * will append the string $ext to
-     * $subject if it is not already a suffix of $subject
+     * will append the extension to the
+     * subject if it is not already a suffix of subject
      *
-     * @param $subject , the string to be appended to
-     * @param $ext , the extension to check for and append
-     * @return $subject, will end with the suffix $ext
+     * @param string $subject the string to be appended to
+     * @param string $ext the extension to check for and append
+     * @return string subject, will end with the suffix $ext
      */
     public static function appendStringIfNot($subject, $ext)
     {
@@ -112,11 +119,11 @@ class KWUtils
     /**
      * will execute a command, respecting the format of the current platform.
      *
-     * @param $command to be executed, with all arguments, and formatted correctly
-     * @param $output , a reference to put the output of the command
-     * @param $chdir , the dir to change to for execution, if any
-     * @param $return_val , a reference to put the return value of the command
-     *  the temporary work dir
+     * @param string $command command to be executed, with all arguments, and formatted correctly
+     * @param null|mixed $output a reference to put the output of the command
+     * @param string $chdir the dir to change to for execution, if any
+     * @param null|mixed $return_val a reference to put the return value of the command the temporary work dir
+     * @throws Zend_Exception
      */
     public static function exec($command, &$output = null, $chdir = '', &$return_val = null)
     {
@@ -124,7 +131,7 @@ class KWUtils
         if (!empty($chdir)) {
             if (is_dir($chdir)) {
                 if (!getcwd()) {
-                    throw new Exception('getcwd failed');
+                    throw new Zend_Exception('getcwd failed');
                 }
                 $currCwd = getcwd();
 
@@ -149,7 +156,9 @@ class KWUtils
     }
 
     /**
-     * @return True if the current platform is Linux
+     * Return true if the current platform is Linux.
+     *
+     * @return bool
      */
     public static function isLinux()
     {
@@ -160,10 +169,10 @@ class KWUtils
      * will prepare an executable application and params for command line
      * execution, including escaping and quoting arguments.
      *
-     * @param $app_name , the application to be executed
-     * @param $params , an array of arguments to the application
-     * @return the full command line command, escaped and quoted, will throw a
-     *             Zend_Exception if the app is not in the path and not executable
+     * @param string $app_name the application to be executed
+     * @param array $params an array of arguments to the application
+     * @return string the full command line command, escaped and quoted
+     * @throws Zend_Exception if the app is not in the path and not executable
      */
     public static function prepareExecCommand($app_name, $params = array())
     {
@@ -187,9 +196,9 @@ class KWUtils
      * will return true if the app can be found and is
      * executable, can optionally look in the path.
      *
-     * @param  string $app_name , the app to check
-     * @param  boolean $check_in_path , if true, will search in path for app
-     * @return True    if app_name is found and executable, False otherwise
+     * @param string $app_name the app to check
+     * @param bool $check_in_path , if true, will search in path for app
+     * @return bool true if app_name is found and executable, False otherwise
      */
     public static function isExecutable($app_name, $check_in_path = false)
     {
@@ -213,12 +222,13 @@ class KWUtils
     /**
      * will return the absolute path of an application
      *
-     * @param $app_name , the name of the application
-     * @param $check_execution_flag , whether to include in the check that the
+     * @param string $app_name the name of the application
+     * @param bool $check_execution_flag whether to include in the check that the
      * application is executable
-     * @return the path to the application, throws a Zend_Exception if the app
+     * @return string the path to the application, throws a Zend_Exception if the app
      *             can't be found, or if $check_execution_flag  is set and the app is not
      *             executable.
+     * @throws Zend_Exception
      */
     public static function findApp($app_name, $check_execution_flag)
     {
@@ -253,6 +263,9 @@ class KWUtils
 
     /**
      * Format the application name according to the platform.
+     *
+     * @param string $app_name
+     * @return string
      */
     public static function formatAppName($app_name)
     {
@@ -266,7 +279,7 @@ class KWUtils
     /**
      * Helper function to recursively delete a directory
      *
-     * @param  type $directorypath Directory to be deleted
+     * @param string $directorypath Directory to be deleted
      * @return bool Success or not
      */
     public static function recursiveRemoveDirectory($directorypath)

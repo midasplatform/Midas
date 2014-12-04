@@ -39,6 +39,7 @@ class Archive_ExtractController extends Archive_AppController
      * Perform the extraction. Requires admin privileges on the item.
      *
      * @param itemId The item to extract
+     * @throws Zend_Exception
      */
     public function performAction()
     {

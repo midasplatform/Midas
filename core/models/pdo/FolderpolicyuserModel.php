@@ -25,9 +25,13 @@ require_once BASE_PATH.'/core/models/base/FolderpolicyuserModelBase.php';
  */
 class FolderpolicyuserModel extends FolderpolicyuserModelBase
 {
-    /** getPolicy
+    /**
+     * Get policy
      *
-     * @return FolderpolicyuserDao
+     * @param UserDao $user
+     * @param FolderDao $folder
+     * @return false|FolderpolicyuserDao
+     * @throws Zend_Exception
      */
     public function getPolicy($user, $folder)
     {

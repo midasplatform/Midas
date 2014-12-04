@@ -23,11 +23,14 @@
  */
 class DownloadController extends AppController
 {
+    /** @var array */
     public $_models = array('Folder', 'Item', 'Community', 'User', 'Bitstream');
-    public $_daos = array();
+
+    /** @var array */
     public $_components = array('DownloadBitstream');
 
-    /** index
+    /**
+     * Index action.
      *
      * @param folders = 12-13 (will download a zip of the folder 12 and 13, recursively)
      * @param folders = 12, 1-13, 1 (will download a zip of the folder 12 and 13, recursively) // Need testing
@@ -37,6 +40,7 @@ class DownloadController extends AppController
      * @param bitstream = 1 (will download related bitstream)
      * @param offset The offset in bytes if downloading a bitstream (defaults to 0)
      * @param name Alternate filename when downloading a bitstream (defaults to bitstream name)
+     * @throws Zend_Exception
      */
     public function indexAction()
     {
@@ -223,6 +227,8 @@ class DownloadController extends AppController
 
     /**
      * Ajax action for determining what action to take based on the size of the requested download.
+     *
+     * @throws Zend_Exception
      */
     public function checksizeAction()
     {
@@ -288,6 +294,7 @@ class DownloadController extends AppController
      *   download/item/<item_id>/...
      * Any extra parameters are ignored and can be used to force clients like wget to download to the correct filename
      * if the content-disposition header is ignored by the user agent.
+     * @throws Zend_Exception
      */
     public function itemAction()
     {
@@ -304,6 +311,8 @@ class DownloadController extends AppController
      *   download/folder/<folder_id>/...
      * Any extra parameters are ignored and can be used to force clients like wget to download to the correct filename
      * if the content-disposition header is ignored by the user agent.
+     *
+     * @throws Zend_Exception
      */
     public function folderAction()
     {
@@ -320,6 +329,8 @@ class DownloadController extends AppController
      *   download/bitstream/<bitstream_id>/...
      * Any extra parameters are ignored and can be used to force clients like wget to download to the correct filename
      * if the content-disposition header is ignored by the user agent.
+     *
+     * @throws Zend_Exception
      */
     public function bitstreamAction()
     {

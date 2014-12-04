@@ -26,14 +26,16 @@ require_once BASE_PATH.'/core/models/base/ErrorlogModelBase.php';
 class ErrorlogModel extends ErrorlogModelBase
 {
     /**
-     * Return a list of log
+     * Return a list of logs.
      *
-     * @param  type $startDate
-     * @param  type $endDate
-     * @param  type $module
-     * @param  type $priority
-     * @param  type $limit
-     * @return array ErrorlogDao
+     * @param string $startDate
+     * @param string $endDate
+     * @param string $module
+     * @param int $priority
+     * @param int $limit
+     * @param int $offset
+     * @param string $operator
+     * @return array
      */
     public function getLog(
         $startDate,
@@ -77,8 +79,9 @@ class ErrorlogModel extends ErrorlogModelBase
     /**
      * Count the number of log entries since a certain date
      *
-     * @param startDate The start date
-     * @param priorities Array of priorities to filter by.  If null, selects all
+     * @param string $startDate start date
+     * @param null|array $priorities priorities to filter by. If null, selects all.
+     * @return int
      */
     public function countSince($startDate, $priorities = null)
     {

@@ -25,18 +25,23 @@ require_once BASE_PATH.'/core/models/base/AssetstoreModelBase.php';
  */
 class AssetstoreModel extends AssetstoreModelBase
 {
-    /** get All */
+    /**
+     * Get all.
+     *
+     * @return array
+     */
     public function getAll()
     {
         return $this->database->getAll('Assetstore');
     }
 
     /**
-     * Move all bitstreams from one assetstore to another
+     * Move all bitstreams from one asset store to another
      *
-     * @param srcAssetstore The source assetstore
-     * @param dstAssetstore The destination assetstore
-     * @param [progressDao] Progress dao for asynchronous updating
+     * @param AssetstoreDao $srcAssetstore The source asset store
+     * @param AssetstoreDao $dstAssetstore The destination asset store
+     * @param null|ProgressDao $progressDao Progress dao for asynchronous updating
+     * @throws Zend_Exception
      */
     public function moveBitstreams($srcAssetstore, $dstAssetstore, $progressDao = null)
     {
@@ -91,7 +96,7 @@ class AssetstoreModel extends AssetstoreModelBase
                 }
             }
 
-            // Update the assetstore id on the bitstream record once it has been moved
+            // Update the asset store id on the bitstream record once it has been moved
             $bitstream->setAssetstoreId($dstAssetstore->getKey());
             $bitstreamModel->save($bitstream);
         }

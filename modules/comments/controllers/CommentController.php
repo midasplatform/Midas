@@ -29,6 +29,7 @@ class Comments_CommentController extends Comments_AppController
      *
      * @param itemId The item id to add the comment to
      * @param comment The text of the comment
+     * @throws Zend_Exception
      */
     public function addAction()
     {
@@ -62,6 +63,7 @@ class Comments_CommentController extends Comments_AppController
      * @param itemId The item id whose comments to get
      * @param limit Max number of comments to display at once
      * @param offset Offset count for pagination
+     * @throws Zend_Exception
      */
     public function getAction()
     {
@@ -90,6 +92,7 @@ class Comments_CommentController extends Comments_AppController
      * Used to delete a comment
      *
      * @param commentId Id of the comment to delete
+     * @throws Zend_Exception
      */
     public function deleteAction()
     {

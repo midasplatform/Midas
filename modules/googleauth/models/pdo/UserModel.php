@@ -24,10 +24,12 @@ require_once BASE_PATH.'/modules/googleauth/models/base/UserModelBase.php';
 class Googleauth_UserModel extends Googleauth_UserModelBase
 {
     /**
-     * Retrieve a dao with the given google person ID, or null if no such user
+     * Retrieve a DAO with the given google person ID, or false if no such user
      * exists.
      *
-     * @param $pid The google person ID to check.
+     * @param string $pid The google person ID to check.
+     * @return false|Googleauth_UserDao
+     * @throws Zend_Exception
      */
     public function getByGooglePersonId($pid)
     {
@@ -41,7 +43,7 @@ class Googleauth_UserModel extends Googleauth_UserModelBase
      * Delete this to wipe the link between a google OAuth user and a core user
      * record. Must call when a core user record is being deleted.
      *
-     * @param $userDao The core user dao.
+     * @param UserDao $userDao The core user dao.
      */
     public function deleteByUser($userDao)
     {

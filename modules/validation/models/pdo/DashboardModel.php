@@ -26,9 +26,10 @@ require_once BASE_PATH.'/modules/validation/models/base/DashboardModelBase.php';
 class Validation_DashboardModel extends Validation_DashboardModelBase
 {
     /**
-     * Return all the record in the table
+     * Return all the records in the table.
      *
-     * @return Array of ValidationDao
+     * @return array of validation DAOs
+     * @throws Zend_Exception
      */
     public function getAll()
     {
@@ -44,14 +45,16 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
     }
 
     /**
-     * Add a results folder to the dashboard
+     * Add a results folder to the dashboard.
      *
-     * @return void
+     * @param Validation_DashboardDao $dashboard
+     * @param FolderDao $folder
+     * @throws Zend_Exception
      */
     public function addResult($dashboard, $folder)
     {
         if (!$dashboard instanceof Validation_DashboardDao) {
-            throw new Zend_Exception("Should be a dasboard.");
+            throw new Zend_Exception("Should be a dashboard.");
         }
         if (!$folder instanceof FolderDao) {
             throw new Zend_Exception("Should be a folder.");
@@ -60,9 +63,11 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
     }
 
     /**
-     * remove a results folder from the dashboard
+     * Remove a results folder from the dashboard.
      *
-     * @return void
+     * @param Validation_DashboardDao $dashboard
+     * @param FolderDao $folder
+     * @throws Zend_Exception
      */
     public function removeResult($dashboard, $folder)
     {
@@ -90,11 +95,10 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
     /**
      * Set a single row of result values for a dashboard.
      *
-     * @param dashboard the target dashboard
-     * @param folder the result folder with which the values are associated
-     * @param values an array where the keys are item ids and the values are
-     *        scalar results
-     * @return void
+     * @param Validation_DashboardDao $dashboard target dashboard
+     * @param FolderDao $folder result folder with which the values are associated
+     * @param array $values array where the keys are item ids and the values are scalar results
+     * @throws Zend_Exception
      */
     public function setScores($dashboard, $folder, $values)
     {
@@ -124,14 +128,14 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
     }
 
     /**
-     * Set a single result value
+     * Set a single result value.
      *
-     * @param dashboard the target dashboard
-     * @param folder the result folder with which the value is associated
-     * @param item the item associated with the result
-     * @param value a scalar value representing a result
-     *        scalar results
-     * @return scalarResultDao
+     * @param Validation_DashboardDao $dashboard target dashboard
+     * @param FolderDao $folder result folder with which the value is associated
+     * @param ItemDao $item item associated with the result
+     * @param mixed $value scalar value representing a result
+     * @return Validation_ScalarResultDao
+     * @throws Zend_Exception
      */
     public function setScore($dashboard, $folder, $item, $value)
     {
@@ -178,12 +182,12 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
     }
 
     /**
-     * Get a single set of scores for a dashboard
+     * Get a single set of scores for a dashboard.
      *
-     * @param dashboard the target dashboard
-     * @param folder the folder that corresponds to the results
-     * @return an array where the keys are item ids and the values are
-     *            scores
+     * @param Validation_DashboardDao $dashboard target dashboard
+     * @param FolderDao $folder folder that corresponds to the results
+     * @return array array where the keys are item ids and the values are scores
+     * @throws Zend_Exception
      */
     public function getScores($dashboard, $folder)
     {
@@ -212,10 +216,10 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
     /**
      * Get all sets of scores for a dashboard
      *
-     * @param dashboard the target dashboard
-     * @return an array of arrays where the keys are folder ids and the values
-     *            are arrays where the keys are item ids and the values are
-     *            scores
+     * @param Validation_DashboardDao $dashboard target dashboard
+     * @return array array of arrays where the keys are folder ids and the values are arrays where the keys are
+     *               item ids and the values are scores
+     * @throws Zend_Exception
      */
     public function getAllScores($dashboard)
     {

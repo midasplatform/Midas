@@ -24,9 +24,14 @@ require_once BASE_PATH.'/modules/statistics/models/base/DownloadBase.php';
 class Statistics_DownloadModel extends Statistics_DownloadModelBase
 {
     /**
-     * Return a list of downloads
+     * Return a list of downloads.
      *
-     * @param ids Array of item ids to aggregate statistics for
+     * @param array $ids item ids to aggregate statistics for
+     * @param string $startDate
+     * @param string $endDate
+     * @param int $limit
+     * @return array
+     * @throws Zend_Exception
      */
     public function getDownloads($ids, $startDate, $endDate, $limit = 99999)
     {
@@ -44,9 +49,14 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
     }
 
     /**
-     * Return only downloads that have been successfully geolocated
+     * Return only downloads that have been successfully geolocated.
      *
-     * @param ids Array of item ids to aggregate statistics for
+     * @param array $ids item ids to aggregate statistics for
+     * @param string $startDate
+     * @param string $endDate
+     * @param int $limit
+     * @return array
+     * @throws Zend_Exception
      */
     public function getLocatedDownloads($ids, $startDate, $endDate, $limit = 99999)
     {
@@ -67,9 +77,13 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
     }
 
     /**
-     * Return the total number of downloads for the given items in the given date range
+     * Return the total number of downloads for the given items in the given date range.
      *
-     * @param ids Array of item ids to aggregate statistics for
+     * @param array $ids  item ids to aggregate statistics for
+     * @param string $startDate
+     * @param string $endDate
+     * @param int $limit
+     * @return string
      */
     public function getCountInRange($ids, $startDate, $endDate, $limit = 99999)
     {
@@ -86,7 +100,10 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
     }
 
     /**
-     * Return a list of downloads that have not yet had geolocation run on them
+     * Return a list of downloads that have not yet had geolocation run on them.
+     *
+     * @return array
+     * @throws Zend_Exception
      */
     public function getAllUnlocated()
     {
@@ -105,9 +122,9 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
 
     /**
      * Set user id = NULL for all entries in the database referencing the user.
-     * Called when a user is about to be deleted
+     * Called when a user is about to be deleted.
      *
-     * @param userId The id of the user being deleted.
+     * @param int $userId The id of the user being deleted
      */
     public function removeUserReferences($userId)
     {
@@ -115,11 +132,13 @@ class Statistics_DownloadModel extends Statistics_DownloadModelBase
     }
 
     /**
-     * Return the daily download counts for the item(s)
+     * Return the daily download counts for the items.
      *
-     * @param items The array of items
-     * @param startDate (optional) start date
-     * @param endDate (optional) end date
+     * @param array $items items
+     * @param null|string $startDate start date
+     * @param null|string $endDate end date
+     * @return array
+     * @throws Zend_Exception
      */
     public function getDailyCounts($items, $startDate = null, $endDate = null)
     {

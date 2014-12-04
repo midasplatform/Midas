@@ -34,6 +34,7 @@ class Thumbnailcreator_ThumbnailController extends Thumbnailcreator_AppControlle
      * @param itemId The item to set the thumbnail on
      * @param width (Optional) The width in pixels to resize to (aspect ratio will be preserved). Defaults to 575
      * @return array('thumbnail' => path to the thumbnail)
+     * @throws Zend_Exception
      */
     public function createAction()
     {
@@ -106,6 +107,7 @@ class Thumbnailcreator_ThumbnailController extends Thumbnailcreator_AppControlle
      * otherwise the request produces no output.
      *
      * @param itemthumbnail The itemthumbnail_id to stream
+     * @throws Zend_Exception
      */
     public function itemAction()
     {

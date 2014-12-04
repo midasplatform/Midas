@@ -25,7 +25,13 @@ require_once BASE_PATH.'/core/models/base/BitstreamModelBase.php';
  */
 class BitstreamModel extends BitstreamModelBase
 {
-    /** Get bitstream by checksum */
+    /**
+     * Get bitstream by checksum.
+     *
+     * @param string $checksum
+     * @param bool $getAll
+     * @return false|array|BitstreamDao
+     */
     public function getByChecksum($checksum, $getAll = false)
     {
         $sql = $this->database->select()->setIntegrityCheck(false)->where('checksum = ?', $checksum);
@@ -48,6 +54,8 @@ class BitstreamModel extends BitstreamModelBase
     /**
      * Used by the admin dashboard page. Counts the number of orphaned bitstream
      * records in the database.
+     *
+     * @return int
      */
     public function countOrphans()
     {
@@ -71,8 +79,11 @@ class BitstreamModel extends BitstreamModelBase
     }
 
     /**
-     * Count the total number of bitstreams in the system. Provide an assetstore
-     * dao if you wish to count the number in a single assetstore.
+     * Count the total number of bitstreams in the system. Provide an asset store
+     * dao if you wish to count the number in a single asset store.
+     *
+     * @param null|AssetstoreDao $assetstoreDao
+     * @return int
      */
     public function countAll($assetstoreDao = null)
     {
@@ -86,7 +97,9 @@ class BitstreamModel extends BitstreamModelBase
     }
 
     /**
-     * Call this to remove all orphaned item revision records
+     * Remove all orphaned item revision records.
+     *
+     * @param null|ProgressDao $progressDao
      */
     public function removeOrphans($progressDao = null)
     {

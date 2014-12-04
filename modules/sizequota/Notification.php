@@ -23,11 +23,16 @@ require_once BASE_PATH.'/modules/api/library/APIEnabledNotification.php';
 /** Notification manager for the sizequota module */
 class Sizequota_Notification extends ApiEnabled_Notification
 {
+    /** @var string */
     public $moduleName = 'sizequota';
+
+    /** @var array */
     public $_moduleComponents = array('Api');
+
+    /** @var array */
     public $_models = array('Assetstore', 'Folder');
 
-    /** init notification process */
+    /** Init notification process. */
     public function init()
     {
         $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_MANAGE_TABS', 'getCommunityTab');
@@ -43,7 +48,12 @@ class Sizequota_Notification extends ApiEnabled_Notification
         $this->enableWebAPI($this->moduleName);
     }
 
-    /** Add a tab to the manage community page for size quota */
+    /**
+     * Add a tab to the manage community page for size quota.
+     *
+     * @param array $args parameters
+     * @return array
+     */
     public function getCommunityTab($args)
     {
         $community = $args['community'];
@@ -55,7 +65,13 @@ class Sizequota_Notification extends ApiEnabled_Notification
         );
     }
 
-    /** Add a tab to the user's main page for size quota */
+    /**
+     * Add a tab to the user's main page for size quota.
+     *
+     * @param array $args parameters
+     * @return array
+     * @throws Zend_Exception
+     */
     public function getUserTab($args)
     {
         $user = $args['user'];
@@ -72,7 +88,11 @@ class Sizequota_Notification extends ApiEnabled_Notification
         }
     }
 
-    /** Add our javascript callback script */
+    /**
+     * Add our JavaScript callback script.
+     *
+     * @return string
+     */
     public function getScript()
     {
         $fc = Zend_Controller_Front::getInstance();
@@ -82,9 +102,11 @@ class Sizequota_Notification extends ApiEnabled_Notification
     }
 
     /**
-     * Add free space information to the dom on the simple upload & java upload pages
+     * Add free space information to the DOM on the simple upload and Java upload pages.
      *
-     * @param folder The folder dao that you are uploading into
+     * @param array $args parameters, including "folder", the folder DAO that you are uploading into
+     * @return string
+     * @throws Zend_Exception
      */
     public function getExtraHtmlSimple($args)
     {
@@ -115,9 +137,11 @@ class Sizequota_Notification extends ApiEnabled_Notification
     }
 
     /**
-     * Add free space information to the dom on the revision uploader page
+     * Add free space information to the DOM on the revision uploader page.
      *
-     * @param item The item dao that you are uploading a new revision into
+     * @param array $args parameters, including "item", the item DAO that you are uploading a new revision into
+     * @return string
+     * @throws Zend_Exception
      */
     public function getExtraHtmlRevision($args)
     {
@@ -157,9 +181,9 @@ class Sizequota_Notification extends ApiEnabled_Notification
      * Return whether or not the upload is allowed.  If uploading the file
      * will cause the size to surpass the quota, it will be rejected.
      *
-     * @param size Size of the uploaded file
-     * @param folderId The id of the folder being uploaded into
-     * @return array('status' => boolean, 'message' => 'error message if status is false')
+     * @param array $args parameters, including "size", the size of the uploaded file,
+     *                    and "folderId", the id of the folder being uploaded into
+     * @return array array('status' => boolean, 'message' => 'error message if status is false')
      */
     public function validateUpload($args)
     {
@@ -195,9 +219,9 @@ class Sizequota_Notification extends ApiEnabled_Notification
      * Return whether or not the upload is allowed.  If uploading the revision
      * will cause the size to surpass the quota, it will be rejected.
      *
-     * @param size Size of the uploaded file
-     * @param itemId The id of the item being uploaded into
-     * @return array('status' => boolean, 'message' => 'error message if status is false')
+     * @param array $args parameters, including "size", size of the uploaded file,
+     *                    and "itemId", the id of the item being uploaded into
+     * @return array array('status' => boolean, 'message' => 'error message if status is false')
      */
     public function validateUploadRevision($args)
     {

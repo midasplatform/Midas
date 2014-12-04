@@ -27,9 +27,12 @@ class Archive_ExtractComponent extends AppComponent
     /**
      * Extract an archive out of an item and into the hierarchy in place
      *
-     * @param itemDao The item representing the archive to extract
-     * @param deleteArchive Whether to delete the archive item when finished extraction
-     * @param progressDao (Optional) Dao for recording progress
+     * @param ItemDao $itemDao item representing the archive to extract
+     * @param bool $deleteArchive whether to delete the archive item when finished extraction
+     * @param UserDao $user user DAO
+     * @param null|ProgressDao $progressDao progress DAO
+     * @return FolderDao
+     * @throws Zend_Exception
      */
     public function extractInPlace($itemDao, $deleteArchive, $user, $progressDao = null)
     {

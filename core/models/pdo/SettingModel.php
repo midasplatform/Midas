@@ -26,7 +26,14 @@ require_once BASE_PATH.'/core/models/base/SettingModelBase.php';
  */
 class SettingModel extends SettingModelBase
 {
-    /** get by name */
+    /**
+     * Get by name.
+     *
+     * @param string $name
+     * @param string $module
+     * @return false|SettingDao
+     * @throws Zend_Exception
+     */
     public function getDaoByName($name, $module = 'core')
     {
         if (!is_string($name) || !is_string($module)) {

@@ -25,7 +25,12 @@ require_once BASE_PATH.'/core/models/base/ItemRevisionModelBase.php';
  */
 class ItemRevisionModel extends ItemRevisionModelBase
 {
-    /** get by uuid */
+    /**
+     * Get by UUID.
+     *
+     * @param string $uuid
+     * @return false|ItemRevisionDao
+     */
     public function getByUuid($uuid)
     {
         $row = $this->database->fetchRow($this->database->select()->where('uuid = ?', $uuid));
@@ -34,7 +39,13 @@ class ItemRevisionModel extends ItemRevisionModelBase
         return $dao;
     }
 
-    /** get the metadata associated with the revision */
+    /**
+     * Get the metadata associated with the revision.
+     *
+     * @param ItemRevisionDao $revisiondao
+     * @return array
+     * @throws Zend_Exception
+     */
     public function getMetadata($revisiondao)
     {
         if (!$revisiondao instanceof ItemRevisionDao) {
@@ -57,8 +68,12 @@ class ItemRevisionModel extends ItemRevisionModelBase
     }
 
     /**
-     * delete the metadata associated with the revision, deleting all
+     * Delete the metadata associated with the revision, deleting all
      * metadata for that revision if no metadataId is passed.
+     *
+     * @param ItemRevisionDao $revisiondao
+     * @param null|int $metadataId
+     * @throws Zend_Exception
      */
     public function deleteMetadata($revisiondao, $metadataId = null)
     {
@@ -92,6 +107,9 @@ class ItemRevisionModel extends ItemRevisionModelBase
      * -All bitstreams of the revision
      * -The feed for the creation of the revision
      * -The metadata associated with the revision
+     *
+     * @param ItemRevisionDao $revisiondao
+     * @throws Zend_Exception
      */
     public function delete($revisiondao)
     {
@@ -132,7 +150,12 @@ class ItemRevisionModel extends ItemRevisionModelBase
         unset($revisiondao->itemrevision_id);
     }
 
-    /** Returns the latest revision of a model */
+    /**
+     * Return the latest revision of a model.
+     *
+     * @param ItemDao $itemdao
+     * @return false|ItemRevisionDao
+     */
     public function getLatestRevision($itemdao)
     {
         $row = $this->database->fetchRow(
@@ -145,7 +168,12 @@ class ItemRevisionModel extends ItemRevisionModelBase
         return $this->initDao('ItemRevision', $row);
     }
 
-    /** Returns the of the revision in Bytes */
+    /**
+     * Return the size of the revision in bytes.
+     *
+     * @param ItemRevisionDao $revision
+     * @return int
+     */
     public function getSize($revision)
     {
         $row = $this->database->fetchRow(
@@ -158,7 +186,13 @@ class ItemRevisionModel extends ItemRevisionModelBase
         return $row['sum'];
     }
 
-    /** Return a bitstream by name */
+    /**
+     * Return a bitstream by name.
+     *
+     * @param ItemRevisionDao $revision
+     * @param string $name
+     * @return false|BitstreamDao
+     */
     public function getBitstreamByName($revision, $name)
     {
         $row = $this->database->fetchRow(
@@ -174,6 +208,8 @@ class ItemRevisionModel extends ItemRevisionModelBase
     /**
      * Used by the admin dashboard page. Counts the number of orphaned revision
      * records in the database.
+     *
+     * @return int
      */
     public function countOrphans()
     {
@@ -194,7 +230,9 @@ class ItemRevisionModel extends ItemRevisionModelBase
     }
 
     /**
-     * Call this to remove all orphaned item revision records
+     * Call this to remove all orphaned item revision records.
+     *
+     * @param null|ProgressDao $progressDao
      */
     public function removeOrphans($progressDao = null)
     {

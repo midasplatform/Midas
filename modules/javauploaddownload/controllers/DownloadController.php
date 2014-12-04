@@ -33,6 +33,7 @@ class Javauploaddownload_DownloadController extends Javauploaddownload_AppContro
      *
      * @param itemIds Comma separated list of items to download
      * @param folderIds Comma separated list of folders to download
+     * @throws Zend_Exception
      */
     public function indexAction()
     {

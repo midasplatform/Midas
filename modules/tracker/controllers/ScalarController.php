@@ -28,6 +28,7 @@ class Tracker_ScalarController extends Tracker_AppController
      * Display the dialog of scalar details, including associated result items with thumbnails
      *
      * @param scalarId The id of the scalar
+     * @throws Zend_Exception
      */
     public function detailsAction()
     {
@@ -72,6 +73,7 @@ class Tracker_ScalarController extends Tracker_AppController
      * Delete a scalar value (requires community admin)
      *
      * @param scalarId
+     * @throws Zend_Exception
      */
     public function deleteAction()
     {

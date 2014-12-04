@@ -25,7 +25,14 @@ require_once BASE_PATH.'/core/models/base/FeedModelBase.php';
  */
 class FeedModel extends FeedModelBase
 {
-    /** get feed by resource */
+    /**
+     * Get feed by resource.
+     *
+     * @param array $typeArray
+     * @param MIDAS_GlobalDao $dao
+     * @return array
+     * @throws Zend_Exception
+     */
     public function getFeedByResourceAndType($typeArray, $dao)
     {
         if (!is_array($typeArray)) {
@@ -48,12 +55,14 @@ class FeedModel extends FeedModelBase
         return $feeds;
     }
 
-    /** check if the policy is valid
+    /**
+     * Check if the policy is valid.
      *
-     * @param  FolderDao $folderDao
-     * @param  UserDao $userDao
-     * @param  type $policy
-     * @return boolean
+     * @param FeedDao $feedDao
+     * @param null|UserDao $userDao
+     * @param int $policy
+     * @return bool
+     * @throws Zend_Exception
      */
     public function policyCheck($feedDao, $userDao = null, $policy = 0)
     {
@@ -105,14 +114,16 @@ class FeedModel extends FeedModelBase
         return true;
     }
 
-    /** get feed
+    /**
+     * Get feeds.
      *
-     * @param  UserDao $loggedUserDao
-     * @param  UserDao $userDao
-     * @param  CommunityDao $communityDao
-     * @param  type $policy
-     * @param  type $limit
-     * @return Array        of FeedDao
+     * @param UserDao $loggedUserDao
+     * @param null|UserDao $userDao
+     * @param null|CommunityDao $communityDao
+     * @param int $policy
+     * @param int $limit
+     * @return array
+     * @throws Zend_Exception
      */
     protected function getFeeds($loggedUserDao, $userDao = null, $communityDao = null, $policy = 0, $limit = 20)
     {
@@ -214,9 +225,12 @@ class FeedModel extends FeedModelBase
         return $rowsetAnalysed;
     }
 
-    /** Add a community to a feed
+    /**
+     * Add a community to a feed.
      *
-     * @return void
+     * @param FeedDao $feed
+     * @param CommunityDao $community
+     * @throws Zend_Exception
      */
     public function addCommunity($feed, $community)
     {
@@ -229,7 +243,8 @@ class FeedModel extends FeedModelBase
         $this->database->link('communities', $feed, $community);
     }
 
-    /** Delete Dao
+    /**
+     * Delete DAO.
      *
      * @param FeedDao $feedDao
      */

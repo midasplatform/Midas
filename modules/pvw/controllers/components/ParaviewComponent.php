@@ -30,8 +30,12 @@ class Pvw_ParaviewComponent extends AppComponent
     /**
      * Creates a new pvpython instance and a corresponding database record for it.
      *
-     * @param item The item dao to visualize
-     * @return The pvw_instance dao
+     * @param ItemDao $item item DAO to visualize
+     * @param array $meshItems
+     * @param string $appname
+     * @param null|ProgressDao $progressDao
+     * @return Pvw_InstanceDao
+     * @throws Zend_Exception
      */
     public function createAndStartInstance($item, $meshItems, $appname, $progressDao = null)
     {
@@ -143,7 +147,8 @@ class Pvw_ParaviewComponent extends AppComponent
     /**
      * Kills the pvpython process and deletes the instance record from the database
      *
-     * @param instance The instance dao to kill
+     * @param Pvw_InstanceDao $instance instance DAO to kill
+     * @throws Zend_Exception
      */
     public function killInstance($instance)
     {
@@ -159,9 +164,10 @@ class Pvw_ParaviewComponent extends AppComponent
     }
 
     /**
-     * Return whether or not the given instance is still running
+     * Return whether or not the given instance is still running.
      *
-     * @param instance The pvw_instance dao
+     * @param $instance instance DAO
+     * @return bool
      */
     public function isRunning($instance)
     {
@@ -173,6 +179,9 @@ class Pvw_ParaviewComponent extends AppComponent
     /**
      * Uses the admin-configured port settings and allocates the next
      * available port that isn't currently in use. If none are available, returns false.
+     *
+     * @return false|int
+     * @throws Zend_Exception
      */
     private function _getNextOpenPort()
     {
@@ -208,7 +217,13 @@ class Pvw_ParaviewComponent extends AppComponent
     }
 
     /**
-     * Symlink the item into a directory
+     * Symlink the item into a directory.
+     *
+     * @param ItemDao $itemDao
+     * @param array $meshItems
+     * @param Pvw_InstanceDao $instanceDao
+     * @return string
+     * @throws Zend_Exception
      */
     private function _createDataDir($itemDao, $meshItems, $instanceDao)
     {

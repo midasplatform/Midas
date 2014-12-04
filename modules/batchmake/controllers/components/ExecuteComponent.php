@@ -26,10 +26,11 @@ class Batchmake_ExecuteComponent extends AppComponent
      * exports these items to a work dir, and returns a list of
      * itemName => fullExportPath
      *
-     * @param  type $userDao
-     * @param  type $taskDao
-     * @param  type $itemsForExport , array itemNames => itemIds
-     * @return string
+     * @param UserDao $userDao
+     * @param Batchmake_TaskDao $taskDao
+     * @param array $itemsForExport array itemNames => itemIds
+     * @return array
+     * @throws Zend_Exception
      */
     public function exportSingleBitstreamItemsToWorkDataDir($userDao, $taskDao, $itemsForExport)
     {
@@ -76,9 +77,10 @@ class Batchmake_ExecuteComponent extends AppComponent
     /**
      * exports a list of itemIds to a work dir.
      *
-     * @param type $userDao
-     * @param type $taskDao
-     * @param type $itemIds
+     * @param UserDao $userDao
+     * @param Batchmake_TaskDao $taskDao
+     * @param array $itemIds
+     * @throws Zend_Exception
      */
     public function exportItemsToWorkDataDir($userDao, $taskDao, $itemIds)
     {
@@ -100,9 +102,10 @@ class Batchmake_ExecuteComponent extends AppComponent
      * with this midas instance via the web API, will be called config.cfg,
      * unless a prefix is supplied, then will be called prefixconfig.cfg.
      *
-     * @param type $taskDao
-     * @param type $userDao
-     * @param type $configPrefix
+     * @param Batchmake_TaskDao $taskDao
+     * @param UserDao $userDao
+     * @param null|string $configPrefix
+     * @throws Zend_Exception
      */
     public function generatePythonConfigParams($taskDao, $userDao, $configPrefix = null)
     {
@@ -136,11 +139,12 @@ class Batchmake_ExecuteComponent extends AppComponent
     /**
      * will generate a batchmake config file in the work dir.
      *
-     * @param type $taskDao
-     * @param type $appTaskConfigProperties list of name=>value to be exported
-     * @param type $condorPostScriptPath full path to the condor post script
-     * @param type $condorDagPostScriptPath full path to condor dag post script
-     * @param type $configScriptStem name of the batchmake script
+     * @param Batchmake_TaskDao $taskDao
+     * @param array $appTaskConfigProperties list of name=>value to be exported
+     * @param string $condorPostScriptPath full path to the condor post script
+     * @param string $condorDagPostScriptPath full path to condor dag post script
+     * @param string $configScriptStem name of the batchmake script
+     * @throws Zend_Exception
      */
     public function generateBatchmakeConfig(
         $taskDao,

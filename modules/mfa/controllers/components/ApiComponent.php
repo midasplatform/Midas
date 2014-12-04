@@ -22,7 +22,11 @@
 class Mfa_ApiComponent extends AppComponent
 {
     /**
-     * Helper function for verifying keys in an input array
+     * Helper function for verifying keys in an input array.
+     *
+     * @param array $keys
+     * @param array $values
+     * @throws Exception
      */
     private function _checkKeys($keys, $values)
     {
@@ -39,6 +43,7 @@ class Mfa_ApiComponent extends AppComponent
      * @param otp The one-time password
      * @param mfaTokenId The id of the temporary MFA token
      * @return The api token
+     * @throws Exception
      */
     public function otpLogin($params)
     {

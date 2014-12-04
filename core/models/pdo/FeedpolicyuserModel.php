@@ -25,9 +25,13 @@ require_once BASE_PATH.'/core/models/base/FeedpolicyuserModelBase.php';
  */
 class FeedpolicyuserModel extends FeedpolicyuserModelBase
 {
-    /** getPolicy
+    /**
+     * Get policy
      *
-     * @return FeedpolicyuserDao
+     * @param UserDao $user
+     * @param FeedDao $feed
+     * @return false|FeedpolicyuserDao
+     * @throws Zend_Exception
      */
     public function getPolicy($user, $feed)
     {

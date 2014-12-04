@@ -21,7 +21,7 @@
 /** ItemRevisionModelBase */
 class CommunityInvitationModelBase extends AppModel
 {
-    /** Constructor */
+    /** Constructor. */
     public function __construct()
     {
         parent::__construct();
@@ -57,11 +57,13 @@ class CommunityInvitationModelBase extends AppModel
     }
 
     /**
-     * Create an invitation record for the user into the given group
+     * Create an invitation record for the user into the given group.
      *
-     * @param groupDao The group to invite the user to
-     * @param userDao The user performing the invitation (typically the session user)
-     * @param invitedUserDao The user being invited to the group
+     * @param GroupDao $groupDao The group to invite the user to
+     * @param UserDao $userDao The user performing the invitation (typically the session user)
+     * @param UserDao $invitedUserDao The user being invited to the group
+     * @return false|CommunityInvitationDao
+     * @throws Zend_Exception
      */
     public function createInvitation($groupDao, $userDao, $invitedUserDao)
     {
@@ -92,7 +94,14 @@ class CommunityInvitationModelBase extends AppModel
         return $invitationDao;
     }
 
-    /** is user invited */
+    /**
+     * Is user invited?
+     *
+     * @param CommunityDao $communityDao
+     * @param UserDao $userDao
+     * @param bool $returnDao
+     * @return bool|CommunityInvitationDao
+     */
     public function isInvited($communityDao, $userDao, $returnDao = false)
     {
         if ($userDao == null) {
@@ -112,11 +121,18 @@ class CommunityInvitationModelBase extends AppModel
         return false;
     }
 
-    /** remove invitation */
+    /**
+     * Remove invitation.
+     *
+     * @param CommunityDao $communityDao
+     * @param UserDao $userDao
+     * @return bool
+     * @throws Zend_Exception
+     */
     public function removeInvitation($communityDao, $userDao)
     {
         if ($userDao == null) {
-            return;
+            return false;
         }
         $invitations = $userDao->getInvitations();
         foreach ($invitations as $invitation) {
@@ -133,6 +149,6 @@ class CommunityInvitationModelBase extends AppModel
             }
         }
 
-        return;
+        return false;
     }
 }

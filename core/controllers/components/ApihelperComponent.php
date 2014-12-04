@@ -393,7 +393,8 @@ class ApihelperComponent extends AppComponent
      *
      * @param id the group to add the user to
      * @param user_id the user to add to the group
-     * @return an array of (groupModel, groupDao, groupUserDao)
+     * @return array an array of (groupModel, groupDao, groupUserDao)
+     * @throws Exception
      */
     public function validateGroupUserChangeParams($args)
     {
@@ -417,7 +418,7 @@ class ApihelperComponent extends AppComponent
         $communityModel = MidasLoader::loadModel('Community');
         if (!$communityModel->policyCheck($group->getCommunity(), $userDao, MIDAS_POLICY_ADMIN)
         ) {
-            throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+            throw new Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
         }
 
         $groupUserId = $args['user_id'];
@@ -451,8 +452,9 @@ class ApihelperComponent extends AppComponent
      * helper method to validate passed in community privacy status params and
      * map them to valid community privacy codes.
      *
-     * @param  string $privacyStatus , should be 'Private' or 'Public'
-     * @return valid  community privacy code
+     * @param string $privacyStatus should be 'Private' or 'Public'
+     * @return int valid community privacy code
+     * @throws Exception
      */
     public function getValidCommunityPrivacyCode($privacyStatus)
     {
@@ -472,8 +474,9 @@ class ApihelperComponent extends AppComponent
      * helper method to validate passed in community can join status params and
      * map them to valid community can join codes.
      *
-     * @param  string $canjoinStatus , should be 'Everyone' or 'Invitation'
-     * @return valid  community canjoin code
+     * @param string $canjoinStatus should be 'Everyone' or 'Invitation'
+     * @return int valid community canjoin code
+     * @throws Exception
      */
     public function getValidCommunityCanjoinCode($canjoinStatus)
     {

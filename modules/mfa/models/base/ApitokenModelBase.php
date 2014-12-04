@@ -24,7 +24,7 @@
  */
 abstract class Mfa_ApitokenModelBase extends Mfa_AppModel
 {
-    /** constructor */
+    /** Constructor. */
     public function __construct()
     {
         parent::__construct();
@@ -47,10 +47,12 @@ abstract class Mfa_ApitokenModelBase extends Mfa_AppModel
     }
 
     /**
-     * Create a temporary token that will be used to fetch the user's real api token later
+     * Create a temporary token that will be used to fetch the user's real API token later
      *
-     * @param user The user to create the token for
-     * @param apiToken The api token dao
+     * @param UserDao $user user to create the token for
+     * @param TokenDao $tokenDao token DAO
+     * @return Mfa_ApitokenDao
+     * @throws Zend_Exception
      */
     public function createTempToken($user, $tokenDao)
     {

@@ -26,10 +26,11 @@ require_once BASE_PATH.'/modules/ldap/models/base/UserModelBase.php';
 class Ldap_UserModel extends Ldap_UserModelBase
 {
     /**
-     * Pass the user's login credentials and see if they are an ldap user
+     * Pass the user's login credentials and see if they are an LDAP user.
      *
-     * @param login The user's login name
-     * @return The Ldap_UserDao if this corresponds to an ldap user, otherwise false
+     * @param string $login user's login name
+     * @return false|Ldap_UserDao LDAP user DAO if this corresponds to an LDAP user, otherwise false
+     * @throws Zend_Exception
      */
     public function getLdapUser($login)
     {
@@ -47,9 +48,9 @@ class Ldap_UserModel extends Ldap_UserModelBase
     }
 
     /**
-     * Delete an ldap_user corresponding to the core user.
+     * Delete an LDAP user corresponding to the core user.
      *
-     * @param userDao The core user
+     * @param UserDao $userDao core user DAO
      */
     public function deleteByUser($userDao)
     {
@@ -57,10 +58,12 @@ class Ldap_UserModel extends Ldap_UserModelBase
     }
 
     /**
-     * Returns the ldap_user corresponding to the core user, or false if the
-     * user is not an ldap_user.
+     * Returns the LDAP user corresponding to the core user, or false if the
+     * user is not an LDAP user.
      *
-     * @param userDao The core user
+     * @param UserDao $userDao core user
+     * @return false|Ldap_UserDao
+     * @throws Zend_Exception
      */
     public function getByUser($userDao)
     {

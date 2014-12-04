@@ -1199,6 +1199,7 @@ class UserController extends AppController
      * @param [lastName] User's last name
      * @param [password] User's password
      * @param [password2] User's password retyped
+     * @throws Zend_Exception
      */
     public function emailregisterAction()
     {

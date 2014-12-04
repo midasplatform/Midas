@@ -26,7 +26,12 @@ require_once BASE_PATH.'/core/models/base/CommunityModelBase.php';
  */
 class CommunityModel extends CommunityModelBase
 {
-    /** get by uuid */
+    /**
+     * Get by UUID.
+     *
+     * @param $uuid
+     * @return false|CommunityDao
+     */
     public function getByUuid($uuid)
     {
         $row = $this->database->fetchRow($this->database->select()->where('uuid = ?', $uuid));
@@ -35,7 +40,12 @@ class CommunityModel extends CommunityModelBase
         return $dao;
     }
 
-    /** Get a community by name */
+    /**
+     * Get a community by name.
+     *
+     * @param string $name
+     * @return false|CommunityDao
+     */
     public function getByName($name)
     {
         $row = $this->database->fetchRow($this->database->select()->where('name = ?', $name));
@@ -44,7 +54,13 @@ class CommunityModel extends CommunityModelBase
         return $dao;
     }
 
-    /** Returns a community given its root folder */
+    /**
+     * Return a community given its root folder.
+     *
+     * @param FolderDao $folder
+     * @return false|CommunityDao
+     * @throws Zend_Exception
+     */
     public function getByFolder($folder)
     {
         if (!$folder instanceof FolderDao) {
@@ -63,7 +79,11 @@ class CommunityModel extends CommunityModelBase
         return $community;
     }
 
-    /** Get all */
+    /**
+     * Get all.
+     *
+     * @return array
+     */
     public function getAll()
     {
         $rowset = $this->database->fetchAll($this->database->select());
@@ -75,9 +95,12 @@ class CommunityModel extends CommunityModelBase
         return $return;
     }
 
-    /** Get public Communities
+    /**
+     * Get public communities.
      *
-     * @return Array of Community Dao
+     * @param int $limit
+     * @return array
+     * @throws Zend_Exception
      */
     public function getPublicCommunities($limit = 20)
     {
@@ -97,7 +120,17 @@ class CommunityModel extends CommunityModelBase
         return $return;
     }
 
-    /** Return a list of communities corresponding to the search */
+    /**
+     * Return a list of communities corresponding to the search.
+     *
+     * @param string $search
+     * @param UserDao $userDao
+     * @param int $limit
+     * @param bool $group
+     * @param string $order
+     * @return array
+     * @throws Zend_Exception
+     */
     public function getCommunitiesFromSearch($search, $userDao, $limit = 14, $group = true, $order = 'view')
     {
         if (Zend_Registry::get('configDatabase')->database->adapter == 'PDO_PGSQL'

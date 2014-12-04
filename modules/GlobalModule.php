@@ -21,14 +21,24 @@
 require_once BASE_PATH.'/core/AppController.php';
 
 /**
- * Provides global function to the controllers
+ * Provides global function to the controllers.
  *
  * @property object $ModuleComponent
  * @property object $ModuleForm
  */
 class MIDAS_GlobalModule extends AppController
 {
-    /** constructor */
+    /** @var null|string */
+    public $moduleName = null;
+
+    /**
+     * Constructor.
+     *
+     * @param Zend_Controller_Request_Abstract $request
+     * @param Zend_Controller_Response_Abstract $response
+     * @param array $invokeArgs
+     * @throws Zend_Exception
+     */
     public function __construct(
         Zend_Controller_Request_Abstract $request,
         Zend_Controller_Response_Abstract $response,
@@ -36,7 +46,7 @@ class MIDAS_GlobalModule extends AppController
     ) {
         parent::__construct($request, $response, $invokeArgs);
         $this->loadModuleElements();
-        if (!isset($this->moduleName)) {
+        if (is_null($this->moduleName)) {
             throw new Zend_Exception("Please set the module name in AppController");
         }
         $fc = Zend_Controller_Front::getInstance();
@@ -71,7 +81,7 @@ class MIDAS_GlobalModule extends AppController
         }
     }
 
-    /** pre dispatch (zend)*/
+    /** Pre-dispatch routines. */
     public function preDispatch()
     {
         parent::preDispatch();
@@ -90,14 +100,7 @@ class MIDAS_GlobalModule extends AppController
         }
     }
 
-    /**
-     * Post-dispatch routines
-     *
-     * Common usages for postDispatch() include rendering content in a site-wide
-     * template, link url correction, setting headers, etc.
-     *
-     * @return void
-     */
+    /** Post-dispatch routines. */
     public function postDispatch()
     {
         parent::postDispatch();
@@ -105,9 +108,7 @@ class MIDAS_GlobalModule extends AppController
         $this->view->addHelperPath(BASE_PATH."/".$this->moduleName."/views/helpers", "Zend_View_Helper_");
     }
 
-    /**
-     * Loads model and components
-     */
+    /** Load model and components. */
     public function loadModuleElements()
     {
         if (isset($this->_moduleModels)) {
@@ -185,7 +186,11 @@ class MIDAS_GlobalModule extends AppController
         }
     }
 
-    /** call controller core method */
+    /**
+     * Call controller core method.
+     *
+     * @return bool
+     */
     public function callCoreAction()
     {
         $request = $this->getRequest();

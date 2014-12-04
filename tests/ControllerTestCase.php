@@ -43,7 +43,6 @@ require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
  * @property ItemRevisionModel $ItemRevision
  * @property LicenseModel $License
  * @property MetadataModel $Metadata
- * @property ModuleModel $Module
  * @property NewUserInvitationModel $NewUserInvitation
  * @property PendingUserModel $PendingUser
  * @property ProgressModel $Progress
@@ -56,10 +55,11 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
 {
     protected $application;
 
+    /** @var array */
     protected $params = array();
 
     /**
-     * get the midas temporary directory
+     * Get the temporary directory.
      *
      * @return string
      */
@@ -68,7 +68,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         return UtilityComponent::getTempDirectory();
     }
 
-    /** set up tests */
+    /** Setup. */
     public function setUp()
     {
         $this->bootstrap = array($this, 'appBootstrap');
@@ -77,7 +77,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         parent::setUp();
     }
 
-    /** end test */
+    /** Tear down. */
     public function tearDown()
     {
         Zend_Controller_Front::getInstance()->resetInstance();
@@ -85,14 +85,22 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         parent::tearDown();
     }
 
-    /** get response body */
+    /**
+     * Get the response body.
+     *
+     * @return string
+     */
     public function getBody()
     {
         return $this->response->outputBody();
     }
 
     /**
-     * @return PHPUnit_Extensions_Database_DataSet_IDataSet
+     * Get the data set.
+     *
+     * @param string $name
+     * @param null|string $module
+     * @return PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet
      */
     protected function getDataSet($name = 'default', $module = null)
     {
@@ -104,7 +112,14 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         return new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
     }
 
-    /** loadData */
+    /**
+     * Load data.
+     *
+     * @param string $modelName
+     * @param null|string $file
+     * @param string $module
+     * @return false|array|mixed
+     */
     protected function loadData($modelName, $file = null, $module = '')
     {
         $model = MidasLoader::loadModel($modelName, $module);
@@ -122,7 +137,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         return $model->load($key);
     }
 
-    /** ini modules */
+    /** Initialize modules. */
     private function _initModule()
     {
         $router = Zend_Controller_Front::getInstance()->getRouter();
@@ -220,7 +235,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         Zend_Registry::set('modulesHaveApi', $apiModules);
     }
 
-    /** register plugins and helpers for REST_Controller */
+    /** Register plugins and helpers for the REST controller. */
     protected function _initREST()
     {
         $frontController = Zend_Controller_Front::getInstance();
@@ -299,7 +314,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         }
     }
 
-    /** reset dispatch parameters */
+    /** Reset dispatch parameters. */
     public function resetAll()
     {
         $this->reset();
@@ -309,7 +324,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         $this->_initREST();
     }
 
-    /** init midas */
+    /** Bootstrap the application. */
     public function appBootstrap()
     {
         $this->application = new Zend_Application(APPLICATION_ENV, CORE_CONFIG);
@@ -319,7 +334,12 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         $this->application->bootstrap();
     }
 
-    /** setup database using xml files */
+    /**
+     * Setup database using XML files.
+     *
+     * @param string|array $files
+     * @param null|string $module
+     */
     public function setupDatabase($files, $module = null)
     {
         $db = Zend_Registry::get('dbAdapter');
@@ -361,9 +381,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         }
     }
 
-    /**
-     * Loads model and components
-     */
+    /** Load model and components. */
     public function loadElements()
     {
         Zend_Registry::set('models', array());

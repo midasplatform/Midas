@@ -26,9 +26,7 @@ require_once BASE_PATH.'/library/KWUtils.php';
 /** helper class used for testing batchmake module */
 class Batchmake_ControllerTestCase extends ControllerTestCase
 {
-    /**
-     * setup function will set test config properties in the Zend_Registry
-     */
+    /** Setup function will set test config properties in the Zend_Registry. */
     public function setup()
     {
         parent::setup();
@@ -41,8 +39,9 @@ class Batchmake_ControllerTestCase extends ControllerTestCase
      * to the the locations in that config needed for the tests, returning an
      * array of config property names to directory locations.
      *
-     * @TODO figure out a way to copy over Batchmake or else mock it
-     * @return string
+     * @todo figure out a way to copy over Batchmake or else mock it
+     * @return array
+     * @throws Zend_Exception
      */
     public function setupAndGetConfig()
     {
@@ -113,9 +112,10 @@ class Batchmake_ControllerTestCase extends ControllerTestCase
      * symlinks them to targetDir if there isn't already a file there
      * by that name
      *
-     * @param type $srcDir
-     * @param type $targetDir
-     * @param type $extension
+     * @param string $srcDir
+     * @param string $targetDir
+     * @param string $extension
+     * @throws Zend_Exception
      */
     protected function symlinkFileset($srcDir, $targetDir, $extension)
     {

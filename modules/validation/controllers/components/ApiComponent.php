@@ -22,7 +22,11 @@
 class Validation_ApiComponent extends AppComponent
 {
     /**
-     * Helper function for verifying keys in an input array
+     * Helper function for verifying keys in an input array.
+     *
+     * @param array $keys
+     * @param array $values
+     * @throws Exception
      */
     private function _checkKeys($keys, $values)
     {
@@ -38,6 +42,7 @@ class Validation_ApiComponent extends AppComponent
      *
      * @param dashboard_id the id of the dashboard
      * @return the name of the dashboard
+     * @throws Exception
      */
     public function getDashboard($value)
     {
@@ -95,6 +100,7 @@ class Validation_ApiComponent extends AppComponent
      * @param name the name of the new dashboard
      * @param description the name of the new dashboard
      * @return the id of the created dashboard
+     * @throws Exception
      */
     public function createDashboard($value)
     {
@@ -125,6 +131,7 @@ class Validation_ApiComponent extends AppComponent
      * @param dashboard_id the id of the target dashboard
      * @param folder_id the id of the testing folder
      * @return the id of the created dashboard
+     * @throws Exception
      */
     public function setTestingFolder($value)
     {
@@ -159,6 +166,7 @@ class Validation_ApiComponent extends AppComponent
      * @param dashboard_id the id of the target dashboard
      * @param folder_id the id of the truth folder
      * @return the id of the created dashboard
+     * @throws Exception
      */
     public function setTruthFolder($value)
     {
@@ -193,6 +201,7 @@ class Validation_ApiComponent extends AppComponent
      * @param dashboard_id the id of the target dashboard
      * @param folder_id the id of the testing folder
      * @return the id of the created dashboard
+     * @throws Exception
      */
     public function setTrainingFolder($value)
     {
@@ -227,6 +236,7 @@ class Validation_ApiComponent extends AppComponent
      * @param dashboard_id the id of the target dashboard
      * @param folder_id the id of the result folder
      * @return the id of the created dashboard
+     * @throws Exception
      */
     public function addResultFolder($value)
     {
@@ -261,6 +271,7 @@ class Validation_ApiComponent extends AppComponent
      * @param dashboard_id the id of the target dashboard
      * @param folder_id the id of the result folder to be removed
      * @return the id of the created dashboard
+     * @throws Exception
      */
     public function removeResultFolder($value)
     {
@@ -302,6 +313,7 @@ class Validation_ApiComponent extends AppComponent
      * @param dashboard_id the id of the target dashboard
      * @return and array of folder_id's corresponding to result folders assigned
      *             to the dashboard
+     * @throws Exception
      */
     public function getResultFolders($value)
     {
@@ -331,6 +343,7 @@ class Validation_ApiComponent extends AppComponent
      * @param item_id the id of the result item
      * @param value the value of the result being set
      * @return the id of the created scalar result
+     * @throws Exception
      */
     public function setScalarResult($value)
     {
@@ -393,6 +406,7 @@ class Validation_ApiComponent extends AppComponent
      * @param folder_id the id of the target result folder
      * @param item_id the id of the result item
      * @return the id of the created scalar result
+     * @throws Exception
      */
     public function getScalarResult($value)
     {
@@ -437,6 +451,7 @@ class Validation_ApiComponent extends AppComponent
      * @param dashboard_id the id of the target dashboard
      * @param folder_id the id of the target result folder
      * @return the scalar results for the specified folder
+     * @throws Exception
      */
     public function getScores($value)
     {
@@ -476,6 +491,7 @@ class Validation_ApiComponent extends AppComponent
      *
      * @param dashboard_id the id of the target dashboard
      * @return the scalar results for the specified dashboard
+     * @throws Exception
      */
     public function getAllScores($value)
     {

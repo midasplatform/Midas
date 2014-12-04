@@ -53,22 +53,34 @@ abstract class Oauth_CodeModelBase extends Oauth_AppModel
         $this->initialize(); // required
     }
 
-    /** Get by user */
+    /**
+     * Return all code DAOs for the given user.
+     *
+     * @param UserDao $userDao
+     * @return array
+     */
     abstract public function getByUser($userDao);
 
-    /** Get by code */
+    /**
+     * Return the code DAO corresponding to this code string if it exists.
+     *
+     * @param string $code
+     * @return false|Oauth_CodeDao
+     */
     abstract public function getByCode($code);
 
-    /** Clean expired */
+    /** Remove expired access tokens from the database. */
     abstract public function cleanExpired();
 
     /**
      * Create and return a new oauth authorization code for the given client and user. Expires after 10 minutes
      * in accordance with the recommendation in the IETF draft v31
      *
-     * @param userDao The resource owner (end user to authenticate via the client)
-     * @param clientDao The client that will be receiving the code
-     * @param scopes The array of permission scopes (see api module constants)
+     * @param UserDao $userDao resource owner (end user to authenticate via the client)
+     * @param Oauth_ClientDao $clientDao client that will be receiving the code
+     * @param array $scopes array of permission scopes (see api module constants)
+     * @return Oauth_CodeDao
+     * @throws Zend_Exception
      */
     public function create($userDao, $clientDao, $scopes)
     {

@@ -32,10 +32,11 @@ class Batchmake_CondorSubmitDagMock
      * exec method with the same interface as that in KWUtils, will simulate
      * an execution of the condor_submit_dag executable for a few select test cases.
      *
-     * @param type $command
-     * @param type $output
-     * @param type $chdir
-     * @param type $return_val
+     * @param string $command
+     * @param null|mixed $output
+     * @param string $chdir
+     * @param null|mixed $return_val
+     * @throws Zend_Exception
      */
     public function exec($command, &$output = null, $chdir = "", &$return_val = null)
     {
@@ -74,4 +75,4 @@ class Batchmake_CondorSubmitDagMock
             throw new Zend_Exception('Unexpected dagjob test script: '.$scriptName);
         }
     }
-} // end class
+}

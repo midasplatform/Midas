@@ -21,9 +21,7 @@
 /** Base item metric model for the batchmake module */
 abstract class Batchmake_ItemmetricModelBase extends Batchmake_AppModel
 {
-    /**
-     * constructor
-     */
+    /** Constructor. */
     public function __construct()
     {
         parent::__construct();
@@ -38,10 +36,13 @@ abstract class Batchmake_ItemmetricModelBase extends Batchmake_AppModel
         $this->initialize(); // required
     }
 
-    /** Create an Itemmetric
+    /**
+     * Create an item metric.
      *
-     * @return ItemmetricDao, will throw a Zend_Exception if an
-     *                        Itemmetric already exists with this metricName
+     * @param string $metricName
+     * @param string $bmsName
+     * @return Batchmake_ItemmetricDao
+     * @throws Zend_Exception  if an item metric already exists with this metric name
      */
     public function createItemmetric($metricName, $bmsName)
     {
@@ -62,6 +63,10 @@ abstract class Batchmake_ItemmetricModelBase extends Batchmake_AppModel
         return $itemmetric;
     }
 
-    /** returns all rows */
+    /**
+     * Get all rows stored.
+     *
+     * @return array
+     */
     abstract public function getAll();
 }

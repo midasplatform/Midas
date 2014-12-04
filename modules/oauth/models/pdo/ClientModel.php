@@ -24,7 +24,10 @@ require_once BASE_PATH.'/modules/oauth/models/base/ClientModelBase.php';
 class Oauth_ClientModel extends Oauth_ClientModelBase
 {
     /**
-     * Return all client records owned by the given user
+     * Return all client records owned by the given user.
+     *
+     * @param UserDao $userDao
+     * @return array
      */
     public function getByUser($userDao)
     {

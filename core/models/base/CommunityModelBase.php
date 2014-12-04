@@ -374,8 +374,9 @@ abstract class CommunityModelBase extends AppModel
      * which should be one of MIDAS_COMMUNITY_PUBLIC, MIDAS_COMMUNITY_PRIVATE.
      *
      * @param CommunityDao $communityDao
-     * @param type $privacyCode
-     * @param type $userDao
+     * @param int $privacyCode
+     * @param UserDao $userDao
+     * @throws Zend_Exception
      */
     public function setPrivacy($communityDao, $privacyCode, $userDao)
     {
@@ -384,7 +385,7 @@ abstract class CommunityModelBase extends AppModel
         }
         if ($privacyCode === false || ($privacyCode != MIDAS_COMMUNITY_PUBLIC && $privacyCode != MIDAS_COMMUNITY_PRIVATE)
         ) {
-            throw new Exception('invalid value for privacyCode: '.$privacyCode);
+            throw new Zend_Exception('invalid value for privacyCode: '.$privacyCode);
         }
 
         $feedModel = MidasLoader::loadModel('Feed');

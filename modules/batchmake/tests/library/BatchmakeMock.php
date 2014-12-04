@@ -34,10 +34,11 @@ class Batchmake_BatchmakeMock
      * has the same interface as KWUtils.exec, used to simulate a BatchMake
      * executable for testing.
      *
-     * @param type $command
-     * @param type $output
-     * @param type $chdir
-     * @param type $return_val
+     * @param string $command
+     * @param null|mixed $output
+     * @param string $chdir
+     * @param null|mixed $return_val
+     * @throws Zend_Exception
      */
     public function exec($command, &$output = null, $chdir = "", &$return_val = null)
     {
@@ -104,11 +105,11 @@ class Batchmake_BatchmakeMock
      * handler function with same interface as KWUtils.exec to simulate the
      * --condor functionality of the BatchMake executable
      *
-     * @param  type $command
-     * @param  type $output
-     * @param  type $chdir
-     * @param  type $return_val
-     * @return type
+     * @param string $command
+     * @param null|mixed $output
+     * @param string $chdir
+     * @param null|mixed $return_val
+     * @throws Zend_Exception
      */
     public function execGenerateCondorDag($command, &$output = null, $chdir = "", &$return_val = null)
     {

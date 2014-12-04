@@ -21,7 +21,7 @@
 /** Token base model for the oauth module */
 abstract class Oauth_TokenModelBase extends Oauth_AppModel
 {
-    /** constructor */
+    /** Constructor. */
     public function __construct()
     {
         parent::__construct();
@@ -54,23 +54,41 @@ abstract class Oauth_TokenModelBase extends Oauth_AppModel
         $this->initialize(); // required
     }
 
-    /** Get by token */
+    /**
+     * Retrieve a token DAO based on the token value. Checking if it has expired
+     * is left up to the caller.
+     *
+     * @param string $token
+     * @return false|Oauth_TokenDao
+     */
     abstract public function getByToken($token);
 
-    /** Get by user */
+    /**
+     * Return all token DAOs for the given user.
+     *
+     * @param UserDao $userDao
+     * @param bool $onlyValid
+     * @return array
+     */
     abstract public function getByUser($userDao, $onlyValid = true);
 
-    /** Expire tokens */
+    /**
+     * Expire all existing tokens for the given user and client.
+     *
+     * @param UserDao $userDao user DAO
+     * @param Oauth_ClientDao $clientDao client DAO
+     */
     abstract public function expireTokens($userDao, $clientDao);
 
-    /** Clean expired */
+    /** Remove expired access tokens from the database. */
     abstract public function cleanExpired();
 
     /**
      * Use the provided codeDao to create and return an oauth access token.
      *
-     * @param codeDao The code dao that should be used to create the access token
-     * @param expire Argument to strtotime for the token expiration
+     * @param Oauth_CodeDao $codeDao code DAO that should be used to create the access token
+     * @param string $expire argument to strtotime for the token expiration
+     * @return Oauth_TokenDao
      */
     public function createAccessToken($codeDao, $expire)
     {
@@ -78,9 +96,10 @@ abstract class Oauth_TokenModelBase extends Oauth_AppModel
     }
 
     /**
-     * Use the provided codeDao to create and return an oauth access token.
+     * Use the provided code DAO to create and return an oauth access token.
      *
-     * @param codeDao The code dao that should be used to create the access token
+     * @param Oauth_CodeDao $codeDao code DAO that should be used to create the access token
+     * @return Oauth_TokenDao
      */
     public function createRefreshToken($codeDao)
     {
@@ -88,9 +107,13 @@ abstract class Oauth_TokenModelBase extends Oauth_AppModel
     }
 
     /**
-     * Helper method to create the token dao from a code dao or refresh token dao
+     * Helper method to create the token DAO from a code DAO or refresh token DAO.
      *
-     * @param fromDao The authorization code dao or refresh token dao
+     * @param Oauth_CodeDao|Oauth_TokenDao $fromDao authorization code DAO or refresh token DAO
+     * @param int $type
+     * @param null|string $expire
+     * @return Oauth_TokenDao
+     * @throws Zend_Exception
      */
     private function _createToken($fromDao, $type, $expire = null)
     {

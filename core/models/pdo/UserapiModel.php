@@ -24,11 +24,12 @@ require_once BASE_PATH.'/core/models/base/UserapiModelBase.php';
 class UserapiModel extends UserapiModelBase
 {
     /**
-     * Get userapi DAO by
+     * Get userapi DAO by application name and email address.
      *
-     * @param  string $appname Application Name
-     * @param  string $email
-     * @return UserapiDao
+     * @param  string $appname application name
+     * @param  string $email email address
+     * @return false|UserapiDao
+     * @throws Zend_Exception
      */
     public function getByAppAndEmail($appname, $email)
     {
@@ -51,11 +52,12 @@ class UserapiModel extends UserapiModelBase
     }
 
     /**
-     * Get userapi DAO by
+     * Get userapi DAO by application name and user.
      *
-     * @param  string $appname Application Name
-     * @param  UserDao $userDao
-     * @return UserapiDao
+     * @param  string $appname application name
+     * @param  UserDao $userDao user DAO
+     * @return false|UserapiDao
+     * @throws Zend_Exception
      */
     public function getByAppAndUser($appname, $userDao)
     {
@@ -73,10 +75,11 @@ class UserapiModel extends UserapiModelBase
     /**
      * Return the token DAO
      *
-     * @param  type $email
-     * @param  type $apikey
-     * @param  type $appname
-     * @return Api_TokenDao
+     * @param string $email email address
+     * @param string $apikey API key
+     * @param string $appname application name
+     * @return false|TokenDao
+     * @throws Zend_Exception
      */
     public function getToken($email, $apikey, $appname)
     {
@@ -123,7 +126,6 @@ class UserapiModel extends UserapiModelBase
 
         if (!$userapiDao) {
             throw new Zend_Exception();
-            return false;
         }
 
         // We do some cleanup of all the other keys that have expired
@@ -142,7 +144,13 @@ class UserapiModel extends UserapiModelBase
         return $tokenDao;
     }
 
-    /** Return the userid from a token */
+    /**
+     * Return the userid from a token
+     *
+     * @param TokenDao $token
+     * @return false|UserapiDao
+     * @throws Zend_Exception
+     */
     public function getUserapiFromToken($token)
     {
         if (!is_string($token)) {
@@ -161,7 +169,13 @@ class UserapiModel extends UserapiModelBase
         return $this->initDao('Userapi', $row);
     }
 
-    /** Get the user's keys */
+    /**
+     * Get the user's keys
+     *
+     * @param UserDao $userDao
+     * @return array
+     * @throws Zend_Exception
+     */
     public function getByUser($userDao)
     {
         if (!$userDao instanceof UserDao) {

@@ -36,6 +36,7 @@ class Tracker_TrendController extends Tracker_AppController
      * @param yMax (optional) Maximum value of the left y axis
      * @param y2Min (optional) Minimum value of the right y axis
      * @param y2Max (optional) Maximum value of the right y axis
+     * @throws Zend_Exception
      */
     public function viewAction()
     {

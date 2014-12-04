@@ -32,6 +32,7 @@ class Oauth_AuthorizeController extends Oauth_AppController
      * @param redirect_uri The redirect URI to redirect the end user to upon successful login
      * @param [scope] JSON-encoded array of scope constants (see api module constants). Defaults to ALL if not set
      * @param [state] Opaque value that will be passed back when redirecting user on success
+     * @throws Zend_Exception
      */
     public function indexAction()
     {
@@ -86,6 +87,7 @@ class Oauth_AuthorizeController extends Oauth_AppController
      * @param password The user's password
      * @param allowOrDeny Whether to allow or deny the request. Set to 'Allow' to allow.
      * @param [state] Opaque state pointer string to be passed back to the client appended to the redirect URI
+     * @throws Zend_Exception
      */
     public function submitAction()
     {

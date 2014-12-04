@@ -29,6 +29,7 @@ class Tracker_ProducerController extends Tracker_AppController
      * List all producers for a given community (in the tab). Requires read permission on community.
      *
      * @param communityId The community id
+     * @throws Zend_Exception
      */
     public function listAction()
     {
@@ -50,6 +51,7 @@ class Tracker_ProducerController extends Tracker_AppController
      * View a producer, displaying all available trends
      *
      * @param producerId The id of the producer to display (requires community read permission)
+     * @throws Zend_Exception
      */
     public function viewAction()
     {
@@ -81,6 +83,7 @@ class Tracker_ProducerController extends Tracker_AppController
      * Delete a producer, deleting all trend data within it (requires community admin)
      *
      * @param producerId The id of the producer to delete
+     * @throws Zend_Exception
      */
     public function deleteAction()
     {
@@ -101,6 +104,8 @@ class Tracker_ProducerController extends Tracker_AppController
 
     /**
      * Show the dialog for editing the producer information
+     *
+     * @throws Zend_Exception
      */
     public function editAction()
     {
@@ -125,6 +130,7 @@ class Tracker_ProducerController extends Tracker_AppController
      * Handle edit form submission
      *
      * @param producerId The id of the producer to edit
+     * @throws Zend_Exception
      */
     public function editsubmitAction()
     {

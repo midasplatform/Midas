@@ -21,7 +21,10 @@
 /** Client management */
 class Oauth_ClientController extends Oauth_AppController
 {
+    /** @var array */
     public $_models = array('User');
+
+    /** @var array */
     public $_moduleModels = array('Client', 'Code', 'Token');
 
     /**
@@ -29,6 +32,7 @@ class Oauth_ClientController extends Oauth_AppController
      * This is a tab in the user's account page.
      *
      * @param userId The id of the user
+     * @throws Zend_Exception
      */
     public function indexAction()
     {
@@ -60,6 +64,7 @@ class Oauth_ClientController extends Oauth_AppController
      *
      * @param name Name of the client
      * @param userId Id of the user.  Must be self if session user is not administrator
+     * @throws Zend_Exception
      */
     public function createAction()
     {
@@ -96,6 +101,7 @@ class Oauth_ClientController extends Oauth_AppController
      * Delete an oauth client
      *
      * @param clientId The id of the client to delete
+     * @throws Zend_Exception
      */
     public function deleteAction()
     {

@@ -32,6 +32,7 @@ class Packages_ApplicationController extends Packages_AppController
      * @param projectId Project id
      * @param name Name of the application
      * @param description Description of the application
+     * @throws Zend_Exception
      */
     public function createAction()
     {
@@ -70,6 +71,7 @@ class Packages_ApplicationController extends Packages_AppController
 
     /**
      * Edit an application's name and description
+     * @throws Zend_Exception
      */
     public function editAction()
     {
@@ -118,6 +120,7 @@ class Packages_ApplicationController extends Packages_AppController
 
     /**
      * View the release packages for an application
+     * @throws Zend_Exception
      */
     public function viewAction()
     {
@@ -173,6 +176,7 @@ class Packages_ApplicationController extends Packages_AppController
      * project community.
      *
      * @param applicationId The id of the application to delete
+     * @throws Zend_Exception
      */
     public function deleteAction()
     {
@@ -194,6 +198,7 @@ class Packages_ApplicationController extends Packages_AppController
 
     /**
      * View for latest builds
+     * @throws Zend_Exception
      */
     public function latestAction()
     {
@@ -235,7 +240,11 @@ class Packages_ApplicationController extends Packages_AppController
     }
 
     /**
-     * Helper function for sorting releases (desc)
+     * Helper function for sorting releases (desc).
+     *
+     * @param string $a
+     * @param string $b
+     * @return int
      */
     private function _releaseSort($a, $b)
     {
@@ -264,9 +273,7 @@ class Packages_ApplicationController extends Packages_AppController
         return -1;
     }
 
-    /**
-     * Ajax action to return a list of packages for a given application and release
-     */
+    /** Ajax action to return a list of packages for a given application and release. */
     public function getpackagesAction()
     {
         $this->disableLayout();

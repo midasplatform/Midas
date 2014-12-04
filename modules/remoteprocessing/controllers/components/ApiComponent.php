@@ -33,6 +33,9 @@ class Remoteprocessing_ApiComponent extends AppComponent
      * @param securitykey Set in configuration
      * @param os (Optional) Operating System
      * @return Array (token, apikey and email)
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function registerserver($args)
     {
@@ -112,6 +115,9 @@ class Remoteprocessing_ApiComponent extends AppComponent
      *
      * @param token
      * @return Array
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function keepaliveserver($args)
     {
@@ -200,6 +206,9 @@ class Remoteprocessing_ApiComponent extends AppComponent
      * The client sends the results to MIDAS (put request)
      *
      * @param token
+     *
+     * @param array $args parameters
+     * @throws Exception
      */
     public function resultsserver($args)
     {
@@ -291,7 +300,11 @@ class Remoteprocessing_ApiComponent extends AppComponent
         return array();
     }
 
-    /** recursively delete a folder */
+    /**
+     * Recursively delete a folder.
+     *
+     * @param string $dir
+     */
     private function _rrmdir($dir)
     {
         if (is_dir($dir)) {

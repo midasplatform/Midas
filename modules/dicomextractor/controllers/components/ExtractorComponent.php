@@ -164,7 +164,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
 
         /** @var UtilityComponent $utilityComponent */
         $utilityComponent = MidasLoader::loadComponent('Utility');
-        $bitstream = $bitstreams[$numBitstreams / 2];
+        $bitstream = $bitstreams[(int) ($numBitstreams / 2)];
 
         // Turn the DICOM into a JPEG
         $tempDirectory = $utilityComponent->getTempDirectory();
