@@ -114,7 +114,6 @@ class AdminController extends AppController
                 $config->global->application->name = $this->getParam('name');
                 $config->global->application->description = $this->getParam('description');
                 $config->global->application->lang = $this->getParam('lang');
-                $config->global->environment = $this->getParam('environment');
                 $config->global->default->timezone = $this->getParam('timezone');
                 $config->global->defaultlicense = $this->getParam('licenseSelect');
                 $config->global->dynamichelp = $this->getParam('dynamichelp');
