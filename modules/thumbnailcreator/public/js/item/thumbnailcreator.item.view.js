@@ -43,7 +43,7 @@ midas.thumbnailcreator.displayThumbnail = function (itemthumbnail) {
     'use strict';
     $('#thumbnailcreatorLargeImageSection').show()
         .find('img.largeImage')
-        .attr('src', json.global.webroot + '/thumbnailcreator/thumbnail/item?itemthumbnail=' + itemthumbnail.itemthumbnail_id);
+        .attr('src', json.global.webroot + '/thumbnailcreator/thumbnail/item?itemthumbnail=' + encodeURIComponent(itemthumbnail.itemthumbnail_id));
 };
 
 $(document).ready(function () {

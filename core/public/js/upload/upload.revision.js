@@ -37,7 +37,7 @@ midas.upload.revision.initHtml5FileUpload = function () {
         if (currentIndex > 0) {
             // All files have finished
             $('.drop-zone').show();
-            window.location.href = json.global.webroot + '/item/' + $('#destinationId').val();
+            window.location.href = json.global.webroot + '/item/' + encodeURIComponent($('#destinationId').val());
             return;
         }
         var file = files[currentIndex];
@@ -47,7 +47,7 @@ midas.upload.revision.initHtml5FileUpload = function () {
             type: 'GET',
             url: json.global.webroot + '/rest/system/uploadtoken?useSession=true' +
             '&filename=' + encodeURIComponent(file.name) +
-            '&itemid=' + $('#destinationId').val()
+            '&itemid=' + encodeURIComponent($('#destinationId').val())
         }).success(function (resp) {
             if (file.size > 0) {
                 startByte = 0;
@@ -112,7 +112,7 @@ midas.upload.revision.initHtml5FileUpload = function () {
         var file = files[currentIndex];
         var blob = file.slice(startByte);
         var url = json.global.webroot + '/api/json?method=midas.upload.perform&uploadtoken=' +
-            uploadToken + '&length=' + file.size + '&filename=' + encodeURIComponent(file.name);
+            encodeURIComponent(uploadToken) + '&length=' + encodeURIComponent(file.size) + '&filename=' + encodeURIComponent(file.name);
         var changes = $('#revisionChanges').val();
         if(changes) {
             url += '&changes=' + encodeURIComponent(changes);
@@ -229,7 +229,7 @@ midas.upload.revision.initHtml5FileUpload = function () {
         $.ajax({
             dataType: 'json',
             type: 'GET',
-            url: json.global.webroot + '/rest/system/uploadoffset?uploadtoken=' + resumeUploadId
+            url: json.global.webroot + '/rest/system/uploadoffset?uploadtoken=' + encodeURIComponent(resumeUploadId)
         }).success(function (resp) {
             startByte = resp.data.offset;
             overallProgress += startByte;

@@ -52,11 +52,11 @@ $(document).ready(function () {
         $(this).remove();
         $.ajax({
             type: "POST",
-            url: json.global.webroot + "/remoteprocessing/executable/define?itemId=" + $('#itemIdExecutable').val(),
+            url: json.global.webroot + "/remoteprocessing/executable/define?itemId=" + encodeURIComponent($('#itemIdExecutable').val()),
             data: req,
             success: function (x) {
                 if (typeof(isDefineAjax) == 'undefined' || !isDefineAjax) {
-                    window.location.replace($('.webroot').val() + '/item/' + json.item.item_id);
+                    window.location.replace($('.webroot').val() + '/item/' + encodeURIComponent(json.item.item_id));
                 } else {
                     $("div.MainDialog").dialog("close");
                     $('#metaWrapper').hide();

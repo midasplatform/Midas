@@ -12,7 +12,7 @@ $(document).ready(function () {
         }, function (text) {
             var retVal = $.parseJSON(text);
             if (retVal.action == 'download') {
-                window.location = json.global.webroot + '/download/item/' + json.item.item_id;
+                window.location = json.global.webroot + '/download/item/' + encodeURIComponent(json.item.item_id);
             }
             else if (retVal.action == 'promptApplet') {
                 midas.doCallback('CALLBACK_CORE_PROMPT_APPLET', {
@@ -44,7 +44,7 @@ $(document).ready(function () {
         midas.showDialogWithContent(json.item.message['delete'], html, false);
 
         $('input.deleteMetaDataYes').unbind('click').click(function () {
-            $.post(json.global.webroot + '/item/' + json.item.item_id, {
+            $.post(json.global.webroot + '/item/' + encodeURIComponent(json.item.item_id), {
                 element: metadataId,
                 itemrevision: itemrevision,
                 deleteMetadata: true
@@ -66,13 +66,13 @@ $(document).ready(function () {
     $('a.metadataEditLink').click(function () {
         var metadataId = $(this).attr('element');
         var itemrevision = $(this).attr('itemrevision');
-        midas.loadDialog("editmetadata" + metadataId, "/item/editmetadata/?metadataId=" + metadataId + "&itemId=" + json.item.item_id + "&itemrevision=" + itemrevision);
+        midas.loadDialog("editmetadata" + metadataId, "/item/editmetadata/?metadataId=" + encodeURIComponent(metadataId) + "&itemId=" + encodeURIComponent(json.item.item_id) + "&itemrevision=" + encodeURIComponent(itemrevision));
         midas.showDialog('MetaData');
     });
 
     $('a.addMetadataLink').click(function () {
         var metadataId = $(this).attr('element');
-        midas.loadDialog("editmetadata" + metadataId, "/item/editmetadata/?itemId=" + json.item.item_id);
+        midas.loadDialog("editmetadata" + metadataId, "/item/editmetadata/?itemId=" + encodeURIComponent(json.item.item_id));
         var options = {
             buttons: {
                 "Add": function () {
@@ -140,12 +140,12 @@ $(document).ready(function () {
     });
 
     $('a.duplicateItemLink').click(function () {
-        midas.loadDialog("duplicateItem", "/browse/movecopy/?duplicate=true&items=" + json.item.item_id);
+        midas.loadDialog("duplicateItem", "/browse/movecopy/?duplicate=true&items=" + encodeURIComponent(json.item.item_id));
         midas.showDialog('Copy item');
     });
 
     $('a.linkItemLink').click(function () {
-        midas.loadDialog("linkToItem", "/share/links?type=item&id=" + json.item.item_id);
+        midas.loadDialog("linkToItem", "/share/links?type=item&id=" + encodeURIComponent(json.item.item_id));
         midas.showDialog('Link to this item');
     });
 
@@ -181,7 +181,7 @@ $(document).ready(function () {
         content: 'Edit bitstream'
     }).click(function () {
         var bitstreamId = $(this).attr('element');
-        midas.loadDialog("editBitstream" + bitstreamId, "/item/editbitstream?bitstreamId=" + bitstreamId);
+        midas.loadDialog("editBitstream" + bitstreamId, "/item/editbitstream?bitstreamId=" + encodeURIComponent(bitstreamId));
         midas.showDialog(json.browse.editBitstream, false, {
             width: 380
         });
@@ -250,7 +250,7 @@ $(document).ready(function () {
                 midas.showDialogWithContent(json.item.message['delete'], html, false);
 
                 $('input.deleteItemYes').unbind('click').click(function () {
-                    location.replace(json.global.webroot + '/item/delete?itemId=' + json.item.item_id);
+                    location.replace(json.global.webroot + '/item/delete?itemId=' + encodeURIComponent(json.item.item_id));
                 });
                 $('input.deleteItemNo').unbind('click').click(function () {
                     $("div.MainDialog").dialog('close');
@@ -260,7 +260,7 @@ $(document).ready(function () {
     });
 
     $('a.sharingLink').click(function () {
-        midas.loadDialog("sharing" + $(this).attr('type') + $(this).attr('element'), "/share/dialog?type=" + $(this).attr('type') + '&element=' + $(this).attr('element'));
+        midas.loadDialog("sharing" + $(this).attr('type') + $(this).attr('element'), "/share/dialog?type=" + encodeURIComponent($(this).attr('type')) + '&element=' + encodeURIComponent($(this).attr('element')));
         midas.showDialog(json.browse.share);
     });
 
@@ -270,7 +270,7 @@ $(document).ready(function () {
             // Set the text to an image HTML string with the correct src URL to the loading image you want to use
             text: '<img  src="' + json.global.webroot + '/core/public/images/icons/loading.gif" alt="Loading..." />',
             ajax: {
-                url: json.global.webroot + "/upload/revision?itemId=" + itemId // Use the rel attribute of each element for the url to load
+                url: json.global.webroot + "/upload/revision?itemId=" + encodeURIComponent(itemId) // Use the rel attribute of each element for the url to load
             },
             title: {
                 text: $('a.uploadRevisionLink').html(), // Give the tooltip a title using each elements text
@@ -301,7 +301,7 @@ $(document).ready(function () {
     });
 
     $('a.editItemLink').click(function () {
-        midas.loadDialog("editItem" + json.item.item_id, "/item/edit?itemId=" + json.item.item_id);
+        midas.loadDialog("editItem" + json.item.item_id, "/item/edit?itemId=" + encodeURIComponent(json.item.item_id));
         midas.showDialog(json.browse.editItem, false, {
             width: 545
         });
@@ -316,7 +316,7 @@ $(document).ready(function () {
 
     $('a.licenseLink').click(function () {
         var licenseId = $(this).attr('element');
-        midas.loadDialog('viewLicense' + licenseId, '/licenses/view?licenseId=' + licenseId);
+        midas.loadDialog('viewLicense' + licenseId, '/licenses/view?licenseId=' + encodeURIComponent(licenseId));
         midas.showDialog($(this).attr('name'), false);
     });
 

@@ -141,7 +141,7 @@ function createInfoItem(jsonContent) {
     if (arrayElement['type'] == 'item') {
         html += '  <tr>';
         html += '    <td>' + arrayElement.translation.Uploaded + '</td>';
-        html += '    <td><a href="' + json.global.webroot + '/user/' + arrayElement['uploaded']['user_id'] + '">' + arrayElement['uploaded']['firstname'] + ' ' + arrayElement['uploaded']['lastname'] + '</a></td>';
+        html += '    <td><a href="' + json.global.webroot + '/user/' + encodeURIComponent(arrayElement['uploaded']['user_id']) + '">' + arrayElement['uploaded']['firstname'] + ' ' + arrayElement['uploaded']['lastname'] + '</a></td>';
         html += '  </tr>';
         html += '  <tr>';
         html += '    <td>Revision';
@@ -175,7 +175,7 @@ function createInfoItem(jsonContent) {
     }
 
     if (arrayElement['thumbnail'] !== undefined && arrayElement['thumbnail'] != '') {
-        html += '<b>' + json.browse.preview + '</b><br><a href="' + json.global.webroot + '/item/' + arrayElement['item_id'] + '"><img class="infoLogo" alt="" src="' + json.global.webroot + '/' + arrayElement['thumbnail'] + '" /></a>';
+        html += '<b>' + json.browse.preview + '</b><br><a href="' + json.global.webroot + '/item/' + encodeURIComponent(arrayElement['item_id']) + '"><img class="infoLogo" alt="" src="' + json.global.webroot + '/' + encodeURIComponent(arrayElement['thumbnail']) + '" /></a>';
     }
 
     return html;

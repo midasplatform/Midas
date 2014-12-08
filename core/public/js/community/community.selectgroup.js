@@ -26,7 +26,7 @@ $(document).ready(function () {
             if (jsonResponse[0]) {
                 midas.createNotice(jsonResponse[1], 3000);
                 if (typeof midas.invite.directAdd !== "undefined" && midas.invite.directAdd == 1) {
-                    window.location.href = json.global.webroot + "/community/manage?communityId=" + json.community.community_id + "#tabs-Users";
+                    window.location.href = json.global.webroot + "/community/manage?communityId=" + encodeURIComponent(json.community.community_id) + "#tabs-Users";
                     window.location.reload();
                 }
                 $('div.MainDialog').dialog('close');

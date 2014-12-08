@@ -14,14 +14,14 @@ midas.invite.directAdd = $("#directAdd").val();
 midas.invite.showGroupSelect = function (item) {
     'use strict';
     var dialogTitle = 'groupSelect';
-    var dialogUrl = '/community/selectgroup?communityId=' + json.community.community_id;
+    var dialogUrl = '/community/selectgroup?communityId=' + encodeURIComponent(json.community.community_id);
 
     if (item.userid) {
-        dialogUrl += '&userId=' + item.userid;
+        dialogUrl += '&userId=' + encodeURIComponent(item.userid);
         dialogTitle += item.userid;
     }
     else { // email address
-        dialogUrl += '&' + item.key + '=' + item.value;
+        dialogUrl += '&' + encodeURIComponent(item.key) + '=' + encodeURIComponent(item.value);
         dialogTitle += item.value;
     }
 

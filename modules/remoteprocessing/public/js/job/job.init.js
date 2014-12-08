@@ -67,7 +67,7 @@ function onFinishCallback() {
         $(this).remove();
         $.ajax({
             type: "POST",
-            url: json.global.webroot + "/remoteprocessing/job/init?itemId=" + $('#selectedExecutableId').val(),
+            url: json.global.webroot + "/remoteprocessing/job/init?itemId=" + encodeURIComponent($('#selectedExecutableId').val()),
             data: req,
             success: function (x) {
                 window.location.replace($('.webroot').val() + '/remoteprocessing/job/manage');
@@ -196,7 +196,7 @@ function onShowStepCallback(obj) {
         var itemid = $('#selectedExecutableId').val();
         if ($('#executableForm').attr('loaded') != itemid) {
             $('#executableForm').attr('loaded', itemid);
-            $('#executableForm').load(json.global.webroot + '/remoteprocessing/job/getinitexecutable?scheduled=' + json.job.scheduled + '&itemId=' + itemid, [], function () {
+            $('#executableForm').load(json.global.webroot + '/remoteprocessing/job/getinitexecutable?scheduled=' + encodeURIComponent(json.job.scheduled) + '&itemId=' + encodeURIComponent(itemid), [], function () {
                 initExecutableForm();
             });
         }
@@ -223,7 +223,7 @@ function loadRecentUpload() {
             $('#selectedExecutable').html($(this).find('a').html());
             $('#selectedExecutableId').val($(this).attr('element'));
             midas.createNotice("Please set the executable meta informaiton.", 4000);
-            $('#metaPageBlock').load(json.global.webroot + '/remoteprocessing/executable/define?itemId=' + $(this).attr('element'));
+            $('#metaPageBlock').load(json.global.webroot + '/remoteprocessing/executable/define?itemId=' + encodeURIComponent($(this).attr('element')));
             $('#metaWrapper').show();
             isExecutableMeta = false;
             executableValid = true;
@@ -292,7 +292,7 @@ function itemSelectionCallback(name, id) {
                             else {
                                 isExecutableMeta = false;
                                 midas.createNotice("Please set the executable meta informaiton.", 4000);
-                                midas.loadDialog("meta_" + id, '/remoteprocessing/executable/define?itemId=' + id);
+                                midas.loadDialog("meta_" + id, '/remoteprocessing/executable/define?itemId=' + encodeURIComponent(id));
                                 midas.showBigDialog("MetaInformation", false);
                             }
                         });

@@ -99,7 +99,7 @@ midas.import.startImport = function () {
     }
     else { // stop the import
         midas.import.stage = 'validate'; // goes back to the validate stage
-        $.get($('.webroot').val() + '/import/stop?id=' + midas.import.uploadId,
+        $.get($('.webroot').val() + '/import/stop?id=' + encodeURIComponent(midas.import.uploadId),
             midas.import.displayStopMessage);
     }
 };
@@ -232,7 +232,7 @@ midas.import.checkProgress = function (id) {
 
     $.ajax({
         type: "GET",
-        url: $('.webroot').val() + '/import/getprogress?id=' + id,
+        url: $('.webroot').val() + '/import/getprogress?id=' + encodeURIComponent(id),
         dataType: 'json',
         timeout: 10000000000,
         success: midas.import.makeProgressSuccessCallback(id),

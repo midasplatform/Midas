@@ -37,7 +37,7 @@ midas.packages.renderPackages = function (os, arch, packages) {
     $.each(packages, function (k, val) {
         var trClass = index % 2 ? 'odd' : 'even';
         var html = '<tr class="' + trClass + '">';
-        html += '<td><a href="' + json.global.webroot + '/download?items=' + val.item_id + '">' +
+        html += '<td><a href="' + json.global.webroot + '/download?items=' + encodeURIComponent(val.item_id) + '">' +
             '<img alt="" src="' + json.global.webroot + '/modules/packages/public/images/package_go.png" /> ' +
             'Download ' + val.packagetype + '</a> - ';
         html += val.size_formatted + ' (' + val.checkoutdate + ')</td>';

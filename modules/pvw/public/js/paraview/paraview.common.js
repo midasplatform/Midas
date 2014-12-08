@@ -75,8 +75,8 @@ midas.pvw._commonStart = function (text) {
         $('#shareSessionLink').click(function () {
             var html = 'Share link: <input style="width:100%;" class="shareUrl" type="text" readonly value="';
             html += window.location.protocol + window.location.hostname + json.global.webroot;
-            html += '/pvw/paraview/share?instanceId=' + midas.pvw.instance.instance_id;
-            html += '&authKey=' + midas.pvw.instance.secret + '" />';
+            html += '/pvw/paraview/share?instanceId=' + encodeURIComponent(midas.pvw.instance.instance_id);
+            html += '&authKey=' + encodeURIComponent(midas.pvw.instance.secret) + '" />';
             midas.showDialogWithContent('Share current session', html, false);
             $('div.MainDialog input.shareUrl').select();
         });
@@ -216,7 +216,7 @@ window.onunload = function () {
     if (midas.pvw.instance && pv.connection) {
         // Sadly we have to do this synchronously so the browser fulfills the request before leaving
         $.ajax({
-            url: json.global.webroot + '/pvw/paraview/instance/' + midas.pvw.instance.instance_id,
+            url: json.global.webroot + '/pvw/paraview/instance/' + encodeURIComponent(midas.pvw.instance.instance_id),
             async: false,
             type: 'DELETE'
         });

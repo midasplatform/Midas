@@ -21,7 +21,7 @@ midas.solr.displayResults = function (items) {
         var item = items[idx];
         var result = $('#itemResultTemplate').clone().show().removeAttr('id');
         result.find('a.itemLink')
-            .attr('href', json.global.webroot + '/item/' + item.id)
+            .attr('href', json.global.webroot + '/item/' + encodeURIComponent(item.id))
             .html(item.name);
         result.appendTo('#resultsArea');
     }

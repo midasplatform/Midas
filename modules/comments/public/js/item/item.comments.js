@@ -45,7 +45,7 @@ midas.comments.initCommentList = function (comments) {
         template.attr('id', 'comment_' + this.comment_id);
         template.find('a.commentUserName')
             .html(this.user.firstname + ' ' + this.user.lastname)
-            .attr('href', json.global.webroot + '/user/' + this.user.user_id);
+            .attr('href', json.global.webroot + '/user/' + encodeURIComponent(this.user.user_id));
         template.find('span.commentDate').html(this.ago).attr('qtip', this.date);
         template.find('span.commentText').html(this.comment.replace(/\n/g, '<br />'));
 

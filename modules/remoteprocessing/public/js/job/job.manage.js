@@ -18,7 +18,7 @@ function createActionMenu(obj) {
     'use strict';
     $('.viewAction').show();
     $('#viewJob').click(function () {
-        window.location.replace(json.global.webroot + '/remoteprocessing/job/view/?jobId=' + selectedJob);
+        window.location.replace(json.global.webroot + '/remoteprocessing/job/view/?jobId=' + encodeURIComponent(selectedJob));
     });
 }
 

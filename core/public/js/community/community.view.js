@@ -31,7 +31,7 @@ $(document).ready(function () {
     $("table#browseTable").show();
 
     $('a#sendInvitationLink').click(function () {
-        midas.loadDialog("invitationCommunity", "/community/invitation?communityId=" + json.community.community_id);
+        midas.loadDialog("invitationCommunity", "/community/invitation?communityId=" + encodeURIComponent(json.community.community_id));
         midas.showDialog(json.community.sendInvitation, false);
     });
 

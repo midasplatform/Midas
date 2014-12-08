@@ -172,7 +172,7 @@ $("#live_share_search").catcomplete({
                 var jsonResponse = $.parseJSON(data);
                 if (jsonResponse[0]) {
                     midas.createNotice(jsonResponse[1], 1500);
-                    midas.loadDialog("sharing" + $(this).attr('type') + $(this).attr('element') + newPolicyId, "/share/dialog?type=" + jsonShare.type + '&element=' + jsonShare.element);
+                    midas.loadDialog("sharing" + $(this).attr('type') + $(this).attr('element') + newPolicyId, "/share/dialog?type=" + encodeURIComponent(jsonShare.type) + '&element=' + encodeURIComponent(jsonShare.element));
                     midas.showDialog(json.browse.share);
                 }
                 else {
@@ -205,7 +205,7 @@ $('input.permissionsDone').click(function () {
     'use strict';
     $('div.MainDialog').dialog('close');
     if (jsonShare.type == "folder") {
-        midas.loadDialog("applyRecursive" + jsonShare.element, "/share/applyrecursivedialog?folderId=" + jsonShare.element);
+        midas.loadDialog("applyRecursive" + jsonShare.element, "/share/applyrecursivedialog?folderId=" + encodeURIComponent(jsonShare.element));
         midas.showDialog(json.browse.share);
     }
 });

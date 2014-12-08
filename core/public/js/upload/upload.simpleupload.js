@@ -40,7 +40,7 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
         if (currentIndex >= files.length) {
             // All files have finished
             $('.drop-zone').show();
-            window.location.href = json.global.webroot + '/folder/' + $('.destinationId').val();
+            window.location.href = json.global.webroot + '/folder/' + encodeURIComponent($('.destinationId').val());
             return;
         }
         var file = files[currentIndex];
@@ -49,7 +49,7 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
             dataType: 'json',
             type: 'GET',
             url: json.global.webroot + '/rest/system/uploadtoken?useSession=true' +
-                '&filename=' + encodeURIComponent(file.name) + '&folderid=' + $('#destinationId').val()
+                '&filename=' + encodeURIComponent(file.name) + '&folderid=' + encodeURIComponent($('#destinationId').val())
         }).success(function (resp) {
             if (file.size > 0) {
                 startByte = 0;
@@ -114,7 +114,7 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
         var file = files[currentIndex];
         var blob = file.slice(startByte);
         var url = json.global.webroot + '/api/json?method=midas.upload.perform&uploadtoken=' +
-            uploadToken + '&length=' + file.size + '&filename=' + encodeURIComponent(file.name || file.fileName);
+            encodeURIComponent(uploadToken) + '&length=' + encodeURIComponent(file.size) + '&filename=' + encodeURIComponent(file.name || file.fileName);
 
         resumeUploadId = uploadToken;
 
@@ -235,7 +235,7 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
         $.ajax({
             dataType: 'json',
             type: 'GET',
-            url: json.global.webroot + '/rest/system/uploadoffset?uploadtoken=' + resumeUploadId
+            url: json.global.webroot + '/rest/system/uploadoffset?uploadtoken=' + encodeURIComponent(resumeUploadId)
         }).success(function (resp) {
             startByte = resp.data.offset;
             overallProgress += startByte;

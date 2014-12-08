@@ -42,7 +42,7 @@ $(document).ready(function () {
     $.each($('a.resultItemLink'), function (idx, link) {
         if ($(link).attr('thumbnail')) {
             $(link).qtip({
-                content: '<img alt="" src="' + json.global.webroot + '/item/thumbnail?itemId=' + $(link).attr('element') + '" />'
+                content: '<img alt="" src="' + json.global.webroot + '/item/thumbnail?itemId=' + encodeURIComponent($(link).attr('element')) + '" />'
             });
         }
     });

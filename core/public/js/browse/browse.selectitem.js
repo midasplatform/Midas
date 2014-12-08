@@ -152,6 +152,6 @@ $('#live_search_item').keyup(function (e) {
     'use strict';
     if (e.keyCode == 13 && !itemselected) // enter key has been pressed
     {
-        window.location = $('.webroot').val() + '/search/' + encodeURI($('#live_search_item').val());
+        window.location = $('.webroot').val() + '/search/' + encodeURIComponent($('#live_search_item').val());
     }
 });

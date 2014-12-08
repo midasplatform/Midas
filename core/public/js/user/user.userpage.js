@@ -62,6 +62,6 @@ function callbackCheckboxes(node) {
  */
 midas.user.showDeleteDialog = function (userId) {
     'use strict';
-    midas.loadDialog('userId' + userId, '/user/deletedialog?userId=' + userId);
+    midas.loadDialog('userId' + userId, '/user/deletedialog?userId=' + encodeURIComponent(userId));
     midas.showDialog('Delete User', false);
 };

@@ -576,7 +576,7 @@ midas.pvw.vrStarted = function (resp) {
     midas.pvw.setupScalarOpacity();
     midas.pvw.setupColorMapping();
 
-    $('a.switchToSliceView').attr('href', json.global.webroot + '/pvw/paraview/slice' + window.location.search);
+    $('a.switchToSliceView').attr('href', json.global.webroot + '/pvw/paraview/slice' + encodeURIComponent(window.location.search));
 };
 
 /** Bind the renderer overlay buttons */

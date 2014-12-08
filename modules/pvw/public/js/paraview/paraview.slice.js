@@ -75,7 +75,7 @@ midas.pvw.sliceRenderStarted = function (resp) {
     midas.pvw.updateWindowInfo([midas.pvw.scalarRange[0], midas.pvw.scalarRange[1]]);
     midas.pvw.enableActions(json.pvw.operations);
 
-    $('a.switchToVolumeView').attr('href', json.global.webroot + '/pvw/paraview/volume' + window.location.search);
+    $('a.switchToVolumeView').attr('href', json.global.webroot + '/pvw/paraview/volume' + encodeURIComponent(window.location.search));
 };
 
 /**

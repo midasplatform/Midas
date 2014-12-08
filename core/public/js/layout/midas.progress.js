@@ -42,7 +42,7 @@ midas.ajaxWithProgress = function (widget, messageContainer, url, params, onSucc
 midas._pollProgress = function (widget, messageContainer, progressId) {
     'use strict';
     $.ajax({
-        url: json.global.webroot + '/progress/get?progressId=' + progressId,
+        url: json.global.webroot + '/progress/get?progressId=' + encodeURIComponent(progressId),
         success: function (data) {
             var progress = $.parseJSON(data);
             if (progress.progress_id) {

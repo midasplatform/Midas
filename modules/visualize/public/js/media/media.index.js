@@ -9,7 +9,7 @@ $(document).ready(function () {
         $("#jquery_jplayer_1").jPlayer({
             ready: function () {
                 $(this).jPlayer("setMedia", {
-                    mp3: json.global.webroot + "/download?items=" + json.itemId
+                    mp3: json.global.webroot + "/download?items=" + encodeURIComponent(json.itemId)
                 });
             }
         });
@@ -18,7 +18,7 @@ $(document).ready(function () {
         $("#jquery_jplayer_1").jPlayer({
             ready: function () {
                 $(this).jPlayer("setMedia", {
-                    m4a: json.global.webroot + "/download?items=" + json.itemId
+                    m4a: json.global.webroot + "/download?items=" + encodeURIComponent(json.itemId)
                 });
             },
             ended: function (event) {
@@ -31,7 +31,7 @@ $(document).ready(function () {
         $("#jquery_jplayer_1").jPlayer({
             ready: function () {
                 $(this).jPlayer("setMedia", {
-                    m4v: json.global.webroot + "/download?items=" + json.itemId
+                    m4v: json.global.webroot + "/download?items=" + encodeURIComponent(json.itemId)
                 });
             },
             ended: function (event) {

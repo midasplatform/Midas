@@ -120,7 +120,7 @@ $('div.MainDialogContent #createFolderButton').click(function () {
     'use strict';
     if ($('div.MainDialogContent #createFolderContent').is(':hidden')) {
         $('div.MainDialogContent #createFolderContent').html('<img  src="' + json.global.webroot + '/core/public/images/icons/loading.gif" alt="Loading..." />').show();
-        var url = json.global.webroot + '/folder/createfolder?folderId=' + $('#selectedDestinationHidden').val();
+        var url = json.global.webroot + '/folder/createfolder?folderId=' + encodeURIComponent($('#selectedDestinationHidden').val());
         $('div.MainDialogContent #createFolderContent').load(url);
     }
     else {

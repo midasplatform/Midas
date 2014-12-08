@@ -13,7 +13,7 @@ midas.readmes = midas.readmes || {};
     midas.readmes.getForFolder = function (id) {
 
         $.ajax({
-            url: json.global.webroot + '/rest/readmes/folder/' + id,
+            url: json.global.webroot + '/rest/readmes/folder/' + encodeURIComponent(id),
             success: function (retVal) {
                 $('.viewMain').append('<hr />' + retVal.data.text);
             },

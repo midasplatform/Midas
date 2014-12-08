@@ -126,7 +126,7 @@ midas.tracker.bindPlotEvents = function () {
             scalarId = json.tracker.rightScalars[dataPoint.pointIndex].scalar_id;
         }
         $('.webroot').val(json.global.webroot);
-        midas.loadDialog('scalarPoint' + scalarId, '/tracker/scalar/details?scalarId=' + scalarId);
+        midas.loadDialog('scalarPoint' + scalarId, '/tracker/scalar/details?scalarId=' + encodeURIComponent(scalarId));
         midas.showDialog('Scalar details', false, {
             width: 500
         });
@@ -345,7 +345,7 @@ $(window).load(function () {
     midas.tracker.renderChartArea(curveData, true);
 
     $('a.thresholdAction').click(function () {
-        midas.loadDialog('thresholdNotification', '/tracker/trend/notify?trendId=' + json.tracker.trends[0].trend_id);
+        midas.loadDialog('thresholdNotification', '/tracker/trend/notify?trendId=' + encodeURIComponent(json.tracker.trends[0].trend_id));
         midas.showDialog('Email notification settings', false);
     });
     $('a.axesControl').click(function () {
@@ -408,7 +408,7 @@ $(window).load(function () {
 
 midas.tracker.trendDeleted = function (resp) {
     'use strict';
-    window.location = json.global.webroot + '/tracker/producer/view?producerId=' + json.tracker.producerId;
+    window.location = json.global.webroot + '/tracker/producer/view?producerId=' + encodeURIComponent(json.tracker.producerId);
 };
 
 midas.tracker.updateBranchFilters = function () {

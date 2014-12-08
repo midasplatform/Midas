@@ -42,7 +42,7 @@ ajaxWebApi._webApiCall = function (params) {
 
     $.ajax({
         type: 'POST',
-        url: json.global.webroot + '/api/json?method=' + params.method,
+        url: json.global.webroot + '/api/json?method=' + encodeURIComponent(params.method),
         data: params.args,
         dataType: 'json',
         success: function (retVal) {
@@ -62,7 +62,7 @@ ajaxWebApi._webApiCall = function (params) {
         },
         error: function () {
             ajaxWebApi.logError('Ajax call to web API returned an error (' +
-                json.global.webroot + '/api/json' + '?' + params.method + '&' + params.args + ')', params.log);
+                json.global.webroot + '/api/json' + '?' + encodeURIComponent(params.method) + '&' + encodeURIComponent(params.args) + ')', params.log);
             if (params.complete) {
                 params.complete();
             }

@@ -8,7 +8,7 @@ midas.tracker = midas.tracker || {};
 
 itemSelectionCallback = function (name, id) {
     'use strict';
-    var html = '<a href="' + json.global.webroot + '/item/' + id + '">' + name + '</a>';
+    var html = '<a href="' + json.global.webroot + '/item/' + encodeURIComponent(id) + '">' + name + '</a>';
     $('span.' + midas.tracker.whichSelect + 'DatasetContent').html(html);
     $('input[name=' + midas.tracker.whichSelect + 'ItemId]').val(id);
 };

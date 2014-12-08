@@ -12,7 +12,7 @@ midas.readmes = midas.readmes || {};
     'use strict';
     midas.readmes.getForCommunity = function (id) {
         $.ajax({
-            url: json.global.webroot + '/rest/readmes/community/' + id,
+            url: json.global.webroot + '/rest/readmes/community/' + encodeURIComponent(id),
             success: function (retVal) {
                 $('.viewMain').append('<hr />' + retVal.data.text);
             },

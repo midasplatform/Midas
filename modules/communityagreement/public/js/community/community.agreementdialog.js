@@ -19,6 +19,6 @@ $(document).ready(function () {
 
     $('#confirmAgreement').click(function () {
         $('div.MainDialog').dialog('close');
-        window.location.assign(json.global.webroot + '/community/' + json.community.community_id + '?joinCommunity=true');
+        window.location.assign(json.global.webroot + '/community/' + encodeURIComponent(json.community.community_id) + '?joinCommunity=true');
     });
 });

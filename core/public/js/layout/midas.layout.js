@@ -156,22 +156,22 @@ $(function () {
             itemselected = true;
             if (ui.item.itemid) // if we have an item
             {
-                window.location = $('.webroot').val() + '/item/' + ui.item.itemid;
+                window.location = $('.webroot').val() + '/item/' + encodeURIComponent(ui.item.itemid);
             }
             else if (ui.item.communityid) // if we have a community
             {
-                window.location = $('.webroot').val() + '/community/' + ui.item.communityid;
+                window.location = $('.webroot').val() + '/community/' + encodeURIComponent(ui.item.communityid);
             }
             else if (ui.item.folderid) // if we have a folder
             {
-                window.location = $('.webroot').val() + '/folder/' + ui.item.folderid;
+                window.location = $('.webroot').val() + '/folder/' + encodeURIComponent(ui.item.folderid);
             }
             else if (ui.item.userid) // if we have a user
             {
-                window.location = $('.webroot').val() + '/user/' + ui.item.userid;
+                window.location = $('.webroot').val() + '/user/' + encodeURIComponent(ui.item.userid);
             }
             else {
-                window.location = $('.webroot').val() + '/search/' + ui.item.value;
+                window.location = $('.webroot').val() + '/search/' + encodeURIComponent(ui.item.value);
             }
         }
     });

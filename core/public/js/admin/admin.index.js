@@ -111,7 +111,7 @@ $(document).ready(function () {
 
     $('.moveBitstreamsLink').click(function () {
         var srcId = $(this).attr('element');
-        midas.loadDialog('moveBitstreams' + srcId, '/assetstore/movedialog?srcAssetstoreId=' + srcId);
+        midas.loadDialog('moveBitstreams' + srcId, '/assetstore/movedialog?srcAssetstoreId=' + encodeURIComponent(srcId));
         midas.showDialog('Move bitstreams', false);
     });
 

@@ -12,7 +12,7 @@ $(document).ready(function () {
         var id = $(this).attr('key');
         $.ajax({
             type: 'DELETE',
-            url: json.global.webroot + '/pvw/paraview/instance/' + id,
+            url: json.global.webroot + '/pvw/paraview/instance/' + encodeURIComponent(id),
             dataType: 'json',
             data: {},
             success: function (resp) {

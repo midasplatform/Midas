@@ -23,11 +23,11 @@ $(document).ready(function () {
     });
 
     $('a.sharingLink').click(function () {
-        midas.loadDialog("sharing" + $(this).attr('type') + $(this).attr('element'), "/share/dialog?type=" + $(this).attr('type') + '&element=' + $(this).attr('element'));
+        midas.loadDialog("sharing" + $(this).attr('type') + $(this).attr('element'), "/share/dialog?type=" + encodeURIComponent($(this).attr('type')) + '&element=' + encodeURIComponent($(this).attr('element')));
         midas.showDialog(json.browse.share);
     });
     $('a.getResourceLinks').click(function () {
-        midas.loadDialog("links" + $(this).attr('type') + $(this).attr('element'), '/share/links?type=' + $(this).attr('type') + '&id=' + $(this).attr('element'));
+        midas.loadDialog("links" + $(this).attr('type') + $(this).attr('element'), '/share/links?type=' + encodeURIComponent($(this).attr('type')) + '&id=' + encodeURIComponent($(this).attr('element')));
         midas.showDialog('Link to this item');
     });
     $('a.uploadInFolder').click(function () {
@@ -43,7 +43,7 @@ $(document).ready(function () {
         }, function (text) {
             var retVal = $.parseJSON(text);
             if (retVal.action == 'download') {
-                window.location = json.global.webroot + '/download?folders=' + folderId;
+                window.location = json.global.webroot + '/download?folders=' + encodeURIComponent(folderId);
             }
             else if (retVal.action == 'promptApplet') {
                 midas.doCallback('CALLBACK_CORE_PROMPT_APPLET', {

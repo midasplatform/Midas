@@ -18,12 +18,12 @@ midas.javauploaddownload.promptApplet = function (args) {
     });
 
     $('input.useLargeDataApplet').unbind('click').click(function () {
-        window.location = json.global.webroot + '/javauploaddownload/download?folderIds=' + args.folderIds + '&itemIds=' + args.itemIds;
+        window.location = json.global.webroot + '/javauploaddownload/download?folderIds=' + encodeURIComponent(args.folderIds) + '&itemIds=' + encodeURIComponent(args.itemIds);
         $('div.MainDialog').dialog('close');
     });
 
     $('input.useZipStream').unbind('click').click(function () {
-        window.location = json.global.webroot + '/download?folders=' + args.folderIds.split(',').join('-') + '&items=' + args.itemIds.split(',').join('-');
+        window.location = json.global.webroot + '/download?folders=' + encodeURIComponent(args.folderIds.split(',').join('-')) + '&items=' + encodeURIComponent(args.itemIds.split(',').join('-'));
         $('div.MainDialog').dialog('close');
     });
 };
