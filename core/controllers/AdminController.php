@@ -81,6 +81,9 @@ class AdminController extends AppController
         $formArray['name']->setValue($config->global->application->name);
         $formArray['timezone']->setValue($config->global->default->timezone);
 
+        if (isset($config->global->allow_password_reset)) {
+            $formArray['allow_password_reset']->setValue($config->global->allow_password_reset);
+        }
         if (isset($config->global->closeregistration)) {
             $formArray['closeregistration']->setValue($config->global->closeregistration);
         }
@@ -116,10 +119,11 @@ class AdminController extends AppController
                 $config->global->application->lang = $this->getParam('lang');
                 $config->global->default->timezone = $this->getParam('timezone');
                 $config->global->defaultlicense = $this->getParam('licenseSelect');
-                $config->global->dynamichelp = $this->getParam('dynamichelp');
+                $config->global->allow_password_reset = $this->getParam('allow_password_reset');
                 $config->global->closeregistration = $this->getParam('closeregistration');
-                $config->global->httpproxy = $this->getParam('httpProxy');
+                $config->global->dynamichelp = $this->getParam('dynamichelp');
                 $config->global->gravatar = $this->getParam('gravatar');
+                $config->global->httpproxy = $this->getParam('httpProxy');
 
                 $writer = new Zend_Config_Writer_Ini();
                 $writer->setConfig($config);

@@ -83,6 +83,10 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.clu
                 <label for='dynamichelp'>Dynamic help</label>
                 {$this->configForm['dynamichelp']}
               </div>
+              <div qtip='If you enable this feature, password reset will not be allowed.' class='allowPasswordReset'>
+                <label for='allow_password_reset'>Allow password reset</label>
+                {$this->configForm['allow_password_reset']}
+              </div>
               <div qtip='If you enable this feature, user registration will not be allowed.' class='closeRegistration'>
                 <label for='closeregistration'>Close registration</label>
                 {$this->configForm['closeregistration']}

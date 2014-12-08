@@ -86,6 +86,11 @@ class UserController extends AppController
         if ($this->logged) {
             throw new Zend_Exception('Shouldn\'t be logged in');
         }
+
+        if ((int) Zend_Registry::get('configGlobal')->get('allow_password_reset', 0) === 0) {
+            throw new Zend_Exception('Password reset is disabled');
+        }
+
         $this->disableLayout();
         $email = $this->getParam('email');
         if (isset($email)) {
@@ -643,6 +648,9 @@ class UserController extends AppController
                 echo JsonComponent::encode(array('status' => false, 'message' => 'Invalid email or password'));
             }
         }
+
+        $this->view->allowPasswordReset = (int) Zend_Registry::get('configGlobal')->get('allow_password_reset', 0) === 1;
+        $this->view->closeRegistration = (int) Zend_Registry::get('configGlobal')->get('closeregistration', 0) === 1;
     }
 
     /** Term of service */

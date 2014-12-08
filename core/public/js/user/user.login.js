@@ -49,10 +49,12 @@ $(document).ready(function () {
     });
 
     // Deal with password recovery
-    $('a#forgotPasswordLink').click(function () {
-        midas.loadDialog("forgotpassword", "/user/recoverpassword");
-        midas.showDialog("Recover Password");
-    });
+    if ($('a#forgotPasswordLink').length) {
+        $('a#forgotPasswordLink').click(function () {
+            midas.loadDialog("forgotpassword", "/user/recoverpassword");
+            midas.showDialog("Recover Password");
+        });
+    }
 
     $("a.registerLink").unbind('click').click(function () {
         midas.showOrHideDynamicBar('register');

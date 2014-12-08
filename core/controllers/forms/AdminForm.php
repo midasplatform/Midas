@@ -54,6 +54,7 @@ class AdminForm extends AppForm
 
         $dynamichelp = new Zend_Form_Element_Checkbox('dynamichelp');
         $gravatar = new Zend_Form_Element_Checkbox('gravatar');
+        $allowPasswordReset = new Zend_Form_Element_Checkbox('allow_password_reset');
         $closeRegistration = new Zend_Form_Element_Checkbox('closeregistration');
 
         $httpProxy = new Zend_Form_Element_Text('httpProxy');
@@ -69,6 +70,7 @@ class AdminForm extends AppForm
                 $gravatar,
                 $lang,
                 $name,
+                $allowPasswordReset,
                 $closeRegistration,
                 $submit,
                 $httpProxy,
