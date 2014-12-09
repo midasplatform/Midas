@@ -400,6 +400,9 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
 
         Zend_Registry::set('components', array());
         if (isset($this->_components)) {
+            if (!isset($this->Component)) {
+                $this->Component = new stdClass();
+            }
             foreach ($this->_components as $component) {
                 $nameComponent = $component.'Component';
                 Zend_Loader::loadClass($nameComponent, BASE_PATH.'/core/controllers/components');
@@ -409,6 +412,9 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
 
         Zend_Registry::set('forms', array());
         if (isset($this->_forms)) {
+            if (!isset($this->Form)) {
+                $this->Form = new stdClass();
+            }
             foreach ($this->_forms as $forms) {
                 $nameForm = $forms.'Form';
 
