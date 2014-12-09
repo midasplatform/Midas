@@ -425,7 +425,7 @@ class UtilityComponent extends AppComponent
             mkdir($path, 0777, true);
         }
 
-        return realpath($path);
+        return UtilityComponent::realpath($path);
     }
 
     /**
@@ -464,7 +464,7 @@ class UtilityComponent extends AppComponent
             mkdir($path, 0777, true);
         }
 
-        return realpath($path);
+        return UtilityComponent::realpath($path);
     }
 
     /**
@@ -792,5 +792,24 @@ class UtilityComponent extends AppComponent
         UtilityComponent::endIgnoreWarnings();
 
         return $result;
+    }
+
+    /**
+     * Returns canonical absolute path.
+     *
+     * @param string $path
+     * @return string
+     */
+    public static function realpath($path)
+    {
+        UtilityComponent::beginIgnoreWarnings();
+        $realpath = realpath($path);
+        UtilityComponent::endIgnoreWarnings();
+
+        if ($realpath === false) {
+            return $path;
+        }
+
+        return $realpath;
     }
 }
