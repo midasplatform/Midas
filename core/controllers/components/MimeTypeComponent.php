@@ -29,7 +29,7 @@ class MimeTypeComponent extends AppComponent
      */
     public function getType($filename)
     {
-        if (file_exists($filename)) {
+        if (function_exists('finfo_open') && file_exists($filename)) {
             $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
             $mimeType = finfo_file($fileInfo, $filename);
             finfo_close($fileInfo);
