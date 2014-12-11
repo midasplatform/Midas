@@ -76,11 +76,11 @@ class HttpuploadComponent extends AppComponent
         if (!array_key_exists('filename', $args)) {
             throw new Exception('Parameter filename is not defined', MIDAS_HTTPUPLOAD_FILENAME_PARAM_UNDEFINED);
         }
-        $dir = $dirname == '' ? '' : '/'.$dirname;
+        $dir = $dirname === '' ? '' : '/'.$dirname;
         $dir = UtilityComponent::getTempDirectory().$dir;
 
         if (!file_exists($dir)) {
-            if (!mkdir($dir, 0700, true)) {
+            if (!mkdir($dir, 0777, true)) {
                 throw new Exception('Failed to create temporary upload dir', MIDAS_HTTPUPLOAD_TMP_DIR_CREATION_FAILED);
             }
         }
@@ -90,10 +90,16 @@ class HttpuploadComponent extends AppComponent
         if ($dirname != '') {
             $uniqueIdentifier = $dirname.'/'.$uniqueIdentifier;
         }
-        if (file_exists(UtilityComponent::getTempDirectory().'/'.$uniqueIdentifier)) {
+
+        $path = UtilityComponent::getTempDirectory().'/'.$uniqueIdentifier;
+        if (file_exists($path)) {
             throw new Exception('Failed to generate upload token', MIDAS_HTTPUPLOAD_UPLOAD_TOKEN_GENERATION_FAILED);
         }
-        touch(UtilityComponent::getTempDirectory().'/'.$uniqueIdentifier);
+
+        if (touch($path) === false) {
+            mkdir($path, 0777, true);
+            $uniqueIdentifier .= '/';
+        }
 
         return array('token' => $uniqueIdentifier);
     }
@@ -123,48 +129,54 @@ class HttpuploadComponent extends AppComponent
         if (!array_key_exists('length', $args)) {
             throw new Exception('Parameter length is not defined', MIDAS_HTTPUPLOAD_PARAM_UNDEFINED);
         }
-        $length = (float) ($args['length']);
+        $length = (int) ($args['length']);
 
         if ($this->testingEnable && array_key_exists('localinput', $args)) {
-            $localinput = array_key_exists('localinput', $args) ? $args['localinput'] : false;
+            $localInput = array_key_exists('localinput', $args) ? $args['localinput'] : false;
         }
 
-        // check if the temporary file exists
-        $pathTemporaryFilename = UtilityComponent::getTempDirectory().'/'.$uploadToken;
-        if (!file_exists($pathTemporaryFilename)) {
+        $temporaryPath = UtilityComponent::getTempDirectory().'/'.$uploadToken;
+        if (!file_exists($temporaryPath)) {
             throw new Exception(
-                'Invalid upload token '.$pathTemporaryFilename, MIDAS_HTTPUPLOAD_INVALID_UPLOAD_TOKEN
+                'Invalid upload token '.$uploadToken, MIDAS_HTTPUPLOAD_INVALID_UPLOAD_TOKEN
             );
-        } else {
-            $uploadOffset = UtilityComponent::fileSize($pathTemporaryFilename);
         }
+
+        if (substr($temporaryPath, -1) === '/') {
+            @rmdir($temporaryPath);
+        }
+
+        $uploadOffset = file_exists($temporaryPath) ? UtilityComponent::fileSize($temporaryPath) : 0;
 
         // can't do streaming checksum if we have a partial file already.
-        $streamChecksum = $uploadOffset == 0;
+        $streamChecksum = $uploadOffset === 0;
 
         ignore_user_abort(true);
 
-        $inputfile = 'php://input'; // Stream (Client -> Server) Mode: Read, Binary
-        if ($this->testingEnable && array_key_exists('localinput', $args)) {
-            $inputfile = $localinput; // Stream (LocalServerFile -> Server) Mode: Read, Binary
-        }
-
-        $in = fopen($inputfile, 'rb'); // Stream (LocalServerFile -> Server) Mode: Read, Binary
-        if ($in === false) {
-            throw new Exception('Failed to open ['.$inputfile.'] source', MIDAS_HTTPUPLOAD_INPUT_FILE_OPEN_FAILED);
-        }
-
         // open target output
-        $out = fopen($pathTemporaryFilename, 'ab'); // Stream (Server -> TempFile) Mode: Append, Binary
+        $out = fopen($temporaryPath, 'ab'); // Stream (Server -> TempFile) Mode: Append, Binary
         if ($out === false) {
             throw new Exception(
-                'Failed to open output file ['.$pathTemporaryFilename.']',
+                'Failed to open output file ['.$temporaryPath.']',
                 MIDAS_HTTPUPLOAD_OUTPUT_FILE_OPEN_FAILED
             );
         }
 
+        $inputFile = 'php://input'; // Stream (Client -> Server) Mode: Read, Binary
+        if ($this->testingEnable && array_key_exists('localinput', $args)) {
+            $inputFile = $localInput; // Stream (LocalServerFile -> Server) Mode: Read, Binary
+        }
+
+        $in = fopen($inputFile, 'rb'); // Stream (LocalServerFile -> Server) Mode: Read, Binary
+        if ($in === false) {
+            fclose($out);
+            throw new Exception('Failed to open ['.$inputFile.'] source', MIDAS_HTTPUPLOAD_INPUT_FILE_OPEN_FAILED);
+        }
+
         if ($streamChecksum) {
-            $hashctx = hash_init('md5');
+            $hashContext = hash_init('md5');
+        } else {
+            $hashContext = null;
         }
 
         // read from input and write into file
@@ -177,7 +189,7 @@ class HttpuploadComponent extends AppComponent
                 $bufSize = $length - $uploadOffset;
             }
             if ($streamChecksum) {
-                hash_update($hashctx, $buf);
+                hash_update($hashContext, $buf);
             }
         }
         fclose($in);
@@ -191,9 +203,9 @@ class HttpuploadComponent extends AppComponent
         }
 
         $data['filename'] = $filename;
-        $data['path'] = $pathTemporaryFilename;
+        $data['path'] = $temporaryPath;
         $data['size'] = $uploadOffset;
-        $data['md5'] = $streamChecksum ? hash_final($hashctx) : '';
+        $data['md5'] = $streamChecksum ? hash_final($hashContext) : '';
 
         return $data;
     }

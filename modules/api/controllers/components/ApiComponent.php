@@ -362,6 +362,7 @@ class Api_ApiComponent extends AppComponent
      * @param changes (Optional)
      * The changes field on the affected item revision,
      * e.g. for recording what has changed since the previous revision.
+     * @param license (Optional) The license for the revision.
      * @return The item information of the item created or changed.
      */
     public function uploadPerform($args)

@@ -25,6 +25,7 @@ class Javauploaddownload_UploadControllerTest extends ControllerTestCase
     public function setUp()
     {
         $this->enabledModules = array('javauploaddownload');
+        $this->_components = array('Random');
         $this->_daos = array('User');
         $this->_models = array('Item', 'User');
         parent::setUp();
@@ -37,7 +38,8 @@ class Javauploaddownload_UploadControllerTest extends ControllerTestCase
         $usersFile = $this->loadData('User', 'default');
         $userDao = $this->User->load($usersFile[0]->getKey());
         $dir = $this->getTempDirectory().'/'.$userDao->getUserId().'/1002'; //private folder
-        $identifier = $dir.'/httpupload.png';
+        $token = $this->Component->Random->generateString(64);
+        $identifier = $dir.'/'.$token;
 
         if (!file_exists($dir)) {
             mkdir($dir, 0700, true);
@@ -48,7 +50,7 @@ class Javauploaddownload_UploadControllerTest extends ControllerTestCase
         }
 
         copy(BASE_PATH.'/tests/testfiles/search.png', $identifier);
-        $page = 'javauploaddownload/upload/gethttpuploadoffset/?uploadUniqueIdentifier='.$userDao->getUserId().'/1002/httpupload.png&testingmode=1';
+        $page = 'javauploaddownload/upload/gethttpuploadoffset/?uploadUniqueIdentifier='.$userDao->getUserId().'/1002/'.$token.'&testingmode=1';
         $this->dispatchUrl($page, $userDao);
         $content = $this->getBody();
 
@@ -67,7 +69,8 @@ class Javauploaddownload_UploadControllerTest extends ControllerTestCase
         $this->setupDatabase(array('default'));
         $usersFile = $this->loadData('User', 'default');
         $userDao = $this->User->load($usersFile[0]->getKey());
-        $identifier = $this->getTempDirectory().'/httpupload.png';
+        $token = $this->Component->Random->generateString(64);
+        $identifier = $this->getTempDirectory().'/'.$token;
 
         if (file_exists($identifier)) {
             unlink($identifier);
@@ -102,7 +105,8 @@ class Javauploaddownload_UploadControllerTest extends ControllerTestCase
         $dir = $this->getTempDirectory().'/'.$subdir;
         $fileBase = BASE_PATH.'/tests/testfiles/search.png';
         $file = $this->getTempDirectory().'/testing_file.png';
-        $identifier = $dir.'/httpupload.png';
+        $token = $this->Component->Random->generateString(64);
+        $identifier = $dir.'/'.$token;
 
         if (file_exists($identifier)) {
             unlink($identifier);
@@ -113,7 +117,7 @@ class Javauploaddownload_UploadControllerTest extends ControllerTestCase
         fwrite($ident, ' ');
         fclose($ident);
         chmod($identifier, 0777);
-        $params = 'testingmode=1&filename=search.png&localinput='.$file.'&length='.filesize($file).'&uploadUniqueIdentifier='.$subdir.'/httpupload.png';
+        $params = 'testingmode=1&filename=search.png&localinput='.$file.'&length='.filesize($file).'&uploadUniqueIdentifier='.$subdir.'/'.$token;
         $page = 'javauploaddownload/upload/processjavaupload?'.$params;
         $this->dispatchUrl($page, $userDao, true);
         $this->resetAll();
@@ -121,7 +125,7 @@ class Javauploaddownload_UploadControllerTest extends ControllerTestCase
         $this->dispatchUrl($page, $userDao);
         $this->assertTrue(strpos($this->getBody(), '[ERROR]') === 0);
         $this->resetAll();
-        $params = 'testingmode=1&filename=search.png&localinput='.$file.'&length='.(filesize($file) + 1).'&uploadUniqueIdentifier='.$subdir.'/httpupload.png';
+        $params = 'testingmode=1&filename=search.png&localinput='.$file.'&length='.(filesize($file) + 1).'&uploadUniqueIdentifier='.$subdir.'/'.$token;
         $page = 'javauploaddownload/upload/processjavaupload?'.$params.'&parentId=1002';
         $this->dispatchUrl($page, $userDao);
         $this->assertTrue(strpos($this->getBody(), '[OK]') === 0);

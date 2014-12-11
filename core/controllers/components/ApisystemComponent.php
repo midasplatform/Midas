@@ -459,6 +459,7 @@ class ApisystemComponent extends AppComponent
      * @param changes (Optional)
      * The changes field on the affected item revision,
      * e.g. for recording what has changed since the previous revision.
+     * @param license (Optional) The license for the revision.
      * @return The item information of the item created or changed.
      *
      * @param array $args parameters
@@ -526,20 +527,19 @@ class ApisystemComponent extends AppComponent
             $result = $httpUploadComponent->process($args);
 
             $filename = $result['filename'];
-            $filepath = $result['path'];
-            $filesize = $result['size'];
-            $filemd5 = $result['md5'];
+            $filePath = $result['path'];
+            $fileSize = (int) $result['size'];
+            $fileChecksum = $result['md5'];
         } elseif ($mode == 'multipart') {
             if (!array_key_exists('file', $args) || !array_key_exists('file', $_FILES)
             ) {
                 throw new Exception('Parameter file is not defined', MIDAS_INVALID_PARAMETER);
             }
             $file = $_FILES['file'];
-
             $filename = $file['name'];
-            $filepath = $file['tmp_name'];
-            $filesize = $file['size'];
-            $filemd5 = '';
+            $filePath = $file['tmp_name'];
+            $fileSize = (int) $file['size'];
+            $fileChecksum = '';
         } else {
             throw new Exception('Invalid upload mode', MIDAS_INVALID_PARAMETER);
         }
@@ -558,35 +558,38 @@ class ApisystemComponent extends AppComponent
             'CALLBACK_CORE_VALIDATE_UPLOAD',
             array(
                 'filename' => $filename,
-                'size' => $filesize,
-                'path' => $filepath,
+                'size' => $fileSize,
+                'path' => $filePath,
                 'folderId' => $firstParent->getFolderId(),
             )
         );
         foreach ($validations as $validation) {
             if (!$validation['status']) {
-                unlink($filepath);
+                unlink($filePath);
                 throw new Exception($validation['message'], MIDAS_INVALID_POLICY);
             }
         }
 
-        /** @var UploadComponent $uploadComponent */
-        $uploadComponent = MidasLoader::loadComponent('Upload');
-        $license = null;
+        $license = array_key_exists('license', $args) ?  $args['license'] : null;
         $changes = array_key_exists('changes', $args) ? $args['changes'] : '';
         $revisionNumber = null;
         if (isset($revision) && $revision !== false) {
             $revisionNumber = $revision->getRevision();
         }
+
+        /** @var UploadComponent $uploadComponent */
+        $uploadComponent = MidasLoader::loadComponent('Upload');
         $item = $uploadComponent->createNewRevision(
             $userDao,
             $filename,
-            $filepath,
+            $filePath,
             $changes,
             $item->getKey(),
             $revisionNumber,
             $license,
-            $filemd5
+            $fileChecksum,
+            false,
+            $fileSize
         );
 
         if (!$item) {

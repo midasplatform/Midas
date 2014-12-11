@@ -25,9 +25,10 @@ class MimeTypeComponent extends AppComponent
      * Get mime type
      *
      * @param string $filename
+     * @param null|string $alternateName
      * @return string
      */
-    public function getType($filename)
+    public function getType($filename, $alternateName = null)
     {
         if (function_exists('finfo_open') && file_exists($filename)) {
             $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -37,6 +38,25 @@ class MimeTypeComponent extends AppComponent
                 return $mimeType;
             }
         }
+
+        $mimeType = $this->privFindType($filename);
+
+        if (($mimeType === 'application/octet-stream' || $mimeType === 'binary/octet-stream') && !is_null($alternateName)) {
+            $mimeType = $this->privFindType($alternateName);
+        }
+
+        // find mime type
+        return $mimeType;
+    }
+
+    /**
+     * privFindType
+     *
+     * @param string $filename
+     * @return string
+     */
+    public function privFindType($filename)
+    {
         // get base name of the filename provided by user
         $filename = basename($filename);
 
@@ -46,24 +66,12 @@ class MimeTypeComponent extends AppComponent
         // take the last part of the file to get the file extension
         $filename = $filename[count($filename) - 1];
 
-        // find mime type
-        return $this->privFindType($filename);
-    }
-
-    /**
-     * privFindType
-     *
-     * @param string $ext
-     * @return string
-     */
-    public function privFindType($ext)
-    {
         // create MIME types array
-        $mimetypes = $this->privBuildMimeArray();
+        $mimeTypes = $this->privBuildMimeArray();
 
         // return mime type for extension
-        if (isset($mimetypes[$ext])) {
-            return $mimetypes[$ext];
+        if (isset($mimeTypes[$filename])) {
+            return $mimeTypes[$filename];
             // if the extension wasn't found return octet-stream
         } else {
             return 'application/octet-stream';

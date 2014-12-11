@@ -139,7 +139,7 @@
     </test>
 
     <!-- Check the position of the close curly brace  -->
-    <test name="controlCloseCurly"></test>
+    <test name="controlCloseCurly"/>
 
     <!-- Check the position of the else -->
     <!-- sl = same line -->
@@ -185,10 +185,10 @@
     </test>
 
     <!-- Check that there is no space before before some tokens -->
-    <test name="noSpaceBeforeToken"></test>
+    <test name="noSpaceBeforeToken"/>
 
     <!-- Check that there is no space after some tokens -->
-    <test name="noSpaceAfterToken"></test>
+    <test name="noSpaceAfterToken"/>
 
 
     <!--  ****************  -->
@@ -238,31 +238,32 @@
         <exception value="mkdir"/>
         <exception value="readdir"/>
         <exception value="rename"/>
+        <exception value="rmdir"/>
     </test>
 
     <!-- Check for encapsed variables inside a string -->
-    <test name="encapsedVariablesInsideString"></test>
+    <test name="encapsedVariablesInsideString"/>
 
     <!-- Use boolean operators instead of logical operators -->
-    <test name="useBooleanOperators"></test>
+    <test name="useBooleanOperators"/>
 
     <!-- Check for empty blocks -->
-    <!-- <test name="checkEmptyBlock"></test> -->
+    <!-- <test name="checkEmptyBlock"/> -->
 
     <!-- Check for empty statements -->
-    <test name="checkEmptyStatement"></test>
+    <test name="checkEmptyStatement"/>
 
     <!-- Check for the presence of heredoc -->
-    <test name="checkHeredoc"></test>
+    <test name="checkHeredoc"/>
 
     <!-- Check for braces around code blocks (if, else, elseif, do, while, for, foreach) -->
-    <test name="needBraces"></test>
+    <test name="needBraces"/>
 
     <!-- Switch need a default value -->
-    <test name="switchNeedDefault"></test>
+    <test name="switchNeedDefault"/>
 
     <!-- Switch default value should be at the end -->
-    <test name="switchDefaultOrder"></test>
+    <test name="switchDefaultOrder"/>
 
     <!-- Avoid using unary operators (++) inside a control statement -->
     <test name="checkUnaryOperator">
@@ -270,7 +271,7 @@
     </test>
 
     <!-- Only one class declaration per PHP file -->
-    <test name="oneClassPerFile"></test>
+    <test name="oneClassPerFile"/>
 
     <!-- Detect empty files -->
     <test name="checkEmptyFile"/>
@@ -281,7 +282,7 @@
     <!--  ****************  -->
 
     <!-- Detect unused code (after return or throw) -->
-    <test name="checkUnusedCode"></test>
+    <test name="checkUnusedCode"/>
 
 
     <!--  *******************  -->
@@ -289,7 +290,7 @@
     <!--  *******************  -->
 
     <!-- Avoid using a count/sizeof function inside a loop -->
-    <test name="functionInsideLoop"></test>
+    <test name="functionInsideLoop"/>
 
 
     <!--  *******************  -->
@@ -357,7 +358,6 @@
         <alias old="key_exists" new="array_key_exists()"/>
         <alias old="magic_quotes_runtime" new="set_magic_quotes_runtime()"/>
         <alias old="pos" new="current()"/>
-        <alias old="rewind" new="rewinddir()"/>
         <alias old="show_source" new="highlight_file()"/>
         <alias old="sizeof" new="count()"/>
         <alias old="strchr" new="strstr()"/>
