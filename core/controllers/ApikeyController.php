@@ -87,5 +87,6 @@ class ApikeyController extends AppController
         $userapiDaos = $this->Userapi->getByUser($user);
         $this->view->userapiDaos = $userapiDaos;
         $this->view->user = $user;
+        $this->view->serverURL = $this->getServerURL();
     }
 }

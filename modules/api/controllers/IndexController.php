@@ -60,7 +60,6 @@ class Api_IndexController extends Api_AppController
     /** Index function */
     public function indexAction()
     {
-        $this->view->header = 'Web API';
         $this->_computeApiHelp($this->apiSetup['apiMethodPrefix']);
 
         // Prepare the data used by the view
