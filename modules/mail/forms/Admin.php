@@ -57,7 +57,7 @@ class Mail_Form_Admin extends Zend_Form
         $sendGridUsername->setLabel('SendGrid User Name');
         $sendGridUsername->addValidator('NotEmpty', true);
 
-        $sendGridPassword = new Zend_Form_Element_Text(MAIL_SEND_GRID_PASSWORD_KEY);
+        $sendGridPassword = new Zend_Form_Element_Password(MAIL_SEND_GRID_PASSWORD_KEY);
         $sendGridPassword->setLabel('SendGrid Password');
         $sendGridPassword->addValidator('NotEmpty', true);
 
