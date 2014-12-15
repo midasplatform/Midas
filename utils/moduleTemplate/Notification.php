@@ -18,12 +18,17 @@
  limitations under the License.
 =========================================================================*/
 
-/** Notification manager for the @MN@ module */
+/**
+ * Notification manager for the @MN@ module.
+ *
+ * @package Modules\@MN_CAP@\Notification
+ */
 class @MN_CAP@_Notification extends MIDAS_Notification
 {
+    /** @var string */
     public $moduleName = '@MN@';
 
-    /** Init notification process */
+    /** @TODO Initialize the notification process. */
     public function init()
     {
         $fc = Zend_Controller_Front::getInstance();
@@ -34,13 +39,14 @@ class @MN_CAP@_Notification extends MIDAS_Notification
     }
 
     /**
-     * STUB: Example of receiving a callback when an item is deleted
+     * @TODO Handle the callback when an item is deleted.
      *
      * @param array $params parameters
      */
     public function handleItemDeleted($params)
     {
         $itemDao = $params['item'];
+
         // TODO: Do something with this item DAO
     }
 }

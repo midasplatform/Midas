@@ -18,21 +18,44 @@
  limitations under the License.
 =========================================================================*/
 
-/** Controller template for the @MN@ module */
+/**
+ * Thing controller for the @MN@ module.
+ *
+ * @package Modules\@MN_CAP@\Controller
+ */
 class @MN_CAP@_ThingController extends @MN_CAP@_AppController
 {
+    /** @var array */
+    public $_components = array();
+
+    /** @var array */
     public $_models = array();
+
+    /** @var array */
+    public $_moduleComponents = array();
+
+    /** @var array */
     public $_moduleModels = array();
 
-    /** STUB: Example get action */
+    /** @TODO Delete action. */
+    public function deleteAction()
+    {
+        $this->disableLayout();
+        $this->disableView();
+        echo JsonComponent::encode(
+            array('status' => 'ok', 'message' => 'Done')
+        );
+    }
+
+    /** @TODO Get action. */
     public function getAction()
     {
         $id = $this->_getParam('id');
         $this->view->id = $id;
     }
 
-    /** STUB: Example create action */
-    public function createAction()
+    /** @TODO Patch action. */
+    public function patchAction()
     {
         $this->disableLayout();
         $this->disableView();
@@ -41,18 +64,8 @@ class @MN_CAP@_ThingController extends @MN_CAP@_AppController
         );
     }
 
-    /** STUB: Example update action */
-    public function updateAction()
-    {
-        $this->disableLayout();
-        $this->disableView();
-        echo JsonComponent::encode(
-            array('status' => 'ok', 'message' => 'Done')
-        );
-    }
-
-    /** STUB: Example delete action */
-    public function deleteAction()
+    /** @TODO Post action. */
+    public function postAction()
     {
         $this->disableLayout();
         $this->disableView();

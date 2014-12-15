@@ -12,7 +12,6 @@
     },
     "require": {
         "php": ">=5.3.23",
-        "ext-fileinfo": "*",
         "ext-gd": "*",
         "ext-json": "*",
         "francodacosta/phmagick": "0.4.*@dev",
@@ -25,22 +24,23 @@
         "reprovinci/solr-php-client": "~1.0.3",
         "rhumsaa/uuid": "~2.8.0",
         "sendgrid/sendgrid": "~2.1.1",
-        "symfony/console": "~2.5.7",
         "zendframework/zendframework1": "~1.12.9"
     },
     "require-dev": {
         "ext-curl": "*",
-        "fabpot/php-cs-fixer": "~1.1",
+        "fabpot/php-cs-fixer": "~1.3",
         "jokkedk/zfdebug": "~1.6.2",
         "phpcheckstyle/phpcheckstyle": "V0.14.1",
         "phpunit/dbunit": "1.3.*@dev",
-        "phpunit/php-code-coverage": "~2.0.11",
+        "phpunit/php-code-coverage": "~2.0.13",
         "phpunit/phpcov": "~2.0.1",
         "phpunit/phpunit": "~4.3.5",
         "satooshi/php-coveralls": "~0.6.1",
-        "sensiolabs/security-checker": "~2.0.0"
+        "sensiolabs/security-checker": "~2.0.0",
+        "symfony/console": "~2.5.8"
     },
     "suggest": {
+        "ext-fileinfo": "*",
         "ext-imagick": "*",
         "ext-ldap": "*",
         "ext-memcached": "*",

@@ -17,8 +17,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
+$this->declareVars('id');
+$this->headLink()->appendStylesheet($this->baseUrl('modules/@MN@/public/css/thing/thing.get.css'));
+$this->headScript()->appendFile($this->baseUrl('modules/@MN@/public/js/thing/thing.get.js'));
 ?>
 
 <div class="viewMain">
-    The id parameter passed in is: <?php echo $this->escape($this->id); ?>
+    <p>The id parameter passed in is: <?php echo $this->escape($this->id); ?>.</p>
 </div>

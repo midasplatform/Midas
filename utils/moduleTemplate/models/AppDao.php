@@ -18,8 +18,13 @@
  limitations under the License.
 =========================================================================*/
 
-/** App DAO for the @MN@ module */
+/**
+ * Generic DAO class for the @MN@ module.
+ *
+ * @package Modules\@MN_CAP@\DAO
+ */
 class @MN_CAP@_AppDao extends MIDAS_GlobalDao
 {
+    /** @var string */
     public $_module = '@MN@';
 }

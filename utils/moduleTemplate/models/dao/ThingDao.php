@@ -18,9 +18,17 @@
  limitations under the License.
 =========================================================================*/
 
-/** DAO template for the @MN@ module */
+/**
+ * Thing DAO for the @MN@ module.
+ *
+ * @method int getThingId()
+ * @method void setThingId(int $thingId)
+ * @method string getCreationDate()
+ * @method void setCreationDate(string $creationDate)
+ * @package Modules\@MN_CAP@\DAO
+ */
 class @MN_CAP@_ThingDao extends @MN_CAP@_AppDao
 {
+    /** @var string */
     public $_model = 'Thing';
-    public $_module = '@MN@';
 }

@@ -18,8 +18,13 @@
  limitations under the License.
 =========================================================================*/
 
-/** Bootstrap for the @MN@ module. */
+/**
+ * Bootstrap for the @MN@ module.
+ *
+ * @package Modules\@MN_CAP@\Bootstrap
+ */
 class @MN_CAP@_Bootstrap extends Zend_Application_Module_Bootstrap
 {
+    /** @var string */
     public $moduleName = '@MN@';
 }

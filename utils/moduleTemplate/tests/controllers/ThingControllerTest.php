@@ -18,25 +18,29 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Thing model base class for the @MN@ module.
- *
- * @package Modules\@MN_CAP@\Model
- */
-abstract class @MN_CAP@_ThingModelBase extends @MN_CAP@_AppModel
+/** Thing controller test for the @MN@ module. */
+class @MN_CAP@_ThingControllerTest extends ControllerTestCase
 {
-    /** Constructor. */
-    public function __construct()
+    /** @TODO Setup the tests. */
+    public function setUp()
     {
-        parent::__construct();
-        $this->_name = '@MN@_thing';
-        $this->_key = 'thing_id';
+        $this->enabledModules = array('@MN@');
 
-        $this->_mainData = array(
-            'thing_id' => array('type' => MIDAS_DATA),
-            'creation_date' => array('type' => MIDAS_DATA)
-        );
+        parent::setUp();
+    }
 
-        $this->initialize();
+    /** @TODO Test the get action. */
+    public function testGetAction()
+    {
+        $params = array('action' => 'get', 'controller' => 'Thing', 'module' => '@MN@');
+        $urlParams = $this->urlizeOptions($params);
+        $id = 1;
+        $url = $this->url($urlParams, '@MN@-1').'?id='.$id;
+        $this->dispatch($url);
+
+        $this->assertModule($urlParams['module']);
+        $this->assertController($urlParams['controller']);
+        $this->assertAction($urlParams['action']);
+        $this->assertQueryContentContains('div.viewMain p', 'The id parameter passed in is: '.$id.'.');
     }
 }

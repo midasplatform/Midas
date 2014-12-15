@@ -17,14 +17,29 @@
 # limitations under the License.
 #=============================================================================
 
-# This CMake script should be used to create a new Midas module.
+# This script should be used to create a new module in modules directory.
 # Call as
-#   cmake -P NewModule.cmake modulename
-# Where modulename is the name of your module. It should have no spaces in it.
+#     cmake -P NewModule.cmake modulename
+# Where modulename is the name of your module. The name should contain no spaces.
 #
 cmake_minimum_required(VERSION 2.8.7)
 if(NOT DEFINED CMAKE_ARGV3)
-  message(FATAL_ERROR "Must pass in module name as an argument: cmake -P NewModule.cmake mymodule")
+    message(FATAL_ERROR "Must pass in module name as an argument: cmake -P NewModule.cmake mymodule")
+endif()
+
+find_file(COMPOSER_LOCK "composer.lock" PATHS ${CMAKE_CURRENT_LIST_DIR}/../ NO_DEFAULT_PATH DOC "Path to the composer lock file")
+if(NOT COMPOSER_LOCK)
+    message(FATAL_ERROR "Must run composer install before creating a module")
+endif()
+
+set(MUUID "00000000-0000-4000-a000-000000000000")
+find_program(PHP "php" DOC "Path to php")
+if(PHP)
+    find_program(UUID "uuid" PATHS ${CMAKE_CURRENT_LIST_DIR}/../vendor/bin NO_DEFAULT_PATH DOC "Path to uuid")
+    if(UUID)
+        execute_process(COMMAND ${PHP} ${UUID} generate 4 OUTPUT_VARIABLE MUUID_OUTPUT)
+        string(STRIP ${MUUID_OUTPUT} MUUID)
+    endif()
 endif()
 
 set(moduleName "${CMAKE_ARGV3}")

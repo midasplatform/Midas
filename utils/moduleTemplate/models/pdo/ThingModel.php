@@ -20,7 +20,11 @@
 
 require_once BASE_PATH.'/modules/@MN@/models/base/ThingModelBase.php';
 
-/** PDO model template for the @MN@ module */
+/**
+ * Thing model for the @MN@ module.
+ *
+ * @package Modules\@MN_CAP@\Model
+ */
 class @MN_CAP@_ThingModel extends @MN_CAP@_ThingModelBase
 {
 }

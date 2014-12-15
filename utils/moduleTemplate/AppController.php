@@ -18,8 +18,13 @@
  limitations under the License.
 =========================================================================*/
 
-/** App controller for the @MN@ module */
+/**
+ * Generic controller class for the @MN@ module.
+ *
+ * @package Modules\@MN_CAP@\Controller
+ */
 class @MN_CAP@_AppController extends MIDAS_GlobalModule
 {
+    /** @var string */
     public $moduleName = '@MN@';
 }
