@@ -41,11 +41,11 @@ class Googleauth_Form_Admin extends Zend_Form
         $clientSecret->setRequired(true);
         $clientSecret->addValidator('NotEmpty', true);
 
-        $this->addDisplayGroup(array($csrf, $clientId, $clientSecret), 'global');
+        $this->addDisplayGroup(array($clientId, $clientSecret), 'global');
 
         $submit = new Zend_Form_Element_Submit('submit');
         $submit->setLabel('Save');
 
-        $this->addElements(array($clientId, $clientSecret, $submit));
+        $this->addElements(array($csrf, $clientId, $clientSecret, $submit));
     }
 }
