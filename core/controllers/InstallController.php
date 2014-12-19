@@ -173,14 +173,7 @@ class InstallController extends AppController
                 $options = array('allowModifications' => true);
                 $applicationConfig = new Zend_Config_Ini(CORE_CONFIGS_PATH.'/application.ini', null, $options);
 
-                if (extension_loaded('openssl')) {
-                    $factory = new \RandomLib\Factory();
-                    $generator = $factory->getHighStrengthGenerator();
-                    $prefix = $generator->generateString(32);
-                } else {
-                    $prefix = $this->Component->Random->generateString(32);
-                }
-
+                $prefix = $this->Component->Random->generateString(32);
                 $applicationConfig->global->password->prefix = $prefix;
                 $applicationConfig->global->gravatar = $form->getValue('gravatar');
 
