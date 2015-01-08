@@ -20,26 +20,29 @@
 
 /** Helper component for the comments module */
 class Comments_CommentComponent extends AppComponent
-  {
-  /**
-   * Returns a page of comments and all required information
-   * to be rendered in the view
-   */
-  public function getComments($item, $limit, $offset)
+{
+    /**
+     * Returns a page of comments and all required information
+     * to be rendered in the view
+     */
+    public function getComments($item, $limit, $offset)
     {
-    $itemCommentModel = MidasLoader::loadModel('Itemcomment', 'comments');
-    $dateComponent = MidasLoader::loadComponent('Date');
-    $comments = $itemCommentModel->getComments($item, $limit, $offset);
-    $total = $itemCommentModel->getTotal($item);
-    $commentsList = array();
-    foreach($comments as $comment)
-      {
-      $commentArray = $comment->toArray();
-      $commentArray['user'] = $comment->getUser()->toArray();
-      $commentArray['comment'] = htmlentities($commentArray['comment']);
-      $commentArray['ago'] = $dateComponent->ago($commentArray['date']);
-      $commentsList[] = $commentArray;
-      }
-    return array($commentsList, $total);
+        /** @var Comments_ItemcommentModel $itemCommentModel */
+        $itemCommentModel = MidasLoader::loadModel('Itemcomment', 'comments');
+
+        /** @var DateComponent $dateComponent */
+        $dateComponent = MidasLoader::loadComponent('Date');
+        $comments = $itemCommentModel->getComments($item, $limit, $offset);
+        $total = $itemCommentModel->getTotal($item);
+        $commentsList = array();
+        foreach ($comments as $comment) {
+            $commentArray = $comment->toArray();
+            $commentArray['user'] = $comment->getUser()->toArray();
+            $commentArray['comment'] = htmlspecialchars($commentArray['comment'], ENT_QUOTES, 'UTF-8');
+            $commentArray['ago'] = $dateComponent->ago($commentArray['date']);
+            $commentsList[] = $commentArray;
+        }
+
+        return array($commentsList, $total);
     }
-  } // end class
+}

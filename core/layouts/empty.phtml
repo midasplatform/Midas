@@ -17,117 +17,75 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-echo $this->doctype()
+
+echo $this->doctype().PHP_EOL;
 ?>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="<?php echo $this->escape($this->lang); ?>" xml:lang="<?php echo $this->escape($this->lang); ?>" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title><?php echo $this->title ?></title>
+    <?php
+    $this->headMeta()->appendHttpEquiv('Content-Type', 'text/html; charset=UTF-8');
+    $this->headMeta()->appendName('description', $this->escape($this->metaDescription));
+    echo $this->headMeta().PHP_EOL;
 
-  <meta name="description" content="<?php echo htmlentities($this->metaDescription)?>" />
-  <meta name="keywords" content="<?php echo htmlentities($this->metaKeywords)?>" />
-  <meta name="robots" content="index, follow, all" />
-  <noscript>
-  <meta http-equiv="refresh" content="1; URL=<?php echo $this->webroot?>/index/nojs">
-  </noscript>
+    $this->headTitle($this->escape($this->title));
+    $this->headTitle()->setSeparator(' - ');
+    echo $this->headTitle().PHP_EOL;
 
-  <!--[if lte IE 6]>
-    <meta http-equiv="refresh" content="1; URL=<?php echo $this->webroot?>/index/nobrowser">
-  <![endif]-->
+    $this->headLink()->appendStylesheet($this->baseUrl('core/public/css/layout/midas.empty.css'));
+    $this->headLink()->appendStylesheet($this->baseUrl('core/public/css/layout/view.css'));
+    $this->headLink()->appendStylesheet($this->baseUrl('core/public/css/layout/jquery-ui.min.css'));
+    $this->headLink()->appendStylesheet($this->baseUrl('core/public/css/layout/form.css'));
+    $this->headLink()->appendStylesheet($this->baseUrl('core/public/css/layout/loginForm.css'));
+    $this->headLink()->appendStylesheet($this->baseUrl('core/public/css/layout/jquery.treeTable.css'));
+    $this->headLink()->appendStylesheet($this->baseUrl('core/public/css/layout/jquery.qtip.min.css'));
+    $this->headLink()->headLink(array('rel' => 'icon', 'href' => $this->baseUrl('favicon.ico'), 'APPEND'));
+    echo $this->headLink().PHP_EOL;
 
-  <!-- Import CSS -->
-  <link rel="shortcut icon" href="<?php echo $this->coreWebroot ?>/public/images/icons/favicon.ico" />
-  <?php
-  if(Zend_Registry::get("configGlobal")->smartoptimizer == 1)
-    {
-    echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/view.css,'.
-         'midas.empty.css,'.
-         'jquery-ui.css,'.
-         'form.css,'.
-         'loginForm.css,'.
-         'jquery.treeTable.css,'.
-         'jquery.qtip.min.css" />';
-    }
-  else
-    {
-    echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/midas.empty.css" />';
-    echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/view.css" />';
-    echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/jquery-ui.css" />';
-    echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/form.css" />';
-    echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/loginForm.css" />';
-    echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/jquery.treeTable.css" />';
-    echo '<link type="text/css" rel="stylesheet" href="'.$this->coreWebroot.'/public/css/layout/jquery.qtip.min.css" />';
-    }
-  ?>
+    $this->headScript()->prependFile($this->baseUrl('core/public/js/layout/jquery.qtip.min.js'));
+    $this->headScript()->prependFile($this->baseUrl('core/public/js/layout/jquery.treeTable.js'));
+    $this->headScript()->prependFile($this->baseUrl('core/public/js/layout/midas.progress.js'));
+    $this->headScript()->prependFile($this->baseUrl('core/public/js/layout/midas.dialog.js'));
+    $this->headScript()->prependFile($this->baseUrl('core/public/js/layout/midas.callback.js'));
+    $this->headScript()->prependFile($this->baseUrl('core/public/js/layout/midas.notice.js'));
+    $this->headScript()->prependFile($this->baseUrl('core/public/js/layout/midas.empty.js'));
+    $this->headScript()->prependFile($this->baseUrl('core/public/js/layout/midas.common.js'));
+    $this->headScript()->prependFile($this->baseUrl('core/public/js/layout/jquery-ui.js'));
+    $this->headScript()->prependFile($this->baseUrl('core/public/js/layout/jquery.js'));
 
-  <?php echo $this->headLink();  // import the css ?>
-  <?php echo $this->headStyle(); // import the css ?>
-
+    echo $this->headStyle().PHP_EOL;
+    ?>
 </head>
 <body>
-  <div class="MainDialog" style="display:none;">
+<div class="MainDialog" style="display:none;">
     <div class="MainDialogContent"></div>
     <div class="MainDialogLoading">
-      <img alt="" src="<?php echo  $this->coreWebroot?>/public/images/icons/loading.gif" />
+        <img alt="" src="<?php echo $this->baseUrl('core/public/images/icons/loading.gif'); ?>"/>
     </div>
     <input type="hidden" class="DialogContentPage"/>
-  </div>
-
-  <div class="viewNoticeWrapper">
+</div>
+<div class="viewNoticeWrapper">
     <div class="viewNotice"></div>
-  </div>
-
-  <div class="Wrapper">
+</div>
+<div class="Wrapper">
     <div class="viewWrapper">
-      <!-- Content -->
-      <?php echo $this->layout()->content ?>
-      <!-- End Content -->
+        <!-- Content -->
+        <?php echo $this->layout()->content.PHP_EOL; ?>
+        <!-- End Content -->
     </div>
-  </div>
+</div>
+<?php echo $this->headScript().PHP_EOL; ?>
+<input type="hidden" class="webroot" value="<?php $this->baseUrl(); ?>"/>
 
-  <?php
-  if(Zend_Registry::get('configGlobal')->smartoptimizer == 1)
-    {
-    echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery.js,'.
-         'jquery-ui.js,'.
-         'midas.common.js,'.
-         'midas.empty.js,'.
-         'midas.callback.js,'.
-         'midas.dialog.js,'.
-         'midas.progress.js,'.
-         'midas.notice.js,'.
-         'jquery.treeTable.js,'.
-         'jquery.qtip.min.js"></script>';
-    }
-  else
-    {
-    echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery.js"></script>';
-    echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery-ui.js"></script>';
-    echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/midas.common.js"></script>';
-    echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/midas.empty.js"></script>';
-    echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/midas.notice.js"></script>';
-    echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/midas.callback.js"></script>';
-    echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/midas.dialog.js"></script>';
-    echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/midas.progress.js"></script>';
-    echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery.treeTable.js"></script>';
-    echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery.qtip.min.js"></script>';
-    }
-  ?>
-  <?php echo $this->headScript() ?>
-  <input type="hidden" class="webroot" value="<?php echo $this->webroot ?>" />
-  <div style="display: none;" class="jsonContent">
-    <?php echo $this->json ?>
-  </div>
+<div style="display: none;" class="jsonContent">
+    <?php echo $this->escape($this->json).PHP_EOL; ?>
+</div>
 </body>
-
 <?php
 $footers = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_GET_FOOTER_LAYOUT', array());
-if(!empty($footers))
-  {
-  foreach($footers as $footer)
-    {
-    echo $footer;
+if (!empty($footers)) {
+    foreach ($footers as $footer) {
+        echo $footer;
     }
-  }
+}
 ?>
 </html>

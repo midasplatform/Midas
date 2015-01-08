@@ -18,49 +18,34 @@
  limitations under the License.
 =========================================================================*/
 
-define('CORE_CONFIGS_PATH', BASE_PATH . '/core/configs');
+define('CORE_CONFIGS_PATH', BASE_PATH.'/core/configs');
 
-if(getenv('midas_local_configs_path') !== false)
-  {
-  define('LOCAL_CONFIGS_PATH', getenv('midas_local_configs_path'));
-  }
-else
-  {
-  define('LOCAL_CONFIGS_PATH', CORE_CONFIGS_PATH);
-  }
+if (getenv('midas_local_configs_path') !== false) {
+    define('LOCAL_CONFIGS_PATH', getenv('midas_local_configs_path'));
+} else {
+    define('LOCAL_CONFIGS_PATH', CORE_CONFIGS_PATH);
+}
 
-if(getenv('midas_logs_path') !== false)
-  {
-  define('LOGS_PATH', getenv('midas_logs_path'));
-  }
-else
-  {
-  define('LOGS_PATH', BASE_PATH . '/log');
-  }
+if (getenv('midas_logs_path') !== false) {
+    define('LOGS_PATH', getenv('midas_logs_path'));
+} else {
+    define('LOGS_PATH', BASE_PATH.'/log');
+}
 
-if(file_exists(LOCAL_CONFIGS_PATH . '/core.local.ini'))
-  {
-  define('CORE_CONFIG', LOCAL_CONFIGS_PATH . '/core.local.ini');
-  }
-else
-  {
-  define('CORE_CONFIG', CORE_CONFIGS_PATH . '/core.ini');
-  }
+if (file_exists(LOCAL_CONFIGS_PATH.'/core.local.ini')) {
+    define('CORE_CONFIG', LOCAL_CONFIGS_PATH.'/core.local.ini');
+} else {
+    define('CORE_CONFIG', CORE_CONFIGS_PATH.'/core.ini');
+}
 
-if(file_exists(LOCAL_CONFIGS_PATH . '/application.local.ini'))
-  {
-  define('APPLICATION_CONFIG', LOCAL_CONFIGS_PATH . '/application.local.ini');
-  }
-else
-  {
-  define('APPLICATION_CONFIG', CORE_CONFIGS_PATH . '/application.ini');
-  }
+if (file_exists(LOCAL_CONFIGS_PATH.'/application.local.ini')) {
+    define('APPLICATION_CONFIG', LOCAL_CONFIGS_PATH.'/application.local.ini');
+} else {
+    define('APPLICATION_CONFIG', CORE_CONFIGS_PATH.'/application.ini');
+}
 
-if(file_exists(LOCAL_CONFIGS_PATH . '/database.local.ini'))
-  {
-  define('DATABASE_CONFIG', LOCAL_CONFIGS_PATH . '/database.local.ini');
-  }
-else
-  {
-  define('DATABASE_CONFIG', CORE_CONFIGS_PATH . '/database.ini');
-  }
+if (file_exists(LOCAL_CONFIGS_PATH.'/database.local.ini')) {
+    define('DATABASE_CONFIG', LOCAL_CONFIGS_PATH.'/database.local.ini');
+} else {
+    define('DATABASE_CONFIG', CORE_CONFIGS_PATH.'/database.ini');
+}

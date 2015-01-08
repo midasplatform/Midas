@@ -18,32 +18,31 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/js/jquery/iviewer/jquery.iviewer.css" />
+    <link type="text/css" rel="stylesheet"
+          href="<?php echo $this->moduleWebroot ?>/public/js/jquery/iviewer/jquery.iviewer.css"/>
 
 <?php
-echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js"></script>';
-$this->headScript()->appendFile($this->moduleWebroot . '/public/js/image/image.index.js');
-$this->headScript()->appendFile($this->moduleWebroot . '/public/js/jquery/iviewer/jquery.iviewer.min.js');
-$this->headScript()->appendFile($this->moduleWebroot . '/public/js/jquery/iviewer/jquery.mousewheel.min.js');
+echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery.js"></script>';
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/image/image.index.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/jquery/iviewer/jquery.iviewer.min.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/jquery/iviewer/jquery.mousewheel.min.js');
 ?>
-<style>
-    .viewer
-    {
-        width: 750px;
-        height: 650px;
-        border: 1px solid black;
-        position: relative;
-    }
+    <style>
+        .viewer {
+            width: 750px;
+            height: 650px;
+            border: 1px solid black;
+            position: relative;
+        }
 
-    .wrapper
-    {
-        overflow: hidden;
-    }
-</style>
+        .wrapper {
+            overflow: hidden;
+        }
+    </style>
 
-<div class="wrapper">
-  <div id="viewer" class="viewer"></div>
-</div>
-<div id='urlImage' style="display:none;"><?php echo $this->imageUrl?></div>
+    <div class="wrapper">
+        <div id="viewer" class="viewer"></div>
+    </div>
+    <div id='urlImage' style="display:none;"><?php echo $this->escape($this->imageUrl); ?></div>
 <?php
 echo $this->headScript();

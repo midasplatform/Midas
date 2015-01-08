@@ -17,61 +17,84 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** test hello model*/
+
+/** test hello model */
 class JobModelTest extends DatabaseTestCase
-  {
-  /** set up tests*/
-  public function setUp()
+{
+    /** set up tests */
+    public function setUp()
     {
-    $db = Zend_Registry::get('dbAdapter');
-    $configDatabase = Zend_Registry::get('configDatabase');
-    if($configDatabase->database->adapter == 'PDO_PGSQL')
-      {
-      $db->query("SELECT setval('remoteprocessing_job_job_id_seq', (SELECT MAX(job_id) FROM remoteprocessing_job)+1);");
-      }
-    $this->setupDatabase(array('default')); //core dataset
-    $this->setupDatabase(array('default'), 'remoteprocessing'); // module dataset
-    $this->enabledModules = array('remoteprocessing');
-    parent::setUp();
+        $db = Zend_Registry::get('dbAdapter');
+        $configDatabase = Zend_Registry::get('configDatabase');
+        if ($configDatabase->database->adapter == 'PDO_PGSQL') {
+            $db->query(
+                "SELECT setval('remoteprocessing_job_job_id_seq', (SELECT MAX(job_id) FROM remoteprocessing_job)+1);"
+            );
+        }
+        $this->setupDatabase(array('default')); // core dataset
+        $this->setupDatabase(array('default'), 'remoteprocessing'); // module dataset
+        $this->enabledModules = array('remoteprocessing');
+        parent::setUp();
     }
 
-  /** test getRelatedJob($item)*/
-  public function testGetRelatedJob()
+    /** test getRelatedJob($item)*/
+    public function testGetRelatedJob()
     {
-    $jobModel = MidasLoader::loadModel('Job', 'remoteprocessing');
-    $itemModel = MidasLoader::loadModel('Item');
+        /** @var Remoteprocessing_JobModel $jobModel */
+        $jobModel = MidasLoader::loadModel('Job', 'remoteprocessing');
 
-    $item = $itemModel->load(1000);
+        /** @var ItemModel $itemModel */
+        $itemModel = MidasLoader::loadModel('Item');
 
-    $jobs = $jobModel->getRelatedJob($item);
-    $this->assertEquals(1, count($jobs));
+        $item = $itemModel->load(1000);
+
+        $jobs = $jobModel->getRelatedJob($item);
+        $this->assertEquals(1, count($jobs));
     }
 
-  /** test getBy*/
-  public function testGetBy()
+    /** test getBy */
+    public function testGetBy()
     {
-    include BASE_PATH.'/modules/remoteprocessing/constant/module.php';
-    $jobModel = MidasLoader::loadModel('Job', 'remoteprocessing');
+        include BASE_PATH.'/modules/remoteprocessing/constant/module.php';
 
-    $jobs = $jobModel->getBy(MIDAS_REMOTEPROCESSING_OS_WINDOWS, '', '2000-10-26 22:32:58', MIDAS_REMOTEPROCESSING_STATUS_WAIT);
-    $this->assertEquals(1, count($jobs));
+        /** @var Remoteprocessing_JobModel $jobModel */
+        $jobModel = MidasLoader::loadModel('Job', 'remoteprocessing');
 
-    $jobs = $jobModel->getBy(MIDAS_REMOTEPROCESSING_OS_LINUX, '', '2000-10-26 22:32:58', MIDAS_REMOTEPROCESSING_STATUS_WAIT);
-    $this->assertEquals(0, count($jobs));
+        $jobs = $jobModel->getBy(
+            MIDAS_REMOTEPROCESSING_OS_WINDOWS,
+            '',
+            '2000-10-26 22:32:58',
+            MIDAS_REMOTEPROCESSING_STATUS_WAIT
+        );
+        $this->assertEquals(1, count($jobs));
 
-    $jobs = $jobModel->getBy(MIDAS_REMOTEPROCESSING_OS_WINDOWS, '', '2100-10-26 22:32:58', MIDAS_REMOTEPROCESSING_STATUS_WAIT);
-    $this->assertEquals(0, count($jobs));
+        $jobs = $jobModel->getBy(
+            MIDAS_REMOTEPROCESSING_OS_LINUX,
+            '',
+            '2000-10-26 22:32:58',
+            MIDAS_REMOTEPROCESSING_STATUS_WAIT
+        );
+        $this->assertEquals(0, count($jobs));
+
+        $jobs = $jobModel->getBy(
+            MIDAS_REMOTEPROCESSING_OS_WINDOWS,
+            '',
+            '2100-10-26 22:32:58',
+            MIDAS_REMOTEPROCESSING_STATUS_WAIT
+        );
+        $this->assertEquals(0, count($jobs));
     }
 
-  /** test addItemRelation*/
-  public function testAddItemRelation()
+    /** test addItemRelation */
+    public function testAddItemRelation()
     {
-    $jobModel = MidasLoader::loadModel('Job', 'remoteprocessing');
-    $itemsFile = $this->loadData('Item', 'default');
-    $jobFile = $this->loadData('Job', 'default', 'remoteprocessing', 'remoteprocessing');
+        /** @var Remoteprocessing_JobModel $jobModel */
+        $jobModel = MidasLoader::loadModel('Job', 'remoteprocessing');
+        $itemsFile = $this->loadData('Item', 'default');
+        $jobFile = $this->loadData('Job', 'default', 'remoteprocessing', 'remoteprocessing');
 
-    $jobModel->addItemRelation($jobFile[0], $itemsFile[1]);
-    $jobs = $jobModel->getRelatedJob($itemsFile[1]);
-    $this->assertEquals(1, count($jobs));
+        $jobModel->addItemRelation($jobFile[0], $itemsFile[1]);
+        $jobs = $jobModel->getRelatedJob($itemsFile[1]);
+        $this->assertEquals(1, count($jobs));
     }
-  }
+}

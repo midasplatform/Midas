@@ -17,23 +17,24 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** UserDaoTest*/
-class UserDaoTest extends DatabaseTestCase
-  {
-  /** init tests*/
-  public function setUp()
+
+/** UserDaoTest */
+class Core_UserDaoTest extends DatabaseTestCase
+{
+    /** init tests */
+    public function setUp()
     {
-    $this->setupDatabase(array());
-    $this->_models = array('User');
-    $this->_daos = array('User');
-    parent::setUp();
+        $this->setupDatabase(array());
+        $this->_models = array('User');
+        $this->_daos = array('User');
+        parent::setUp();
     }
 
-  /** testGetFullName*/
-  public function testGetFullName()
+    /** testGetFullName */
+    public function testGetFullName()
     {
-    $usersFile = $this->loadData('User', 'default');
-    $userDao = $this->User->load($usersFile[0]->getKey());
-    $this->assertEquals($userDao->getFullName(), $usersFile[0]->firstname." ".$usersFile[0]->lastname);
+        $usersFile = $this->loadData('User', 'default');
+        $userDao = $this->User->load($usersFile[0]->getKey());
+        $this->assertEquals($userDao->getFullName(), $usersFile[0]->firstname." ".$usersFile[0]->lastname);
     }
-  }
+}

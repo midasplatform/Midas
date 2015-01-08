@@ -18,69 +18,54 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/index/index.index.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/index/index.index.css" />
 <?php
-$this->headScript()->appendFile($this->moduleWebroot . '/public/js/index/index.index.js');
+$this->headScript()->appendFile($this->moduleWebroot.'/public/js/index/index.index.js');
 ?>
 <div class="viewMain">
-  <h2>Deprecated MIDAS Web API</h2>
-
-  <div><img style="position: relative; top: 3px;" src="<?php echo $this->coreWebroot ?>/public/images/icons/warning.png"> This RPC style API is now deprecated, instead use the
-  <a href="<?php echo $this->serverURL.$this->webroot?>/rest">RESTful API.</a></div>
-  <br/>
-  <br/>
-  <br/>
-
-  The api will send you an XML RPC response at the following URL:<br/>
-  <pre><?php echo $this->serverURL.$this->webroot?>/api/rest?method=METHOD_NAME</pre>
-  <br/>
-    The api will send you a JSON RPC response at the following URL:<br/>
-  <pre><?php echo $this->serverURL.$this->webroot?>/api/json?method=METHOD_NAME</pre>
-  <br/>
-    To authenticate requests you can provide a parameter of <b>token</b> with an
-    authentication token value obtained by calling <b>midas.login</b>, or to authenticate using the current Midas session you can pass a parameter key of <b>useSession</b>.
-  <br/>
-  <br/>
-
-  <div class="api.listmethods" id="api.listmethods">
-    Available methods:
-    <ul class="listmethods">
-      <?php
-      foreach($this->data['api.listmethods'] as $methodname)
-        {
-        echo "<li class='methodListElement'>".$methodname." <a class='showHideHelp'>?</a></li>";
-        if(isset($this->help[$methodname]))
-          {
-          echo "<div class='helpContent'>";
-          echo $this->help[$methodname]['description'].'<br/>';
-          if(!empty($this->help[$methodname]['params']))
-            {
-            echo '<b>Parameters</b>';
-            foreach($this->help[$methodname]['params'] as $key => $value)
-              {
-              echo '<ul>';
-              echo "<li><b>{$key}</b> - {$value}</li>";
-              echo '</ul>';
-              }
+    <h2>Deprecated JSON RPC API</h2>
+    <div>
+        <img style="position: relative; top: 3px;" src="<?php echo $this->coreWebroot ?>/public/images/icons/warning.png"> This JSON RPC API is
+        <b>deprecated</b>. Instead use the <a href="<?php echo $this->escape($this->serverURL.$this->webroot); ?>/rest">RESTful API</a>.
+    </div>
+    <br />
+    <p>This API will send you a JSON RPC response at the following URL:</p>
+    <p><b><?php echo $this->escape($this->serverURL.$this->webroot); ?>/api/json?method=METHOD_NAME</b></p>
+    <p>To authenticate requests you can provide a parameter named <b>token</b> with an
+    authentication token value obtained by calling <b>midas.login</b>.</p>
+    <br />
+    <div class="api.listmethods" id="api.listmethods">
+        Available methods:
+        <ul class="listmethods">
+            <?php
+            foreach ($this->data['api.listmethods'] as $methodname) {
+                echo "<li class='methodListElement'>".$this->escape($methodname)." <a class='showHideHelp'>?</a></li>";
+                if (isset($this->help[$methodname])) {
+                    echo "<div class='helpContent'>";
+                    echo $this->escape($this->help[$methodname]['description']).'<br/>';
+                    if (!empty($this->help[$methodname]['params'])) {
+                        echo '<b>Parameters</b>';
+                        foreach ($this->help[$methodname]['params'] as $key => $value) {
+                            echo '<ul>';
+                            echo "<li><b>{$this->escape($key)}</b> - {$this->escape($value)}</li>";
+                            echo '</ul>';
+                        }
+                    }
+                    if (!empty($this->help[$methodname]['return'])) {
+                        echo '<b>Return</b> - '.$this->escape($this->help[$methodname]['return']);
+                    }
+                    if (!empty($this->help[$methodname]['example'])) {
+                        echo '<br/><b>Examples</b>';
+                        foreach ($this->help[$methodname]['example'] as $key => $value) {
+                            echo '<ul>';
+                            echo "<li><b>{$this->escape($value)}</b> - {$this->escape($key)}</li>";
+                            echo '</ul>';
+                        }
+                    }
+                    echo "</div>";
+                }
             }
-          if(!empty($this->help[$methodname]['return']))
-            {
-            echo '<b>Return</b> - '.$this->help[$methodname]['return'];
-            }
-          if(!empty($this->help[$methodname]['example']))
-            {
-            echo '<br/><b>Examples</b>';
-            foreach($this->help[$methodname]['example'] as $key => $value)
-              {
-              echo '<ul>';
-              echo "<li><b>{$value}</b> - {$key}</li>";
-              echo '</ul>';
-              }
-            }
-          echo "</div>";
-          }
-        }
-      ?>
-    </ul>
+            ?>
+        </ul>
     </div>
 </div>

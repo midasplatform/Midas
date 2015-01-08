@@ -21,86 +21,82 @@
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/trend/trend.edit.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/trend/trend.edit.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/trend/trend.edit.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/common/common.browser.css"/>
 
 <div class="formWrapper">
-  <div class="editTitle">
-    Edit trend information
-  </div>
-  <form class="editTrendForm genericForm" action="<?php echo $this->webroot?>/tracker/trend/editsubmit" method="POST">
-    <div class="formRow">
-      <label for="metricName">Metric name</label>
-      <input type="text" name="metricName" value="<?php echo $this->trend->getMetricName();?>"
-        qtip="The metric name that submission clients use to identify this trend" />
+    <div class="editTitle">
+        Edit trend information
     </div>
-    <div class="formRow">
-      <label for="displayName">Display name</label>
-      <input type="text" name="displayName" value="<?php echo $this->trend->getDisplayName();?>"
-        qtip="The title that is displayed in Midas for this trend" />
-    </div>
-    <div class="formRow">
-      <label for="unit">Unit</label>
-      <input type="text" name="unit" value="<?php echo $this->trend->getUnit();?>"
-        qtip="The unit of measurement for this metric (optional)" />
-    </div>
-    <div class="formRow">
-      <label>Config Dataset</label>
+    <form class="editTrendForm genericForm" action="<?php echo $this->webroot ?>/tracker/trend/editsubmit"
+          method="POST">
+        <div class="formRow">
+            <label for="metricName">Metric name</label>
+            <input type="text" name="metricName" value="<?php echo $this->escape($this->trend->getMetricName()); ?>"
+                   qtip="The metric name that submission clients use to identify this trend"/>
+        </div>
+        <div class="formRow">
+            <label for="displayName">Display name</label>
+            <input type="text" name="displayName" value="<?php echo $this->escape($this->trend->getDisplayName()); ?>"
+                   qtip="The title that is displayed in Midas for this trend"/>
+        </div>
+        <div class="formRow">
+            <label for="unit">Unit</label>
+            <input type="text" name="unit" value="<?php echo $this->escape($this->trend->getUnit()); ?>"
+                   qtip="The unit of measurement for this metric (optional)"/>
+        </div>
+        <div class="formRow">
+            <label>Config Dataset</label>
       <span class="configDatasetContent">
       <?php
-      if($this->trend->getConfigItemId())
-        {
-        echo '<a href="'.$this->webroot.'/item/'.$this->trend->getConfigItemId().'">'.$this->trend->getConfigItem()->getName().'</a>';
-        }
-      else
-        {
-        echo '<span class="noItem">none</span>';
-        }
+      if ($this->trend->getConfigItemId()) {
+          echo '<a href="'.$this->webroot.'/item/'.$this->escape($this->trend->getConfigItemId()).'">'.$this->escape($this->trend->getConfigItem(
+              )->getName()).'</a>';
+      } else {
+          echo '<span class="noItem">none</span>';
+      }
       ?>
       </span>
-      <input type="button" class="removeItem" element="config" value="Remove" />
-      <input type="button" class="selectItem" id="selectConfigItem" value="Choose" />
-    </div>
-    <div class="formRow">
-      <label>Test Dataset</label>
+            <input type="button" class="removeItem" element="config" value="Remove"/>
+            <input type="button" class="selectItem" id="selectConfigItem" value="Choose"/>
+        </div>
+        <div class="formRow">
+            <label>Test Dataset</label>
       <span class="testDatasetContent">
       <?php
-      if($this->trend->getTestDatasetId())
-        {
-        echo '<a href="'.$this->webroot.'/item/'.$this->trend->getTestDatasetId().'">'.$this->trend->getTestDatasetItem()->getName().'</a>';
-        }
-      else
-        {
-        echo '<span class="noItem">none</span>';
-        }
+      if ($this->trend->getTestDatasetId()) {
+          echo '<a href="'.$this->webroot.'/item/'.$this->escape($this->trend->getTestDatasetId(
+              )).'">'.$this->escape($this->trend->getTestDatasetItem()->getName()).'</a>';
+      } else {
+          echo '<span class="noItem">none</span>';
+      }
       ?>
       </span>
-      <input type="button" class="removeItem" element="test" value="Remove" />
-      <input type="button" class="selectItem" id="selectTestDatasetItem" value="Choose" />
-    </div>
-    <div class="formRow">
-      <label>Ground Truth Dataset</label>
+            <input type="button" class="removeItem" element="test" value="Remove"/>
+            <input type="button" class="selectItem" id="selectTestDatasetItem" value="Choose"/>
+        </div>
+        <div class="formRow">
+            <label>Ground Truth Dataset</label>
       <span class="truthDatasetContent">
       <?php
-      if($this->trend->getTruthDatasetId())
-        {
-        echo '<a href="'.$this->webroot.'/item/'.$this->trend->getTruthDatasetId().'">'.$this->trend->getTruthDatasetItem()->getName().'</a>';
-        }
-      else
-        {
-        echo '<span class="noItem">none</span>';
-        }
+      if ($this->trend->getTruthDatasetId()) {
+          echo '<a href="'.$this->webroot.'/item/'.$this->escape($this->trend->getTruthDatasetId(
+              )).'">'.$this->escape($this->trend->getTruthDatasetItem()->getName()).'</a>';
+      } else {
+          echo '<span class="noItem">none</span>';
+      }
       ?>
       </span>
-      <input type="button" class="removeItem" element="truth" value="Remove" />
-      <input type="button" class="selectItem" id="selectTruthDatasetItem" value="Choose" />
-    </div>
-    <input type="hidden" name="configItemId" value="<?php echo $this->trend->getConfigItemId();?>" />
-    <input type="hidden" name="testItemId" value="<?php echo $this->trend->getTestDatasetId();?>" />
-    <input type="hidden" name="truthItemId" value="<?php echo $this->trend->getTruthDatasetId();?>" />
-    <input type="hidden" name="trendId" value="<?php echo $this->trend->getKey();?>" />
-    <div class="submitButtonContainer">
-      <input type="submit" class="globalButton" value="Save" />
-    </div>
-  </form>
+            <input type="button" class="removeItem" element="truth" value="Remove"/>
+            <input type="button" class="selectItem" id="selectTruthDatasetItem" value="Choose"/>
+        </div>
+        <input type="hidden" name="configItemId" value="<?php echo $this->escape($this->trend->getConfigItemId()); ?>"/>
+        <input type="hidden" name="testItemId" value="<?php echo $this->escape($this->trend->getTestDatasetId()); ?>"/>
+        <input type="hidden" name="truthItemId" value="<?php echo $this->escape($this->trend->getTruthDatasetId()); ?>"/>
+        <input type="hidden" name="trendId" value="<?php echo $this->escape($this->trend->getKey()); ?>"/>
+
+        <div class="submitButtonContainer">
+            <input type="submit" class="globalButton" value="Save"/>
+        </div>
+    </form>
 </div>

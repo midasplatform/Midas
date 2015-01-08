@@ -18,56 +18,58 @@
  limitations under the License.
 =========================================================================*/
 
-if(isset($this->errormessage))
-  {
-  echo $this->errormessage;
-  }
-if(isset($this->statusmessage))
-  {
-  echo $this->statusmessage;
-  }
+if (isset($this->errormessage)) {
+    echo $this->escape($this->errormessage);
+}
+if (isset($this->statusmessage)) {
+    echo $this->escape($this->statusmessage);
+}
 ?>
 
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.cluetip.css" />
-    <div class ="genericWrapperTopRight">
-         <?php
-          echo '<div style="margin-right:2px;" class="genericBigButton ">';
-            echo "<a  href='{$this->webroot}/admin#tabs-assetstore'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
-            echo $this->t('Back');
-            echo "</a>";
-          echo '</div>';
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->coreWebroot ?>/public/css/jquery/jquery.cluetip.min.css"/>
+<div class="genericWrapperTopRight">
+    <?php
+    echo '<div style="margin-right:2px;" class="genericBigButton ">';
+    echo "<a  href='{$this->webroot}/admin#tabs-assetstore'><img style='float:left;margin-right:2px;' alt='' src='{$this->coreWebroot}/public/images/icons/back.png'/>";
+    echo $this->t('Back');
+    echo "</a>";
+    echo '</div>';
 
-        ?>
-    </div>
+    ?>
+</div>
 <br/>
 <?php
-  $this->headScript()->appendFile($this->coreWebroot.'/public/js/import/import.index.js');
-  $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
-  $this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.cluetip.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/import/import.index.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.cluetip.js');
 
-  $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/jquery/jquery.filetree.css');
-  $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/import/import.index.css');
-  $this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/assetstore/assetstore.add.css');
+$this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/jquery/jquery.filetree.min.css');
+$this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/import/import.index.css');
+$this->headLink()->appendStylesheet($this->coreWebroot.'/public/css/assetstore/assetstore.add.css');
 
-  echo $this->importForm;
+echo $this->importForm;
 ?>
 
 <div id="progress" style="display:none"></div>
 <div id="progress_status"></div>
 
-<?php echo $this->element('serversidefilechooser',
-                     array('id'=>'inputdirectorybutton',
-                           'fileFilterErrorMsg' => 'Select the local XML directory on the server',
-                           'destSelector' => '#inputdirectory',
-                     ))
-                    ?>
+<?php echo $this->element(
+    'serversidefilechooser',
+    array(
+        'id' => 'inputdirectorybutton',
+        'fileFilterErrorMsg' => 'Select the local XML directory on the server',
+        'destSelector' => '#inputdirectory',
+    )
+)
+?>
 
-<div id="newassetstore-form"  style="display:none">
-   <?php echo $this->assetstoreForm; ?>
+<div id="newassetstore-form" style="display:none">
+    <?php echo $this->assetstoreForm; ?>
 </div>
 
 <script language="javascript">
-   var midas = midas || {};
-   midas.import = midas.import || {};
-   midas.import.assetstores = '<?php echo str_replace('\\', '\\\\', JsonComponent::encode($this->assetstores)); ?>';
+    var midas = midas || {};
+    midas.import = midas.import || {};
+    midas.import.assetstores = '<?php echo str_replace('\\', '\\\\', JsonComponent::encode($this->assetstores)); ?>';
 </script>

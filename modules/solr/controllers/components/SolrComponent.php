@@ -20,55 +20,60 @@
 
 /** Component for accessing the solr server */
 class Solr_SolrComponent extends AppComponent
-  {
-  /**
-   * Returns the Apache_Solr_Service object.
-   */
-  public function getSolrIndex()
+{
+    /**
+     * Returns the Apache_Solr_Service object.
+     */
+    public function getSolrIndex()
     {
-    $settingModel = MidasLoader::loadModel('Setting');
-    $solrHost = $settingModel->getValueByName('solrHost', 'solr');
-    $solrPort = $settingModel->getValueByName('solrPort', 'solr');
-    $solrWebroot = $settingModel->getValueByName('solrWebroot', 'solr');
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $solrHost = $settingModel->getValueByName(SOLR_HOST_KEY, 'solr');
+        $solrPort = $settingModel->getValueByName(SOLR_PORT_KEY, 'solr');
+        $solrWebroot = $settingModel->getValueByName(SOLR_WEBROOT_KEY, 'solr');
 
-    if($solrHost === null)
-      {
-      throw new Zend_Exception('Solr settings not saved');
-      }
-    require_once BASE_PATH.'/modules/solr/library/Apache/Solr/Service.php';
-    require_once BASE_PATH.'/modules/solr/library/Apache/Solr/Document.php';
+        if ($solrHost === null) {
+            throw new Zend_Exception('Solr settings not saved');
+        }
 
-    return new Apache_Solr_Service($solrHost, (int)$solrPort, $solrWebroot);
+        return new Apache_Solr_Service($solrHost, (int) $solrPort, $solrWebroot);
     }
 
-  /**
-   * Rebuilds the search index by iterating over all items and folders and indexing each of them
-   */
-  public function rebuildIndex($progressDao = null)
+    /**
+     * Rebuilds the search index by iterating over all items and folders and indexing each of them
+     */
+    public function rebuildIndex($progressDao = null)
     {
-    $folderModel = MidasLoader::loadModel('Folder');
-    $itemModel = MidasLoader::loadModel('Item');
-    $progressModel = MidasLoader::loadModel('Progress');
-    if($progressDao)
-      {
-      $progressDao->setMaximum($folderModel->getTotalCount() + $itemModel->getTotalCount());
-      $progressModel->save($progressDao);
-      }
+        /** @var FolderModel $folderModel */
+        $folderModel = MidasLoader::loadModel('Folder');
 
-    $folderModel->iterateWithCallback('CALLBACK_CORE_FOLDER_SAVED', 'folder', array(
-      'metadataChanged' => true,
-      'progress' => $progressDao));
+        /** @var ItemModel $itemModel */
+        $itemModel = MidasLoader::loadModel('Item');
 
-    $itemModel->iterateWithCallback('CALLBACK_CORE_ITEM_SAVED', 'item', array(
-      'metadataChanged' => true,
-      'progress' => $progressDao));
+        /** @var ProgressModel $progressModel */
+        $progressModel = MidasLoader::loadModel('Progress');
+        if ($progressDao) {
+            $progressDao->setMaximum($folderModel->getTotalCount() + $itemModel->getTotalCount());
+            $progressModel->save($progressDao);
+        }
 
-    if($progressDao)
-      {
-      $progressDao->setMessage('Optimizing index...');
-      $progressModel->save($progressDao);
-      }
-    $index = $this->getSolrIndex();
-    $index->optimize();
+        $folderModel->iterateWithCallback(
+            'CALLBACK_CORE_FOLDER_SAVED',
+            'folder',
+            array('metadataChanged' => true, 'progress' => $progressDao)
+        );
+
+        $itemModel->iterateWithCallback(
+            'CALLBACK_CORE_ITEM_SAVED',
+            'item',
+            array('metadataChanged' => true, 'progress' => $progressDao)
+        );
+
+        if ($progressDao) {
+            $progressDao->setMessage('Optimizing index...');
+            $progressModel->save($progressDao);
+        }
+        $index = $this->getSolrIndex();
+        $index->optimize();
     }
-  } // end class
+}

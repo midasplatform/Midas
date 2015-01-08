@@ -18,8 +18,8 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/paraview/paraview.dual.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/layout/jquery-ui.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/paraview/paraview.dual.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/layout/jquery-ui.min.css"/>
 
 <?php
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/get_modules.js');
@@ -28,36 +28,37 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/paraview/paravi
 $this->headScript()->appendFile($this->webroot.'/modules/api/public/js/common/common.ajaxapi.js');
 
 /** Dynamic js library imports for action handlers */
-foreach($this->jsImports as $jsImport)
-  {
-  $this->headScript()->appendFile($jsImport);
-  }
+foreach ($this->jsImports as $jsImport) {
+    $this->headScript()->appendFile($jsImport);
+}
 ?>
 
 <div class="rendererWrapper">
-  <div id="leftRenderer">
-    <img class="leftLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
-    <span id="leftLoadingStatus"></span>
-    <div id="leftRendererOverlay"></div>
-    <!-- The left renderer will be inserted here -->
-  </div>
-  <div id="rightRenderer">
-    <img class="rightLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
-    <span id="rightLoadingStatus"></span>
-    <div id="rightRendererOverlay"></div>
-    <!-- The right renderer will be inserted here -->
-  </div>
+    <div id="leftRenderer">
+        <img class="leftLoading" alt="" src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>
+        <span id="leftLoadingStatus"></span>
+
+        <div id="leftRendererOverlay"></div>
+        <!-- The left renderer will be inserted here -->
+    </div>
+    <div id="rightRenderer">
+        <img class="rightLoading" alt="" src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>
+        <span id="rightLoadingStatus"></span>
+
+        <div id="rightRendererOverlay"></div>
+        <!-- The right renderer will be inserted here -->
+    </div>
 </div>
 
 <div class="slidersContainer">
-  <div class="sliceControlContainer">
-    <div id="sliceSlider"></div>
-    <div id="sliceInfo"></div>
-  </div>
-  <div class="windowControlContainer">
-    <div id="windowSlider"></div>
-    <div id="windowInfo"></div>
-  </div>
+    <div class="sliceControlContainer">
+        <div id="sliceSlider"></div>
+        <div id="sliceInfo"></div>
+    </div>
+    <div class="windowControlContainer">
+        <div id="windowSlider"></div>
+        <div id="windowInfo"></div>
+    </div>
 </div>
 
 <!-- TEMPLATE: UI Action widget -->
@@ -65,17 +66,19 @@ foreach($this->jsImports as $jsImport)
 
 <!-- TEMPLATE: Fiducial point list dialog -->
 <div id="pointListDialogTemplate" style="display: none;">
-  <table class="pointListTable">
-    <thead>
-      <tr>
-        <th>Left image point</th><th>Right image point</th><th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
-  <div class="bottomButtons">
-    <button class="processButton">Process</button>
-    <button class="closeButton">Close</button>
-  </div>
+    <table class="pointListTable">
+        <thead>
+        <tr>
+            <th>Left image point</th>
+            <th>Right image point</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <div class="bottomButtons">
+        <button class="processButton">Process</button>
+        <button class="closeButton">Close</button>
+    </div>
 </div>

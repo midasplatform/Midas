@@ -18,35 +18,50 @@
  limitations under the License.
 =========================================================================*/
 
+/** Item rating base model for the ratings module */
 abstract class Ratings_ItemratingModelBase extends Ratings_AppModel
-  {
-  /** constructor */
-  public function __construct()
+{
+    /** constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'ratings_item';
-    $this->_daoName = 'ItemratingDao';
-    $this->_key = 'rating_id';
+        parent::__construct();
+        $this->_name = 'ratings_item';
+        $this->_daoName = 'ItemratingDao';
+        $this->_key = 'rating_id';
 
-    $this->_mainData = array(
-        'rating_id' => array('type' => MIDAS_DATA),
-        'user_id' => array('type' => MIDAS_DATA),
-        'item_id' => array('type' => MIDAS_DATA),
-        'rating' => array('type' => MIDAS_DATA),
-        'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
-        'item' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Item', 'parent_column' => 'item_id', 'child_column' => 'item_id')
+        $this->_mainData = array(
+            'rating_id' => array('type' => MIDAS_DATA),
+            'user_id' => array('type' => MIDAS_DATA),
+            'item_id' => array('type' => MIDAS_DATA),
+            'rating' => array('type' => MIDAS_DATA),
+            'user' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'User',
+                'parent_column' => 'user_id',
+                'child_column' => 'user_id',
+            ),
+            'item' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'Item',
+                'parent_column' => 'item_id',
+                'child_column' => 'item_id',
+            ),
         );
-    $this->initialize();
+        $this->initialize();
     }
 
-  /** Set the rating on an item for a user (overwrites if already exists) */
-  abstract function setRating($user, $item, $rating);
-  /** Get the average rating and total rating count on an item */
-  abstract function getAggregateInfo($item);
-  /** Get rating by user, or return 0 if none exists for that user */
-  abstract function getByUser($user, $item);
-  /** Delete all comments made by the user. Called when user is about to be deleted. */
-  abstract public function deleteByUser($user);
-  /** Delete all comments on a given item. Called when item is about to be deleted. */
-  abstract public function deleteByItem($item);
-  }
+    /** Set the rating on an item for a user (overwrites if already exists) */
+    abstract public function setRating($user, $item, $rating);
+
+    /** Get the average rating and total rating count on an item */
+    abstract public function getAggregateInfo($item);
+
+    /** Get rating by user, or return 0 if none exists for that user */
+    abstract public function getByUser($user, $item);
+
+    /** Delete all comments made by the user. Called when user is about to be deleted. */
+    abstract public function deleteByUser($user);
+
+    /** Delete all comments on a given item. Called when item is about to be deleted. */
+    abstract public function deleteByItem($item);
+}

@@ -20,121 +20,113 @@
 
 /** Data management Component */
 class DateComponent extends AppComponent
-  {
-  /** format date (ex: 01/14/2011 or 14/01/2011 (fr or en) */
-  public static function formatDate($timestamp)
+{
+    /**
+     * Format date (ex: 01/14/2011 or 14/01/2011 (fr or en)
+     *
+     * @param int|string $timestamp
+     * @return string
+     */
+    public static function formatDate($timestamp)
     {
-    if(!is_numeric($timestamp))
-      {
-      $timestamp = strtotime($timestamp);
-      if($timestamp == false)
-        {
-        return "";
+        if (!is_numeric($timestamp)) {
+            $timestamp = strtotime($timestamp);
+            if ($timestamp == false) {
+                return "";
+            }
         }
-      }
-    if(Zend_Registry::get('configGlobal')->application->lang == 'fr')
-      {
-      return date('d', $timestamp).'/'.date('m', $timestamp).'/'.date('Y', $timestamp);
-      }
-    else
-      {
-      return date('m', $timestamp).'/'.date('d', $timestamp).'/'.date('Y', $timestamp);
-      }
+        if (Zend_Registry::get('configGlobal')->application->lang == 'fr') {
+            return date('d', $timestamp).'/'.date('m', $timestamp).'/'.date('Y', $timestamp);
+        } else {
+            return date('m', $timestamp).'/'.date('d', $timestamp).'/'.date('Y', $timestamp);
+        }
     }
 
-  /** format the date (ex: 5 days ago) */
-  public static function ago($timestamp, $only_time = false)
+    /**
+     * Format the date (ex: 5 days ago)
+     *
+     * @param int|string $timestamp
+     * @param bool $onlyTime
+     * @return string
+     */
+    public static function ago($timestamp, $onlyTime = false)
     {
-    if(!is_numeric($timestamp))
-      {
-      $timestamp = strtotime($timestamp);
-      if($timestamp == false)
-        {
-        return "";
+        if (!is_numeric($timestamp)) {
+            $timestamp = strtotime($timestamp);
+            if ($timestamp == false) {
+                return "";
+            }
         }
-      }
-    $difference = time() - $timestamp;
-    $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
-    $periodsFr = array("seconde", "minute", "heure", "jour", "semaine", "mois", "annee", "decades");
-    $lengths = array("60", "60", "24", "7", "4.35", "12", "10");
-    for($j = 0; $difference >= $lengths[$j]; $j++)
-      {
-      $difference /= $lengths[$j];
-      }
-    $difference = round($difference);
-    if($difference != 1)
-      {
-      $periods[$j] .=  "s";
-      if($periodsFr[$j] != 'mois')
-        {
-        $periodsFr[$j] .=  "s";
+        $difference = time() - $timestamp;
+        $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
+        $periodsFr = array("seconde", "minute", "heure", "jour", "semaine", "mois", "annee", "decades");
+        $lengths = array("60", "60", "24", "7", "4.35", "12", "10");
+        for ($j = 0; $difference >= $lengths[$j]; $j++) {
+            $difference /= $lengths[$j];
         }
-      }
+        $difference = round($difference);
+        if ($difference != 1) {
+            $periods[$j] .= "s";
+            if ($periodsFr[$j] != 'mois') {
+                $periodsFr[$j] .= "s";
+            }
+        }
 
-    if($only_time)
-      {
-      if(Zend_Registry::get('configGlobal')->application->lang == 'fr')
-        {
-        return $difference.' '.$periodsFr[$j];
+        if ($onlyTime) {
+            if (Zend_Registry::get('configGlobal')->application->lang == 'fr') {
+                return $difference.' '.$periodsFr[$j];
+            } else {
+                return $difference.' '.$periods[$j];
+            }
         }
-      else
-        {
-        return $difference.' '.$periods[$j];
+        if (Zend_Registry::get('configGlobal')->application->lang == 'fr') {
+            $text = "Il y a ".$difference." ".$periodsFr[$j];
+        } else {
+            $text = $difference." ".$periods[$j]." ago";
         }
-      }
-    if(Zend_Registry::get('configGlobal')->application->lang == 'fr')
-      {
-      $text = "Il y a ".$difference." ".$periodsFr[$j];
-      }
-    else
-      {
-      $text = $difference." ".$periods[$j]." ago";
-      }
-    return $text;
+
+        return $text;
     }
 
-  /** format the date (ex: 5 days ago) */
-  public static function duration($timestamp)
+    /**
+     * Format the date (ex: 5 days ago)
+     *
+     * @param int|string $timestamp
+     * @return string
+     */
+    public static function duration($timestamp)
     {
-    if(!is_numeric($timestamp))
-      {
-      $timestamp = strtotime($timestamp);
-      if($timestamp == false)
-        {
-        return "";
+        if (!is_numeric($timestamp)) {
+            $timestamp = strtotime($timestamp);
+            if ($timestamp == false) {
+                return "";
+            }
         }
-      }
-    $difference = $timestamp;
-    $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
-    $periodsFr = array("seconde", "minute", "heure", "jour", "semaine", "mois", "annee", "decades");
-    $lengths = array("60", "60", "24", "7", "4.35", "12", "10");
-    for($j = 0; $difference >= $lengths[$j]; $j++)
-      {
-      $difference /= $lengths[$j];
-      }
-    $difference = round($difference);
-    if($difference != 1)
-      {
-      $periods[$j] .=  "s";
-      if($periodsFr[$j] != 'mois')
-        {
-        $periodsFr[$j] .=  "s";
+        $difference = $timestamp;
+        $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
+        $periodsFr = array("seconde", "minute", "heure", "jour", "semaine", "mois", "annee", "decades");
+        $lengths = array("60", "60", "24", "7", "4.35", "12", "10");
+        for ($j = 0; $difference >= $lengths[$j]; $j++) {
+            $difference /= $lengths[$j];
         }
-      }
+        $difference = round($difference);
+        if ($difference != 1) {
+            $periods[$j] .= "s";
+            if ($periodsFr[$j] != 'mois') {
+                $periodsFr[$j] .= "s";
+            }
+        }
 
-    if($periods[$j] == 'second' || $periods[$j] == 'seconds')
-      {
-      $difference = $timestamp;
-      }
+        if ($periods[$j] == 'second' || $periods[$j] == 'seconds') {
+            $difference = $timestamp;
+        }
 
-    if(Zend_Registry::get('configGlobal')->application->lang == 'fr')
-      {
-      $text = $difference." ".$periodsFr[$j];
-      }
-    else
-      {
-      $text = $difference." ".$periods[$j];
-      }
-    return $text;
+        if (Zend_Registry::get('configGlobal')->application->lang == 'fr') {
+            $text = $difference." ".$periodsFr[$j];
+        } else {
+            $text = $difference." ".$periods[$j];
+        }
+
+        return $text;
     }
-  } // end class
+}

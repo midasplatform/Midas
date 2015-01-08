@@ -20,7 +20,7 @@
 
 /** dao for the statistics_ip_location model */
 class Statistics_IpLocationDao extends Statistics_AppDao
-  {
-  public $_model = 'IpLocation';
-  public $_module = 'statistics';
-  }
+{
+    public $_model = 'IpLocation';
+    public $_module = 'statistics';
+}

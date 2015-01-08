@@ -22,7 +22,7 @@
  * Scalar DAO
  */
 class Tracker_ScalarDao extends Tracker_AppDao
-  {
-  public $_model = 'Scalar';
-  public $_module = 'tracker';
-  }
+{
+    public $_model = 'Scalar';
+    public $_module = 'tracker';
+}

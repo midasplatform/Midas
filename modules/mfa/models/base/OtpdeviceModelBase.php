@@ -23,25 +23,31 @@
  * one-time-password device.
  */
 abstract class Mfa_OtpdeviceModelBase extends Mfa_AppModel
-  {
-  /** constructor */
-  public function __construct()
+{
+    /** constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'mfa_otpdevice';
-    $this->_key = 'otpdevice_id';
+        parent::__construct();
+        $this->_name = 'mfa_otpdevice';
+        $this->_key = 'otpdevice_id';
 
-    $this->_mainData = array(
-        'otpdevice_id' => array('type' => MIDAS_DATA),
-        'user_id' => array('type' => MIDAS_DATA),
-        'secret' => array('type' => MIDAS_DATA),
-        'algorithm' =>  array('type' => MIDAS_DATA),
-        'counter' =>  array('type' => MIDAS_DATA),
-        'length' =>  array('type' => MIDAS_DATA),
-        'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id')
+        $this->_mainData = array(
+            'otpdevice_id' => array('type' => MIDAS_DATA),
+            'user_id' => array('type' => MIDAS_DATA),
+            'secret' => array('type' => MIDAS_DATA),
+            'algorithm' => array('type' => MIDAS_DATA),
+            'counter' => array('type' => MIDAS_DATA),
+            'length' => array('type' => MIDAS_DATA),
+            'user' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'User',
+                'parent_column' => 'user_id',
+                'child_column' => 'user_id',
+            ),
         );
-    $this->initialize(); // required
+        $this->initialize(); // required
     }
 
-  abstract function getByUser($userDao);
-  }
+    /** Get by user */
+    abstract public function getByUser($userDao);
+}

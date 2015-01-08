@@ -18,24 +18,25 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH . '/modules/landingpage/models/AppModel.php';
+require_once BASE_PATH.'/modules/landingpage/models/AppModel.php';
 
-/** demo base model*/
+/** demo base model */
 abstract class Landingpage_TextModelBase extends Landingpage_AppModel
-  {
-  /** constructor*/
-  public function __construct()
+{
+    /** constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'landingpage_text';
-    $this->_key = 'landingpage_id';
+        parent::__construct();
+        $this->_name = 'landingpage_text';
+        $this->_key = 'landingpage_id';
 
-    $this->_mainData = array(
-        'landingpage_id' =>  array('type' => MIDAS_DATA),
-        'text' =>  array('type' => MIDAS_DATA)
+        $this->_mainData = array(
+            'landingpage_id' => array('type' => MIDAS_DATA),
+            'text' => array('type' => MIDAS_DATA),
         );
-    $this->initialize(); // required
-    } // end __construct()
+        $this->initialize(); // required
+    }
 
-  abstract function getAll();
-  } // end class
+    /** Get all */
+    abstract public function getAll();
+}

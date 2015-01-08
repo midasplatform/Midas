@@ -18,6 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-//define("MIDAS_EXAMPLE", 0);
+define('MIDAS_TRACKER_TEMP_SCALAR_TTL_KEY', 'tempScalarTtl');
+define('MIDAS_TRACKER_TEMP_SCALAR_TTL_DEFAULT_VALUE', 24);
 define('MIDAS_TRACKER_EMAIL_USER', 'emailuser');
 define('MIDAS_TRACKER_EMAIL_GROUP', 'emailgroup');

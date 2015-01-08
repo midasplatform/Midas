@@ -20,5 +20,5 @@
 
 /** Base model class for the thumbnailcreator module */
 class Thumbnailcreator_AppModel extends MIDASModel
-  {
-  }
+{
+}

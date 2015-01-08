@@ -21,44 +21,46 @@
 require_once BASE_PATH.'/core/models/base/PendingUserModelBase.php';
 
 /**
- * \class PendingUserModel
- * \brief Pdo Model for a pending user
+ * Pdo Model for a pending user
  */
 class PendingUserModel extends PendingUserModelBase
-  {
-  /**
-   * Search the table for a matching record.  If any exists, returns the first dao.  Otherwise returns false.
-   */
-  public function getByParams($params)
+{
+    /**
+     * Search the table for a matching record.  If any exists, returns the first dao.  Otherwise returns false.
+     *
+     * @param array $params
+     * @return false|PendingUserDao
+     */
+    public function getByParams($params)
     {
-    $sql = $this->database->select()
-                          ->setIntegrityCheck(false);
-    foreach($params as $column => $value)
-      {
-      $sql->where($column.' = ?', $value);
-      }
-    $row = $this->database->fetchRow($sql);
-    return $this->initDao('PendingUser', $row);
+        $sql = $this->database->select()->setIntegrityCheck(false);
+        foreach ($params as $column => $value) {
+            $sql->where($column.' = ?', $value);
+        }
+        $row = $this->database->fetchRow($sql);
+
+        return $this->initDao('PendingUser', $row);
     }
 
-  /**
-   * Search the table for a matching record. Returns the matching set of daos.
-   */
-  public function getAllByParams($params)
+    /**
+     * Search the table for a matching record. Returns the matching set of daos.
+     *
+     * @param array $params
+     * @return array
+     */
+    public function getAllByParams($params)
     {
-    $sql = $this->database->select()
-                          ->setIntegrityCheck(false);
-    foreach($params as $column => $value)
-      {
-      $sql->where($column.' = ?', $value);
-      }
+        $sql = $this->database->select()->setIntegrityCheck(false);
+        foreach ($params as $column => $value) {
+            $sql->where($column.' = ?', $value);
+        }
 
-    $rows = $this->database->fetchAll($sql);
-    $daos = array();
-    foreach($rows as $row)
-      {
-      $daos[] = $this->initDao('PendingUser', $row);
-      }
-    return $daos;
+        $rows = $this->database->fetchAll($sql);
+        $daos = array();
+        foreach ($rows as $row) {
+            $daos[] = $this->initDao('PendingUser', $row);
+        }
+
+        return $daos;
     }
-  }
+}

@@ -22,47 +22,50 @@ require_once BASE_PATH.'/modules/oauth/models/base/CodeModelBase.php';
 
 /** pdo model implementation */
 class Oauth_CodeModel extends Oauth_CodeModelBase
-  {
-  /**
-   * Return all auth code records for the given user
-   */
-  public function getByUser($userDao)
+{
+    /**
+     * Return all code DAOs for the given user.
+     *
+     * @param UserDao $userDao
+     * @return array
+     * @throws Zend_Exception
+     */
+    public function getByUser($userDao)
     {
-    $sql = $this->database->select()->setIntegrityCheck(false)
-                ->where('user_id = ?', $userDao->getKey());
-    $rows = $this->database->fetchAll($sql);
-    $daos = array();
-    foreach($rows as $row)
-      {
-      $daos[] = $this->initDao('Code', $row, $this->moduleName);
-      }
-    return $daos;
+        $sql = $this->database->select()->setIntegrityCheck(false)->where('user_id = ?', $userDao->getKey());
+        $rows = $this->database->fetchAll($sql);
+        $daos = array();
+        foreach ($rows as $row) {
+            $daos[] = $this->initDao('Code', $row, $this->moduleName);
+        }
+
+        return $daos;
     }
 
-  /**
-   * Return the dao corresponding to this code string if it exists
-   */
-  public function getByCode($code)
+    /**
+     * Return the code DAO corresponding to this code string if it exists.
+     *
+     * @param string $code
+     * @return false|Oauth_CodeDao
+     * @throws Zend_Exception
+     */
+    public function getByCode($code)
     {
-    $row = $this->database->fetchRow($this->database->select()->setIntegrityCheck(false)
-                                          ->where('code = ?', $code));
-    return $this->initDao('Code', $row, $this->moduleName);
+        $row = $this->database->fetchRow($this->database->select()->setIntegrityCheck(false)->where('code = ?', $code));
+
+        return $this->initDao('Code', $row, $this->moduleName);
     }
 
-  /**
-   * Removes expired access tokens from the database
-   */
-  public function cleanExpired()
+    /** Remove expired access tokens from the database. */
+    public function cleanExpired()
     {
-    $sql = $this->database->select()->setIntegrityCheck(false)
-                ->where('expiration_date < ?', date("Y-m-d H:i:s"));
+        $sql = $this->database->select()->setIntegrityCheck(false)->where('expiration_date < ?', date('Y-m-d H:i:s'));
 
-    $rows = $this->database->fetchAll($sql);
-    foreach($rows as $row)
-      {
-      $tmpDao = $this->initDao('Code', $row, $this->moduleName);
-      $this->delete($tmpDao);
-      $tmpDao = null; //mark for memory reclamation
-      }
+        $rows = $this->database->fetchAll($sql);
+        foreach ($rows as $row) {
+            $tmpDao = $this->initDao('Code', $row, $this->moduleName);
+            $this->delete($tmpDao);
+            $tmpDao = null; // mark for memory reclamation
+        }
     }
-  }
+}

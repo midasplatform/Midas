@@ -18,44 +18,57 @@
  limitations under the License.
 =========================================================================*/
 
-// need to include the module constant for this test
-require_once str_replace('tests', 'constant', str_replace('controllers', 'module.php', dirname(__FILE__)));
-
-/** config controller test*/
-class WrappergControllerTest extends ControllerTestCase
-  {
-  /** set up tests*/
-  public function setUp()
+/** config controller test */
+class Visualize_WrapperControllerTest extends ControllerTestCase
+{
+    /** set up tests */
+    public function setUp()
     {
-    $this->setupDatabase(array('default'));
-    $this->enabledModules = array('visualize');
-    parent::setUp();
+        $this->setupDatabase(array('default'));
+        $this->enabledModules = array('visualize');
+        parent::setUp();
     }
 
-  /** test index action*/
-  public function testIndexAction()
+    /** test index action */
+    public function testIndexAction()
     {
-    $groupModel = MidasLoader::loadModel('Group');
-    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
-    $userModel = MidasLoader::loadModel('User');
-    $folderModel = MidasLoader::loadModel('Folder');
+        /** @var GroupModel $groupModel */
+        $groupModel = MidasLoader::loadModel('Group');
 
-    $uploadComponent = MidasLoader::loadComponent('Upload');
+        /** @var ItempolicygroupModel $itempolicygroupModel */
+        $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
 
-    $usersFile = $this->loadData('User', 'default');
-    $userDao = $userModel->load($usersFile[0]->getKey());
+        /** @var UserModel $userModel */
+        $userModel = MidasLoader::loadModel('User');
 
-    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
-    Zend_Registry::set('configsModules', array());
-    $privateFolder = $folderModel->load(1002);
-    $item = $uploadComponent->createUploadedItem($userDao, "test.png", BASE_PATH.'/tests/testfiles/search.png', $privateFolder, null, '', true);
-    $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
-    $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
+        /** @var FolderModel $folderModel */
+        $folderModel = MidasLoader::loadModel('Folder');
 
-    $this->params['itemId'] = $item->getKey();
-    $this->dispatchUrI("/visualize/wrapper");
+        /** @var UploadComponent $uploadComponent */
+        $uploadComponent = MidasLoader::loadComponent('Upload');
 
-    $this->assertAction("index");
-    $this->assertModule("visualize");
+        $usersFile = $this->loadData('User', 'default');
+        $userDao = $userModel->load($usersFile[0]->getKey());
+
+        Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
+
+        $privateFolder = $folderModel->load(1002);
+        $item = $uploadComponent->createUploadedItem(
+            $userDao,
+            "test.png",
+            BASE_PATH.'/tests/testfiles/search.png',
+            $privateFolder,
+            null,
+            '',
+            true
+        );
+        $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
+        $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
+
+        $this->params['itemId'] = $item->getKey();
+        $this->dispatchUrl("/visualize/wrapper");
+
+        $this->assertAction("index");
+        $this->assertModule("visualize");
     }
-  }
+}

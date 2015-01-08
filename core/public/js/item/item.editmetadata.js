@@ -4,6 +4,7 @@ var midas = midas || {};
 midas.item = midas.item || {};
 
 midas.item.initElementMetaData = function () {
+    'use strict';
     var value = $('select[name=metadatatype]').val();
     var availableTags = [];
     $.each(midas.item.jsonMetadata[value], function (i, l) {
@@ -19,6 +20,7 @@ midas.item.initElementMetaData = function () {
 };
 
 midas.item.initQualifierMetaData = function () {
+    'use strict';
     var type = $('select[name=metadatatype]').val();
     var value = $('input[name=element]').val();
     var availableTags = [];
@@ -35,6 +37,7 @@ midas.item.initQualifierMetaData = function () {
 };
 
 $(document).ready(function () {
+    'use strict';
     var text = $('div#jsonMetadata').html().trim();
     if (text == '') {
         return; // no metadata fields, do not perform auto-completion

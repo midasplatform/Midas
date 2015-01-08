@@ -18,40 +18,59 @@
  limitations under the License.
 =========================================================================*/
 
-/** Controller template for the @MN@ module */
+/**
+ * Thing controller for the @MN@ module.
+ *
+ * @package Modules\@MN_CAP@\Controller
+ */
 class @MN_CAP@_ThingController extends @MN_CAP@_AppController
-  {
-  public $_models = array();
-  public $_moduleModels = array();
+{
+    /** @var array */
+    public $_components = array();
 
-  /** STUB: Example get action */
-  function getAction()
+    /** @var array */
+    public $_models = array();
+
+    /** @var array */
+    public $_moduleComponents = array();
+
+    /** @var array */
+    public $_moduleModels = array();
+
+    /** @TODO Delete action. */
+    public function deleteAction()
     {
-    $id = $this->_getParam('id');
-    $this->view->id = $id;
+        $this->disableLayout();
+        $this->disableView();
+        echo JsonComponent::encode(
+            array('status' => 'ok', 'message' => 'Done')
+        );
     }
 
-  /** STUB: Example create action */
-  function createAction()
+    /** @TODO Get action. */
+    public function getAction()
     {
-    $this->disableLayout();
-    $this->disableView();
-    echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Done'));
+        $id = $this->_getParam('id');
+        $this->view->id = $id;
     }
 
-  /** STUB: Example update action */
-  function updateAction()
+    /** @TODO Patch action. */
+    public function patchAction()
     {
-    $this->disableLayout();
-    $this->disableView();
-    echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Done'));
+        $this->disableLayout();
+        $this->disableView();
+        echo JsonComponent::encode(
+            array('status' => 'ok', 'message' => 'Done')
+        );
     }
 
-  /** STUB: Example delete action */
-  function deleteAction()
+    /** @TODO Post action. */
+    public function postAction()
     {
-    $this->disableLayout();
-    $this->disableView();
-    echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Done'));
+        $this->disableLayout();
+        $this->disableView();
+        echo JsonComponent::encode(
+            array('status' => 'ok', 'message' => 'Done')
+        );
     }
-  }
+}

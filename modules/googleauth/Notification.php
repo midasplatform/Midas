@@ -18,93 +18,89 @@
  limitations under the License.
 =========================================================================*/
 
-/** notification manager*/
+/** Notification manager for the googleauth module */
 class Googleauth_Notification extends MIDAS_Notification
-  {
-  public $moduleName = 'googleauth';
-  public $_models = array('Setting', 'User', 'Userapi');
-  public $_moduleModels = array('User');
+{
+    public $moduleName = 'googleauth';
+    public $_models = array('Setting', 'User', 'Userapi');
+    public $_moduleModels = array('User');
 
-  /** init notification process*/
-  public function init()
+    /** init notification process */
+    public function init()
     {
-    $this->addCallBack('CALLBACK_CORE_LOGIN_EXTRA_HTML', 'googleAuthLink');
-    $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
-    $this->addCallBack('CALLBACK_CORE_USER_COOKIE', 'checkUserCookie');
-    }//end init
-
-  /**
-   * Constructs the link that is used to initiate a google oauth authentication.
-   * This link redirects the user to google so they can approve of the requested
-   * oauth scopes, and in turn google will redirect them back to our callback
-   * url with an authorization code.
-   */
-  public function googleAuthLink()
-    {
-    $clientId = $this->Setting->getValueByName('client_id', $this->moduleName);
-    $scheme = (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS']) ? 'https://' : 'http://';
-    $fc = Zend_Controller_Front::getInstance();
-    $csrfToken = UtilityComponent::generateRandomString(30);
-    $redirectUri = $scheme.$_SERVER['HTTP_HOST'].$fc->getBaseUrl().'/'.$this->moduleName.'/callback';
-    $scopes = array('profile', 'email');
-
-    $href = 'https://accounts.google.com/o/oauth2/auth?response_type=code'.
-            '&client_id='.urlencode($clientId).
-            '&redirect_uri='.urlencode($redirectUri).
-            '&scope='.urlencode(join(' ', $scopes)).
-            '&state='.urlencode($csrfToken);
-
-    $userNs = new Zend_Session_Namespace('Auth_User');
-    $userNs->oauthToken = $csrfToken;
-    session_write_close();
-
-    return '<div style="margin-top: 10px; display: inline-block;">Or '.
-           '<a class="googleauth-login" style="text-decoration: underline;" href="'.$href.'">'.
-           'Login with your Google account</a></div><script type="text/javascript"'.
-           ' src="'.$fc->getBaseUrl().'/modules/'.$this->moduleName.
-           '/public/js/login/googleauth.login.js"></script>';
+        $this->addCallBack('CALLBACK_CORE_LOGIN_EXTRA_HTML', 'googleAuthLink');
+        $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
+        $this->addCallBack('CALLBACK_CORE_USER_COOKIE', 'checkUserCookie');
     }
 
-  /**
-   * If a user is deleted, we must delete any corresponding google auth user
-   */
-  public function handleUserDeleted($params)
+    /**
+     * Constructs the link that is used to initiate a google oauth authentication.
+     * This link redirects the user to google so they can approve of the requested
+     * oauth scopes, and in turn google will redirect them back to our callback
+     * url with an authorization code.
+     */
+    public function googleAuthLink()
     {
-    $this->Googleauth_User->deleteByUser($params['userDao']);
+        $clientId = $this->Setting->getValueByName(GOOGLE_AUTH_CLIENT_ID_KEY, $this->moduleName);
+        $scheme = (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS']) ? 'https://' : 'http://';
+        $fc = Zend_Controller_Front::getInstance();
+
+        /** @var RandomComponent $randomComponent */
+        $randomComponent = MidasLoader::loadComponent('Random');
+        $csrfToken = $randomComponent->generateString(30);
+        $redirectUri = $scheme.$_SERVER['HTTP_HOST'].$fc->getBaseUrl().'/'.$this->moduleName.'/callback';
+        $scopes = array('profile', 'email');
+
+        $href = 'https://accounts.google.com/o/oauth2/auth?response_type=code'.'&client_id='.urlencode(
+                $clientId
+            ).'&redirect_uri='.urlencode($redirectUri).'&scope='.urlencode(
+                implode(
+                    ' ',
+                    $scopes
+                )
+            ).'&state='.urlencode($csrfToken);
+
+        $userNs = new Zend_Session_Namespace('Auth_User');
+        $userNs->oauthToken = $csrfToken;
+        session_write_close();
+
+        return '<div style="margin-top: 10px; display: inline-block;">Or '.'<a class="googleauth-login" style="text-decoration: underline;" href="'.htmlspecialchars($href, ENT_QUOTES, 'UTF-8').'">'.'Login with your Google account</a></div><script type="text/javascript"'.' src="'.$fc->getBaseUrl(
+        ).'/modules/'.$this->moduleName.'/public/js/login/googleauth.login.js"></script>';
     }
 
-  public function checkUserCookie($args)
+    /**
+     * If a user is deleted, we must delete any corresponding google auth user
+     */
+    public function handleUserDeleted($params)
     {
-    $cookie = $args['value'];
-
-    if(strpos($cookie, 'googleauth') === 0)
-      {
-      list(, $userId, $apikey) = preg_split('/:/', $cookie);
-      $userDao = $this->User->load($userId);
-
-      if(!$userDao)
-        {
-        return false;
-        }
-
-      $userapi = $this->Userapi->getByAppAndUser('Default', $userDao);
-
-      if(!$userapi)
-        {
-        return false;
-        }
-      if(md5($userapi->getApikey()) === $apikey)
-        {
-        return $userDao;
-        }
-      else
-        {
-        return false;
-        }
-      }
-    else
-      {
-      return false;
-      }
+        $this->Googleauth_User->deleteByUser($params['userDao']);
     }
-  } // end class
+
+    /** Check user cookie */
+    public function checkUserCookie($args)
+    {
+        $cookie = $args['value'];
+
+        if (strpos($cookie, 'googleauth') === 0) {
+            list(, $userId, $apikey) = preg_split('/:/', $cookie);
+            $userDao = $this->User->load($userId);
+
+            if (!$userDao) {
+                return false;
+            }
+
+            $userapi = $this->Userapi->getByAppAndUser('Default', $userDao);
+
+            if (!$userapi) {
+                return false;
+            }
+            if (md5($userapi->getApikey()) === $apikey) {
+                return $userDao;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+}

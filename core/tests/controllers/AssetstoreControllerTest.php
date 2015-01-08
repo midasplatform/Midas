@@ -17,345 +17,385 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** test assetstore controller*/
-class AssetstoreControllerTest extends ControllerTestCase
-  {
 
-  protected $nullUserDao;
-  protected $nonAdminUserDao;
-  protected $AdminUserDao;
-  protected $testAssetstoreDao;
-  protected $testAssetstoreAdditionalPath;
+/** test assetstore controller */
+class Core_AssetstoreControllerTest extends ControllerTestCase
+{
+    protected $nullUserDao;
+    protected $nonAdminUserDao;
+    protected $AdminUserDao;
+    protected $testAssetstoreDao;
+    protected $testAssetstoreAdditionalPath;
 
-  /** init tests*/
-  public function setUp()
+    /** init tests */
+    public function setUp()
     {
-    $this->setupDatabase(array('default'));
-    $this->_models = array('Assetstore', 'Bitstream', 'User');
-    $this->_daos = array('Assetstore', 'User');
-    parent::setUp();
-    $this->loadUsers();
+        $this->setupDatabase(array('default'));
+        $this->_models = array('Assetstore', 'Bitstream', 'User');
+        $this->_daos = array('Assetstore', 'User');
+        parent::setUp();
+        $this->loadUsers();
 
-    // create another assetstore
-    $testAssetstoreBase = $this->getTempDirectory().'/test/';
-    $testAssetstoreBase = str_replace('tests/../', '', $testAssetstoreBase);
-    $testAssetstoreBase = str_replace('//', '/', $testAssetstoreBase);
-    $testAssetstore2 = $testAssetstoreBase . '/assetstore2';
-    if(!is_dir($testAssetstore2))
-      {
-      mkdir($testAssetstore2);
-      }
-    $testAssetstoreAdditionalPath = $testAssetstoreBase . '/additionalpathassetstore2';
-    if(!is_dir($testAssetstoreAdditionalPath))
-      {
-      mkdir($testAssetstoreAdditionalPath);
-      }
-    $this->testAssetstoreAdditionalPath = $testAssetstoreAdditionalPath;
-
-    $testAssetstoreDao = new AssetstoreDao();
-    $testAssetstoreDao->setName('testassetstore2');
-    $testAssetstoreDao->setPath($testAssetstore2);
-    $testAssetstoreDao->setType(MIDAS_ASSETSTORE_LOCAL);
-    $this->Assetstore->save($testAssetstoreDao);
-    $this->testAssetstoreDao = $testAssetstoreDao;
-    }
-
-  /** tearDown tester method. */
-  public function tearDown()
-    {
-    $this->Assetstore->delete($this->testAssetstoreDao);
-    parent::tearDown();
-    }
-
-  /** helper method, load the 3 different user daos. */
-  protected function loadUsers()
-    {
-    $usersFile = $this->loadData('User', 'default');
-    $this->nullUserDao = null;
-    foreach($usersFile as $userDao)
-      {
-      if($userDao->getFirstname() === 'Admin')
-        {
-        $this->adminUserDao = $userDao;
+        // create another assetstore
+        $testAssetstoreBase = $this->getTempDirectory().'/test/';
+        $testAssetstoreBase = str_replace('tests/../', '', $testAssetstoreBase);
+        $testAssetstoreBase = str_replace('//', '/', $testAssetstoreBase);
+        $testAssetstore2 = $testAssetstoreBase.'/assetstore2';
+        if (!is_dir($testAssetstore2)) {
+            mkdir($testAssetstore2);
         }
-      else if($userDao->getFirstname() === 'FirstName1')
-        {
-        $this->nonAdminUserDao = $userDao;
+        $testAssetstoreAdditionalPath = $testAssetstoreBase.'/additionalpathassetstore2';
+        if (!is_dir($testAssetstoreAdditionalPath)) {
+            mkdir($testAssetstoreAdditionalPath);
         }
-      }
+        $this->testAssetstoreAdditionalPath = $testAssetstoreAdditionalPath;
+
+        $testAssetstoreDao = new AssetstoreDao();
+        $testAssetstoreDao->setName('testassetstore2');
+        $testAssetstoreDao->setPath($testAssetstore2);
+        $testAssetstoreDao->setType(MIDAS_ASSETSTORE_LOCAL);
+        $this->Assetstore->save($testAssetstoreDao);
+        $this->testAssetstoreDao = $testAssetstoreDao;
     }
 
-  /** helper method, ensures only admins can call the action. */
-  protected function ensureAdminRequired($pageURI)
+    /** tearDown tester method. */
+    public function tearDown()
     {
-    // first try to bring up the page without logging in, should get an exception
-    $withException = true;
-    $this->params = array();
-    $this->resetAll();
-    $this->getRequest()->setMethod('POST');
-    $this->dispatchUrI($pageURI, $this->nullUserDao, $withException);
-
-    // now login with a non-admin account, should get an exception
-    $this->resetAll();
-    $this->params = array();
-    $this->getRequest()->setMethod('POST');
-    $this->dispatchUrI($pageURI, $this->nonAdminUserDao, $withException);
-
-    // now login with an admin account
-    $this->resetAll();
-    $this->params = array();
-    $this->getRequest()->setMethod('POST');
-    $this->dispatchUrI($pageURI, $this->adminUserDao);
+        $this->Assetstore->delete($this->testAssetstoreDao);
+        parent::tearDown();
     }
 
-  /** test defaultassetstore action */
-  function testDefaultassetstoreAction()
+    /** helper method, load the 3 different user daos. */
+    protected function loadUsers()
     {
-    $pageURI = '/assetstore/defaultassetstore';
-    $this->ensureAdminRequired($pageURI);
-
-    // get the default assetstore
-    $initialDefaultAssetstoreDao = $this->Assetstore->getDefault();
-
-    // set the second assetstore as default
-    $this->resetAll();
-    $this->params = array();
-    $this->params['submitDefaultAssetstore'] = 'submitDefaultAssetstore';
-    $this->params['element'] = $this->testAssetstoreDao->getKey();
-    $this->getRequest()->setMethod('POST');
-    $this->dispatchUrI($pageURI, $this->adminUserDao);
-    $response = json_decode($this->getBody());
-    $this->assertEquals(1, $response[0], "Expected true json response");
-
-    $defaultAssetstoreDao = $this->Assetstore->getDefault();
-
-    $juggleTypes = true;
-    $this->assertTrue($this->Assetstore->compareDao($defaultAssetstoreDao, $this->testAssetstoreDao, $juggleTypes), 'New default assetstore is not the real default assetstore');
-
-    // now set back to the original default
-    $this->resetAll();
-    $this->params = array();
-    $this->params['submitDefaultAssetstore'] = 'submitDefaultAssetstore';
-    $this->params['element'] = $initialDefaultAssetstoreDao->getKey();
-    $this->getRequest()->setMethod('POST');
-    $this->dispatchUrI($pageURI, $this->adminUserDao);
-    $response = json_decode($this->getBody());
-    $this->assertEquals(1, $response[0], "Expected true json response");
-
-    $defaultAssetstoreDao = $this->Assetstore->getDefault();
-    $this->assertTrue($this->Assetstore->compareDao($defaultAssetstoreDao, $initialDefaultAssetstoreDao, $juggleTypes), 'New default assetstore is not the real default assetstore');
-
-    // now don't send a submitDefaultAssetstore param and be sure we get an error
-    $this->resetAll();
-    $this->params = array();
-    $this->getRequest()->setMethod('POST');
-    $this->dispatchUrI($pageURI, $this->adminUserDao);
-    $response = json_decode($this->getBody());
-    $this->assertEquals("", $response[0], "Expected false json response");
-
-    // now don't send a submitDefaultAssetstore param and be sure we get an error
-    $this->resetAll();
-    $this->params = array();
-    $this->params['submitDefaultAssetstore'] = 'submitDefaultAssetstore';
-    //$this->params['element'] = $initialDefaultAssetstoreDao->getKey();
-    $this->getRequest()->setMethod('POST');
-    $this->dispatchUrI($pageURI, $this->adminUserDao);
-    $response = json_decode($this->getBody());
-    $this->assertEquals("", $response[0], "Expected false json response");
+        $usersFile = $this->loadData('User', 'default');
+        $this->nullUserDao = null;
+        foreach ($usersFile as $userDao) {
+            if ($userDao->getFirstname() === 'Admin') {
+                $this->adminUserDao = $userDao;
+            } elseif ($userDao->getFirstname() === 'FirstName1') {
+                $this->nonAdminUserDao = $userDao;
+            }
+        }
     }
 
-  /** test delete action */
-  function testDeleteAction()
+    /** helper method, ensures only admins can call the action. */
+    protected function ensureAdminRequired($pageURI)
     {
-    $pageURI = '/assetstore/delete';
-    $this->ensureAdminRequired($pageURI);
+        // first try to bring up the page without logging in, should get an exception
+        $withException = true;
+        $this->params = array();
+        $this->resetAll();
+        $this->getRequest()->setMethod('POST');
+        $this->dispatchUrl($pageURI, $this->nullUserDao, $withException);
 
-    $testAssetstoreId = $this->testAssetstoreDao->getKey();
+        // now login with a non-admin account, should get an exception
+        $this->resetAll();
+        $this->params = array();
+        $this->getRequest()->setMethod('POST');
+        $this->dispatchUrl($pageURI, $this->nonAdminUserDao, $withException);
 
-    // delete the assetstore via the controller
-    $this->resetAll();
-    $this->params = array();
-    $this->params['assetstoreId'] = $testAssetstoreId;
-    $this->getRequest()->setMethod('POST');
-    $this->dispatchUrI($pageURI, $this->adminUserDao);
-    $response = json_decode($this->getBody());
-    $this->assertEquals(1, $response[0], "Expected true json response");
-
-    // try to load and be sure it is deleted
-    $testAssetstoreDao = $this->Assetstore->load($testAssetstoreId);
-    $this->assertFalse($testAssetstoreDao);
+        // now login with an admin account
+        $this->resetAll();
+        $this->params = array();
+        $this->getRequest()->setMethod('POST');
+        $this->dispatchUrl($pageURI, $this->adminUserDao);
     }
 
-  /** helper method, sends a request to assetstore controller */
-  protected function dispatchRequestJson($pageURI, $params)
+    /** test defaultassetstore action */
+    public function testDefaultassetstoreAction()
     {
-    $this->resetAll();
-    $this->params = $params;
-    $this->getRequest()->setMethod('POST');
-    $this->dispatchUrI($pageURI, $this->adminUserDao);
-    $response = json_decode($this->getBody());
-    return $response;
+        $pageURI = '/assetstore/defaultassetstore';
+        $this->ensureAdminRequired($pageURI);
+
+        // get the default assetstore
+        $initialDefaultAssetstoreDao = $this->Assetstore->getDefault();
+
+        // set the second assetstore as default
+        $this->resetAll();
+        $this->params = array();
+        $this->params['submitDefaultAssetstore'] = 'submitDefaultAssetstore';
+        $this->params['element'] = $this->testAssetstoreDao->getKey();
+        $this->getRequest()->setMethod('POST');
+        $this->dispatchUrl($pageURI, $this->adminUserDao);
+        $response = json_decode($this->getBody());
+        $this->assertEquals(1, $response[0], "Expected true json response");
+
+        $defaultAssetstoreDao = $this->Assetstore->getDefault();
+
+        $juggleTypes = true;
+        $this->assertTrue(
+            $this->Assetstore->compareDao($defaultAssetstoreDao, $this->testAssetstoreDao, $juggleTypes),
+            'New default assetstore is not the real default assetstore'
+        );
+
+        // now set back to the original default
+        $this->resetAll();
+        $this->params = array();
+        $this->params['submitDefaultAssetstore'] = 'submitDefaultAssetstore';
+        $this->params['element'] = $initialDefaultAssetstoreDao->getKey();
+        $this->getRequest()->setMethod('POST');
+        $this->dispatchUrl($pageURI, $this->adminUserDao);
+        $response = json_decode($this->getBody());
+        $this->assertEquals(1, $response[0], "Expected true json response");
+
+        $defaultAssetstoreDao = $this->Assetstore->getDefault();
+        $this->assertTrue(
+            $this->Assetstore->compareDao($defaultAssetstoreDao, $initialDefaultAssetstoreDao, $juggleTypes),
+            'New default assetstore is not the real default assetstore'
+        );
+
+        // now don't send a submitDefaultAssetstore param and be sure we get an error
+        $this->resetAll();
+        $this->params = array();
+        $this->getRequest()->setMethod('POST');
+        $this->dispatchUrl($pageURI, $this->adminUserDao);
+        $response = json_decode($this->getBody());
+        $this->assertEquals("", $response[0], "Expected false json response");
+
+        // now don't send a submitDefaultAssetstore param and be sure we get an error
+        $this->resetAll();
+        $this->params = array();
+        $this->params['submitDefaultAssetstore'] = 'submitDefaultAssetstore';
+        //$this->params['element'] = $initialDefaultAssetstoreDao->getKey();
+        $this->getRequest()->setMethod('POST');
+        $this->dispatchUrl($pageURI, $this->adminUserDao);
+        $response = json_decode($this->getBody());
+        $this->assertEquals("", $response[0], "Expected false json response");
     }
 
-  /** helper method, expects a false response */
-  protected function expectFalseJson($pageURI, $params)
+    /** test delete action */
+    public function testDeleteAction()
     {
-    $response = $this->dispatchRequestJson($pageURI, $params);
-    $this->assertEquals("", $response[0], "Expected false json response");
+        $pageURI = '/assetstore/delete';
+        $this->ensureAdminRequired($pageURI);
+
+        $testAssetstoreId = $this->testAssetstoreDao->getKey();
+
+        // delete the assetstore via the controller
+        $this->resetAll();
+        $this->params = array();
+        $this->params['assetstoreId'] = $testAssetstoreId;
+        $this->getRequest()->setMethod('POST');
+        $this->dispatchUrl($pageURI, $this->adminUserDao);
+        $response = json_decode($this->getBody());
+        $this->assertEquals(1, $response[0], "Expected true json response");
+
+        // try to load and be sure it is deleted
+        $testAssetstoreDao = $this->Assetstore->load($testAssetstoreId);
+        $this->assertFalse($testAssetstoreDao);
     }
 
-  /** helper method, expects a true response */
-  protected function expectTrueJson($pageURI, $params)
+    /** helper method, sends a request to assetstore controller */
+    protected function dispatchRequestJson($pageURI, $params)
     {
-    $response = $this->dispatchRequestJson($pageURI, $params);
-    $this->assertEquals(1, $response[0], "Expected true json response");
-    return $response;
+        $this->resetAll();
+        $this->params = $params;
+        $this->getRequest()->setMethod('POST');
+        $this->dispatchUrl($pageURI, $this->adminUserDao);
+        $response = json_decode($this->getBody());
+
+        return $response;
     }
 
-  /** helper method, expects an 'error' key */
-  protected function expectErrorJson($pageURI, $params)
+    /** helper method, expects a false response */
+    protected function expectFalseJson($pageURI, $params)
     {
-    $response = $this->dispatchRequestJson($pageURI, $params);
-    $this->assertTrue(isset($response->error));
+        $response = $this->dispatchRequestJson($pageURI, $params);
+        $this->assertEquals("", $response[0], "Expected false json response");
     }
 
-  /** test edit action */
-  function testEditAction()
+    /** helper method, expects a true response */
+    protected function expectTrueJson($pageURI, $params)
     {
-    $pageURI = '/assetstore/edit';
-    $this->ensureAdminRequired($pageURI);
+        $response = $this->dispatchRequestJson($pageURI, $params);
+        $this->assertEquals(1, $response[0], "Expected true json response");
 
-    $testAssetstoreId = $this->testAssetstoreDao->getKey();
-    $testAssetstoreName = $this->testAssetstoreDao->getName();
-    $testAssetstorePath = $this->testAssetstoreDao->getPath();
-    $testAssetstoreNewName = "anewname";
-
-    // get the default assetstore
-    $defaultAssetstoreDao = $this->Assetstore->getDefault();
-    $defaultAssetstoreName = $defaultAssetstoreDao->getName();
-    $defaultAssetstorePath = $defaultAssetstoreDao->getPath();
-
-    // test error conditions first
-
-    // don't send ID
-    $params = array();
-    $this->expectFalseJson($pageURI, $params);
-
-    // don't send name
-    $params = array("assetstoreId" => $testAssetstoreId);
-    $this->expectFalseJson($pageURI, $params);
-
-    // don't send path
-    $params = array("assetstoreId" => $testAssetstoreId, "assetstoreName" => $testAssetstoreName);
-    $this->expectFalseJson($pageURI, $params);
-
-    // send a bad path
-    $params = array("assetstoreId" => $testAssetstoreId, "assetstoreName" => $testAssetstoreName, "assetstorePath" => '/this/path/probably/will/not/exist');
-    $this->expectFalseJson($pageURI, $params);
-
-    // try to edit to same name as default
-    $params = array("assetstoreId" => $testAssetstoreId, "assetstoreName" => $defaultAssetstoreName, "assetstorePath" => $testAssetstorePath);
-    $this->expectFalseJson($pageURI, $params);
-
-    // try to edit to same path as default
-    $params = array("assetstoreId" => $testAssetstoreId, "assetstoreName" => $testAssetstoreName, "assetstorePath" => $defaultAssetstorePath);
-    $this->expectFalseJson($pageURI, $params);
-
-    // edit name
-    $params = array("assetstoreId" => $testAssetstoreId, "assetstoreName" => $testAssetstoreNewName, "assetstorePath" => $testAssetstorePath);
-    $this->expectTrueJson($pageURI, $params);
-    $updatedTestAssetstore = $this->Assetstore->load($testAssetstoreId);
-    $this->assertEquals($updatedTestAssetstore->getName(), $testAssetstoreNewName);
-
-    // edit path
-    $params = array("assetstoreId" => $testAssetstoreId, "assetstoreName" => $testAssetstoreNewName, "assetstorePath" => $this->testAssetstoreAdditionalPath);
-    $this->expectTrueJson($pageURI, $params);
-    $updatedTestAssetstore = $this->Assetstore->load($testAssetstoreId);
-    $this->assertEquals($updatedTestAssetstore->getPath(), $this->testAssetstoreAdditionalPath);
-
-    // edit name and path
-    $params = array("assetstoreId" => $testAssetstoreId, "assetstoreName" => $testAssetstoreName, "assetstorePath" => $testAssetstorePath);
-    $this->expectTrueJson($pageURI, $params);
-    $updatedTestAssetstore = $this->Assetstore->load($testAssetstoreId);
-    $this->assertEquals($updatedTestAssetstore->getName(), $testAssetstoreName);
-    $this->assertEquals($updatedTestAssetstore->getPath(), $testAssetstorePath);
+        return $response;
     }
 
-  /** test add action */
-  function testAddAction()
+    /** helper method, expects an 'error' key */
+    protected function expectErrorJson($pageURI, $params)
     {
-    $pageURI = '/assetstore/add';
-    $this->ensureAdminRequired($pageURI);
-
-    // get the default assetstore
-    $defaultAssetstoreDao = $this->Assetstore->getDefault();
-    $defaultAssetstoreName = $defaultAssetstoreDao->getName();
-    $defaultAssetstorePath = $defaultAssetstoreDao->getPath();
-
-    $newAssetstoreName = "anewname";
-
-    // test error conditions first
-
-    // try to add as same name as default
-    $params = array("name" => $defaultAssetstoreName, "basedirectory" => $this->testAssetstoreAdditionalPath, "assetstoretype" => '0');
-    $this->expectErrorJson($pageURI, $params);
-
-    // try to add as same path as default
-    $params = array("name" => $newAssetstoreName, "basedirectory" => $defaultAssetstorePath, "assetstoretype" => '0');
-    $this->expectErrorJson($pageURI, $params);
-
-    // add and check saved values
-    $params = array("name" => $newAssetstoreName, "basedirectory" => $this->testAssetstoreAdditionalPath, "assetstoretype" => '1');
-    $response = $this->dispatchRequestJson($pageURI, $params);//$this->expectTrueJson($pageURI, $params);
-    $this->assertTrue(isset($response->assetstore_id), "Expected error key assetstore_id in response");
-    $createdAssetstoreDao = $this->Assetstore->load($response->assetstore_id);
-    $this->assertEquals($createdAssetstoreDao->getName(), $newAssetstoreName);
-    $this->assertEquals($createdAssetstoreDao->getPath(), $this->testAssetstoreAdditionalPath);
-    $this->assertEquals($createdAssetstoreDao->getType(), '1');
-
-    // delete the newly added assetstore
-    $this->Assetstore->delete($createdAssetstoreDao);
+        $response = $this->dispatchRequestJson($pageURI, $params);
+        $this->assertTrue(isset($response->error));
     }
 
-  /**
-   * Test the move bitstreams between assetstores dialog
-   */
-  function testMoveDialog()
+    /** test edit action */
+    public function testEditAction()
     {
-    $pageURI = '/assetstore/movedialog?srcAssetstoreId='.$this->testAssetstoreDao->getKey();
-    $defaultAssetstore = $this->Assetstore->getDefault();
+        $pageURI = '/assetstore/edit';
+        $this->ensureAdminRequired($pageURI);
 
-    $this->ensureAdminRequired($pageURI);
+        $testAssetstoreId = $this->testAssetstoreDao->getKey();
+        $testAssetstoreName = $this->testAssetstoreDao->getName();
+        $testAssetstorePath = $this->testAssetstoreDao->getPath();
+        $testAssetstoreNewName = "anewname";
 
-    $this->assertNotEquals($defaultAssetstore->getKey(), $this->testAssetstoreDao->getKey());
-    $this->assertQueryContentContains('option[value="'.$defaultAssetstore->getKey().'"]', $defaultAssetstore->getName());
-    $this->assertNotQuery('option[value="'.$this->testAssetstoreDao->getKey().'"]');
+        // get the default assetstore
+        $defaultAssetstoreDao = $this->Assetstore->getDefault();
+        $defaultAssetstoreName = $defaultAssetstoreDao->getName();
+        $defaultAssetstorePath = $defaultAssetstoreDao->getPath();
+
+        // test error conditions first
+
+        // don't send ID
+        $params = array();
+        $this->expectFalseJson($pageURI, $params);
+
+        // don't send name
+        $params = array("assetstoreId" => $testAssetstoreId);
+        $this->expectFalseJson($pageURI, $params);
+
+        // don't send path
+        $params = array("assetstoreId" => $testAssetstoreId, "assetstoreName" => $testAssetstoreName);
+        $this->expectFalseJson($pageURI, $params);
+
+        // send a bad path
+        $params = array(
+            "assetstoreId" => $testAssetstoreId,
+            "assetstoreName" => $testAssetstoreName,
+            "assetstorePath" => '/this/path/probably/will/not/exist',
+        );
+        $this->expectFalseJson($pageURI, $params);
+
+        // try to edit to same name as default
+        $params = array(
+            "assetstoreId" => $testAssetstoreId,
+            "assetstoreName" => $defaultAssetstoreName,
+            "assetstorePath" => $testAssetstorePath,
+        );
+        $this->expectFalseJson($pageURI, $params);
+
+        // try to edit to same path as default
+        $params = array(
+            "assetstoreId" => $testAssetstoreId,
+            "assetstoreName" => $testAssetstoreName,
+            "assetstorePath" => $defaultAssetstorePath,
+        );
+        $this->expectFalseJson($pageURI, $params);
+
+        // edit name
+        $params = array(
+            "assetstoreId" => $testAssetstoreId,
+            "assetstoreName" => $testAssetstoreNewName,
+            "assetstorePath" => $testAssetstorePath,
+        );
+        $this->expectTrueJson($pageURI, $params);
+        $updatedTestAssetstore = $this->Assetstore->load($testAssetstoreId);
+        $this->assertEquals($updatedTestAssetstore->getName(), $testAssetstoreNewName);
+
+        // edit path
+        $params = array(
+            "assetstoreId" => $testAssetstoreId,
+            "assetstoreName" => $testAssetstoreNewName,
+            "assetstorePath" => $this->testAssetstoreAdditionalPath,
+        );
+        $this->expectTrueJson($pageURI, $params);
+        $updatedTestAssetstore = $this->Assetstore->load($testAssetstoreId);
+        $this->assertEquals($updatedTestAssetstore->getPath(), $this->testAssetstoreAdditionalPath);
+
+        // edit name and path
+        $params = array(
+            "assetstoreId" => $testAssetstoreId,
+            "assetstoreName" => $testAssetstoreName,
+            "assetstorePath" => $testAssetstorePath,
+        );
+        $this->expectTrueJson($pageURI, $params);
+        $updatedTestAssetstore = $this->Assetstore->load($testAssetstoreId);
+        $this->assertEquals($updatedTestAssetstore->getName(), $testAssetstoreName);
+        $this->assertEquals($updatedTestAssetstore->getPath(), $testAssetstorePath);
     }
 
-  /**
-   * Testing moving bitstreams from one assetstore to another
-   */
-  function testMoveContents()
+    /** test add action */
+    public function testAddAction()
     {
-    $defaultAssetstore = $this->Assetstore->getDefault();
-    $pageURI = '/assetstore/movecontents?srcAssetstoreId='.$defaultAssetstore->getKey();
-    $pageURI .= '&dstAssetstoreId='.$this->testAssetstoreDao->getKey();
-    $bitstream = $this->Bitstream->getByChecksum('f283bc88b24491ba85c65ba960642753');
-    $oldPath = $bitstream->getFullPath();
-    $newPath = $this->testAssetstoreDao->getPath().'/'.$bitstream->getPath();
+        $pageURI = '/assetstore/add';
+        $this->ensureAdminRequired($pageURI);
 
-    if(!is_dir(dirname($oldPath)))
-      {
-      mkdir(dirname($oldPath), 0777, true);
-      }
-    touch($oldPath);
+        // get the default assetstore
+        $defaultAssetstoreDao = $this->Assetstore->getDefault();
+        $defaultAssetstoreName = $defaultAssetstoreDao->getName();
+        $defaultAssetstorePath = $defaultAssetstoreDao->getPath();
 
-    $this->assertTrue(is_file($oldPath));
-    $this->assertFalse(is_file($newPath));
+        $newAssetstoreName = "anewname";
 
-    $this->ensureAdminRequired($pageURI);
+        // test error conditions first
 
-    $this->assertFalse(is_file($oldPath));
-    $this->assertTrue(is_file($newPath));
+        // try to add as same name as default
+        $params = array(
+            "name" => $defaultAssetstoreName,
+            "basedirectory" => $this->testAssetstoreAdditionalPath,
+            "assetstoretype" => '0',
+        );
+        $this->expectErrorJson($pageURI, $params);
+
+        // try to add as same path as default
+        $params = array(
+            "name" => $newAssetstoreName,
+            "basedirectory" => $defaultAssetstorePath,
+            "assetstoretype" => '0',
+        );
+        $this->expectErrorJson($pageURI, $params);
+
+        // add and check saved values
+        $params = array(
+            "name" => $newAssetstoreName,
+            "basedirectory" => $this->testAssetstoreAdditionalPath,
+            "assetstoretype" => '1',
+        );
+        $response = $this->dispatchRequestJson($pageURI, $params);
+        $this->assertTrue(isset($response->assetstore_id), "Expected error key assetstore_id in response");
+        $createdAssetstoreDao = $this->Assetstore->load($response->assetstore_id);
+        $this->assertEquals($createdAssetstoreDao->getName(), $newAssetstoreName);
+        $this->assertEquals($createdAssetstoreDao->getPath(), $this->testAssetstoreAdditionalPath);
+        $this->assertEquals($createdAssetstoreDao->getType(), '1');
+
+        // delete the newly added assetstore
+        $this->Assetstore->delete($createdAssetstoreDao);
     }
-  }
+
+    /**
+     * Test the move bitstreams between assetstores dialog
+     */
+    public function testMoveDialog()
+    {
+        $pageURI = '/assetstore/movedialog?srcAssetstoreId='.$this->testAssetstoreDao->getKey();
+        $defaultAssetstore = $this->Assetstore->getDefault();
+
+        $this->ensureAdminRequired($pageURI);
+
+        $this->assertNotEquals($defaultAssetstore->getKey(), $this->testAssetstoreDao->getKey());
+        $this->assertQueryContentContains(
+            'option[value="'.$defaultAssetstore->getKey().'"]',
+            $defaultAssetstore->getName()
+        );
+        $this->assertNotQuery('option[value="'.$this->testAssetstoreDao->getKey().'"]');
+    }
+
+    /**
+     * Testing moving bitstreams from one assetstore to another
+     */
+    public function testMoveContents()
+    {
+        $defaultAssetstore = $this->Assetstore->getDefault();
+        $pageURI = '/assetstore/movecontents?srcAssetstoreId='.$defaultAssetstore->getKey();
+        $pageURI .= '&dstAssetstoreId='.$this->testAssetstoreDao->getKey();
+        $bitstream = $this->Bitstream->getByChecksum('f283bc88b24491ba85c65ba960642753');
+        $oldPath = $bitstream->getFullPath();
+        $newPath = $this->testAssetstoreDao->getPath().'/'.$bitstream->getPath();
+
+        if (!is_dir(dirname($oldPath))) {
+            mkdir(dirname($oldPath), 0777, true);
+        }
+        touch($oldPath);
+
+        $this->assertTrue(is_file($oldPath));
+        $this->assertFalse(is_file($newPath));
+
+        $this->ensureAdminRequired($pageURI);
+
+        $this->assertFalse(is_file($oldPath));
+        $this->assertTrue(is_file($newPath));
+    }
+}

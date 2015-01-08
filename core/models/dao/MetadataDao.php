@@ -19,10 +19,24 @@
 =========================================================================*/
 
 /**
- * \class MetadataDao
- * \brief DAO Item (table Metadata)
+ * Metadata DAO.
+ *
+ * @method int getMetadataId()
+ * @method void setMetadataId(int $metadataId)
+ * @method int getMetadatatype()
+ * @method void setMetadatatype(int $metadataType)
+ * @method string getElement()
+ * @method void setElement(string $element)
+ * @method string getQualifier()
+ * @method void setQualifier(string $qualifier)
+ * @method string getValue()
+ * @method void setValue(string $value)
+ * @method ItemRevisionDao getItemrevisionId()
+ * @method void setItemrevisionId(ItemRevisionDao $itemRevisionId)
+ * @package Core\DAO
  */
 class MetadataDao extends AppDao
-  {
-  public $_model = 'Metadata';
-  } // end class
+{
+    /** @var string */
+    public $_model = 'Metadata';
+}

@@ -17,36 +17,39 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** test agreement model*/
-class AgreementModelTest extends DatabaseTestCase
-  {
-  /** set up tests*/
-  public function setUp()
-    {
-    //$this->setupDatabase(array('default')); //core dataset
 
-    $this->enabledModules = array('communityagreement');
-    $this->setupDatabase(array('default')); //core dataset
-    $this->setupDatabase(array('default'), 'communityagreement'); // module dataset
-    parent::setUp();
+/** test agreement model */
+class Communityagreement_AgreementModelTest extends DatabaseTestCase
+{
+    /** set up tests */
+    public function setUp()
+    {
+        //$this->setupDatabase(array('default')); // core dataset
+
+        $this->enabledModules = array('communityagreement');
+        $this->setupDatabase(array('default')); // core dataset
+        $this->setupDatabase(array('default'), 'communityagreement'); // module dataset
+        parent::setUp();
     }
 
-  /** test AgreementModel::GetAll .*/
-  public function testGetAll()
+    /** test AgreementModel::GetAll .*/
+    public function testGetAll()
     {
-    $agreementModel = MidasLoader::loadModel('Agreement', 'communityagreement');
+        /** @var Communityagreement_AgreementModel $agreementModel */
+        $agreementModel = MidasLoader::loadModel('Agreement', 'communityagreement');
 
-    $daos = $agreementModel->getAll();
-    $this->assertEquals(1, count($daos));
+        $daos = $agreementModel->getAll();
+        $this->assertEquals(1, count($daos));
     }
 
-  /** test AgreementModel::getByCommunityId*/
-  public function testGetByCommunityId()
+    /** test AgreementModel::getByCommunityId */
+    public function testGetByCommunityId()
     {
-    $agreementModel = MidasLoader::loadModel('Agreement', 'communityagreement');
+        /** @var Communityagreement_AgreementModel $agreementModel */
+        $agreementModel = MidasLoader::loadModel('Agreement', 'communityagreement');
 
-    $dao = $agreementModel->getByCommunityId('2000');
-    $this->assertEquals(1, count($dao));
-    $this->assertEquals('Community agreement for Community test User 1', $dao->getAgreement());
+        $dao = $agreementModel->getByCommunityId('2000');
+        $this->assertEquals(1, count($dao));
+        $this->assertEquals('Community agreement for Community test User 1', $dao->getAgreement());
     }
-  }
+}

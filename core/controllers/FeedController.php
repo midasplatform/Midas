@@ -22,70 +22,84 @@
  *  AJAX request for the admin Controller
  */
 class FeedController extends AppController
-  {
-  public $_models = array('Feed', 'Item', 'User', 'Community');
-  public $_daos = array();
-  public $_components = array();
+{
+    public $_models = array('Feed', 'Item', 'User', 'Community');
+    public $_daos = array();
+    public $_components = array();
 
-  /** Init Controller */
-  function init()
+    /** Init Controller */
+    public function init()
     {
-    $this->view->activemenu = 'feed'; // set the active menu
-    }  // end init()
-
-  /** index Action */
-  public function indexAction()
-    {
-    $this->view->feeds = $this->Feed->getGlobalFeeds($this->userSession->Dao);
-    $this->view->loggedUser = $this->userSession->Dao;
-    $this->view->itemThumbnails = $this->Item->getRandomThumbnails($this->userSession->Dao, 0, 12, true);
-    $this->view->nUsers = $this->User->getCountAll();
-    $this->view->nCommunities = $this->Community->getCountAll();
-    $this->view->nItems = $this->Item->getCountAll();
-    $this->view->notifications = array();
-    $this->view->header = $this->t('Feed');
-
-    if($this->logged && !$this->isTestingEnv())
-      {
-      $request = $this->getRequest();
-      $cookieData = $request->getCookie('newFeed'.$this->userSession->Dao->getKey());
-      if(isset($cookieData) && is_numeric($cookieData))
-        {
-        $this->view->lastFeedVisit = $cookieData;
-        }
-      setcookie('newFeed'.$this->userSession->Dao->getKey(), strtotime("now"), time() + 60 * 60 * 24 * 300, '/'); //30 days
-      }
-
-    $this->addDynamicHelp('.feedContainer', 'The <b>Feed</b> shows recent actions and events.', 'top right', 'bottom left');
+        $this->view->activemenu = 'feed'; // set the active menu
     }
 
-  /** get delete a feed */
-  public function deleteajaxAction()
+    /** index Action */
+    public function indexAction()
     {
-    if(!$this->isTestingEnv())
-      {
-      $this->requireAjaxRequest();
-      }
+        $this->view->feeds = $this->Feed->getGlobalFeeds($this->userSession->Dao);
+        $this->view->loggedUser = $this->userSession->Dao;
+        $this->view->itemThumbnails = $this->Item->getRandomThumbnails($this->userSession->Dao, 0, 12, true);
+        $this->view->nUsers = $this->User->getCountAll();
+        $this->view->nCommunities = $this->Community->getCountAll();
+        $this->view->nItems = $this->Item->getCountAll();
+        $this->view->notifications = array();
+        $this->view->header = $this->t('Feed');
 
-    $this->disableLayout();
-    $this->disableView();
+        if ($this->logged && !$this->isTestingEnv()) {
+            $cookieName = hash('sha1', MIDAS_FEED_COOKIE_NAME.$this->userSession->Dao->getKey());
 
-    $feedId = $this->getParam('feed');
-    if(!isset($feedId) || !is_numeric($feedId))
-      {
-      throw new Zend_Exception("Please set the feed Id");
-      }
-    $feed = $this->Feed->load($feedId);
+            /** @var Zend_Controller_Request_Http $request */
+            $request = $this->getRequest();
+            $cookieData = $request->getCookie($cookieName);
 
-    if($feed == false)
-      {
-      return;
-      }
+            if (isset($cookieData) && is_numeric($cookieData)) {
+                $this->view->lastFeedVisit = $cookieData;
+            }
+            $date = new DateTime();
+            $interval = new DateInterval('P1M');
+            setcookie(
+                $cookieName,
+                $date->getTimestamp(),
+                $date->add($interval)->getTimestamp(),
+                '/',
+                $request->getHttpHost(),
+                (int) Zend_Registry::get('configGlobal')->get('cookie_secure', 1) === 1,
+                true
+            );
+        }
 
-    if(!$this->Feed->policyCheck($feed, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
-      {
-      return;
-      }
-    $this->Feed->delete($feed);
-    } //end deleteajaxAction
-  } // end class
+        $this->addDynamicHelp(
+            '.feedContainer',
+            'The Feed shows recent actions and events.',
+            'top right',
+            'bottom left'
+        );
+    }
+
+    /** get delete a feed */
+    public function deleteajaxAction()
+    {
+        if (!$this->isTestingEnv()) {
+            $this->requireAjaxRequest();
+        }
+
+        $this->disableLayout();
+        $this->disableView();
+
+        $feedId = $this->getParam('feed');
+        if (!isset($feedId) || !is_numeric($feedId)) {
+            throw new Zend_Exception("Please set the feed Id");
+        }
+        $feed = $this->Feed->load($feedId);
+
+        if ($feed == false) {
+            return;
+        }
+
+        if (!$this->Feed->policyCheck($feed, $this->userSession->Dao, MIDAS_POLICY_ADMIN)
+        ) {
+            return;
+        }
+        $this->Feed->delete($feed);
+    }
+}

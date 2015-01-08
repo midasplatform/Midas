@@ -17,6 +17,9 @@
 # limitations under the License.
 #=============================================================================
 
-#add_midas_test( RemoteprocessingJobController JobControllerTest.php )
-#add_midas_test( RemoteprocessingExecutableController ExecutableControllerTest.php )
-add_midas_test( RemoteprocessingConfigController ConfigControllerTest.php )
+set(module_name remoteprocessing)
+to_titlecase(${module_name} module_name_titlecase)
+
+add_midas_test(${module_name_titlecase}ApiComponentController ApiComponentControllerTest.php)
+# add_midas_test(${module_name_titlecase}ExecutableController ExecutableControllerTest.php)  # FIXME
+# add_midas_test(${module_name_titlecase}JobController JobControllerTest.php)  # FIXME

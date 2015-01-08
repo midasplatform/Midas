@@ -20,6 +20,6 @@
 
 /** App controller for the metadataextractor module */
 class Metadataextractor_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'metadataextractor';
-  }
+{
+    public $moduleName = 'metadataextractor';
+}

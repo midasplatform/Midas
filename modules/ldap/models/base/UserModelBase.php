@@ -20,50 +20,63 @@
 
 /** Base class for the ldap user model */
 abstract class Ldap_UserModelBase extends Ldap_AppModel
-  {
-  /** constructor */
-  public function __construct()
+{
+    /** constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'ldap_user';
-    $this->_daoName = 'UserDao';
-    $this->_key = 'ldap_user_id';
+        parent::__construct();
+        $this->_name = 'ldap_user';
+        $this->_daoName = 'UserDao';
+        $this->_key = 'ldap_user_id';
 
-    $this->_mainData = array(
-      'ldap_user_id' => array('type' => MIDAS_DATA),
-      'user_id' => array('type' => MIDAS_DATA),
-      'login' => array('type' => MIDAS_DATA),
-      'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id')
-      );
-    $this->initialize();
+        $this->_mainData = array(
+            'ldap_user_id' => array('type' => MIDAS_DATA),
+            'user_id' => array('type' => MIDAS_DATA),
+            'login' => array('type' => MIDAS_DATA),
+            'user' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'User',
+                'parent_column' => 'user_id',
+                'child_column' => 'user_id',
+            ),
+        );
+        $this->initialize();
     }
 
-  abstract public function getLdapUser($login);
-  abstract public function deleteByUser($userDao);
-  abstract public function getByUser($userDao);
+    /** Get LDAP user */
+    abstract public function getLdapUser($login);
 
-  /**
-   * Create a new ldap user and an underlying core user entry.
-   * @param ldapLogin What the user uses to actually login to the ldap
-   * @param email The user's email (because it might be different from ldap login)
-   * @param password The user's password (not stored, just used to generate initial default api key)
-   * @param firstName User's first name
-   * @param lastName User's last name
-   * @return The ldap user dao that was created
-   */
-  public function createLdapUser($ldapLogin, $email, $password, $firstName, $lastName)
+    /** Delete by user */
+    abstract public function deleteByUser($userDao);
+
+    /** Get by user */
+    abstract public function getByUser($userDao);
+
+    /**
+     * Create a new ldap user and an underlying core user entry.
+     *
+     * @param ldapLogin What the user uses to actually login to the ldap
+     * @param email The user's email (because it might be different from ldap login)
+     * @param password The user's password (not stored, just used to generate initial default api key)
+     * @param firstName User's first name
+     * @param lastName User's last name
+     * @return The ldap user dao that was created
+     */
+    public function createLdapUser($ldapLogin, $email, $password, $firstName, $lastName)
     {
-    $userModel = MidasLoader::loadModel('User');
-    $userDao = $userModel->createUser($email, $password, $firstName, $lastName);
+        /** @var UserModel $userModel */
+        $userModel = MidasLoader::loadModel('User');
+        $userDao = $userModel->createUser($email, $password, $firstName, $lastName);
 
-    $userDao->setSalt('x'); //place invalid salt so normal authentication will fail
-    $userModel->save($userDao);
+        $userDao->setSalt('x'); // place invalid salt so normal authentication will fail
+        $userModel->save($userDao);
 
-    $ldapUserDao = MidasLoader::newDao('UserDao', 'ldap');
-    $ldapUserDao->setUserId($userDao->getKey());
-    $ldapUserDao->setLogin($ldapLogin);
-    $this->save($ldapUserDao);
+        /** @var Ldap_UserDao $ldapUserDao */
+        $ldapUserDao = MidasLoader::newDao('UserDao', 'ldap');
+        $ldapUserDao->setUserId($userDao->getKey());
+        $ldapUserDao->setLogin($ldapLogin);
+        $this->save($ldapUserDao);
 
-    return $ldapUserDao;
+        return $ldapUserDao;
     }
-  }
+}

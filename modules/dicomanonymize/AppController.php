@@ -18,8 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
-/** Dicom anonymizer app controller */
+/** App controller for the dicomanonymize module */
 class Dicomanonymize_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'dicomanonymize';
-  } // end class
+{
+    public $moduleName = 'dicomanonymize';
+}

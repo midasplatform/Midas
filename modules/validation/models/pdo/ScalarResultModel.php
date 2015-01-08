@@ -24,21 +24,22 @@ require_once BASE_PATH.'/modules/validation/models/base/ScalarResultModelBase.ph
  * ScalarResult PDO Model
  */
 class Validation_ScalarResultModel extends Validation_ScalarResultModelBase
-  {
-  /**
-   * Return all the record in the table
-   * @return array of ScalarResultDao
-   */
-  function getAll()
+{
+    /**
+     * Return all the record in the table
+     *
+     * @return array of ScalarResultDao
+     */
+    public function getAll()
     {
-    $sql = $this->database->select();
-    $rowset = $this->database->fetchAll($sql);
-    $rowsetAnalysed = array();
-    foreach($rowset as $row)
-      {
-      $tmpDao = $this->initDao('ScalarResult', $row, 'validation');
-      $rowsetAnalysed[] = $tmpDao;
-      }
-    return $rowsetAnalysed;
+        $sql = $this->database->select();
+        $rowset = $this->database->fetchAll($sql);
+        $rowsetAnalysed = array();
+        foreach ($rowset as $row) {
+            $tmpDao = $this->initDao('ScalarResult', $row, 'validation');
+            $rowsetAnalysed[] = $tmpDao;
+        }
+
+        return $rowsetAnalysed;
     }
-  }
+}

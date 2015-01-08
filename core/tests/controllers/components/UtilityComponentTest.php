@@ -21,38 +21,38 @@
 /**
  * UtilityComponentTest
  */
-class UtilityComponentTest extends ControllerTestCase
-  {
-  /** set up tests*/
-  public function setUp()
+class Core_UtilityComponentTest extends ControllerTestCase
+{
+    /** set up tests */
+    public function setUp()
     {
-    $this->_components = array('Utility');
-    parent::setUp();
+        $this->_components = array('Utility');
+        parent::setUp();
     }
 
-  /**
-   * Make sure that we are safely filtering html tags
-   */
-  public function testFilterHtmlTags()
+    /**
+     * Make sure that we are safely filtering html tags
+     */
+    public function testFilterHtmlTags()
     {
-    // Assert that plain text with no tags is unchanged
-    $text = 'test plain text';
-    $val = UtilityComponent::filterHtmlTags($text);
-    $this->assertEquals($text, $val);
+        // Assert that plain text with no tags is unchanged
+        $text = 'test plain text';
+        $val = UtilityComponent::filterHtmlTags($text);
+        $this->assertEquals($text, $val);
 
-    // Assert that we allow certain tags
-    $text = '<b>bold</b><br><br /><i>italic</i><p>paragraph</p><a href="http://site.com">anchor</a><div>Div</div>';
-    $val = UtilityComponent::filterHtmlTags($text);
-    $this->assertEquals($text, $val);
+        // Assert that we allow certain tags
+        $text = '<b>bold</b><br><br /><i>italic</i><p>paragraph</p><a href="http://site.com">anchor</a><div>Div</div>';
+        $val = UtilityComponent::filterHtmlTags($text);
+        $this->assertEquals($text, $val);
 
-    // Assert that we strip disallowed attributes such as id
-    $text = '<a id="idLink">anchor</a>';
-    $val = UtilityComponent::filterHtmlTags($text);
-    $this->assertEquals($val, '<a>anchor</a>');
+        // Assert that we strip disallowed attributes such as id
+        $text = '<a id="idLink">anchor</a>';
+        $val = UtilityComponent::filterHtmlTags($text);
+        $this->assertEquals($val, '<a>anchor</a>');
 
-    // Assert that we strip disallowed tags such as script
-    $text = '<script type="text/javascript">malicious javascript</script>';
-    $val = UtilityComponent::filterHtmlTags($text);
-    $this->assertEquals($val, 'malicious javascript');
+        // Assert that we strip disallowed tags such as script
+        $text = '<script type="text/javascript">malicious javascript</script>';
+        $val = UtilityComponent::filterHtmlTags($text);
+        $this->assertEquals($val, 'malicious javascript');
     }
-  } // end class
+}

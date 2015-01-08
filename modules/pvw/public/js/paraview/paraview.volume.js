@@ -1,5 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var pv;
 var midas = midas || {};
 midas.pvw = midas.pvw || {};
@@ -58,6 +60,7 @@ midas.pvw.PRESET_TRANSFER_RGBPOINTS = {
  * of the form [xMin, xMax, yMin, yMax, zMin, zMax]
  */
 midas.pvw.renderSubgrid = function (bounds) {
+    'use strict';
     midas.pvw.subgridBounds = bounds;
     var container = $('div.MainDialog');
     container.find('img.extractInProgress').show();
@@ -76,6 +79,7 @@ midas.pvw.renderSubgrid = function (bounds) {
  * Display information about the volume
  */
 midas.pvw.populateInfo = function () {
+    'use strict';
     $('#boundsXInfo').html(midas.pvw.bounds[0] + ' .. ' + midas.pvw.bounds[1]);
     $('#boundsYInfo').html(midas.pvw.bounds[2] + ' .. ' + midas.pvw.bounds[3]);
     $('#boundsZInfo').html(midas.pvw.bounds[4] + ' .. ' + midas.pvw.bounds[5]);
@@ -87,6 +91,7 @@ midas.pvw.populateInfo = function () {
  */
 /*
 midas.visualize.setupObjectList = function () {
+    'use strict';
     var dialog = $('#objectListTemplate').clone();
     dialog.removeAttr('id');
     $('#objectListAction').click(function () {
@@ -151,6 +156,7 @@ midas.visualize.toggleObjectVisibility = function(checkbox) {
 };*/
 
 midas.pvw._setupColorPresets = function (container) {
+    'use strict';
     var presetSelect = container.find('select.scmPresets');
     var html = '<option value="">Use preset...</option>';
     $.each(midas.pvw.PRESET_TRANSFER_RGBPOINTS, function (name, points) {
@@ -163,12 +169,13 @@ midas.pvw._setupColorPresets = function (container) {
 };
 
 midas.pvw.changeColorPreset = function (container, select) {
+    'use strict';
     var name = select.val();
     if (name == '') {
         return;
     }
     var colorList = midas.pvw.PRESET_TRANSFER_RGBPOINTS[name];
-    if ((colorList.length % 4) != 0) {
+    if ((colorList.length % 4) !== 0) {
         alert('Invalid color list length: ' + name);
     }
     // Map points into the actual scalar range
@@ -185,6 +192,7 @@ midas.pvw.changeColorPreset = function (container, select) {
  * Setup the color mapping controls
  */
 midas.pvw.setupColorMapping = function () {
+    'use strict';
     var dialog = $('#scmDialogTemplate').clone();
     dialog.removeAttr('id');
     $('#scmEditAction').click(function () {
@@ -203,7 +211,7 @@ midas.pvw.setupColorMapping = function () {
                 var rgbPoint = $('#scmPointMapTemplate').clone();
                 var r = Math.round(255 * colorMap[i + 1]);
                 var g = Math.round(255 * colorMap[i + 2]);
-                var b = Math.round(255 * colorMap[i + 3])
+                var b = Math.round(255 * colorMap[i + 3]);
                 rgbPoint.removeAttr('id').appendTo(pointListDiv).show();
                 rgbPoint.find('input.scmScalarValue').val(colorMap[i]);
                 rgbPoint.find('button.scmDeletePoint').show().click(function () {
@@ -275,6 +283,7 @@ midas.pvw.setupColorMapping = function () {
  * Setup the scalar opacity function controls
  */
 midas.pvw.setupScalarOpacity = function () {
+    'use strict';
     var dialog = $('#sofDialogTemplate').clone();
     dialog.removeAttr('id');
     $('#sofEditAction').click(function () {
@@ -348,6 +357,7 @@ midas.pvw.setupScalarOpacity = function () {
  * Get the plot data from the scalar opacity function
  */
 midas.pvw.getSofCurve = function (points) {
+    'use strict';
     var curve = [];
     for (var i = 0; i < points.length; i++) {
         curve[i] = [points[4 * i], points[4 * i + 1]];
@@ -360,6 +370,7 @@ midas.pvw.getSofCurve = function (points) {
  * updates the sof in paraview based on the jqplot curve
  */
 midas.pvw.applySofCurve = function () {
+    'use strict';
     // Create the scalar opacity transfer function
     var points = [];
     var curve = midas.pvw.sofPlot.series[0].data;
@@ -372,14 +383,14 @@ midas.pvw.applySofCurve = function () {
         .then(function () {
             pv.viewport.render();
         })
-        .otherwise(midas.pvw.rpcFailure)
+        .otherwise(midas.pvw.rpcFailure);
 };
 
 /**
  * Must call this anytime a redraw or replot is called on the sof plot
  */
 midas.pvw.setupSofPlotBindings = function () {
-
+    'use strict';
     // Clicking an existing point should let you change its values
     $('#sofChartDiv').bind('jqplotDataClick', function (ev, seriesIndex, pointIndex, data) {
         var container = $('div.MainDialog').find('div.sofPointEdit');
@@ -431,6 +442,7 @@ midas.pvw.setupSofPlotBindings = function () {
  * Setup the extract subgrid controls
  */
 midas.pvw.setupExtractSubgrid = function () {
+    'use strict';
     var dialog = $('#extractSubgridDialogTemplate').clone();
     dialog.removeAttr('id');
     $('#extractSubgridAction').click(function () {
@@ -527,6 +539,7 @@ midas.pvw.setupExtractSubgrid = function () {
 };
 
 midas.pvw.start = function () {
+    'use strict';
     if (typeof midas.pvw.preInitCallback == 'function') {
         midas.pvw.preInitCallback();
     }
@@ -535,6 +548,7 @@ midas.pvw.start = function () {
 
 /** Callback for once the loadData RPC has returned */
 midas.pvw.dataLoaded = function (resp) {
+    'use strict';
     midas.pvw.mainProxy = resp;
     pv.viewport.render();
     midas.pvw.waitingDialog('Starting volume rendering...');
@@ -545,6 +559,7 @@ midas.pvw.dataLoaded = function (resp) {
 
 /** After volume rendering has started successfully, this gets called */
 midas.pvw.vrStarted = function (resp) {
+    'use strict';
     midas.pvw.bounds = resp.bounds;
     midas.pvw.extent = resp.extent;
     midas.pvw.subgridBounds = resp.extent;
@@ -561,11 +576,12 @@ midas.pvw.vrStarted = function (resp) {
     midas.pvw.setupScalarOpacity();
     midas.pvw.setupColorMapping();
 
-    $('a.switchToSliceView').attr('href', json.global.webroot + '/pvw/paraview/slice' + window.location.search);
+    $('a.switchToSliceView').attr('href', json.global.webroot + '/pvw/paraview/slice' + encodeURIComponent(window.location.search));
 };
 
 /** Bind the renderer overlay buttons */
 midas.pvw.setupOverlay = function () {
+    'use strict';
     $('button.cameraPreset').click(function () {
         pv.connection.session.call('vtk:cameraPreset', $(this).attr('type'))
             .then(pv.viewport.render())

@@ -18,5 +18,17 @@
  limitations under the License.
 =========================================================================*/
 
-define("MIDAS_USE_DEFAULT_QUOTA", 0);
-define("MIDAS_USE_SPECIFIC_QUOTA", 1);
+define('MIDAS_SIZEQUOTA_DEFAULT_USER_QUOTA_KEY', 'defaultuserquota');
+define('MIDAS_SIZEQUOTA_DEFAULT_USER_QUOTA_DEFAULT_VALUE', '');
+
+define('MIDAS_SIZEQUOTA_DEFAULT_USER_QUOTA_UNIT_KEY', 'default_user_quota_unit');
+define('MIDAS_SIZEQUOTA_DEFAULT_USER_QUOTA_VALUE_KEY', 'default_user_quota_value');
+
+define('MIDAS_SIZEQUOTA_DEFAULT_COMMUNITY_QUOTA_KEY', 'defaultcommunityquota');
+define('MIDAS_SIZEQUOTA_DEFAULT_COMMUNITY_QUOTA_DEFAULT_VALUE', '');
+
+define('MIDAS_SIZEQUOTA_DEFAULT_COMMUNITY_QUOTA_UNIT_KEY', 'default_community_quota_unit');
+define('MIDAS_SIZEQUOTA_DEFAULT_COMMUNITY_QUOTA_VALUE_KEY', 'default_community_quota_value');
+
+define('MIDAS_SIZEQUOTA_USE_DEFAULT_QUOTA', 0);
+define('MIDAS_SIZEQUOTA_USE_SPECIFIC_QUOTA', 1);

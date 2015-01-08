@@ -1,16 +1,21 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
-jsonRegister = jQuery.parseJSON($('div.jsonRegister').html());
+/* global json */
+
+var midas = midas || {};
+var jsonRegister = $.parseJSON($('div.jsonRegister').html());
 
 $('label.termLabel').after($('div.termDiv').html());
 $('a.termOfService').click(function () {
+    'use strict';
     midas.loadDialog("terms", "/user/termofservice");
     midas.showBigDialog("Terms of Service");
 });
 
 $('#registerForm').find('input').each(function () {
+    'use strict';
     $(this).after('<span></span>');
-})
+});
 
 var email = false;
 var password = false;
@@ -18,11 +23,13 @@ var firstname = false;
 var lastname = false;
 
 $('#registerForm').find('input').focusout(function () {
+    'use strict';
     var obj = $(this);
     checkAll(obj);
 });
 
 function checkAll(obj) {
+    'use strict';
     if (obj.attr('name') == 'email') {
         if (!checkEmail(obj.val())) {
             obj.parent('div').find('span').html('<img alt="" src="' + json.global.coreWebroot + '/public/images/icons/nok.png"/> ' + jsonRegister.MessageNotValid);
@@ -90,11 +97,13 @@ function checkAll(obj) {
 }
 
 $('#registerForm').find('input').focusin(function () {
+    'use strict';
     var obj = $(this);
     obj.parent('div').find('span').html('');
 });
 
 $('form#registerForm').submit(function () {
+    'use strict';
     var valid = validRegisterForm();
     if (valid) {
         $('#registerWaiting').show();
@@ -104,6 +113,7 @@ $('form#registerForm').submit(function () {
 });
 
 function checkEmail(mailteste) {
+    'use strict';
     var reg = /^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/;
 
     if (reg.test(mailteste)) {
@@ -115,6 +125,7 @@ function checkEmail(mailteste) {
 }
 
 function validRegisterForm() {
+    'use strict';
     firstname = $('input[name=firstname]').val().length > 0;
     lastname = $('input[name=lastname]').val().length > 0;
     var terms = $('input[name=conditions]').is(':checked');

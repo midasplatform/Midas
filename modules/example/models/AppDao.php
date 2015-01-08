@@ -19,9 +19,12 @@
 =========================================================================*/
 
 /**
- * AppDao for the example module.
+ * Generic DAO class for the example module.
+ *
+ * @package Modules\Example\DAO
  */
 class Example_AppDao extends MIDAS_GlobalDao
-  {
-  public $moduleName = 'example';
-  } // end class
+{
+    /** @var string */
+    public $moduleName = 'example';
+}

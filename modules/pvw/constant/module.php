@@ -18,6 +18,13 @@
  limitations under the License.
 =========================================================================*/
 
+define('MIDAS_PVW_PVPYTHON_KEY', 'pvpython');
+define('MIDAS_PVW_PVPYTHON_DEFAULT_VALUE', 'pvpython');
+define('MIDAS_PVW_PORTS_KEY', 'ports');
+define('MIDAS_PVW_PORTS_DEFAULT_VALUE', '9000,9001');
+define('MIDAS_PVW_DISPLAY_ENV_KEY', 'displayEnv');
+define('MIDAS_PVW_DISPLAY_ENV_DEFAULT_VALUE', '');
+
 // Max amount of time in seconds to wait between starting pvpython and it binding to the TCP port.
 // If this time is surpassed, we stop waiting and alert the user that something failed.
-define("MIDAS_PVW_STARTUP_TIMEOUT", 5);
+define('MIDAS_PVW_STARTUP_TIMEOUT', 5);

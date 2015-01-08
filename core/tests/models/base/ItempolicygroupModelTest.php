@@ -17,30 +17,29 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** ItempolicygroupModelTest*/
-class ItempolicygroupModelTest extends DatabaseTestCase
-  {
-  /** init tests*/
-  public function setUp()
+
+/** ItempolicygroupModelTest */
+class Core_ItempolicygroupModelTest extends DatabaseTestCase
+{
+    /** init tests */
+    public function setUp()
     {
-    $this->setupDatabase(array());
-    $this->_models = array(
-      'Itempolicygroup'
-    );
-    $this->_daos = array();
-    parent::setUp();
+        $this->setupDatabase(array());
+        $this->_models = array('Itempolicygroup');
+        $this->_daos = array();
+        parent::setUp();
     }
 
-  /** testCreatePolicyAndGetPolicy*/
-  public function testCreatePolicyAndGetPolicy()
+    /** testCreatePolicyAndGetPolicy */
+    public function testCreatePolicyAndGetPolicy()
     {
-    Zend_Registry::set('modulesEnable', array());
-    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
-    $groupsFile = $this->loadData('Group', 'default');
-    $itemsFile = $this->loadData('Item', 'default');
-    $policy = $this->Itempolicygroup->createPolicy($groupsFile[0], $itemsFile[1], 1);
-    $this->assertEquals(true, $policy->saved);
-    $policy = $this->Itempolicygroup->getPolicy($groupsFile[0], $itemsFile[1]);
-    $this->assertNotEquals(false, $policy);
+        Zend_Registry::set('modulesEnable', array());
+        Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
+        $groupsFile = $this->loadData('Group', 'default');
+        $itemsFile = $this->loadData('Item', 'default');
+        $policy = $this->Itempolicygroup->createPolicy($groupsFile[0], $itemsFile[1], 1);
+        $this->assertEquals(true, $policy->saved);
+        $policy = $this->Itempolicygroup->getPolicy($groupsFile[0], $itemsFile[1]);
+        $this->assertNotEquals(false, $policy);
     }
-  }
+}

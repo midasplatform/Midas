@@ -18,7 +18,13 @@
  limitations under the License.
 =========================================================================*/
 
-/** App DAO for the PVW module */
+/**
+ * Generic DAO class for the pvw module.
+ *
+ * @package Modules\Pvw\DAO
+ */
 class Pvw_AppDao extends MIDAS_GlobalDao
-  {
-  }
+{
+    /** @var string */
+    public $moduleName = 'pvw';
+}

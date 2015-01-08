@@ -21,39 +21,50 @@
 require_once BASE_PATH.'/core/models/base/FeedpolicygroupModelBase.php';
 
 /**
- * \class FeedpolicygroupModel
- * \brief Pdo Model
+ * Pdo Model
  */
 class FeedpolicygroupModel extends FeedpolicygroupModelBase
-  {
-
-  /** getPolicy
-   * @return FeedpolicygroupDao
-   */
-  public function getPolicy($group, $feed)
+{
+    /**
+     * Get policy
+     *
+     * @param GroupDao $group
+     * @param FeedDao $feed
+     * @return false|FeedpolicygroupDao
+     * @throws Zend_Exception
+     */
+    public function getPolicy($group, $feed)
     {
-    if(!$group instanceof GroupDao)
-      {
-      throw new Zend_Exception("Should be a group.");
-      }
-    if(!$feed instanceof FeedDao)
-      {
-      throw new Zend_Exception("Should be a feed.");
-      }
-    return $this->initDao('Feedpolicygroup', $this->database->fetchRow($this->database->select()->where('feed_id = ?', $feed->getKey())->where('group_id = ?', $group->getKey())));
-    }  // end getPolicy
+        if (!$group instanceof GroupDao) {
+            throw new Zend_Exception("Should be a group.");
+        }
+        if (!$feed instanceof FeedDao) {
+            throw new Zend_Exception("Should be a feed.");
+        }
 
-  /**
-   * deletes all feedpolicygroup rows associated with the passed in group
-   * @param GroupDao
-   */
-  public function deleteGroupPolicies($group)
-    {
-    if(!$group instanceof GroupDao)
-      {
-      throw new Zend_Exception("Should be a group.");
-      }
-    $clause = 'group_id = '.$group->getKey();
-    Zend_Registry::get('dbAdapter')->delete($this->_name, $clause);
+        return $this->initDao(
+            'Feedpolicygroup',
+            $this->database->fetchRow(
+                $this->database->select()->where('feed_id = ?', $feed->getKey())->where(
+                    'group_id = ?',
+                    $group->getKey()
+                )
+            )
+        );
     }
-  } // end class
+
+    /**
+     * Deletes all feedpolicygroup rows associated with the passed in group
+     *
+     * @param GroupDao $group
+     * @throws Zend_Exception
+     */
+    public function deleteGroupPolicies($group)
+    {
+        if (!$group instanceof GroupDao) {
+            throw new Zend_Exception("Should be a group.");
+        }
+        $clause = 'group_id = '.$group->getKey();
+        Zend_Registry::get('dbAdapter')->delete($this->_name, $clause);
+    }
+}

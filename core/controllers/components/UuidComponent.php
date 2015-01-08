@@ -18,51 +18,77 @@
  limitations under the License.
 =========================================================================*/
 
-/** UuidComponent component */
+/** UUID component for generating UUIDs and searching by UUID. */
 class UuidComponent extends AppComponent
-  {
-  /** Get using id*/
-  public function getByUid($uuid)
+{
+    /**
+     * Generate a version 4 UUID.
+     *
+     * @return string
+     */
+    public function generate()
     {
-    $model = MidasLoader::loadModel('Community');
-    $dao = $model->getByUuid($uuid);
-    if($dao != false)
-      {
-      $dao->resourceType = MIDAS_RESOURCE_COMMUNITY;
-      return $dao;
-      }
-
-    $model = MidasLoader::loadModel('Folder');
-    $dao = $model->getByUuid($uuid);
-    if($dao != false)
-      {
-      $dao->resourceType = MIDAS_RESOURCE_FOLDER;
-      return $dao;
-      }
-
-    $model = MidasLoader::loadModel('Item');
-    $dao = $model->getByUuid($uuid);
-    if($dao != false)
-      {
-      $dao->resourceType = MIDAS_RESOURCE_ITEM;
-      return $dao;
-      }
-
-    $model = MidasLoader::loadModel('ItemRevision');
-    $dao = $model->getByUuid($uuid);
-    if($dao != false)
-      {
-      $dao->resourceType = MIDAS_RESOURCE_REVISION;
-      return $dao;
-      }
-
-    $model = MidasLoader::loadModel('User');
-    $dao = $model->getByUuid($uuid);
-    if($dao != false)
-      {
-      $dao->resourceType = MIDAS_RESOURCE_USER;
-      return $dao;
-      }
-    return false;
+        return str_replace('-', '', \Rhumsaa\Uuid\Uuid::uuid4()->toString());
     }
-  } // end class
+
+    /**
+     * Return a resource given its unique id.
+     *
+     * @param string $uuid UUID
+     * @return false|CommunityDao|FolderDao|ItemDao|ItemRevisionDao|UserDao
+     */
+    public function getByUid($uuid)
+    {
+        /** @var CommunityModel $communityModel */
+        $communityModel = MidasLoader::loadModel('Community');
+        $dao = $communityModel->getByUuid($uuid);
+
+        if ($dao !== false) {
+            $dao->resourceType = MIDAS_RESOURCE_COMMUNITY;
+
+            return $dao;
+        }
+
+        /** @var FolderModel $folderModel */
+        $folderModel = MidasLoader::loadModel('Folder');
+        $dao = $folderModel->getByUuid($uuid);
+
+        if ($dao !== false) {
+            $dao->resourceType = MIDAS_RESOURCE_FOLDER;
+
+            return $dao;
+        }
+
+        /** @var ItemModel $itemModel */
+        $itemModel = MidasLoader::loadModel('Item');
+        $dao = $itemModel->getByUuid($uuid);
+
+        if ($dao !== false) {
+            $dao->resourceType = MIDAS_RESOURCE_ITEM;
+
+            return $dao;
+        }
+
+        /** @var ItemRevisionModel $itemRevisionModel */
+        $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
+        $dao = $itemRevisionModel->getByUuid($uuid);
+
+        if ($dao !== false) {
+            $dao->resourceType = MIDAS_RESOURCE_REVISION;
+
+            return $dao;
+        }
+
+        /** @var UserModel $userModel */
+        $userModel = MidasLoader::loadModel('User');
+        $dao = $userModel->getByUuid($uuid);
+
+        if ($dao !== false) {
+            $dao->resourceType = MIDAS_RESOURCE_USER;
+
+            return $dao;
+        }
+
+        return false;
+    }
+}

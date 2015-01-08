@@ -22,52 +22,53 @@ require_once BASE_PATH.'/modules/comments/models/base/ItemcommentModelBase.php';
 
 /** Item comment model implementation */
 class Comments_ItemcommentModel extends Comments_ItemcommentModelBase
-  {
-  /**
-   * Get (paginated) comments on an item
-   */
-  public function getComments($item, $limit = 10, $offset = 0)
+{
+    /**
+     * Get (paginated) comments on an item
+     */
+    public function getComments($item, $limit = 10, $offset = 0)
     {
-    $sql = $this->database->select()
-                ->where('item_id = ?', $item->getKey())
-                ->limit($limit, $offset)
-                ->order('date ASC');
+        $sql = $this->database->select()->where('item_id = ?', $item->getKey())->limit($limit, $offset)->order(
+            'date ASC'
+        );
 
-    $rowset = $this->database->fetchAll($sql);
-    $comments = array();
-    foreach($rowset as $row)
-      {
-      $comments[] = $this->initDao('Itemcomment', $row, 'comments');
-      }
-    return $comments;
+        $rowset = $this->database->fetchAll($sql);
+        $comments = array();
+        foreach ($rowset as $row) {
+            $comments[] = $this->initDao('Itemcomment', $row, 'comments');
+        }
+
+        return $comments;
     }
 
-  /**
-   * Delete all comments made by the user. Called when user is about to be deleted.
-   */
-  public function deleteByUser($user)
+    /**
+     * Delete all comments made by the user. Called when user is about to be deleted.
+     */
+    public function deleteByUser($user)
     {
-    Zend_Registry::get('dbAdapter')->delete($this->_name, 'user_id = '.$user->getKey());
+        Zend_Registry::get('dbAdapter')->delete($this->_name, 'user_id = '.$user->getKey());
     }
 
-  /**
-   * Delete all comments on a given item. Called when item is about to be deleted.
-   */
-  public function deleteByItem($item)
+    /**
+     * Delete all comments on a given item. Called when item is about to be deleted.
+     */
+    public function deleteByItem($item)
     {
-    Zend_Registry::get('dbAdapter')->delete($this->_name, 'item_id = '.$item->getKey());
+        Zend_Registry::get('dbAdapter')->delete($this->_name, 'item_id = '.$item->getKey());
     }
 
-  /**
-   * Get the total number of comments on the item
-   */
-  public function getTotal($item)
+    /**
+     * Get the total number of comments on the item
+     */
+    public function getTotal($item)
     {
-    $sql = $this->database->select()
-                ->from(array($this->_name), array('count' => 'count(*)'))
-                ->where('item_id = ?', $item->getKey());
+        $sql = $this->database->select()->from(array($this->_name), array('count' => 'count(*)'))->where(
+            'item_id = ?',
+            $item->getKey()
+        );
 
-    $row = $this->database->fetchRow($sql);
-    return $row['count'];
+        $row = $this->database->fetchRow($sql);
+
+        return $row['count'];
     }
-  }
+}

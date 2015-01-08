@@ -2,6 +2,7 @@
 /**
  * File picker - display a tree view to choose a file or a folder on the local computer
  * All the html elements have the prefix 'fp-' (for File Picker)
+ *
  * @param $script : php script to call (default: 'admin/filePicker')
  * @param $fileFilter : JS regular expression to validate filenames (default: '' ie accept all)
  *                      Use '[.]xml$' to allow only xml file.
@@ -12,62 +13,73 @@
  * @param $fileFilterErrorMsg : Message to display when regular expression is false
  * @param $destSelector : jquery selector to insert the filename when user click on 'OK'
  *
-**/
+ */
 
-  // assign unique identifier to this element
-  if(!isset($this->id))
-    {
+// assign unique identifier to this element
+if (!isset($this->id)) {
     throw new Zend_Exception("variable id is not set");
-    }
+}
 
-  if( !isset($this->script) ) $this->script = $this->webroot.'/admin/serversidefilechooser';
-  if( !isset($this->width) ) $this->width = 400;
-  if( !isset($this->height) ) $this->height = 400;
-  if( !isset($this->fileFilter) ) $this->fileFilter = '';
-  if( !isset($this->errorMessage) ) $this->errorMessage = 'Incorrect file type';
-  if( !isset($this->destSelector) ) $this->destSelector = 'body>XX'; // default selector return 0 elements
+if (!isset($this->script)) {
+    $this->script = $this->webroot.'/admin/serversidefilechooser';
+}
+if (!isset($this->width)) {
+    $this->width = 400;
+}
+if (!isset($this->height)) {
+    $this->height = 400;
+}
+if (!isset($this->fileFilter)) {
+    $this->fileFilter = '';
+}
+if (!isset($this->errorMessage)) {
+    $this->errorMessage = 'Incorrect file type';
+}
+if (!isset($this->destSelector)) {
+    $this->destSelector = 'body>XX';
+} // default selector return 0 elements
 ?>
 
-<input type="hidden" id="serversidefilechooser-id" value="<?php echo $this->id; ?>">
-<input type="hidden" id="serversidefilechooser-errorMessage" value="<?php echo $this->errorMessage; ?>">
-<input type="hidden" id="serversidefilechooser-destSelector" value="<?php echo $this->destSelector; ?>">
-<input type="hidden" id="serversidefilechooser-fileFilter" value="<?php echo $this->fileFilter; ?>">
-<input type="hidden" id="serversidefilechooser-script" value="<?php echo $this->script; ?>">
+<input type="hidden" id="serversidefilechooser-id" value="<?php echo $this->escape($this->id); ?>">
+<input type="hidden" id="serversidefilechooser-errorMessage" value="<?php echo $this->escape($this->errorMessage); ?>">
+<input type="hidden" id="serversidefilechooser-destSelector" value="<?php echo $this->escape($this->destSelector); ?>">
+<input type="hidden" id="serversidefilechooser-fileFilter" value="<?php echo $this->escape($this->fileFilter); ?>">
+<input type="hidden" id="serversidefilechooser-script" value="<?php echo $this->escape($this->script); ?>">
 
 <style>
-.fp-container {
-      }
+    .fp-container {
+    }
 
-/* The fp-XXX-panel is the div that gets lighted */
-#fp-<?php echo $this->id?>-panel {
-        display:none;
-        position:fixed;
-        top:100px;
-        left:50%;
-        margin-left:-200px;
-        width:<?php echo $this->width?>px;
-        background:#FFF;
-        padding:10px 15px 10px 15px;
-        border:2px solid #CCC;
-        z-index:101;
-        }
-
-/* The fp-XXX-panel is the div that covers the rest of the page */
-#fp-<?php echo $this->id?>-background {
-         display:none;
-         background:#000;
-         opacity:0.5;
-         filter:alpha(opacity=90);
-         position:absolute;
-         top:0;
-         left:0;
-         min-width:100%;
-         min-height:100%;
-         z-index:100;
-        }
-
-.fp-fileTree {
+    /* The fp-XXX-panel is the div that gets lighted */
+    #fp-<?php echo $this->escape($this->id); ?>-panel {
+        display: none;
+        position: fixed;
+        top: 100px;
+        left: 50%;
+        margin-left: -200px;
         width: <?php echo $this->width?>px;
+        background: #FFF;
+        padding: 10px 15px 10px 15px;
+        border: 2px solid #CCC;
+        z-index: 101;
+    }
+
+    /* The fp-XXX-panel is the div that covers the rest of the page */
+    #fp-<?php echo $this->escape($this->id); ?>-background {
+        display: none;
+        background: #000;
+        opacity: 0.5;
+        filter: alpha(opacity=90);
+        position: absolute;
+        top: 0;
+        left: 0;
+        min-width: 100%;
+        min-height: 100%;
+        z-index: 100;
+    }
+
+    .fp-fileTree {
+        width: <?php echo $this->escape($this->width); ?>px;
         height: 300px;
         border: 1px solid #BBB;
         border-right-color: #FFF;
@@ -76,35 +88,34 @@
         overflow: scroll;
         padding: 5px;
         text-align: left;
-      }
+    }
 
-.fp-inputFile {
+    .fp-inputFile {
         position: relative;
-        width: <?php echo $this->width+5?>px;
-      }
+        width: <?php echo $this->escape($this->width + 5); ?>px;
+    }
 
-.fp-inputButton {
+    .fp-inputButton {
         position: relative;
         float: left;
         display: block;
         width: 100px;
         margin: 3px 40px;
-      }
+    }
 
-.fp-open {
-      }
+    .fp-open {
+    }
 </style>
 <?php
-  $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.filetree.js');
-  $this->headScript()->appendFile($this->coreWebroot.'/public/js/element/serversidefilechooser.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.filetree.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/element/serversidefilechooser.js');
 ?>
 
-<!--  <input type="submit" id="fp-<?php echo $this->id?>-open" class="fp-open" value="Choose"></input>  -->
-<div id="fp-<?php echo $this->id?>-container" class="fp-container">
-  <div id="fp-<?php echo $this->id?>-panel">
-    <div id="fp-<?php echo $this->id?>-fileTree" class="fp-fileTree"></div>
-    <input id="fp-<?php echo $this->id?>-inputFile" class="fp-inputFile" type="text" disabled />
-    <input id="fp-<?php echo $this->id?>-inputButtonCancel" class="fp-inputButton" type="submit" value="Cancel" />
-    <input id="fp-<?php echo $this->id?>-inputButtonOK" class="fp-inputButton" type="submit" value="Ok" />
-  </div>
+<div id="fp-<?php echo $this->escape($this->id); ?>-container" class="fp-container">
+    <div id="fp-<?php echo $this->escape($this->id); ?>-panel">
+        <div id="fp-<?php echo $this->escape($this->id); ?>-fileTree" class="fp-fileTree"></div>
+        <input id="fp-<?php echo $this->escape($this->id); ?>-inputFile" class="fp-inputFile" type="text" disabled/>
+        <input id="fp-<?php echo $this->escape($this->id); ?>-inputButtonCancel" class="fp-inputButton" type="submit" value="Cancel"/>
+        <input id="fp-<?php echo $this->escape($this->id); ?>-inputButtonOK" class="fp-inputButton" type="submit" value="Ok"/>
+    </div>
 </div>

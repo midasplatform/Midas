@@ -19,10 +19,24 @@
 =========================================================================*/
 
 /**
- * Item thumbnail DAO
+ * Item thumbnail DAO for the thumbnailcreator module.
+ *
+ * @method int getItemthumbnailId()
+ * @method void setItemthumbnailId(int $itemthumbnailId)
+ * @method int getItemId()
+ * @method void setItemId(int $itemId)
+ * @method int getThumbnailId()
+ * @method void setThumbnailId(int $thumbnailId)
+ * @method ItemDao getItem()
+ * @method void setItem(ItemDao $item)
+ * @method void setDagFilename(string $dagFilename)
+ * @package Modules\Thumbnailcreator\DAO
  */
 class Thumbnailcreator_ItemthumbnailDao extends Thumbnailcreator_AppDao
-  {
-  public $_model = 'Itemthumbnail';
-  public $_module = 'thumbnailcreator';
-  }
+{
+    /** @var string */
+    public $_model = 'Itemthumbnail';
+
+    /** @var string */
+    public $_module = 'thumbnailcreator';
+}

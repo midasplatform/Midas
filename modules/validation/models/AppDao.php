@@ -19,9 +19,12 @@
 =========================================================================*/
 
 /**
- * AppDao for the validation module.
+ * Generic DAO class for the validation module.
+ *
+ * @package Modules\Validation\DAO
  */
 class Validation_AppDao extends MIDAS_GlobalDao
-  {
-  public $moduleName = 'validation';
-  } // end class
+{
+    /** @var string */
+    public $moduleName = 'validation';
+}

@@ -18,12 +18,18 @@
  limitations under the License.
 =========================================================================*/
 
-echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/community/community.invitation.js?'.time().'"></script>';
+echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/community/community.invitation.js?'.time(
+    ).'"></script>';
 ?>
-<link href="<?php echo $this->coreWebroot?>/public/css/community/community.invitation.css?<?php echo time();?>" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->coreWebroot ?>/public/css/community/community.invitation.css" rel="stylesheet"
+      type="text/css"/>
+
+<input type='hidden' id='directAdd' value='<?php echo $this->escape($this->directAdd); ?>' />
 
 <div class='invitationSearch'>
-  <input type='text' id='live_invitation_search' value='Start typing a name or email address...' autocomplete='off' autocorrect='off' autocapitalize='off' />
-  <input type='hidden' id='live_invitation_search_value' value='init' />
-  <div id='searchInvitationLoading' style='display:none'></div>
+    <input type='text' id='live_invitation_search' value='Start typing a name or email address...' autocomplete='off'
+           autocorrect='off' autocapitalize='off'/>
+    <input type='hidden' id='live_invitation_search_value' value='init'/>
+
+    <div id='searchInvitationLoading' style='display:none'></div>
 </div>

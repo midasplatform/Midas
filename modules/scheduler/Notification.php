@@ -17,90 +17,87 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** notification manager*/
+
+/** Notification manager for the scheduler module */
 class Scheduler_Notification extends MIDAS_Notification
-  {
-  public $_moduleModels = array('Job');
-  public $_moduleDaos = array('Job');
-  public $_components = array('Json');
-  public $moduleName = 'scheduler';
+{
+    public $_moduleModels = array('Job');
+    public $_moduleDaos = array('Job');
+    public $_components = array('Json');
+    public $moduleName = 'scheduler';
 
-  /** init notification process*/
-  public function init()
+    /** init notification process */
+    public function init()
     {
-    $this->addTask('TASK_SCHEDULER_SCHEDULE_TASK', 'scheduleTask', "Schedule a task. Parameters: task, priority, params");
+        $this->addTask(
+            'TASK_SCHEDULER_SCHEDULE_TASK',
+            'scheduleTask',
+            "Schedule a task. Parameters: task, priority, params"
+        );
 
-    $this->addCallBack('CALLBACK_SCHEDULER_SCHEDULE_TASK', 'scheduleTask');
-    $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
-    }//end init
+        $this->addCallBack('CALLBACK_SCHEDULER_SCHEDULE_TASK', 'scheduleTask');
+        $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
+    }
 
-  /** get Config Tabs */
-  public function scheduleTask($params)
+    /** get Config Tabs */
+    public function scheduleTask($params)
     {
-    $tasks = Zend_Registry::get('notifier')->tasks;
-    if(!isset($params['task']) || !isset($tasks[$params['task']]))
-      {
-      throw new Zend_Exception('Unable to identify task: '.$params['task']);
-      }
-    if(!isset($params['priority']))
-      {
-      $params['priority'] = MIDAS_EVENT_PRIORITY_NORMAL;
-      }
-    if(!isset($params['run_only_once']))
-      {
-      $params['run_only_once'] = true;
-      }
-
-    if(!isset($params['fire_time']))
-      {
-      $params['fire_time'] = date("Y-m-d H:i:s");
-      }
-    else if(is_numeric($params['fire_time']))
-      {
-      $params['fire_time'] = date("Y-m-d H:i:s", $params['fire_time']);
-      }
-
-    if(!$params['run_only_once'])
-      {
-      if(!isset($params['time_interval']))
-        {
-        throw new Zend_Exception('Please set time interval');
+        $tasks = Zend_Registry::get('notifier')->tasks;
+        if (!isset($params['task']) || !isset($tasks[$params['task']])) {
+            throw new Zend_Exception('Unable to identify task: '.$params['task']);
         }
-      }
-    $job = new Scheduler_JobDao();
-    $job->setTask($params['task']);
-    $job->setPriority($params['priority']);
-    $job->setRunOnlyOnce($params['run_only_once']);
-    $job->setFireTime($params['fire_time']);
-    if(!$params['run_only_once'])
-      {
-      $job->setTimeInterval($params['time_interval']);
-      }
-    if($this->logged)
-      {
-      $job->setCreatorId($this->userSession->Dao->getKey());
-      }
-    $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
-    $job->setParams(JsonComponent::encode($params['params']));
+        if (!isset($params['priority'])) {
+            $params['priority'] = MIDAS_EVENT_PRIORITY_NORMAL;
+        }
+        if (!isset($params['run_only_once'])) {
+            $params['run_only_once'] = true;
+        }
 
-    $this->Scheduler_Job->save($job);
-    return;
+        if (!isset($params['fire_time'])) {
+            $params['fire_time'] = date('Y-m-d H:i:s');
+        } elseif (is_numeric($params['fire_time'])) {
+            $params['fire_time'] = date('Y-m-d H:i:s', $params['fire_time']);
+        }
+
+        if (!$params['run_only_once']) {
+            if (!isset($params['time_interval'])) {
+                throw new Zend_Exception('Please set time interval');
+            }
+        }
+        $job = new Scheduler_JobDao();
+        $job->setTask($params['task']);
+        $job->setPriority($params['priority']);
+        $job->setRunOnlyOnce($params['run_only_once']);
+        $job->setFireTime($params['fire_time']);
+        if (!$params['run_only_once']) {
+            $job->setTimeInterval($params['time_interval']);
+        }
+        if ($this->logged) {
+            $job->setCreatorId($this->userSession->Dao->getKey());
+        }
+        $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
+        $job->setParams(JsonComponent::encode($params['params']));
+
+        $this->Scheduler_Job->save($job);
+
+        return;
     }
 
-  /**
-   * If a user is deleted, we should remove references to them in the
-   * scheduler_job table.
-   * @param userDao The user dao that is about to be deleted
-   */
-  public function handleUserDeleted($params)
+    /**
+     * If a user is deleted, we should remove references to them in the
+     * scheduler_job table.
+     *
+     * @param userDao The user dao that is about to be deleted
+     */
+    public function handleUserDeleted($params)
     {
-    if(!isset($params['userDao']))
-      {
-      throw new Zend_Exception('Error: userDao parameter required');
-      }
-    $user = $params['userDao'];
+        if (!isset($params['userDao'])) {
+            throw new Zend_Exception('Error: userDao parameter required');
+        }
+        $user = $params['userDao'];
 
-    $jobModel = MidasLoader::loadModel('Job', $this->moduleName);
-    $jobModel->removeUserReferences($user->getKey());
+        /** @var Scheduler_JobModel $jobModel */
+        $jobModel = MidasLoader::loadModel('Job', $this->moduleName);
+        $jobModel->removeUserReferences($user->getKey());
     }
-  } // end class
+}

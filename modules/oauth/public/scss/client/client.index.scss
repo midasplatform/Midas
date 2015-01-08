@@ -1,0 +1,51 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+div {
+    &.sectionHeader {
+        color: #666;
+        display: inline;
+        float: left;
+        font-size: 16px;
+        margin-bottom: 5px;
+        padding-top: 3px;
+    }
+    &.sectionContainer {
+        margin-bottom: 30px;
+        padding-top: 6px;
+    }
+}
+
+.myClientsTable th, .myAuthorizationsTable th {
+    background-color: #DDE4E4;
+    font-weight: normal;
+    padding: 3px 10px 3px 5px;
+}
+
+.myClientsTable td, .myAuthorizationsTable td {
+    background-color: #FBFBFB;
+    padding: 3px;
+}
+
+.myClientsTable, .myAuthorizationsTable {
+    width: 100%;
+}
+
+.noClientsMessage {
+    color: #888;
+    font-style: italic;
+    padding-left: 5px;
+}
+
+.newClientButton {
+    float: left;
+    margin-left: 10px;
+    padding-bottom: 2px;
+}
+
+div.bottomButtons {
+    float: right;
+    margin-top: 25px;
+    input {
+        margin-left: 10px;
+    }
+}

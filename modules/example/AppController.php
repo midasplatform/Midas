@@ -20,6 +20,6 @@
 
 /** App controller for the example module */
 class Example_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'example';
-  }
+{
+    public $moduleName = 'example';
+}

@@ -17,3 +17,14 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
+define('STATISTICS_PIWIK_URL_KEY', 'piwik_url');
+define('STATISTICS_PIWIK_URL_DEFAULT_VALUE', '');
+define('STATISTICS_PIWIK_SITE_ID_KEY', 'piwik_site_id');
+define('STATISTICS_PIWIK_SITE_ID_DEFAULT_VALUE', '');
+define('STATISTICS_PIWIK_API_KEY_KEY', 'piwik_api_key');
+define('STATISTICS_PIWIK_API_KEY_DEFAULT_VALUE', '');
+define('STATISTICS_IP_INFO_DB_API_KEY_KEY', 'ip_info_db_api_key');
+define('STATISTICS_IP_INFO_DB_API_KEY_DEFAULT_VALUE', '');
+define('STATISTICS_SEND_DAILY_REPORTS_KEY', 'send_daily_reports');
+define('STATISTICS_SEND_DAILY_REPORTS_DEFAULT_VALUE', '');

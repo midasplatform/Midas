@@ -18,25 +18,35 @@
  limitations under the License.
 =========================================================================*/
 
-/** Notification manager for the @MN@ module */
+/**
+ * Notification manager for the @MN@ module.
+ *
+ * @package Modules\@MN_CAP@\Notification
+ */
 class @MN_CAP@_Notification extends MIDAS_Notification
-  {
-  public $moduleName = '@MN@';
+{
+    /** @var string */
+    public $moduleName = '@MN@';
 
-  /** Init notification process */
-  public function init()
+    /** @TODO Initialize the notification process. */
+    public function init()
     {
-    $fc = Zend_Controller_Front::getInstance();
-    $this->moduleWebroot = $fc->getBaseUrl().'/modules/'.$this->moduleName;
-    $this->coreWebroot = $fc->getBaseUrl().'/core';
+        $fc = Zend_Controller_Front::getInstance();
+        $this->moduleWebroot = $fc->getBaseUrl().'/modules/'.$this->moduleName;
+        $this->coreWebroot = $fc->getBaseUrl().'/core';
 
-    $this->addCallBack('CALLBACK_CORE_ITEM_DELETED', 'handleItemDeleted');
+        $this->addCallBack('CALLBACK_CORE_ITEM_DELETED', 'handleItemDeleted');
     }
 
-  /** STUB: Example of receiving a callback when an item is deleted */
-  public function handleItemDeleted($params)
+    /**
+     * @TODO Handle the callback when an item is deleted.
+     *
+     * @param array $params parameters
+     */
+    public function handleItemDeleted($params)
     {
-    $itemDao = $params['item'];
-    // TODO: Do something with this item DAO
+        $itemDao = $params['item'];
+
+        // TODO: Do something with this item DAO
     }
-  }
+}

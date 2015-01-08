@@ -17,4 +17,7 @@
 # limitations under the License.
 #=============================================================================
 
-add_midas_test( RemoteprocessingJobModel JobModelTest.php )
+set(module_name remoteprocessing)
+to_titlecase(${module_name} module_name_titlecase)
+
+add_midas_test(${module_name_titlecase}JobModel JobModelTest.php)

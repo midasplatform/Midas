@@ -20,36 +20,45 @@
 
 /** Apiitem Component for api methods */
 class Dicomextractor_ApiitemComponent extends AppComponent
-  {
-  /**
-   * Extract the dicom metadata from a revision
-   * @path /dicomextractor/item/{id}
-   * @http PUT
-   * @param id the id of the item to be extracted
-   * @return the id of the revision
-   */
-  function extract($args)
+{
+    /**
+     * Extract the dicom metadata from a revision
+     *
+     * @path /dicomextractor/item/{id}
+     * @http PUT
+     * @param id the id of the item to be extracted
+     * @return the id of the revision
+     *
+     * @param array $args parameters
+     * @throws Exception
+     */
+    public function extract($args)
     {
-    $apihelperComponent = MidasLoader::loadComponent('Apihelper');
-    $apihelperComponent->validateParams($args, array('id'));
+        /** @var ApihelperComponent $apihelperComponent */
+        $apihelperComponent = MidasLoader::loadComponent('Apihelper');
+        $apihelperComponent->validateParams($args, array('id'));
 
-    $itemModel = MidasLoader::loadModel("Item");
-    $authComponent = MidasLoader::loadComponent('Authentication');
-    $itemDao = $itemModel->load($args['id']);
-    $userDao = $authComponent->getUser($args,
-                                       Zend_Registry::get('userSession')->Dao);
-    if(!$itemModel->policyCheck($itemDao, $userDao, MIDAS_POLICY_WRITE))
-      {
-      throw new Exception('You didn\'t log in or you don\'t have the write '.
-        'permission for the given item.', MIDAS_INVALID_POLICY);
-      }
+        /** @var ItemModel $itemModel */
+        $itemModel = MidasLoader::loadModel("Item");
 
-    $revisionDao = $itemModel->getLastRevision($itemDao);
+        /** @var AuthenticationComponent $authComponent */
+        $authComponent = MidasLoader::loadComponent('Authentication');
+        $itemDao = $itemModel->load($args['id']);
+        $userDao = $authComponent->getUser($args, Zend_Registry::get('userSession')->Dao);
+        if (!$itemModel->policyCheck($itemDao, $userDao, MIDAS_POLICY_WRITE)) {
+            throw new Exception(
+                'You didn\'t log in or you don\'t have the write '.'permission for the given item.',
+                MIDAS_INVALID_POLICY
+            );
+        }
 
-    $dicomComponent = MidasLoader::loadComponent('Extractor',
-                                                      'dicomextractor');
-    $dicomComponent->extract($revisionDao);
-    $dicomComponent->thumbnail($itemDao);
-    return json_encode($revisionDao);
+        $revisionDao = $itemModel->getLastRevision($itemDao);
+
+        /** @var Dicomextractor_ExtractorComponent $dicomComponent */
+        $dicomComponent = MidasLoader::loadComponent('Extractor', 'dicomextractor');
+        $dicomComponent->extract($revisionDao);
+        $dicomComponent->thumbnail($itemDao);
+
+        return json_encode($revisionDao);
     }
-  }
+}

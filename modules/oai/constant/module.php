@@ -18,4 +18,9 @@
  limitations under the License.
 =========================================================================*/
 
-//define("MIDAS_EXAMPLE", 0);
+define('OAI_REPOSITORY_IDENTIFIER_KEY', 'repository_identifier');
+define('OAI_REPOSITORY_IDENTIFIER_DEFAULT_VALUE', 'midas.example.org');
+define('OAI_REPOSITORY_NAME_KEY', 'repository_name');
+define('OAI_REPOSITORY_NAME_DEFAULT_VALUE', 'midas');
+define('OAI_ADMIN_EMAIL_KEY', 'admin_email');
+define('OAI_ADMIN_EMAIL_DEFAULT_VALUE', 'midas@example.org');

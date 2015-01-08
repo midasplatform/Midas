@@ -20,6 +20,6 @@
 
 /** App controller for the visualize module */
 class Visualize_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'visualize';
-  }
+{
+    public $moduleName = 'visualize';
+}

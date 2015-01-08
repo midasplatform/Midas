@@ -18,46 +18,61 @@
  limitations under the License.
 =========================================================================*/
 
+/** Base item comment model class for the comments module */
 abstract class Comments_ItemcommentModelBase extends Comments_AppModel
-  {
-  /** constructor */
-  public function __construct()
+{
+    /** constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'comments_item';
-    $this->_daoName = 'ItemcommentDao';
-    $this->_key = 'comment_id';
+        parent::__construct();
+        $this->_name = 'comments_item';
+        $this->_daoName = 'ItemcommentDao';
+        $this->_key = 'comment_id';
 
-    $this->_mainData = array(
-      'comment_id' => array('type' => MIDAS_DATA),
-      'user_id' => array('type' => MIDAS_DATA),
-      'item_id' => array('type' => MIDAS_DATA),
-      'comment' => array('type' => MIDAS_DATA),
-      'date' => array('type' => MIDAS_DATA),
-      'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
-      'item' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Item', 'parent_column' => 'item_id', 'child_column' => 'item_id')
-      );
-    $this->initialize();
+        $this->_mainData = array(
+            'comment_id' => array('type' => MIDAS_DATA),
+            'user_id' => array('type' => MIDAS_DATA),
+            'item_id' => array('type' => MIDAS_DATA),
+            'comment' => array('type' => MIDAS_DATA),
+            'date' => array('type' => MIDAS_DATA),
+            'user' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'User',
+                'parent_column' => 'user_id',
+                'child_column' => 'user_id',
+            ),
+            'item' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'Item',
+                'parent_column' => 'item_id',
+                'child_column' => 'item_id',
+            ),
+        );
+        $this->initialize();
     }
 
-  /** Get all the comments for an item */
-  abstract public function getComments($item, $limit = 10, $offset = 0);
-  /** Delete all comments made by the user */
-  abstract public function deleteByUser($user);
-  /** Delete all comments on the given item */
-  abstract public function deleteByItem($item);
-  /** Get total number of comments on an item */
-  abstract public function getTotal($item);
+    /** Get all the comments for an item */
+    abstract public function getComments($item, $limit = 10, $offset = 0);
 
-  /** Add a comment to an item */
-  public function addComment($user, $item, $comment)
+    /** Delete all comments made by the user */
+    abstract public function deleteByUser($user);
+
+    /** Delete all comments on the given item */
+    abstract public function deleteByItem($item);
+
+    /** Get total number of comments on an item */
+    abstract public function getTotal($item);
+
+    /** Add a comment to an item */
+    public function addComment($user, $item, $comment)
     {
-    $commentDao = MidasLoader::newDao('ItemcommentDao', 'comments');
-    $commentDao->setUserId($user->getKey());
-    $commentDao->setItemId($item->getKey());
-    $commentDao->setComment($comment);
-    $this->save($commentDao);
+        /** @var Comments_ItemcommentDao $commentDao */
+        $commentDao = MidasLoader::newDao('ItemcommentDao', 'comments');
+        $commentDao->setUserId($user->getKey());
+        $commentDao->setItemId($item->getKey());
+        $commentDao->setComment($comment);
+        $this->save($commentDao);
 
-    Zend_Registry::get('notifier')->callback('CALLBACK_COMMENTS_ADDED_COMMENT', array('comment' => $commentDao));
+        Zend_Registry::get('notifier')->callback('CALLBACK_COMMENTS_ADDED_COMMENT', array('comment' => $commentDao));
     }
-  }
+}

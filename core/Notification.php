@@ -19,81 +19,106 @@
 =========================================================================*/
 
 require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
-/** notification manager*/
+
+/**
+ * Generic notification manager class.
+ *
+ * @package Core\Notification
+ */
 class Notification extends MIDAS_Notification
-  {
-  public $_components = array('Utility', 'Authentication');
-  public $_models = array('User', 'Item');
+{
+    /** @var array */
+    public $_components = array('Utility', 'Authentication');
 
-  /** init notification process*/
-  public function init()
+    /** @var array */
+    public $_models = array('User', 'Item');
+
+    /** Initialize this notification manager. */
+    public function init()
     {
-    $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDasboard');
-    $this->addCallBack('CALLBACK_CORE_GET_CONFIG_TABS', 'getConfigTabs');
-    $this->addCallBack('CALLBACK_CORE_PASSWORD_CHANGED', 'setDefaultWebApiKey');
-    $this->addCallBack('CALLBACK_CORE_NEW_USER_ADDED', 'setDefaultWebApiKey');
-    $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
-    $this->addCallBack('CALLBACK_CORE_PARAMETER_AUTHENTICATION', 'tokenAuth');
-    }//end init
-
-  /** generate dashboard information */
-  public function getDasboard()
-    {
-    $return = array();
-    $return['Config Folder Writable'] = array(is_writable(LOCAL_CONFIGS_PATH));
-    $return['Data Folder Writable'] = array(is_writable(UtilityComponent::getDataDirectory()));
-    // pass in empty string since we want to check the overall root temp directory
-    $return['Temporary Folder Writable'] = array(is_writable(UtilityComponent::getTempDirectory('')));
-
-    return $return;
-    }//end _getDasboard
-
-  /** get config Tabs */
-  public function getConfigTabs($params)
-    {
-    $user = $params['user'];
-    $fc = Zend_Controller_Front::getInstance();
-    $webroot = $fc->getBaseUrl();
-    return array('API' => $webroot.'/apikey/usertab?userId='.$user->getKey());
+        $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDasboard');
+        $this->addCallBack('CALLBACK_CORE_GET_CONFIG_TABS', 'getConfigTabs');
+        $this->addCallBack('CALLBACK_CORE_PASSWORD_CHANGED', 'setDefaultWebApiKey');
+        $this->addCallBack('CALLBACK_CORE_NEW_USER_ADDED', 'setDefaultWebApiKey');
+        $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
+        $this->addCallBack('CALLBACK_CORE_PARAMETER_AUTHENTICATION', 'tokenAuth');
     }
 
-  /** Reset the user's default web API key */
-  public function setDefaultWebApiKey($params)
+    /**
+     * Handle the get dashboard callback.
+     *
+     * @return array map of dashboard fields to their values
+     */
+    public function getDasboard()
     {
-    if(!isset($params['userDao']))
-      {
-      throw new Zend_Exception('Error: userDao parameter required');
-      }
-    $userApiModel = MidasLoader::loadModel('Userapi');
-    $userApiModel->createDefaultApiKey($params['userDao']);
+        return array(
+            'Data Folder Writable' => array(is_writable(UtilityComponent::getDataDirectory())),
+            // pass in empty string since we want to check the overall root temp directory
+            'Temporary Folder Writable' => array(is_writable(UtilityComponent::getTempDirectory(''))),
+        );
     }
 
-  /**
-   * If a user is deleted, we should delete their api keys
-   * @param userDao the user dao that is about to be deleted
-   */
-  public function handleUserDeleted($params)
+    /**
+     * Handle the get configuration tabs callback.
+     *
+     * @param array $params parameters
+     * @return array map from tab names to URLs of the tab content
+     */
+    public function getConfigTabs($params)
     {
-    if(!isset($params['userDao']))
-      {
-      throw new Zend_Exception('Error: userDao parameter required');
-      }
-    $userApiModel = MidasLoader::loadModel('Userapi');
-    $apiKeys = $userApiModel->getByUser($params['userDao']);
+        $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
 
-    foreach($apiKeys as $apiKey)
-      {
-      $userApiModel->delete($apiKey);
-      }
+        return array('API' => $webroot.'/apikey/usertab?userId='.$params['user']->getKey());
     }
 
-  /**
-   * When we redirect from the web api for downloads, we add the user's token as a parameter,
-   * and the controller makes a callback to this module to get the user.
-   */
-  public function tokenAuth($params)
+    /**
+     * Handle the password changed callback. Reset the default API of the user.
+     *
+     * @param array $params parameters
+     * @throws Zend_Exception
+     */
+    public function setDefaultWebApiKey($params)
     {
-    $token = $params['authToken'];
-    return $this->Component->Authentication->getUser(array('token' => $token), null);
+        if (!isset($params['userDao'])) {
+            throw new Zend_Exception('Error: userDao parameter required');
+        }
+
+        /** @var UserapiModel $userApiModel */
+        $userApiModel = MidasLoader::loadModel('Userapi');
+        $userApiModel->createDefaultApiKey($params['userDao']);
     }
-  } // end class
+
+    /**
+     * Handle the user deleted callback. Delete the API keys of the user.
+     *
+     * @param array $params parameters
+     * @throws Zend_Exception
+     */
+    public function handleUserDeleted($params)
+    {
+        if (!isset($params['userDao'])) {
+            throw new Zend_Exception('Error: userDao parameter required');
+        }
+
+        /** @var UserapiModel $userApiModel */
+        $userApiModel = MidasLoader::loadModel('Userapi');
+        $apiKeys = $userApiModel->getByUser($params['userDao']);
+
+        foreach ($apiKeys as $apiKey) {
+            $userApiModel->delete($apiKey);
+        }
+    }
+
+    /**
+     * Handle the parameter authentication callback. When we redirect from the
+     * API for downloads, we add a user token as a parameter, and the
+     * controller makes a callback here to get the user.
+     *
+     * @param array $params parameters
+     * @return false|UserDao user DAO or false on failure
+     */
+    public function tokenAuth($params)
+    {
+        return $this->Component->Authentication->getUser(array('token' => $params['authToken']), null);
+    }
+}

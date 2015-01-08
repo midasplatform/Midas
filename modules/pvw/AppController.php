@@ -18,8 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
-/** Controller base class for the module */
+/** App controller for the pvw module */
 class Pvw_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'pvw';
-  }
+{
+    public $moduleName = 'pvw';
+}

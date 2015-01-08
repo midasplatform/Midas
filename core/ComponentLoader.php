@@ -19,35 +19,42 @@
 =========================================================================*/
 
 /**
- * @deprecated Use MidasLoader static method loadComponent() instead.
+ * Legacy component loader.
+ *
+ * @deprecated replaced by static methods of MidasLoader
+ * @package Core\Deprecated
  */
 class MIDAS_ComponentLoader
-  {
-  /**
-   * Loads components (array or string)
-   * @deprecated
-   */
-  public function loadComponents($components, $module = '')
+{
+    /**
+     * Load multiple components into the Zend registry.
+     *
+     * @param array|string $components names of the components to load
+     * @param string $module name of the module from which to load the components, defaults to core
+     * @deprecated replaced by AppComponent MidasLoader::loadComponent(string $component, string $module)
+     */
+    public function loadComponents($components, $module = '')
     {
-    if(is_string($components))
-      {
-      MidasLoader::loadComponent($components, $module);
-      }
-    else if(is_array($components))
-      {
-      foreach($components as $component)
-        {
-        MidasLoader::loadComponent($component, $module);
+        if (is_string($components)) {
+            MidasLoader::loadComponent($components, $module);
+        } elseif (is_array($components)) {
+            foreach ($components as $component) {
+                MidasLoader::loadComponent($component, $module);
+            }
         }
-      }
     }
 
-  /**
-   * Loads a component
-   * @deprecated
-   */
-  public function loadComponent($component, $module = '')
+    /**
+     * Load a component into the Zend registry.
+     *
+     * @param string $component name of the component to load
+     * @param string $module name of the module from which to load the component, defaults to core
+     * @return mixed|AppComponent component that was loaded
+     * @throws Zend_Exception
+     * @deprecated replaced by AppComponent MidasLoader::loadComponent(string $component, string $module)
+     */
+    public function loadComponent($component, $module = '')
     {
-    return MidasLoader::loadComponent($component, $module);
+        return MidasLoader::loadComponent($component, $module);
     }
-  }
+}

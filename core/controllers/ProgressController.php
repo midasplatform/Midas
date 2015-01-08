@@ -22,50 +22,48 @@
  * Progress controller
  */
 class ProgressController extends AppController
-  {
-  public $_models = array('Progress');
-  public $_daos = array();
-  public $_components = array();
-  public $_forms = array();
+{
+    public $_models = array('Progress');
+    public $_daos = array();
+    public $_components = array();
+    public $_forms = array();
 
-  /**
-   * For any action that you intend to track progress on, you should call this first
-   * to create and return your progress object.  You can then pass the progressId parameter
-   * to the controller and it will update that progress object.
-   * @return Echoes the progress dao that was just created
-   */
-  public function createAction()
+    /**
+     * For any action that you intend to track progress on, you should call this first
+     * to create and return your progress object.  You can then pass the progressId parameter
+     * to the controller and it will update that progress object.
+     *
+     * @return Echoes the progress dao that was just created
+     */
+    public function createAction()
     {
-    $this->disableLayout();
-    $this->disableView();
+        $this->disableLayout();
+        $this->disableView();
 
-    $progress = $this->Progress->createProgress();
-    echo JsonComponent::encode($progress->toArray());
+        $progress = $this->Progress->createProgress();
+        echo JsonComponent::encode($progress->toArray());
     }
 
-  /**
-   * Action for querying progress of a certain event. Should be called with ajax.
-   * @param progressId The id of the progress object to query
-   * @return Echoes the progress dao if one exists, or false if it is completed or DNE.
-   */
-  public function getAction()
+    /**
+     * Action for querying progress of a certain event. Should be called with ajax.
+     *
+     * @param progressId The id of the progress object to query
+     * @return Echoes the progress dao if one exists, or false if it is completed or DNE.
+     */
+    public function getAction()
     {
-    $progressId = $this->getParam('progressId');
-    if(!isset($progressId))
-      {
-      throw new Zend_Exception('Must pass progressId parameter');
-      }
-    $this->disableLayout();
-    $this->disableView();
+        $progressId = $this->getParam('progressId');
+        if (!isset($progressId)) {
+            throw new Zend_Exception('Must pass progressId parameter');
+        }
+        $this->disableLayout();
+        $this->disableView();
 
-    $progress = $this->Progress->load($progressId);
-    if(!$progress)
-      {
-      echo JsonComponent::encode(array());
-      }
-    else
-      {
-      echo JsonComponent::encode($progress->toArray());
-      }
+        $progress = $this->Progress->load($progressId);
+        if (!$progress) {
+            echo JsonComponent::encode(array());
+        } else {
+            echo JsonComponent::encode($progress->toArray());
+        }
     }
-  }
+}

@@ -17,6 +17,9 @@
 # limitations under the License.
 #=============================================================================
 
-add_midas_test( OauthAuthorizeController AuthorizeControllerTest.php )
-add_midas_test( OauthClientController ClientControllerTest.php )
-add_midas_test( OauthTokenController TokenControllerTest.php )
+set(module_name oauth)
+to_titlecase(${module_name} module_name_titlecase)
+
+add_midas_test(${module_name_titlecase}AuthorizeController AuthorizeControllerTest.php)
+add_midas_test(${module_name_titlecase}ClientController ClientControllerTest.php)
+add_midas_test(${module_name_titlecase}TokenController TokenControllerTest.php)

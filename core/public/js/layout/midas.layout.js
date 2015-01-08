@@ -1,8 +1,8 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
-var json;
-var itemselected = false;
+var json = json || {};
 var midas = midas || {};
+var itemselected = false;
 
 // Prevent error if console.log is called
 if (typeof console != "object") {
@@ -13,10 +13,10 @@ if (typeof console != "object") {
 
 // Main calls
 $(function () {
-
+    'use strict';
     // Parse json content
     // jQuery 1.8 has weird bugs when using .html() here, use the old-style innerHTML here
-    json = jQuery.parseJSON($('div.jsonContent')[0].innerHTML);
+    json = $.parseJSON($('div.jsonContent')[0].innerHTML);
 
     // Preload login page
     if (!json.global.logged) {
@@ -156,22 +156,22 @@ $(function () {
             itemselected = true;
             if (ui.item.itemid) // if we have an item
             {
-                window.location = $('.webroot').val() + '/item/' + ui.item.itemid;
+                window.location = $('.webroot').val() + '/item/' + encodeURIComponent(ui.item.itemid);
             }
             else if (ui.item.communityid) // if we have a community
             {
-                window.location = $('.webroot').val() + '/community/' + ui.item.communityid;
+                window.location = $('.webroot').val() + '/community/' + encodeURIComponent(ui.item.communityid);
             }
             else if (ui.item.folderid) // if we have a folder
             {
-                window.location = $('.webroot').val() + '/folder/' + ui.item.folderid;
+                window.location = $('.webroot').val() + '/folder/' + encodeURIComponent(ui.item.folderid);
             }
             else if (ui.item.userid) // if we have a user
             {
-                window.location = $('.webroot').val() + '/user/' + ui.item.userid;
+                window.location = $('.webroot').val() + '/user/' + encodeURIComponent(ui.item.userid);
             }
             else {
-                window.location = $('.webroot').val() + '/search/' + ui.item.value;
+                window.location = $('.webroot').val() + '/search/' + encodeURIComponent(ui.item.value);
             }
         }
     });
@@ -283,6 +283,7 @@ $(function () {
 
 // asks the user to authenticate
 function globalAuthAsk(url) {
+    'use strict';
     if (json.global.logged) {
         window.location = url;
     }
@@ -293,12 +294,17 @@ function globalAuthAsk(url) {
     }
 }
 
-var qtipsHelp = new Array();
+var qtipsHelp = [];
 var iQtips = 0;
 
 function InitHelpQtip() {
-    if (!json.global.dynamichelp) return;
-    if (json.dynamicHelp == undefined) return;
+    'use strict';
+    if (!json.global.dynamichelp) {
+        return;
+    }
+    if (json.dynamicHelp === undefined) {
+        return;
+    }
     $.each(json.dynamicHelp, function (index, value) {
         var text = value.text;
         text = text.replace(/&lt;/g, '<');
@@ -318,16 +324,15 @@ function InitHelpQtip() {
 
 // Dynamic help sequence
 function TimerQtip() {
-    if (!json.global.dynamichelp) return;
+    'use strict';
+    if (!json.global.dynamichelp) {
+        return;
+    }
 
     $.each(qtipsHelp, function (index, value) {
         value.qtip('hide');
         value.qtip('disable');
     });
-
-    if (json.global.demomode) {
-        $('.loginLink').qtip('enable');
-    }
 
     if (!$('#dialogStartingGuide').is(':hidden')) {
         iQtips = 0;
@@ -346,7 +351,10 @@ function TimerQtip() {
 }
 
 function StopTimerQtip() {
-    if (!json.global.dynamichelp) return;
+    'use strict';
+    if (!json.global.dynamichelp) {
+        return;
+    }
     $.each(qtipsHelp, function (index, value) {
         value.qtip('hide');
         value.qtip('enable');

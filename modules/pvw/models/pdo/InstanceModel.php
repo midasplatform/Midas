@@ -22,18 +22,18 @@ require_once BASE_PATH.'/modules/pvw/models/base/InstanceModelBase.php';
 
 /** Instance model implementation */
 class Pvw_InstanceModel extends Pvw_InstanceModelBase
-  {
-  /**
-   * Return all daos of this type
-   */
-  public function getAll()
+{
+    /**
+     * Return all daos of this type
+     */
+    public function getAll()
     {
-    $rows = $this->database->fetchAll($this->database->select()->setIntegrityCheck(false));
-    $daos = array();
-    foreach($rows as $row)
-      {
-      $daos [] = $this->initDao('Instance', $row, $this->moduleName);
-      }
-    return $daos;
+        $rows = $this->database->fetchAll($this->database->select()->setIntegrityCheck(false));
+        $daos = array();
+        foreach ($rows as $row) {
+            $daos [] = $this->initDao('Instance', $row, $this->moduleName);
+        }
+
+        return $daos;
     }
-  }
+}

@@ -19,10 +19,36 @@
 =========================================================================*/
 
 /**
- * \class ItemDao
- * \brief DAO Item (table item)
+ * Item revision DAO.
+ *
+ * @method int getItemrevisionId()
+ * @method void setItemrevisionId(int $itemRevisionId)
+ * @method int getItemId()
+ * @method void setItemId(int $itemId)
+ * @method int getRevision()
+ * @method void setRevision(int $revision)
+ * @method string getDate()
+ * @method void setDate(string $date)
+ * @method string getChanges()
+ * @method void setChanges(string $changes)
+ * @method int getUserId()
+ * @method void setUserId(int $userId)
+ * @method int getLicenseId()
+ * @method void setLicenseId(int $licenseId)
+ * @method string getUuid()
+ * @method void setUuid(string $uuid)
+ * @method array getBitstreams()
+ * @method void setBitstreams(array $bitstreams)
+ * @method ItemDao getItem()
+ * @method void setItem(ItemDao $item)
+ * @method UserDao getUser()
+ * @method void setUser(UserDao $user)
+ * @method LicenseDao getLicense()
+ * @method void setLicense(LicenseDao $license)
+ * @package Core\DAO
  */
 class ItemRevisionDao extends AppDao
-  {
-  public $_model = 'ItemRevision';
-  }
+{
+    /** @var string */
+    public $_model = 'ItemRevision';
+}

@@ -17,33 +17,29 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /** demo overwrite component */
 class Landingpage_IndexCoreController extends Landingpage_AppController
-  {
+{
+    public $_moduleModels = array('Text');
+    public $_components = array('Utility');
 
-  public $_moduleModels = array('Text');
-  public $_components = array('Utility');
-
-  /**
-   * @method initAction()
-   *  Index Action (first action when we access the application)
-   */
-  function init()
+    /**
+     * Index Action (first action when we access the application)
+     */
+    public function init()
     {
-    } // end method indexAction
-
-  /** index action*/
-  function indexAction()
-    {
-    $textDaos = $this->Landingpage_Text->getAll();
-    if(isset($textDaos[0]))
-      {
-      $textDao = $textDaos[0];
-      $this->view->landingText = $this->Component->Utility->markDown($textDao->getText());
-      }
-    else
-      {
-      $this->callCoreAction();
-      }
     }
-  } // end class
+
+    /** index action */
+    public function indexAction()
+    {
+        $textDaos = $this->Landingpage_Text->getAll();
+        if (isset($textDaos[0])) {
+            $textDao = $textDaos[0];
+            $this->view->landingText = UtilityComponent::markdown(htmlspecialchars($textDao->getText(), ENT_QUOTES, 'UTF-8'));
+        } else {
+            $this->callCoreAction();
+        }
+    }
+}

@@ -18,8 +18,13 @@
  limitations under the License.
 =========================================================================*/
 
-/** Base model class for the @MN@ module */
+/**
+ * Generic model class for the @MN@ module.
+ *
+ * @package Modules\@MN_CAP@\Model
+ */
 class @MN_CAP@_AppModel extends MIDASModel
-  {
-  public $moduleName = '@MN@';
-  }
+{
+    /** @var string */
+    public $moduleName = '@MN@';
+}

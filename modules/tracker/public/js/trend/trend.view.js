@@ -1,5 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 midas.tracker = midas.tracker || {};
 
@@ -13,6 +15,7 @@ midas.tracker.unofficialVisible = true;
  * permalinking easy.
  */
 midas.tracker.updateUrlBar = function () {
+    'use strict';
     if (typeof window.history.replaceState == 'function') {
         var params = '?trendId=' + json.tracker.trendIds;
         params += '&startDate=' + $('#startdate').val();
@@ -35,6 +38,7 @@ midas.tracker.updateUrlBar = function () {
  * Extract the jqplot curve data from the scalar daos passed to us
  */
 midas.tracker.extractCurveData = function (curves) {
+    'use strict';
     // TODO remove duplicates from branchFilters
     if (!midas.tracker.branchFilters) {
         midas.tracker.branchFilters = [''];
@@ -56,7 +60,7 @@ midas.tracker.extractCurveData = function (curves) {
             midas.tracker.scalarIdMap[seriesIndex] = [];
 
             $.each(scalars, function (idx, scalar) {
-                if (!midas.tracker.unofficialVisible && scalar.official == 0) {
+                if (!midas.tracker.unofficialVisible && scalar.official === 0) {
                     return;
                 }
 
@@ -98,6 +102,7 @@ midas.tracker.extractCurveData = function (curves) {
  * Fill in the "info" sidebar section based on the curve data
  */
 midas.tracker.populateInfo = function (curveData) {
+    'use strict';
     var count = curveData.points[0].length;
     if (json.tracker.rightTrend) {
         count += curveData.points[1].length;
@@ -108,19 +113,20 @@ midas.tracker.populateInfo = function (curveData) {
 };
 
 midas.tracker.bindPlotEvents = function () {
+    'use strict';
     $('#chartDiv').unbind('jqplotDataClick').bind('jqplotClick', function (ev, gridpos, datapos, dataPoint, plot) {
-        if (dataPoint == null || typeof dataPoint.seriesIndex == 'undefined') {
+        if (dataPoint === null || typeof dataPoint.seriesIndex == 'undefined') {
             return;
         }
         var scalarId;
-        if (!json.tracker.rightTrend || dataPoint.seriesIndex == 0) {
+        if (!json.tracker.rightTrend || dataPoint.seriesIndex === 0) {
             scalarId = midas.tracker.scalarIdMap[dataPoint.seriesIndex][dataPoint.pointIndex];
         }
         else {
             scalarId = json.tracker.rightScalars[dataPoint.pointIndex].scalar_id;
         }
         $('.webroot').val(json.global.webroot);
-        midas.loadDialog('scalarPoint' + scalarId, '/tracker/scalar/details?scalarId=' + scalarId);
+        midas.loadDialog('scalarPoint' + scalarId, '/tracker/scalar/details?scalarId=' + encodeURIComponent(scalarId));
         midas.showDialog('Scalar details', false, {
             width: 500
         });
@@ -128,6 +134,7 @@ midas.tracker.bindPlotEvents = function () {
 };
 
 midas.tracker.renderChartArea = function (curveData, first) {
+    'use strict';
     if (midas.tracker.plot) {
         midas.tracker.plot.destroy();
     }
@@ -146,7 +153,6 @@ midas.tracker.renderChartArea = function (curveData, first) {
                         labelPosition: 'middle',
                         showGridline: false
                     }
-
                 },
                 yaxis: {
                     pad: 1.05,
@@ -220,7 +226,7 @@ midas.tracker.renderChartArea = function (curveData, first) {
                 }
                 $.each(midas.tracker.branchFilters, function (idx, branchFilter) {
                     if (!branchFilter) {
-                        branchFilter = '[all branches]'
+                        branchFilter = '[all branches]';
                     }
                     var branchLabel = label + ': ' + branchFilter;
                     labels.push(branchLabel);
@@ -256,6 +262,7 @@ midas.tracker.renderChartArea = function (curveData, first) {
 };
 
 $(window).load(function () {
+    'use strict';
     var inputCurves = json.tracker.scalars;
     if (json.tracker.rightTrend) {
         inputCurves.push(json.tracker.rightScalars);
@@ -338,7 +345,7 @@ $(window).load(function () {
     midas.tracker.renderChartArea(curveData, true);
 
     $('a.thresholdAction').click(function () {
-        midas.loadDialog('thresholdNotification', '/tracker/trend/notify?trendId=' + json.tracker.trends[0].trend_id);
+        midas.loadDialog('thresholdNotification', '/tracker/trend/notify?trendId=' + encodeURIComponent(json.tracker.trends[0].trend_id));
         midas.showDialog('Email notification settings', false);
     });
     $('a.axesControl').click(function () {
@@ -400,10 +407,12 @@ $(window).load(function () {
 });
 
 midas.tracker.trendDeleted = function (resp) {
-    window.location = json.global.webroot + '/tracker/producer/view?producerId=' + json.tracker.producerId;
+    'use strict';
+    window.location = json.global.webroot + '/tracker/producer/view?producerId=' + encodeURIComponent(json.tracker.producerId);
 };
 
 midas.tracker.updateBranchFilters = function () {
+    'use strict';
     midas.tracker.branchFilters = [];
     $.each($('.branchfilter'), function () {
         midas.tracker.branchFilters.push($(this).val());

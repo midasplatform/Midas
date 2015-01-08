@@ -1,8 +1,13 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
+var midas = midas || {};
+
 $(document).ready(function () {
+    'use strict';
     $('a.editProducerInfo').click(function () {
-        midas.loadDialog('editProducer', '/tracker/producer/edit?producerId=' + json.tracker.producer.producer_id);
+        midas.loadDialog('editProducer', '/tracker/producer/edit?producerId=' + encodeURIComponent(json.tracker.producer.producer_id));
         midas.showDialog('Edit Producer Information', false, {
             width: 495
         });
@@ -26,7 +31,7 @@ $(document).ready(function () {
                 producerId: json.tracker.producer.producer_id
             }, function (retVal) {
                 // Use location.replace so we remove this page from back button history
-                window.location.replace(json.global.webroot + '/community/' + json.tracker.producer.community_id + '#Trackers');
+                window.location.replace(json.global.webroot + '/community/' + encodeURIComponent(json.tracker.producer.community_id) + '#Trackers');
             });
         });
     });
@@ -35,7 +40,7 @@ $(document).ready(function () {
         var checked = $('input.selectTrend:checked');
         if (checked.length == 2) {
             $('a.visualizeDualAxis').show().unbind('click').click(function () {
-                window.location = json.global.webroot + '/tracker/trend/view?trendId=' + $(checked[0]).attr('element') + '&rightTrendId=' + $(checked[1]).attr('element');
+                window.location = json.global.webroot + '/tracker/trend/view?trendId=' + encodeURIComponent($(checked[0]).attr('element')) + '&rightTrendId=' + encodeURIComponent($(checked[1]).attr('element'));
             });
         }
         else {
@@ -47,7 +52,7 @@ $(document).ready(function () {
                 $.each(checked, function (idx, checkbox) {
                     trends += $(checkbox).attr('element') + ',';
                 });
-                window.location = json.global.webroot + '/tracker/trend/view?trendId=' + trends;
+                window.location = json.global.webroot + '/tracker/trend/view?trendId=' + encodeURIComponent(trends);
             });
             $('span.selectedTrendCount').html(checked.length);
         }

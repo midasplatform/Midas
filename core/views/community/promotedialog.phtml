@@ -20,29 +20,32 @@
 
 echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/jquery/jquery.form.js"></script>';
 echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/community/community.promotedialog.js"></script>';
-
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/community/community.promotedialog.css" />
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->coreWebroot ?>/public/css/common/common.genericPage.css"/>
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->coreWebroot ?>/public/css/community/community.promotedialog.css"/>
 
-Add user <b><?php echo $this->user->getFullName(); ?></b> to the following groups:
+Add user
+<b><?php echo $this->escape($this->user->getFullName()); ?></b> to the following groups:
 <br/><br/>
 <div>
-  <form class="genericForm" id="promoteGroupForm" action="<?php echo $this->webroot; ?>/community/promoteuser" method="POST">
-    <?php
-    if(count($this->availableGroups) == 0)
-      {
-      echo 'No available groups.';
-      }
-    foreach($this->availableGroups as $group)
-      {
-      echo '<input type="checkbox" name="groupCheckbox_'.$group->getKey().'">'.$group->getName().'</input><br/>';
-      }
-    ?>
-    <br />
-    <input id="addToGroupsSubmitButton" class="addToGroupsSubmit" type="submit" value="Add" name="addToGroups" />
-    <input type="hidden" id="promoteUserId" name="userId" value="<?php echo $this->user->getKey(); ?>" />
-    <input type="hidden" id="promoteCommunityId" name="communityId" value="<?php echo $this->community->getKey(); ?>" />
-  </form>
-  <img style="display: none;" id="promoteDialogLoading" alt="" src="<?php echo $this->coreWebroot; ?>/public/images/icons/loading.gif" />
+    <form class="genericForm" id="promoteGroupForm" action="<?php echo $this->webroot; ?>/community/promoteuser"
+          method="POST">
+        <?php
+        if (count($this->availableGroups) == 0) {
+            echo 'No available groups.';
+        }
+        foreach ($this->availableGroups as $group) {
+            echo '<input type="checkbox" name="groupCheckbox_'.$this->escape($group->getKey()).'">'.$this->escape($group->getName()).'</input><br/>';
+        }
+        ?>
+        <br/>
+        <input id="addToGroupsSubmitButton" class="addToGroupsSubmit" type="submit" value="Add" name="addToGroups"/>
+        <input type="hidden" id="promoteUserId" name="userId" value="<?php echo $this->escape($this->user->getKey()); ?>"/>
+        <input type="hidden" id="promoteCommunityId" name="communityId"
+               value="<?php echo $this->escape($this->community->getKey()); ?>"/>
+    </form>
+    <img style="display: none;" id="promoteDialogLoading" alt=""
+         src="<?php echo $this->coreWebroot; ?>/public/images/icons/loading.gif"/>
 </div>

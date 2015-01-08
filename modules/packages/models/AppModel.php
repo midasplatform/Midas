@@ -22,6 +22,6 @@
  * Base model class for the module
  */
 class Packages_AppModel extends MIDASModel
-  {
-  public $moduleName = 'packages';
-  }
+{
+    public $moduleName = 'packages';
+}

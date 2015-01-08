@@ -17,4 +17,7 @@
 # limitations under the License.
 #=============================================================================
 
-add_midas_test( KeyfilesDownloadController KeyfilesDownloadControllerTest.php )
+set(module_name keyfiles)
+to_titlecase(${module_name} module_name_titlecase)
+
+add_midas_test(${module_name_titlecase}DownloadController DownloadControllerTest.php)

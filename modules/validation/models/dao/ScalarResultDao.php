@@ -22,7 +22,7 @@
  * ScalarResult DAO
  */
 class Validation_ScalarResultDao extends AppDao
-  {
-  public $_model = 'ScalarResult';
-  public $_module = 'validation';
-  }
+{
+    public $_model = 'ScalarResult';
+    public $_module = 'validation';
+}

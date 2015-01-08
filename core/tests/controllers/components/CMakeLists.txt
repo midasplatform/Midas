@@ -17,5 +17,5 @@
 # limitations under the License.
 #=============================================================================
 
-add_midas_test( ExportComponent ExportComponentTest.php )
-add_midas_test( UtilityComponent UtilityComponentTest.php )
+add_midas_test(CoreExportComponent ExportComponentTest.php)
+add_midas_test(CoreUtilityComponent UtilityComponentTest.php)

@@ -17,3 +17,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
+define('METADATAEXTRACTOR_HACHOIR_METADATA_COMMAND_KEY', 'hachoir_metadata_command');
+define('METADATAEXTRACTOR_HACHOIR_METADATA_COMMAND_DEFAULT_VALUE', 'hachoir-metadata');

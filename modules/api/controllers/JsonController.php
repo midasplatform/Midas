@@ -20,12 +20,11 @@
 
 /** Api controller for /json */
 class Api_JsonController extends Api_AppController
-  {
-
-  /** Before filter */
-  function preDispatch()
+{
+    /** Before filter */
+    public function preDispatch()
     {
-    $this->forward('json', 'index', 'api', $this->getAllParams());
-    parent::preDispatch();
+        $this->forward('json', 'index', 'api', $this->getAllParams());
+        parent::preDispatch();
     }
-  } // end class
+}

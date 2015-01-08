@@ -18,11 +18,11 @@
  limitations under the License.
 =========================================================================*/
 
-if(file_exists(LOCAL_CONFIGS_PATH.'/termsofservice.txt'))
-  {
-  echo file_get_contents(LOCAL_CONFIGS_PATH.'/termsofservice.txt');
-  return;
-  }
+if (file_exists(LOCAL_CONFIGS_PATH.'/termsofservice.txt')) {
+    echo $this->escape(file_get_contents(LOCAL_CONFIGS_PATH.'/termsofservice.txt'));
+
+    return;
+}
 ?>
 
 <b>Privacy</b>

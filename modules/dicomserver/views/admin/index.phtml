@@ -1,0 +1,129 @@
+<?php
+/*=========================================================================
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+=========================================================================*/
+
+$this->declareVars('form', 'pageTitle');
+$this->headTitle($this->escape($this->pageTitle));
+?>
+
+<div class="viewMain">
+    <h1><?php echo $this->escape($this->pageTitle); ?></h1>
+    <p>
+        This module requires <i>dcm2xml</i> and <i>storescp</i> from DCMTK to implement a DICOM Store service (C-STORE)
+        receiver. It also requires <i>dcmqrscp</i> and <i>dcmqridx</i> from DCMTK  to implement DICOM Query/Retrieve
+        services (C-FIND and C-MOVE). To install DCMTK:<br />
+        <a href="http://support.dcmtk.org/redmine/projects/dcmtk/wiki/howto">support.dcmtk.org/redmine/projects/dcmtk/wiki/howto</a>.
+    </p>
+    <p>
+        This module requires <i>pydas</i> to upload DICOM files to the server. To install <i>pydas</i>:<br />
+        <a href="https://pydas.readthedocs.org">pydas.readthedocs.org</a>.
+    </p>
+    <?php echo $this->form; ?>
+    <h1>DICOM Server Module Dashboard</h1>
+    <table>
+    <?php
+    foreach ($this->dashboard as $name => $status) {
+        echo '<tr>';
+        echo '<td>'.$this->escape($name).'</td>';
+        if ($status[0]) {
+            echo '<td><img src="'.$this->baseUrl('core/public/images/icons/ok.png').'" /></td>';
+        } else {
+            echo '<td><img src="'.$this->baseUrl('core/public/images/icons/nok.png').'" /></td>';
+        }
+        if (isset($status[1])) {
+            echo '<td>'.$this->escape($status[1]).'</td>';
+        }
+        echo '</tr>';
+    }
+    ?>
+    </table>
+    <h1>Start/Stop DICOM Server</h1>
+
+    <p>Please restart the DICOM server after each configuration change.</p>
+
+    <div>
+        <div style="margin-right:10px;" id="startServer">Start</div>
+        <div style="margin-right:10px;" id="stopServer">Stop</div>
+        <div style="margin-right:10px;">
+            <h3>Status:
+                <span class="running_status" id="running_status" style="display:none">Running</span>
+                <span class="only_storescp_running_status" id="only_storescp_running_status" style="display:none">C-STORE receiver is running, but Query/Retrieve services are not running</span>
+                <span class="only_dcmqrscp_running_status" id="only_dcmqrscp_running_status" style="display:none">Query/Retrieve services are running, but C-STORE receiver is not running</span>
+                <span class="not_running_status" id="not_running_status" style="display:none">Not running</span>
+                <span class="not_supported_status" id="not_supported_status" style="display:none">This module is currently not supported on Windows</span>
+            </h3>
+        </div>
+        <div id="start_server_user" class="start_server_user" style="display:none">
+            User who started the DICOM server:
+            <span id="span_start_server_user"></span>
+        </div>
+        <br/>
+
+        <div style="margin-right:10px;display:none" id="hideError">Hide Error</div>
+        <div id="apicall_failure" class="apicall_failure" style="display:none">
+            <textarea id="apicall_failure_reason" rows="5" cols="80" readonly> </textarea>
+        </div>
+    </div>
+    <div class="manualCommandsWrapper" id="manualCommandsWrapper" style="display: none">
+        On some platforms, the above start/stop buttons may not work because the web server does not have the necessary
+        permissions.
+        The following commands can be used to start/stop DICOM server on the command line.
+        <h3 class="sectionHeader"><a href="#">Start/Stop DICOM server on the command line</a></h3>
+        <ul>
+            <li>
+                Before start/stop DICOM server on the command line, make sure the user to run the command:
+            </li>
+            <li>
+                1) has permission to run this command:
+                <span class="set_bold" id="manual_dcm2xml_command"/>
+            </li>
+            <li>
+                2) has permission to run this command:
+                <span class="set_bold" id="manual_storescp_command"/>
+            </li>
+            <li>
+                3) has permission to run this command:
+                <span class="set_bold" id="manual_dcmqrscp_command"/>
+            </li>
+            <li>
+                4) has permission to run this command:
+                <span class="set_bold" id="manual_dcmqridx_command"/>
+            </li>
+            <li>
+                5) has write permission to write to this directory:
+                <span class="set_bold" id="manual_reception_directory"/>
+            </li>
+            <li>
+                If all the above requirements are met, copy/paste the following commands (the leading and trailing
+                quotes
+                are not needed) to start/stop the DICOM server on the command line.
+                <span class="set_bold">Refresh the page to show the current running status if the DICOM server is started/stopped on the command line.</span>
+            </li>
+            <li class="manual_start">
+                <span class="set_bold">Start DICOM server:</span> <br/>
+                <span id="manual_start"></span>
+            </li>
+            <li class="manual_stop">
+                <span class="set_bold">Stop DICOM server:</span> <br/>
+                <span id="manual_stop"></span>
+            </li>
+        </ul>
+    </div>
+    <p><a href="<?php echo $this->url(array('controller' => 'admin', 'action' => 'index'), 'default'); ?>#tabs-modules">&laquo; Back to Modules Administration</a></p>
+</div>

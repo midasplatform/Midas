@@ -18,37 +18,40 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.form.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.autogrow-textarea.js"></script>
-<script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/producer/producer.edit.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot ?>/public/js/jquery/jquery.form.js"></script>
+<script type="text/javascript"
+        src="<?php echo $this->coreWebroot ?>/public/js/jquery/jquery.autogrow-textarea.js"></script>
+<script type="text/javascript" src="<?php echo $this->moduleWebroot ?>/public/js/producer/producer.edit.js"></script>
 
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/producer/producer.edit.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/producer/producer.edit.css"/>
 
 <div class="formWrapper">
-  <form class="editProducerForm genericForm" action="<?php echo $this->webroot?>/tracker/producer/editsubmit" method="POST">
-    <div class="formRow">
-      <label for="displayName">Name</label>
-      <input type="text" name="displayName" value="<?php echo $this->producer->getDisplayName();?>" />
-    </div>
-    <div class="formRow">
-      <label for="description">Description</label>
-      <textarea class="description" name="description"><?php echo $this->producer->getDescription();?></textarea>
-    </div>
-    <div class="formRow">
-      <label for="repository">Repository URL</label>
-      <input type="text" name="repository" value="<?php echo $this->producer->getRepository();?>" />
-    </div>
-    <div class="formRow">
-      <label for="revisionUrl">Revision URL</label>
-      <input type="text" name="revisionUrl" value="<?php echo $this->producer->getRevisionUrl();?>" />
-    </div>
-    <div class="formRow">
-      <label for="executableName">Executable Name</label>
-      <input type="text" name="executableName" value="<?php echo $this->producer->getExecutableName();?>" />
-    </div>
-    <input type="hidden" name="producerId" value="<?php echo $this->producer->getKey();?>" />
-    <div class="submitButtonContainer">
-      <input type="submit" class="globalButton" value="Save" />
-    </div>
-  </form>
+    <form class="editProducerForm genericForm" action="<?php echo $this->webroot ?>/tracker/producer/editsubmit"
+          method="POST">
+        <div class="formRow">
+            <label for="displayName">Name</label>
+            <input type="text" name="displayName" value="<?php echo $this->producer->getDisplayName(); ?>"/>
+        </div>
+        <div class="formRow">
+            <label for="description">Description</label>
+            <textarea class="description" name="description"><?php echo $this->producer->getDescription(); ?></textarea>
+        </div>
+        <div class="formRow">
+            <label for="repository">Repository URL</label>
+            <input type="text" name="repository" value="<?php echo $this->producer->getRepository(); ?>"/>
+        </div>
+        <div class="formRow">
+            <label for="revisionUrl">Revision URL</label>
+            <input type="text" name="revisionUrl" value="<?php echo $this->producer->getRevisionUrl(); ?>"/>
+        </div>
+        <div class="formRow">
+            <label for="executableName">Executable Name</label>
+            <input type="text" name="executableName" value="<?php echo $this->producer->getExecutableName(); ?>"/>
+        </div>
+        <input type="hidden" name="producerId" value="<?php echo $this->producer->getKey(); ?>"/>
+
+        <div class="submitButtonContainer">
+            <input type="submit" class="globalButton" value="Save"/>
+        </div>
+    </form>
 </div>

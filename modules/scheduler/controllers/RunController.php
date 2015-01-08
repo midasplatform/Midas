@@ -20,96 +20,84 @@
 
 /** Run controller for the scheduler module */
 class Scheduler_RunController extends Scheduler_AppController
-  {
-  public $_models = array('Setting');
-  public $_moduleModels = array('Job', 'JobLog');
-  public $_components = array('Json');
+{
+    public $_models = array('Setting');
+    public $_moduleModels = array('Job', 'JobLog');
+    public $_components = array('Json');
 
-  /** Index action */
-  function indexAction()
+    /** Index action */
+    public function indexAction()
     {
-    $startTime = time();
-    $this->disableLayout();
-    $this->disableView();
+        $startTime = time();
+        $this->disableLayout();
+        $this->disableView();
 
-    $lastStart = $this->Setting->getValueByName('lastrun', $this->moduleName);
-    if($lastStart !== null && $startTime < (int)$lastStart + 270)
-      {
-      throw new Zend_Exception('The scheduler is already running. Please wait for it to complete before invoking again.');
-      }
-    ignore_user_abort(true);
+        $lastStart = $this->Setting->getValueByName('lastrun', $this->moduleName);
+        if ($lastStart !== null && $startTime < (int) $lastStart + 270) {
+            throw new Zend_Exception(
+                'The scheduler is already running. Please wait for it to complete before invoking again.'
+            );
+        }
+        ignore_user_abort(true);
 
-    $this->Setting->setConfig('lastrun', ''.$startTime, $this->moduleName);
+        $this->Setting->setConfig('lastrun', $startTime, $this->moduleName);
 
-    $id = $this->getParam('id');
-    if(isset($id))
-      {
-      $jobs = $this->Scheduler_Job->load($id);
-      if($jobs == false)
-        {
-        throw new Zend_Exception('Unable to load job');
+        $id = $this->getParam('id');
+        if (isset($id)) {
+            $jobs = $this->Scheduler_Job->load($id);
+            if ($jobs == false) {
+                throw new Zend_Exception('Unable to load job');
+            }
+            $jobs = array($jobs);
+        } else {
+            $jobs = $this->Scheduler_Job->getJobsToRun(1000);
         }
-      $jobs = array($jobs);
-      }
-    else
-      {
-      $jobs = $this->Scheduler_Job->getJobsToRun(1000);
-      }
-    $modules = Zend_Registry::get('notifier')->modules;
-    $tasks = Zend_Registry::get('notifier')->tasks;
-    foreach($jobs as $job)
-      {
-      if(time() - $startTime > 270) // After 4.5 minutes, do not start any new tasks
-        {
-        break;
+        $modules = Zend_Registry::get('notifier')->modules;
+        $tasks = Zend_Registry::get('notifier')->tasks;
+        foreach ($jobs as $job) {
+            if (time() - $startTime > 270
+            ) { // After 4.5 minutes, do not start any new tasks
+                break;
+            }
+            $job->setStatus(SCHEDULER_JOB_STATUS_STARTED);
+            if ($job->getRunOnlyOnce() == 0) {
+                $interval = $job->getTimeInterval();
+                $currTime = time();
+                $firetime = strtotime($job->getFireTime()) + $interval;
+                while ($firetime < $currTime && $interval > 0) {
+                    $firetime += $interval; // only schedule jobs for the future
+                }
+                $job->setFireTime(date('Y-m-d H:i:s', $firetime));
+            }
+            $job->setTimeLastFired(date('Y-m-d H:i:s'));
+            $this->Scheduler_Job->save($job);
+            try {
+                if (!isset($tasks[$job->getTask()])) {
+                    throw new Zend_Exception('Unable to find task '.$job->getTask());
+                }
+                $log = call_user_func(
+                    array($modules[$tasks[$job->getTask()]['module']], $tasks[$job->getTask()]['method']),
+                    JsonComponent::decode($job->getParams())
+                );
+                if ($log && is_string($log) && $log != '') {
+                    $this->Scheduler_JobLog->saveLog($job, $log);
+                }
+            } catch (Zend_Exception $exc) {
+                $job->setStatus(SCHEDULER_JOB_STATUS_FAILED);
+                $this->Scheduler_Job->save($job);
+                $this->Scheduler_JobLog->saveLog($job, $exc->getMessage().' - '.$exc->getTraceAsString());
+                continue;
+            }
+            if ($job->getRunOnlyOnce() == 0) {
+                $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
+            } else {
+                $job->setStatus(SCHEDULER_JOB_STATUS_DONE);
+            }
+            $this->Scheduler_Job->save($job);
         }
-      $job->setStatus(SCHEDULER_JOB_STATUS_STARTED);
-      if($job->getRunOnlyOnce() == 0)
-        {
-        $interval = $job->getTimeInterval();
-        $currTime = time();
-        $firetime = strtotime($job->getFireTime()) + $interval;
-        while($firetime < $currTime && $interval > 0)
-          {
-          $firetime += $interval; //only schedule jobs for the future
-          }
-        $job->setFireTime(date("Y-m-d H:i:s", $firetime));
+        $lastRunSetting = $this->Setting->getDaoByName('lastrun', $this->moduleName);
+        if ($lastRunSetting) {
+            $this->Setting->delete($lastRunSetting);
         }
-      $job->setTimeLastFired(date("Y-m-d H:i:s"));
-      $this->Scheduler_Job->save($job);
-      try
-        {
-        if(!isset($tasks[$job->getTask()]))
-          {
-          throw new Zend_Exception('Unable to find task '.$job->getTask());
-          }
-        $log = call_user_func(array($modules[$tasks[$job->getTask()]['module']], $tasks[$job->getTask()]['method']), JsonComponent::decode($job->getParams()));
-        if($log && is_string($log) && $log != '')
-          {
-          $this->Scheduler_JobLog->saveLog($job, $log);
-          }
-        }
-      catch(Zend_Exception $exc)
-        {
-        $job->setStatus(SCHEDULER_JOB_STATUS_FAILED);
-        $this->Scheduler_Job->save($job);
-        $this->Scheduler_JobLog->saveLog($job, $exc->getMessage().' - '.$exc->getTraceAsString());
-        continue;
-        }
-      if($job->getRunOnlyOnce() == 0)
-        {
-        $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
-        }
-      else
-        {
-        $job->setStatus(SCHEDULER_JOB_STATUS_DONE);
-        }
-      $this->Scheduler_Job->save($job);
-      }
-    $lastRunSetting = $this->Setting->getDaoByName('lastrun', $this->moduleName);
-    if($lastRunSetting)
-      {
-      $this->Setting->delete($lastRunSetting);
-      }
     }
-  } // end class
+}

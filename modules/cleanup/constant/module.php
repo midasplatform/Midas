@@ -17,3 +17,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
+define('CLEANUP_DAYS_TO_KEEP_PARTIAL_FILES_KEY', 'days_to_keep_partial_files');
+define('CLEANUP_DAYS_TO_KEEP_PARTIAL_FILES_DEFAULT_VALUE', 1);

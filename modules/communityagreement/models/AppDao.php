@@ -17,13 +17,14 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /**
- * Communityagreement_AppDao
+ * Generic DAO for the communityagreement module.
  *
- * @category   Midas modules
- * @package    communityagreement
+ * @package Modules\Communityagreement\DAO
  */
 class Communityagreement_AppDao extends MIDAS_GlobalDao
-  {
-  public $moduleName = 'communityagreement';
-  }
+{
+    /** @var string */
+    public $moduleName = 'communityagreement';
+}

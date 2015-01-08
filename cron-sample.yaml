@@ -1,3 +1,4 @@
+---
 # Enable the task scheduler module and rename this file "cron.yaml".
 cron:
 - description: task scheduler job

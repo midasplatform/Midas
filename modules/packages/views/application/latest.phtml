@@ -22,26 +22,27 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.for
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.autogrow-textarea.js');
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/application/packages.application.latest.js');
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/application/packages.application.latest.css" />
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->moduleWebroot ?>/public/css/application/packages.application.latest.css"/>
 
 <div class="viewMain">
-  <h2>Select your platform and package type</h2>
+    <h2>Select your platform and package type</h2>
+
     <div class="platformListArea">
-      <div id="platformList" style="display: none;">
-      <?php
-      foreach($this->platforms as $platform)
-        {
-        echo '<h3 os="'.$platform['os'].'" arch="'.$platform['arch'].'"><a href="#"></a></h3>';
-        echo '<div class="platformContainer" os="'.$platform['os'].'" arch="'.$platform['arch'].'">';
-        echo '</div>';
-        }
-      ?>
-      </div>
+        <div id="platformList" style="display: none;">
+            <?php
+            foreach ($this->platforms as $platform) {
+                echo '<h3 os="'.$this->escape($platform['os']).'" arch="'.$this->escape($platform['arch']).'"><a href="#"></a></h3>';
+                echo '<div class="platformContainer" os="'.$this->escape($platform['os']).'" arch="'.$this->escape($platform['arch']).'">';
+                echo '</div>';
+            }
+            ?>
+        </div>
     </div>
 
 </div>
 
 <!-- TEMPLATE: package list -->
 <table id="packageListTemplate" class="packagesTable" style="display: none;">
-  <tbody></tbody>
+    <tbody></tbody>
 </table>

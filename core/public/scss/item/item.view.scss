@@ -1,0 +1,142 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+@import 'bourbon';
+
+div {
+    &.viewAction, &.viewInfo {
+        display: block !important;
+    }
+}
+
+table {
+    &.bitstreamList {
+        display: table !important;
+    }
+    &#metadataTable {
+        display: table !important;
+        table-layout: fixed;
+        th.elementHeader {
+            width: 6em;
+        }
+        td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+}
+
+div.genericInfo {
+    position: relative;
+    .genericSubtitle {
+        font-size: 10px;
+    }
+}
+
+iframe#fullscreenVisualizeIframe {
+    border: 0;
+}
+
+div#fullscreenPanel {
+    background-color: #FFF;
+    border-radius: 6px;
+    border: 1px solid #D7D7D7;
+    box-shadow: 0 0 6px #CCC;
+    float: right;
+    padding: 0 0 7px;
+    width: 380px;
+    h1 {
+        font-size: 14px;
+    }
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+img.closeVisuButton {
+    float: right;
+}
+
+span.manageMetadata {
+    display: inline;
+    float: right;
+}
+
+#revisionList {
+    h3 a {
+        text-decoration: none;
+    }
+    a img {
+        float: left;
+        margin-right: 2px;
+    }
+}
+
+#parentList a img {
+    position: relative;
+    top: 3px;
+}
+
+#licenseDiv {}
+
+div.itemViewMainSection {
+    border-top: 1px solid #D7D7D7;
+    margin-bottom: 14px;
+    h4 {
+        color: #999;
+        font-size: 11px;
+        margin-bottom: 0.67em;
+        margin-top: 0.67em;
+        text-shadow: #FFF 0 1px 1px;
+        text-transform: uppercase;
+    }
+}
+
+table {
+    &.bitstreamList, &.metadataList {
+        border-collapse: collapse;
+        border-spacing: 0;
+        width: 100%;
+    }
+    &.bitstreamList th, &.metadataList th {
+        background-color: #D0D0F6;
+        border: 1px solid #808080;
+    }
+    &.bitstreamList td, &.metadataList td {
+        border: 1px solid #B5B5B5;
+    }
+}
+
+div.revisionEntry {
+    border-top: 1px solid #A7A7A7 !important;
+    padding-left: 13px !important;
+    padding-right: 13px !important;
+}
+
+img {
+    &.editBitstreamIcon {
+        cursor: pointer;
+        float: none;
+    }
+    &.deleteBitstreamIcon, &.bitstreamInfoIcon {
+        cursor: pointer;
+        float: right;
+    }
+}
+
+button.topDownloadButton {
+    @include linear-gradient(to bottom, #4499CC, #4466AA);
+    border-radius: 6px;
+    border: #354856 1px solid;
+    color: #FFF;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    height: 35px;
+    width: 100px;
+    &:hover {
+        @include linear-gradient(to bottom, #227777, #224444);
+    }
+}

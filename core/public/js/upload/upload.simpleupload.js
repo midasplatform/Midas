@@ -1,80 +1,16 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 midas.upload = midas.upload || {};
 midas.upload.simpleupload = {};
-
-// We use shockwave flash uploader for IE (no multi-file upload support)
-midas.upload.simpleupload.initSwfupload = function () {
-    // Callback hook for the flash uploader
-    midas.upload.simpleupload.uploadPreStart = function (file) {
-        midas.upload.simpleupload.swfu.setPostParams({
-            'sid': $('.sessionId').val(),
-            'parent': $('#destinationId').val(),
-            'license': $('select[name=licenseSelect]').val()
-        });
-    }
-    var settings = {
-        flash_url: json.global.coreWebroot + "/public/js/swfupload/swfupload_fp10/swfupload.swf",
-        flash9_url: json.global.coreWebroot + "/public/js/swfupload/swfupload_fp9/swfupload_fp9.swf",
-        upload_url: json.global.webroot + "/upload/saveuploaded",
-        post_params: {
-            'sid': $('.sessionId').val(),
-            'parent': $('#destinationId').val(),
-            'license': $('select[name=licenseSelect]').val()
-        },
-        file_size_limit: $('.maxSizeFile').val() + " MB",
-        file_types: "*.*",
-        file_types_description: "All Files",
-        file_upload_limit: 100,
-        file_queue_limit: 0,
-        custom_settings: {
-            progressTarget: "fsUploadProgress",
-            cancelButtonId: "btnCancel",
-            pageObj: midas.upload.simpleupload
-        },
-        debug: false,
-
-        // Button settings
-        button_image_url: json.global.coreWebroot + "/public/js/swfupload/images/Button_65x29.png",
-        button_width: "65",
-        button_height: "20",
-        button_placeholder_id: "spanButtonPlaceHolder",
-        button_text: '<span class="theFont">' + $('.buttonBrowse').val() + '</span>',
-        button_text_style: ".theFont { font-size: 12; }",
-        button_text_left_padding: 5,
-        button_text_top_padding: 0,
-
-        // The event handler functions are defined in handlers.js
-        swfupload_preload_handler: preLoad,
-        swfupload_load_failed_handler: loadFailed,
-        file_queued_handler: fileQueued,
-        file_queue_error_handler: fileQueueError,
-        file_dialog_complete_handler: fileDialogComplete,
-        upload_start_handler: midas.upload.simpleupload.uploadPreStart,
-        upload_progress_handler: uploadProgress,
-        upload_error_handler: uploadError,
-        upload_success_handler: uploadSuccess,
-        upload_complete_handler: uploadComplete,
-        queue_complete_handler: queueComplete // Queue plugin event
-    };
-
-    $('#swfuploadContent').show();
-    midas.upload.simpleupload.swfu = new SWFUpload(settings);
-
-    $('#startUploadLink').click(function () {
-        if ($('#destinationId').val() == undefined || $('#destinationId').val().length == 0) {
-            midas.createNotice("Please select where you want to upload your files.", 4000, 'warning');
-            return false;
-        }
-        midas.upload.simpleupload.swfu.startUpload();
-    });
-}
 
 $('img#uploadAFile').show();
 $('img#uploadAFileLoading').hide();
 
 midas.upload.simpleupload.initHtml5FileUpload = function () {
+    'use strict';
     $('.progress-current').progressbar({
         value: 0
     });
@@ -104,7 +40,7 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
         if (currentIndex >= files.length) {
             // All files have finished
             $('.drop-zone').show();
-            window.location.href = json.global.webroot + '/folder/' + $('.destinationId').val();
+            window.location.href = json.global.webroot + '/folder/' + encodeURIComponent($('.destinationId').val());
             return;
         }
         var file = files[currentIndex];
@@ -113,7 +49,7 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
             dataType: 'json',
             type: 'GET',
             url: json.global.webroot + '/rest/system/uploadtoken?useSession=true' +
-                '&filename=' + file.name + '&folderid=' + $('#destinationId').val()
+                '&filename=' + encodeURIComponent(file.name) + '&folderid=' + encodeURIComponent($('#destinationId').val())
         }).success(function (resp) {
             if (file.size > 0) {
                 startByte = 0;
@@ -177,8 +113,8 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
     var _streamFileContents = function (uploadToken) {
         var file = files[currentIndex];
         var blob = file.slice(startByte);
-        var url = json.global.webroot + '/api/rest?method=midas.upload.perform&uploadtoken=' +
-            uploadToken + '&length=' + file.size + '&filename=' + (file.name || file.fileName);
+        var url = json.global.webroot + '/api/json?method=midas.upload.perform&uploadtoken=' +
+            encodeURIComponent(uploadToken) + '&length=' + encodeURIComponent(file.size) + '&filename=' + encodeURIComponent(file.name || file.fileName);
 
         resumeUploadId = uploadToken;
 
@@ -201,7 +137,7 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
 
         xhr.open('PUT', url, true);
         xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-        xhr.setRequestHeader('X-File-Name', file.name || file.fileName);
+        xhr.setRequestHeader('X-File-Name', encodeURIComponent(file.name || file.fileName));
         xhr.setRequestHeader('X-File-Size', blob.size);
         xhr.setRequestHeader('X-File-Type', file.type);
 
@@ -271,7 +207,7 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
             return;
         }
 
-        if ($('#destinationId').val() == undefined || $('#destinationId').val().length == 0) {
+        if ($('#destinationId').val() === undefined || $('#destinationId').val().length === 0) {
             midas.createNotice("Please select where you want to upload your files.", 4000, 'warning');
             return false;
         }
@@ -299,7 +235,7 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
         $.ajax({
             dataType: 'json',
             type: 'GET',
-            url: json.global.webroot + '/rest/system/uploadoffset?uploadtoken=' + resumeUploadId
+            url: json.global.webroot + '/rest/system/uploadoffset?uploadtoken=' + encodeURIComponent(resumeUploadId)
         }).success(function (resp) {
             startByte = resp.data.offset;
             overallProgress += startByte;
@@ -316,13 +252,16 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
 $('.uploadTabs').tabs({
     ajaxOptions: {
         beforeSend: function () {
+            'use strict';
             $('div.MainDialogLoading').show();
         },
         success: function () {
+            'use strict';
             $('div.MainDialogLoading').hide();
             $(".uploadTabs").show();
         },
         error: function (xhr, status, index, anchor) {
+            'use strict';
             $(anchor.hash).html("Couldn't load this tab. ");
         }
     }
@@ -330,21 +269,15 @@ $('.uploadTabs').tabs({
 
 $('.uploadTabs').show();
 $('#linkForm').ajaxForm(function () {
+    'use strict';
     $('.uploadedLinks').val(parseInt($('.uploadedLinks').val()) + 1);
 });
 
-if ($.browser.msie) {
-    $('#swfuploadContent').show();
-    $('#jqueryFileUploadContent').hide();
-    midas.upload.simpleupload.initSwfupload();
-}
-else {
-    $('#swfuploadContent').hide();
-    $('#jqueryFileUploadContent').show();
-    midas.upload.simpleupload.initHtml5FileUpload();
-}
+$('#jqueryFileUploadContent').show();
+midas.upload.simpleupload.initHtml5FileUpload();
 
 $('.browseMIDASLink').click(function () {
+    'use strict';
     midas.loadDialog("select", "/browse/selectfolder/?policy=write");
     midas.showDialog('Select upload destination');
 });
@@ -354,6 +287,7 @@ if ($('#destinationId').val()) {
 }
 
 midas.registerCallback('CALLBACK_CORE_UPLOAD_FOLDER_CHANGED', 'core', function () {
+    'use strict';
     $('#startUploadLink').removeClass('disabled');
 });
 

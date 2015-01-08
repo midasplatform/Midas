@@ -24,5 +24,5 @@ require_once BASE_PATH.'/modules/mfa/models/base/ApitokenModelBase.php';
  * PDO-level implementation of the MFA API Token model
  */
 class Mfa_ApitokenModel extends Mfa_ApitokenModelBase
-  {
-  }
+{
+}

@@ -20,6 +20,6 @@
 
 /** App controller for the packages module */
 class Packages_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'packages';
-  }
+{
+    public $moduleName = 'packages';
+}

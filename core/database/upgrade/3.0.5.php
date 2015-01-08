@@ -18,25 +18,22 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the core to version 3.0.5. */
 class Upgrade_3_0_5 extends MIDASUpgrade
-  {
-  public function mysql()
+{
+    /** Upgrade a MySQL database. */
+    public function mysql()
     {
-    $sql = "ALTER TABLE community MODIFY folder_id bigint(20) NULL DEFAULT NULL;  ";
-    $this->db->query($sql);
-    $sql = "ALTER TABLE community MODIFY publicfolder_id bigint(20) NULL DEFAULT NULL;  ";
-    $this->db->query($sql);
-    $sql = "ALTER TABLE community MODIFY privatefolder_id bigint(20) NULL DEFAULT NULL;  ";
-    $this->db->query($sql);
+        $this->db->query("ALTER TABLE community MODIFY folder_id bigint(20) NULL DEFAULT NULL;");
+        $this->db->query("ALTER TABLE community MODIFY publicfolder_id bigint(20) NULL DEFAULT NULL;");
+        $this->db->query("ALTER TABLE community MODIFY privatefolder_id bigint(20) NULL DEFAULT NULL;");
     }
 
-  public function pgsql()
+    /** Upgrade a PostgreSQL database. */
+    public function pgsql()
     {
-    $sql = "ALTER TABLE community ALTER COLUMN folder_id DROP NOT NULL; ; ";
-    $this->db->query($sql);
-    $sql = "ALTER TABLE community ALTER COLUMN publicfolder_id DROP NOT NULL; ; ";
-    $this->db->query($sql);
-    $sql = "ALTER TABLE community ALTER COLUMN privatefolder_id DROP NOT NULL; ; ";
-    $this->db->query($sql);
+        $this->db->query("ALTER TABLE community ALTER COLUMN folder_id DROP NOT NULL;");
+        $this->db->query("ALTER TABLE community ALTER COLUMN publicfolder_id DROP NOT NULL;");
+        $this->db->query("ALTER TABLE community ALTER COLUMN privatefolder_id DROP NOT NULL;");
     }
-  }
+}

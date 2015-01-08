@@ -18,29 +18,31 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link href="<?php echo $this->coreWebroot?>/public/css/community/community.create.css?<?php echo time()?>" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/community/community.create.js?<?php echo time()?>"></script>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="<?php echo $this->coreWebroot ?>/public/css/community/community.create.css" rel="stylesheet"
+      type="text/css"/>
+<script type="text/javascript" src="<?php echo $this->coreWebroot ?>/public/js/community/community.create.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
-<form id="createCommunityForm" class="genericForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
-  <div class="createNameElement">
-    <label for="name"><?php echo $this->t('Name')?></label>
-    <?php echo $this->form['name']?>
-  </div>
-  <div>
-    <label for="description"><?php echo $this->t('Description')?></label>
-    <?php echo $this->form['description']?>
-  </div>
-  <div class="radioElement">
-    <h4><?php echo $this->t('Privacy')?></h4>
-    <?php echo $this->form['privacy']?>
-
-    <div id="canJoinDiv">
-      <h4><?php echo $this->t('Who can join the community?')?></h4>
-      <?php echo $this->form['canJoin']?>
+<form id="createCommunityForm" class="genericForm" method="<?php echo $this->form['method'] ?>"
+      action="<?php echo $this->form['action'] ?>">
+    <div class="createNameElement">
+        <label for="name"><?php echo $this->t('Name') ?></label>
+        <?php echo $this->form['name'] ?>
     </div>
-  </div>
-  <div>
-    <?php echo $this->form['submit']?>
-  </div>
+    <div>
+        <label for="description"><?php echo $this->t('Description') ?></label>
+        <?php echo $this->form['description'] ?>
+    </div>
+    <div class="radioElement">
+        <h4><?php echo $this->t('Privacy') ?></h4>
+        <?php echo $this->form['privacy'] ?>
+
+        <div id="canJoinDiv">
+            <h4><?php echo $this->t('Who can join the community?') ?></h4>
+            <?php echo $this->form['canJoin'] ?>
+        </div>
+    </div>
+    <div>
+        <?php echo $this->form['submit'] ?>
+    </div>
 </form>

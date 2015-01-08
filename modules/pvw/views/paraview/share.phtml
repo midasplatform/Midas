@@ -18,7 +18,8 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/paraview/paraview.common.css" />
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->moduleWebroot ?>/public/css/paraview/paraview.common.css"/>
 
 <?php
 $this->headScript()->appendFile($this->moduleWebroot.'/public/import/ext/js-core/autobahn.min.js');
@@ -31,10 +32,10 @@ $this->headScript()->appendFile($this->webroot.'/modules/api/public/js/common/co
 ?>
 
 <div class="viewMain">
-  <div class="shareSessionMessage">You are viewing someone else's session. Interaction is disabled.</div>
-  <div id='renderercontainer' class="viewport-container">
-    <!-- The renderer will be inserted here -->
-  </div>
+    <div class="shareSessionMessage">You are viewing someone else's session. Interaction is disabled.</div>
+    <div id='renderercontainer' class="viewport-container">
+        <!-- The renderer will be inserted here -->
+    </div>
 </div>
 
 <div class="viewSideBar">

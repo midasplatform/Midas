@@ -19,10 +19,20 @@
 =========================================================================*/
 
 /**
- * \class SettingDao
- * \brief DAO  (table setting)
+ * Configuration setting DAO.
+ *
+ * @method int getSettingId()
+ * @method void setSettingId(int $settingId)
+ * @method string getName()
+ * @method void setName(string $name)
+ * @method string getModule()
+ * @method void setModule(string $module)
+ * @method string getValue()
+ * @method void setValue(string $value)
+ * @package Core\DAO
  */
 class SettingDao extends AppDao
-  {
-  public $_model = 'Setting';
-  }
+{
+    /** @var string */
+    public $_model = 'Setting';
+}

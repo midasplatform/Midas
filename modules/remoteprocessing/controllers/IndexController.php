@@ -17,17 +17,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** index controller*/
-class Remoteprocessing_IndexController extends Remoteprocessing_AppController
-  {
-  /** select action */
-  function selectactionAction()
-    {
-    $this->disableLayout();
-    }
 
-  /** dashboard */
-  function dashboardAction()
+/** index controller */
+class Remoteprocessing_IndexController extends Remoteprocessing_AppController
+{
+    /** select action */
+    public function selectactionAction()
     {
+        $this->disableLayout();
     }
-  } // end class
+}

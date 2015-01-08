@@ -18,4 +18,4 @@
  limitations under the License.
 =========================================================================*/
 
-//define("MIDAS_EXAMPLE", 0);
+// define('MIDAS_EXAMPLE', 0);

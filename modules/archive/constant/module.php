@@ -18,4 +18,5 @@
  limitations under the License.
 =========================================================================*/
 
-//define("MIDAS_EXAMPLE", 0);
+define('ARCHIVE_UNZIP_COMMAND_KEY', 'unzipCommand');
+define('ARCHIVE_UNZIP_COMMAND_DEFAULT_VALUE', '');

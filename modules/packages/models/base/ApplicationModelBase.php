@@ -22,38 +22,45 @@
  * Application Model Base
  */
 abstract class Packages_ApplicationModelBase extends Packages_AppModel
-  {
-  /** constructor*/
-  public function __construct()
+{
+    /** constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'packages_application';
-    $this->_key = 'application_id';
-    $this->_mainData = array(
-        'application_id' => array('type' => MIDAS_DATA),
-        'project_id' => array('type' => MIDAS_DATA),
-        'name' => array('type' => MIDAS_DATA),
-        'description' => array('type' => MIDAS_DATA),
-        'project' => array('type' => MIDAS_MANY_TO_ONE,
-                           'model' => 'Project',
-                           'module' => 'packages',
-                           'parent_column' => 'project_id',
-                           'child_column' => 'project_id')
-      );
-    $this->initialize();
+        parent::__construct();
+        $this->_name = 'packages_application';
+        $this->_key = 'application_id';
+        $this->_mainData = array(
+            'application_id' => array('type' => MIDAS_DATA),
+            'project_id' => array('type' => MIDAS_DATA),
+            'name' => array('type' => MIDAS_DATA),
+            'description' => array('type' => MIDAS_DATA),
+            'project' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'Project',
+                'module' => 'packages',
+                'parent_column' => 'project_id',
+                'child_column' => 'project_id',
+            ),
+        );
+        $this->initialize();
     }
 
-  abstract public function getAllByProjectId($projectId);
-  abstract public function getAllReleases($application);
-  abstract public function getDistinctPlatforms($application);
+    /** Get all by project id */
+    abstract public function getAllByProjectId($projectId);
 
-  /**
-   * Override the save function
-   */
-  public function save($application)
+    /** Get all releases */
+    abstract public function getAllReleases($application);
+
+    /** Get distinct platforms */
+    abstract public function getDistinctPlatforms($application);
+
+    /**
+     * Override the save function
+     */
+    public function save($application)
     {
-    // Strip out unsafe html tags from description
-    $application->setDescription(UtilityComponent::filterHtmlTags($application->getDescription()));
-    parent::save($application);
+        // Strip out unsafe html tags from description
+        $application->setDescription(UtilityComponent::filterHtmlTags($application->getDescription()));
+        parent::save($application);
     }
-  }
+}

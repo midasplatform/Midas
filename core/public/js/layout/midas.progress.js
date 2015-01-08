@@ -1,5 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 
 /**
@@ -11,6 +13,7 @@ var midas = midas || {};
  * @param success The success function
  */
 midas.ajaxWithProgress = function (widget, messageContainer, url, params, onSuccess) {
+    'use strict';
     $(widget).progressbar({
         value: 0
     });
@@ -37,8 +40,9 @@ midas.ajaxWithProgress = function (widget, messageContainer, url, params, onSucc
  * Internal function for polling progress and updating the progress bar element
  */
 midas._pollProgress = function (widget, messageContainer, progressId) {
+    'use strict';
     $.ajax({
-        url: json.global.webroot + '/progress/get?progressId=' + progressId,
+        url: json.global.webroot + '/progress/get?progressId=' + encodeURIComponent(progressId),
         success: function (data) {
             var progress = $.parseJSON(data);
             if (progress.progress_id) {
@@ -56,6 +60,7 @@ midas._pollProgress = function (widget, messageContainer, progressId) {
  * Internal function to render the progress in the widget
  */
 midas._updateProgress = function (widget, messageContainer, progress) {
+    'use strict';
     $(messageContainer).html(progress.message);
 
     if (progress.maximum > 0) {
@@ -67,7 +72,7 @@ midas._updateProgress = function (widget, messageContainer, progress) {
     }
     else {
         $(widget).hide();
-        if ($('img.progressIndeterminate').length == 0) {
+        if ($('img.progressIndeterminate').length === 0) {
             $(messageContainer).before(
                 ' <img class="progressIndeterminate" alt="" src="' + json.global.coreWebroot + '/public/images/icons/loading.gif" /> ');
         }

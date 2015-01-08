@@ -22,52 +22,58 @@
  * Threshold Notification Model Base
  */
 abstract class Tracker_ThresholdNotificationModelBase extends Tracker_AppModel
-  {
-  /** constructor*/
-  public function __construct()
+{
+    /** constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'tracker_threshold_notification';
-    $this->_daoName = 'ThresholdNotificationDao';
-    $this->_key = 'threshold_id';
-    $this->_mainData = array(
-        'threshold_id' => array('type' => MIDAS_DATA),
-        'trend_id' => array('type' => MIDAS_DATA),
-        'value' => array('type' => MIDAS_DATA),
-        'comparison' => array('type' => MIDAS_DATA),
-        'action' => array('type' => MIDAS_DATA),
-        'recipient_id' => array('type' => MIDAS_DATA),
-        'trend' => array('type' => MIDAS_MANY_TO_ONE,
-                            'model' => 'Trend',
-                            'module' => $this->moduleName,
-                            'parent_column' => 'trend_id',
-                            'child_column' => 'trend_id')
-      );
-    $this->initialize();
+        parent::__construct();
+        $this->_name = 'tracker_threshold_notification';
+        $this->_daoName = 'ThresholdNotificationDao';
+        $this->_key = 'threshold_id';
+        $this->_mainData = array(
+            'threshold_id' => array('type' => MIDAS_DATA),
+            'trend_id' => array('type' => MIDAS_DATA),
+            'value' => array('type' => MIDAS_DATA),
+            'comparison' => array('type' => MIDAS_DATA),
+            'action' => array('type' => MIDAS_DATA),
+            'recipient_id' => array('type' => MIDAS_DATA),
+            'trend' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'Trend',
+                'module' => $this->moduleName,
+                'parent_column' => 'trend_id',
+                'child_column' => 'trend_id',
+            ),
+        );
+        $this->initialize();
     }
 
-  abstract public function getNotifications($scalar);
-  abstract public function getUserSetting($user, $trend);
-  abstract public function deleteByTrend($trend);
+    /** Get notifications */
+    abstract public function getNotifications($scalar);
 
-  /**
-   * Check whether the given scalar value meets the threshold condition.
-   * Returns true if the action should be taken, i.e. the threshold was crossed.
-   */
-  public function testThreshold($value, $threshold)
+    /** Get user setting */
+    abstract public function getUserSetting($user, $trend);
+
+    /** Delete by trend */
+    abstract public function deleteByTrend($trend);
+
+    /**
+     * Check whether the given scalar value meets the threshold condition.
+     * Returns true if the action should be taken, i.e. the threshold was crossed.
+     */
+    public function testThreshold($value, $threshold)
     {
-    switch($threshold->getComparison())
-      {
-      case '>':
-        return $value > $threshold->getValue();
-      case '<':
-        return $value < $threshold->getValue();
-      case '>=':
-        return $value >= $threshold->getValue();
-      case '<=':
-        return $value <= $threshold->getValue();
-      default:
-        return false;
-      }
+        switch ($threshold->getComparison()) {
+            case '>':
+                return $value > $threshold->getValue();
+            case '<':
+                return $value < $threshold->getValue();
+            case '>=':
+                return $value >= $threshold->getValue();
+            case '<=':
+                return $value <= $threshold->getValue();
+            default:
+                return false;
+        }
     }
-  }
+}

@@ -18,22 +18,26 @@
  limitations under the License.
 =========================================================================*/
 
-echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/share/share.applyrecursivedialog.js?'.time().'"></script>';
-$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
+echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/share/share.applyrecursivedialog.js?'.time(
+    ).'"></script>';
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
 ?>
-<link href="<?php echo $this->coreWebroot?>/public/css/share/share.dialog.css?<?php echo time();?> " rel="stylesheet" type="text/css" />
-<br />
+<link href="<?php echo $this->coreWebroot ?>/public/css/share/share.dialog.css" rel="stylesheet" type="text/css"/>
+<br/>
 <?php echo $this->t('Would you also like to apply these permissions to all items and subfolders?'); ?>
 
-<br /><br /><br />
+<br/><br/><br/>
 
 <div id="applyPoliciesRecursiveProgressBar"></div>
 <div id="applyPoliciesRecursiveMessage"></div>
 
 <div id="applyPoliciesRecursiveForm" style="float: right">
-  <input type='hidden' id="folderId" value="<?php echo $this->folderId; ?>" />
-  <input class="globalButton" type='submit' name='submitButton' id='acceptApplyRecursive' value='<?php echo $this->t('Yes')?>' />
-  <input class="globalButton" style="margin-left: 15px;" type='button' name='declineApplyRecursive' id='declineApplyRecursive'
-         value='<?php echo $this->t('No')?>' />
+    <input type='hidden' id="folderId" value="<?php echo $this->escape($this->folderId); ?>"/>
+    <input class="globalButton" type='submit' name='submitButton' id='acceptApplyRecursive'
+           value='<?php echo $this->t('Yes') ?>'/>
+    <input class="globalButton" style="margin-left: 15px;" type='button' name='declineApplyRecursive'
+           id='declineApplyRecursive'
+           value='<?php echo $this->t('No') ?>'/>
 </div>
-<img id="applyPoliciesRecursiveLoadingGif" style="display: none; float: left" alt="" src="<?php echo  $this->coreWebroot?>/public/images/icons/loading.gif" />
+<img id="applyPoliciesRecursiveLoadingGif" style="display: none; float: left" alt=""
+     src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>

@@ -3,19 +3,19 @@
 var midas = midas || {};
 midas.mfa = midas.mfa || {};
 
-midas.mfa.validateConfig = function (formData, jqForm, options) {
-
-};
+midas.mfa.validateConfig = function (formData, jqForm, options) {};
 
 midas.mfa.successConfig = function (responseText, statusText, xhr, form) {
+    'use strict';
+    var jsonResponse;
     try {
-        var jsonResponse = jQuery.parseJSON(responseText);
+        jsonResponse = $.parseJSON(responseText);
     }
     catch (e) {
         midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
         return false;
     }
-    if (jsonResponse == null) {
+    if (jsonResponse === null) {
         midas.createNotice('An internal error occurred, please contact an administrator', 4000, 'error');
         return;
     }
@@ -26,6 +26,7 @@ midas.mfa.successConfig = function (responseText, statusText, xhr, form) {
  * Enable/disable the form elements based on the top checkbox
  */
 midas.mfa.setEnabledState = function () {
+    'use strict';
     if ($('#useOtpCheckbox').is(':checked')) {
         $('#otpSecret').removeAttr('disabled');
         $('#otpAlgorithmSelect').removeAttr('disabled');
@@ -39,6 +40,7 @@ midas.mfa.setEnabledState = function () {
 };
 
 $(document).ready(function () {
+    'use strict';
     $('#mfaConfigForm').ajaxForm({
         beforeSubmit: midas.mfa.validateConfig,
         success: midas.mfa.successConfig

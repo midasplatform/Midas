@@ -20,75 +20,73 @@
 
 /** Apikey controller for Web Api */
 class ApikeyController extends AppController
-  {
-  public $_models = array('User', 'Userapi');
-  public $_forms = array('Apikey');
-  public $_components = array('Date');
+{
+    /** @var array */
+    public $_models = array('User', 'Userapi');
 
-  /**
-   * Configuration action for a user's api keys
-   * @param userId The id of the user to display
-   */
-  function usertabAction()
+    /** @var array */
+    public $_forms = array('Apikey');
+
+    /** @var array */
+    public $_components = array('Date');
+
+    /**
+     * Configuration action for a user's api keys
+     *
+     * @param userId The id of the user to display
+     * @throws Zend_Exception
+     */
+    public function usertabAction()
     {
-    $this->disableLayout();
-    if(!$this->logged)
-      {
-      throw new Zend_Exception('Please Log in');
-      }
-
-    $userId = $this->getParam('userId');
-    if($this->userSession->Dao->getKey() != $userId &&
-       !$this->userSession->Dao->isAdmin())
-      {
-      throw new Zend_Exception('Only admins can view other user API keys');
-      }
-    $user = $this->User->load($userId);
-
-    $this->view->Date = $this->Component->Date;
-
-    $form = $this->Form->Apikey->createKeyForm();
-    $formArray = $this->getFormAsArray($form);
-    $formArray['expiration']->setValue('100');
-    $this->view->form = $formArray;
-    // Create a new API key
-    $createAPIKey = $this->getParam('createAPIKey');
-    $deleteAPIKey = $this->getParam('deleteAPIKey');
-    if(isset($createAPIKey))
-      {
-      $this->disableView();
-      $applicationName      = $this->getParam('appplication_name');
-      $tokenExperiationTime = $this->getParam('expiration');
-      $userapiDao = $this->Userapi->createKey($user, $applicationName, $tokenExperiationTime);
-      if($userapiDao != false)
-        {
-        echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+        $this->disableLayout();
+        if (!$this->logged) {
+            throw new Zend_Exception('Please Log in');
         }
-      else
-        {
-        echo JsonComponent::encode(array(false, $this->t('Error')));
-        }
-      }
-    else if(isset($deleteAPIKey))
-      {
-      $this->disableView();
-      $element = $this->getParam('element');
-      $userapiDao = $this->Userapi->load($element);
-      // Make sure the key belongs to the user
-      if($userapiDao != false && ($userapiDao->getUserId() == $userId || $this->userSession->Dao->isAdmin()))
-        {
-        $this->Userapi->delete($userapiDao);
-        echo JsonComponent::encode(array(true, $this->t('Changes saved')));
-        }
-      else
-        {
-        echo JsonComponent::encode(array(false, $this->t('Error')));
-        }
-      }
 
-    // List the previously generated API keys
-    $userapiDaos = $this->Userapi->getByUser($user);
-    $this->view->userapiDaos = $userapiDaos;
-    $this->view->user = $user;
+        $userId = $this->getParam('userId');
+        if ($this->userSession->Dao->getKey() != $userId && !$this->userSession->Dao->isAdmin()
+        ) {
+            throw new Zend_Exception('Only admins can view other user API keys');
+        }
+        $user = $this->User->load($userId);
+
+        $this->view->Date = $this->Component->Date;
+
+        $form = $this->Form->Apikey->createKeyForm();
+        $formArray = $this->getFormAsArray($form);
+        $formArray['expiration']->setValue('100');
+        $this->view->form = $formArray;
+        // Create a new API key
+        $createAPIKey = $this->getParam('createAPIKey');
+        $deleteAPIKey = $this->getParam('deleteAPIKey');
+        if (isset($createAPIKey)) {
+            $this->disableView();
+            $applicationName = $this->getParam('appplication_name');
+            $tokenExperiationTime = $this->getParam('expiration');
+            $userapiDao = $this->Userapi->createKey($user, $applicationName, $tokenExperiationTime);
+            if ($userapiDao != false) {
+                echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+            } else {
+                echo JsonComponent::encode(array(false, $this->t('Error')));
+            }
+        } elseif (isset($deleteAPIKey)) {
+            $this->disableView();
+            $element = $this->getParam('element');
+            $userapiDao = $this->Userapi->load($element);
+            // Make sure the key belongs to the user
+            if ($userapiDao != false && ($userapiDao->getUserId() == $userId || $this->userSession->Dao->isAdmin())
+            ) {
+                $this->Userapi->delete($userapiDao);
+                echo JsonComponent::encode(array(true, $this->t('Changes saved')));
+            } else {
+                echo JsonComponent::encode(array(false, $this->t('Error')));
+            }
+        }
+
+        // List the previously generated API keys
+        $userapiDaos = $this->Userapi->getByUser($user);
+        $this->view->userapiDaos = $userapiDaos;
+        $this->view->user = $user;
+        $this->view->serverURL = $this->getServerURL();
     }
-  } // end class
+}

@@ -19,18 +19,20 @@
 =========================================================================*/
 
 /**
- * Adds an index on bitstream.checksum for faster collision checking across
- * multiple assetstores
+ * Upgrade the core to version 3.2.3. Add an index on bitstream.checksum for
+ * faster collision checking across multiple asset stores.
  */
 class Upgrade_3_2_3 extends MIDASUpgrade
-  {
-  public function mysql()
+{
+    /** Upgrade a MySQL database. */
+    public function mysql()
     {
-    $this->db->query("ALTER TABLE `bitstream` ADD INDEX (`checksum`)");
+        $this->db->query("ALTER TABLE `bitstream` ADD KEY (`checksum`);");
     }
 
-  public function pgsql()
+    /** Upgrade a PostgreSQL database. */
+    public function pgsql()
     {
-    $this->db->query("CREATE INDEX bitstream_idx_checksum ON bitstream (checksum)");
+        $this->db->query("CREATE INDEX bitstream_idx_checksum ON bitstream (checksum);");
     }
-  }
+}

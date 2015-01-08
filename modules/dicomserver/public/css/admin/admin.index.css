@@ -1,0 +1,1 @@
+span.running_status{color:#090;font-weight:bold;}span.not_running_status,span.only_storescp_running_status,span.only_dcmqrscp_running_status,span.not_supported_status{color:#c80000;font-weight:bold;}textarea#apicall_failure_reason{color:#c80000;font-weight:bold;}div.manualCommandsWrapper li{margin:10px 0;}span.set_bold{font-weight:bold;}textarea#peer_aes{height:50px;width:460px;}

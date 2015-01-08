@@ -20,63 +20,71 @@
 
 /** Component for api methods */
 class Mfa_ApiComponent extends AppComponent
-  {
-  /**
-   * Helper function for verifying keys in an input array
-   */
-  private function _checkKeys($keys, $values)
+{
+    /**
+     * Helper function for verifying keys in an input array.
+     *
+     * @param array $keys
+     * @param array $values
+     * @throws Exception
+     */
+    private function _checkKeys($keys, $values)
     {
-    foreach($keys as $key)
-      {
-      if(!array_key_exists($key, $values))
-        {
-        throw new Exception('Parameter '.$key.' must be set.', -1);
+        foreach ($keys as $key) {
+            if (!array_key_exists($key, $values)) {
+                throw new Exception('Parameter '.$key.' must be set.', -1);
+            }
         }
-      }
     }
 
-  /**
-   * Submit your OTP after calling core login, and you will receive your api token
-   * @param otp The one-time password
-   * @param mfaTokenId The id of the temporary MFA token
-   * @return The api token
-   */
-  public function otpLogin($params)
+    /**
+     * Submit your OTP after calling core login, and you will receive your api token
+     *
+     * @param otp The one-time password
+     * @param mfaTokenId The id of the temporary MFA token
+     * @return The api token
+     * @throws Exception
+     */
+    public function otpLogin($params)
     {
-    $this->_checkKeys(array('otp', 'mfaTokenId'), $params);
-    $tempTokenModel = MidasLoader::loadModel('Apitoken', 'mfa');
-    $otpDeviceModel = MidasLoader::loadModel('Otpdevice', 'mfa');
-    $apiTokenModel = MidasLoader::loadModel('Token');
+        $this->_checkKeys(array('otp', 'mfaTokenId'), $params);
 
-    $tempToken = $tempTokenModel->load($params['mfaTokenId']);
-    if(!$tempToken)
-      {
-      throw new Exception('Invalid MFA token id', -1);
-      }
+        /** @var Mfa_ApitokenModel $tempTokenModel */
+        $tempTokenModel = MidasLoader::loadModel('Apitoken', 'mfa');
 
-    $apiToken = $apiTokenModel->load($tempToken->getTokenId());
-    if(!$apiToken)
-      {
-      $tempTokenModel->delete($tempToken);
-      throw new Exception('Corresponding api token no longer exists', -1);
-      }
-    $user = $tempToken->getUser();
-    $otpDevice = $otpDeviceModel->getByUser($user);
-    if(!$otpDevice)
-      {
-      $tempTokenModel->delete($tempToken);
-      throw new Exception('User does not have an OTP device', -1);
-      }
-    $tempTokenModel->delete($tempToken);
+        /** @var Mfa_OtpdeviceModel $otpDeviceModel */
+        $otpDeviceModel = MidasLoader::loadModel('Otpdevice', 'mfa');
 
-    $otpComponent = MidasLoader::loadComponent('Otp', 'mfa');
+        /** @var TokenModel $apiTokenModel */
+        $apiTokenModel = MidasLoader::loadModel('Token');
 
-    if(!$otpComponent->authenticate($otpDevice, $params['otp']))
-      {
-      throw new Exception('Incorrect OTP', -1);
-      }
+        $tempToken = $tempTokenModel->load($params['mfaTokenId']);
+        if (!$tempToken) {
+            throw new Exception('Invalid MFA token id', -1);
+        }
 
-    $token = $apiToken->getToken();
-    return array('token' => $token);
+        $apiToken = $apiTokenModel->load($tempToken->getTokenId());
+        if (!$apiToken) {
+            $tempTokenModel->delete($tempToken);
+            throw new Exception('Corresponding api token no longer exists', -1);
+        }
+        $user = $tempToken->getUser();
+        $otpDevice = $otpDeviceModel->getByUser($user);
+        if (!$otpDevice) {
+            $tempTokenModel->delete($tempToken);
+            throw new Exception('User does not have an OTP device', -1);
+        }
+        $tempTokenModel->delete($tempToken);
+
+        /** @var Mfa_OtpComponent $otpComponent */
+        $otpComponent = MidasLoader::loadComponent('Otp', 'mfa');
+
+        if (!$otpComponent->authenticate($otpDevice, $params['otp'])) {
+            throw new Exception('Incorrect OTP', -1);
+        }
+
+        $token = $apiToken->getToken();
+
+        return array('token' => $token);
     }
-  } // end class
+}

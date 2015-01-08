@@ -18,46 +18,44 @@
  limitations under the License.
 =========================================================================*/
 
-/** Folder forms*/
+/** Folder forms */
 class ItemForm extends AppForm
-  {
-  /** create edit folder form */
-  public function createEditForm()
+{
+    /** create edit folder form */
+    public function createEditForm()
     {
-    $form = new Zend_Form;
+        $form = new Zend_Form();
 
-    $form->setAction($this->webroot.'/item/edit')
-          ->setMethod('post');
+        $form->setAction($this->webroot.'/item/edit')->setMethod('post');
 
-    $name = new Zend_Form_Element_Text('name');
-    $name ->setRequired(true)
-          ->addValidator('NotEmpty', true);
+        $name = new Zend_Form_Element_Text('name');
+        $name->setRequired(true)->addValidator('NotEmpty', true);
 
-    $description = new Zend_Form_Element_Textarea('description');
-    $submit = new  Zend_Form_Element_Submit('submit');
-    $submit ->setLabel($this->t("Save"));
+        $description = new Zend_Form_Element_Textarea('description');
+        $submit = new  Zend_Form_Element_Submit('submit');
+        $submit->setLabel($this->t("Save"));
 
-    $form->addElements(array($name, $description, $submit));
-    return $form;
+        $form->addElements(array($name, $description, $submit));
+
+        return $form;
     }
 
-  /** create edit bitstream form */
-  public function createEditBitstreamForm()
+    /** create edit bitstream form */
+    public function createEditBitstreamForm()
     {
-    $form = new Zend_Form;
+        $form = new Zend_Form();
 
-    $form->setAction($this->webroot.'/item/editbitstream')
-          ->setMethod('post');
+        $form->setAction($this->webroot.'/item/editbitstream')->setMethod('post');
 
-    $name = new Zend_Form_Element_Text('name');
-    $name ->setRequired(true)
-          ->addValidator('NotEmpty', true);
+        $name = new Zend_Form_Element_Text('name');
+        $name->setRequired(true)->addValidator('NotEmpty', true);
 
-    $mimetype = new Zend_Form_Element_Text('mimetype');
-    $submit = new  Zend_Form_Element_Submit('submit');
-    $submit ->setLabel($this->t("Save"));
+        $mimetype = new Zend_Form_Element_Text('mimetype');
+        $submit = new  Zend_Form_Element_Submit('submit');
+        $submit->setLabel($this->t("Save"));
 
-    $form->addElements(array($name, $mimetype, $submit));
-    return $form;
+        $form->addElements(array($name, $mimetype, $submit));
+
+        return $form;
     }
-  } // end class
+}

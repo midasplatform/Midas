@@ -18,4 +18,17 @@
  limitations under the License.
 =========================================================================*/
 
-//define("MIDAS_EXAMPLE", 0);
+define('VISUALIZE_TEMPORARY_DIRECTORY_KEY', 'temporary_directory');
+define('VISUALIZE_TEMPORARY_DIRECTORY_DEFAULT_VALUE', '');
+define('VISUALIZE_USE_PARAVIEW_WEB_KEY', 'use_paraview_web');
+define('VISUALIZE_USE_PARAVIEW_WEB_DEFAULT_VALUE', '');
+define('VISUALIZE_USE_WEB_GL_KEY', 'use_web_gl');
+define('VISUALIZE_USE_WEB_GL_DEFAULT_VALUE', '');
+define('VISUALIZE_USE_SYMLINKS_KEY', 'use_symlinks');
+define('VISUALIZE_USE_SYMLINKS_DEFAULT_VALUE', '');
+define('VISUALIZE_TOMCAT_ROOT_URL_KEY', 'tomcat_root_url');
+define('VISUALIZE_TOMCAT_ROOT_URL_DEFAULT_VALUE', '');
+define('VISUALIZE_PVBATCH_COMMAND_KEY', 'pvbatch_command');
+define('VISUALIZE_PVBATCH_COMMAND_DEFAULT_VALUE', '');
+define('VISUALIZE_PARAVIEW_WEB_WORK_DIRECTORY_KEY', 'paraview_web_work_directory');
+define('VISUALIZE_PARAVIEW_WEB_WORK_DIRECTORY_DEFAULT_VALUE', '');

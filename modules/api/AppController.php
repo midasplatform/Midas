@@ -18,8 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
-/** Api Application Controller */
+/** App controller for the api module */
 class Api_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'api';
-  } // end class
+{
+    public $moduleName = 'api';
+}

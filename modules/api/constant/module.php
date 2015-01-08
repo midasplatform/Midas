@@ -18,4 +18,5 @@
  limitations under the License.
 =========================================================================*/
 
-// refer to core/constant/api.php
+define('API_METHOD_PREFIX_KEY', 'method_prefix');
+define('API_METHOD_PREFIX_DEFAULT_VALUE', 'midas');

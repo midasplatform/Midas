@@ -20,27 +20,33 @@
 
 /** Base class for instance model */
 abstract class Pvw_InstanceModelBase extends Pvw_AppModel
-  {
-  /** constructor */
-  public function __construct()
+{
+    /** constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'pvw_instance';
-    $this->_daoName = 'InstanceDao';
-    $this->_key = 'instance_id';
+        parent::__construct();
+        $this->_name = 'pvw_instance';
+        $this->_daoName = 'InstanceDao';
+        $this->_key = 'instance_id';
 
-    $this->_mainData = array(
-      'instance_id' => array('type' => MIDAS_DATA),
-      'item_id' => array('type' => MIDAS_DATA),
-      'pid' => array('type' => MIDAS_DATA),
-      'sid' => array('type' => MIDAS_DATA),
-      'secret' => array('type' => MIDAS_DATA),
-      'port' => array('type' => MIDAS_DATA),
-      'creation_date' => array('type' => MIDAS_DATA),
-      'item' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Item', 'parent_column' => 'item_id', 'child_column' => 'item_id')
-      );
-    $this->initialize();
+        $this->_mainData = array(
+            'instance_id' => array('type' => MIDAS_DATA),
+            'item_id' => array('type' => MIDAS_DATA),
+            'pid' => array('type' => MIDAS_DATA),
+            'sid' => array('type' => MIDAS_DATA),
+            'secret' => array('type' => MIDAS_DATA),
+            'port' => array('type' => MIDAS_DATA),
+            'creation_date' => array('type' => MIDAS_DATA),
+            'item' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'Item',
+                'parent_column' => 'item_id',
+                'child_column' => 'item_id',
+            ),
+        );
+        $this->initialize();
     }
 
-  abstract public function getAll();
-  }
+    /** Get all */
+    abstract public function getAll();
+}

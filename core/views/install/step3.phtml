@@ -20,12 +20,12 @@
 ?>
 
 <?php
-  $this->headScript()->appendFile($this->coreWebroot.'/public/js/install/install.step3.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/install/install.step3.js');
 ?>
 
 <div class="viewMain">
-     <?php
-      echo "
+    <?php
+    echo "
       <form class='genericForm' method='{$this->form['method']}'  action='{$this->form['action']}'>
       <h3>Configuration:</h3>
               <div class='installName'>
@@ -36,55 +36,38 @@
                 <label for='name'>Description</label>
                 {$this->form['description']}
               </div>
-              <div class='installKeywords'>
-                <label for='name'>Keywords</label>
-                {$this->form['keywords']}
-              </div>
               <div class='installLang'";
-      if(isset(Zend_Registry::get('configCore')->internationalization) && Zend_Registry::get('configCore')->internationalization == "0")
-        {
+    if (isset(Zend_Registry::get('configCore')->internationalization) && Zend_Registry::get(
+            'configCore'
+        )->internationalization == "0"
+    ) {
         echo " style='display:none;' ";
-        }
-      echo ">
+    }
+    echo ">
                 <label for='lang'>Language</label>
                 {$this->form['lang']}
               </div>
-              <div class='installEnvironment'>
-                <label for='environment'>Environment</label>
-                {$this->form['environment']}
-              </div>
               <div class='installTimezone'>
-                <label for='environment'>Time zone</label>
+                <label for='timezone'>Time zone</label>
                 {$this->form['timezone']}
-              </div>
-              <div class='installSmartoptimizer'>
-                <label for='smartoptimizer'>CSS and Javascript optimizer</label>
-                {$this->form['smartoptimizer']}
               </div>
                 ";
 
-         echo"
+    echo "
           </table>
           <div>
             {$this->form['submit']}
           </div>
        </form>";
 
-     ?>
+    ?>
 </div>
 <div class="viewSideBar">
-  <div class="sideElementFirst " >
-      <h1>Help</h1>
-      <div class="installHelp">
-        This page allows you to configure your installation.
-      </div>
-  </div>
-</div>
+    <div class="sideElementFirst">
+        <h1>Help</h1>
 
-<div class='hiddenProcces' style="display:none;">
-  <?php
-echo "<br/>
-    Windows:".BASE_PATH."<br/>/library/Executable/windows/32/<br/>wget.exe -O <br/>".BASE_PATH."<br/>/log/task.log<br/> http://localhost{$this->webroot}/task<br/><br/>
-    Linux:  wget -O ".BASE_PATH."<br/>/log/task.log http://localhost{$this->webroot}/task";
-    ?>
+        <div class="installHelp">
+            This page allows you to configure your installation.
+        </div>
+    </div>
 </div>

@@ -23,270 +23,281 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.che
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.dotdotdot-1.5.6-packed.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/community/community.view.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
-foreach($this->customJSs as $Urls)
-  {
-    foreach($Urls as $url)
-      {
-      $this->headScript()->appendFile($url);
-      }
-  }
-?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/community/community.view.css" />
-<?php
-foreach($this->customCSSs as $Uris)
-  {
-  foreach($Uris as $uri)
-    {
-    echo "<link type='text/css' rel='stylesheet' href={$uri} />";
+foreach ($this->customJSs as $Urls) {
+    foreach ($Urls as $url) {
+        $this->headScript()->appendFile($url);
     }
-  }
+}
+?>
+    <link type="text/css" rel="stylesheet"
+          href="<?php echo $this->coreWebroot ?>/public/css/common/common.browser.css"/>
+    <link type="text/css" rel="stylesheet"
+          href="<?php echo $this->coreWebroot ?>/public/css/common/common.genericPage.css"/>
+    <link type="text/css" rel="stylesheet"
+          href="<?php echo $this->coreWebroot ?>/public/css/community/community.view.css"/>
+<?php
+foreach ($this->customCSSs as $Uris) {
+    foreach ($Uris as $uri) {
+        echo "<link type='text/css' rel='stylesheet' href={$this->escape($uri)} />";
+    }
+}
 $rawDescription = $this->communityDao->getDescription();
-$description = $this->Utility->markDown($rawDescription);
+$description = $this->markdown($rawDescription);
 $strippedDescription = strip_tags($description);
 ?>
 
-<div class="viewMain">
-  <div class="genericThumbnail">
-  <?php
-  $thumbnail=null;
-  if(!empty($thumbnail))
-    {
-    echo "<img src='{$this->webroot}data/thumbnail/{$thumbnail}' alt=''/>";
-    }
-  else
-    {
-    echo "<img src='{$this->coreWebroot}/public/images/icons/community-big.png' alt=''/>";
-    }
-  ?>
-  </div>
-  <div class="genericInfo">
-  <?php
-  if($this->logged && !$this->isMember && ($this->canJoin || $this->isInvited))
-    { ?>
-     <div id="joinCommunityDiv" class="genericBigButton genericWrapperTopRight">
-     <form id="joinCommunityForm" type='post' action=''>
-      <input style="margin:0;padding:0;" id="joinCommunity_submit" name='joinCommunity' type='submit' value='<?php echo $this->t('Join the community') ?>' />
-     </form>
-     </div>
-   <?php } ?>
-    <div class="genericName"><?php echo $this->communityDao->getName();?></div>
-    <div id="communitySubtitle" class="genericSubtitle" style="color:grey;">
-    <?php
-        if(!empty($rawDescription))
-        {
-        echo substr($strippedDescription, 0, 240).'<a href="#" class="more">More &raquo;</a>';
-        }
-    ?>
-    </div>
-  </div>
-  <img class="tabsLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
-  <div class="tabs" id='tabsGeneric'>
-  <ul>
-    <li><a id="tabDataLink" href="#tabs-data"><?php echo $this->t('Data');?></a></li>
-    <li><a id="tabFeedLink" href="#tabs-feed"><?php echo $this->t("Feed")?></a></li>
-    <?php
-    if(!empty($description))
-      {
-      ?>
-    <li><a id="tabInfoLink" href="#tabs-info"><?php echo $this->t('Info');?></a></li>
-    <?php
-      }
-      ?>
-
-    <?php
-    if($this->isMember)
-      {
-      ?>
-    <li><a id="tabSharedLink" href="#tabs-shared"><?php echo $this->t('Shared with members');?></a></li>
-    <?php
-      }
-    foreach($this->customTabs as $module => $value)
-      {
-      if(!$value)
-        {
-        continue;
-        }
-      foreach($value as $name => $url)
-        {
-        echo "<li><a title='".str_replace(' ', '_', $name)."' href='{$url}'>{$name}</a></li>";
-        }
-      }
-     ?>
-  </ul>
-  <div id="tabs-feed">
-     <?php
-      echo $this->element('feed');
-      ?>
-  </div>
-        <?php
-    if(!empty($description))
-      {
-      ?>
-    <div id="tabs-info">
-      <?php
-      echo $description;
-      ?>
-    </div>
-    <?php
-      }
-      ?>
-    <div id="tabs-data">
-      <img class="tableLoading" alt=""  src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
-
-      <table id="browseTable" class="midasTree"  root="<?php echo $this->communityDao->getFolderId(); ?>">
-        <thead>
-              <th class="thData"><?php echo $this->t('Name');?></th>
-              <th class="thSize"><?php echo $this->t('Size');?></th>
-              <th class="thDate"><?php echo $this->t('Modified');?></th>
-              <th class="thCheckbox"><input type="checkbox" id="browseTableHeaderCheckbox" /></th>
-        </thead>
-        <tbody>
+    <div class="viewMain">
+        <div class="genericThumbnail">
             <?php
-            $node=1;
-            foreach($this->folders as $folder)
-              {
-              $folderId = $folder->getFolderId();
-              $privacyClass = $folder->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-              echo "<tr id='node--$node' class='parent' privacy='{$folder->getPrivacyStatus()}' type='folder' element='$folderId' ajax='$folderId'>";
-              echo "  <td class='treeBrowseElement'><span class='folder{$privacyClass}'>{$folder->getName()}</span></td>";
-              echo "  <td><img class='folderLoading' element='$folderId' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
-              echo "  <td>{$this->Date->ago($folder->getDateUpdate(), true)}</td>";
-              echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='$folderId' id='folderCheckbox{$folderId}' /></td>";
-              echo "</tr>";
-              $node++;
-              }
-
-            foreach($this->items as $item)
-              {
-              $privacyClass = $item->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-              echo "<tr id='node--$node' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}' >";
-              echo "  <td class='treeBrowseElement'><span class='file{$privacyClass}'>{$this->slicename($item->getName(), 40)}</span></td>";
-              echo "  <td>{$item->size}</td>";
-              echo "  <td>{$this->Date->ago($item->getDateUpdate(), true)}</td>";
-              echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$item->getItemId()}' id='itemCheckbox{$item->getItemId()}' /></td>";
-              echo "</tr>";
-              $node++;
-              }
+            $thumbnail = null;
+            if (!empty($thumbnail)) {
+                echo "<img src='{$this->webroot}data/thumbnail/{$this->escape($thumbnail)}' alt=''/>";
+            } else {
+                echo "<img src='{$this->coreWebroot}/public/images/icons/community-big.png' alt=''/>";
+            }
             ?>
+        </div>
+        <div class="genericInfo">
+            <?php
+            if ($this->logged && !$this->isMember && ($this->canJoin || $this->isInvited)) {
+                ?>
+                <div id="joinCommunityDiv" class="genericBigButton genericWrapperTopRight">
+                    <form id="joinCommunityForm" type='post' action=''>
+                        <input style="margin:0;padding:0;" id="joinCommunity_submit" name='joinCommunity' type='submit'
+                               value='<?php echo $this->t('Join the community') ?>'/>
+                    </form>
+                </div>
+            <?php } ?>
+            <div class="genericName"><?php echo $this->escape($this->communityDao->getName()); ?></div>
+            <div id="communitySubtitle" class="genericSubtitle" style="color:grey;">
+                <?php
+                if (!empty($rawDescription)) {
+                    echo substr($this->escape($strippedDescription), 0, 240).'<a href="#" class="more">More &raquo;</a>';
+                }
+                ?>
+            </div>
+        </div>
+        <img class="tabsLoading" alt="" src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>
 
-          </tbody>
-      </table>
+        <div class="tabs" id='tabsGeneric'>
+            <ul>
+                <li>
+                    <a id="tabDataLink" href="#tabs-data"><?php echo $this->t('Data'); ?></a></li>
+                <li>
+                    <a id="tabFeedLink" href="#tabs-feed"><?php echo $this->t("Feed") ?></a></li>
+                <?php
+                if (!empty($description)) {
+                    ?>
+                    <li>
+                        <a id="tabInfoLink" href="#tabs-info"><?php echo $this->t('Info'); ?></a></li>
+                <?php
+                }
+                ?>
+
+                <?php
+                if ($this->isMember) {
+                    ?>
+                    <li>
+                        <a id="tabSharedLink" href="#tabs-shared"><?php echo $this->t('Shared with members'); ?></a>
+                    </li>
+                <?php
+                }
+                foreach ($this->customTabs as $module => $value) {
+                    if (!$value) {
+                        continue;
+                    }
+                    foreach ($value as $name => $url) {
+                        echo "<li><a title='".str_replace(' ', '_', $this->escape($name))."' href='{$this->escape($url)}'>{$this->escape($name)}</a></li>";
+                    }
+                }
+                ?>
+            </ul>
+            <div id="tabs-feed">
+                <?php
+                echo $this->element('feed');
+                ?>
+            </div>
+            <?php
+            if (!empty($description)) {
+                ?>
+                <div id="tabs-info">
+                    <?php
+                    echo $description;
+                    ?>
+                </div>
+            <?php
+            }
+            ?>
+            <div id="tabs-data">
+                <img class="tableLoading" alt=""
+                     src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>
+
+                <table id="browseTable" class="midasTree" root="<?php echo $this->escape($this->communityDao->getFolderId()); ?>">
+                    <thead>
+                    <th class="thData"><?php echo $this->t('Name'); ?></th>
+                    <th class="thSize"><?php echo $this->t('Size'); ?></th>
+                    <th class="thDate"><?php echo $this->t('Modified'); ?></th>
+                    <th class="thCheckbox">
+                        <input type="checkbox" id="browseTableHeaderCheckbox"/>
+                    </th>
+                    </thead>
+                    <tbody>
+                    <?php
+                    $node = 1;
+                    foreach ($this->folders as $folder) {
+                        $folderId = $folder->getFolderId();
+                        $privacyClass = $folder->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
+                        echo "<tr id='node--$node' class='parent' privacy='{$this->escape($folder->getPrivacyStatus(
+                        ))}' type='folder' element='{$this->escape($folderId)}' ajax='{$this->escape($folderId)}'>";
+                        echo "  <td class='treeBrowseElement'><span class='folder{$this->escape($privacyClass)}'>{$this->escape($folder->getName(
+                        ))}</span></td>";
+                        echo "  <td><img class='folderLoading' element='{$this->escape($folderId)}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
+                        echo "  <td>{$this->dateago($folder->getDateUpdate())}</td>";
+                        echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$this->escape($folderId)}' id='folderCheckbox{$this->escape($folderId)}' /></td>";
+                        echo "</tr>";
+                        $node++;
+                    }
+
+                    foreach ($this->items as $item) {
+                        $privacyClass = $item->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
+                        echo "<tr id='node--$node' privacy='{$this->escape($item->getPrivacyStatus(
+                        ))}' class='' type='item' element='{$this->escape($item->getItemId())}'>";
+                        echo "  <td class='treeBrowseElement'><span class='file{$this->escape($privacyClass)}'>{$this->slicename(
+                            $this->escape($item->getName()),
+                            40
+                        )}</span></td>";
+                        echo "  <td>{$this->escape($item->size)}</td>";
+                        echo "  <td>{$this->dateago($item->getDateUpdate())}</td>";
+                        echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$this->escape($item->getItemId(
+                        ))}' id='itemCheckbox{$this->escape($item->getItemId())}' /></td>";
+                        echo "</tr>";
+                        $node++;
+                    }
+                    ?>
+
+                    </tbody>
+                </table>
+            </div>
+            <?php
+            if ($this->isMember) {
+                ?>
+                <div id="tabs-shared">
+                    <?php
+                    $this->listFiles = $this->shareItems;
+                    echo $this->element('listfiles');
+                    ?>
+                </div>
+            <?php
+            }?>
+        </div>
     </div>
+
+    <div class="viewSideBar">
+
         <?php
-    if($this->isMember)
-      {
-      ?>
-    <div id="tabs-shared">
-      <?php
-      $this->listFiles=$this->shareItems;
-      echo $this->element('listfiles');
-      ?>
-    </div>
-    <?php
-      }?>
-  </div>
-</div>
-
-<div class="viewSideBar">
-
-  <?php
-  if($this->isModerator||$this->isAdmin||$this->isMember)
-    {
-    echo "
+        if ($this->isModerator || $this->isAdmin || $this->isMember) {
+            echo "
     <div class='sideElementFirst genericAction'>
       <h1>Community Actions</h1>
         <ul>";
-    if($this->isAdmin||$this->isModerator)
-      {
-      echo "
-          <li><a href='{$this->webroot}/community/manage?communityId={$this->communityDao->getKey()}'><img alt='' src='{$this->coreWebroot}/public/images/icons/edit.png'/> {$this->t('Manage')}</a></li>
+            if ($this->isAdmin || $this->isModerator) {
+                echo "
+          <li><a href='{$this->webroot}/community/manage?communityId={$this->escape($this->communityDao->getKey(
+                ))}'><img alt='' src='{$this->coreWebroot}/public/images/icons/edit.png'/> {$this->t('Manage')}</a></li>
           ";
-      echo "
-          <li><a id='sendInvitationLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/email.png'/> {$this->t('Send invitation')}</a></li>
+                echo "
+          <li><a id='sendInvitationLink'><img alt='' src='{$this->coreWebroot}/public/images/icons/email.png'/> {$this->t(
+                    'Send invitation'
+                )}</a></li>
           ";
-      echo "<li><a onclick='midas.createNewFolder(".$this->mainFolder->getKey().");'><img alt='' src='{$this->coreWebroot}/public/images/icons/folder_add.png'/> {$this->t('Create a top-level folder')}</a></li>
+                echo "<li><a onclick='midas.createNewFolder(".$this->escape($this->mainFolder->getKey(
+                    )).");'><img alt='' src='{$this->coreWebroot}/public/images/icons/folder_add.png'/> {$this->t(
+                        'Create a top-level folder'
+                    )}</a></li>
           ";
-      foreach($this->customManageActions as $actions)
-        {
-        foreach($actions as $name => $propertyNimage)
-          {
-          echo '
-          <li><a '.$propertyNimage["property"].'><img alt="" src="'.$propertyNimage["image"].'"/> '.$this->t("$name").'</a></li>' ;
-          }
-        }
-      }
-    if($this->isMember&&!$this->isAdmin)
-      {
-      echo "
-          <li><a href='{$this->webroot}/community/{$this->communityDao->getKey()}?leaveCommunity=true'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/> {$this->t('Leave the community')}</a></li>
+                foreach ($this->customManageActions as $actions) {
+                    foreach ($actions as $name => $propertyNimage) {
+                        echo '
+          <li><a '.$this->escape($propertyNimage["property"]).'><img alt="" src="'.$this->escape($propertyNimage["image"]).'"/> '.$this->t(
+                                "{$this->escape($name)}"
+                            ).'</a></li>';
+                    }
+                }
+            }
+            if ($this->isMember && !$this->isAdmin) {
+                echo "
+          <li><a href='{$this->webroot}/community/{$this->escape($this->communityDao->getKey(
+                ))}?leaveCommunity=true'><img alt='' src='{$this->coreWebroot}/public/images/icons/close.png'/> {$this->t(
+                    'Leave the community'
+                )}</a></li>
           ";
-      }
-    echo
-    "  </ul>
+            }
+            echo "  </ul>
     </div>";
-    }
-  ?>
-   <div class="sideElement<?php echo (!$this->isModerator&&!$this->isAdmin&&!$this->isMember)?'First':''?> genericCommunities">
-    <h1><?php echo $this->t('Members')?></h1>
-      <ul>
-      <?php
-        $i=0;
-        foreach($this->members as $member)
-          {
-          if($i>10)break;
-          echo "<li>{$this->linkuser($member)}</li>";
-          }
-      ?>
-      </ul>
-   </div>
-   <div class="sideElementLast genericStats">
-    <h1>Stats</h1>
-
-    <?php
-      echo "<ul>";
-      echo "  <li>".count($this->members)." {$this->t("member")}".((count($this->members)>1)?'s':'')."</li>";
-      echo "</ul>";
-      ?>
-   </div>
-
-    <div class="sideElementActions viewAction">
-      <?php
-      if((!$this->isModerator)&&(!$this->isAdmin)&&(!$this->isMember))
-        {
-        echo "<h1>Actions</h1>";
         }
-      ?>
-      <ul>
-        <li>
+        ?>
+        <div
+            class="sideElement<?php echo (!$this->isModerator && !$this->isAdmin && !$this->isMember) ? 'First' : '' ?> genericCommunities">
+            <h1><?php echo $this->t('Members') ?></h1>
+            <ul>
+                <?php
+                $i = 0;
+                foreach ($this->members as $member) {
+                    if ($i > 10) {
+                        break;
+                    }
+                    echo "<li>{$this->linkuser($member)}</li>";
+                }
+                ?>
+            </ul>
+        </div>
+        <div class="sideElementLast genericStats">
+            <h1>Stats</h1>
 
-        </li>
-      </ul>
-    </div>
-    <div class="sideElement viewSelected" >
-      <h1><?php echo $this->t('Checked')?><span></span></h1>
-      <span></span>
-    </div>
-    <div class="sideElementLast viewInfo">
-      <h1>Info</h1>
-      <img class="infoLoading" style="display:none;" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
-      <div class="ajaxInfoElement">
-      </div>
-    </div>
-</div>
+            <?php
+            echo "<ul>";
+            echo "  <li>".$this->escape(count($this->members))." {$this->t("member")}".((count(
+                        $this->members
+                    ) > 1) ? 's' : '')."</li>";
+            echo "</ul>";
+            ?>
+        </div>
 
-<div id="guideRobot">
-   <?php
-    foreach($this->folders as $folder)
-      {
-      echo "<a href='{$this->webroot}/folder/{$folder->getKey()}'>{$folder->getName()}</a> ";
-      }
-    ?>
-</div>
+        <div class="sideElementActions viewAction">
+            <?php
+            if ((!$this->isModerator) && (!$this->isAdmin) && (!$this->isMember)) {
+                echo "<h1>Actions</h1>";
+            }
+            ?>
+            <ul>
+                <li>
+
+                </li>
+            </ul>
+        </div>
+        <div class="sideElement viewSelected">
+            <h1><?php echo $this->t('Checked') ?><span></span></h1>
+            <span></span>
+        </div>
+        <div class="sideElementLast viewInfo">
+            <h1>Info</h1>
+            <img class="infoLoading" style="display:none;" alt=""
+                 src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>
+
+            <div class="ajaxInfoElement">
+            </div>
+        </div>
+    </div>
+
+    <div id="guideRobot">
+        <?php
+        foreach ($this->folders as $folder) {
+            echo "<a href='{$this->webroot}/folder/{$this->escape($folder->getKey())}'>{$this->escape($folder->getName())}</a> ";
+        }
+        ?>
+    </div>
 
 <?php
-foreach($this->extraHtml as $module => $content)
-  {
-  echo $content."\n";
-  }
+foreach ($this->extraHtml as $module => $content) {
+    echo $content."\n";
+}

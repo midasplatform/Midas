@@ -24,57 +24,56 @@ require_once BASE_PATH.'/modules/ldap/models/base/UserModelBase.php';
  * Ldap user pdo model
  */
 class Ldap_UserModel extends Ldap_UserModelBase
-  {
-  /**
-   * Pass the user's login credentials and see if they are an ldap user
-   * @param login The user's login name
-   * @return The Ldap_UserDao if this corresponds to an ldap user, otherwise false
-   */
-  public function getLdapUser($login)
+{
+    /**
+     * Pass the user's login credentials and see if they are an LDAP user.
+     *
+     * @param string $login user's login name
+     * @return false|Ldap_UserDao LDAP user DAO if this corresponds to an LDAP user, otherwise false
+     * @throws Zend_Exception
+     */
+    public function getLdapUser($login)
     {
-    if($login === '')
-      {
-      return false;
-      }
-    $sql = $this->database->select()->where('login = ?', $login);
-    $row = $this->database->fetchRow($sql);
-    $dao = $this->initDao('User', $row, 'ldap');
-    if($dao)
-      {
-      return $dao;
-      }
-    else
-      {
-      return false;
-      }
+        if ($login === '') {
+            return false;
+        }
+        $sql = $this->database->select()->where('login = ?', $login);
+        $row = $this->database->fetchRow($sql);
+        $dao = $this->initDao('User', $row, 'ldap');
+        if ($dao) {
+            return $dao;
+        } else {
+            return false;
+        }
     }
 
-  /**
-   * Delete an ldap_user corresponding to the core user.
-   * @param userDao The core user
-   */
-  public function deleteByUser($userDao)
+    /**
+     * Delete an LDAP user corresponding to the core user.
+     *
+     * @param UserDao $userDao core user DAO
+     */
+    public function deleteByUser($userDao)
     {
-    $this->database->getDB()->delete('ldap_user', 'user_id = '.$userDao->getKey());
+        $this->database->getDB()->delete('ldap_user', 'user_id = '.$userDao->getKey());
     }
 
-  /**
-   * Returns the ldap_user corresponding to the core user, or false if the
-   * user is not an ldap_user.
-   * @param userDao The core user
-   */
-  public function getByUser($userDao)
+    /**
+     * Returns the LDAP user corresponding to the core user, or false if the
+     * user is not an LDAP user.
+     *
+     * @param UserDao $userDao core user
+     * @return false|Ldap_UserDao
+     * @throws Zend_Exception
+     */
+    public function getByUser($userDao)
     {
-    $sql = $this->database->select()->where('user_id = ?', $userDao->getKey());
-    $row = $this->database->fetchRow($sql);
-    $dao = $this->initDao('User', $row, 'ldap');
-    if($dao)
-      {
-      return $dao;
-      }
-    else
-      {
-      return false;
-      }
+        $sql = $this->database->select()->where('user_id = ?', $userDao->getKey());
+        $row = $this->database->fetchRow($sql);
+        $dao = $this->initDao('User', $row, 'ldap');
+        if ($dao) {
+            return $dao;
+        } else {
+            return false;
+        }
     }
-  }
+}

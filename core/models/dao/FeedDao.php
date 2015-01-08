@@ -19,47 +19,103 @@
 =========================================================================*/
 
 /**
- * \class FeedDao
- * \brief DAO Item (table Feed)
+ * Feed DAO.
+ *
+ * @method int getFeedId()
+ * @method void setFeedId(int $feedId)
+ * @method string getDate()
+ * @method void setDate(string $date)
+ * @method int getUserId()
+ * @method void setUserId(int $userId)
+ * @method int getType()
+ * @method void setType(int $type)
+ * @method void setResource(string $resource)
+ * @method array getCommunities()
+ * @method void setCommunities(array $communities)
+ * @method UserDao getUser()
+ * @method void setUser(UserDao $user)
+ * @method FeedpolicygroupDao getFeedpolicygroup()
+ * @method void setFeedpolicygroup(FeedpolicygroupDao $feedPolicyGroup)
+ * @method FeedpolicyuserDao getFeedpolicyuser()
+ * @method void setFeedpolicyuser(FeedpolicyuserDao $feedPolicyUser)
+ * @package Core\DAO
  */
 class FeedDao extends AppDao
-  {
-  public $_model = 'Feed';
+{
+    /** @var string */
+    public $_model = 'Feed';
 
-  /** overwrite get Ressource method */
-  public function getRessource()
+    /**
+     * Return the resource.
+     *
+     * @return mixed
+     * @throws Zend_Exception
+     */
+    public function getResource()
     {
-    $type = $this->getType();
+        $type = $this->getType();
 
-    switch($type)
-      {
-      case MIDAS_FEED_CREATE_COMMUNITY:
-      case MIDAS_FEED_UPDATE_COMMUNITY:
-        $model = MidasLoader::loadModel("Community");
-        return $model->load($this->ressource);
-      case MIDAS_FEED_COMMUNITY_INVITATION:
-        $model = MidasLoader::loadModel("CommunityInvitation");
-        return $model->load($this->ressource);
-      case MIDAS_FEED_CREATE_FOLDER:
-        $model = MidasLoader::loadModel("Folder");
-        return $model->load($this->ressource);
-      case MIDAS_FEED_CREATE_ITEM:
-      case MIDAS_FEED_CREATE_LINK_ITEM:
-        $model = MidasLoader::loadModel("Item");
-        return $model->load($this->ressource);
-      case MIDAS_FEED_CREATE_REVISION:
-        $model = MidasLoader::loadModel("ItemRevision");
-        return $model->load($this->ressource);
-      case MIDAS_FEED_CREATE_USER:
-        $model = MidasLoader::loadModel("User");
-        return $model->load($this->ressource);
-      case MIDAS_FEED_DELETE_COMMUNITY:
-      case MIDAS_FEED_DELETE_FOLDER:
-      case MIDAS_FEED_DELETE_ITEM:
-        return $this->ressource;
-      default:
-        throw new Zend_Exception("Unable to defined the type of feed");
-        break;
-      }
+        switch ($type) {
+            case MIDAS_FEED_CREATE_COMMUNITY:
+            case MIDAS_FEED_UPDATE_COMMUNITY:
+                /** @var CommunityModel $model */
+                $model = MidasLoader::loadModel('Community');
+
+                return $model->load($this->resource);
+            case MIDAS_FEED_COMMUNITY_INVITATION:
+                /** @var CommunityInvitationModel $model */
+                $model = MidasLoader::loadModel('CommunityInvitation');
+
+                return $model->load($this->resource);
+            case MIDAS_FEED_CREATE_FOLDER:
+                /** @var FolderModel $model */
+                $model = MidasLoader::loadModel('Folder');
+
+                return $model->load($this->resource);
+            case MIDAS_FEED_CREATE_ITEM:
+            case MIDAS_FEED_CREATE_LINK_ITEM:
+                /** @var ItemModel $model */
+                $model = MidasLoader::loadModel('Item');
+
+                return $model->load($this->resource);
+            case MIDAS_FEED_CREATE_REVISION:
+                /** @var ItemRevisionModel $model */
+                $model = MidasLoader::loadModel('ItemRevision');
+
+                return $model->load($this->resource);
+            case MIDAS_FEED_CREATE_USER:
+                /** @var UserModel $model */
+                $model = MidasLoader::loadModel('User');
+
+                return $model->load($this->resource);
+            case MIDAS_FEED_DELETE_COMMUNITY:
+            case MIDAS_FEED_DELETE_FOLDER:
+            case MIDAS_FEED_DELETE_ITEM:
+                return $this->resource;
+            default:
+                throw new Zend_Exception('Unable to define the type of feed.');
+        }
     }
-  } // end class
+
+    /**
+     * Return the resource.
+     *
+     * @deprecated since 3.3.0
+     * @return mixed
+     */
+    public function getRessource()
+    {
+        return $this->getResource();
+    }
+
+    /**
+     * Set the resource.
+     *
+     * @deprecated since 3.3.0
+     * @param string $resource resource
+     */
+    public function setRessource($resource)
+    {
+        $this->setResource($resource);
+    }
+}

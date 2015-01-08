@@ -1,187 +1,189 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <dataset>
+    <folder folder_id="1" name="name Folder 1" description="Description Folder 1" privacy_status="0" left_index="1"
+        right_index="2" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72800' parent_id="-1"/>
+    <folderpolicygroup folder_id="1" group_id="0" policy='0'/>
+    <folder folder_id="2" name="name Folder 2" description="Description Folder 2" privacy_status="0" left_index="3"
+        right_index="4" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72801' parent_id="-1"/>
+    <folder folder_id="3" name="name Folder 3" description="Description Folder 3" privacy_status="0" left_index="5"
+        right_index="6" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72802' parent_id="-1"/>
 
-  <folder folder_id="1" name="name Folder 1" description="Description Folder 1" privacy_status="0"  left_indice="1" right_indice="2" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72800'
-    parent_id="-1"/>
-  <folderpolicygroup folder_id="1" group_id="0" policy='0' />
-  <folder folder_id="2" name="name Folder 2" description="Description Folder 2" privacy_status="0" left_indice="3" right_indice="4" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72801'
-    parent_id="-1"/>
-  <folder folder_id="3" name="name Folder 3" description="Description Folder 3" privacy_status="0" left_indice="5" right_indice="6" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72802'
-    parent_id="-1"/>
+    <community community_id="2000" name="Community test User 1" description="Community test User 1"
+        creation="2011-01-27 12:09:02" privacy="0" folder_id="1003" admingroup_id="3000" moderatorgroup_id="3001"
+        membergroup_id="3002" uuid='4e311fdf82107d245f0798d654fc24205f2621eb72777'/>
 
-  <community community_id="2000" name="Community test User 1"
-    description="Community test User 1" creation="2011-01-27 12:09:02" privacy="0" folder_id="1003"
-    admingroup_id="3000" moderatorgroup_id="3001" membergroup_id="3002"
-    uuid='4e311fdf82107d245f0798d654fc24205f2621eb72777' />
+    <folder folder_id="1000" name="User 1 name Folder 1" privacy_status="2"
+        uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72760' description="Description Folder 1" left_index="1000"
+        right_index="1005" parent_id="-1"/>
+    <folderpolicyuser folder_id="1000" user_id="1" policy='2'/>
+    <folder folder_id="1001" name="User 1 name Folder 2" privacy_status="0"
+        uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72761' description="Description Folder 2" left_index="1001"
+        right_index="1002" parent_id="1000"/>
+    <folderpolicyuser folder_id="1001" user_id="1" policy='2'/>
+    <folder folder_id="1002" name="User 1 name Folder 3" privacy_status="2"
+        uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72762' description="Description Folder 3" left_index="1003"
+        right_index="1004" parent_id="1000"/>
+    <folderpolicyuser folder_id="1002" user_id="1" policy='2'/>
+    <folder folder_id="1003" name="community_2000" privacy_status="0"
+        uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72763' description="Description Folder 1" left_index="1006"
+        right_index="10011" parent_id="-2"/>
+    <folder folder_id="1004" name="Community test User 1 name Folder 2" privacy_status="0"
+        uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72764' description="Description Folder 2" left_index="1007"
+        right_index="1008" parent_id="1003"/>
+    <folder folder_id="1005" name="Community test User 1 name Folder 3" privacy_status="0"
+        uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72765' description="Description Folder 3" left_index="1009"
+        right_index="1010" parent_id="1003"/>
 
-  <folder folder_id="1000" name="User 1 name Folder 1"  privacy_status="2" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72760'
-    description="Description Folder 1" left_indice="1000" right_indice="1005"
-    parent_id="-1" />
-  <folderpolicyuser folder_id="1000" user_id="1" policy='2' />
-  <folder folder_id="1001" name="User 1 name Folder 2" privacy_status="0" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72761'
-    description="Description Folder 2" left_indice="1001" right_indice="1002"
-    parent_id="1000" />
-  <folderpolicyuser folder_id="1001" user_id="1" policy='2' />
-  <folder folder_id="1002" name="User 1 name Folder 3" privacy_status="2" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72762'
-    description="Description Folder 3" left_indice="1003" right_indice="1004"
-    parent_id="1000" />
-  <folderpolicyuser folder_id="1002" user_id="1" policy='2' />
-  <folder folder_id="1003" name="community_2000" privacy_status="0" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72763'
-    description="Description Folder 1" left_indice="1006" right_indice="10011"
-    parent_id="-2" />
-  <folder folder_id="1004" name="Community test User 1 name Folder 2" privacy_status="0" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72764'
-    description="Description Folder 2" left_indice="1007" right_indice="1008"
-    parent_id="1003" />
-  <folder folder_id="1005" name="Community test User 1 name Folder 3" privacy_status="0" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72765'
-    description="Description Folder 3" left_indice="1009" right_indice="1010"
-    parent_id="1003" />
+    <!-- Admin's folders -->
+    <folder folder_id="1006" name="user_3" description="" privacy_status="2" parent_id="-1" left_index="1"
+        right_index="2" uuid="123890231890"/>
+    <folder folder_id="1007" name="Public" description="" privacy_status="0" parent_id="1006" left_index="2"
+        right_index="3" uuid="123890231891"/>
+    <folder folder_id="1008" name="Private" description="" privacy_status="2" parent_id="1006" left_index="3"
+        right_index="4" uuid="123890231892"/>
 
-  <!-- Admin's folders -->
-  <folder folder_id="1006" name="user_3" description="" privacy_status="2" parent_id="-1" left_indice="1" right_indice="2" uuid="123890231890" />
-  <folder folder_id="1007" name="Public" description="" privacy_status="0" parent_id="1006" left_indice="2" right_indice="3" uuid="123890231891" />
-  <folder folder_id="1008" name="Private" description="" privacy_status="2" parent_id="1006" left_indice="3" right_indice="4" uuid="123890231892" />
-
-  <group group_id="3000" community_id="2000" name="Community test User 1 Admin" />
-  <group group_id="3001" community_id="2000"
-    name="Community test User 1 Moderator" />
-  <group group_id="3002" community_id="2000"
-    name="Community test User 1 Member" />
-
-
-  <user user_id="1" firstname="FirstName1" lastname="LastName1"  hash_alg="sha256"
-    email="user1@user1.com" creation="2011-01-27 12:09:02" folder_id="1000" admin="0" />
-
-<!-- To test Export component -->
-  <user user_id="2" firstname="FirstName2" lastname="LastName2"  hash_alg="sha256"
-    email="user2@user2.com" creation="2011-01-27 12:10:02" admin="0" />
-  <folderpolicygroup folder_id="1001" group_id="0" policy="0" />
-<!-- To test admin user capabilities -->
-  <user user_id="3" firstname="Admin" lastname="Admin"  hash_alg="sha256"
-    email="admin@admin.com" creation="2011-01-27 12:11:02" admin="1" folder_id="1006" />
-
-  <user2group group_id="3000" user_id="1" />
-  <user2group group_id="3002" user_id="1" />
-
-  <license license_id="1" name="Public License" fulltext="This is open data" />
-  <license license_id="2" name="Private License" fulltext="All rights reserved" />
-
-  <item item_id="1000" name="name 1" description="Description 1" type="1" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72750' />
-  <itemrevision itemrevision_id="1" item_id="1000" revision="1"
-    date="2011-01-27 12:09:02" user_id='1' changes="Description 1" license_id="1" />
-  <itempolicygroup item_id="1000" group_id="0" policy='0'  />
-  <item2folder item_id="1000" folder_id='1001' />
-  <item item_id="1001" name="name 2" description="Description 2" type="4" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72751' />
-  <itemrevision itemrevision_id="2" item_id="1001" revision="1"
-    date="2011-01-27 12:09:02" user_id='1' changes="Description 1" license_id="2" />
-  <itempolicyuser item_id="1001" user_id="1" policy='2' />
-  <item2folder item_id="1001" folder_id='1001' />
-  <item item_id="1002" name="name 3" description="Description 3" type="3" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72752' />
-  <itemrevision itemrevision_id="3" item_id="1000" revision="2"
-    date="2011-01-27 12:09:02" user_id='1' changes="Description 1" />
-  <item item_id="1003" name="name 4" description="Description 4" type="4" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72753' />
-  <itemrevision itemrevision_id="4" item_id="1003" revision="1"
-    date="2011-01-27 12:09:02" user_id='1' changes="Description 4" license_id="2" />
-  <itempolicyuser item_id="1003" user_id="1" policy='2' />
-  <item2folder item_id="1003" folder_id='1001' />
-
-  <bitstream bitstream_id="1" itemrevision_id="3" name="foo.png" mimetype="image/png" sizebytes="64" checksum="f283bc88b24491ba85c65ba960642753"
-    path="f2/83/f283bc88b24491ba85c65ba960642753" assetstore_id="1" date="2011-01-27 12:09:02" />
-  <bitstream bitstream_id="2" itemrevision_id="4" name="foo_2.png" mimetype="image/png" sizebytes="64" checksum="f283bc88b24491ba85c65ba960642753"
-    path="f2/83/f283bc88b24491ba85c65ba960642753" assetstore_id="1" date="2011-01-27 12:09:02" />
-
-  <!-- MIDAS_FEED_CREATE_COMMUNITY -->
-  <feed feed_id="1" date="2011-01-27 12:09:02" user_id='1' type="0"
-    ressource="2000" />
-  <feedpolicygroup feed_id="1" group_id="0" policy='0'  />
-
-  <!-- MIDAS_FEED_DELETE_COMMUNITY -->
-  <feed feed_id="2" date="2011-01-27 12:09:02" user_id='1' type="1"
-    ressource="CommunityName" />
-  <feedpolicygroup feed_id="2" group_id="3000" policy='1'  />
-
-  <!-- MIDAS_FEED_UPDATE_COMMUNITY -->
-  <feed feed_id="3" date="2011-01-27 12:09:02" user_id='1' type="2"
-    ressource="2000" />
-  <feedpolicyuser feed_id="3" user_id="1" policy='2'  />
-  <feed2community feed_id="2" community_id="2000" />
-
-  <!-- MIDAS_FEED_CREATE_USER -->
-  <feed feed_id="4" date="2011-01-27 12:09:02" user_id='1' type="10"
-    ressource="1" />
-  <!-- MIDAS_FEED_CREATE_FOLDER -->
-  <feed feed_id="5" date="2011-01-27 12:09:02" user_id='1' type="20"
-    ressource="1003" />
-  <!-- MIDAS_FEED_DELETE_FOLDER -->
-  <feed feed_id="6" date="2011-01-27 12:09:02" user_id='1' type="21"
-    ressource="NameFolder" />
-  <!-- MIDAS_FEED_CREATE_ITEM -->
-  <feed feed_id="7" date="2011-01-27 12:09:02" user_id='1' type="30"
-    ressource="1000" />
-  <!-- MIDAS_FEED_DELETE_ITEM -->
-  <feed feed_id="8" date="2011-01-27 12:09:02" user_id='1' type="31"
-    ressource="ItemName" />
-  <!-- MIDAS_FEED_CREATE_LINK_ITEM -->
-  <feed feed_id="9" date="2011-01-27 12:09:02" user_id='1' type="32"
-    ressource="1000" />
-  <!-- MIDAS_FEED_CREATE_REVISION -->
-  <feed feed_id="10" date="2011-01-27 12:09:02" user_id='1' type="40"
-    ressource="1" />
-
-  <setting setting_id="1000" name="dummy" module="" value="dummy" />
-  <setting setting_id="1" name="adminuser" module="core" value="3" />
-
-  <!-- second community, associated folders and groups -->
-  <community community_id="2001" name="Community For Deletion"
-    description="Community test User 1" creation="2011-01-27 12:09:02"
-    privacy="0" folder_id="1009" admingroup_id="3003" moderatorgroup_id="3004"
-    membergroup_id="3005" uuid='7811ff82107d245f0798d654fc24205f2621eb72777' />
-  <group group_id="3003" community_id="2001" name="Community For Deletion Admin" />
-  <group group_id="3004" community_id="2001" name="Community For Deletion Moderator" />
-  <group group_id="3005" community_id="2001" name="Community For Deletion Member" />
-  <folder folder_id="1009" name="Community For Deletion Folder" description="" privacy_status="0" parent_id="-1" left_indice="1" right_indice="2" uuid="123890231890" />
-  <folder folder_id="1010" name="Community For Deletion Folder Public" description="" privacy_status="0" parent_id="1009" left_indice="2" right_indice="3" uuid="123890231891" />
-  <folder folder_id="1011" name="Community For Deletion Folder Private" description="" privacy_status="2" parent_id="1009" left_indice="3" right_indice="4" uuid="123890231892" />
-  <folderpolicygroup folder_id="1009" group_id="3003" policy='2' />
-  <folderpolicygroup folder_id="1009" group_id="3004" policy='1' />
-  <folderpolicygroup folder_id="1009" group_id="3005" policy='0' />
-
-  <folder folder_id="1012" name="Folder User 1 Read" description="" privacy_status="0" parent_id="1009" left_indice="3" right_indice="4" uuid="1012123890231892" />
-  <folderpolicyuser folder_id="1012" user_id="1" policy='0' />
-  <folder folder_id="1013" name="Folder User 1 Write" description="" privacy_status="0" parent_id="1009" left_indice="3" right_indice="4" uuid="1013123890231892" />
-  <folderpolicyuser folder_id="1013" user_id="1" policy='1' />
-  <folder folder_id="1014" name="Folder User 1 Admin" description="" privacy_status="0" parent_id="1009" left_indice="3" right_indice="4" uuid="1014123890231892" />
-  <folderpolicyuser folder_id="1014" user_id="1" policy='2' />
-  <folderpolicygroup folder_id="1014" group_id="3003" policy='2' />
-  <folderpolicygroup folder_id="1014" group_id="3004" policy='1' />
-  <folderpolicygroup folder_id="1014" group_id="3005" policy='0' />
+    <group group_id="3000" community_id="2000" name="Community test User 1 Admin"/>
+    <group group_id="3001" community_id="2000" name="Community test User 1 Moderator"/>
+    <group group_id="3002" community_id="2000" name="Community test User 1 Member"/>
 
 
-  <item item_id="1004" name="Item User 1 Read" description="Description 1" type="1" uuid='10041fdf82007c245b07d8d6c4fcb4205f2621eb72750' />
-  <itempolicyuser item_id="1004" user_id="1" policy='0' />
-  <item2folder item_id="1004" folder_id='1014' />
-  <item item_id="1005" name="Item User 1 Write" description="Description 1" type="1" uuid='10051fdf82007c245b07d8d6c4fcb4205f2621eb72750' />
-  <itempolicyuser item_id="1005" user_id="1" policy='1' />
-  <item2folder item_id="1005" folder_id='1014' />
-  <item item_id="1006" name="Item User 1 Admin" description="Description 1" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72750' />
-  <itempolicyuser item_id="1006" user_id="1" policy='2' />
-  <item2folder item_id="1006" folder_id='1014' />
+    <user user_id="1" firstname="FirstName1" lastname="LastName1" hash_alg="sha256" email="user1@user1.com"
+        creation="2011-01-27 12:09:02" folder_id="1000" admin="0"/>
 
-  <user user_id="4" firstname="community2001" lastname="Member" hash_alg="sha256"
-    admin="0" email="community2001@member.com" creation="2011-01-27 12:11:02" folder_id="1006" />
-  <user2group group_id="3005" user_id="4" />
-  <user user_id="5" firstname="community2001" lastname="Moderator"  hash_alg="sha256"
-    admin="0" email="community2001@moderator.com" creation="2011-01-27 12:11:02" folder_id="1006" />
-  <user2group group_id="3004" user_id="5" />
-  <user user_id="6" firstname="community2001" lastname="Admin"  hash_alg="sha256"
-    admin="0" email="community2001@admin.com" creation="2011-01-27 12:11:02" folder_id="1006" />
-  <user2group group_id="3003" user_id="6" />
+    <!-- To test Export component -->
+    <user user_id="2" firstname="FirstName2" lastname="LastName2" hash_alg="sha256" email="user2@user2.com"
+        creation="2011-01-27 12:10:02" admin="0"/>
+    <folderpolicygroup folder_id="1001" group_id="0" policy="0"/>
+    <!-- To test admin user capabilities -->
+    <user user_id="3" firstname="Admin" lastname="Admin" hash_alg="sha256" email="admin@admin.com"
+        creation="2011-01-27 12:11:02" admin="1" folder_id="1006"/>
 
-  <itempolicyuser item_id="1006" user_id="4" policy='0' />
-  <itempolicyuser item_id="1006" user_id="5" policy='1' />
+    <user2group group_id="3000" user_id="1"/>
+    <user2group group_id="3002" user_id="1"/>
 
+    <license license_id="1" name="Public License" fulltext="This is open data"/>
+    <license license_id="2" name="Private License" fulltext="All rights reserved"/>
 
-  <newuserinvitation newuserinvitation_id="1001" email="dummy@dummy.com" auth_key="12345" inviter_id="4" community_id="2001" group_id="3003" date_creation="2011-01-27 12:11:02" />
-  <pendinguser pendinguser_id="1001" email="dummy@dummy.com" auth_key="12345" firstname="Dummy" lastname="Dummy" date_creation="2011-01-27 12:11:02" />
-  <password hash="dummy_hash" />
+    <item item_id="1000" name="name 1" description="Description 1" type="1"
+        uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72750'/>
+    <itemrevision itemrevision_id="1" item_id="1000" revision="1" date="2011-01-27 12:09:02" user_id='1'
+        changes="Description 1" license_id="1"/>
+    <itempolicygroup item_id="1000" group_id="0" policy='0'/>
+    <item2folder item_id="1000" folder_id='1001'/>
+    <item item_id="1001" name="name 2" description="Description 2" type="4"
+        uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72751'/>
+    <itemrevision itemrevision_id="2" item_id="1001" revision="1" date="2011-01-27 12:09:02" user_id='1'
+        changes="Description 1" license_id="2"/>
+    <itempolicyuser item_id="1001" user_id="1" policy='2'/>
+    <item2folder item_id="1001" folder_id='1001'/>
+    <item item_id="1002" name="name 3" description="Description 3" type="3"
+        uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72752'/>
+    <itemrevision itemrevision_id="3" item_id="1000" revision="2" date="2011-01-27 12:09:02" user_id='1'
+        changes="Description 1"/>
+    <item item_id="1003" name="name 4" description="Description 4" type="4"
+        uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72753'/>
+    <itemrevision itemrevision_id="4" item_id="1003" revision="1" date="2011-01-27 12:09:02" user_id='1'
+        changes="Description 4" license_id="2"/>
+    <itempolicyuser item_id="1003" user_id="1" policy='2'/>
+    <item2folder item_id="1003" folder_id='1001'/>
 
+    <bitstream bitstream_id="1" itemrevision_id="3" name="foo.png" mimetype="image/png" sizebytes="64"
+        checksum="f283bc88b24491ba85c65ba960642753" path="f2/83/f283bc88b24491ba85c65ba960642753" assetstore_id="1"
+        date="2011-01-27 12:09:02"/>
+    <bitstream bitstream_id="2" itemrevision_id="4" name="foo_2.png" mimetype="image/png" sizebytes="64"
+        checksum="f283bc88b24491ba85c65ba960642753" path="f2/83/f283bc88b24491ba85c65ba960642753" assetstore_id="1"
+        date="2011-01-27 12:09:02"/>
+
+    <!-- MIDAS_FEED_CREATE_COMMUNITY -->
+    <feed feed_id="1" date="2011-01-27 12:09:02" user_id='1' type="0" resource="2000"/>
+    <feedpolicygroup feed_id="1" group_id="0" policy='0'/>
+
+    <!-- MIDAS_FEED_DELETE_COMMUNITY -->
+    <feed feed_id="2" date="2011-01-27 12:09:02" user_id='1' type="1" resource="CommunityName"/>
+    <feedpolicygroup feed_id="2" group_id="3000" policy='1'/>
+
+    <!-- MIDAS_FEED_UPDATE_COMMUNITY -->
+    <feed feed_id="3" date="2011-01-27 12:09:02" user_id='1' type="2" resource="2000"/>
+    <feedpolicyuser feed_id="3" user_id="1" policy='2'/>
+    <feed2community feed_id="2" community_id="2000"/>
+
+    <!-- MIDAS_FEED_CREATE_USER -->
+    <feed feed_id="4" date="2011-01-27 12:09:02" user_id='1' type="10" resource="1"/>
+    <!-- MIDAS_FEED_CREATE_FOLDER -->
+    <feed feed_id="5" date="2011-01-27 12:09:02" user_id='1' type="20" resource="1003"/>
+    <!-- MIDAS_FEED_DELETE_FOLDER -->
+    <feed feed_id="6" date="2011-01-27 12:09:02" user_id='1' type="21" resource="NameFolder"/>
+    <!-- MIDAS_FEED_CREATE_ITEM -->
+    <feed feed_id="7" date="2011-01-27 12:09:02" user_id='1' type="30" resource="1000"/>
+    <!-- MIDAS_FEED_DELETE_ITEM -->
+    <feed feed_id="8" date="2011-01-27 12:09:02" user_id='1' type="31" resource="ItemName"/>
+    <!-- MIDAS_FEED_CREATE_LINK_ITEM -->
+    <feed feed_id="9" date="2011-01-27 12:09:02" user_id='1' type="32" resource="1000"/>
+    <!-- MIDAS_FEED_CREATE_REVISION -->
+    <feed feed_id="10" date="2011-01-27 12:09:02" user_id='1' type="40" resource="1"/>
+
+    <setting setting_id="1000" name="dummy" module="" value="dummy"/>
+    <setting setting_id="1" name="adminuser" module="core" value="3"/>
+
+    <!-- second community, associated folders and groups -->
+    <community community_id="2001" name="Community For Deletion" description="Community test User 1"
+        creation="2011-01-27 12:09:02" privacy="0" folder_id="1009" admingroup_id="3003" moderatorgroup_id="3004"
+        membergroup_id="3005" uuid='7811ff82107d245f0798d654fc24205f2621eb72777'/>
+    <group group_id="3003" community_id="2001" name="Community For Deletion Admin"/>
+    <group group_id="3004" community_id="2001" name="Community For Deletion Moderator"/>
+    <group group_id="3005" community_id="2001" name="Community For Deletion Member"/>
+    <folder folder_id="1009" name="Community For Deletion Folder" description="" privacy_status="0" parent_id="-1"
+        left_index="1" right_index="2" uuid="123890231890"/>
+    <folder folder_id="1010" name="Community For Deletion Folder Public" description="" privacy_status="0"
+        parent_id="1009" left_index="2" right_index="3" uuid="123890231891"/>
+    <folder folder_id="1011" name="Community For Deletion Folder Private" description="" privacy_status="2"
+        parent_id="1009" left_index="3" right_index="4" uuid="123890231892"/>
+    <folderpolicygroup folder_id="1009" group_id="3003" policy='2'/>
+    <folderpolicygroup folder_id="1009" group_id="3004" policy='1'/>
+    <folderpolicygroup folder_id="1009" group_id="3005" policy='0'/>
+
+    <folder folder_id="1012" name="Folder User 1 Read" description="" privacy_status="0" parent_id="1009"
+        left_index="3" right_index="4" uuid="1012123890231892"/>
+    <folderpolicyuser folder_id="1012" user_id="1" policy='0'/>
+    <folder folder_id="1013" name="Folder User 1 Write" description="" privacy_status="0" parent_id="1009"
+        left_index="3" right_index="4" uuid="1013123890231892"/>
+    <folderpolicyuser folder_id="1013" user_id="1" policy='1'/>
+    <folder folder_id="1014" name="Folder User 1 Admin" description="" privacy_status="0" parent_id="1009"
+        left_index="3" right_index="4" uuid="1014123890231892"/>
+    <folderpolicyuser folder_id="1014" user_id="1" policy='2'/>
+    <folderpolicygroup folder_id="1014" group_id="3003" policy='2'/>
+    <folderpolicygroup folder_id="1014" group_id="3004" policy='1'/>
+    <folderpolicygroup folder_id="1014" group_id="3005" policy='0'/>
+
+    <item item_id="1004" name="Item User 1 Read" description="Description 1" type="1"
+        uuid='10041fdf82007c245b07d8d6c4fcb4205f2621eb72750'/>
+    <itempolicyuser item_id="1004" user_id="1" policy='0'/>
+    <item2folder item_id="1004" folder_id='1014'/>
+    <item item_id="1005" name="Item User 1 Write" description="Description 1" type="1"
+        uuid='10051fdf82007c245b07d8d6c4fcb4205f2621eb72750'/>
+    <itempolicyuser item_id="1005" user_id="1" policy='1'/>
+    <item2folder item_id="1005" folder_id='1014'/>
+    <item item_id="1006" name="Item User 1 Admin" description="Description 1" type="1"
+        uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72750'/>
+    <itempolicyuser item_id="1006" user_id="1" policy='2'/>
+    <item2folder item_id="1006" folder_id='1014'/>
+
+    <user user_id="4" firstname="community2001" lastname="Member" hash_alg="sha256" admin="0"
+        email="community2001@member.com" creation="2011-01-27 12:11:02" folder_id="1006"/>
+    <user2group group_id="3005" user_id="4"/>
+    <user user_id="5" firstname="community2001" lastname="Moderator" hash_alg="sha256" admin="0"
+        email="community2001@moderator.com" creation="2011-01-27 12:11:02" folder_id="1006"/>
+    <user2group group_id="3004" user_id="5"/>
+    <user user_id="6" firstname="community2001" lastname="Admin" hash_alg="sha256" admin="0"
+        email="community2001@admin.com" creation="2011-01-27 12:11:02" folder_id="1006"/>
+    <user2group group_id="3003" user_id="6"/>
+
+    <itempolicyuser item_id="1006" user_id="4" policy='0'/>
+    <itempolicyuser item_id="1006" user_id="5" policy='1'/>
+
+    <newuserinvitation newuserinvitation_id="1001" email="dummy@dummy.com" auth_key="12345" inviter_id="4"
+        community_id="2001" group_id="3003" date_creation="2011-01-27 12:11:02"/>
+    <pendinguser pendinguser_id="1001" email="dummy@dummy.com" auth_key="12345" firstname="Dummy" lastname="Dummy"
+        date_creation="2011-01-27 12:11:02"/>
+    <password hash="dummy_hash"/>
 </dataset>

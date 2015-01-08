@@ -22,66 +22,72 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.for
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/config/config.index.js');
 ?>
 
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/config/config.index.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/config/config.index.css"/>
 
 <div class="viewMain">
-  <div class ="genericWrapperTopRight">
-    <div style="float:right;margin-right:2px;" class="genericBigButton ">
-      <a href="<?php echo $this->webroot; ?>/admin#tabs-modules">
-        <img style="float:left;margin-right:2px;"
-             alt=""
-             src="<?php echo $this->coreWebroot;?>/public/images/icons/back.png"/>
-        Back
-      </a>
+    <div class="genericWrapperTopRight">
+        <div style="float:right;margin-right:2px;" class="genericBigButton ">
+            <a href="<?php echo $this->webroot; ?>/admin#tabs-modules">
+                <img style="float:left;margin-right:2px;"
+                     alt=""
+                     src="<?php echo $this->coreWebroot; ?>/public/images/icons/back.png"/>
+                Back
+            </a>
+        </div>
     </div>
-  </div>
-  <h3>Multi-Factor Authentication Configuration</h3>
-  <p>Configuration of One-Time Pass (OTP) devices can be done on the
-    "My Account" page. Administrators can configure this information for any
-    user.</p>
-  <h4>PAM Configuration</h4>
-  <p>Configuration of PAM multi-factor authentication is dependent on the
-    PAM configuration of the host machine and is thus restricted to hosts
-    running PAM. To this point, the verification of the OTP is entirely
-    delegated to PAM and custom configuration should take place there.</p>
-  <h4>RADIUS Configuration</h4>
-  <p>Configuration of the RADIUS multi-factor authentication is dependent on
-    the global configuration parameters below as well as the installation and
-    proper configuration of the PHP RADIUS module. See
-    <a href="https://php.net/manual/en/book.radius.php">the manual</a> for
-    further information.</p>
+    <h3>Multi-Factor Authentication Configuration</h3>
 
-  <form class="genericForm" id="configForm" method="POST" action="<?php echo $this->webroot?>/mfa/config/submit">
-    <div>
-      <input name="userOtpControl" type="checkbox"
-        <?php if($this->userOtpControl) { echo 'checked="checked" '; } ?> />
-      Allow users to configure their own two-factor authentication settings
-      <div class="formElement">
-        <h4>RADIUS-specific global parameters</h4>
-      </div>
-      <div class="formElement">
-        <label for="radiusServer">The IP or hostname of the RADIUS server</label>
-        <input id="radiusServer" name="radiusServer" value="<?php echo $this->radiusServer;?>" autofocus />
-      </div>
-      <div class="formElement">
-        <label for="radiusPort">The port of the RADIUS server</label>
-        <input id="radiusPort" name="radiusPort" value="<?php echo $this->radiusPort;?>" />
-      </div>
-      <div class="formElement">
-        <label for="radiusPassword">The password of the RADIUS server</label>
-        <input type="password" id="radiusPassword" name="radiusPassword" value="<?php echo $this->radiusPassword;?>" />
-      </div>
-      <div class="formElement">
-        <label for="radiusTimeout">The timeout when connecting to the RADIUS server</label>
-        <input id="radiusTimeout" name="radiusTimeout" value="<?php echo $this->radiusTimeout;?>" />
-      </div>
-      <div class="formElement">
-        <label for="radiusMaxTries">The maximum number of tries when connecting to the RADIUS server</label>
-        <input id="radiusMaxTries" name="radiusMaxTries" value="<?php echo $this->radiusMaxTries;?>" />
-      </div>
-    </div>
-    <div class="saveButton">
-      <input type="submit" value="Save" />
-    </div>
-  </form>
+    <p>Configuration of One-Time Pass (OTP) devices can be done on the
+        "My Account" page. Administrators can configure this information for any
+        user.</p>
+    <h4>PAM Configuration</h4>
+
+    <p>Configuration of PAM multi-factor authentication is dependent on the
+        PAM configuration of the host machine and is thus restricted to hosts
+        running PAM. To this point, the verification of the OTP is entirely
+        delegated to PAM and custom configuration should take place there.</p>
+    <h4>RADIUS Configuration</h4>
+
+    <p>Configuration of the RADIUS multi-factor authentication is dependent on
+        the global configuration parameters below as well as the installation and
+        proper configuration of the PHP RADIUS module. See
+        <a href="https://php.net/manual/en/book.radius.php">the manual</a> for
+        further information.</p>
+
+    <form class="genericForm" id="configForm" method="POST" action="<?php echo $this->webroot ?>/mfa/config/submit">
+        <div>
+            <input name="userOtpControl" type="checkbox"
+                <?php if ($this->userOtpControl) {
+                    echo 'checked="checked" ';
+                } ?> />
+            Allow users to configure their own two-factor authentication settings
+            <div class="formElement">
+                <h4>RADIUS-specific global parameters</h4>
+            </div>
+            <div class="formElement">
+                <label for="radiusServer">The IP or hostname of the RADIUS server</label>
+                <input id="radiusServer" name="radiusServer" value="<?php echo $this->escape($this->radiusServer); ?>" autofocus/>
+            </div>
+            <div class="formElement">
+                <label for="radiusPort">The port of the RADIUS server</label>
+                <input id="radiusPort" name="radiusPort" value="<?php echo $this->escape($this->radiusPort); ?>"/>
+            </div>
+            <div class="formElement">
+                <label for="radiusPassword">The password of the RADIUS server</label>
+                <input type="password" id="radiusPassword" name="radiusPassword"
+                       value="<?php echo $this->escape($this->radiusPassword); ?>"/>
+            </div>
+            <div class="formElement">
+                <label for="radiusTimeout">The timeout when connecting to the RADIUS server</label>
+                <input id="radiusTimeout" name="radiusTimeout" value="<?php echo $this->escape($this->radiusTimeout); ?>"/>
+            </div>
+            <div class="formElement">
+                <label for="radiusMaxTries">The maximum number of tries when connecting to the RADIUS server</label>
+                <input id="radiusMaxTries" name="radiusMaxTries" value="<?php echo $this->escape($this->radiusMaxTries); ?>"/>
+            </div>
+        </div>
+        <div class="saveButton">
+            <input type="submit" value="Save"/>
+        </div>
+    </form>
 </div>

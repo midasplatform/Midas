@@ -1,0 +1,146 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+div.rendererWrapper {
+    position: relative;
+}
+
+#leftRenderer {
+    height: 425px;
+    overflow: hidden;
+    position: absolute;
+    width: 424px;
+    z-index: 2;
+}
+
+#rightRenderer {
+    height: 425px;
+    left: 425px;
+    overflow: hidden;
+    position: absolute;
+    width: 425px;
+    z-index: 2;
+}
+
+img {
+    &.leftLoading, &.rightLoading {
+        margin-left: 10px;
+        margin-top: 10px;
+        z-index: 100;
+    }
+}
+
+#leftRendererOverlay, #rightRendererOverlay {
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    z-index: 5;
+}
+
+div {
+    &.slidersContainer {
+        position: relative;
+        top: 426px;
+    }
+    &.sliceControlContainer {
+        position: absolute;
+        width: 424px;
+    }
+    &.windowControlContainer {
+        left: 425px;
+        position: absolute;
+        width: 424px;
+    }
+}
+
+#windowSlider, #sliceSlider {
+    margin: 8px 14px 8px 15px;
+}
+
+#windowInfo, #sliceInfo {
+    margin-left: 15px;
+}
+
+button {
+    &.actionButton {
+        background: no-repeat 2px 1px;
+        height: 25px;
+        margin-right: 10px;
+        margin-top: 10px;
+        width: 25px;
+    }
+    &.actionActive {
+        background-color: #9C9;
+    }
+    &.actionInactive {
+        background-color: #CCC;
+    }
+    &.pointSelectButton {
+        background-image: url(../../images/pointSelect.png);
+    }
+    &.pointMapListButton {
+        background-image: url(../../images/pqNodeSetData16.png);
+    }
+    &.cameraLinkButton {
+        background-image: url(../../images/camera_link.png);
+    }
+}
+
+#leftLoadingStatus, #rightLoadingStatus {
+    margin-left: 10px;
+}
+
+span.infoValue {
+    color: #7A7A7A;
+}
+
+.pointListTable {
+    border-collapse: collapse;
+    width: 100%;
+    th {
+        background-color: #CDD;
+        border: 1px solid #A0A0A0;
+        padding: 5px 3px 5px 5px;
+    }
+    tbody tr {
+        border-bottom: 1px dotted #A0A0A0;
+    }
+}
+
+div {
+    &.colorSwatchL, &.colorSwatchR {
+        border: 1px solid #707070;
+        display: inline-block;
+        height: 14px;
+        margin-right: 4px;
+        position: relative;
+        top: 3px;
+        width: 14px;
+    }
+}
+
+button {
+    &.highlightPoints, &.deletePoints, &.processButton, &.closeButton {
+        background-color: #F0F0F0;
+        border-radius: 1px;
+        border: 1px solid #B0B0B0;
+        padding: 3px 6px 3px 6px;
+    }
+    &.highlightPoints:hover, &.deletePoints:hover, &.processButton:hover, &.closeButton:hover {
+        background-color: #DADADA;
+        border: 1px solid #808080;
+    }
+    &.highlightOn {
+        background-color: #CDF9CD !important;
+        border-radius: 2px;
+        border: 1px solid #B0B0B0;
+    }
+}
+
+div.bottomButtons {
+    float: right;
+    margin-top: 15px;
+}
+
+td.pointMapActions {
+    float: right;
+}

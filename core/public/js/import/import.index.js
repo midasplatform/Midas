@@ -44,7 +44,6 @@ midas.import.importSubmit = function (formData, jqForm, options) {
 /** On import success */
 midas.import.importCallback = function (responseText, statusText, xhr, form) {
     'use strict';
-
     if (responseText.stage === 'validate') {
         midas.import.stage = 'initialize';
         $("#progress_status").html('Counting files (this could take some time)');
@@ -100,7 +99,7 @@ midas.import.startImport = function () {
     }
     else { // stop the import
         midas.import.stage = 'validate'; // goes back to the validate stage
-        $.get($('.webroot').val() + '/import/stop?id=' + midas.import.uploadId,
+        $.get($('.webroot').val() + '/import/stop?id=' + encodeURIComponent(midas.import.uploadId),
             midas.import.displayStopMessage);
     }
 };
@@ -108,7 +107,6 @@ midas.import.startImport = function () {
 /** On assetstore add submit */
 midas.import.assetstoreSubmit = function (formData, jqForm, options) {
     'use strict';
-
     // Add the type is the one in the main page (because it's hidden in the assetstore add page)
     var assetstoretype = {};
     assetstoretype.name = 'assetstoretype';
@@ -164,7 +162,6 @@ midas.import.newAssetstoreHide = function () {
 /** When the input directory is changed */
 midas.import.inputDirectoryChanged = function () {
     'use strict';
-
     // Set the assetstore name as the basename
     var basename = $('#inputdirectory').val().replace(/^.*[\/\\]/g, '');
     if (basename.length === 0) { // if the last char is / or \
@@ -229,14 +226,13 @@ midas.import.progressFailureCallback = function (XMLHttpRequest, textStatus, err
 /** Check the progress of the import */
 midas.import.checkProgress = function (id) {
     'use strict';
-
     if (midas.import.stage === 'validate') {
         return false;
     }
 
     $.ajax({
         type: "GET",
-        url: $('.webroot').val() + '/import/getprogress?id=' + id,
+        url: $('.webroot').val() + '/import/getprogress?id=' + encodeURIComponent(id),
         dataType: 'json',
         timeout: 10000000000,
         success: midas.import.makeProgressSuccessCallback(id),
@@ -247,7 +243,6 @@ midas.import.checkProgress = function (id) {
 
 $(document).ready(function () {
     'use strict';
-
     // Parse json from the view
     midas.import.assetstores = $.parseJSON(midas.import.assetstores);
 

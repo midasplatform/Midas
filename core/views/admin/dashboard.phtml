@@ -18,66 +18,63 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/admin/admin.dashboard.css" />
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/admin/admin.dashboard.js"></script>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/admin/admin.dashboard.css"/>
+<script type="text/javascript" src="<?php echo $this->coreWebroot ?>/public/js/admin/admin.dashboard.js"></script>
 
 <?php
-  foreach($this->dashboard as $module => $dasboard)
-    {
-    echo "<h3>".ucfirst($module)."</h3>";
-    echo "<table>";
-    foreach($dasboard as $name => $status)
-      {
-      echo "<tr>";
-      echo "  <td>$name </td>";
-      if($status[0])
-        {
-        echo "  <td><img src='{$this->coreWebroot}/public/images/icons/ok.png' /></td>";
+foreach ($this->dashboard as $module => $dasboard) {
+    echo '<h3>'.ucfirst($this->escape($module)).'</h3>';
+    echo '<table>';
+    foreach ($dasboard as $name => $status) {
+        echo '<tr>';
+        echo '<td>'.$this->escape($name).'</td>';
+        if ($status[0]) {
+            echo '<td><img src="'.$this->coreWebroot.'/public/images/icons/ok.png" /></td>';
+        } else {
+            echo '<td><img src="'.$this->coreWebroot.'/public/images/icons/nok.png" /></td>';
         }
-      else
-        {
-        echo "  <td><img src='{$this->coreWebroot}/public/images/icons/nok.png' /></td>";
+        if (isset($status[1])) {
+            echo '<td>'.$this->escape($status[1]).'</td>';
         }
-      if(isset($status[1]))
-        {
-        echo "  <td>$status[1]</td>";
-        }
-      echo "</tr>";
-      }
-    echo "</table>";
+        echo '</tr>';
     }
- ?>
+    echo '</table>';
+}
+?>
 
-  <div class="databaseIntegrityWrapper" style="display: none">
+<div class="databaseIntegrityWrapper" style="display: none">
     <h3 class="sectionHeader"><a href="#">Database Integrity</a></h3>
+
     <div>
-      <div class="integrityLoading">
-        <img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
-        Computing database integrity. This may take several minutes...
-      </div>
-      <div class="integrityList" style="display: none">
-        <ul>
-          <li class="integrityItem">
-            <span>Number of orphaned folders:</span>
-            <span class="nFolder"></span>
-            <span class="integrityButton"><button element="Folder" class="removeOrphans">Clean</button></span>
-          </li>
-          <li class="integrityItem">
-            <span>Number of orphaned items:</span>
-            <span class="nItem"></span>
-            <span class="integrityButton"><button element="Item" class="removeOrphans">Clean</button></span>
-          </li>
-          <li class="integrityItem">
-            <span>Number of orphaned revisions:</span>
-            <span class="nItemRevision"></span>
-            <span class="integrityButton"><button element="ItemRevision" class="removeOrphans">Clean</button></span>
-          </li>
-          <li class="integrityItem">
-            <span>Number of orphaned bitstreams:</span>
-            <span class="nBitstream"></span>
-            <span class="integrityButton"><button element="Bitstream" class="removeOrphans">Clean</button></span>
-          </li>
-        </ul>
-      </div>
+        <div class="integrityLoading">
+            <img alt="" src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>
+            Computing database integrity. This may take several minutes...
+        </div>
+        <div class="integrityList" style="display: none">
+            <ul>
+                <li class="integrityItem">
+                    <span>Number of orphaned folders:</span>
+                    <span class="nFolder"></span>
+                    <span class="integrityButton"><button element="Folder" class="removeOrphans">Clean</button></span>
+                </li>
+                <li class="integrityItem">
+                    <span>Number of orphaned items:</span>
+                    <span class="nItem"></span>
+                    <span class="integrityButton"><button element="Item" class="removeOrphans">Clean</button></span>
+                </li>
+                <li class="integrityItem">
+                    <span>Number of orphaned revisions:</span>
+                    <span class="nItemRevision"></span>
+                    <span class="integrityButton"><button element="ItemRevision" class="removeOrphans">Clean
+                        </button></span>
+                </li>
+                <li class="integrityItem">
+                    <span>Number of orphaned bitstreams:</span>
+                    <span class="nBitstream"></span>
+                    <span class="integrityButton"><button element="Bitstream" class="removeOrphans">Clean
+                        </button></span>
+                </li>
+            </ul>
+        </div>
     </div>
-  </div>
+</div>

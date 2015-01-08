@@ -18,13 +18,13 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the scheduler module to version 1.0.2. */
 class Scheduler_Upgrade_1_0_2 extends MIDASUpgrade
-  {
-  public function mysql()
+{
+    /** Upgrade a MySQL database. */
+    public function mysql()
     {
-    $sql = "DELETE FROM scheduler_job_log";
-    $this->db->query($sql);
-    $sql = "ALTER TABLE scheduler_job_log MODIFY log_id bigint(20) NOT NULL AUTO_INCREMENT";
-    $this->db->query($sql);
+        $this->db->query("DELETE FROM `scheduler_job_log`;");
+        $this->db->query("ALTER TABLE `scheduler_job_log` MODIFY `log_id` bigint(20) NOT NULL AUTO_INCREMENT;");
     }
-  }
+}

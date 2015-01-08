@@ -18,69 +18,65 @@
  limitations under the License.
 =========================================================================*/
 
-/** Admin forms*/
+/** Admin forms */
 class AdminForm extends AppForm
-  {
-  /** create form */
-  public function createConfigForm()
+{
+    /** create form */
+    public function createConfigForm()
     {
-    $form = new Zend_Form;
+        $form = new Zend_Form();
 
-    $form->setAction($this->webroot.'/admin/index')
-         ->setMethod('post');
+        $form->setAction($this->webroot.'/admin/index')->setMethod('post');
 
-    $lang = new Zend_Form_Element_Select('lang');
-    $lang->addMultiOptions(array(
-      'en' => 'English',
-      'fr' => 'French'));
+        $lang = new Zend_Form_Element_Select('lang');
+        $lang->addMultiOptions(array('en' => 'English', 'fr' => 'French'));
 
-    $description = new Zend_Form_Element_Textarea('description');
+        $description = new Zend_Form_Element_Textarea('description');
 
-    $keywords = new Zend_Form_Element_Textarea('keywords');
+        $timezone = new Zend_Form_Element_Select('timezone');
+        $timezone->addMultiOptions(
+            array(
+                'America/Anchorage' => 'America/Anchorage',
+                'America/Chicago' => 'America/Chicago',
+                'America/Denver' => 'America/Denver',
+                'America/Los_Angeles' => 'America/Los Angeles',
+                'America/New_York' => 'America/New York',
+                'America/Phoenix' => 'America/Phoenix',
+                'Europe/London' => 'Europe/London',
+                'Europe/Paris' => 'Europe/Paris',
+                'Pacific/Honolulu' => 'Pacific/Honolulu',
+                'UTC' => 'UTC',
+            )
+        );
 
-    $timezone = new Zend_Form_Element_Select('timezone');
-    $timezone->addMultiOptions(array(
-      'America/Anchorage' => 'America/Anchorage',
-      'America/Chicago' => 'America/Chicago',
-      'America/Denver' => 'America/Denver',
-      'America/Los_Angeles' => 'America/Los Angeles',
-      'America/New_York' => 'America/New York',
-      'America/Phoenix' => 'America/Phoenix',
-      'Europe/London' => 'Europe/London',
-      'Europe/Paris' => 'Europe/Paris',
-      'Pacific/Honolulu' => 'Pacific/Honolulu',
-      'UTC' => 'UTC'));
+        $name = new Zend_Form_Element_Text('name');
+        $name->setRequired(true)->addValidator('NotEmpty', true);
 
-    $environment = new Zend_Form_Element_Select('environment');
-    $environment->addMultiOptions(array(
-      'production' => 'Production',
-      'development' => 'Development'));
+        $dynamichelp = new Zend_Form_Element_Checkbox('dynamichelp');
+        $gravatar = new Zend_Form_Element_Checkbox('gravatar');
+        $allowPasswordReset = new Zend_Form_Element_Checkbox('allow_password_reset');
+        $closeRegistration = new Zend_Form_Element_Checkbox('closeregistration');
 
-    $name = new Zend_Form_Element_Text('name');
-    $name->setRequired(true)
-         ->addValidator('NotEmpty', true);
+        $httpProxy = new Zend_Form_Element_Text('httpProxy');
 
-    $smartoptimizer = new Zend_Form_Element_Checkbox('smartoptimizer');
-    $dynamichelp = new Zend_Form_Element_Checkbox('dynamichelp');
-    $gravatar = new Zend_Form_Element_Checkbox('gravatar');
-    $closeRegistration = new Zend_Form_Element_Checkbox('closeregistration');
-    $verifyEmail = new Zend_Form_Element_Checkbox('verifyemail');
-    $logtrace = new Zend_Form_Element_Checkbox('logtrace');
+        $submit = new Zend_Form_Element_Submit('submitConfig');
+        $submit->setLabel('Save configuration');
 
-    $httpProxy = new Zend_Form_Element_Text('httpProxy');
+        $form->addElements(
+            array(
+                $dynamichelp,
+                $description,
+                $timezone,
+                $gravatar,
+                $lang,
+                $name,
+                $allowPasswordReset,
+                $closeRegistration,
+                $submit,
+                $httpProxy,
+            )
+        );
 
-    $smtpServer = new Zend_Form_Element_Text('smtpserver');
-    $smtpUser = new Zend_Form_Element_Text('smtpuser');
-    $smtpPassword = new Zend_Form_Element_Text('smtppassword');
-    $smtpFromAddress = new Zend_Form_Element_Text('smtpfromaddress');
-
-    $submit = new Zend_Form_Element_Submit('submitConfig');
-    $submit ->setLabel('Save configuration');
-
-    $form->addElements(
-      array($dynamichelp, $keywords, $description, $timezone, $environment, $gravatar,
-      $lang, $name, $smartoptimizer, $closeRegistration, $submit, $logtrace, $httpProxy,
-      $smtpServer, $smtpUser, $smtpPassword, $smtpFromAddress, $verifyEmail));
-    return $form;
+        return $form;
     }
-  } // end class
+}

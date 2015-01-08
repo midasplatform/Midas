@@ -1,5 +1,8 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global JavaScriptRenderer */
+/* global json */
+
 var paraview;
 var midas = midas || {};
 midas.visualize = midas.visualize || {};
@@ -8,6 +11,7 @@ midas.visualize.renderers = {};
 midas.visualize.DISTANCE_FACTOR = 1.6; // factor to zoom the camera out by
 
 midas.visualize.start = function () {
+    'use strict';
     // Create a paraview proxy
     if (typeof Paraview != 'function') {
         alert('Paraview javascript was not fetched correctly from server.');
@@ -39,6 +43,7 @@ midas.visualize.start = function () {
  * Helper callback for after the data file has been opened
  */
 midas.visualize._dataOpened = function (view, retVal) {
+    'use strict';
     midas.visualize.input = retVal.input;
     midas.visualize.bounds = retVal.imageData.Bounds;
     midas.visualize.meshes = retVal.meshes;
@@ -89,6 +94,7 @@ midas.visualize._dataOpened = function (view, retVal) {
  * for use in other functions, and starts the render window
  */
 midas.visualize.initCallback = function (view, retVal) {
+    'use strict';
     midas.visualize.sof = retVal.sof;
     midas.visualize.lookupTable = retVal.lookupTable;
     midas.visualize.activeView = retVal.activeView;
@@ -111,13 +117,14 @@ midas.visualize.initCallback = function (view, retVal) {
 
     midas.visualize.renderers.current.updateServerSizeIfNeeded(); // force a view refresh
     midas.visualize.forceRefreshView();
-}
+};
 
 /**
  * Initialize or re-initialize the renderer within the DOM
  */
 midas.visualize.switchRenderer = function (first) {
-    if (midas.visualize.renderers.js == undefined) {
+    'use strict';
+    if (midas.visualize.renderers.js === undefined) {
         midas.visualize.renderers.js = new JavaScriptRenderer("jsRenderer", "/PWService");
         midas.visualize.renderers.js.enableWebSocket(paraview, 'ws://' + json.visualize.hostname + ':' + json.visualize.wsport + '/PWService/Websocket');
         midas.visualize.renderers.js.init(paraview.sessionId, midas.visualize.activeView.__selfid__);
@@ -139,6 +146,7 @@ midas.visualize.switchRenderer = function (first) {
  * of the form [xMin, xMax, yMin, yMax, zMin, zMax]
  */
 midas.visualize.renderSubgrid = function (bounds) {
+    'use strict';
     var toHide = midas.visualize.subgrid ? midas.visualize.subgrid : null;
 
     var container = $('div.MainDialog');
@@ -159,6 +167,7 @@ midas.visualize.renderSubgrid = function (bounds) {
  * Display information about the volume
  */
 midas.visualize.populateInfo = function () {
+    'use strict';
     $('#boundsXInfo').html(midas.visualize.bounds[0] + ' .. ' + midas.visualize.bounds[1]);
     $('#boundsYInfo').html(midas.visualize.bounds[2] + ' .. ' + midas.visualize.bounds[3]);
     $('#boundsZInfo').html(midas.visualize.bounds[4] + ' .. ' + midas.visualize.bounds[5]);
@@ -169,6 +178,7 @@ midas.visualize.populateInfo = function () {
  * Get the plot data from the scalar opacity function
  */
 midas.visualize.getSofCurve = function () {
+    'use strict';
     var points = paraview.GetProperty(midas.visualize.sof, 'Points');
     var curve = [];
     for (var i = 0; i < points.length; i++) {
@@ -181,6 +191,7 @@ midas.visualize.getSofCurve = function () {
  * Setup the object list widget
  */
 midas.visualize.setupObjectList = function () {
+    'use strict';
     var dialog = $('#objectListTemplate').clone();
     dialog.removeAttr('id');
     $('#objectListAction').click(function () {
@@ -221,10 +232,12 @@ midas.visualize.setupObjectList = function () {
  * Force the renderer image to refresh from the server
  */
 midas.visualize.forceRefreshView = function () {
+    'use strict';
     midas.visualize.renderers.js.forceRefresh();
 };
 
 midas.visualize.toggleObjectVisibility = function (checkbox) {
+    'use strict';
     var type = checkbox.attr('vis');
     var itemId = checkbox.attr('element');
     var proxy;
@@ -262,6 +275,7 @@ midas.visualize.toggleObjectVisibility = function (checkbox) {
  * Setup the color mapping controls
  */
 midas.visualize.setupColorMapping = function () {
+    'use strict';
     var dialog = $('#scmDialogTemplate').clone();
     dialog.removeAttr('id');
     $('#scmEditAction').click(function () {
@@ -278,7 +292,7 @@ midas.visualize.setupColorMapping = function () {
                 var rgbPoint = $('#scmPointMapTemplate').clone();
                 var r = Math.round(255 * colorMap[i + 1]);
                 var g = Math.round(255 * colorMap[i + 2]);
-                var b = Math.round(255 * colorMap[i + 3])
+                var b = Math.round(255 * colorMap[i + 3]);
                 rgbPoint.removeAttr('id').appendTo(pointListDiv).show();
                 rgbPoint.find('input.scmScalarValue').val(colorMap[i]);
                 if (i < 8) { // first two values must be present (min and max)
@@ -300,7 +314,7 @@ midas.visualize.setupColorMapping = function () {
                     }
                 }).css('background-color', 'rgb(' + r + ',' + g + ',' + b + ')');
             }
-        };
+        }
         renderPointList(midas.visualize.colorMap);
 
         container.find('button.scmAddPoint').unbind('click').click(function () {
@@ -354,6 +368,7 @@ midas.visualize.setupColorMapping = function () {
  * Setup the scalar opacity function controls
  */
 midas.visualize.setupScalarOpacity = function () {
+    'use strict';
     var dialog = $('#sofDialogTemplate').clone();
     dialog.removeAttr('id');
     $('#sofEditAction').click(function () {
@@ -428,6 +443,7 @@ midas.visualize.setupScalarOpacity = function () {
  * updates the sof in paraview based on the jqplot curve
  */
 midas.visualize.applySofCurve = function () {
+    'use strict';
     // Create the scalar opacity transfer function
     var points = [];
     var curve = midas.visualize.sofPlot.series[0].data;
@@ -449,7 +465,7 @@ midas.visualize.applySofCurve = function () {
  * Must call this anytime a redraw or replot is called on the sof plot
  */
 midas.visualize.setupSofPlotBindings = function () {
-
+    'use strict';
     // Clicking an existing point should let you change its values
     $('#sofChartDiv').bind('jqplotDataClick', function (ev, seriesIndex, pointIndex, data) {
         var container = $('div.MainDialog').find('div.sofPointEdit');
@@ -501,6 +517,7 @@ midas.visualize.setupSofPlotBindings = function () {
  * Setup the extract subgrid controls
  */
 midas.visualize.setupExtractSubgrid = function () {
+    'use strict';
     var dialog = $('#extractSubgridDialogTemplate').clone();
     dialog.removeAttr('id');
     $('#extractSubgridAction').click(function () {
@@ -597,6 +614,7 @@ midas.visualize.setupExtractSubgrid = function () {
 };
 
 midas.visualize.setupOverlay = function () {
+    'use strict';
     $('button.plusX').click(function () {
         paraview.callPluginMethod('midascommon', 'SetCamera', {
             cameraPosition: [
@@ -672,14 +690,16 @@ midas.visualize.setupOverlay = function () {
 };
 
 $(window).load(function () {
+    'use strict';
     if (typeof midas.visualize.preInitCallback == 'function') {
         midas.visualize.preInitCallback();
     }
 
-    json = jQuery.parseJSON($('div.jsonContent').html());
+    json = $.parseJSON($('div.jsonContent').html());
     midas.visualize.start(); // warning: asynchronous. To add post logic, see initCallback
 });
 
 $(window).unload(function () {
+    'use strict';
     paraview.disconnect();
 });

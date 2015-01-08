@@ -19,21 +19,23 @@
 =========================================================================*/
 ?>
 <html>
-	<title>Midas Platform Visualization</title>
+<title>Midas Platform Visualization</title>
 
-	<script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/webgl/Three.js"></script>
-	<script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/webgl/Detector.js"></script>
-	<script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/webgl/RequestAnimationFrame.js"></script>
-	<script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/webgl/utils.js"></script>
-  <script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/webgl/TrackballControlsMidas.js"></script>
+<script type="text/javascript" src="<?php echo $this->moduleWebroot ?>/public/js/webgl/Three.js"></script>
+<script type="text/javascript" src="<?php echo $this->moduleWebroot ?>/public/js/webgl/Detector.js"></script>
+<script type="text/javascript"
+        src="<?php echo $this->moduleWebroot ?>/public/js/webgl/RequestAnimationFrame.js"></script>
+<script type="text/javascript" src="<?php echo $this->moduleWebroot ?>/public/js/webgl/utils.js"></script>
+<script type="text/javascript"
+        src="<?php echo $this->moduleWebroot ?>/public/js/webgl/TrackballControlsMidas.js"></script>
 
-  <?php
-  echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery.js"></script>';
-  echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/layout/jquery-ui.js"></script>';
-  ?>
-  <script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/webgl/webgl.index.js"></script>
-  <link type="text/css" href="<?php echo $this->coreWebroot?>/public/css/layout/jquery-ui.css" rel="stylesheet" />
-  <link type="text/css" href="<?php echo $this->moduleWebroot?>/public/css/webgl/webgl.index.css" rel="stylesheet" />
+<?php
+echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery.js"></script>';
+echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery-ui.js"></script>';
+?>
+<script type="text/javascript" src="<?php echo $this->moduleWebroot ?>/public/js/webgl/webgl.index.js"></script>
+<link type="text/css" href="<?php echo $this->coreWebroot ?>/public/css/layout/jquery-ui.min.css" rel="stylesheet"/>
+<link type="text/css" href="<?php echo $this->moduleWebroot ?>/public/css/webgl/webgl.index.css" rel="stylesheet"/>
 </head>
 
 <body>
@@ -46,18 +48,19 @@
 <button onclick="zoomIn();" id="buttonPlus" class="buttonNav"></button>
 <button onclick="zoomOut();" id="buttonMinus" class="buttonNav"></button>
 <div id="info">
-	<b>MOVE</b> mouse & press <b>LEFT button:</b> rotate, <b>MIDDLE button:</b> pan , <b>RIGHT button:</b> zoom
+    <b>MOVE</b> mouse & press <b>LEFT button:</b> rotate,
+    <b>MIDDLE button:</b> pan , <b>RIGHT button:</b> zoom
 </div>
 
 <div id="onliver" style="display:none">
-	Over tooltip
+    Over tooltip
 </div>
 
-<div id="axesContainer" >
+<div id="axesContainer">
 </div>
 
-<div id="container" ></div>
+<div id="container"></div>
 
-<div id="datacontent" style="display:none"><?php echo $this->data?></div>
+<div id="datacontent" style="display:none"><?php echo $this->data ?></div>
 </body>
 </html>

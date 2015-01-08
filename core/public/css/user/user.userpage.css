@@ -1,18 +1,1 @@
-/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
-
-#locationUser {
-    color: gray;
-    font-size: 10px;
-}
-
-div.sideElementFirst ul li:hover {
-    background-color: #E5E5E5;
-    color: black;
-}
-
-.websiteBlock li {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
-    white-space: nowrap;
-}
+#locationUser{color:#808080;font-size:10px;}div.sideElementFirst ul li:hover{background-color:#e5e5e5;color:#000;}.websiteBlock li{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}

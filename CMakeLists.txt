@@ -17,58 +17,93 @@
 # limitations under the License.
 #=============================================================================
 
-project( Midas )
+cmake_minimum_required(VERSION 2.8.7)
+project(Midas)
 
-#-----------------------------------------------------------------------------
-cmake_minimum_required( VERSION 2.6 )
+get_filename_component(REAL_SOURCE_DIR ${CMAKE_SOURCE_DIR} REALPATH)
+get_filename_component(REAL_BINARY_DIR "${CMAKE_BINARY_DIR}" REALPATH)
+if(${REAL_SOURCE_DIR} STREQUAL ${REAL_BINARY_DIR})
+    message(FATAL_ERROR "Binary directory must not be same as the source directory")
+endif()
 
-#-----------------------------------------------------------------------------
-#  Set Midas version information
-set( Midas_VERSION_MAJOR "3" )
-set( Midas_VERSION_MINOR "0" )
-include( library/CMake/kwsysDateStamp.cmake )
-set( Midas_VERSION_BUILD
-  ${KWSYS_DATE_STAMP_YEAR}${KWSYS_DATE_STAMP_MONTH}${KWSYS_DATE_STAMP_DAY} )
-set( Midas_VERSION
-  "${Midas_VERSION_MAJOR}.${Midas_VERSION_MINOR}.${Midas_VERSION_BUILD}" )
-
-#-----------------------------------------------------------------------------
-#  Find the php executable
-find_program(PHP "php" CACHE STRING "PHP executable.")
+find_program(PHP "php" DOC "Path to the PHP executable")
 if(NOT PHP)
- message(FATAL_ERROR "Please set the PHP executable")
+    message(FATAL_ERROR "Please set the path to the PHP executable")
 endif()
 
 #-----------------------------------------------------------------------------
-#  Drop all tables from the testing DB
-#  Then re-install the DB, set a Default assetstore, and install all modules
-message(STATUS "Setting up database for module testing, please wait...")
+# Download and run composer to install third-party dependencies, if necessary
+#-----------------------------------------------------------------------------
+
+find_file(COMPOSER_LOCK "composer.lock" PATHS ${CMAKE_CURRENT_SOURCE_DIR} NO_DEFAULT_PATH DOC "Path to the composer lock file")
+if(NOT COMPOSER_LOCK)
+    find_file(COMPOSER_PHAR "composer.phar" PATHS ${CMAKE_CURRENT_SOURCE_DIR} DOC "Path to the composer PHP archive")
+    if(NOT COMPOSER_PHAR)
+        message(STATUS "Downloading composer")
+        file(DOWNLOAD https://getcomposer.org/composer.phar ${CMAKE_CURRENT_SOURCE_DIR}/composer.phar STATUS DOWNLOAD_COMPOSER_PHAR_STATUS)
+        list(GET DOWNLOAD_COMPOSER_PHAR_STATUS 0 DOWNLOAD_COMPOSER_PHAR_RESULT)
+        list(GET DOWNLOAD_COMPOSER_PHAR_STATUS 1 DOWNLOAD_COMPOSER_PHAR_ERROR)
+        if(NOT DOWNLOAD_COMPOSER_PHAR_RESULT EQUAL 0)
+    	    message(FATAL_ERROR "Error downloading composer: ${DOWNLOAD_COMPOSER_PHAR_ERROR}")
+        endif()
+        message(STATUS "Downloading composer - done")
+        set(COMPOSER_PHAR ${CMAKE_CURRENT_SOURCE_DIR}/composer.phar CACHE FILEPATH "Path to the composer PHP archive")
+    endif()
+    message(STATUS "Executing composer install")
+    execute_process(
+        COMMAND ${PHP} ${COMPOSER_PHAR} install
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        RESULT_VARIABLE COMPOSER_INSTALL_RESULT
+        OUTPUT_VARIABLE COMPOSER_INSTALL_OUTPUT
+        ERROR_VARIABLE COMPOSER_INSTALL_ERROR)
+    if(NOT COMPOSER_INSTALL_RESULT EQUAL 0)
+        message(STATUS "Composer install output: ${COMPOSER_INSTALL_OUTPUT}")
+        message(FATAL_ERROR "Composer install error: ${COMPOSER_INSTALL_ERROR}")
+    endif()
+    message(STATUS "Executing composer install - done")
+endif()
+
+#-----------------------------------------------------------------------------
+# Create data, local configs, logs, and temporary directories for testing
+#-----------------------------------------------------------------------------
+set(ENV{midas_data_path} ${CMAKE_CURRENT_BINARY_DIR}/data)
+file(MAKE_DIRECTORY $ENV{midas_data_path})
+
+set(ENV{midas_local_configs_path} ${CMAKE_CURRENT_BINARY_DIR}/configs)
+file(MAKE_DIRECTORY $ENV{midas_local_configs_path})
+
+set(ENV{midas_logs_path} ${CMAKE_CURRENT_BINARY_DIR}/logs)
+file(MAKE_DIRECTORY $ENV{midas_logs_path})
+
+set(ENV{midas_temp_path} ${CMAKE_CURRENT_BINARY_DIR}/tmp)
+file(MAKE_DIRECTORY $ENV{midas_temp_path})
+
+#-----------------------------------------------------------------------------
+# Drop all tables from the testing database, then reinstall the database, set
+# a default asset store, and install all modules
+#-----------------------------------------------------------------------------
+
+message(STATUS "Setting up database(s) for testing")
 execute_process(
-  COMMAND ${PHP} ${CMAKE_CURRENT_SOURCE_DIR}/tests/DatabaseSetup.php
-  RESULT_VARIABLE databaseSetup_RESULT
-  OUTPUT_VARIABLE databaseSetup_OUT
-  ERROR_VARIABLE databaseSetup_ERR)
-
-if(NOT databaseSetup_RESULT EQUAL 0)
-  message(STATUS "DatabaseSetup output: ${databaseSetup_OUT}")
-  message(FATAL_ERROR "DatabaseSetup error: ${databaseSetup_ERR}")
+    COMMAND ${PHP} ${CMAKE_CURRENT_SOURCE_DIR}/tests/DatabaseSetup.php
+    RESULT_VARIABLE DATABASE_SETUP_RESULT
+    OUTPUT_VARIABLE DATABASE_SETUP_OUTPUT
+    ERROR_VARIABLE DATABASE_SETUP_ERROR)
+if(NOT DATABASE_SETUP_RESULT EQUAL 0)
+    message(STATUS "Database setup output: ${DATABASE_SETUP_OUTPUT}")
+    message(FATAL_ERROR "Database setup error: ${DATABASE_SETUP_ERROR}")
 endif()
-
-message(STATUS "Database setup is complete")
+message(STATUS "Setting up database(s) for testing - done")
 
 #-----------------------------------------------------------------------------
-#  This should be at the top level for warning suppression and coverage exclude
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/library/CMake/CTestCustom.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake )
-
-
-
-#----------------------------------------------------------------------------
 # Setup testing and required parameters for testing
+#-----------------------------------------------------------------------------
 
 include(CTest)
-option( MIDAS_RUN_STYLE_TESTS "Should MIDAS run PHP style checking tests?" ON )
-set( SERVER_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR} )
+option(MIDAS_RUN_SECURITY_CHECKS  "Run security checks?" ON)
+option(MIDAS_RUN_STYLE_TESTS "Run PHP style tests?" ON)
+option(MIDAS_RUN_TESTS_WITH_COVERAGE "Run tests with coverage?" OFF)
+
 add_subdirectory(tests)
 add_subdirectory(core/tests)
 add_subdirectory(modules)

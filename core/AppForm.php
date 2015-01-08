@@ -18,20 +18,30 @@
  limitations under the License.
 =========================================================================*/
 
-/** Common Form Class*/
+/**
+ * Generic form class.
+ *
+ * @package Core\Forms
+ */
 class AppForm
-  {
-  /** constructor*/
-  public function  __construct()
+{
+    /** Constructor. */
+    public function __construct()
     {
-    $fc = Zend_Controller_Front::getInstance();
-    $this->webroot = $fc->getBaseUrl();
-    }//end construct
+        $fc = Zend_Controller_Front::getInstance();
+        $this->webroot = $fc->getBaseUrl();
+    }
 
-  /** translation  */
-  protected function t($text)
+    /**
+     * Return the translation of a given string.
+     *
+     * @param string $text string to translate
+     * @return string translated string or the input string if there is no translation
+     */
+    protected function t($text)
     {
-    Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
-    return InternationalizationComponent::translate($text);
-    }//en method t
-  } // end class
+        Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
+
+        return InternationalizationComponent::translate($text);
+    }
+}

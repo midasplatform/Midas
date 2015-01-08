@@ -18,55 +18,47 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link href="<?php echo $this->coreWebroot?>/public/css/install/install.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->coreWebroot ?>/public/css/install/install.css" rel="stylesheet" type="text/css"/>
 
 <div class="viewMain">
-  <h2>Welcome to Midas Platform!</h2>
-    <p>Midas Platform is a collection of server, client, and standalone tools for data archiving, analysis, and access.</p>
+    <h2>Welcome to Midas Platform!</h2>
+
+    <p>Midas Platform is a collection of server, client, and standalone tools for data archiving, analysis, and
+        access.</p>
     <ul>
-      <li>Hosts public and private collections of data;</li>
-      <li>Handles massive collections and images;</li>
-      <li>Manages images, files, and metadata;</li>
-      <li>Integrates BatchMake technology for server-side and standalone batch processing;</li>
-      <li>Builds upon open source code and open standards.</li>
-      </ul>
-      <div class="separator"></div>
-      <h3>Installation</h3>
-      This script will guide you during the installation of Midas Platform.<br/><br/>
-      For more information go to: <a href="http://www.kitware.com/midaswiki/index.php/MIDAS3-Installation">http://www.kitware.com/midaswiki/index.php/MIDAS3-Installation</a>
+        <li>Hosts public and private collections of data;</li>
+        <li>Handles massive collections and images;</li>
+        <li>Manages images, files, and metadata;</li>
+        <li>Integrates BatchMake technology for server-side and standalone batch processing;</li>
+        <li>Builds upon open source code and open standards.</li>
+    </ul>
+    <div class="separator"></div>
+    <h3>Installation</h3>
+    This script will guide you during the installation of Midas Platform.<br/><br/>
+    For more information go to:
+    <a href="http://www.kitware.com/midaswiki/index.php/MIDAS3-Installation">http://www.kitware.com/midaswiki/index.php/MIDAS3-Installation</a>
 
-      <h3>System check</h3>
-  <?php
+    <h3>System check</h3>
+    <?php
     echo "<ul>";
-    if(!empty($this->phpextension_missing))
-      {
-      foreach($this->phpextension_missing as $missing)
-        {
-        echo "<li><span style=\"color:#d48304\">$missing</span></li>";
+    if (!empty($this->phpextension_missing)) {
+        foreach ($this->phpextension_missing as $missing) {
+            echo "<li><span style=\"color:#d48304\">{$this->escape($missing)}</span></li>";
         }
-      }
+    }
 
-    if($this->writable === false)
-      {
-      echo "<li><span style=\"color:red\"> Unable to write to the application folder: {$this->basePath}. Please check your web server permissions.</span></li>";
-      }
-
-    if($this->writable && empty($this->phpextension_missing))
-      {
-      echo "<li><span style=\"color:green\"> Your system is OK.</span></li>";
-      }
+    if (empty($this->phpextension_missing)) {
+        echo "<li><span style=\"color:green\"> Your system is OK.</span></li>";
+    }
     echo "</ul>";
 
-    if($this->writable !== false)
-      {
-      echo "<form method='post' action=''>";
-      echo "<input type='submit' name='submit' value='Go to next step'>";
-      echo "</form>";
-      }
-    else
-      {
-      echo "<input type='submit' name='submit' value='Go to next step' disabled><br/>";
-      echo "Please fix the above issues to proceed to the next step.";
-      }
-  ?>
+    if (empty($this->phpextension_missing)) {
+        echo "<form method='post' action=''>";
+        echo "<input type='submit' name='submit' value='Go to next step'>";
+        echo "</form>";
+    } else {
+        echo "<input type='submit' name='submit' value='Go to next step' disabled><br/>";
+        echo "Please fix the above issues to proceed to the next step.";
+    }
+    ?>
 </div>

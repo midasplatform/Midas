@@ -1,7 +1,7 @@
 <?php
 /*=========================================================================
  MIDAS Server
- Copyright (c) Kitware SAS. 26 rue Louis GuŽrin. 69100 Villeurbanne, FRANCE
+ Copyright (c) Kitware SAS. 26 rue Louis GuÃ©rin. 69100 Villeurbanne, FRANCE
  All rights reserved.
  More information http://www.kitware.com
 
@@ -18,22 +18,20 @@
  limitations under the License.
 =========================================================================*/
 
-// please change to the according metadata prefix you use 
+// please change to the according metadata prefix you use
 $prefix = 'oai_dc';
 
 $output .= '   <metadata>'."\n";
 $output .= metadataHeader($prefix);
 
-foreach($metadata as $m)
-  {
-  xmlgetinfo($m->getMetadataId(), $m->getValue());
-  }
+foreach ($metadata as $m) {
+    xmlgetinfo($m->getMetadataId(), $m->getValue());
+}
 
 // Here, no changes need to be done
 $output .= '     </'.$prefix;
-if (isset($METADATAFORMATS[$prefix]['record_prefix']))
-  {
-  $output .= ':'.$METADATAFORMATS[$prefix]['record_prefix'];
-  }
+if (isset($METADATAFORMATS[$prefix]['record_prefix'])) {
+    $output .= ':'.$METADATAFORMATS[$prefix]['record_prefix'];
+}
 $output .= ">\n";
 $output .= '   </metadata>'."\n";

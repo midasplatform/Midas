@@ -19,23 +19,23 @@
 =========================================================================*/
 
 /** test oauth client controller */
-class OauthClientControllerTest extends ControllerTestCase
-  {
-  /** set up tests*/
-  public function setUp()
+class Oauth_ClientControllerTest extends ControllerTestCase
+{
+    /** set up tests */
+    public function setUp()
     {
-    $this->setupDatabase(array('default')); //core dataset
-    $this->setupDatabase(array('default'), 'oauth');
-    $this->enabledModules = array('api', 'oauth');
-    $this->_models = array('User');
+        $this->setupDatabase(array('default')); // core dataset
+        $this->setupDatabase(array('default'), 'oauth');
+        $this->enabledModules = array('api', 'oauth');
+        $this->_models = array('User');
 
-    parent::setUp();
+        parent::setUp();
     }
 
-  /**
-   * TODO stub
-   */
-  public function testStub()
+    /**
+     * TODO stub
+     */
+    public function testStub()
     {
     }
-  }
+}

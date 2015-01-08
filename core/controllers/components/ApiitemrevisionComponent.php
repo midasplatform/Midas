@@ -20,54 +20,63 @@
 
 /** These are the implementations of the web api methods for ItemRevision */
 class ApiitemrevisionComponent extends AppComponent
-  {
-
-  /**
-   * Function for grabbing bitstream id (used in itemrevisionGet)
-   */
-  function getBitstreamId($bitstream)
+{
+    /**
+     * Function for grabbing bitstream id (used in itemrevisionGet)
+     *
+     * @param BitstreamDao $bitstream
+     * @return int
+     */
+    public function getBitstreamId($bitstream)
     {
-    return $bitstream->getBitstreamId();
+        return $bitstream->getBitstreamId();
     }
 
-  /**
-   * Fetch the information about an ItemRevision
-   * @path /itemrevision/{id}
-   * @http GET
-   * @param id The id of the ItemRevision
-   * @return ItemRevision object
-   */
-  function itemrevisionGet($args)
+    /**
+     * Fetch the information about an ItemRevision
+     *
+     * @path /itemrevision/{id}
+     * @http GET
+     * @param id The id of the ItemRevision
+     * @return ItemRevision object
+     *
+     * @param array $args parameters
+     * @throws Exception
+     */
+    public function itemrevisionGet($args)
     {
-    $apihelperComponent = MidasLoader::loadComponent('Apihelper');
-    $apihelperComponent->validateParams($args, array('id'));
-    $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
-    $userDao = $apihelperComponent->getUser($args);
+        /** @var ApihelperComponent $apihelperComponent */
+        $apihelperComponent = MidasLoader::loadComponent('Apihelper');
+        $apihelperComponent->validateParams($args, array('id'));
+        $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_READ_DATA));
+        $userDao = $apihelperComponent->getUser($args);
 
-    $itemrevision_id = $args['id'];
-    $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
-    $itemRevision = $itemRevisionModel->load($itemrevision_id);
+        $itemrevision_id = $args['id'];
 
-    $itemModel = MidasLoader::loadModel('Item');
-    $item = $itemModel->load($itemRevision->getItemId());
-    if($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ))
-      {
-      throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
-      }
+        /** @var ItemRevisionModel $itemRevisionModel */
+        $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
+        $itemRevision = $itemRevisionModel->load($itemrevision_id);
 
-    $in = $itemRevision->toArray();
-    $out = array();
-    $out['id'] = $in['itemrevision_id'];
-    $out['item_id'] = $in['item_id'];
-    $out['date_created'] = $in['date'];
-    $out['date_updated'] = $in['date']; // fix this
-    $out['changes'] = $in['changes'];
-    $out['user_id'] = $in['user_id'];
-    $out['license_id'] = $in['license_id'];
-    $out['uuid'] = $in['uuid'];
-    $out['bitstreams'] = array_map(array($this, 'getBitstreamId'),
-        $itemRevision->getBitstreams());
+        /** @var ItemModel $itemModel */
+        $itemModel = MidasLoader::loadModel('Item');
+        $item = $itemModel->load($itemRevision->getItemId());
+        if ($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_READ)
+        ) {
+            throw new Exception("This item doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
+        }
 
-    return $out;
+        $in = $itemRevision->toArray();
+        $out = array();
+        $out['id'] = $in['itemrevision_id'];
+        $out['item_id'] = $in['item_id'];
+        $out['date_created'] = $in['date'];
+        $out['date_updated'] = $in['date']; // fix this
+        $out['changes'] = $in['changes'];
+        $out['user_id'] = $in['user_id'];
+        $out['license_id'] = $in['license_id'];
+        $out['uuid'] = $in['uuid'];
+        $out['bitstreams'] = array_map(array($this, 'getBitstreamId'), $itemRevision->getBitstreams());
+
+        return $out;
     }
-  } // end of class
+}

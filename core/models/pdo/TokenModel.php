@@ -22,16 +22,15 @@ require_once BASE_PATH.'/core/models/base/TokenModelBase.php';
 
 /** Api Token model implementation */
 class TokenModel extends TokenModelBase
-  {
-  /** Remove all expired api tokens */
-  function cleanExpired()
+{
+    /** Remove all expired API tokens. */
+    public function cleanExpired()
     {
-    $sql = $this->database->select()->where('expiration_date < ?', date("Y-m-d H:i:s"));
-    $rowset = $this->database->fetchAll($sql);
-    foreach($rowset as $row)
-      {
-      $tmpDao = $this->initDao('Token', $row);
-      parent::delete($tmpDao);
-      }
+        $sql = $this->database->select()->where('expiration_date < ?', date('Y-m-d H:i:s'));
+        $rowset = $this->database->fetchAll($sql);
+        foreach ($rowset as $row) {
+            $tmpDao = $this->initDao('Token', $row);
+            parent::delete($tmpDao);
+        }
     }
-  }
+}

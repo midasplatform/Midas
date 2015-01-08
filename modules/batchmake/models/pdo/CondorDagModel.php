@@ -18,9 +18,9 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH . '/modules/batchmake/models/base/CondorDagModelBase.php';
+require_once BASE_PATH.'/modules/batchmake/models/base/CondorDagModelBase.php';
 
 /** CondorDag class */
 class Batchmake_CondorDagModel extends Batchmake_CondorDagModelBase
-  {
-  }
+{
+}

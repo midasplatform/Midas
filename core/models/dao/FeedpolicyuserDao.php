@@ -19,10 +19,24 @@
 =========================================================================*/
 
 /**
- * \class FeedpolicyuserDao
- * \brief DAO
+ * Feed user policy DAO.
+ *
+ * @method int getFeedId()
+ * @method void setFeedId(int $feedId)
+ * @method int getUserId()
+ * @method void setUserId(int $userId)
+ * @method int getPolicy()
+ * @method void setPolicy(int $policy)
+ * @method string getDate()
+ * @method void setDate(string $date)
+ * @method FeedDao getFeed()
+ * @method void setFeed(FeedDao $feed)
+ * @method UserDao getUser()
+ * @method void setUser(UserDao $user)
+ * @package Core\DAO
  */
 class FeedpolicyuserDao extends AppDao
-  {
-  public $_model = 'Feedpolicyuser';
-  }
+{
+    /** @var string */
+    public $_model = 'Feedpolicyuser';
+}

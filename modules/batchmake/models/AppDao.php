@@ -17,8 +17,14 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** AppDao class for batchmake module */
+
+/**
+ * Generic DAO class for the batchmake module.
+ *
+ * @package Modules\Batchmake\DAO
+ */
 class Batchmake_AppDao extends MIDAS_GlobalDao
-  {
-  public $moduleName = 'batchmake';
-  } // end class
+{
+    /** @var string */
+    public $moduleName = 'batchmake';
+}

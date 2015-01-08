@@ -18,13 +18,13 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/extract/extract.dialog.js"></script>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.form.js"></script>
+<script type="text/javascript" src="<?php echo $this->moduleWebroot ?>/public/js/extract/extract.dialog.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot ?>/public/js/jquery/jquery.form.js"></script>
 
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/extract/extract.dialog.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/extract/extract.dialog.css"/>
 
 <div class="archiveExtractPromptText">
-Click <b>Extract</b> to begin extracting the archive.
+    Click <b>Extract</b> to begin extracting the archive.
 </div>
 
 <input type="checkbox" id="deleteArchiveWhenDone" checked="checked">Delete archive item when done</input>
@@ -33,8 +33,9 @@ Click <b>Extract</b> to begin extracting the archive.
 <div id="extractArchiveProgressMessage"></div>
 
 <div id="extractArchiveButtons" style="float: right">
-  <input type='hidden' id="itemId" value="<?php echo $this->itemId; ?>" />
-  <input class="globalButton" type='submit' name='submitButton' id='beginArchiveExtract' value='Extract' />
-  <input class="globalButton" style="margin-left: 15px;" type='button' name='declineArchiveExtract' id='declineArchiveExtract'
-         value='Cancel' />
+    <input type='hidden' id="itemId" value="<?php echo $this->escape($this->itemId); ?>"/>
+    <input class="globalButton" type='submit' name='submitButton' id='beginArchiveExtract' value='Extract'/>
+    <input class="globalButton" style="margin-left: 15px;" type='button' name='declineArchiveExtract'
+           id='declineArchiveExtract'
+           value='Cancel'/>
 </div>

@@ -1,0 +1,163 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+@import 'normalize';
+@import 'bourbon';
+
+body {
+    border: 0;
+    font-family: $lucida-grande;
+    font-size: 12px;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    width: 100%;
+}
+
+img {
+    border: 0;
+}
+
+a {
+    cursor: pointer;
+    &:visited {
+        border: none;
+        text-decoration: none;
+    }
+    &:active {
+        outline: none;
+    }
+}
+
+a:focus, li:active, li:focus {
+    outline: none;
+}
+
+img.thumbnailSmall {
+    height: 32px;
+    margin-right: 3px;
+    width: 32px;
+}
+
+.ui-widget {
+    font-family: $lucida-grande !important;
+    font-size: 12px !important;
+}
+
+div {
+    &#guideRobot {
+        display: none;
+    }
+    &.genericBigButton {
+        @include linear-gradient(to bottom, #FFF, #C4C4C4);
+        border-radius: 3px;
+        border: #354856 1px solid;
+        box-shadow: 0 0 2px #666;
+        color: #000;
+        cursor: pointer;
+        display: block;
+        float: left;
+        font-size: 12px;
+        font-weight: normal;
+        list-style-type: none;
+        padding: 1px 3px 2px 3px;
+        a {
+            color: #000 !important;
+            font-size: 12px !important;
+            font-weight: normal !important;
+            &:hover {
+                text-decoration: none !important;
+            }
+        }
+        &:hover {
+            @include linear-gradient(to bottom, #BDDCC9, #8AB79B);
+        }
+    }
+    &.genericWrapperTopRight {
+        float: right;
+    }
+    &.viewAction li a:hover, &.genericAction li a:hover, &.viewSelected li a:hover {
+        text-decoration: none;
+    }
+    &.viewAction li img, &.genericAction li img, &.viewSelected li img {
+        position: relative;
+        top: 3px;
+    }
+    &.viewAction hr, &.genericAction hr {
+        background-color: #D7D7D7;
+        border: 0;
+        color: #D7D7D7;
+        height: 1px;
+        margin-bottom: 0;
+        margin-left: 0;
+        margin-top: 3px;
+        width: 130px;
+    }
+    &.viewSideBar h1 {
+        color: #999;
+        font-size: 11px;
+        margin-bottom: 0.67em;
+        margin-top: 0.67em;
+        text-shadow: #FFF 0 1px 1px;
+        text-transform: uppercase;
+    }
+}
+
+.jgrowl {
+    font-size: 13px !important;
+    font-weight: bold !important;
+    min-width: 300px !important;
+    padding-bottom: 2px !important;
+    padding-top: 2px !important;
+    z-index: 15102 !important;
+}
+
+.uploadqtip {
+    background-color: #FFF !important;
+    border: 1px solid #808080 !important;
+    min-width: 600px !important;
+}
+
+.qtip-titlebar {
+    background-color: #D7D7D7 !important;
+}
+
+.growlError {
+    background: url(../../images/icons/nok.png) no-repeat;
+    padding-left: 18px;
+}
+
+.growlWarning {
+    background: url(../../images/icons/warning.png) no-repeat;
+    padding-left: 18px;
+}
+
+.growlOk {
+    background: url(../../images/icons/ok.png) no-repeat;
+    padding-left: 18px;
+}
+
+.recentItem {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+div {
+    &.viewWrapper a {
+        color: #56758B;
+        cursor: pointer;
+        font-weight: 500;
+        text-decoration: none;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+    &.errorText {
+        color: #F00;
+    }
+}
+
+span.errorText {
+    color: #F00;
+}

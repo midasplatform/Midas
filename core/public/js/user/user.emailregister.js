@@ -1,5 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 midas.register = midas.register || {};
 midas.register.password = false;
@@ -7,6 +9,7 @@ midas.register.firstname = false;
 midas.register.lastname = false;
 
 $(document).ready(function () {
+    'use strict';
     $('label.termLabel').after($('div.termDiv').html());
     $('a.termOfService').click(function () {
         midas.loadDialog("terms", "/user/termofservice");
@@ -54,6 +57,7 @@ $(document).ready(function () {
 });
 
 midas.register.checkAll = function (obj) {
+    'use strict';
     if (obj.attr('name') == 'firstName') {
         if (obj.val().length < 1) {
             obj.parent('div').find('span').html('<img alt="" src="' + json.global.coreWebroot + '/public/images/icons/nok.png"/> You must enter a first name');
@@ -102,6 +106,7 @@ midas.register.checkAll = function (obj) {
 };
 
 midas.register.validRegisterForm = function () {
+    'use strict';
     midas.register.firstname = $('input[name=firstName]').val().length > 0;
     midas.register.lastname = $('input[name=lastName]').val().length > 0;
     midas.register.terms = $('input.tosAccept').is(':checked');

@@ -17,9 +17,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /** Dao a user's OTP device */
 class Mfa_OtpdeviceDao extends Mfa_AppDao
-  {
-  public $_model = 'Otpdevice';
-  public $_module = 'mfa';
-  }
+{
+    public $_model = 'Otpdevice';
+    public $_module = 'mfa';
+}

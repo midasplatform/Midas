@@ -19,9 +19,10 @@
 =========================================================================*/
 
 /**
- * \class GlobalComponent
- * \brief Provides global function to the components
+ * Generic component class.
+ *
+ * @package Core\Component
  */
 class AppComponent extends MIDAS_GlobalComponent
-  {
-  }
+{
+}

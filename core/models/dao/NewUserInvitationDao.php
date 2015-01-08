@@ -19,9 +19,32 @@
 =========================================================================*/
 
 /**
- * \class NewUserInvitationDao
+ * New user invitation DAO.
+ *
+ * @method int getNewuserinvitationId()
+ * @method void setNewuserinvitationId(int $newUserInvitationId)
+ * @method string getAuthKey()
+ * @method void setAuthKey(string $authKey)
+ * @method string getEmail()
+ * @method void setEmail(string $email)
+ * @method int getInviterId()
+ * @method void setInviterId(int $inviterId)
+ * @method string getDateCreation()
+ * @method void setDateCreation(string $dateCreation)
+ * @method int getCommunityId()
+ * @method void setCommunityId(int $communityId)
+ * @method int getGroupId()
+ * @method void setGroupId(int $groupId)
+ * @method CommunityDao getCommunity()
+ * @method void setCommunity(CommunityDao $community)
+ * @method GroupDao getGroup()
+ * @method void setGroup(GroupDao $group)
+ * @method UserDao getInviter()
+ * @method void setInviter(UserDao $inviter)
+ * @package Core\DAO
  */
 class NewUserInvitationDao extends AppDao
-  {
-  public $_model = 'NewUserInvitation';
-  }
+{
+    /** @var string */
+    public $_model = 'NewUserInvitation';
+}

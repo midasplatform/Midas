@@ -18,25 +18,22 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link href="<?php echo $this->coreWebroot?>/public/css/error/error.error.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->coreWebroot ?>/public/css/error/error.error.css" rel="stylesheet" type="text/css"/>
 
 <div class="viewMain">
-  <?php
-  if($this->code == 403)
-    {
-    echo '<div class="errorMessage">You do not have the necessary permission on the specified resource(s).</div>';
-    echo '<div class="exceptionText">Details: <b>'.$this->exceptionText.'</b></div>';
+    <?php
+    if ($this->code == 403) {
+        echo '<div class="errorMessage">You do not have the necessary permission on the specified resource(s).</div>';
+        echo '<div class="exceptionText">Details: <b>'.$this->escape($this->exceptionText).'</b></div>';
+    } else {
+        if ($this->code == 404) {
+            echo '<div class="errorMessage">The requested resource was not found.</div>';
+            echo '<div class="exceptionText">Details: <b>'.$this->escape($this->exceptionText).'</b></div>';
+        } else {
+            echo '<h1>An error occurred</h1>';
+            echo '<div class="errorMessage">'.$this->message.'</div>';
+        }
     }
-  else if($this->code == 404)
-    {
-    echo '<div class="errorMessage">The requested resource was not found.</div>';
-    echo '<div class="exceptionText">Details: <b>'.$this->exceptionText.'</b></div>';
-    }
-  else
-    {
-    echo '<h1>An error occurred</h1>';
-    echo '<div class="errorMessage">'.$this->message.'</div>';
-    }
-  ?>
+    ?>
 </div>
 

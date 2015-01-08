@@ -17,3 +17,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
+
+define('GOOGLE_AUTH_CLIENT_ID_KEY', 'client_id');
+define('GOOGLE_AUTH_CLIENT_ID_DEFAULT_VALUE', '');
+
+define('GOOGLE_AUTH_CLIENT_SECRET_KEY', 'client_secret');
+define('GOOGLE_AUTH_CLIENT_SECRET_DEFAULT_VALUE', '');
+
+define('GOOGLE_AUTH_OAUTH2_URL', 'https://accounts.google.com/o/oauth2/token');
+define('GOOGLE_AUTH_PLUS_URL', 'https://www.googleapis.com/plus/v1/people/me');

@@ -18,11 +18,11 @@
  limitations under the License.
 =========================================================================*/
 
-/** Size quota Application Controller */
+/** App controller for the sizequota module */
 class Sizequota_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'sizequota';
+{
+    public $moduleName = 'sizequota';
 
-  /** folder quota model */
-  var $Sizequota_Folderquota;
-  } // end class
+    /** folder quota model */
+    public $Sizequota_Folderquota;
+}

@@ -21,22 +21,26 @@
 require_once BASE_PATH.'/core/models/base/ActivedownloadModelBase.php';
 
 /**
- * \class ActivedownloadModel
  */
 class ActivedownloadModel extends ActivedownloadModelBase
-  {
-  /** Check whether an active download exists for the given ip */
-  public function getByIp($ip)
+{
+    /**
+     * Check whether an active download exists for the given IP address.
+     *
+     * @param string $ip
+     * @return false|ActivedownloadDao
+     */
+    public function getByIp($ip)
     {
-    $sql = $this->database->select()
-            ->setIntegrityCheck(false)
-            ->from(array('a' => 'activedownload'))
-            ->where('ip = ?', $ip);
-    $rowset = $this->database->fetchAll($sql);
-    foreach($rowset as $row)
-      {
-      return $this->initDao('Activedownload', $row);
-      }
-    return false;
+        $sql = $this->database->select()->setIntegrityCheck(false)->from(array('a' => 'activedownload'))->where(
+            'ip = ?',
+            $ip
+        );
+        $rowset = $this->database->fetchAll($sql);
+        foreach ($rowset as $row) {
+            return $this->initDao('Activedownload', $row);
+        }
+
+        return false;
     }
-  } // end class
+}

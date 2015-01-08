@@ -18,53 +18,69 @@
  limitations under the License.
 =========================================================================*/
 
-/** index controller test*/
-class IndexControllerTest extends ControllerTestCase
-  {
-  /** set up tests*/
-  public function setUp()
+/** index controller test */
+class Visualize_IndexControllerTest extends ControllerTestCase
+{
+    /** set up tests */
+    public function setUp()
     {
-    $this->setupDatabase(array('default'));
-    $this->enabledModules = array('visualize');
-    parent::setUp();
+        $this->setupDatabase(array('default'));
+        $this->enabledModules = array('visualize');
+        parent::setUp();
     }
 
-  /** test index action*/
-  public function testIndexAction()
+    /** test index action */
+    public function testIndexAction()
     {
-    $groupModel = MidasLoader::loadModel('Group');
-    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
-    $userModel = MidasLoader::loadModel('User');
-    $folderModel = MidasLoader::loadModel('Folder');
+        /** @var GroupModel $groupModel */
+        $groupModel = MidasLoader::loadModel('Group');
 
-    $uploadComponent = MidasLoader::loadComponent('Upload');
+        /** @var ItempolicygroupModel $itempolicygroupModel */
+        $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
 
-    $usersFile = $this->loadData('User', 'default');
-    $userDao = $userModel->load($usersFile[0]->getKey());
+        /** @var UserModel $userModel */
+        $userModel = MidasLoader::loadModel('User');
 
-    Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
-    Zend_Registry::set('configsModules', array());
-    $privateFolder = $folderModel->load(1002);
-    $item = $uploadComponent->createUploadedItem($userDao, "test.png", BASE_PATH.'/tests/testfiles/search.png', $privateFolder, null, '', true);
-    $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
-    $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
-    $this->params['itemId'] = $item->getKey();
-    $this->dispatchUrI("/visualize/index/index");
-    $this->assertController("index");
+        /** @var FolderModel $folderModel */
+        $folderModel = MidasLoader::loadModel('Folder');
 
-    $this->dispatchUrI("/visualize/image/index");
-    $this->assertController("image");
+        /** @var UploadComponent $uploadComponent */
+        $uploadComponent = MidasLoader::loadComponent('Upload');
 
-    $this->dispatchUrI("/visualize/media/index");
-    $this->assertController("media");
+        $usersFile = $this->loadData('User', 'default');
+        $userDao = $userModel->load($usersFile[0]->getKey());
 
-    $this->dispatchUrI("/visualize/pdf/index");
-    $this->assertController("pdf");
+        Zend_Registry::set('notifier', new MIDAS_Notifier(false, null));
 
-    $this->dispatchUrI("/visualize/txt/index");
-    $this->assertController("txt");
+        $privateFolder = $folderModel->load(1002);
+        $item = $uploadComponent->createUploadedItem(
+            $userDao,
+            "test.png",
+            BASE_PATH.'/tests/testfiles/search.png',
+            $privateFolder,
+            null,
+            '',
+            true
+        );
+        $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
+        $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
+        $this->params['itemId'] = $item->getKey();
+        $this->dispatchUrl("/visualize/index/index");
+        $this->assertController("index");
 
-    $this->dispatchUrI("/visualize/webgl/index");
-    $this->assertController("webgl");
+        $this->dispatchUrl("/visualize/image/index");
+        $this->assertController("image");
+
+        $this->dispatchUrl("/visualize/media/index");
+        $this->assertController("media");
+
+        $this->dispatchUrl("/visualize/pdf/index");
+        $this->assertController("pdf");
+
+        $this->dispatchUrl("/visualize/txt/index");
+        $this->assertController("txt");
+
+        $this->dispatchUrl("/visualize/webgl/index");
+        $this->assertController("webgl");
     }
-  }
+}

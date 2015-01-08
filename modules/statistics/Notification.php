@@ -17,111 +17,114 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** notification manager*/
+
+/** Notification manager for the statistics module */
 class Statistics_Notification extends MIDAS_Notification
-  {
-  public $moduleName = 'statistics';
-  public $_moduleModels = array('Download', 'IpLocation');
-  public $_moduleComponents = array('Report');
+{
+    public $moduleName = 'statistics';
+    public $_models = array('Setting');
+    public $_moduleModels = array('Download', 'IpLocation');
+    public $_moduleComponents = array('Report');
 
-  /** init notification process*/
-  public function init()
+    /** init notification process */
+    public function init()
     {
-    $this->addCallBack('CALLBACK_CORE_GET_FOOTER_LAYOUT', 'getFooter');
-    $this->addCallBack('CALLBACK_CORE_GET_USER_MENU', 'getUserMenu');
-    $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_ACTIONMENU', 'getItemMenuLink');
-    $this->addCallBack('CALLBACK_CORE_PLUS_ONE_DOWNLOAD', 'addDownload');
-    $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
+        $this->addCallBack('CALLBACK_CORE_GET_FOOTER_LAYOUT', 'getFooter');
+        $this->addCallBack('CALLBACK_CORE_GET_USER_MENU', 'getUserMenu');
+        $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_ACTIONMENU', 'getItemMenuLink');
+        $this->addCallBack('CALLBACK_CORE_PLUS_ONE_DOWNLOAD', 'addDownload');
+        $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'handleUserDeleted');
 
-    $this->addTask('TASK_STATISTICS_SEND_REPORT', 'sendReport', 'Send a daily report');
-    $this->addTask('TASK_STATISTICS_PERFORM_GEOLOCATION', 'performGeolocation', 'Perform geolocation based on IP');
-    }//end init
-
-  /** send the batch report to admins */
-  public function sendReport()
-    {
-    echo $this->ModuleComponent->Report->generate();
-    $this->ModuleComponent->Report->send();
+        $this->addTask('TASK_STATISTICS_SEND_REPORT', 'sendReport', 'Send a daily report');
+        $this->addTask('TASK_STATISTICS_PERFORM_GEOLOCATION', 'performGeolocation', 'Perform geolocation based on IP');
     }
 
-  /** add download stat*/
-  public function addDownload($params)
+    /** send the batch report to admins */
+    public function sendReport()
     {
-    $item = $params['item'];
-    $user = $this->userSession->Dao;
-    $this->Statistics_Download->addDownload($item, $user);
+        echo $this->ModuleComponent->Report->generate();
+        $this->ModuleComponent->Report->send();
     }
 
-  /** perform download geolocation by ip address */
-  public function performGeolocation($params)
+    /** add download stat */
+    public function addDownload($params)
     {
-    return $this->Statistics_IpLocation->performGeolocation($params['apikey']);
+        $item = $params['item'];
+        $user = $this->userSession->Dao;
+        $this->Statistics_Download->addDownload($item, $user);
     }
 
-  /** user Menu link */
-  public function getUserMenu()
+    /** perform download geolocation by ip address */
+    public function performGeolocation($params)
     {
-    if($this->logged && $this->userSession->Dao->getAdmin() == 1)
-      {
-      $fc = Zend_Controller_Front::getInstance();
-      $moduleWebroot = $fc->getBaseUrl().'/statistics';
-      return array($this->t('Statistics') => $moduleWebroot);
-      }
-    else
-      {
-      return null;
-      }
+        return $this->Statistics_IpLocation->performGeolocation($params['apikey']);
     }
 
-  /** Get the link to place in the item action menu */
-  public function getItemMenuLink($params)
+    /** user Menu link */
+    public function getUserMenu()
     {
-    $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
-    return '<li><a href="'.$webroot.'/'.$this->moduleName.'/item?id='.$params['item']->getKey().
-           '"><img alt="" src="'.$webroot.'/modules/'.$this->moduleName.
-           '/public/images/chart_bar.png" /> '.$this->t('Statistics').'</a></li>';
+        if ($this->logged && $this->userSession->Dao->getAdmin() == 1) {
+            $fc = Zend_Controller_Front::getInstance();
+            $moduleWebroot = $fc->getBaseUrl().'/statistics';
+
+            return array($this->t('Statistics') => $moduleWebroot);
+        } else {
+            return null;
+        }
     }
 
-  /** get layout footer */
-  public function getFooter()
+    /** Get the link to place in the item action menu */
+    public function getItemMenuLink($params)
     {
-    $modulesConfig = Zend_Registry::get('configsModules');
-    $url = $modulesConfig['statistics']->piwik->url;
-    $id = $modulesConfig['statistics']->piwik->id;
+        $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
 
-    $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
-    $js = $baseUrl.'/modules/'.$this->moduleName.'/public/js/statistics.notify.js';
-    $html = '<script type="text/javascript" src="'.$js.'"></script>';
+        return '<li><a href="'.$webroot.'/'.$this->moduleName.'/item?id='.$params['item']->getKey(
+        ).'"><img alt="" src="'.$webroot.'/modules/'.$this->moduleName.'/public/images/chart_bar.png" /> '.$this->t(
+            'Statistics'
+        ).'</a></li>';
+    }
 
-    return "
+    /** get layout footer */
+    public function getFooter()
+    {
+        $url = $this->Setting->getValueByName(STATISTICS_PIWIK_URL_KEY, $this->moduleName);
+        $id = $this->Setting->getValueByName(STATISTICS_PIWIK_SITE_ID_KEY, $this->moduleName);
+
+        $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
+        $js = $baseUrl.'/modules/'.$this->moduleName.'/public/js/statistics.notify.js';
+        $html = '<script type="text/javascript" src="'.htmlspecialchars($js, ENT_QUOTES, 'UTF-8').'"></script>';
+
+        return "
       <!-- Piwik -->
       <script type=\"text/javascript\">
-      var pkBaseURL = '".$url."/';
+      var pkBaseURL = '".htmlspecialchars($url, ENT_QUOTES, 'UTF-8')."/';
       document.write(unescape(\"%3Cscript src='\" + pkBaseURL + \"piwik.js' type='text/javascript'%3E%3C/script%3E\"));
       </script><script type=\"text/javascript\">
       try {
-      var piwikTracker = Piwik.getTracker(pkBaseURL + \"piwik.php\", 1);
+      var piwikTracker = Piwik.getTracker(pkBaseURL + \"piwik.php\", ".htmlspecialchars($id, ENT_QUOTES, 'UTF-8').");
       piwikTracker.trackPageView();
       piwikTracker.enableLinkTracking();
-      } catch( err ) {}
-      </script><noscript><p><img src=\"".$url."/piwik.php?idsite=".$id."\" style=\"border:0\" alt=\"\" /></p></noscript>
+    } catch ( err ) {}
+      </script><noscript><p><img src=\"".htmlspecialchars($url, ENT_QUOTES, 'UTF-8')."/piwik.php?idsite=".htmlspecialchars($id, ENT_QUOTES, 'UTF-8')."\" style=\"border:0\" alt=\"\" /></p></noscript>
       <!-- End Piwik Tracking Code -->
       ".$html;
     }
 
-  /**
-   * If a user is deleted, we should remove references to them in the
-   * statistics_download table
-   * @param userDao the user dao that is about to be deleted
-   */
-  public function handleUserDeleted($params)
+    /**
+     * If a user is deleted, we should remove references to them in the
+     * statistics_download table
+     *
+     * @param userDao the user dao that is about to be deleted
+     */
+    public function handleUserDeleted($params)
     {
-    if(!isset($params['userDao']))
-      {
-      throw new Zend_Exception('Error: userDao parameter required');
-      }
-    $user = $params['userDao'];
-    $downloadModel = MidasLoader::loadModel('Download', $this->moduleName);
-    $downloadModel->removeUserReferences($user->getKey());
+        if (!isset($params['userDao'])) {
+            throw new Zend_Exception('Error: userDao parameter required');
+        }
+        $user = $params['userDao'];
+
+        /** @var Statistics_DownloadModel $downloadModel */
+        $downloadModel = MidasLoader::loadModel('Download', $this->moduleName);
+        $downloadModel->removeUserReferences($user->getKey());
     }
-  } // end class
+}

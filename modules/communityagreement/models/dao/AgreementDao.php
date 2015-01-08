@@ -19,15 +19,22 @@
 =========================================================================*/
 
 /**
- * Communityagreement_AgreementDao
+ * Agreement DAO for the communityagreement module.
  *
- * agreement dao
  *
- * @category   Midas modules
- * @package    communityagreement
+ * @method int getAgreementId()
+ * @method void setAgreementId(int $agreementId)
+ * @method int getCommunityId()
+ * @method void setCommunityId(int $communityId)
+ * @method string getAgreement()
+ * @method void setAgreement(string $agreement)
+ * @package Modules\Communityagreement\DAO
  */
 class Communityagreement_AgreementDao extends Communityagreement_AppDao
-  {
-  public $_model = 'Agreement';
-  public $_module = 'communityagreement';
-  }
+{
+    /** @var string */
+    public $_model = 'Agreement';
+
+    /** @var string */
+    public $_module = 'communityagreement';
+}

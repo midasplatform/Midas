@@ -1,5 +1,8 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global JavaScriptRenderer */
+/* global json */
+
 var paraview;
 var midas = midas || {};
 midas.visualize = midas.visualize || {};
@@ -13,6 +16,7 @@ midas.visualize.right = {
 midas.visualize.camerasLocked = false;
 
 midas.visualize.start = function () {
+    'use strict';
     // Create a paraview proxy
     var file = json.visualize.url;
 
@@ -49,7 +53,7 @@ midas.visualize.start = function () {
         paraview.left.loadPlugins();
         $('#leftLoadingStatus').html('Reading image data from files...');
         paraview.left.plugins.midascommon.AsyncOpenData(function (retVal) {
-            midas.visualize._dataOpened('left', retVal)
+            midas.visualize._dataOpened('left', retVal);
         }, {
             filename: json.visualize.urls.left,
             otherMeshes: []
@@ -61,7 +65,7 @@ midas.visualize.start = function () {
 
         $('#rightLoadingStatus').html('Reading image data from files...');
         paraview.right.plugins.midascommon.AsyncOpenData(function (retVal) {
-            midas.visualize._dataOpened('right', retVal)
+            midas.visualize._dataOpened('right', retVal);
         }, {
             filename: json.visualize.urls.right,
             otherMeshes: []
@@ -72,6 +76,7 @@ midas.visualize.start = function () {
 };
 
 midas.visualize._dataOpened = function (side, retVal) {
+    'use strict';
     midas.visualize[side].input = retVal.input;
     midas.visualize[side].bounds = retVal.imageData.Bounds;
     midas.visualize[side].extent = retVal.imageData.Extent;
@@ -123,11 +128,12 @@ midas.visualize._dataOpened = function (side, retVal) {
     $('#' + side + 'LoadingStatus').html('Initializing view state and renderer...');
 
     paraview[side].plugins.midasdual.AsyncInitViewState(function (retVal) {
-        midas.visualize.initCallback(side, retVal)
+        midas.visualize.initCallback(side, retVal);
     }, params);
 };
 
 midas.visualize.initCallback = function (side, retVal) {
+    'use strict';
     midas.visualize[side].lookupTable = retVal.lookupTable;
     midas.visualize[side].activeView = retVal.activeView;
 
@@ -156,6 +162,7 @@ midas.visualize.initCallback = function (side, retVal) {
  * Helper function to setup the slice and window/level sliders
  */
 midas.visualize.setupSliders = function () {
+    'use strict';
     $('#sliceSlider').slider({
         min: midas.visualize.left.bounds[4],
         max: midas.visualize.left.bounds[5],
@@ -185,6 +192,7 @@ midas.visualize.setupSliders = function () {
  * Unregisters all mouse event handlers on the renderer
  */
 midas.visualize.disableMouseInteraction = function (side) {
+    'use strict';
     var el = midas.visualize[side].renderer.view;
     el.onclick = null;
     el.onmousemove = null;
@@ -200,11 +208,13 @@ midas.visualize.disableMouseInteraction = function (side) {
  * actually changing them in PVWeb
  */
 midas.visualize.updateWindowInfo = function (values) {
+    'use strict';
     $('#windowInfo').html('Window: ' + values[0] + ' - ' + values[1]);
 };
 
 /** Make the actual request to PVWeb to set the window */
 midas.visualize.changeWindow = function (values) {
+    'use strict';
     paraview.left.plugins.midasdual.AsyncChangeWindow(function (retVal) {
         midas.visualize.left.lookupTable = retVal.lookupTable;
         midas.visualize.forceRefreshView('left');
@@ -219,6 +229,7 @@ midas.visualize.changeWindow = function (values) {
 
 /** Change the slice and run appropriate slice filter on any meshes in the scene */
 midas.visualize.changeSlice = function (slice) {
+    'use strict';
     slice = parseInt(slice);
     midas.visualize.currentSlice = slice;
 
@@ -253,6 +264,7 @@ midas.visualize.changeSlice = function (slice) {
  * Update the value of the current slice, without rendering the slice.
  */
 midas.visualize.updateSliceInfo = function (slice) {
+    'use strict';
     var max;
     if (midas.visualize.sliceMode == 'XY Plane') {
         max = midas.visualize.left.bounds[5];
@@ -270,7 +282,8 @@ midas.visualize.updateSliceInfo = function (slice) {
  * Initialize or re-initialize the renderer within the DOM
  */
 midas.visualize.switchRenderer = function (side) {
-    if (midas.visualize[side].renderer == undefined) {
+    'use strict';
+    if (midas.visualize[side].renderer === undefined) {
         midas.visualize[side].renderer = new JavaScriptRenderer(side + 'JsRenderer', '/PWService');
         midas.visualize[side].renderer.init(paraview[side].sessionId, midas.visualize[side].activeView.__selfid__);
     }
@@ -286,10 +299,13 @@ midas.visualize.switchRenderer = function (side) {
  * List will contain <size> color values that are RGB lists with each channel in [0, 1].
  */
 midas.visualize._generateColorList = function (size) {
+    'use strict';
     var list = [];
     for (var i = 0; i < size; i++) {
         var hue = i * (1.0 / size);
-        if (hue > 1.0) hue = 1.0;
+        if (hue > 1.0) {
+            hue = 1.0;
+        }
         list.push(midas.visualize._hsvToRgb(hue, 1.0, 1.0));
     }
     return list;
@@ -301,6 +317,7 @@ midas.visualize._generateColorList = function (size) {
  * RGB output values will be in [0, 1]
  */
 midas.visualize._hsvToRgb = function (h, s, v) {
+    'use strict';
     var r, g, b;
 
     var i = Math.floor(h * 6);
@@ -311,22 +328,34 @@ midas.visualize._hsvToRgb = function (h, s, v) {
 
     switch (i % 6) {
     case 0:
-        r = v, g = t, b = p;
+        r = v;
+        g = t;
+        b = p;
         break;
     case 1:
-        r = q, g = v, b = p;
+        r = q;
+        g = v;
+        b = p;
         break;
     case 2:
-        r = p, g = v, b = t;
+        r = p;
+        g = v;
+        b = t;
         break;
     case 3:
-        r = p, g = q, b = v;
+        r = p;
+        g = q;
+        b = v;
         break;
     case 4:
-        r = t, g = p, b = v;
+        r = t;
+        g = p;
+        b = v;
         break;
     case 5:
-        r = v, g = p, b = q;
+        r = v;
+        g = p;
+        b = q;
         break;
     }
 
@@ -337,6 +366,7 @@ midas.visualize._hsvToRgb = function (h, s, v) {
  * Set the mode to point selection within the image.
  */
 midas.visualize.pointMapMode = function () {
+    'use strict';
     midas.createNotice('Click on the images to select points', 3500);
 
     // Bind click action on the render window
@@ -347,30 +377,31 @@ midas.visualize.pointMapMode = function () {
             var x, y, z;
             var pscale = midas.visualize[side].cameraParallelScale;
             var focus = midas.visualize[side].cameraFocalPoint;
+            var top, bottom, left, right;
 
             if (midas.visualize.sliceMode == 'XY Plane') {
-                var top = focus[1] - pscale;
-                var bottom = focus[1] + pscale;
-                var left = focus[0] - pscale;
-                var right = focus[0] + pscale;
+                top = focus[1] - pscale;
+                bottom = focus[1] + pscale;
+                left = focus[0] - pscale;
+                right = focus[0] + pscale;
                 x = (e.offsetX / $(this).width()) * (right - left) + left;
                 y = (e.offsetY / $(this).height()) * (bottom - top) + top;
                 z = midas.visualize.currentSlice + midas.visualize[side].bounds[4] - midas.visualize[side].extent[4];
             }
             else if (midas.visualize.sliceMode == 'XZ Plane') {
-                var top = focus[2] + pscale;
-                var bottom = focus[2] - pscale;
-                var left = focus[0] + pscale;
-                var right = focus[0] - pscale;
+                top = focus[2] + pscale;
+                bottom = focus[2] - pscale;
+                left = focus[0] + pscale;
+                right = focus[0] - pscale;
                 x = (e.offsetX / $(this).width()) * (right - left) + left;
                 y = midas.visualize.currentSlice + midas.visualize[side].bounds[2] - midas.visualize[side].extent[2];
                 z = (e.offsetY / $(this).height()) * (bottom - top) + top;
             }
             else if (midas.visualize.sliceMode == 'YZ Plane') {
-                var top = focus[2] + pscale;
-                var bottom = focus[2] - pscale;
-                var left = focus[0] - pscale;
-                var right = focus[0] + pscale;
+                top = focus[2] + pscale;
+                bottom = focus[2] - pscale;
+                left = focus[0] - pscale;
+                right = focus[0] + pscale;
                 x = midas.visualize.currentSlice + midas.visualize[side].bounds[0] - midas.visualize[side].extent[0];
                 y = (e.offsetX / $(this).width()) * (right - left) + left;
                 z = (e.offsetY / $(this).height()) * (bottom - top) + top;
@@ -402,6 +433,7 @@ midas.visualize.pointMapMode = function () {
  * Force the renderer image to refresh from the server
  */
 midas.visualize.forceRefreshView = function (side) {
+    'use strict';
     paraview[side].sendEvent('Render', '');
 };
 
@@ -409,6 +441,7 @@ midas.visualize.forceRefreshView = function (side) {
  * Enable point selection action
  */
 midas.visualize._enablePointMap = function () {
+    'use strict';
     var button = $('#actionButtonTemplate').clone();
     button.removeAttr('id');
     button.addClass('pointSelectButton');
@@ -438,6 +471,7 @@ midas.visualize._enablePointMap = function () {
 };
 
 midas.visualize._enableDefaultMode = function () {
+    'use strict';
     var camLinkButton = $('#actionButtonTemplate').clone();
     camLinkButton.removeAttr('id');
     camLinkButton.addClass('cameraLinkButton');
@@ -464,6 +498,7 @@ midas.visualize._enableDefaultMode = function () {
  * Apply default camera parameters from the left side to the right, or use the right side defaults
  */
 midas.visualize.setCameraMode = function (side) {
+    'use strict';
     midas.visualize.right.cameraFocalPoint = [midas.visualize[side].midI, midas.visualize[side].midJ, midas.visualize[side].midK];
     midas.visualize.right.cameraPosition = [midas.visualize[side].midI, midas.visualize[side].midJ, midas.visualize[side].bounds[4] - 10];
     midas.visualize.right.cameraParallelScale =
@@ -487,6 +522,7 @@ midas.visualize.setCameraMode = function (side) {
  *   -pointMap: select a single point in the image
  */
 midas.visualize.enableActions = function (side, operations) {
+    'use strict';
     if (side == 'right') {
         $.each(operations, function (k, operation) {
             if (operation == 'pointMap') {
@@ -504,11 +540,12 @@ midas.visualize.enableActions = function (side, operations) {
  * Change the slice mode. Valid values are 'XY Plane', 'XZ Plane', 'YZ Plane'
  */
 midas.visualize.setSliceMode = function (sliceMode) {
+    'use strict';
     if (midas.visualize.sliceMode == sliceMode) {
         return; // nothing to do, already in this mode
     }
 
-    var slice, parallelScale, cameraPosition, min, max;
+    var cameraUp, slice, parallelScale, cameraPosition, min, max;
     if (sliceMode == 'XY Plane') {
         slice = Math.floor(midas.visualize.midK);
         parallelScale = Math.max(midas.visualize.bounds[1] - midas.visualize.bounds[0],
@@ -571,6 +608,7 @@ midas.visualize.setSliceMode = function (sliceMode) {
  * Display all the fiducial points selected in each image
  */
 midas.visualize.displayPointMap = function () {
+    'use strict';
     var dialog = $('#pointListDialogTemplate').clone();
     dialog.removeAttr('id');
     midas.showDialogWithContent('Fiducial point mapping',
@@ -585,7 +623,7 @@ midas.visualize.displayPointMap = function () {
         var rightPoint = midas.visualize.right.points[idx];
         var tr = '<tr><td><div class="colorSwatchL"></div><span class="leftPointValue">(' + point.x.toFixed(1) + ', ' +
             point.y.toFixed(1) + ', ' + point.z.toFixed(1) + ')</span></td><td><span class="rightPointValue">';
-        if (rightPoint == undefined) {
+        if (rightPoint === undefined) {
             tr += '<i>None</i>';
         }
         else {
@@ -604,7 +642,7 @@ midas.visualize.displayPointMap = function () {
         tr.find('div.colorSwatchL').css('background-color',
             'rgb(' + Math.round(point.color[0] * 255) + ',' + Math.round(point.color[1] * 255) + ',' +
             Math.round(point.color[2] * 255) + ')');
-        if (rightPoint != undefined) {
+        if (rightPoint !== undefined) {
             tr.find('div.colorSwatchR').css('background-color',
                 'rgb(' + Math.round(rightPoint.color[0] * 255) + ',' +
                 Math.round(rightPoint.color[1] * 255) + ',' +
@@ -622,7 +660,7 @@ midas.visualize.displayPointMap = function () {
 
             midas.visualize._removePointFromList('left', point);
 
-            if (rightPoint != undefined) {
+            if (rightPoint !== undefined) {
                 paraview.right.plugins.midascommon.AsyncDeleteSource(function () {
                     midas.visualize.forceRefreshView('right');
                 }, {
@@ -695,6 +733,7 @@ midas.visualize.displayPointMap = function () {
  * Helper function to remove a point from the fiducial lists at global scope
  */
 midas.visualize._removePointFromList = function (side, pointToRemove) {
+    'use strict';
     var spliceIdx = -1;
     $.each(midas.visualize[side].points, function (idx, point) {
         if (point.object.__selfid__ == pointToRemove.object.__selfid__) {
@@ -705,15 +744,17 @@ midas.visualize._removePointFromList = function (side, pointToRemove) {
 };
 
 $(window).load(function () {
+    'use strict';
     if (typeof midas.visualize.preInitCallback == 'function') {
         midas.visualize.preInitCallback();
     }
 
-    json = jQuery.parseJSON($('div.jsonContent').html());
+    json = $.parseJSON($('div.jsonContent').html());
     midas.visualize.start();
 });
 
 $(window).unload(function () {
+    'use strict';
     paraview.left.disconnect();
     paraview.right.disconnect();
 });

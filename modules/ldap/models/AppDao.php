@@ -18,8 +18,13 @@
  limitations under the License.
 =========================================================================*/
 
-/** Base dao class for the ldap module */
+/**
+ * Generic DAO class for the ldap module.
+ *
+ * @package Modules\Ldap\DAO
+ */
 class Ldap_AppDao extends MIDAS_GlobalDao
-  {
-  public $moduleName = 'ldap';
-  } // end class
+{
+    /** @var string */
+    public $moduleName = 'ldap';
+}

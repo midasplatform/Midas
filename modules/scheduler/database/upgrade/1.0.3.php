@@ -18,11 +18,12 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the scheduler module to version 1.0.3. */
 class Scheduler_Upgrade_1_0_3 extends MIDASUpgrade
-  {
-  public function mysql()
+{
+    /** Upgrade a MySQL database. */
+    public function mysql()
     {
-    $sql = "ALTER TABLE scheduler_job ADD creator_id bigint(20)";
-    $this->db->query($sql);
+        $this->db->query("ALTER TABLE `scheduler_job` ADD COLUMN `creator_id` bigint(20);");
     }
-  }
+}

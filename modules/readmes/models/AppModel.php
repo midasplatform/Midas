@@ -20,6 +20,6 @@
 
 /** Base model class for the cleanup module */
 class Readmes_AppModel extends MIDASModel
-  {
-  public $moduleName = 'readmes';
-  }
+{
+    public $moduleName = 'readmes';
+}

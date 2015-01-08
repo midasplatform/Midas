@@ -18,66 +18,69 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH . '/modules/api/library/APIEnabledNotification.php';
+require_once BASE_PATH.'/modules/api/library/APIEnabledNotification.php';
 
-/** notification manager*/
+/** Notification manager for the dicomserver module */
 class Dicomserver_Notification extends ApiEnabled_Notification
-  {
-  public $_moduleComponents = array('Api', 'Server');
-  public $moduleName = 'dicomserver';
+{
+    public $_moduleComponents = array('Api', 'Server');
+    public $moduleName = 'dicomserver';
 
-  /** init notification process*/
-  public function init()
+    /** init notification process */
+    public function init()
     {
-    $this->enableWebAPI($this->moduleName);
-    $fc = Zend_Controller_Front::getInstance();
-    $this->moduleWebroot = $fc->getBaseUrl().'/modules/'.$this->moduleName;
-    $this->coreWebroot = $fc->getBaseUrl().'/core';
-    $this->apiWebroot = $fc->getBaseURL().'/modules/api';
+        $this->enableWebAPI($this->moduleName);
+        $fc = Zend_Controller_Front::getInstance();
+        $this->moduleWebroot = $fc->getBaseUrl().'/modules/'.$this->moduleName;
+        $this->coreWebroot = $fc->getBaseUrl().'/core';
+        $this->apiWebroot = $fc->getBaseURL().'/modules/api';
 
-    $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_ACTIONMENU', 'getItemMenuLink');
-    $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_JS', 'getJs');
-    $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDashboard');
-    $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_INFO', 'getItemInfo');
-    }//end init
-
-  /** Get the link to place in the item action menu */
-  public function getItemMenuLink($params)
-    {
-    $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
-    $html = '<li id="dicomRegisterListItem" style="display: none;">';
-    $html .= '<a id="dicomRegisterAction" href="#">';
-    $html .= '<img alt="" src="'.$webroot.'/modules/';
-    $html .= $this->moduleName.'/public/images/dicom_register_icon.jpg" /> ';
-    $html .= $this->t('Register for DICOM Query/Retrieve').'</a></li>';
-    return $html;
+        $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_ACTIONMENU', 'getItemMenuLink');
+        $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_JS', 'getJs');
+        $this->addCallBack('CALLBACK_CORE_GET_DASHBOARD', 'getDashboard');
+        $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_INFO', 'getItemInfo');
     }
 
-  /** Get javascript for the item view that will specify the ajax call
-   *  for DICOM registration
-   */
-  public function getJs($params)
+    /** Get the link to place in the item action menu */
+    public function getItemMenuLink($params)
     {
-    return array($this->moduleWebroot.
-                 '/public/js/item/dicomserver.item.view.js',
-                 $this->apiWebroot.
-                 '/public/js/common/common.ajaxapi.js');
+        $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
+        $html = '<li id="dicomRegisterListItem" style="display: none;">';
+        $html .= '<a id="dicomRegisterAction" href="#">';
+        $html .= '<img alt="" src="'.$webroot.'/modules/';
+        $html .= $this->moduleName.'/public/images/dicom_register_icon.jpg" /> ';
+        $html .= $this->t('Register for DICOM Query/Retrieve').'</a></li>';
+
+        return $html;
     }
 
-  /** Add admin dashboard entry for DICOM server */
-  public function getDashboard()
+    /**
+     * Get javascript for the item view that will specify the ajax call
+     * for DICOM registration
+     */
+    public function getJs($params)
     {
-    $return = $this->ModuleComponent->Server->isDICOMServerWorking();
-    return $return;
+        return array(
+            $this->moduleWebroot.'/public/js/item/dicomserver.item.view.js',
+            $this->apiWebroot.'/public/js/common/common.ajaxapi.js',
+        );
     }
 
-  /** Some html to be appended to the item view sidebar */
-  public function getItemInfo($params)
+    /** Add admin dashboard entry for DICOM server */
+    public function getDashboard()
     {
-    return '<div class="sideElement" id="sideElementDicomRegistration" style="display: none;">
+        $return = $this->ModuleComponent->Server->isDICOMServerWorking();
+
+        return $return;
+    }
+
+    /** Some html to be appended to the item view sidebar */
+    public function getItemInfo($params)
+    {
+        return '<div class="sideElement" id="sideElementDicomRegistration" style="display: none;">
               <h1>DICOM</h1>
               <span>This item was registered for DICOM Query/Retrieve services.</span><br/>
               <span>Note: if the latest revision is updated, registration action needs to be rerun.</span>
             </div>';
     }
-  } // end class
+}

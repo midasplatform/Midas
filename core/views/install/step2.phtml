@@ -18,31 +18,29 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link href="<?php echo $this->coreWebroot?>/public/css/install/install.css" rel="stylesheet" type="text/css" />
-<link href="<?php echo $this->coreWebroot?>/public/css/install/install.step2.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->coreWebroot ?>/public/css/install/install.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo $this->coreWebroot ?>/public/css/install/install.step2.css" rel="stylesheet" type="text/css"/>
 
 <?php
-  $this->headScript()->appendFile($this->coreWebroot.'/public/js/install/install.step2.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/install/install.step2.js');
 ?>
 
 <div class="viewMain">
 
-   <h3>Select a database type:</h3>
+    <h3>Select a database type:</h3>
 
-   <?php
-   echo "<select id='databaseType'>";
-   echo "<option value=''>Please select a database</option>";
-    foreach($this->databaseType as $d => $form)
-      {
-      echo "<option value='{$d}'>$d</option>";
-      }
-   echo "</select>";
+    <?php
+    echo "<select id='databaseType'>";
+    echo "<option value=''>Please select a database</option>";
+    foreach ($this->databaseType as $d => $form) {
+        echo "<option value='{$this->escape($d)}'>{$this->escape($d)}</option>";
+    }
+    echo "</select>";
 
-   foreach($this->databaseType as $d => $form)
-      {
-      echo "<div class='dbForm' id='form$d'>";
-      echo "<form class='genericForm' method='{$form['method']}'  action='{$form['action']}'>";
-      echo "  {$form['type']}
+    foreach ($this->databaseType as $d => $form) {
+        echo "<div class='dbForm' id='form{$this->escape($d)}'>";
+        echo "<form class='genericForm' method='{$form['method']}'  action='{$form['action']}'>";
+        echo "  {$form['type']}
               <div class='configDBForm'>
                 <div>
                   <label for='host'>Host</label>
@@ -83,7 +81,7 @@
                 </div>
               </div>";
 
-      echo "  <h3>Set up Administrator account:</h3>
+        echo "  <h3>Set up Administrator account:</h3>
 
               <div class='adminAcountForm'>
                 <div>
@@ -113,11 +111,11 @@
               </div>
               ";
 
-      echo "    <div>
+        echo "    <div>
                 {$form['submit']}
                 </div>
               </form>";
-      echo "</div>";
-      }
-   ?>
+        echo "</div>";
+    }
+    ?>
 </div>

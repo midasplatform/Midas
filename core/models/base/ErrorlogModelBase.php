@@ -18,27 +18,36 @@
  limitations under the License.
 =========================================================================*/
 
-/** Error log Model Base*/
+/** Error log Model Base */
 abstract class ErrorlogModelBase extends AppModel
-  {
-  /** Constructor */
-  public function __construct()
+{
+    /** Constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'errorlog';
-    $this->_key = 'errorlog_id';
-    $this->_mainData = array(
-      'errorlog_id' => array('type' => MIDAS_DATA),
-      'module' => array('type' => MIDAS_DATA),
-      'message' => array('type' => MIDAS_DATA),
-      'datetime' => array('type' => MIDAS_DATA),
-      'priority' => array('type' => MIDAS_DATA),
-      );
-    $this->initialize(); // required
-    } // end __construct()
+        parent::__construct();
+        $this->_name = 'errorlog';
+        $this->_key = 'errorlog_id';
+        $this->_mainData = array(
+            'errorlog_id' => array('type' => MIDAS_DATA),
+            'module' => array('type' => MIDAS_DATA),
+            'message' => array('type' => MIDAS_DATA),
+            'datetime' => array('type' => MIDAS_DATA),
+            'priority' => array('type' => MIDAS_DATA),
+        );
+        $this->initialize(); // required
+    }
 
-  /** get Log Error */
-  abstract function getLog($startDate, $endDate, $module = 'all', $priority = MIDAS_PRIORITY_WARNING, $limit = 99999, $offset = 0, $operator = '<=');
-  /** Count log entries since a certain date */
-  abstract function countSince($startDate, $priorities = null);
-  } // end class
+    /** get Log Error */
+    abstract public function getLog(
+        $startDate,
+        $endDate,
+        $module = 'all',
+        $priority = MIDAS_PRIORITY_WARNING,
+        $limit = 99999,
+        $offset = 0,
+        $operator = '<='
+    );
+
+    /** Count log entries since a certain date */
+    abstract public function countSince($startDate, $priorities = null);
+}

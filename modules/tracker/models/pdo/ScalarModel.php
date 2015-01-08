@@ -24,124 +24,129 @@ require_once BASE_PATH.'/modules/tracker/models/base/ScalarModelBase.php';
  * Scalar PDO Model
  */
 class Tracker_ScalarModel extends Tracker_ScalarModelBase
-  {
-  /**
-   * Associate an item with a particular scalar
-   * @param scalar The scalar dao
-   * @param item The item dao
-   * @param label The association label
-   */
-  public function associateItem($scalar, $item, $label)
+{
+    /**
+     * Associate an item with a particular scalar
+     *
+     * @param scalar The scalar dao
+     * @param item The item dao
+     * @param label The association label
+     */
+    public function associateItem($scalar, $item, $label)
     {
-    $data = array(
-      'scalar_id' => $scalar->getKey(),
-      'item_id' => $item->getKey(),
-      'label' => $label);
-    Zend_Registry::get('dbAdapter')->insert('tracker_scalar2item', $data);
+        $data = array('scalar_id' => $scalar->getKey(), 'item_id' => $item->getKey(), 'label' => $label);
+        Zend_Registry::get('dbAdapter')->insert('tracker_scalar2item', $data);
     }
 
-  /**
-   * Return all items associated with this scalar, and their corresponding labels
-   */
-  public function getAssociatedItems($scalar)
+    /**
+     * Return all items associated with this scalar, and their corresponding labels
+     */
+    public function getAssociatedItems($scalar)
     {
-    $sql = $this->database->select()
-                ->setIntegrityCheck(false)
-                ->from('tracker_scalar2item')
-                ->where('scalar_id = ?', $scalar->getKey());
-    $rows = $this->database->fetchAll($sql);
-    $results = array();
-    $itemModel = MidasLoader::loadModel('Item');
-    foreach($rows as $row)
-      {
-      $item = $itemModel->load($row['item_id']);
-      $results[] = array('label' => $row['label'], 'item' => $item);
-      }
-    usort($results, function($a, $b) {
-        return strcmp($a['label'], $b['label']);
-    });
-    return $results;
+        $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_scalar2item')->where(
+            'scalar_id = ?',
+            $scalar->getKey()
+        );
+        $rows = $this->database->fetchAll($sql);
+        $results = array();
+
+        /** @var ItemModel $itemModel */
+        $itemModel = MidasLoader::loadModel('Item');
+        foreach ($rows as $row) {
+            $item = $itemModel->load($row['item_id']);
+            $results[] = array('label' => $row['label'], 'item' => $item);
+        }
+        usort(
+            $results,
+            function ($a, $b) {
+                return strcmp($a['label'], $b['label']);
+            }
+        );
+
+        return $results;
     }
 
-  /**
-   * Return other scalars that are from the same submission (same submit_time, producer, and user id)
-   */
-  public function getOtherScalarsFromSubmission($scalar)
+    /**
+     * Return other scalars that are from the same submission (same submit_time, producer, and user id)
+     */
+    public function getOtherScalarsFromSubmission($scalar)
     {
-    $sql = $this->database->select()
-      ->from('tracker_scalar')
-      ->join('tracker_trend', 'tracker_scalar.trend_id = tracker_trend.trend_id', array())
-      ->where('tracker_scalar.submit_time = ?', $scalar->getSubmitTime())
-      ->where('tracker_scalar.user_id = ?', $scalar->getUserId())
-      ->where('tracker_trend.producer_id = ?', $scalar->getTrend()->getProducerId());
-    $rows = $this->database->fetchAll($sql);
-    $scalars = array();
-    foreach($rows as $row)
-      {
-      $scalars[] = $this->initDao('Scalar', $row, $this->moduleName);
-      }
-    return $scalars;
+        $sql = $this->database->select()->from('tracker_scalar')->join(
+            'tracker_trend',
+            'tracker_scalar.trend_id = tracker_trend.trend_id',
+            array()
+        )->where('tracker_scalar.submit_time = ?', $scalar->getSubmitTime())->where(
+            'tracker_scalar.user_id = ?',
+            $scalar->getUserId()
+        )->where('tracker_trend.producer_id = ?', $scalar->getTrend()->getProducerId());
+        $rows = $this->database->fetchAll($sql);
+        $scalars = array();
+        foreach ($rows as $row) {
+            $scalars[] = $this->initDao('Scalar', $row, $this->moduleName);
+        }
+
+        return $scalars;
     }
 
-  /**
-   * Return other values that are from the same submission (same submit_time, producer, and user id)
-   */
-  public function getOtherValuesFromSubmission($scalar)
+    /**
+     * Return other values that are from the same submission (same submit_time, producer, and user id)
+     */
+    public function getOtherValuesFromSubmission($scalar)
     {
-    $sql = $this->database->select()
-                ->setIntegrityCheck(false)
-                ->from(array('s' => 'tracker_scalar'))
-                ->join(array('t' => 'tracker_trend'), 's.trend_id = t.trend_id')
-                ->where('s.submit_time = ?', $scalar->getSubmitTime())
-                ->where('s.user_id = ?', $scalar->getUserId())
-                ->where('t.producer_id = ?', $scalar->getTrend()->getProducerId())
-                ->order('metric_name ASC');
-    $rows = $this->database->fetchAll($sql);
-    $scalars = array();
-    foreach($rows as $row)
-      {
-      $scalars[$row['metric_name']] = $row['value'].' '.$row['unit'];
-      }
-    return $scalars;
+        $sql = $this->database->select()->setIntegrityCheck(false)->from(array('s' => 'tracker_scalar'))->join(
+            array('t' => 'tracker_trend'),
+            's.trend_id = t.trend_id'
+        )->where('s.submit_time = ?', $scalar->getSubmitTime())->where(
+            's.user_id = ?',
+            $scalar->getUserId()
+        )->where('t.producer_id = ?', $scalar->getTrend()->getProducerId())->order('metric_name ASC');
+        $rows = $this->database->fetchAll($sql);
+        $scalars = array();
+        foreach ($rows as $row) {
+            $scalars[$row['metric_name']] = $row['value'].' '.$row['unit'];
+        }
+
+        return $scalars;
     }
 
-  /**
-   * Delete the scalar (deletes all result item associations as well)
-   */
-  public function delete($scalar)
+    /**
+     * Delete the scalar (deletes all result item associations as well)
+     */
+    public function delete($scalar)
     {
-    Zend_Registry::get('dbAdapter')->delete('tracker_scalar2item', 'scalar_id = '.$scalar->getKey());
-    parent::delete($scalar);
+        Zend_Registry::get('dbAdapter')->delete('tracker_scalar2item', 'scalar_id = '.$scalar->getKey());
+        parent::delete($scalar);
     }
 
-  /**
-   * Get a scalar dao based on trend and timestamp
-   */
-  public function getByTrendAndTimestamp($trendId, $timestamp, $userId = null)
+    /**
+     * Get a scalar dao based on trend and timestamp
+     */
+    public function getByTrendAndTimestamp($trendId, $timestamp, $userId = null)
     {
-    $sql = $this->database->select()
-                ->setIntegrityCheck(false)
-                ->where('trend_id = ?', $trendId)
-                ->where('submit_time = ?', $timestamp);
-    if($userId !== null)
-      {
-      $sql->where('user_id = ?', $userId);
-      }
-    return $this->initDao('Scalar', $this->database->fetchRow($sql), $this->moduleName);
+        $sql = $this->database->select()->setIntegrityCheck(false)->where('trend_id = ?', $trendId)->where(
+            'submit_time = ?',
+            $timestamp
+        );
+        if ($userId !== null) {
+            $sql->where('user_id = ?', $userId);
+        }
+
+        return $this->initDao('Scalar', $this->database->fetchRow($sql), $this->moduleName);
     }
 
-  public function getDistinctBranches()
+    /** Get distinct branches. */
+    public function getDistinctBranches()
     {
-    $sql = $this->database->select()
-                ->setIntegrityCheck(false)
-                ->from(array('s' => 'tracker_scalar'), 'branch')
-                ->distinct();
-    $rows = $this->database->fetchAll($sql);
-    $branches = array();
-    foreach($rows as $row)
-      {
-      $branches[] = $row['branch'];
-      }
-    return $branches;
+        $sql = $this->database->select()->setIntegrityCheck(false)->from(
+            array('s' => 'tracker_scalar'),
+            'branch'
+        )->distinct();
+        $rows = $this->database->fetchAll($sql);
+        $branches = array();
+        foreach ($rows as $row) {
+            $branches[] = $row['branch'];
+        }
+
+        return $branches;
     }
-  }
+}

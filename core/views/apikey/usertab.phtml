@@ -18,60 +18,62 @@
  limitations under the License.
 =========================================================================*/
 
-echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/apikey/apikey.usertab.js"></script>';
+echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/apikey/apikey.usertab.js"></script>';
 ?>
+<h3>REST Web API</h3>
+<p><b>Base URL:</b> <a href="<?php echo $this->serverURL.$this->webroot; ?>/rest"><?php echo $this->serverURL.$this->webroot; ?>/rest</a></p>
 
-<h3><?php echo $this->t('Generated API keys')?></h3>
-<?php if(count($this->userapiDaos)==0)
-{
-  echo "You do not have any API keys.<br/>";
-}
-else
-{
-?>
-<table width="100%"  border="0">
- <tr bgcolor="#999999">
-   <td><center><b><?php echo $this->t('Application Name')?></b></center></td>
-   <td><center><b>API Key</b></center></td>
-   <td><center><b><?php echo $this->t('Default Expiration')?></b></center></td>
-   <td><center><b>Creation</b></center></td>
-   <td><center><b>Action</b></center></td>
- </tr>
-  <?php
-  foreach($this->userapiDaos as $userapiDao)
-    {
+<h3><?php echo $this->t('Generated API Keys') ?></h3>
+<?php if (count($this->userapiDaos) == 0) {
+    echo "You do not have any API keys.<br/>";
+} else {
     ?>
- <tr>
-   <td><?php echo $userapiDao->getApplicationName(); ?></td>
-   <td><?php echo $userapiDao->getApikey(); ?></td>
-   <td><?php echo $userapiDao->getTokenExpirationTime(); ?> minutes</td>
-   <td><?php echo $this->Date->ago($userapiDao->getCreationDate()); ?></td>
-   <td><a style='text-decoration: underline;' class='deleteApiKeyLink' element='<?php echo $userapiDao->getKey()?>'><?php echo $this->t('delete')?></a></td>
- </tr>
-  <?php
-    } // end foreach keys
-  ?>
-</table>
-  <?php
-  } // end count
+    <table width="100%" border="0">
+        <tr bgcolor="#999999">
+            <th><?php echo $this->t('Application Name') ?></th>
+            <th>API Key</th>
+            <th><?php echo $this->t('Default Expiration') ?></th>
+            <th>Creation</th>
+            <th>Action</th>
+        </tr>
+        <?php
+        foreach ($this->userapiDaos as $userapiDao) {
+            ?>
+            <tr>
+                <td><?php echo $this->escape($userapiDao->getApplicationName()); ?></td>
+                <td><?php echo $this->escape($userapiDao->getApikey()); ?></td>
+                <td><?php echo $this->escape($userapiDao->getTokenExpirationTime()); ?> minutes</td>
+                <td><?php echo $this->dateago($userapiDao->getCreationDate()); ?></td>
+                <td>
+                    <a style='text-decoration: underline;' class='deleteApiKeyLink'
+                       element='<?php echo $this->escape($userapiDao->getKey()); ?>'><?php echo $this->t('delete') ?></a>
+                </td>
+            </tr>
+        <?php
+        }
+        ?>
+    </table>
+<?php
+}
 ?>
 
-<a href="<?php echo $this->webroot?>/rest">Web API Information</a>
+<br />
 
-<div class="separator"></div>
-<h3><?php echo $this->t('Generate New API Key')?></h3>
+<h3><?php echo $this->t('Generate New API Key') ?></h3>
 
-<form class="genericForm" id="generateKeyForm" method="<?php echo $this->form['method']?>"  action="<?php echo $this->form['action']?>">
-  <input type="hidden" id="apiUserId" name="userId" value="<?php echo $this->user->getKey(); ?>" />
-  <div >
-    <label for="appplication_name"><?php echo $this->t('Application Name')?>:</label>
-    <?php echo $this->form['appplication_name']?>
-  </div>
-  <div >
-    <label for="expiration"><?php echo $this->t('Default Expiration')?> (minutes):</label>
-    <?php echo $this->form['expiration']?>
-  </div>
-  <div>
-     <?php echo $this->form['createAPIKey']?>
-  </div>
+<form class="genericForm" id="generateKeyForm" method="<?php echo $this->form['method']; ?>"
+      action="<?php echo $this->form['action']; ?>">
+    <input type="hidden" id="apiUserId" name="userId" value="<?php echo $this->escape($this->user->getKey()); ?>"/>
+
+    <div>
+        <label for="appplication_name"><?php echo $this->t('Application Name'); ?>:</label>
+        <?php echo $this->form['appplication_name']; ?>
+    </div>
+    <div>
+        <label for="expiration"><?php echo $this->t('Default Expiration'); ?> (minutes):</label>
+        <?php echo $this->form['expiration']; ?>
+    </div>
+    <div>
+        <?php echo $this->form['createAPIKey']; ?>
+    </div>
 </form>

@@ -1,0 +1,86 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+div#tabsSettings {
+    display: none;
+    width: 800px;
+}
+
+form {
+    &#modifyAccount {
+        span {
+            float: left;
+            width: 80px;
+        }
+        input {
+            &[type="text"], &[type="password"] {
+                width: 200px !important;
+            }
+        }
+    }
+    &#modifyPassword input[type="password"] {
+        width: 200px !important;
+    }
+}
+
+div {
+    &#accountPrivacy {
+        margin-left: 100px;
+        label {
+            float: none !important;
+            width: auto !important;
+        }
+        br {
+            display: none;
+        }
+    }
+    &#imageActual {
+        float: right;
+    }
+}
+
+.ui-tabs-panel h3 {
+    margin-top: 0;
+}
+
+div#tabsSettings {
+    .ui-tabs-nav {
+        background: none !important;
+        border-bottom: 1px solid #D7D7D7 !important;
+        border-left: none !important;
+        border-radius: 0;
+        border-right: none !important;
+        border-top: none !important;
+        height: 22px !important;
+        padding-left: 10px;
+    }
+    .ui-widget-content {
+        background: none !important;
+    }
+    background: none !important;
+    .ui-tabs .ui-tabs-nav li a {
+        padding: 3px 10px !important;
+    }
+}
+
+.ui-tabs .ui-tabs-nav li a {
+    padding: 3px 10px !important;
+}
+
+div#tabsSettings {
+    .ui-tabs-selected {
+        color: #1D5987 !important;
+        font-weight: bold;
+        height: 19px !important;
+        a {
+            color: #1D5987 !important;
+            font-weight: bold;
+            height: 19px !important;
+        }
+    }
+    .ui-state-default {
+        height: 20px;
+    }
+    .ui-tabs-panel {
+        width: 99%;
+    }
+}

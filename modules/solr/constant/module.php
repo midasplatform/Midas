@@ -17,3 +17,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
+define('SOLR_HOST_KEY', 'solrHost');
+define('SOLR_HOST_DEFAULT_VALUE', 'localhost');
+define('SOLR_PORT_KEY', 'solrPort');
+define('SOLR_PORT_DEFAULT_VALUE', 8983);
+define('SOLR_WEBROOT_KEY', 'solrWebroot');
+define('SOLR_WEBROOT_DEFAULT_VALUE', '/solr/');

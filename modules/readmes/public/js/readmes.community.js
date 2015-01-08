@@ -1,19 +1,18 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
-/*global $*/
-/*global document*/
-/*global ajaxWebApi*/
-/*global json*/
-/*global window*/
+/* global ajaxWebApi */
+/* global document */
+/* global json */
+/* global window */
+
 var midas = midas || {};
 midas.readmes = midas.readmes || {};
 
 (function () {
     'use strict';
-
     midas.readmes.getForCommunity = function (id) {
         $.ajax({
-            url: json.global.webroot + '/rest/readmes/community/' + id,
+            url: json.global.webroot + '/rest/readmes/community/' + encodeURIComponent(id),
             success: function (retVal) {
                 $('.viewMain').append('<hr />' + retVal.data.text);
             },
@@ -28,5 +27,4 @@ midas.readmes = midas.readmes || {};
     $(document).ready(function () {
         midas.readmes.getForCommunity(json.community.community_id);
     });
-
 })();

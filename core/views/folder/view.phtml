@@ -18,189 +18,197 @@
  limitations under the License.
 =========================================================================*/
 
-$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.checkboxrange.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/folder/folder.view.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
 
-$cssArray = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_FOLDER_VIEW_CSS', array('folder' => $this->mainFolder));
-$jsArray = Zend_Registry::get('notifier')->callback('CALLBACK_CORE_FOLDER_VIEW_JS', array('folder' => $this->mainFolder));
+$cssArray = Zend_Registry::get('notifier')->callback(
+    'CALLBACK_CORE_FOLDER_VIEW_CSS',
+    array('folder' => $this->mainFolder)
+);
+$jsArray = Zend_Registry::get('notifier')->callback(
+    'CALLBACK_CORE_FOLDER_VIEW_JS',
+    array('folder' => $this->mainFolder)
+);
 
-foreach($jsArray as $module => $list)
-  {
-  foreach($list as $script)
-    {
-    $this->headScript()->appendFile($script);
+foreach ($jsArray as $module => $list) {
+    foreach ($list as $script) {
+        $this->headScript()->appendFile($script);
     }
-  }
-foreach($cssArray as $module => $list)
-  {
-  foreach($list as $stylesheet)
-    {
-    echo '<link type="text/css" rel="stylesheet" href="'.$stylesheet.'" />';
+}
+foreach ($cssArray as $module => $list) {
+    foreach ($list as $stylesheet) {
+        echo '<link type="text/css" rel="stylesheet" href="'.$this->escape($stylesheet).'" />';
     }
-  }
-
+}
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.genericPage.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/folder/folder.view.css" />
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->coreWebroot ?>/public/css/common/common.genericPage.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/common/common.browser.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/folder/folder.view.css"/>
 
 <div class="viewMain">
-  <div class="tabs" id='tabsGeneric'>
-    <ul>
-      <li><a href="#tabs-1"><?php echo $this->t('Data')?></a></li>
-      <li><a href="#tabs-2"><?php echo $this->t('Info');?></a></li>
-    </ul>
-  <div class="genericBigButton genericWrapperTopRight downloadObject">
-    <?php
-    echo "<a href='javascript:;' class='downloadFolderLink' element='{$this->mainFolder->getKey()}'>";
-    echo $this->t('Download');
-    echo '</a>';
-     ?>
-  </div>
-  <div id="tabs-1">
+    <div class="tabs" id='tabsGeneric'>
+        <ul>
+            <li><a href="#tabs-1"><?php echo $this->t('Data') ?></a></li>
+            <li><a href="#tabs-2"><?php echo $this->t('Info'); ?></a></li>
+        </ul>
+        <div class="genericBigButton genericWrapperTopRight downloadObject">
+            <?php
+            echo "<a href='javascript:;' class='downloadFolderLink' element='{$this->mainFolder->getKey()}'>";
+            echo $this->t('Download');
+            echo '</a>';
+            ?>
+        </div>
+        <div id="tabs-1">
 
-  <img class="tableLoading" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
-  <table id="browseTable" class="midasTree" root="<?php echo $this->mainFolder->getKey(); ?>">
-    <thead>
-      <tr>
-        <th class="thData"><?php echo $this->t('Name');?></th>
-        <th class="thSize"><?php echo $this->t('Size');?></th>
-        <th class="thDate"><?php echo $this->t('Modified');?></th>
-        <th class="thCheckbox"><input type="checkbox" id="browseTableHeaderCheckbox" /></th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php
-      $node=1;
+            <img class="tableLoading" alt="" src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>
+            <table id="browseTable" class="midasTree" root="<?php echo $this->mainFolder->getKey(); ?>">
+                <thead>
+                <tr>
+                    <th class="thData"><?php echo $this->t('Name'); ?></th>
+                    <th class="thSize"><?php echo $this->t('Size'); ?></th>
+                    <th class="thDate"><?php echo $this->t('Modified'); ?></th>
+                    <th class="thCheckbox">
+                        <input type="checkbox" id="browseTableHeaderCheckbox"/>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                $node = 1;
 
-      foreach($this->folders as $folder)
-        {
-        $privacyClass = $folder->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-        echo "<tr id='node--$node' privacy='{$folder->getPrivacyStatus()}' class='parent' type='folder' element='{$folder->getFolderId()}' ajax='{$folder->getFolderId()}'>";
-        echo "  <td class='treeBrowseElement'><span class='folder{$privacyClass}'>{$this->slicename($folder->getName(), 40)}</span></td>";
-        echo "  <td><img class='folderLoading'  element='{$folder->getFolderId()}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
-        echo "  <td>{$this->Date->ago($folder->getDateUpdate(), true)}</td>";
-        echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$folder->getFolderId()}' /></td>";
-        echo "</tr>";
-        $node++;
-        }
+                foreach ($this->folders as $folder) {
+                    $privacyClass = $folder->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
+                    echo "<tr id='node--$node' privacy='{$this->escape($folder->getPrivacyStatus(
+                    ))}' class='parent' type='folder' element='{$this->escape($folder->getFolderId())}' ajax='{$this->escape($folder->getFolderId(
+                    ))}'>";
+                    echo "  <td class='treeBrowseElement'><span class='folder{$this->escape($privacyClass)}'>{$this->slicename(
+                        $this->escape($folder->getName()),
+                        40
+                    )}</span></td>";
+                    echo "  <td><img class='folderLoading'  element='{$this->escape($folder->getFolderId(
+                    ))}' alt='' src='{$this->coreWebroot}/public/images/icons/loading.gif'/></td>";
+                    echo "  <td>{$this->dateago($folder->getDateUpdate())}</td>";
+                    echo "  <td><input type='checkbox' class='treeCheckbox' type='folder' element='{$this->escape($folder->getFolderId(
+                    ))}' /></td>";
+                    echo "</tr>";
+                    $node++;
+                }
 
-      foreach($this->items as $item)
-        {
-        $privacyClass = $item->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
-        echo "<tr id='node--$node' privacy='{$item->getPrivacyStatus()}' class='' type='item' element='{$item->getItemId()}' >";
-        echo "  <td class='treeBrowseElement'><span class='file{$privacyClass}'>{$this->slicename($item->getName(), 40)}</span></td>";
-        echo "  <td>{$item->size}</td>";
-        echo "  <td>{$this->Date->ago($item->getDateUpdate(), true)}</td>";
-        echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$item->getItemId()}' /></td>";
-        echo "</tr>";
-        $node++;
-        }
-      ?>
+                foreach ($this->items as $item) {
+                    $privacyClass = $item->getPrivacyStatus() == MIDAS_PRIVACY_PUBLIC ? 'Public' : 'Private';
+                    echo "<tr id='node--$node' privacy='{$this->escape($item->getPrivacyStatus(
+                    ))}' class='' type='item' element='{$this->escape($item->getItemId())}'>";
+                    echo "  <td class='treeBrowseElement'><span class='file{$this->escape($privacyClass)}'>{$this->slicename(
+                        $this->escape($item->getName()),
+                        40
+                    )}</span></td>";
+                    echo "  <td>{$this->escape($item->size)}</td>";
+                    echo "  <td>{$this->dateago($item->getDateUpdate())}</td>";
+                    echo "  <td><input type='checkbox' class='treeCheckbox' type='item' element='{$this->escape($item->getItemId(
+                    ))}' /></td>";
+                    echo "</tr>";
+                    $node++;
+                }
+                ?>
 
-    </tbody>
-  </table>
+                </tbody>
+            </table>
 
-    <?php
-    if(empty($this->folders)&&empty($this->items))
-      {
-      echo "<h4>{$this->t("This folder is empty")}.</h4>";
-      }
-    ?>
+            <?php
+            if (empty($this->folders) && empty($this->items)) {
+                echo "<h4>{$this->t("This folder is empty")}.</h4>";
+            }
+            ?>
 
+        </div>
+        <div id="tabs-2">
+            <?php
+            echo $this->escape($this->mainFolder->getDescription());
+            ?>
+        </div>
     </div>
-    <div id="tabs-2">
-      <?php
-      $descriptionMainFolder=$this->mainFolder->getDescription();
-      echo $descriptionMainFolder;
-      ?>
-    </div>
-  </div>
 
 </div>
 
 <div id="guideRobot">
-   <?php
-   foreach($this->folders as $folder)
-      {
-      echo "<a href='{$this->webroot}/folder/{$folder->getKey()}'>{$folder->getName()}</a> ";
-      }
-   foreach($this->items as $item)
-      {
-      echo "<a href='{$this->webroot}/item/{$item->getKey()}'>{$item->getName()}</a> ";
-      }
-  ?>
+    <?php
+    foreach ($this->folders as $folder) {
+        echo "<a href='{$this->webroot}/folder/{$this->escape($folder->getKey())}'>{$this->escape($folder->getName())}</a> ";
+    }
+    foreach ($this->items as $item) {
+        echo "<a href='{$this->webroot}/item/{$this->escape($item->getKey())}'>{$this->escape($item->getName())}</a> ";
+    }
+    ?>
 </div>
 
 <div class="viewSideBar">
-  <?php
-  echo '
+    <?php
+    echo '
   <div class="sideElementActions sideElementFirst viewAction">
     <ul>
       <h1>Folder Actions</h1>
       <li class="downloadObject">
         <img alt="" src="'.$this->coreWebroot.'/public/images/icons/download.png"/>
-        <a href="javascript:;" class="downloadFolderLink" element="'.$this->mainFolder->getKey().'">Download</a>
+        <a href="javascript:;" class="downloadFolderLink" element="'.$this->escape($this->mainFolder->getKey()).'">Download</a>
       </li>
       <li>
         <img alt="" src="'.$this->coreWebroot.'/public/images/icons/link.png"/>
-        <a type="folder" element="'.$this->mainFolder->getKey().'" href="javascript:;" class="getResourceLinks">Share</a>
+        <a type="folder" element="'.$this->escape($this->mainFolder->getKey()).'" href="javascript:;" class="getResourceLinks">Share</a>
       </li>';
-    if($this->isModerator)
-      {
-      echo '
+    if ($this->isModerator) {
+        echo '
       <li>
         <img alt="" src="'.$this->coreWebroot.'/public/images/icons/folder_add.png"/>
-        <a onclick="midas.createNewFolder('.$this->mainFolder->getKey().');">Create new folder</a>
+        <a onclick="midas.createNewFolder('.$this->escape($this->mainFolder->getKey()).');">Create new folder</a>
       </li>
       <li>
         <img alt="" src="'.$this->coreWebroot.'/public/images/icons/upload.png"/>
-        <a rel="'.$this->webroot.'/upload/simpleupload/?parent='.$this->mainFolder->getKey().'" class="uploadInFolder">Upload here</a>
+        <a rel="'.$this->webroot.'/upload/simpleupload/?parent='.$this->escape($this->mainFolder->getKey()).'" class="uploadInFolder">Upload here</a>
       </li>';
-      if($this->deleteable)
-        {
-        echo '
+        if ($this->deleteable) {
+            echo '
         <li>
           <img alt="" src="'.$this->coreWebroot.'/public/images/icons/edit.png"/>
-          <a onclick="midas.editFolder('.$this->mainFolder->getKey().');">Edit</a>
+          <a onclick="midas.editFolder('.$this->escape($this->mainFolder->getKey()).');">Edit</a>
         </li>
         <li>
           <img alt="" src="'.$this->coreWebroot.'/public/images/icons/move.png"/>
-          <a onclick="midas.moveFolder('.$this->mainFolder->getKey().');">Move</a>
+          <a onclick="midas.moveFolder('.$this->escape($this->mainFolder->getKey()).');">Move</a>
         </li>';
         }
-      }
-    if($this->isAdmin)
-      {
-      echo '
+    }
+    if ($this->isAdmin) {
+        echo '
       <li>
         <img alt="" src="'.$this->coreWebroot.'/public/images/icons/lock.png"/>
-        <a type="folder" element="'.$this->mainFolder->getKey().'" class="sharingLink">Permissions</a>
+        <a type="folder" element="'.$this->escape($this->mainFolder->getKey()).'" class="sharingLink">Permissions</a>
       </li>';
-      if($this->deleteable)
-        {
-        echo '
+        if ($this->deleteable) {
+            echo '
         <li>
           <img alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png"/>
-          <a onclick="midas.deleteFolder('.$this->mainFolder->getKey().');">Delete</a>
+          <a onclick="midas.deleteFolder('.$this->escape($this->mainFolder->getKey()).');">Delete</a>
         </li>';
         }
-      }
+    }
     echo '
     </ul>
   </div>
-  <div class="sideElement viewSelected" >
+  <div class="sideElement viewSelected">
   <h1>'.$this->t('Checked').'<span></span></h1>
     <span></span>
   </div>
   <div class="sideElementLast viewInfo">';
-  ?>
+    ?>
 
     <h1>Info</h1>
-    <img class="infoLoading" style="display:none;" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
+    <img class="infoLoading" style="display:none;" alt=""
+         src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>
+
     <div class="ajaxInfoElement">
     </div>
-  </div>
+</div>
 </div>

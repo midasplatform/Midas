@@ -22,20 +22,22 @@ require_once BASE_PATH.'/modules/oauth/models/base/ClientModelBase.php';
 
 /** pdo model implementation */
 class Oauth_ClientModel extends Oauth_ClientModelBase
-  {
-  /**
-   * Return all client records owned by the given user
-   */
-  public function getByUser($userDao)
+{
+    /**
+     * Return all client records owned by the given user.
+     *
+     * @param UserDao $userDao
+     * @return array
+     */
+    public function getByUser($userDao)
     {
-    $sql = $this->database->select()->setIntegrityCheck(false)
-                ->where('owner_id = ?', $userDao->getKey());
-    $rows = $this->database->fetchAll($sql);
-    $daos = array();
-    foreach($rows as $row)
-      {
-      $daos[] = $this->initDao('Client', $row, $this->moduleName);
-      }
-    return $daos;
+        $sql = $this->database->select()->setIntegrityCheck(false)->where('owner_id = ?', $userDao->getKey());
+        $rows = $this->database->fetchAll($sql);
+        $daos = array();
+        foreach ($rows as $row) {
+            $daos[] = $this->initDao('Client', $row, $this->moduleName);
+        }
+
+        return $daos;
     }
-  }
+}

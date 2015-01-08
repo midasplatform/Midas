@@ -18,19 +18,15 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Communityagreement_AppController
- *
- * @category   Midas modules
- * @package    communityagreement
- */
+/** App controller for the communityagreement module */
 class Communityagreement_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'communityagreement';
+{
+    public $moduleName = 'communityagreement';
 
-  /**
-   * Communityagreement_Agreement Model
-   * @var Communityagreement_AgreementModelBase
-   */
-  var $Communityagreement_Agreement;
-  }
+    /**
+     * Communityagreement_Agreement Model
+     *
+     * @var Communityagreement_AgreementModelBase
+     */
+    public $Communityagreement_Agreement;
+}

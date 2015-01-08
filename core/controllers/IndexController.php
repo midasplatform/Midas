@@ -18,35 +18,12 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * IndexController
- *  Index Controller
- */
+/** Index controller. */
 class IndexController extends AppController
-  {
-
-  public $_models = array('Item');
-  public $_daos = array();
-  public $_components = array();
-
-  /**
-   * @method indexAction()
-   *  Index Action (first action when we access the application)
-   */
-  function indexAction()
+{
+    /** Index action. */
+    public function indexAction()
     {
-    $this->redirect("/feed");
-    } // end method indexAction
-
-  /** no javascript*/
-  function nojsAction()
-    {
-    $this->disableLayout();
-    } // end method indexAction
-
-  /** no valid browser*/
-  function nobrowserAction()
-    {
-    $this->disableLayout();
-    } // end method indexAction
-  } // end class
+        $this->redirect('/community');
+    }
+}

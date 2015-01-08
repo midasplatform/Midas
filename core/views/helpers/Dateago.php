@@ -18,20 +18,20 @@
  limitations under the License.
 =========================================================================*/
 
-class  Zend_View_Helper_Dateago
+/** Date ago view helper. */
+class Zend_View_Helper_Dateago extends Zend_View_Helper_Abstract
 {
-  /** translation helper */
-    function dateago($timestamp)
+    /**
+     * Date ago view helper.
+     *
+     * @param int|string $timestamp timestamp
+     * @return string date ago as a formatted string
+     */
+    public function dateago($timestamp)
     {
-    Zend_Loader::loadClass('DateComponent', BASE_PATH . '/core/controllers/components');
-    $component=new DateComponent();
-    return $component->ago($timestamp);
-    }
+        /** @var DateComponent $dateComponent */
+        $dateComponent = MidasLoader::loadComponent('Date');
 
-
-    /** Set view*/
-    public function setView(Zend_View_Interface $view)
-    {
-        $this->view = $view;
+        return htmlspecialchars($dateComponent->ago($timestamp), ENT_QUOTES, 'UTF-8');
     }
-}// end class
+}

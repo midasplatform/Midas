@@ -17,5 +17,5 @@
 # limitations under the License.
 #=============================================================================
 
-add_midas_test( FeedDao FeedDaoTest.php )
-add_midas_test( UserDao UserDaoTest.php )
+add_midas_test(CoreFeedDao FeedDaoTest.php)
+add_midas_test(CoreUserDao UserDaoTest.php)

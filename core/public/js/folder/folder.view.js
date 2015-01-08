@@ -1,9 +1,11 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 
 $(document).ready(function () {
-
+    'use strict';
     $("#browseTable").treeTable({
         onFirstInit: midas.enableRangeSelect,
         onNodeShow: midas.enableRangeSelect,
@@ -21,11 +23,11 @@ $(document).ready(function () {
     });
 
     $('a.sharingLink').click(function () {
-        midas.loadDialog("sharing" + $(this).attr('type') + $(this).attr('element'), "/share/dialog?type=" + $(this).attr('type') + '&element=' + $(this).attr('element'));
+        midas.loadDialog("sharing" + $(this).attr('type') + $(this).attr('element'), "/share/dialog?type=" + encodeURIComponent($(this).attr('type')) + '&element=' + encodeURIComponent($(this).attr('element')));
         midas.showDialog(json.browse.share);
     });
     $('a.getResourceLinks').click(function () {
-        midas.loadDialog("links" + $(this).attr('type') + $(this).attr('element'), '/share/links?type=' + $(this).attr('type') + '&id=' + $(this).attr('element'));
+        midas.loadDialog("links" + $(this).attr('type') + $(this).attr('element'), '/share/links?type=' + encodeURIComponent($(this).attr('type')) + '&id=' + encodeURIComponent($(this).attr('element')));
         midas.showDialog('Link to this item');
     });
     $('a.uploadInFolder').click(function () {
@@ -41,10 +43,14 @@ $(document).ready(function () {
         }, function (text) {
             var retVal = $.parseJSON(text);
             if (retVal.action == 'download') {
-                window.location = json.global.webroot + '/download?folders=' + folderId;
+                window.location = json.global.webroot + '/download?folders=' + encodeURIComponent(folderId);
             }
             else if (retVal.action == 'promptApplet') {
-                midas.promptDownloadApplet(folderId, '', retVal.sizeStr);
+                midas.doCallback('CALLBACK_CORE_PROMPT_APPLET', {
+                    folderIds: folderId,
+                    itemIds: '',
+                    sizeString: retVal.sizeStr
+                });
             }
         });
     });
@@ -74,22 +80,27 @@ $(document).ready(function () {
 midas.ajaxSelectRequest = '';
 
 function callbackSelect(node) {
+    'use strict';
     midas.genericCallbackSelect(node);
 }
 
 function callbackDblClick(node) {
+    'use strict';
     midas.genericCallbackDblClick(node);
 }
 
 function callbackCheckboxes(node) {
+    'use strict';
     midas.genericCallbackCheckboxes(node);
 }
 
 $(document).ready(function () {
+    'use strict';
     $('div.viewAction').show();
 });
 
 $(window).load(function () {
+    'use strict';
     $.ajax({
         type: 'POST',
         url: json.global.webroot + '/browse/getelementinfo',

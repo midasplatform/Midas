@@ -21,59 +21,73 @@
 require_once BASE_PATH.'/core/models/base/FolderpolicygroupModelBase.php';
 
 /**
- * \class FolderpolicygroupModel
- * \brief Pdo Model
+ * Pdo Model
  */
 class FolderpolicygroupModel extends FolderpolicygroupModelBase
-  {
-  /** getPolicy
-   * @return FolderpolicygroupDao
-   */
-  public function getPolicy($group, $folder)
+{
+    /**
+     * Get policy
+     *
+     * @param GroupDao $group
+     * @param FolderDao $folder
+     * @return false|FolderpolicygroupDao
+     * @throws Zend_Exception
+     */
+    public function getPolicy($group, $folder)
     {
-    if(!$group instanceof GroupDao)
-      {
-      throw new Zend_Exception("Should be a group.");
-      }
-    if(!$folder instanceof FolderDao)
-      {
-      throw new Zend_Exception("Should be a folder.");
-      }
-    return $this->initDao('Folderpolicygroup', $this->database->fetchRow($this->database->select()->where('folder_id = ?', $folder->getKey())->where('group_id = ?', $group->getKey())));
+        if (!$group instanceof GroupDao) {
+            throw new Zend_Exception("Should be a group.");
+        }
+        if (!$folder instanceof FolderDao) {
+            throw new Zend_Exception("Should be a folder.");
+        }
+
+        return $this->initDao(
+            'Folderpolicygroup',
+            $this->database->fetchRow(
+                $this->database->select()->where('folder_id = ?', $folder->getKey())->where(
+                    'group_id = ?',
+                    $group->getKey()
+                )
+            )
+        );
     }
 
-  /** compute policy status*/
-  public function computePolicyStatus($folder)
+    /** compute policy status */
+    public function computePolicyStatus($folder)
     {
-    $sql = $this->database->select()->from(array('fpg' => 'folderpolicygroup'), array('COUNT(*) as count'));
-    $sql->where('fpg.folder_id = ?', $folder->getFolderId());
-    $sql->where('fpg.group_id = ?', MIDAS_GROUP_ANONYMOUS_KEY);
-    $row = $this->database->fetchRow($sql);
-    $count = (int)$row['count'];
+        $sql = $this->database->select()->from(array('fpg' => 'folderpolicygroup'), array('COUNT(*) as count'));
+        $sql->where('fpg.folder_id = ?', $folder->getFolderId());
+        $sql->where('fpg.group_id = ?', MIDAS_GROUP_ANONYMOUS_KEY);
+        $row = $this->database->fetchRow($sql);
+        $count = (int) $row['count'];
 
-    $folderModel = MidasLoader::loadModel('Folder');
-    if($count > 0)
-      {
-      $folder->setPrivacyStatus(MIDAS_PRIVACY_PUBLIC);
-      $folderModel->save($folder);
-      return MIDAS_PRIVACY_PUBLIC;
-      }
-    $folder->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE);
-    $folderModel->save($folder);
-    return MIDAS_PRIVACY_PRIVATE;
-    }// end computePolicyStatus
+        /** @var FolderModel $folderModel */
+        $folderModel = MidasLoader::loadModel('Folder');
+        if ($count > 0) {
+            $folder->setPrivacyStatus(MIDAS_PRIVACY_PUBLIC);
+            $folderModel->save($folder);
 
-  /**
-   * deletes all folderpolicygroup rows associated with the passed in group
-   * @param GroupDao
-   */
-  public function deleteGroupPolicies($group)
-    {
-    if(!$group instanceof GroupDao)
-      {
-      throw new Zend_Exception("Should be a group.");
-      }
-    $clause = 'group_id = '.$group->getKey();
-    Zend_Registry::get('dbAdapter')->delete($this->_name, $clause);
+            return MIDAS_PRIVACY_PUBLIC;
+        }
+        $folder->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE);
+        $folderModel->save($folder);
+
+        return MIDAS_PRIVACY_PRIVATE;
     }
-  }
+
+    /**
+     * Deletes all folderpolicygroup rows associated with the passed in group
+     *
+     * @param GroupDao $group
+     * @throws Zend_Exception
+     */
+    public function deleteGroupPolicies($group)
+    {
+        if (!$group instanceof GroupDao) {
+            throw new Zend_Exception("Should be a group.");
+        }
+        $clause = 'group_id = '.$group->getKey();
+        Zend_Registry::get('dbAdapter')->delete($this->_name, $clause);
+    }
+}

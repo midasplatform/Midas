@@ -17,5 +17,8 @@
 # limitations under the License.
 #=============================================================================
 
-add_midas_test( KWBatchmakeComponent KWBatchmakeComponentTest.php )
-add_midas_test( BatchmakeExecuteComponent ExecuteComponentTest.php )
+set(module_name batchmake)
+to_titlecase(${module_name} module_name_titlecase)
+
+add_midas_test(${module_name_titlecase}KWBatchmakeComponent KWBatchmakeComponentTest.php)
+add_midas_test(${module_name_titlecase}ExecuteComponent ExecuteComponentTest.php)

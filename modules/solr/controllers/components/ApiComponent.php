@@ -20,27 +20,29 @@
 
 /** Component for api methods */
 class Solr_ApiComponent extends AppComponent
-  {
-  /** Return the user dao */
-  private function _callModuleApiMethod($args, $coreApiMethod, $resource = null, $hasReturn = true)
+{
+    /** Return the user dao */
+    private function _callModuleApiMethod($args, $coreApiMethod, $resource = null, $hasReturn = true)
     {
-    $ApiComponent = MidasLoader::loadComponent('Api'.$resource, 'solr');
-    $rtn = $ApiComponent->$coreApiMethod($args);
-    if($hasReturn)
-      {
-      return $rtn;
-      }
+        $ApiComponent = MidasLoader::loadComponent('Api'.$resource, 'solr');
+        $rtn = $ApiComponent->$coreApiMethod($args);
+        if ($hasReturn) {
+            return $rtn;
+        }
+
+        return null;
     }
 
-  /**
-   * Create a big thumbnail for the given bitstream with the given width. It is used as the main image of the given item and shown in the item view page.
-   * @param token (Optional) Authentication token
-   * @param query The Lucene search query
-   * @param limit (Optional) The limit of the search; defaults to 25
-   * @return The list of items matching the search query
-   */
-  public function searchAdvanced($args)
+    /**
+     * Create a big thumbnail for the given bitstream with the given width. It is used as the main image of the given item and shown in the item view page.
+     *
+     * @param token (Optional) Authentication token
+     * @param query The Lucene search query
+     * @param limit (Optional) The limit of the search; defaults to 25
+     * @return The list of items matching the search query
+     */
+    public function searchAdvanced($args)
     {
-    return $this->_callModuleApiMethod($args, 'searchAdvanced', 'search');
+        return $this->_callModuleApiMethod($args, 'searchAdvanced', 'search');
     }
-  } // end class
+}

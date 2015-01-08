@@ -18,8 +18,13 @@
  limitations under the License.
 =========================================================================*/
 
-/** App DAO for the remoteprocessing module */
+/**
+ * Generic DAO class for the remoteprocessing module.
+ *
+ * @package Modules\Remoteprocessing\DAO
+ */
 class Remoteprocessing_AppDao extends MIDAS_GlobalDao
-  {
-  public $_module = 'remoteprocessing';
-  }
+{
+    /** @var string */
+    public $_module = 'remoteprocessing';
+}

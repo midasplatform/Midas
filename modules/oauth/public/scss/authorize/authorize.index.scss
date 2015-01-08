@@ -1,0 +1,67 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+body {
+    background-color: #F5F5F5;
+    padding-bottom: 40px;
+    padding-top: 40px;
+}
+
+.form-login {
+    background-color: #FAFAFA;
+    border-radius: 5px;
+    border: 1px solid #E5E5E5;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    margin: 0 auto 20px;
+    max-width: 600px;
+    padding: 19px 29px 29px;
+    .form-login-heading, .checkbox {
+        margin-bottom: 10px;
+    }
+    input {
+        &[type="text"], &[type="password"] {
+            font-size: 16px;
+            height: auto;
+            margin-bottom: 15px;
+            padding: 7px 9px;
+        }
+    }
+}
+
+.btn {
+    margin: 10px 0 15px 12px;
+}
+
+ul.scopeList {
+    margin-top: 8px;
+}
+
+div {
+    &.authorizationText {
+        background-color: #FFB;
+        border-radius: 5px;
+        border: 1px solid #C0C0C0;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        margin-bottom: 18px;
+        padding: 10px 12px 5px 12px;
+    }
+    &.loginErrorMessage {
+        color: #EE1010;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    &.logoContainer {
+        border-bottom: 1px solid #D7D7D7;
+        margin-bottom: 12px;
+        margin-top: -10px;
+        padding-bottom: 8px;
+        text-align: right;
+    }
+    &.buttonBar {
+        text-align: right;
+    }
+}
+
+img.secureImage {
+    position: relative;
+    top: -2px;
+}

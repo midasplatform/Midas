@@ -20,6 +20,6 @@
 
 /** App model for oauth module */
 class Googleauth_AppModel extends MIDASModel
-  {
-  public $moduleName = 'googleauth';
-  }
+{
+    public $moduleName = 'googleauth';
+}

@@ -17,9 +17,31 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** Dao for item ratings */
+
+/**
+ * Item comment DAO for the comments module.
+ *
+ * @method int getCommentId()
+ * @method void setCommentId(int $commentId)
+ * @method int getUserId()
+ * @method void setUserId(int $userId)
+ * @method int getItemId()
+ * @method void setItemId int $itemId)
+ * @method string getComment()
+ * @method void setComment(string $comment)
+ * @method string getDate()
+ * @method void setDate(string $date)
+ * @method UserDao getUser()
+ * @method void setUser(UserDao $user)
+ * @method ItemDao getItem()
+ * @method void setItem(ItemDao $item)
+ * @package Modules\Comments\DAO
+ */
 class Comments_ItemcommentDao extends Comments_AppDao
-  {
-  public $_model = 'Itemcomment';
-  public $_module = 'comments';
-  }
+{
+    /** @var string */
+    public $_model = 'Itemcomment';
+
+    /** @var string */
+    public $_module = 'comments';
+}

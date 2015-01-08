@@ -18,16 +18,17 @@
  limitations under the License.
 =========================================================================*/
 
-echo '<script type="text/javascript" src="' . $this->coreWebroot.'/public/js/folder/folder.deletedialog.js?'.time().'"></script>';
+echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/folder/folder.deletedialog.js"></script>';
 ?>
 
-Are you sure you want to delete the folder <b><?php echo $this->folder->getName()?></b>? (<?php echo $this->sizeStr?>)
+Are you sure you want to delete the folder
+<b><?php echo $this->escape($this->folder->getName()); ?></b>? (<?php echo $this->escape($this->sizeStr); ?>)
 <br/><br/>
 <div id="deleteFolderProgress"></div>
 <div id="deleteFolderProgressMessage"></div>
 <br/><br/>
-<input id="deleteFolderId" type="hidden" value="<?php echo $this->folder->getKey()?>" />
+<input id="deleteFolderId" type="hidden" value="<?php echo $this->escape($this->folder->getKey()); ?>"/>
 <div style="float: right;">
-  <input class="globalButton deleteFolderYes" element="'+id+'" type="button" value="Yes"/>
-  <input style="margin-left:15px;" class="globalButton deleteFolderNo" type="button" value="No"/>
+    <input class="globalButton deleteFolderYes" element="'+id+'" type="button" value="Yes"/>
+    <input style="margin-left:15px;" class="globalButton deleteFolderNo" type="button" value="No"/>
 </div>

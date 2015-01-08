@@ -1,0 +1,10 @@
+{
+    "name": "midas-server",
+    "description": "Midas Platform",
+    "homepage": "http://www.midasplatform.org",
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/midasplatform/Midas.git"
+    }
+}

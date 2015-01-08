@@ -18,9 +18,20 @@
  limitations under the License.
 =========================================================================*/
 
-/** Landingpage text dao */
+/**
+ * Text DAO for the landingpage module.
+ *
+ * @method int getLandingpageId()
+ * @method void setLandingpageId(int $landingpageId)
+ * @method string getText()
+ * @method void setText(string $text)
+ * @package Modules\Landingpage\DAO
+ */
 class Landingpage_TextDao extends AppDao
-  {
-  public $_model = 'Text';
-  public $_module = 'landingpage';
-  }
+{
+    /** @var string */
+    public $_model = 'Text';
+
+    /** @var string */
+    public $_module = 'landingpage';
+}

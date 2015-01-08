@@ -25,168 +25,180 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.canvasAxisLabelRenderer.min.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.canvasAxisTickRenderer.min.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.highlighter.min.js');
-$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.differentColorMarkerLineRenderer.js');
+$this->headScript()->appendFile(
+    $this->coreWebroot.'/public/js/jquery/jqplot/jqplot.differentColorMarkerLineRenderer.js'
+);
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.cursor.min.js');
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/trend/trend.view.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/jquery/jquery.jqplot.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/trend/trend.view.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/jquery/jquery.jqplot.min.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/common/common.browser.css"/>
 
 <div class="viewMain">
-  <div class="itemsContainer">
-    <div>
-      <?php
-      if(count($this->trends) == 1)
-        {
-      ?>
-        Configuration data:
-        <?php
-        if($this->trends[0]->getConfigItemId())
-          {
-          echo '<a href="'.$this->webroot.'/item/'.$this->trends[0]->getConfigItemId().'">'.$this->trends[0]->getConfigItem()->getName().'</a>';
-          }
-        else
-          {
-          echo '<span class="itemLinkNone">none</span>';
-          }
-        ?>
-      </div>
-      <div>
-        Test data:
-        <?php
-        if($this->trends[0]->getTestDatasetId())
-          {
-          echo '<a href="'.$this->webroot.'/item/'.$this->trends[0]->getTestDatasetId().'">'.$this->trends[0]->getTestDatasetItem()->getName().'</a>';
-          }
-        else
-          {
-          echo '<span class="itemLinkNone">none</span>';
-          }
-        ?>
-      </div>
-      <div>
-        Ground truth data:
-        <?php
-        if($this->trends[0]->getTruthDatasetId())
-          {
-          echo '<a href="'.$this->webroot.'/item/'.$this->trends[0]->getTruthDatasetId().'">'.$this->trends[0]->getTruthDatasetItem()->getName().'</a>';
-          }
-        else
-          {
-          echo '<span class="itemLinkNone">none</span>';
-          }
-        }
-      ?>
+    <div class="itemsContainer">
+        <div>
+            <?php
+            if (count($this->trends) == 1)
+            {
+            ?>
+            Configuration data:
+            <?php
+            if ($this->trends[0]->getConfigItemId()) {
+                echo '<a href="'.$this->webroot.'/item/'.$this->escape($this->trends[0]->getConfigItemId(
+                    )).'">'.$this->escape($this->trends[0]->getConfigItem()->getName()).'</a>';
+            } else {
+                echo '<span class="itemLinkNone">none</span>';
+            }
+            ?>
+        </div>
+        <div>
+            Test data:
+            <?php
+            if ($this->trends[0]->getTestDatasetId()) {
+                echo '<a href="'.$this->webroot.'/item/'.$this->escape($this->trends[0]->getTestDatasetId(
+                    )).'">'.$this->escape($this->trends[0]->getTestDatasetItem()->getName()).'</a>';
+            } else {
+                echo '<span class="itemLinkNone">none</span>';
+            }
+            ?>
+        </div>
+        <div>
+            Ground truth data:
+            <?php
+            if ($this->trends[0]->getTruthDatasetId()) {
+                echo '<a href="'.$this->webroot.'/item/'.$this->escape($this->trends[0]->getTruthDatasetId(
+                    )).'">'.$this->escape($this->trends[0]->getTruthDatasetItem()->getName()).'</a>';
+            } else {
+                echo '<span class="itemLinkNone">none</span>';
+            }
+            }
+            ?>
+        </div>
     </div>
-  </div>
-  <div class="dateControlContainer">
-    <label for="startdate">Date range:</label>
-    <input class="dateSelect" type="text" id="startdate" name="startdate"/>
-    <label for="enddate">to</label>
-    <input class="dateSelect" type="text" id="enddate" name="enddate"/>
-    <input type="button" class="globalButton" id="filterButton" value="Update" />
-    <img alt="" style="display: none;" id="dateRangeUpdating" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif" />
-  </div>
-  <div class="branchFilterContainer">
-    <label for="branchfilter">Filter by branch:</label>
-    <select id="branchfilter" class="branchfilter">
-      <option value="">[all branches]</option>
-      <?php foreach($this->allBranches as $branch)
-        {
-        echo '<option>'.$branch.'</option>';
-        } ?>
-    </select>
-    <button class="add-branchfilter">Add branch trend</button>
-  </div>
-  <div id="chartDiv" class="chartContainer"></div>
-  <?php if($this->logged)
-    { ?>
-  <div class="belowChartText">
-    * Points in <span class="redText">red</span> represent unofficial submissions to this trend.
-  </div>
-  <?php } ?>
+    <div class="dateControlContainer">
+        <label for="startdate">Date range:</label>
+        <input class="dateSelect" type="text" id="startdate" name="startdate"/>
+        <label for="enddate">to</label>
+        <input class="dateSelect" type="text" id="enddate" name="enddate"/>
+        <input type="button" class="globalButton" id="filterButton" value="Update"/>
+        <img alt="" style="display: none;" id="dateRangeUpdating"
+             src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>
+    </div>
+    <div class="branchFilterContainer">
+        <label for="branchfilter">Filter by branch:</label>
+        <select id="branchfilter" class="branchfilter">
+            <option value="">[all branches]</option>
+            <?php foreach ($this->allBranches as $branch) {
+                echo '<option>'.$this->escape($branch).'</option>';
+            } ?>
+        </select>
+        <button class="add-branchfilter">Add branch trend</button>
+    </div>
+    <div id="chartDiv" class="chartContainer"></div>
+    <?php if ($this->logged) {
+        ?>
+        <div class="belowChartText">
+            * Points in
+            <span class="redText">red</span> represent unofficial submissions to this trend.
+        </div>
+    <?php } ?>
 </div>
 
 <div class="viewSideBar">
-  <div class="sideElementFirst viewAction">
-    <h1>Actions</h1>
-    <ul>
-    <?php
-    if($this->isAdmin && count($this->trends) == 1)
-      {
-    ?>
-      <li>
-        <a href="<?php echo $this->webroot?>/tracker/trend/edit?trendId=<?php echo $this->trends[0]->getKey()?>">
-          <img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/edit.png"/> Edit
-        </a>
-      </li>
-      <li>
-        <a class="deleteTrend"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/close.png"/> Delete</a>
-      </li>
-    <?php
-      }
-    if($this->logged && count($this->trends) == 1)
-      {
-    ?>
-      <li>
-        <a class="thresholdAction"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/email_error.png"/> Notifications</a>
-      </li>
-    <?php
-      }
-    ?>
-      <li>
-        <a class="resetZoomAction"><img alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/magnifier_zoom_out.png"/> Reset plot zoom</a>
-      </li>
-      <li>
-        <a class="axesControl"><img alt="" src="<?php echo $this->moduleWebroot?>/public/images/axes.png" /> Axes</a>
-      </li>
-      <li>
-        <a class="toggleUnofficialVisibility">
-          <div class="toggleUnofficialIcon toHide"></div>
-          <span class="linkText">Hide unofficial submissions</a>
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div class="sideElement viewInfo">
-    <h1>Info</h1>
-    <div>Points in range: <span class="infoItem" id="pointCount"></span></div>
-    <div>Min value: <span class="infoItem" id="minVal"></span></div>
-    <div>Max value: <span class="infoItem" id="maxVal"></span></div>
-  </div>
+    <div class="sideElementFirst viewAction">
+        <h1>Actions</h1>
+        <ul>
+            <?php
+            if ($this->isAdmin && count($this->trends) == 1) {
+                ?>
+                <li>
+                    <a href="<?php echo $this->webroot ?>/tracker/trend/edit?trendId=<?php echo $this->trends[0]->getKey(
+                    ) ?>">
+                        <img alt="" src="<?php echo $this->coreWebroot ?>/public/images/icons/edit.png"/> Edit
+                    </a>
+                </li>
+                <li>
+                    <a class="deleteTrend"><img alt=""
+                                                src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png"/>
+                        Delete</a>
+                </li>
+            <?php
+            }
+            if ($this->logged && count($this->trends) == 1) {
+                ?>
+                <li>
+                    <a class="thresholdAction"><img alt=""
+                                                    src="<?php echo $this->coreWebroot ?>/public/images/icons/email_error.png"/>
+                        Notifications</a>
+                </li>
+            <?php
+            }
+            ?>
+            <li>
+                <a class="resetZoomAction"><img alt=""
+                                                src="<?php echo $this->coreWebroot ?>/public/images/icons/magnifier_zoom_out.png"/>
+                    Reset plot zoom</a>
+            </li>
+            <li>
+                <a class="axesControl"><img alt="" src="<?php echo $this->moduleWebroot ?>/public/images/axes.png"/>
+                    Axes</a>
+            </li>
+            <li>
+                <a class="toggleUnofficialVisibility">
+                    <div class="toggleUnofficialIcon toHide"></div>
+                    <span class="linkText">Hide unofficial submissions</a>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="sideElement viewInfo">
+        <h1>Info</h1>
+
+        <div>Points in range: <span class="infoItem" id="pointCount"></span>
+        </div>
+        <div>Min value: <span class="infoItem" id="minVal"></span></div>
+        <div>Max value: <span class="infoItem" id="maxVal"></span></div>
+    </div>
 </div>
 
 <!-- TEMPLATE: axes control dialog -->
 <div id="axesControlTemplate" style="display: none;">
-  <table class="yValuesTable"><tbody>
-    <tr>
-      <th>Y range:</th><td><input class="yMin" type="text" /></td><td>to</td><td><input class="yMax" type="text" /></td>
-    </tr>
-    <?php
-    if($this->rightTrend)
-      {
-    ?>
-      <tr>
-        <th>Y2 range:</th><td><input class="y2Min" type="text" /></td><td>to</td><td><input class="y2Max" type="text" /></td>
-      </tr>
-    <?php
-      }
-    ?>
-    </tbody></table>
+    <table class="yValuesTable">
+        <tbody>
+        <tr>
+            <th>Y range:</th>
+            <td><input class="yMin" type="text"/></td>
+            <td>to</td>
+            <td><input class="yMax" type="text"/></td>
+        </tr>
+        <?php
+        if ($this->rightTrend) {
+            ?>
+            <tr>
+                <th>Y2 range:</th>
+                <td><input class="y2Min" type="text"/></td>
+                <td>to</td>
+                <td><input class="y2Max" type="text"/></td>
+            </tr>
+        <?php
+        }
+        ?>
+        </tbody>
+    </table>
     <div class="bottomButtons">
-      <input type="button" class="globalButton updateAxes" value="Apply" />
+        <input type="button" class="globalButton updateAxes" value="Apply"/>
     </div>
 </div>
 
 <!-- TEMPLATE: delete trend dialog -->
 <div id="deleteTrendTemplate" style="display: none;">
-  <div class="deleteWarningText">
-    Are you sure you want to delete this trend? All points in the trend will be deleted.
-  </div>
-  <div class="deleteProgressBar"></div>
-  <div class="deleteProgressMessage"></div>
-  <div class="bottomButtonsDelete">
-    <input type="button" class="globalButton deleteYes" value="Yes" />
-    <input type="button" class="globalButton deleteNo" value="No" />
-  </div>
+    <div class="deleteWarningText">
+        Are you sure you want to delete this trend? All points in the trend will be deleted.
+    </div>
+    <div class="deleteProgressBar"></div>
+    <div class="deleteProgressMessage"></div>
+    <div class="bottomButtonsDelete">
+        <input type="button" class="globalButton deleteYes" value="Yes"/>
+        <input type="button" class="globalButton deleteNo" value="No"/>
+    </div>
 </div>

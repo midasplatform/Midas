@@ -20,99 +20,103 @@
 
 /** Base class for the job log model */
 abstract class Sizequota_FolderQuotaModelBase extends Sizequota_AppModel
-  {
-  /** constructor */
-  public function __construct()
+{
+    /** constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'sizequota_folderquota';
-    $this->_daoName = 'FolderQuotaDao';
-    $this->_key = 'folderquota_id';
+        parent::__construct();
+        $this->_name = 'sizequota_folderquota';
+        $this->_daoName = 'FolderQuotaDao';
+        $this->_key = 'folderquota_id';
 
-    $this->_mainData = array(
-      'folderquota_id' => array('type' => MIDAS_DATA),
-      'folder_id' => array('type' => MIDAS_DATA),
-      'quota' => array('type' => MIDAS_DATA),
-      'folder' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Folder', 'parent_column' => 'folder_id', 'child_column' => 'folder_id')
-      );
-    $this->initialize();
+        $this->_mainData = array(
+            'folderquota_id' => array('type' => MIDAS_DATA),
+            'folder_id' => array('type' => MIDAS_DATA),
+            'quota' => array('type' => MIDAS_DATA),
+            'folder' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'Folder',
+                'parent_column' => 'folder_id',
+                'child_column' => 'folder_id',
+            ),
+        );
+        $this->initialize();
     }
 
-  /** Get the quota dao for a particular folder, or return false if none is set */
-  abstract public function getQuota($folder);
+    /** Get the quota dao for a particular folder, or return false if none is set */
+    abstract public function getQuota($folder);
 
-  /** Get the quota in bytes for a particular folder, or return the default if none is set */
-  public function getFolderQuota($folder)
+    /** Get the quota in bytes for a particular folder, or return the default if none is set */
+    public function getFolderQuota($folder)
     {
-    $quotaDao = $this->getQuota($folder);
-    if(!$quotaDao)
-      {
-      $settingModel = MidasLoader::loadModel('Setting');
-      if($folder->getParentId() == -1) //user
-        {
-        $settingName = 'defaultuserquota';
+        $quotaDao = $this->getQuota($folder);
+        if (!$quotaDao) {
+            /** @var SettingModel $settingModel */
+            $settingModel = MidasLoader::loadModel('Setting');
+            if ($folder->getParentId() == -1) { // user
+                $settingName = 'defaultuserquota';
+            } else {
+                $settingName = 'defaultcommunityquota';
+            }
+
+            return $settingModel->getValueByName($settingName, $this->moduleName);
         }
-      else
-        {
-        $settingName = 'defaultcommunityquota';
+
+        return $quotaDao->getQuota();
+    }
+
+    /** Get the quota in bytes for a particular user, or return the default if none is set */
+    public function getUserQuota($user)
+    {
+        $quotaDao = $this->getQuota($user->getFolder());
+        if (!$quotaDao) {
+            /** @var SettingModel $settingModel */
+            $settingModel = MidasLoader::loadModel('Setting');
+
+            return $settingModel->getValueByName('defaultuserquota', $this->moduleName);
         }
-      return $settingModel->getValueByName($settingName, $this->moduleName);
-      }
-    return $quotaDao->getQuota();
+
+        return $quotaDao->getQuota();
     }
 
-  /** Get the quota in bytes for a particular user, or return the default if none is set */
-  public function getUserQuota($user)
+    /** Get the quota in bytes for a particular community, or return the default if none is set */
+    public function getCommunityQuota($community)
     {
-    $quotaDao = $this->getQuota($user->getFolder());
-    if(!$quotaDao)
-      {
-      $settingModel = MidasLoader::loadModel('Setting');
-      return $settingModel->getValueByName('defaultuserquota', $this->moduleName);
-      }
-    return $quotaDao->getQuota();
+        $quotaDao = $this->getQuota($community->getFolder());
+        if (!$quotaDao) {
+            /** @var SettingModel $settingModel */
+            $settingModel = MidasLoader::loadModel('Setting');
+
+            return $settingModel->getValueByName('defaultcommunityquota', $this->moduleName);
+        }
+
+        return $quotaDao->getQuota();
     }
 
-  /** Get the quota in bytes for a particular community, or return the default if none is set */
-  public function getCommunityQuota($community)
+    /**
+     * Set the quota on a folder.  Passing null or false as the quota will delete the entry for that folder.
+     * Returns the saved folder quota dao, or false if it was deleted.
+     */
+    public function setQuota($folder, $quota)
     {
-    $quotaDao = $this->getQuota($community->getFolder());
-    if(!$quotaDao)
-      {
-      $settingModel = MidasLoader::loadModel('Setting');
-      return $settingModel->getValueByName('defaultcommunityquota', $this->moduleName);
-      }
-    return $quotaDao->getQuota();
+        if (!$folder instanceof FolderDao) {
+            throw new Zend_Exception('Should be a folder.');
+        }
+
+        $oldQuota = $this->getQuota($folder);
+        if ($oldQuota !== false) {
+            $this->delete($oldQuota);
+        }
+        if ($quota !== null && $quota !== false) {
+            /** @var Sizequota_FolderQuotaDao $folderQuota */
+            $folderQuota = MidasLoader::newDao('FolderQuotaDao', 'sizequota');
+            $folderQuota->setFolderId($folder->getKey());
+            $folderQuota->setQuota($quota);
+            $this->save($folderQuota);
+
+            return $folderQuota;
+        } else {
+            return false;
+        }
     }
-
-  /**
-   * Set the quota on a folder.  Passing null or false as the quota will delete the entry for that folder.
-   * Returns the saved folder quota dao, or false if it was deleted.
-   */
-  public function setQuota($folder, $quota)
-    {
-    if(!$folder instanceof FolderDao)
-      {
-      throw new Zend_Exception('Should be a folder.');
-      }
-
-    $oldQuota = $this->getQuota($folder);
-    if($oldQuota !== false)
-      {
-      $this->delete($oldQuota);
-      }
-    if($quota !== null && $quota !== false)
-      {
-      $folderQuota = MidasLoader::newDao('FolderQuotaDao', 'sizequota');
-      $folderQuota->setFolderId($folder->getKey());
-      $folderQuota->setQuota($quota);
-      $this->save($folderQuota);
-
-      return $folderQuota;
-      }
-    else
-      {
-      return false;
-      }
-    }
-  }
+}

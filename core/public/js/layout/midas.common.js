@@ -11,6 +11,7 @@ midas.fixedSidebar = false;
  */
 
 $(document).ready(function () {
+    'use strict';
     // Right-sidebar view actions hover style (must be done in javascript due to parent refs)
     $('div.viewAction li a').hover(function () {
         $(this).parents('li').css('background-color', '#E5E5E5');
@@ -31,6 +32,7 @@ $(document).ready(function () {
  * Requires layout to work.
  */
 $(window).scroll(function () {
+    'use strict';
     var sidebar = $('div.viewSideBar');
     if (sidebar.length === 0) {
         return;
@@ -59,7 +61,7 @@ $(window).scroll(function () {
  * Format a number of bytes to a human readable string.
  */
 midas.formatBytes = function (sizeBytes) {
-
+    'use strict';
     // If it's > 1GB, report to two decimal places, otherwise just one.
     var precision = sizeBytes > 1073741824 ? 2 : 1;
     for (var i = 0; sizeBytes > 1024; i += 1) {
@@ -71,6 +73,7 @@ midas.formatBytes = function (sizeBytes) {
 
 // trim name by the number of character
 function sliceFileName(name, nchar) {
+    'use strict';
     if (name.length > nchar) {
         var toremove = name.length - nchar;
         if (toremove < 13) {
@@ -84,6 +87,7 @@ function sliceFileName(name, nchar) {
 
 // trim name by the number of pixel
 function trimName(name, padding) {
+    'use strict';
     if (name.length * 7 + padding > 350) {
         var toremove = (name.length * 7 + padding - 350) / 8;
         if (toremove < 13) {

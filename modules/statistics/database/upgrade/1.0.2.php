@@ -18,15 +18,12 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Adds user agent to the download record
- */
+/** Upgrade the statistics module to version 1.0.2. */
 class Statistics_Upgrade_1_0_2 extends MIDASUpgrade
-  {
-  /** Mysql upgrade */
-  public function mysql()
+{
+    /** Upgrade a MySQL database. */
+    public function mysql()
     {
-    $this->db->query("ALTER TABLE `statistics_download`
-                      ADD COLUMN `user_agent` VARCHAR(255) DEFAULT ''");
+        $this->db->query("ALTER TABLE `statistics_download` ADD COLUMN `user_agent` varchar(255);");
     }
-  }
+}

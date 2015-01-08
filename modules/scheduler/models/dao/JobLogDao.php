@@ -18,9 +18,26 @@
  limitations under the License.
 =========================================================================*/
 
-/** Job log DAO for the scheduler module */
+/**
+ * Job log DAO for the scheduler module.
+ *
+ * @method int getLogId()
+ * @method void setLogId(int $logId)
+ * @method int getJobId()
+ * @method void setJobId(int $jobId)
+ * @method string getDate()
+ * @method void setDate(string $date)
+ * @method string getLog()
+ * @method void setLog(string $log)
+ * @method Scheduler_JobDao getJob()
+ * @method void setJob(Scheduler_JobDao $job)
+ * @package Modules\Scheduler\DAO
+ */
 class Scheduler_JobLogDao extends Scheduler_AppDao
-  {
-  public $_model = 'JobLog';
-  public $_module = 'scheduler';
-  }
+{
+    /** @var string */
+    public $_model = 'JobLog';
+
+    /** @var string */
+    public $_module = 'scheduler';
+}

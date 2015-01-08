@@ -22,84 +22,106 @@
  * Scalar Model Base
  */
 abstract class Tracker_ScalarModelBase extends Tracker_AppModel
-  {
-  /** constructor*/
-  public function __construct()
+{
+    /** constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'tracker_scalar';
-    $this->_key = 'scalar_id';
-    $this->_mainData = array(
-        'scalar_id' => array('type' => MIDAS_DATA),
-        'trend_id' => array('type' => MIDAS_DATA),
-        'user_id' => array('type' => MIDAS_DATA),
-        'official' => array('type' => MIDAS_DATA),
-        'build_results_url' => array('type' => MIDAS_DATA),
-        'params' => array('type' => MIDAS_DATA),
-        'extra_urls' => array('type' => MIDAS_DATA),
-        'branch' => array('type' => MIDAS_DATA),
-        'submit_time' => array('type' => MIDAS_DATA),
-        'value' => array('type' => MIDAS_DATA),
-        'producer_revision' => array('type' => MIDAS_DATA),
-        'trend' => array('type' => MIDAS_MANY_TO_ONE,
-                         'model' => 'Trend',
-                         'module' => $this->moduleName,
-                         'parent_column' => 'trend_id',
-                         'child_column' => 'trend_id'),
-        'user' => array('type' => MIDAS_MANY_TO_ONE,
-                        'model' => 'User',
-                        'parent_column' => 'user_id',
-                        'child_column' => 'user_id')
-      );
-    $this->initialize();
+        parent::__construct();
+        $this->_name = 'tracker_scalar';
+        $this->_key = 'scalar_id';
+        $this->_mainData = array(
+            'scalar_id' => array('type' => MIDAS_DATA),
+            'trend_id' => array('type' => MIDAS_DATA),
+            'user_id' => array('type' => MIDAS_DATA),
+            'official' => array('type' => MIDAS_DATA),
+            'build_results_url' => array('type' => MIDAS_DATA),
+            'params' => array('type' => MIDAS_DATA),
+            'extra_urls' => array('type' => MIDAS_DATA),
+            'branch' => array('type' => MIDAS_DATA),
+            'submit_time' => array('type' => MIDAS_DATA),
+            'value' => array('type' => MIDAS_DATA),
+            'producer_revision' => array('type' => MIDAS_DATA),
+            'trend' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'Trend',
+                'module' => $this->moduleName,
+                'parent_column' => 'trend_id',
+                'child_column' => 'trend_id',
+            ),
+            'user' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'User',
+                'parent_column' => 'user_id',
+                'child_column' => 'user_id',
+            ),
+        );
+        $this->initialize();
     }
 
-  abstract public function associateItem($scalar, $item, $label);
-  abstract public function getAssociatedItems($scalar);
-  abstract public function getOtherScalarsFromSubmission($scalar);
-  abstract public function getOtherValuesFromSubmission($scalar);
-  abstract public function getByTrendAndTimestamp($trendId, $timestamp, $user = null);
-  abstract public function getDistinctBranches();
+    /** Associate item */
+    abstract public function associateItem($scalar, $item, $label);
 
-  /**
-   * Add a new scalar point to the trend.  If overwrite is true, and a scalar
-   * already exists on the trend with the same submit time and user, this will replace that scalar value.
-   */
-  public function addToTrend($trend, $submitTime, $producerRevision, $value, $user,
-                             $overwrite = true, $official = true, $buildResultsUrl = '', $branch = '',
-                             $params = null, $extraUrls = null)
-    {
-    if($overwrite)
-      {
-      $dao = $this->getByTrendAndTimestamp($trend->getKey(), $submitTime, $user->getKey());
-      if($dao)
-        {
-        $this->delete($dao);
+    /** Get associated items */
+    abstract public function getAssociatedItems($scalar);
+
+    /** Get other scalars from submission */
+    abstract public function getOtherScalarsFromSubmission($scalar);
+
+    /** Get other values from submission */
+    abstract public function getOtherValuesFromSubmission($scalar);
+
+    /** Get by trend and timestamp */
+    abstract public function getByTrendAndTimestamp($trendId, $timestamp, $user = null);
+
+    /** Get distinct branches */
+    abstract public function getDistinctBranches();
+
+    /**
+     * Add a new scalar point to the trend.  If overwrite is true, and a scalar
+     * already exists on the trend with the same submit time and user, this will replace that scalar value.
+     */
+    public function addToTrend(
+        $trend,
+        $submitTime,
+        $producerRevision,
+        $value,
+        $user,
+        $overwrite = true,
+        $official = true,
+        $buildResultsUrl = '',
+        $branch = '',
+        $params = null,
+        $extraUrls = null
+    ) {
+        if ($overwrite) {
+            $dao = $this->getByTrendAndTimestamp($trend->getKey(), $submitTime, $user->getKey());
+            if ($dao) {
+                $this->delete($dao);
+            }
         }
-      }
 
-    if(is_array($params))
-      {
-      $params = json_encode($params);
-      }
-    if(is_array($extraUrls))
-      {
-      $extraUrls = json_encode($extraUrls);
-      }
+        if (is_array($params)) {
+            $params = json_encode($params);
+        }
+        if (is_array($extraUrls)) {
+            $extraUrls = json_encode($extraUrls);
+        }
 
-    $scalar = MidasLoader::newDao('ScalarDao', $this->moduleName);
-    $scalar->setTrendId($trend->getKey());
-    $scalar->setSubmitTime($submitTime);
-    $scalar->setProducerRevision($producerRevision);
-    $scalar->setValue($value);
-    $scalar->setUserId($user instanceof UserDao ? $user->getKey() : -1);
-    $scalar->setOfficial($official ? 1 : 0);
-    $scalar->setBuildResultsUrl($buildResultsUrl);
-    $scalar->setBranch(trim($branch));
-    $scalar->setParams($params);
-    $scalar->setExtraUrls($extraUrls);
+        /** @var Tracker_ScalarDao $scalar */
+        $scalar = MidasLoader::newDao('ScalarDao', $this->moduleName);
+        $scalar->setTrendId($trend->getKey());
+        $scalar->setSubmitTime($submitTime);
+        $scalar->setProducerRevision($producerRevision);
+        $scalar->setValue($value);
+        $scalar->setUserId($user instanceof UserDao ? $user->getKey() : -1);
+        $scalar->setOfficial($official ? 1 : 0);
+        $scalar->setBuildResultsUrl($buildResultsUrl);
+        $scalar->setBranch(trim($branch));
+        $scalar->setParams($params);
+        $scalar->setExtraUrls($extraUrls);
 
-    $this->save($scalar);
-    return $scalar;
+        $this->save($scalar);
+
+        return $scalar;
     }
-  }
+}

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <dataset>
-
-	<token token_id="1000" userapi_id="1000" token="cleanTable" expiration_date="2011-01-27 12:09:02" />
-	<userapi userapi_id="1000" user_id="1000" apikey="cleanTable" application_name="cleanTable"
-		token_expiration_time="100" creation_date="2011-01-27 12:09:02" />
-
+    <token token_id="1000" userapi_id="1000" token="cleanTable" expiration_date="2011-01-27 12:09:02"/>
+    <userapi userapi_id="1000" user_id="1000" apikey="cleanTable" application_name="cleanTable"
+        token_expiration_time="100" creation_date="2011-01-27 12:09:02"/>
 </dataset>
-

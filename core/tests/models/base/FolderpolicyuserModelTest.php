@@ -17,28 +17,27 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** FolderpolicyuserModelTest*/
-class FolderpolicyuserModelTest extends DatabaseTestCase
-  {
-  /** init tests*/
-  public function setUp()
+
+/** FolderpolicyuserModelTest */
+class Core_FolderpolicyuserModelTest extends DatabaseTestCase
+{
+    /** init tests */
+    public function setUp()
     {
-    $this->setupDatabase(array());
-    $this->_models = array(
-      'Folderpolicyuser'
-    );
-    $this->_daos = array();
-    parent::setUp();
+        $this->setupDatabase(array());
+        $this->_models = array('Folderpolicyuser');
+        $this->_daos = array();
+        parent::setUp();
     }
 
-  /** testCreatePolicyAndGetPolicy*/
-  public function testCreatePolicyAndGetPolicy()
+    /** testCreatePolicyAndGetPolicy */
+    public function testCreatePolicyAndGetPolicy()
     {
-    $folderFile = $this->loadData('Folder', 'default');
-    $usersFile = $this->loadData('User', 'default');
-    $policy = $this->Folderpolicyuser->createPolicy($usersFile[0], $folderFile[5], 1);
-    $this->assertEquals(true, $policy->saved);
-    $policy = $this->Folderpolicyuser->getPolicy($usersFile[0], $folderFile[5]);
-    $this->assertNotEquals(false, $policy);
+        $folderFile = $this->loadData('Folder', 'default');
+        $usersFile = $this->loadData('User', 'default');
+        $policy = $this->Folderpolicyuser->createPolicy($usersFile[0], $folderFile[5], 1);
+        $this->assertEquals(true, $policy->saved);
+        $policy = $this->Folderpolicyuser->getPolicy($usersFile[0], $folderFile[5]);
+        $this->assertNotEquals(false, $policy);
     }
-  }
+}

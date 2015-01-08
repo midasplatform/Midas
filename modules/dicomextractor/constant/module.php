@@ -17,3 +17,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
+define('DICOMEXTRACTOR_DCM2XML_COMMAND_KEY', 'dcm2xml_command');
+define('DICOMEXTRACTOR_DCM2XML_COMMAND_DEFAULT_VALUE', 'dcm2xml');
+define('DICOMEXTRACTOR_DCMJ2PNM_COMMAND_KEY', 'dcmj2pnm_command');
+define('DICOMEXTRACTOR_DCMJ2PNM_COMMAND_DEFAULT_VALUE', 'dcmj2pnm --write-jpeg --min-max-window');
+define('DICOMEXTRACTOR_DCMFTEST_COMMAND_KEY', 'dcmftest_command');
+define('DICOMEXTRACTOR_DCMFTEST_COMMAND_DEFAULT_VALUE', 'dcmftest');
+define('DICOMEXTRACTOR_DCMDICTPATH_KEY', 'dcmdictpath');
+define('DICOMEXTRACTOR_DCMDICTPATH_DEFAULT_VALUE', '');

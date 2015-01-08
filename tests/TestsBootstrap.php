@@ -19,26 +19,19 @@
 =========================================================================*/
 
 error_reporting(E_ALL | E_STRICT);
-ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 
-define('APPLICATION_PATH', realpath(dirname(__FILE__).'/../core'));
+define('BASE_PATH', realpath(dirname(__FILE__).'/../'));
 define('APPLICATION_ENV', 'testing');
-define('LIBRARY_PATH', realpath(dirname(__FILE__).'/../library'));
-define('TESTS_PATH', realpath(dirname(__FILE__)));
-define('BASE_PATH', realpath(dirname(__FILE__)).'/../');
+define('APPLICATION_PATH', BASE_PATH.'/core');
+define('LIBRARY_PATH', BASE_PATH.'/library');
+define('TESTS_PATH', BASE_PATH.'/tests');
 
-$includePaths = array(LIBRARY_PATH, get_include_path());
-set_include_path(implode(PATH_SEPARATOR, $includePaths));
+require_once BASE_PATH.'/vendor/autoload.php';
+require_once BASE_PATH.'/core/include.php';
 
-require_once dirname(__FILE__).'/../library/Zend/Loader/Autoloader.php';
-
-$loader = Zend_Loader_Autoloader::getInstance();
-$loader->setFallbackAutoloader(true);
-$loader->suppressNotFoundWarnings(false);
-
-require_once(BASE_PATH.'/core/include.php');
-define('START_TIME', microtime(true));
+date_default_timezone_set('UTC');
 
 Zend_Session::$_unitTestEnabled = true;
 Zend_Session::start();
@@ -55,48 +48,41 @@ Zend_Registry::set('configGlobal', $configGlobal);
 $config = new Zend_Config_Ini(APPLICATION_CONFIG, 'testing');
 Zend_Registry::set('config', $config);
 
-// InitDatabase
-if(file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini'))
-  {
-  $configDatabase = new Zend_Config_Ini(BASE_PATH.'/tests/configs/lock.mysql.ini', 'testing');
-  }
-else if(file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini'))
-  {
-  $configDatabase = new Zend_Config_Ini(BASE_PATH.'/tests/configs/lock.pgsql.ini', 'testing');
-  }
-else
-  {
-  echo 'Error';
-  exit;
-  }
+$databaseIni = getenv('MIDAS_DATABASE_INI');
 
-if(empty($configDatabase->database->params->driver_options))
-  {
-  $driverOptions = array();
-  }
-else
-  {
-  $driverOptions = $configDatabase->database->params->driver_options->toArray();
-  }
+if (!file_exists($databaseIni)) {
+    if (file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini')) {
+        $databaseIni = BASE_PATH.'/tests/configs/lock.mysql.ini';
+    } elseif (file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini')) {
+        $databaseIni = BASE_PATH.'/tests/configs/lock.pgsql.ini';
+    } elseif (file_exists(BASE_PATH.'/tests/configs/lock.sqlite.ini')) {
+        $databaseIni = BASE_PATH.'/tests/configs/lock.sqlite.ini';
+    } else {
+        echo 'Error: database ini file not found.';
+        exit(1);
+    }
+}
+
+$configDatabase = new Zend_Config_Ini($databaseIni, 'testing');
+
+if (empty($configDatabase->database->params->driver_options)) {
+    $driverOptions = array();
+} else {
+    $driverOptions = $configDatabase->database->params->driver_options->toArray();
+}
 $params = array(
-  'dbname' => $configDatabase->database->params->dbname,
-  'username' => $configDatabase->database->params->username,
-  'password' => $configDatabase->database->params->password,
-  'driver_options' => $driverOptions);
-if(empty($configDatabase->database->params->unix_socket))
-  {
-  $params['host'] = $configDatabase->database->params->host;
-  $params['port'] = $configDatabase->database->params->port;
-  }
-else
-  {
-  $params['unix_socket'] = $configDatabase->database->params->unix_socket;
-  }
+    'dbname' => $configDatabase->database->params->dbname,
+    'username' => $configDatabase->database->params->username,
+    'password' => $configDatabase->database->params->password,
+    'driver_options' => $driverOptions,
+);
+if (empty($configDatabase->database->params->unix_socket)) {
+    $params['host'] = $configDatabase->database->params->host;
+    $params['port'] = $configDatabase->database->params->port;
+} else {
+    $params['unix_socket'] = $configDatabase->database->params->unix_socket;
+}
 $db = Zend_Db::factory($configDatabase->database->adapter, $params);
-if($configDatabase->database->profiler == '1')
-  {
-  $db->getProfiler()->setEnabled(true);
-  }
 Zend_Db_Table::setDefaultAdapter($db);
 Zend_Registry::set('dbAdapter', $db);
 Zend_Registry::set('configDatabase', $configDatabase);
@@ -108,56 +94,50 @@ $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
 
 $upgradeComponent->initUpgrade('core', $db, $dbtype);
 $version = Zend_Registry::get('configDatabase')->version;
-if(!isset($version))
-  {
-  if(Zend_Registry::get('configDatabase')->database->adapter == 'PDO_MYSQL')
-    {
-    $type = 'mysql';
+if (!isset($version)) {
+    if (Zend_Registry::get('configDatabase')->database->adapter === 'PDO_MYSQL'
+    ) {
+        $type = 'mysql';
+    } elseif (Zend_Registry::get('configDatabase')->database->adapter === 'PDO_PGSQL'
+    ) {
+        $type = 'pgsql';
+    } elseif (Zend_Registry::get('configDatabase')->database->adapter === 'PDO_SQLITE'
+    ) {
+        $type = 'sqlite';
+    } else {
+        echo 'Error';
+        exit;
     }
-  else
-    {
-    $type = 'pgsql';
-    }
-  $MyDirectory = opendir(BASE_PATH."/core/database/".$type);
-  while($Entry = @readdir($MyDirectory))
-    {
-    if(strpos($Entry, '.sql') != false)
-      {
-      $sqlFile = BASE_PATH."/core/database/".$type."/".$Entry;
-      }
+    $MyDirectory = opendir(BASE_PATH."/core/database/".$type);
+    while ($Entry = @readdir($MyDirectory)) {
+        if (strpos($Entry, '.sql') != false) {
+            $sqlFile = BASE_PATH."/core/database/".$type."/".$Entry;
+        }
     }
 
-  $version = str_replace('.sql', '', basename($sqlFile));
-  }
+    $version = str_replace('.sql', '', basename($sqlFile));
+}
 $upgradeComponent->upgrade($version, true);
 
-$logger = Zend_Log::factory(array(
-  array(
-    'writerName' => 'Stream',
-    'writerParams' => array(
-      'stream' => LOGS_PATH.'/testing.log',
-    ),
-    'filterName' => 'Priority',
-    'filterParams' => array(
-      'priority' => Zend_Log::INFO,
-    ),
-  ),
-  array(
-    'writerName' => 'Firebug',
-    'filterName' => 'Priority',
-    'filterParams' => array(
-      'priority' => Zend_Log::INFO,
-    ),
-  ),
-));
+$logger = Zend_Log::factory(
+    array(
+        array(
+            'writerName' => 'Stream',
+            'writerParams' => array('stream' => LOGS_PATH.'/testing.log'),
+            'filterName' => 'Priority',
+            'filterParams' => array('priority' => Zend_Log::INFO),
+        ),
+    )
+);
 
 Zend_Registry::set('logger', $logger);
 
-if(file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini'))
-  {
-  rename(BASE_PATH.'/tests/configs/lock.pgsql.ini', BASE_PATH.'/tests/configs/pgsql.ini');
-  }
-if(file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini'))
-  {
-  rename(BASE_PATH.'/tests/configs/lock.mysql.ini', BASE_PATH.'/tests/configs/mysql.ini');
-  }
+if (file_exists(BASE_PATH.'/tests/configs/lock.mysql.ini')) {
+    rename(BASE_PATH.'/tests/configs/lock.mysql.ini', BASE_PATH.'/tests/configs/mysql.ini');
+}
+if (file_exists(BASE_PATH.'/tests/configs/lock.pgsql.ini')) {
+    rename(BASE_PATH.'/tests/configs/lock.pgsql.ini', BASE_PATH.'/tests/configs/pgsql.ini');
+}
+if (file_exists(BASE_PATH.'/tests/configs/lock.sqlite.ini')) {
+    rename(BASE_PATH.'/tests/configs/lock.sqlite.ini', BASE_PATH.'/tests/configs/sqlite.ini');
+}

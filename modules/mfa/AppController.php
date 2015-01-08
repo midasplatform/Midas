@@ -20,6 +20,6 @@
 
 /** App controller for the mfa module */
 class Mfa_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'mfa';
-  }
+{
+    public $moduleName = 'mfa';
+}

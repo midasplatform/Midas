@@ -20,6 +20,6 @@
 
 /** App controller for the dicomextractor module */
 class Dicomextractor_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'dicomextractor';
-  }
+{
+    public $moduleName = 'dicomextractor';
+}

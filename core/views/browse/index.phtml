@@ -18,78 +18,86 @@
  limitations under the License.
 =========================================================================*/
 
-$this->headScript()->appendFile($this->coreWebroot . '/public/js/jquery/jquery.form.js');
+$this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/browse/browse.index.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.browser.js');
 ?>
 
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/common/common.browser.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/browse/browse.index.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/common/common.browser.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/browse/browse.index.css"/>
 <div class="viewMain">
-  <h3 class='itemSubTitle'> <?php echo $this->t('Most Popular Items'); ?></h3>
-  <div class="itemList">
-  <?php
-  if(!empty($this->items))
-    {
-    foreach($this->items as $item)
-      {
-      ?>
-      <div class="itemBlock">
-      <a class="itemTitle" qtip="<?php echo str_replace('"', "'", $item->getDescription())?>" href="<?php echo $this->webroot?>/item/<?php echo $item->getItemId(); ?>"><?php echo $item->getName(); ?></a>
-      <div class="itemStats"><?php echo $item->getView(); ?> views, <?php echo $item->getDownload(); ?> downloads</div>
-      </div>
-  <?php
-      }
-    }
-  ?>
-  </div>
+    <h3 class='itemSubTitle'> <?php echo $this->t('Most Popular Items'); ?></h3>
+
+    <div class="itemList">
+        <?php
+        if (!empty($this->items)) {
+            foreach ($this->items as $item) {
+                ?>
+                <div class="itemBlock">
+                    <a class="itemTitle" qtip="<?php echo str_replace(
+                        '"',
+                        "'",
+                        $this->escape($item->getDescription())
+                    ) ?>" href="<?php echo $this->webroot ?>/item/<?php echo $this->escape($item->getItemId(
+                    )); ?>"><?php echo $this->escape($item->getName()); ?></a>
+
+                    <div class="itemStats"><?php echo $this->escape($item->getView()); ?> views, <?php echo $this->escape($item->getDownload()); ?>
+                        downloads
+                    </div>
+                </div>
+            <?php
+            }
+        }
+        ?>
+    </div>
 
 </div>
 
 <div class="viewSideBar">
-  <div class="sideElementFirst viewAction" >
-    <h1>Actions</h1>
-    <ul>
-      <li>
+    <div class="sideElementFirst viewAction">
+        <h1>Actions</h1>
+        <ul>
+            <li>
 
-      </li>
-    </ul>
-  </div>
-  <div class="sideElement viewSelected" >
-    <h1><?php echo $this->t('Selected')?></h1>
-    <span></span>
-  </div>
-  <div class="sideElementLast viewInfo" >
-    <h1>Info</h1>
-    <img class="infoLoading" style="display:none;" alt="" src="<?php echo $this->coreWebroot?>/public/images/icons/loading.gif"/>
-    <div class="ajaxInfoElement">
+            </li>
+        </ul>
     </div>
-  </div>
+    <div class="sideElement viewSelected">
+        <h1><?php echo $this->t('Selected') ?></h1>
+        <span></span>
+    </div>
+    <div class="sideElementLast viewInfo">
+        <h1>Info</h1>
+        <img class="infoLoading" style="display:none;" alt=""
+             src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>
 
-  <div class="defaultSide" >
-    <?php
-    if(!empty($this->itemThumbnails))
-      {
-      echo '<div class="sideElementFirst feedThumbnail">';
-      echo '<h1>Thumbnails</h1>';
-      foreach($this->itemThumbnails as $item)
-        {
-        echo "<a href='{$this->webroot}/item/{$item->getKey()}'>";
-        echo "<img qtip='".$item->getName()."' src='{$this->webroot}/item/thumbnail?itemId={$item->getKey()}' alt=''/>";
-        echo "</a>";
+        <div class="ajaxInfoElement">
+        </div>
+    </div>
+
+    <div class="defaultSide">
+        <?php
+        if (!empty($this->itemThumbnails)) {
+            echo '<div class="sideElementFirst feedThumbnail">';
+            echo '<h1>Thumbnails</h1>';
+            foreach ($this->itemThumbnails as $item) {
+                echo "<a href='{$this->webroot}/item/{$this->escape($item->getKey())}'>";
+                echo "<img qtip='".$this->escape($item->getName())."' src='{$this->webroot}/item/thumbnail?itemId={$this->escape($item->getKey(
+                    ))}' alt=''/>";
+                echo "</a>";
+            }
+            echo '</div>';
         }
-      echo '</div>';
-      }
-      ?>
-    <div class="sideElementLast feedStats">
-      <h1>Stats</h1>
-      <?php
-      echo "<ul>";
-      echo "  <li>{$this->nUsers} user".(($this->nUsers>1)?'s':'')."</li>";
-      echo "  <li>{$this->nCommunities} ".(($this->nCommunities>1)?'communities':'community')."</li>";
-      echo "  <li>{$this->nItems} item".(($this->nItems>1)?'s':'')."</li>";
-      echo "</ul>";
-      ?>
+        ?>
+        <div class="sideElementLast feedStats">
+            <h1>Stats</h1>
+            <?php
+            echo "<ul>";
+            echo "  <li>{$this->escape($this->nUsers)} user".(($this->nUsers > 1) ? 's' : '')."</li>";
+            echo "  <li>{$this->escape($this->nCommunities)} ".(($this->nCommunities > 1) ? 'communities' : 'community')."</li>";
+            echo "  <li>{$this->escape($this->nItems)} item".(($this->nItems > 1) ? 's' : '')."</li>";
+            echo "</ul>";
+            ?>
+        </div>
     </div>
-  </div>
 </div>

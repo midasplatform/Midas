@@ -20,26 +20,26 @@
 
 /** Component for performing threshold notifications */
 class Tracker_ThresholdNotificationComponent extends AppComponent
-  {
-  /**
-   * Add scheduled tasks for emailing users that the threshold was crossed
-   */
-  public function scheduleNotifications($scalar, $notifications)
+{
+    /**
+     * Add scheduled tasks for emailing users that the threshold was crossed
+     */
+    public function scheduleNotifications($scalar, $notifications)
     {
-    $jobModel = MidasLoader::loadModel('Job', 'scheduler');
-    foreach($notifications as $notification)
-      {
-      $job = MidasLoader::newDao('JobDao', 'scheduler');
-      $job->setTask('TASK_TRACKER_SEND_THRESHOLD_NOTIFICATION');
-      $job->setPriority(1);
-      $job->setRunOnlyOnce(1);
-      $job->setFireTime(date('Y-m-j G:i:s'));
-      $job->setTimeInterval(0);
-      $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
-      $job->setCreatorId($notification->getRecipientId());
-      $job->setParams(JsonComponent::encode(array('notification' => $notification,
-                                                  'scalar' => $scalar)));
-      $jobModel->save($job);
-      }
+        /** @var Scheduler_JobModel $jobModel */
+        $jobModel = MidasLoader::loadModel('Job', 'scheduler');
+        foreach ($notifications as $notification) {
+            /** @var Scheduler_JobDao $job */
+            $job = MidasLoader::newDao('JobDao', 'scheduler');
+            $job->setTask('TASK_TRACKER_SEND_THRESHOLD_NOTIFICATION');
+            $job->setPriority(1);
+            $job->setRunOnlyOnce(1);
+            $job->setFireTime(date('Y-m-d H:i:s'));
+            $job->setTimeInterval(0);
+            $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
+            $job->setCreatorId($notification->getRecipientId());
+            $job->setParams(JsonComponent::encode(array('notification' => $notification, 'scalar' => $scalar)));
+            $jobModel->save($job);
+        }
     }
-  } // end class
+}

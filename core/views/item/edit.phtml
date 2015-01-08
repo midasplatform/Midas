@@ -19,28 +19,31 @@
 =========================================================================*/
 ?>
 
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/item/item.edit.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/item/item.edit.css"/>
 
-<form id="editItemForm" class="genericForm" method="<?php echo $this->form['method'];?>" action="<?php echo $this->form['action'];?>">
-   <input type="hidden" name="itemId" value="<?php echo $this->itemDao->getKey(); ?>"/>
-   <div class="updateBitstreamNameNotice" style="display:<?php echo $this->displayUpdateBitstream;?>">
-     The latest revision of this item contains only one bitstream.
-     Check the checkbox below if you want this bitstream's name to change to the name of the item.<br/><br/>
-     <input type="checkbox" name="updateBitstreamName" value="updateBitstreamName"/> Update bitstream's name to keep it same as item's name.
-   </div>
-      <div>
+<form id="editItemForm" class="genericForm" method="<?php echo $this->form['method']; ?>"
+      action="<?php echo $this->form['action']; ?>">
+    <input type="hidden" name="itemId" value="<?php echo $this->escape($this->itemDao->getKey()); ?>"/>
+
+    <div class="updateBitstreamNameNotice" style="display:<?php echo $this->displayUpdateBitstream; ?>">
+        The latest revision of this item contains only one bitstream.
+        Check the checkbox below if you want this bitstream's name to change to the name of the item.<br/><br/>
+        <input type="checkbox" name="updateBitstreamName" value="updateBitstreamName"/> Update bitstream's name to keep
+        it same as item's name.
+    </div>
+    <div>
         <label for="name"><?php echo $this->t('Name'); ?></label>
         <?php echo $this->form['name']; ?>
-      </div>
-      <div>
+    </div>
+    <div>
         <label for="description"><?php echo $this->t('Description'); ?></label>
         <?php echo $this->form['description']; ?>
-      </div>
-      <div>
+    </div>
+    <div>
         <label for="license"><?php echo $this->t('License'); ?></label><br/>
         <?php echo $this->element('license'); ?>
-      </div>
-      <div>
-        <?php echo $this->form['submit']?>
-      </div>
+    </div>
+    <div>
+        <?php echo $this->form['submit'] ?>
+    </div>
 </form>

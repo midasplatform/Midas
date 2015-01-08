@@ -18,45 +18,49 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<script type="text/javascript" src="<?php echo $this->coreWebroot?>/public/js/jquery/jquery.form.js"></script>
-<script type="text/javascript" src="<?php echo $this->moduleWebroot?>/public/js/trend/trend.notify.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot ?>/public/js/jquery/jquery.form.js"></script>
+<script type="text/javascript" src="<?php echo $this->moduleWebroot ?>/public/js/trend/trend.notify.js"></script>
 
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot?>/public/css/trend/trend.notify.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/trend/trend.notify.css"/>
 
-<form id="thresholdNotifyForm" class="genericForm" method="POST" action="<?php echo $this->webroot?>/tracker/trend/notifysubmit">
-  <div><input type="radio" id="noNotify" name="doNotify" value="no" />Do not send me emails for this trend</div>
-  <div><input type="radio" id="yesNotify" name="doNotify" value="yes" />Send me an email alert</div>
-  <div class="thresholdInfoContainer">
-    When submitted value is
-    <select name="operator" id="operatorSelect">
-      <option value="&gt;">&gt;</option>
-      <option value="&lt;">&lt;</option>
-      <option value="&gt;=">&gt;=</option>
-      <option value="&lt;=">&lt;=</option>
-    </select>
-    <input type="text" class="thresholdValue" name="value"
-    <?php
-    if($this->setting)
-      {
-      echo ' value="'.$this->setting->getValue().'"';
-      }
-    ?>
-    />
-  </div>
-  <div class="registeredEmail">
-  Registered email: <?php echo $this->userDao->getEmail(); ?>
-  </div>
-  <div class="bottomButtons">
-    <input type="submit" value="Save" />
-  </div>
-  <input type="hidden" name="trendId" value="<?php echo $this->trend->getKey();?>" />
+<form id="thresholdNotifyForm" class="genericForm" method="POST"
+      action="<?php echo $this->webroot ?>/tracker/trend/notifysubmit">
+    <div>
+        <input type="radio" id="noNotify" name="doNotify" value="no"/>Do not send me emails for this trend
+    </div>
+    <div>
+        <input type="radio" id="yesNotify" name="doNotify" value="yes"/>Send me an email alert
+    </div>
+    <div class="thresholdInfoContainer">
+        When submitted value is
+        <select name="operator" id="operatorSelect">
+            <option value="&gt;">&gt;</option>
+            <option value="&lt;">&lt;</option>
+            <option value="&gt;=">&gt;=</option>
+            <option value="&lt;=">&lt;=</option>
+        </select>
+        <input type="text" class="thresholdValue" name="value"
+            <?php
+            if ($this->setting) {
+                echo ' value="'.$this->escape($this->setting->getValue()).'"';
+            }
+            ?>
+            />
+    </div>
+    <div class="registeredEmail">
+        Registered email: <?php echo $this->escape($this->userDao->getEmail()); ?>
+    </div>
+    <div class="bottomButtons">
+        <input type="submit" value="Save"/>
+    </div>
+    <input type="hidden" name="trendId" value="<?php echo $this->escape($this->trend->getKey()); ?>"/>
 </form>
 
 <div style="display: none;" id="settingInfo">
-  <?php
-  if($this->setting)
-    {
-    echo '{"id": "'.$this->setting->getKey().'", "value": '.$this->setting->getValue().', "operator": "'.$this->setting->getComparison().'"}';
+    <?php
+    if ($this->setting) {
+        echo '{"id": "'.$this->escape($this->setting->getKey()).'", "value": '.$this->escape($this->setting->getValue(
+            )).', "operator": "'.$this->escape($this->setting->getComparison()).'"}';
     }
-  ?>
+    ?>
 </div>

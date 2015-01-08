@@ -22,7 +22,7 @@
  * Trend DAO
  */
 class Tracker_TrendDao extends Tracker_AppDao
-  {
-  public $_model = 'Trend';
-  public $_module = 'tracker';
-  }
+{
+    public $_model = 'Trend';
+    public $_module = 'tracker';
+}

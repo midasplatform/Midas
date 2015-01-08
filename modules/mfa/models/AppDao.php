@@ -18,8 +18,13 @@
  limitations under the License.
 =========================================================================*/
 
-/** Base DAO class for MFA module */
+/**
+ * Generic DAO class for the mfa module.
+ *
+ * @package Modules\Mfa\DAO
+ */
 class Mfa_AppDao extends MIDAS_GlobalDao
-  {
-  public $moduleName = 'mfa';
-  }
+{
+    /** @var string */
+    public $moduleName = 'mfa';
+}

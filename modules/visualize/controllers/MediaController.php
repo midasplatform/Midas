@@ -18,43 +18,38 @@
  limitations under the License.
 =========================================================================*/
 
-/** Media Controller*/
+/** Media Controller */
 class Visualize_MediaController extends Visualize_AppController
-  {
-  public $_models = array('Item', 'ItemRevision', 'Bitstream');
-  /** index */
-  public function indexAction()
+{
+    public $_models = array('Item', 'ItemRevision', 'Bitstream');
+
+    /** index */
+    public function indexAction()
     {
-    $this->disableLayout();
-    $itemid = $this->getParam('itemId');
-    $item = $this->Item->load($itemid);
+        $this->disableLayout();
+        $itemid = $this->getParam('itemId');
+        $item = $this->Item->load($itemid);
 
-    if($item === false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
-      {
-      throw new Zend_Exception("This item doesn't exist  or you don't have the permissions.");
-      }
+        if ($item === false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ)
+        ) {
+            throw new Zend_Exception("This item doesn't exist  or you don't have the permissions.");
+        }
 
-    $revision = $this->Item->getLastRevision($item);
-    $bitstreams = $revision->getBitstreams();
-    if(count($bitstreams) != 1)
-      {
-      throw new Zend_Exception('Error');
-      }
-    $this->bistream = $bitstreams[0];
+        $revision = $this->Item->getLastRevision($item);
+        $bitstreams = $revision->getBitstreams();
+        if (count($bitstreams) != 1) {
+            throw new Zend_Exception('Error');
+        }
+        $this->bistream = $bitstreams[0];
 
-    $ext = strtolower(substr(strrchr($bitstreams[0]->getName(), '.'), 1));
-    if(in_array($ext, array('avi', 'mp4', 'm4v')))
-      {
-      $this->view->json['type'] = 'm4v';
-      }
-    else if(in_array($ext, array('mp3')))
-      {
-      $this->view->json['type'] = 'mp3';
-      }
-    else
-      {
-      $this->view->json['type'] = 'm4a';
-      }
-    $this->view->json['itemId'] = $item->getKey();
+        $ext = strtolower(substr(strrchr($bitstreams[0]->getName(), '.'), 1));
+        if (in_array($ext, array('avi', 'mp4', 'm4v'))) {
+            $this->view->json['type'] = 'm4v';
+        } elseif (in_array($ext, array('mp3'))) {
+            $this->view->json['type'] = 'mp3';
+        } else {
+            $this->view->json['type'] = 'm4a';
+        }
+        $this->view->json['itemId'] = $item->getKey();
     }
-  } // end class
+}

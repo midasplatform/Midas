@@ -1,0 +1,31 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+div {
+    &.formWrapper {
+        padding-left: 15px;
+        width: 840px;
+    }
+    &.editTitle {
+        color: #797979;
+        font-size: 16px;
+        margin-bottom: 12px;
+        margin-top: 8px;
+    }
+    &.submitButtonContainer {
+        margin-top: 25px;
+    }
+    &.formRow {
+        margin-bottom: 6px;
+    }
+}
+
+span.noItem {
+    color: #A0A0A0;
+    font-style: italic;
+}
+
+input {
+    &.selectItem, &.removeItem {
+        margin-left: 8px !important;
+    }
+}

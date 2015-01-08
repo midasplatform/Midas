@@ -20,6 +20,7 @@
 
 /** App controller for the thumbnailcreator module */
 class Thumbnailcreator_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'thumbnailcreator';
-  }
+{
+    /** @var string */
+    public $moduleName = 'thumbnailcreator';
+}

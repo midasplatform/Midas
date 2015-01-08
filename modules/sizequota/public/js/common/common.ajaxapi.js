@@ -1,5 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var ajaxWebApi = {};
 
 /**
@@ -19,16 +21,18 @@ var ajaxWebApi = {};
  *          be written. Default behavior is alert() in error conditions.
  */
 ajaxWebApi.ajax = function (params) {
+    'use strict';
     if (!params.method) {
         alert('ajaxWebApi.ajax: method parameter not set');
         return;
     }
 
     this._webApiCall(params);
-}
+};
 
 /** Internal function.  Do not call directly. */
 ajaxWebApi._webApiCall = function (params) {
+    'use strict';
     if (!params.args) {
         params.args = 'useSession=true';
     }
@@ -38,7 +42,7 @@ ajaxWebApi._webApiCall = function (params) {
 
     $.ajax({
         type: 'POST',
-        url: json.global.webroot + '/api/json?method=' + params.method,
+        url: json.global.webroot + '/api/json?method=' + encodeURIComponent(params.method),
         data: params.args,
         dataType: 'json',
         success: function (retVal) {
@@ -58,28 +62,30 @@ ajaxWebApi._webApiCall = function (params) {
         },
         error: function () {
             ajaxWebApi.logError('Ajax call to web API returned an error (' +
-                json.global.webroot + '/api/json' + '?' + params.method + '&' + params.args + ')', params.log);
+                json.global.webroot + '/api/json' + '?' + encodeURIComponent(params.method) + '&' + encodeURIComponent(params.args) + ')', params.log);
             if (params.complete) {
                 params.complete();
             }
         }
     });
-}
+};
 
 ajaxWebApi.logMessage = function (text, log) {
+    'use strict';
     if (log) {
         log.append('<span style="color:black;">' + text + '</span><br>');
     }
     else {
         alert(text);
     }
-}
+};
 
 ajaxWebApi.logError = function (text, log) {
+    'use strict';
     if (log) {
         log.append('<span style="color:red;">Error: ' + text + '</span><br>');
     }
     else {
         alert('Error: ' + text);
     }
-}
+};

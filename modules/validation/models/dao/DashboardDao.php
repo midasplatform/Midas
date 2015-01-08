@@ -22,7 +22,7 @@
  * Dashboard DAO
  */
 class Validation_DashboardDao extends AppDao
-  {
-  public $_model = 'Dashboard';
-  public $_module = 'validation';
-  }
+{
+    public $_model = 'Dashboard';
+    public $_module = 'validation';
+}

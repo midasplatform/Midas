@@ -1,0 +1,10 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+@import 'bourbon';
+
+div.HeaderAction ul li.processButton {
+    @include linear-gradient(to bottom, #578DBB, #325372);
+    &:hover {
+        @include linear-gradient(to bottom, #5B7AD2, #42779D);
+    }
+}

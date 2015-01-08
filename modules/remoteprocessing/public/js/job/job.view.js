@@ -1,6 +1,12 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+/* global sliceFileName */
+
+var midas = midas || {};
+
 $(document).ready(function () {
+    'use strict';
     $('#showLogLink').click(function () {
         $('#hiddenLog').toggle();
     });
@@ -15,7 +21,7 @@ $(document).ready(function () {
 
         initMetrics();
 
-        if ($('.metric').length != 0) {
+        if ($('.metric').length !== 0) {
             $('#metricsWrapper').show();
         }
         processXmlTableColors();
@@ -40,11 +46,11 @@ $(document).ready(function () {
             }
         });
     }, function () {
-
-    })
+    });
 });
 
 function initMetrics() {
+    'use strict';
     $('#tableXml').find('thead .metric').each(function () {
         var html = '<label for="' + $(this).attr('name') + '">' + $(this).html() + ':</label>';
         html += '<div id="' + $(this).attr('name') + '" style="border:0; color:green; font-weight:bold;" />';
@@ -73,10 +79,11 @@ function initMetrics() {
             }
         });
         $('#' + $(this).attr('name') + '').html("<span class='spanmin'>0.00</span> - <span class='spanmax'>" + max.toFixed(2) + "</span>");
-    })
+    });
 }
 
 function processXmlTableColors() {
+    'use strict';
     $('#tableXml').find('tbody tr').each(function () {
         var passed = true;
         if ($(this).find('.xmlStatus').html() != 'passed') {
@@ -103,7 +110,8 @@ function processXmlTableColors() {
 }
 
 function createInfoItem(jsonContent) {
-    arrayElement = jQuery.parseJSON(jsonContent);
+    'use strict';
+    var arrayElement = $.parseJSON(jsonContent);
     var html = '';
     if (arrayElement['type'] == 'community') {
         html += '<img class="infoLogo" alt="Data Type" src="' + json.global.coreWebroot + '/public/images/icons/community-big.png" />';
@@ -133,7 +141,7 @@ function createInfoItem(jsonContent) {
     if (arrayElement['type'] == 'item') {
         html += '  <tr>';
         html += '    <td>' + arrayElement.translation.Uploaded + '</td>';
-        html += '    <td><a href="' + json.global.webroot + '/user/' + arrayElement['uploaded']['user_id'] + '">' + arrayElement['uploaded']['firstname'] + ' ' + arrayElement['uploaded']['lastname'] + '</a></td>';
+        html += '    <td><a href="' + json.global.webroot + '/user/' + encodeURIComponent(arrayElement['uploaded']['user_id']) + '">' + arrayElement['uploaded']['firstname'] + ' ' + arrayElement['uploaded']['lastname'] + '</a></td>';
         html += '  </tr>';
         html += '  <tr>';
         html += '    <td>Revision';
@@ -166,8 +174,8 @@ function createInfoItem(jsonContent) {
         html += '<h4>' + arrayElement.translation.Private + '</h4>';
     }
 
-    if (arrayElement['thumbnail'] != undefined && arrayElement['thumbnail'] != '') {
-        html += '<b>' + json.browse.preview + '</b><br><a href="' + json.global.webroot + '/item/' + arrayElement['item_id'] + '"><img class="infoLogo" alt="" src="' + json.global.webroot + '/' + arrayElement['thumbnail'] + '" /></a>';
+    if (arrayElement['thumbnail'] !== undefined && arrayElement['thumbnail'] != '') {
+        html += '<b>' + json.browse.preview + '</b><br><a href="' + json.global.webroot + '/item/' + encodeURIComponent(arrayElement['item_id']) + '"><img class="infoLogo" alt="" src="' + json.global.webroot + '/' + encodeURIComponent(arrayElement['thumbnail']) + '" /></a>';
     }
 
     return html;

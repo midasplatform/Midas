@@ -17,9 +17,27 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** Example_WalletDao */
+
+/**
+ * Wallet DAO for the example module.
+ *
+ * @method int getExampleWalletId()
+ * @method void setExampleWalletId(int $exampleWalletId)
+ * @method int getUserId()
+ * @method void setUserId(int $userId)
+ * @method float getDollars()
+ * @method void setDollars(float $dollars)
+ * @method int getCreditCardCount()
+ * @method void setCreditCardCount(int $creditCardCount)
+ * @method UserDao getUser()
+ * @method void setUser(UserDao $user)
+ * @package Modules\Example\DAO
+ */
 class Example_WalletDao extends AppDao
-  {
-  public $_model = 'Wallet';
-  public $_module = 'example';
-  }
+{
+    /** @var string */
+    public $_model = 'Wallet';
+
+    /** @var string */
+    public $_module = 'example';
+}

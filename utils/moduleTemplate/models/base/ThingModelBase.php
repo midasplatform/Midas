@@ -18,20 +18,25 @@
  limitations under the License.
 =========================================================================*/
 
-/** Base model class template for the @MN@ module */
+/**
+ * Thing model base class for the @MN@ module.
+ *
+ * @package Modules\@MN_CAP@\Model
+ */
 abstract class @MN_CAP@_ThingModelBase extends @MN_CAP@_AppModel
-  {
-  /** Constructor */
-  public function __construct()
+{
+    /** Constructor. */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = '@MN@_thing';
-    $this->_key = 'thing_id';
+        parent::__construct();
+        $this->_name = '@MN@_thing';
+        $this->_key = 'thing_id';
 
-    $this->_mainData = array(
-      'thing_id' => array('type' => MIDAS_DATA),
-      'creation_date' => array('type' => MIDAS_DATA)
-      );
-    $this->initialize();
+        $this->_mainData = array(
+            'thing_id' => array('type' => MIDAS_DATA),
+            'creation_date' => array('type' => MIDAS_DATA)
+        );
+
+        $this->initialize();
     }
-  }
+}

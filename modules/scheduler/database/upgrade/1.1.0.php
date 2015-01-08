@@ -18,33 +18,30 @@
  limitations under the License.
 =========================================================================*/
 
+/** Upgrade the scheduler module to version 1.1.0. */
 class Scheduler_Upgrade_1_1_0 extends MIDASUpgrade
-  {
-  public function mysql()
+{
+    /** Upgrade a MySQL database. */
+    public function mysql()
     {
-    $sql = "
-      DROP TABLE IF EXISTS scheduler_execution_state;
-      DROP TABLE IF EXISTS scheduler_execution;
-      DROP TABLE IF EXISTS scheduler_node_connection;
-      DROP TABLE IF EXISTS scheduler_node;
-      DROP TABLE IF EXISTS scheduler_variable_handler;
-      DROP TABLE IF EXISTS scheduler_workflow;
-      ";
-    $this->db->query($sql);
+        $this->db->query("DROP TABLE IF EXISTS `scheduler_execution_state`;");
+        $this->db->query("DROP TABLE IF EXISTS `scheduler_execution`;");
+        $this->db->query("DROP TABLE IF EXISTS `scheduler_node_connection`;");
+        $this->db->query("DROP TABLE IF EXISTS `scheduler_node`;");
+        $this->db->query("DROP TABLE IF EXISTS `scheduler_variable_handler`;");
+        $this->db->query("DROP TABLE IF EXISTS `scheduler_workflow`;");
     }
 
-  public function pgsql()
+    /** Upgrade a PostgreSQL database. */
+    public function pgsql()
     {
-    $sql = "
-      DROP INDEX IF EXISTS scheduler_execution_execution_parent;
-      DROP INDEX IF EXISTS scheduler_node_workflow_id;
-      DROP TABLE IF EXISTS scheduler_execution_state;
-      DROP TABLE IF EXISTS scheduler_execution;
-      DROP TABLE IF EXISTS scheduler_node_connection;
-      DROP TABLE IF EXISTS scheduler_node;
-      DROP TABLE IF EXISTS scheduler_variable_handler;
-      DROP TABLE IF EXISTS scheduler_workflow;
-      ";
-    $this->db->query($sql);
+        $this->db->query("DROP INDEX IF EXISTS scheduler_execution_execution_parent;");
+        $this->db->query("DROP INDEX IF EXISTS scheduler_node_workflow_id;");
+        $this->db->query("DROP TABLE IF EXISTS scheduler_execution_state;");
+        $this->db->query("DROP TABLE IF EXISTS scheduler_execution;");
+        $this->db->query("DROP TABLE IF EXISTS scheduler_node_connection;");
+        $this->db->query("DROP TABLE IF EXISTS scheduler_node;");
+        $this->db->query("DROP TABLE IF EXISTS scheduler_variable_handler;");
+        $this->db->query("DROP TABLE IF EXISTS scheduler_workflow;");
     }
-  }
+}

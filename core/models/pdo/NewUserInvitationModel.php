@@ -21,70 +21,74 @@
 require_once BASE_PATH.'/core/models/base/NewUserInvitationModelBase.php';
 
 /**
- * \class NewUserInvitationModel
- * \brief Pdo Model for a new user invitation
+ * Pdo Model for a new user invitation
  */
 class NewUserInvitationModel extends NewUserInvitationModelBase
-  {
-  /**
-   * Search the table for a matching record.  If any exists, returns the first dao.  Otherwise returns false.
-   */
-  public function getByParams($params)
+{
+    /**
+     * Search the table for a matching record.  If any exists, returns the first dao.  Otherwise returns false.
+     *
+     * @param array $params
+     * @return false|NewUserInvitationDao
+     */
+    public function getByParams($params)
     {
-    $sql = $this->database->select()
-                          ->setIntegrityCheck(false);
-    foreach($params as $column => $value)
-      {
-      $sql->where($column.' = ?', $value);
-      }
-    $row = $this->database->fetchRow($sql);
-    return $this->initDao('NewUserInvitation', $row);
+        $sql = $this->database->select()->setIntegrityCheck(false);
+        foreach ($params as $column => $value) {
+            $sql->where($column.' = ?', $value);
+        }
+        $row = $this->database->fetchRow($sql);
+
+        return $this->initDao('NewUserInvitation', $row);
     }
 
-  /**
-   * Search the table for a matching record. Returns the matching set of daos.
-   */
-  public function getAllByParams($params)
+    /**
+     * Search the table for a matching record. Returns the matching set of daos.
+     *
+     * @param array $params
+     * @return array
+     */
+    public function getAllByParams($params)
     {
-    $sql = $this->database->select()
-                          ->setIntegrityCheck(false);
-    foreach($params as $column => $value)
-      {
-      $sql->where($column.' = ?', $value);
-      }
+        $sql = $this->database->select()->setIntegrityCheck(false);
+        foreach ($params as $column => $value) {
+            $sql->where($column.' = ?', $value);
+        }
 
-    $rows = $this->database->fetchAll($sql);
-    $daos = array();
-    foreach($rows as $row)
-      {
-      $daos[] = $this->initDao('NewUserInvitation', $row);
-      }
-    return $daos;
+        $rows = $this->database->fetchAll($sql);
+        $daos = array();
+        foreach ($rows as $row) {
+            $daos[] = $this->initDao('NewUserInvitation', $row);
+        }
+
+        return $daos;
     }
 
-  /**
-   * Deletes all new user invitations corresponding to a group
-   * @param group GroupDao
-   */
-  public function deleteByGroup($group)
+    /**
+     * Deletes all new user invitations corresponding to a group.
+     *
+     * @param GroupDao $group
+     * @throws Zend_Exception
+     */
+    public function deleteByGroup($group)
     {
-    if(!$group instanceof GroupDao)
-      {
-      throw new Zend_Exception('Must pass a group dao');
-      }
-    Zend_Registry::get('dbAdapter')->delete($this->_name, 'group_id = '.$group->getKey());
+        if (!$group instanceof GroupDao) {
+            throw new Zend_Exception('Must pass a group dao');
+        }
+        Zend_Registry::get('dbAdapter')->delete($this->_name, 'group_id = '.$group->getKey());
     }
 
-  /**
-   * Deletes all new user invitations corresponding to a community
-   * @param community communityDao
-   */
-  public function deleteByCommunity($community)
+    /**
+     * Deletes all new user invitations corresponding to a community.
+     *
+     * @param CommunityDao $community
+     * @throws Zend_Exception
+     */
+    public function deleteByCommunity($community)
     {
-    if(!$community instanceof CommunityDao)
-      {
-      throw new Zend_Exception('Must pass a community dao');
-      }
-    Zend_Registry::get('dbAdapter')->delete($this->_name, 'community_id = '.$community->getKey());
+        if (!$community instanceof CommunityDao) {
+            throw new Zend_Exception('Must pass a community dao');
+        }
+        Zend_Registry::get('dbAdapter')->delete($this->_name, 'community_id = '.$community->getKey());
     }
-  }
+}

@@ -22,6 +22,6 @@
  * Validation AppModel
  */
 class Validation_AppModel extends MIDASModel
-  {
-  public $moduleName = 'validation';
-  }
+{
+    public $moduleName = 'validation';
+}

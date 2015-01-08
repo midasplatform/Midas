@@ -18,125 +18,146 @@
  limitations under the License.
 =========================================================================*/
 
-/** GroupModelBase*/
+/** GroupModelBase */
 abstract class GroupModelBase extends AppModel
-  {
-  /** Constructor*/
-  public function __construct()
+{
+    /** Constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'group';
-    $this->_key = 'group_id';
-    $this->_mainData = array(
-      'group_id' => array('type' => MIDAS_DATA),
-      'community_id' => array('type' => MIDAS_DATA),
-      'name' => array('type' => MIDAS_DATA),
-      'community' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Community', 'parent_column' => 'community_id', 'child_column' => 'community_id'),
-      'users' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'User', 'table' => 'user2group', 'parent_column' => 'group_id', 'child_column' => 'user_id'),
-      );
-    $this->initialize(); // required
-    } // end __construct()
-
-  /** Add a user to a group */
-  abstract function addUser($group, $user);
-  abstract function removeUser($group, $user);
-  abstract function findByCommunity($communityDao);
-  abstract function getGroupFromSearch($search, $limit = 14);
-
-  /** load */
-  public function load($key = null)
-    {
-    if($key == MIDAS_GROUP_ANONYMOUS_KEY)
-      {
-      $dao = MidasLoader::newDao('GroupDao');
-      $dao->setGroupId(MIDAS_GROUP_ANONYMOUS_KEY);
-      $dao->setCommunityId(0);
-      $dao->setName('Anonymous');
-      $dao->saved = true;
-      return $dao;
-      }
-    else if($key == MIDAS_GROUP_SERVER_KEY)
-      {
-      $dao = MidasLoader::newDao('GroupDao');
-      $dao->setGroupId(MIDAS_GROUP_SERVER_KEY);
-      $dao->setCommunityId(0);
-      $dao->setName('Servers');
-      $dao->saved = true;
-      return $dao;
-      }
-    else
-      {
-      return parent::load($key);
-      }
+        parent::__construct();
+        $this->_name = 'group';
+        $this->_key = 'group_id';
+        $this->_mainData = array(
+            'group_id' => array('type' => MIDAS_DATA),
+            'community_id' => array('type' => MIDAS_DATA),
+            'name' => array('type' => MIDAS_DATA),
+            'community' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'Community',
+                'parent_column' => 'community_id',
+                'child_column' => 'community_id',
+            ),
+            'users' => array(
+                'type' => MIDAS_MANY_TO_MANY,
+                'model' => 'User',
+                'table' => 'user2group',
+                'parent_column' => 'group_id',
+                'child_column' => 'user_id',
+            ),
+        );
+        $this->initialize(); // required
     }
 
-  /** Delete a group */
-  public function delete($group)
+    /** Add a user to a group */
+    abstract public function addUser($group, $user);
+
+    /** Remove user */
+    abstract public function removeUser($group, $user);
+
+    /** Find by community */
+    abstract public function findByCommunity($communityDao);
+
+    /** Get group from search */
+    abstract public function getGroupFromSearch($search, $limit = 14);
+
+    /** load */
+    public function load($key = null)
     {
-    if(!$group instanceof GroupDao)
-      {
-      throw new Zend_Exception("Should be a group.");
-      }
-    $users = $group->getUsers();
-    foreach($users as $user)
-      {
-      $this->removeUser($group, $user);
-      }
+        if ($key == MIDAS_GROUP_ANONYMOUS_KEY) {
+            /** @var GroupDao $dao */
+            $dao = MidasLoader::newDao('GroupDao');
+            $dao->setGroupId(MIDAS_GROUP_ANONYMOUS_KEY);
+            $dao->setCommunityId(0);
+            $dao->setName('Anonymous');
+            $dao->saved = true;
 
-    $feedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
-    $feedpolicygroupModel->deleteGroupPolicies($group);
-    $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
-    $itempolicygroupModel->deleteGroupPolicies($group);
-    $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
-    $folderpolicygroupModel->deleteGroupPolicies($group);
-    $newUserInvitationModel = MidasLoader::loadModel('NewUserInvitation');
-    $newUserInvitationModel->deleteByGroup($group);
+            return $dao;
+        } elseif ($key == MIDAS_GROUP_SERVER_KEY) {
+            /** @var GroupDao $dao */
+            $dao = MidasLoader::newDao('GroupDao');
+            $dao->setGroupId(MIDAS_GROUP_SERVER_KEY);
+            $dao->setCommunityId(0);
+            $dao->setName('Servers');
+            $dao->saved = true;
 
-    parent::delete($group);
-    unset($group->group_id);
-    $group->saved = false;
-    }//end deleteGroup
-
-  /** create a group
-   * @return GroupDao*/
-  public function createGroup($communityDao, $name)
-    {
-    if(!$communityDao instanceof CommunityDao)
-      {
-      throw new Zend_Exception("Should be a acommunity.");
-      }
-    if(!is_string($name))
-      {
-      throw new Zend_Exception("Should be a string.");
-      }
-    $group = MidasLoader::newDao('GroupDao');
-    $group->setName($name);
-    $group->setCommunityId($communityDao->getCommunityId());
-    $this->save($group);
-    return $group;
-    }
-
-  /**
-   * Return (bool) whether or not the user is in the group
-   */
-  public function userInGroup($user, $group)
-    {
-    if(!$user instanceof UserDao)
-      {
-      throw new Zend_Exception('Should be a user');
-      }
-    if(!$group instanceof GroupDao)
-      {
-      throw new Zend_Exception('Should be a group');
-      }
-
-    foreach($user->getGroups() as $usergroup)
-      {
-      if($usergroup->getKey() == $group->getKey())
-        {
-        return true;
+            return $dao;
+        } else {
+            return parent::load($key);
         }
-      }
-    return false;
     }
-  } // end class
+
+    /** Delete a group */
+    public function delete($group)
+    {
+        if (!$group instanceof GroupDao) {
+            throw new Zend_Exception("Should be a group.");
+        }
+        $users = $group->getUsers();
+        foreach ($users as $user) {
+            $this->removeUser($group, $user);
+        }
+
+        /** @var FeedpolicygroupModel $feedpolicygroupModel */
+        $feedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
+        $feedpolicygroupModel->deleteGroupPolicies($group);
+
+        /** @var ItempolicygroupModel $itempolicygroupModel */
+        $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
+        $itempolicygroupModel->deleteGroupPolicies($group);
+
+        /** @var FolderpolicygroupModel $folderpolicygroupModel */
+        $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
+        $folderpolicygroupModel->deleteGroupPolicies($group);
+
+        /** @var NewUserInvitationModel $newUserInvitationModel */
+        $newUserInvitationModel = MidasLoader::loadModel('NewUserInvitation');
+        $newUserInvitationModel->deleteByGroup($group);
+
+        parent::delete($group);
+        unset($group->group_id);
+        $group->saved = false;
+    }
+
+    /** create a group
+     *
+     * @return GroupDao
+     */
+    public function createGroup($communityDao, $name)
+    {
+        if (!$communityDao instanceof CommunityDao) {
+            throw new Zend_Exception("Should be a acommunity.");
+        }
+        if (!is_string($name)) {
+            throw new Zend_Exception("Should be a string.");
+        }
+
+        /** @var GroupDao $group */
+        $group = MidasLoader::newDao('GroupDao');
+        $group->setName($name);
+        $group->setCommunityId($communityDao->getCommunityId());
+        $this->save($group);
+
+        return $group;
+    }
+
+    /**
+     * Return (bool) whether or not the user is in the group
+     */
+    public function userInGroup($user, $group)
+    {
+        if (!$user instanceof UserDao) {
+            throw new Zend_Exception('Should be a user');
+        }
+        if (!$group instanceof GroupDao) {
+            throw new Zend_Exception('Should be a group');
+        }
+
+        foreach ($user->getGroups() as $usergroup) {
+            if ($usergroup->getKey() == $group->getKey()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}

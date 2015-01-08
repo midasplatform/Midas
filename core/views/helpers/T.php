@@ -18,20 +18,19 @@
  limitations under the License.
 =========================================================================*/
 
-class Zend_View_Helper_T
+/** Translation view helper. */
+class Zend_View_Helper_T extends Zend_View_Helper_Abstract
 {
-  /** translation helper */
-    function t($text)
+    /**
+     * Translation view helper.
+     *
+     * @param string $text text
+     * @return string translated text if available, otherwise the input text
+     */
+    public function t($text)
     {
-    Zend_Loader::loadClass("InternationalizationComponent",BASE_PATH.'/core/controllers/components');
-    return InternationalizationComponent::translate($text);
-    }//en method t
+        Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
 
-
-
-    /** Set view*/
-    public function setView(Zend_View_Interface $view)
-    {
-        $this->view = $view;
+        return htmlspecialchars(InternationalizationComponent::translate($text), ENT_QUOTES, 'UTF-8');
     }
-}// end class
+}

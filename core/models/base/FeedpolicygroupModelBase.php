@@ -20,57 +20,69 @@
 
 /** Feed policy model base */
 abstract class FeedpolicygroupModelBase extends AppModel
-  {
-  /** Constructor */
-  public function __construct()
+{
+    /** Constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'feedpolicygroup';
+        parent::__construct();
+        $this->_name = 'feedpolicygroup';
 
-    $this->_mainData = array(
-        'feed_id' => array('type' => MIDAS_DATA),
-        'group_id' => array('type' => MIDAS_DATA),
-        'policy' => array('type' => MIDAS_DATA),
-        'date' => array('type' => MIDAS_DATA),
-        'feed' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Feed', 'parent_column' => 'feed_id', 'child_column' => 'feed_id'),
-        'group' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'Group', 'parent_column' => 'group_id', 'child_column' => 'group_id')
-      );
-    $this->initialize(); // required
-    } // end __construct()
+        $this->_mainData = array(
+            'feed_id' => array('type' => MIDAS_DATA),
+            'group_id' => array('type' => MIDAS_DATA),
+            'policy' => array('type' => MIDAS_DATA),
+            'date' => array('type' => MIDAS_DATA),
+            'feed' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'Feed',
+                'parent_column' => 'feed_id',
+                'child_column' => 'feed_id',
+            ),
+            'group' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'Group',
+                'parent_column' => 'group_id',
+                'child_column' => 'group_id',
+            ),
+        );
+        $this->initialize(); // required
+    }
 
-  /** Abstract functions */
-  abstract function getPolicy($group, $feed);
-  abstract function deleteGroupPolicies($group);
+    /** Get policy */
+    abstract public function getPolicy($group, $feed);
 
-  /** create a policy
-   * @return FeedpolicygroupDao*/
-  public function createPolicy($group, $feed, $policy)
+    /** Delete group policies */
+    abstract public function deleteGroupPolicies($group);
+
+    /** create a policy
+     *
+     * @return FeedpolicygroupDao
+     */
+    public function createPolicy($group, $feed, $policy)
     {
-    if(!$group instanceof GroupDao)
-      {
-      throw new Zend_Exception("Should be a group.");
-      }
-    if(!$feed instanceof FeedDao)
-      {
-      throw new Zend_Exception("Should be a feedDao.");
-      }
-    if(!is_numeric($policy))
-      {
-      throw new Zend_Exception("Should be a number.");
-      }
-    if(!$group->saved && !$feed->saved)
-      {
-      throw new Zend_Exception("Save the daos first.");
-      }
-    if($this->getPolicy($group, $feed) !== false)
-      {
-      $this->delete($this->getPolicy($group, $feed));
-      }
-    $policyGroupDao = MidasLoader::newDao('FeedpolicygroupDao');
-    $policyGroupDao->setGroupId($group->getGroupId());
-    $policyGroupDao->setFeedId($feed->getFeedId());
-    $policyGroupDao->setPolicy($policy);
-    $this->save($policyGroupDao);
-    return $policyGroupDao;
-    } // end createPolicy
-  } // end class
+        if (!$group instanceof GroupDao) {
+            throw new Zend_Exception("Should be a group.");
+        }
+        if (!$feed instanceof FeedDao) {
+            throw new Zend_Exception("Should be a feedDao.");
+        }
+        if (!is_numeric($policy)) {
+            throw new Zend_Exception("Should be a number.");
+        }
+        if (!$group->saved && !$feed->saved) {
+            throw new Zend_Exception("Save the daos first.");
+        }
+        if ($this->getPolicy($group, $feed) !== false) {
+            $this->delete($this->getPolicy($group, $feed));
+        }
+
+        /** @var FeedpolicygroupDao $policyGroupDao */
+        $policyGroupDao = MidasLoader::newDao('FeedpolicygroupDao');
+        $policyGroupDao->setGroupId($group->getGroupId());
+        $policyGroupDao->setFeedId($feed->getFeedId());
+        $policyGroupDao->setPolicy($policy);
+        $this->save($policyGroupDao);
+
+        return $policyGroupDao;
+    }
+}

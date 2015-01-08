@@ -18,30 +18,26 @@
  limitations under the License.
 =========================================================================*/
 
-class Zend_View_Helper_Userthumbnail
+/** User thumbnail view helper. */
+class Zend_View_Helper_Userthumbnail extends Zend_View_Helper_Abstract
 {
-    /** translation helper */
-    function userthumbnail($thumbnail, $id = '')
+    /**
+     * User thumbnail view helper.
+     *
+     * @param string $thumbnail link to thumbnail, if any
+     * @param string $id value of id attribute
+     */
+    public function userthumbnail($thumbnail, $id = '')
     {
-    if(empty($thumbnail))
-      {
-      echo "<img id='{$id}' class='thumbnailSmall' " .
-           "src='{$this->view->coreWebroot}/public/images/icons/unknownUser.png'" .
-           "alt=''/>";
-      }
-    else if(preg_match("@^https?://@", $thumbnail))
-      {
-      echo "<img id='{$id}' class='thumbnailSmall' src='{$thumbnail}' alt=''/>";
-      }
-    else
-      {
-      echo "<img id='{$id}' class='thumbnailSmall' src='{$this->view->webroot}/{$thumbnail}' alt=''/>";
-      }
-    }
+        $id = htmlspecialchars($id, ENT_QUOTES, 'UTF-8');
+        $thumbnail = htmlspecialchars($thumbnail, ENT_QUOTES, 'UTF-8');
 
-    /** Set view*/
-    public function setView(Zend_View_Interface $view)
-    {
-        $this->view = $view;
+        if (empty($thumbnail)) {
+            echo '<img id="'.$id.'" class="thumbnailSmall" src="'.$this->view->coreWebroot.'/public/images/icons/unknownUser.png" alt="" />';
+        } elseif (preg_match("@^https?://@", $thumbnail)) {
+            echo '<img id="'.$id.'" class="thumbnailSmall" src="'.$thumbnail.'" alt="" />';
+        } else {
+            echo '<img id="'.$id.'" class="thumbnailSmall" src="'.$this->view->webroot.'/'.$thumbnail.'" alt="" />';
+        }
     }
-}// end class
+}

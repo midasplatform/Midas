@@ -1,5 +1,7 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 midas.keyfiles = midas.keyfiles || {};
 
@@ -15,9 +17,9 @@ midas.keyfiles.setup = function () {
         content: 'Download key file'
     }).click(function () {
         var bitstream_id = $(this).attr('element');
-        window.location.href = json.global.webroot + '/keyfiles/download/bitstream?bitstreamId=' + bitstream_id;
+        window.location.href = json.global.webroot + '/keyfiles/download/bitstream?bitstreamId=' + encodeURIComponent(bitstream_id);
     });
-}
+};
 
 $(document).ready(function () {
     'use strict';

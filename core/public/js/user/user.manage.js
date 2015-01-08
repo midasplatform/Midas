@@ -1,9 +1,11 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
 var midas = midas || {};
 
 $(document).ready(function () {
-
+    'use strict';
     // init tree
     $('img.tabsLoading').hide();
 
@@ -31,13 +33,14 @@ $(document).ready(function () {
 var ajaxSelectRequest = '';
 
 function callbackSelect(node) {
+    'use strict';
     $('div.genericAction').hide();
     $('div.genericCommunities').hide();
     $('div.genericStats').hide();
 
     // user need to have at least written permission to see specific Actions
     //(edit, delete, etc...)
-    if (node.attr('type') != 0) {
+    if (node.attr('type') !== 0) {
         $('div.viewInfo').show();
         $('div.viewAction').show();
     }
@@ -48,19 +51,22 @@ function callbackSelect(node) {
 function callbackDblClick(node) {}
 
 function callbackCheckboxes(node) {
+    'use strict';
     midas.genericCallbackCheckboxes(node);
 }
 
 function callbackCreateElement(node) {
+    'use strict';
     initDragAndDrop();
 }
 
 function initDragAndDrop() {
+    'use strict';
     $("#browseTable .file, #browseTable .filePublic, #browseTable .filePrivate," +
         "#browseTable .folderPublic:not(.notdraggable), #browseTable .folderPrivate:not(.notdraggable)").draggable({
         helper: "clone",
         cursor: "move",
-        opacity: .75,
+        opacity: 0.75,
         refreshPositions: true, // Performance?
         revert: "invalid",
         revertDuration: 300,
@@ -86,7 +92,7 @@ function initDragAndDrop() {
                 }
                 var from_obj;
                 var classNames = $(ui.draggable).parents("tr").attr('class').split(' ');
-                for (key in classNames) {
+                for (var key in classNames) {
                     if (classNames[key].match('child-of-')) {
                         from_obj = "#" + classNames[key].substring(9);
                     }
@@ -103,9 +109,8 @@ function initDragAndDrop() {
                             ajax: true
                         },
                         function (data) {
-
-                            jsonResponse = jQuery.parseJSON(data);
-                            if (jsonResponse == null) {
+                            var jsonResponse = $.parseJSON(data);
+                            if (jsonResponse === null) {
                                 midas.createNotice('Error', 4000);
                                 return;
                             }
@@ -154,5 +159,4 @@ function initDragAndDrop() {
         });
 
     });
-
 }

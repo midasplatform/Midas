@@ -53,22 +53,20 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-$base_path = realpath(dirname(__FILE__)) . '/..';
-set_include_path(get_include_path() . PATH_SEPARATOR . $base_path . '/tests/library/PHPUnit');
+$basePath = realpath(dirname(__FILE__)).'/..';
+require_once $basePath.'/vendor/autoload.php';
 
-if (!file_exists($base_path . '/tests/configs/pgsql.ini')) {
+if (!file_exists($basePath.'/tests/configs/pgsql.ini')) {
     echo 'Failures: 1 Unable to find config';
     exit();
 }
 
-copy($base_path . '/tests/configs/pgsql.ini', $base_path . '/tests/configs/lock.pgsql.ini');
+copy($basePath.'/tests/configs/pgsql.ini', $basePath.'/tests/configs/lock.pgsql.ini');
 
 define('PHPUnit_MAIN_METHOD', 'PHPUnit_TextUI_Command::main');
 
 if (strpos('@php_bin@', '@php_bin') === 0) {
-    set_include_path(dirname(__FILE__) . PATH_SEPARATOR . get_include_path());
+    set_include_path(dirname(__FILE__).PATH_SEPARATOR.get_include_path());
 }
-
-require_once 'PHPUnit/Autoload.php';
 
 PHPUnit_TextUI_Command::main();

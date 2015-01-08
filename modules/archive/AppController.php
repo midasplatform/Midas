@@ -18,8 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
-/** Module Application Controller */
+/** App controller for the archive module */
 class Archive_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'archive';
-  }
+{
+    public $moduleName = 'archive';
+}

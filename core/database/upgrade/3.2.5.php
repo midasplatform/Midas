@@ -19,22 +19,25 @@
 =========================================================================*/
 
 /**
- * Adding indexes for faster lookup of the folder & item hierarchy
+ * Upgrade the core to version 3.2.5. Add indexes for faster lookup of the
+ * folder and item hierarchies.
  */
 class Upgrade_3_2_5 extends MIDASUpgrade
-  {
-  public function mysql()
+{
+    /** Upgrade a MySQL database. */
+    public function mysql()
     {
-    $this->db->query("ALTER TABLE `folder` ADD INDEX (`left_indice`)");
-    $this->db->query("ALTER TABLE `folder` ADD INDEX (`right_indice`)");
-    $this->db->query("ALTER TABLE `item2folder` ADD INDEX (`folder_id`)");
+        $this->db->query("ALTER TABLE `folder` ADD KEY (`left_indice`);");
+        $this->db->query("ALTER TABLE `folder` ADD KEY (`right_indice`);");
+        $this->db->query("ALTER TABLE `item2folder` ADD KEY (`folder_id`);");
     }
 
-  public function pgsql()
+    /** Upgrade a PostgreSQL database. */
+    public function pgsql()
     {
-    $this->db->query("CREATE INDEX folder_idx_parent_id ON folder (parent_id)");
-    $this->db->query("CREATE INDEX folder_idx_left_indice ON folder (left_indice)");
-    $this->db->query("CREATE INDEX folder_idx_right_indice ON folder (right_indice)");
-    $this->db->query("CREATE INDEX item2folder_idx_folder_id ON folder (folder_id)");
+        $this->db->query("CREATE INDEX folder_idx_parent_id ON folder (parent_id);");
+        $this->db->query("CREATE INDEX folder_idx_left_indice ON folder (left_indice);");
+        $this->db->query("CREATE INDEX folder_idx_right_indice ON folder (right_indice);");
+        $this->db->query("CREATE INDEX item2folder_idx_folder_id ON folder (folder_id);");
     }
-  }
+}

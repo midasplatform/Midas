@@ -17,160 +17,121 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 /** Test for admin controllers */
-class AdminControllerTest extends ControllerTestCase
-  {
-  /** init tests*/
-  public function setUp()
+class Core_AdminControllerTest extends ControllerTestCase
+{
+    /** init tests */
+    public function setUp()
     {
-    $this->setupDatabase(array('default'));
-    $this->_models = array('User');
-    $this->_daos = array('User');
-    parent::setUp();
+        $this->setupDatabase(array('default'));
+        $this->_models = array('User');
+        $this->_daos = array('User');
+        parent::setUp();
     }
 
-  /** test index action */
-  public function testIndexAction()
+    /** test index action */
+    public function testIndexAction()
     {
-    // Need this line to render admin index page
-    Zend_Registry::set('configCore', array());
+        // Need this line to render admin index page
+        Zend_Registry::set('configCore', array());
 
-    $usersFile = $this->loadData('User', 'default');
-    $user1 = $this->User->load($usersFile[0]->getKey());
-    $adminUser = $this->User->load($usersFile[2]->getKey());
+        $usersFile = $this->loadData('User', 'default');
+        $user1 = $this->User->load($usersFile[0]->getKey());
+        $adminUser = $this->User->load($usersFile[2]->getKey());
 
-    // Should get exception if we try to access admin controller unlogged
-    $this->dispatchUrI('/admin', null, true);
-    $this->assertController('error');
-    $this->assertAction('error');
+        // Should get exception if we try to access admin controller unlogged
+        $this->dispatchUrl('/admin', null, true);
+        $this->assertController('error');
+        $this->assertAction('error');
 
-    // If a non admin tries to access admin page, should throw exception
-    $this->resetAll();
-    $this->dispatchUrI('/admin', $user1, true);
+        // If a non admin tries to access admin page, should throw exception
+        $this->resetAll();
+        $this->dispatchUrl('/admin', $user1, true);
 
-    $this->resetAll();
-    $this->dispatchUrI('/admin', $adminUser);
-    $this->assertController('admin');
-    $this->assertAction('index');
+        $this->resetAll();
+        $this->dispatchUrl('/admin', $adminUser);
+        $this->assertController('admin');
+        $this->assertAction('index');
     }
 
-  /** test show log action */
-  public function testShowLogAction()
+    /** test dashboard action */
+    public function testDashboardAction()
     {
-    $usersFile = $this->loadData('User', 'default');
-    $user1 = $this->User->load($usersFile[0]->getKey());
-    $adminUser = $this->User->load($usersFile[2]->getKey());
+        $usersFile = $this->loadData('User', 'default');
+        $user1 = $this->User->load($usersFile[0]->getKey());
+        $adminUser = $this->User->load($usersFile[2]->getKey());
 
-    // Should get exception if we try to access logs while not logged in
-    $this->dispatchUrI('/admin/showlog', null, true);
+        // Should get exception if we try to access logs while not logged in
+        $this->dispatchUrl('/admin/dashboard', null, true);
 
-    // Should get exception if we try to access logs as non admin
-    $this->resetAll();
-    $this->dispatchUrI('/admin/showlog', $user1, true);
+        // Should get exception if we try to access logs as non admin
+        $this->resetAll();
+        $this->dispatchUrl('/admin/dashboard', $user1, true);
 
-    // Should be able to see log page as admin user
-    $this->resetAll();
-    $this->dispatchUrI('/admin/showlog', $adminUser);
-    $this->assertController('admin');
-    $this->assertAction('showlog');
+        // Should be able to see log page as admin user
+        $this->resetAll();
+        $this->dispatchUrl('/admin/dashboard', $adminUser);
+        $this->assertController('admin');
+        $this->assertAction('dashboard');
 
-    // Should be able to see log page as admin user
-    $this->resetAll();
-    $this->getRequest()->setMethod('POST');
-    $this->dispatchUrI('/admin/showlog', $adminUser);
-    $this->assertController('admin');
-    $this->assertAction('showlog');
-    $resp = json_decode($this->getBody(), true);
-    $this->assertTrue($resp['currentFilter'] != null);
-    $this->assertTrue($resp['currentFilter']['start'] != null);
-    $this->assertTrue($resp['currentFilter']['end'] != null);
-    $this->assertEquals($resp['currentFilter']['module'], 'all');
-    $this->assertEquals($resp['currentFilter']['priority'], MIDAS_PRIORITY_WARNING);
-    $this->assertEquals($resp['currentFilter']['priorityOperator'], '<=');
-    $this->assertEquals($resp['currentFilter']['limit'], 100);
-    $this->assertEquals($resp['currentFilter']['offset'], 0);
-    $this->assertEquals($resp['total'], 0);
-    $this->assertTrue(is_array($resp['logs']));
-    $this->assertEquals(count($resp['logs']), 0);
+        // Test integrity check action
+        $this->resetAll();
+        $this->dispatchUrl('/admin/integritycheck', $adminUser);
     }
 
-  /** test dashboard action */
-  public function testDashboardAction()
+    /**
+     * Test removal of orphans in the tree
+     */
+    public function testRemoveOrphans()
     {
-    $usersFile = $this->loadData('User', 'default');
-    $user1 = $this->User->load($usersFile[0]->getKey());
-    $adminUser = $this->User->load($usersFile[2]->getKey());
+        $usersFile = $this->loadData('User', 'default');
+        $user1 = $this->User->load($usersFile[0]->getKey());
+        $adminUser = $this->User->load($usersFile[2]->getKey());
+        $this->dispatchUrl('/admin/removeorphans', $user1, true);
 
-    // Should get exception if we try to access logs while not logged in
-    $this->dispatchUrI('/admin/dashboard', null, true);
+        $this->resetAll();
+        $this->dispatchUrl('/admin/removeorphans', $adminUser, true);
 
-    // Should get exception if we try to access logs as non admin
-    $this->resetAll();
-    $this->dispatchUrI('/admin/dashboard', $user1, true);
+        $this->resetAll();
+        $this->dispatchUrl('/admin/removeorphans?model=Blah', $adminUser, true);
 
-    // Should be able to see log page as admin user
-    $this->resetAll();
-    $this->dispatchUrI('/admin/dashboard', $adminUser);
-    $this->assertController('admin');
-    $this->assertAction('dashboard');
-
-    // Test integrity check action
-    $this->resetAll();
-    $this->dispatchUrI('/admin/integritycheck', $adminUser);
+        $this->resetAll();
+        $this->dispatchUrl('/admin/removeorphans?model=Bitstream', $adminUser);
+        $resp = json_decode($this->getBody());
+        $this->assertEquals($resp->status, 'ok');
+        $this->assertEquals($resp->message, 'Bitstream resources cleaned');
     }
 
-  /**
-   * Test removal of orphans in the tree
-   */
-  public function testRemoveOrphans()
+    /**
+     * Test the upgrade action
+     */
+    public function testUpgradeAction()
     {
-    $usersFile = $this->loadData('User', 'default');
-    $user1 = $this->User->load($usersFile[0]->getKey());
-    $adminUser = $this->User->load($usersFile[2]->getKey());
-    $this->dispatchUrI('/admin/removeorphans', $user1, true);
+        $usersFile = $this->loadData('User', 'default');
+        $user1 = $this->User->load($usersFile[0]->getKey());
+        $adminUser = $this->User->load($usersFile[2]->getKey());
+        $this->dispatchUrl('/admin/upgrade', $user1, true);
 
-    $this->resetAll();
-    $this->dispatchUrI('/admin/removeorphans', $adminUser, true);
+        $this->resetAll();
+        $this->dispatchUrl('/admin/upgrade', $adminUser);
 
-    $this->resetAll();
-    $this->dispatchUrI('/admin/removeorphans?model=Blah', $adminUser, true);
-
-    $this->resetAll();
-    $this->dispatchUrI('/admin/removeorphans?model=Bitstream', $adminUser);
-    $resp = json_decode($this->getBody());
-    $this->assertEquals($resp->status, 'ok');
-    $this->assertEquals($resp->message, 'Bitstream resources cleaned');
+        $this->resetAll();
+        $this->getRequest()->setMethod('POST');
+        $this->dispatchUrl('/admin/upgrade', $adminUser);
     }
 
-  /**
-   * Test the upgrade action
-   */
-  public function testUpgradeAction()
+    /**
+     * Stub test for midas2 migration action
+     */
+    public function testMidas2MigrationAction()
     {
-    $usersFile = $this->loadData('User', 'default');
-    $user1 = $this->User->load($usersFile[0]->getKey());
-    $adminUser = $this->User->load($usersFile[2]->getKey());
-    $this->dispatchUrI('/admin/upgrade', $user1, true);
+        $usersFile = $this->loadData('User', 'default');
+        $user1 = $this->User->load($usersFile[0]->getKey());
+        $adminUser = $this->User->load($usersFile[2]->getKey());
+        $this->dispatchUrl('/admin/migratemidas2', $user1, true);
 
-    $this->resetAll();
-    $this->dispatchUrI('/admin/upgrade', $adminUser);
-
-    $this->resetAll();
-    $this->getRequest()->setMethod('POST');
-    $this->dispatchUrI('/admin/upgrade', $adminUser);
+        $this->resetAll();
+        $this->dispatchUrl('/admin/migratemidas2', $adminUser);
     }
-
-  /**
-   * Stub test for midas2 migration action
-   */
-  public function testMidas2MigrationAction()
-    {
-    $usersFile = $this->loadData('User', 'default');
-    $user1 = $this->User->load($usersFile[0]->getKey());
-    $adminUser = $this->User->load($usersFile[2]->getKey());
-    $this->dispatchUrI('/admin/migratemidas2', $user1, true);
-
-    $this->resetAll();
-    $this->dispatchUrI('/admin/migratemidas2', $adminUser);
-    }
-  }
+}

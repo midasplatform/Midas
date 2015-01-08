@@ -20,45 +20,44 @@
 
 /** Controller for setting and getting ratings */
 class Ratings_RatingController extends Ratings_AppController
-  {
-  public $_models = array('Item');
+{
+    public $_models = array('Item');
 
-  /**
-   * Set a rating on an item
-   * @param itemId The item id to set the rating on
-   * @param rating The rating (0-5) to set for the currently logged user. 0 means remove user's rating.
-   */
-  function rateitemAction()
+    /**
+     * Set a rating on an item
+     *
+     * @param itemId The item id to set the rating on
+     * @param rating The rating (0-5) to set for the currently logged user. 0 means remove user's rating.
+     * @throws Zend_Exception
+     */
+    public function rateitemAction()
     {
-    if(!$this->logged)
-      {
-      throw new Zend_Exception('Must be logged in to rate an item');
-      }
+        if (!$this->logged) {
+            throw new Zend_Exception('Must be logged in to rate an item');
+        }
 
-    $itemId = $this->getParam('itemId');
-    if(!isset($itemId) || !$itemId)
-      {
-      throw new Zend_Exception('Must set itemId parameter');
-      }
-    $item = $this->Item->load($itemId);
-    if(!$item)
-      {
-      throw new Zend_Exception('Not a valid itemId');
-      }
-    $rating = (int)$this->getParam('rating');
-    if($rating < 0 || $rating > 5)
-      {
-      throw new Zend_Exception('Rating must be 0-5');
-      }
+        $itemId = $this->getParam('itemId');
+        if (!isset($itemId) || !$itemId) {
+            throw new Zend_Exception('Must set itemId parameter');
+        }
+        $item = $this->Item->load($itemId);
+        if (!$item) {
+            throw new Zend_Exception('Not a valid itemId');
+        }
+        $rating = (int) $this->getParam('rating');
+        if ($rating < 0 || $rating > 5) {
+            throw new Zend_Exception('Rating must be 0-5');
+        }
 
-    $this->disableView();
-    $this->disableLayout();
+        $this->disableView();
+        $this->disableLayout();
 
-    $itemRatingModel = MidasLoader::loadModel('Itemrating', $this->moduleName);
-    $itemRatingModel->setRating($this->userSession->Dao, $item, $rating);
+        /** @var Ratings_ItemratingModel $itemRatingModel */
+        $itemRatingModel = MidasLoader::loadModel('Itemrating', $this->moduleName);
+        $itemRatingModel->setRating($this->userSession->Dao, $item, $rating);
 
-    $info = $itemRatingModel->getAggregateInfo($item);
-    $message = $rating == 0 ? 'Rating removed' : 'Rating saved';
-    echo JsonComponent::encode(array_merge(array('status' => 'ok', 'message' => $message), $info));
+        $info = $itemRatingModel->getAggregateInfo($item);
+        $message = $rating == 0 ? 'Rating removed' : 'Rating saved';
+        echo JsonComponent::encode(array_merge(array('status' => 'ok', 'message' => $message), $info));
     }
-  } // end class
+}

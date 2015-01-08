@@ -18,21 +18,25 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/item/item.editbitstream.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/item/item.editbitstream.css"/>
 
-<form id="editBitstreamForm" class="genericForm" method="<?php echo $this->bitstreamform['method'];?>" action="<?php echo $this->bitstreamform['action'];?>">
-   <input type="hidden" name="bitstreamId" value="<?php echo $this->bitstreamDao->getKey(); ?>"/>
-      <div>
+<form id="editBitstreamForm" class="genericForm" method="<?php echo $this->bitstreamform['method']; ?>"
+      action="<?php echo $this->bitstreamform['action']; ?>">
+    <input type="hidden" name="bitstreamId" value="<?php echo $this->escape($this->bitstreamDao->getKey()); ?>"/>
+
+    <div>
         <label for="name"><?php echo $this->t('Name'); ?></label>
         <?php echo $this->bitstreamform['name']; ?>
-      </div>
-      <br/>
-      <div>
+    </div>
+    <br/>
+
+    <div>
         <label for="mimetype"><?php echo $this->t('Mimetype'); ?></label>
         <?php echo $this->bitstreamform['mimetype']; ?>
-      </div>
-      <br/>
-      <div>
-        <?php echo $this->bitstreamform['submit']?>
-      </div>
+    </div>
+    <br/>
+
+    <div>
+        <?php echo $this->bitstreamform['submit'] ?>
+    </div>
 </form>

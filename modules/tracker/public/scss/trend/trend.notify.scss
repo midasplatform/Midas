@@ -1,0 +1,20 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+div.thresholdInfoContainer {
+    margin-top: 10px;
+}
+
+input.thresholdValue {
+    width: 70px !important;
+}
+
+div {
+    &.bottomButtons {
+        float: right;
+        margin-top: 15px;
+    }
+    &.registeredEmail {
+        color: #797979;
+        margin-top: 10px;
+    }
+}

@@ -17,36 +17,36 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-/** Txt controller*/
+
+/** Txt controller */
 class Visualize_TxtController extends Visualize_AppController
-  {
-  public $_models = array('Item', 'ItemRevision', 'Bitstream');
-  /** index */
-  public function indexAction()
+{
+    public $_models = array('Item', 'ItemRevision', 'Bitstream');
+
+    /** index */
+    public function indexAction()
     {
-    $this->disableLayout();
-    $this->disableView();
-    $itemid = $this->getParam('itemId');
-    $item = $this->Item->load($itemid);
+        $this->disableLayout();
+        $this->disableView();
+        $itemid = $this->getParam('itemId');
+        $item = $this->Item->load($itemid);
 
-    if($item === false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ))
-      {
-      throw new Zend_Exception("This item doesn't exist  or you don't have the permissions.");
-      }
+        if ($item === false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ)
+        ) {
+            throw new Zend_Exception("This item doesn't exist  or you don't have the permissions.");
+        }
 
-    $revision = $this->Item->getLastRevision($item);
-    $bitstreams = $revision->getBitstreams();
-    if(count($bitstreams) != 1)
-      {
-      throw new Zend_Exception('Error');
-      }
-    $this->bistream = $bitstreams[0];
-    if(Zend_Registry::get('configGlobal')->environment != 'testing')
-      {
-      header('content-type: text/plain');
-      }
-    echo "<pre>";
-    echo file_get_contents($this->bistream->getFullPath());
-    echo "</pre>";
+        $revision = $this->Item->getLastRevision($item);
+        $bitstreams = $revision->getBitstreams();
+        if (count($bitstreams) != 1) {
+            throw new Zend_Exception('Error');
+        }
+        $this->bistream = $bitstreams[0];
+        if (Zend_Registry::get('configGlobal')->environment != 'testing') {
+            header('content-type: text/plain');
+        }
+        echo "<pre>";
+        echo file_get_contents($this->bistream->getFullPath());
+        echo "</pre>";
     }
-  } // end class
+}

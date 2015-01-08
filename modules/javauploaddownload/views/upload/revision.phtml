@@ -1,0 +1,71 @@
+<?php
+/*=========================================================================
+ MIDAS Server
+ Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ All rights reserved.
+ More information http://www.kitware.com
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0.txt
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+=========================================================================*/
+?>
+<link type="text/css" rel="stylesheet"
+      href="<?php echo $this->moduleWebroot; ?>/public/css/upload/upload.revision.css"/>
+<div>
+    <div class="belowDestinationUpload"></div>
+</div>
+<div>
+    <b><?php echo $this->t('Step 1: Select a license'); ?></b>
+
+    <div>
+        <?php echo $this->element('license'); ?>
+    </div>
+</div>
+<br/>
+<div>
+    <b><?php echo $this->t('Step 2: Set the changes') ?></b>
+
+    <div>
+        <textarea class="revisionChanges" name="revisionChanges"/>
+    </div>
+</div>
+<br/>
+<div>
+    <b><?php echo $this->t('Step 3: Upload files'); ?></b>
+    <br/><br/>
+    <applet name="MidasUploader" class="uploadApplet" width="480" height="175"
+            archive="<?php echo $this->moduleWebroot; ?>/public/java/upload/MidasUploader.jar?rev=3; ?>"
+            code="com.kitware.utils.Main" mayscript="true">
+        <param name="background" value="ffffff"/>
+        <param name="baseURL"
+               value="<?php echo $this->escape($this->protocol)."://".$this->escape($this->host.$this->webroot); ?>/javauploaddownload/upload/"/>
+        <param name="getUploadFileOffsetBaseURL" value="gethttpuploadoffset/"/>
+        <param name="loglevel" value="WARNING"/>
+        <param name="onSuccessfulUploadRedirectEnable" value="true"/>
+        <param name="onSuccessRedirectURL"
+               value="<?php echo $this->escape($this->protocol)."://".$this->escape($this->host.$this->webroot); ?>/item/<?php echo $this->escape($this->item->getKey(
+               )); ?>"/>
+        <param name="parentItem" value="<?php echo $this->escape($this->item->getKey()); ?>"/>
+        <param name="sessionId" value="<?php echo $this->escape(session_id()); ?>"/>
+        <param name="type" value="application/x-java-applet;version=1.5"/>
+        <param name="uploadFileBaseURL" value="processjavarevisionupload?sid="/>
+        <param name="uploadType" value="revision"/>
+        <param name="uploadUniqueIdentifierURL" value="gethttpuploaduniqueidentifier/"/>
+        You must install and enable Java on your system in order to use the Java upload applet.
+    </applet>
+</div>
+<?php
+foreach ($this->extraHtml as $module => $extra) {
+    echo $extra.PHP_EOL;
+}
+?>
+<script type="text/javascript" src="<?php echo $this->moduleWebroot; ?>/public/js/upload/upload.revision.js"></script>

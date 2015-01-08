@@ -20,6 +20,6 @@
 
 /** App controller for the oai module */
 class Oai_AppController extends MIDAS_GlobalModule
-  {
-  public $moduleName = 'oai';
-  }
+{
+    public $moduleName = 'oai';
+}

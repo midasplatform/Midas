@@ -21,81 +21,88 @@
 require_once BASE_PATH.'/core/models/base/ErrorlogModelBase.php';
 
 /**
- * \class ErrorlogModel
- * \brief Pdo Model
+ * Pdo Model
  */
 class ErrorlogModel extends ErrorlogModelBase
-  {
+{
+    /**
+     * Return a list of logs.
+     *
+     * @param string $startDate
+     * @param string $endDate
+     * @param string $module
+     * @param int $priority
+     * @param int $limit
+     * @param int $offset
+     * @param string $operator
+     * @return array
+     */
+    public function getLog(
+        $startDate,
+        $endDate,
+        $module = 'all',
+        $priority = MIDAS_PRIORITY_WARNING,
+        $limit = 99999,
+        $offset = 0,
+        $operator = '<='
+    ) {
+        $sql = $this->database->select()->setIntegrityCheck(false)->from(array('e' => 'errorlog'))->where(
+            'datetime >= ?',
+            $startDate
+        )->where(
+            'datetime <= ?',
+            $endDate
+        )->where('priority '.$operator.' ?', $priority)->order('datetime DESC')->limit($limit, $offset);
+        $sqlCount = $this->database->select()->setIntegrityCheck(false)->from(
+            array('e' => 'errorlog'),
+            array('count' => 'count(*)')
+        )->where(
+            'datetime >= ?',
+            $startDate
+        )->where('datetime <= ?', $endDate)->where('priority '.$operator.' ?', $priority);
+        if ($module != 'all') {
+            $sql->where('module = ?', $module);
+            $sqlCount->where('module = ?', $module);
+        }
 
-  /**
-   *  Return a list of log
-   * @param type $startDate
-   * @param type $endDate
-   * @param type $module
-   * @param type $priority
-   * @param type $limit
-   * @return array ErrorlogDao
-   */
-  function getLog($startDate, $endDate, $module = 'all', $priority = MIDAS_PRIORITY_WARNING, $limit = 99999, $offset = 0, $operator = '<=')
-    {
-    $sql = $this->database->select()
-            ->setIntegrityCheck(false)
-            ->from(array('e' => 'errorlog'))
-            ->where('datetime >= ?', $startDate)
-            ->where('datetime <= ?', $endDate)
-            ->where('priority '.$operator.' ?', $priority)
-            ->order('datetime DESC')
-            ->limit($limit, $offset);
-    $sqlCount = $this->database->select()
-            ->setIntegrityCheck(false)
-            ->from(array('e' => 'errorlog'), array('count' => 'count(*)'))
-            ->where('datetime >= ?', $startDate)
-            ->where('datetime <= ?', $endDate)
-            ->where('priority '.$operator.' ?', $priority);
-    if($module != 'all')
-      {
-      $sql->where('module = ?', $module);
-      $sqlCount->where('module = ?', $module);
-      }
+        $rowset = $this->database->fetchAll($sql);
+        $result = array('logs' => array());
+        foreach ($rowset as $row) {
+            $result['logs'][] = $this->initDao('Errorlog', $row);
+        }
+        $countrow = $this->database->fetchRow($sqlCount);
+        $result['total'] = $countrow['count'];
 
-    $rowset = $this->database->fetchAll($sql);
-    $result = array('logs' => array());
-    foreach($rowset as $row)
-      {
-      $result['logs'][] = $this->initDao('Errorlog', $row);
-      }
-    $countrow = $this->database->fetchRow($sqlCount);
-    $result['total'] = $countrow['count'];
-
-    return $result;
-    }//getLog
-
-  /**
-   * Count the number of log entries since a certain date
-   * @param startDate The start date
-   * @param priorities Array of priorities to filter by.  If null, selects all
-   */
-  function countSince($startDate, $priorities = null)
-    {
-    $sql = $this->database->select()
-                ->setIntegrityCheck(false)
-                ->from(array('e' => 'errorlog'), array('count(*)'))
-                ->where('datetime >= ?', $startDate);
-
-    if($priorities != null)
-      {
-      $sql->where('priority IN (?)', $priorities);
-      }
-
-    $row = $this->database->fetchRow($sql);
-    if(isset($row['count(*)']))
-      {
-      return $row['count(*)'];
-      }
-    if(isset($row['count'])) //for pgsql
-      {
-      return $row['count'];
-      }
-    return 0;
+        return $result;
     }
-  } // end class
+
+    /**
+     * Count the number of log entries since a certain date
+     *
+     * @param string $startDate start date
+     * @param null|array $priorities priorities to filter by. If null, selects all.
+     * @return int
+     */
+    public function countSince($startDate, $priorities = null)
+    {
+        $sql = $this->database->select()->setIntegrityCheck(false)->from(
+            array('e' => 'errorlog'),
+            array('count(*)')
+        )->where('datetime >= ?', $startDate);
+
+        if ($priorities != null) {
+            $sql->where('priority IN (?)', $priorities);
+        }
+
+        $row = $this->database->fetchRow($sql);
+        if (isset($row['count(*)'])) {
+            return $row['count(*)'];
+        }
+        if (isset($row['count'])) { // for pgsql
+
+            return $row['count'];
+        }
+
+        return 0;
+    }
+}

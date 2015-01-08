@@ -20,133 +20,167 @@
 
 /** Feed Model Base */
 abstract class FeedModelBase extends AppModel
-  {
-  /** Constructor*/
-  public function __construct()
+{
+    /** Constructor */
+    public function __construct()
     {
-    parent::__construct();
-    $this->_name = 'feed';
-    $this->_key = 'feed_id';
-    $this->_components = array('Sortdao');
-    $this->_mainData = array(
-      'feed_id' => array('type' => MIDAS_DATA),
-      'date' => array('type' => MIDAS_DATA),
-      'user_id' => array('type' => MIDAS_DATA),
-      'type' => array('type' => MIDAS_DATA),
-      'ressource' => array('type' => MIDAS_DATA),
-      'communities' =>  array('type' => MIDAS_MANY_TO_MANY, 'model' => 'Community', 'table' => 'feed2community', 'parent_column' => 'feed_id', 'child_column' => 'community_id'),
-      'user' => array('type' => MIDAS_MANY_TO_ONE, 'model' => 'User', 'parent_column' => 'user_id', 'child_column' => 'user_id'),
-      'feedpolicygroup' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Feedpolicygroup', 'parent_column' => 'feed_id', 'child_column' => 'feed_id'),
-      'feedpolicyuser' =>  array('type' => MIDAS_ONE_TO_MANY, 'model' => 'Feedpolicyuser', 'parent_column' => 'feed_id', 'child_column' => 'feed_id'),
-      );
-    $this->initialize(); // required
-    } // end __construct()
+        parent::__construct();
+        $this->_name = 'feed';
+        $this->_key = 'feed_id';
+        $this->_components = array('Sortdao');
+        $this->_mainData = array(
+            'feed_id' => array('type' => MIDAS_DATA),
+            'date' => array('type' => MIDAS_DATA),
+            'user_id' => array('type' => MIDAS_DATA),
+            'type' => array('type' => MIDAS_DATA),
+            'resource' => array('type' => MIDAS_DATA),
+            'communities' => array(
+                'type' => MIDAS_MANY_TO_MANY,
+                'model' => 'Community',
+                'table' => 'feed2community',
+                'parent_column' => 'feed_id',
+                'child_column' => 'community_id',
+            ),
+            'user' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'User',
+                'parent_column' => 'user_id',
+                'child_column' => 'user_id',
+            ),
+            'feedpolicygroup' => array(
+                'type' => MIDAS_ONE_TO_MANY,
+                'model' => 'Feedpolicygroup',
+                'parent_column' => 'feed_id',
+                'child_column' => 'feed_id',
+            ),
+            'feedpolicyuser' => array(
+                'type' => MIDAS_ONE_TO_MANY,
+                'model' => 'Feedpolicyuser',
+                'parent_column' => 'feed_id',
+                'child_column' => 'feed_id',
+            ),
+        );
+        $this->initialize(); // required
+    }
 
-  /** get Feeds*/
-  abstract protected function getFeeds($loggedUserDao, $userDao = null, $communityDao = null, $policy = 0, $limit = 20);
-  /** add a community*/
-  abstract protected function addCommunity($feed, $community);
-  abstract function policyCheck($feedDao, $userDao = null, $policy = 0);
+    /** get Feeds */
+    abstract protected function getFeeds(
+        $loggedUserDao,
+        $userDao = null,
+        $communityDao = null,
+        $policy = 0,
+        $limit = 20
+    );
 
-  /** get feeds (filtered by policies)
-   * @return Array of FeedDao */
-  function getGlobalFeeds($loggedUserDao, $policy = 0, $limit = 20)
+    /** add a community */
+    abstract protected function addCommunity($feed, $community);
+
+    /** Check policy */
+    abstract public function policyCheck($feedDao, $userDao = null, $policy = 0);
+
+    /** get feeds (filtered by policies)
+     *
+     * @return Array of FeedDao
+     */
+    public function getGlobalFeeds($loggedUserDao, $policy = 0, $limit = 20)
     {
-    return $this->getFeeds($loggedUserDao, null, null, $policy, $limit);
-    } //end getGlobalFeeds
+        return $this->getFeeds($loggedUserDao, null, null, $policy, $limit);
+    }
 
-  /** get feeds by user (filtered by policies)
-   * @return Array of FeedDao */
-  function getFeedsByUser($loggedUserDao, $userDao, $policy = 0, $limit = 20)
+    /** get feeds by user (filtered by policies)
+     *
+     * @return Array of FeedDao
+     */
+    public function getFeedsByUser($loggedUserDao, $userDao, $policy = 0, $limit = 20)
     {
-    return $this->getFeeds($loggedUserDao, $userDao, null, $policy, $limit);
-    } //end getFeedsByUser
+        return $this->getFeeds($loggedUserDao, $userDao, null, $policy, $limit);
+    }
 
-  /** get feeds by community (filtered by policies)
-     * @return Array of FeedDao */
-  function getFeedsByCommunity($loggedUserDao, $communityDao, $policy = 0, $limit = 20)
+    /** get feeds by community (filtered by policies)
+     *
+     * @return Array of FeedDao
+     */
+    public function getFeedsByCommunity($loggedUserDao, $communityDao, $policy = 0, $limit = 20)
     {
-    return $this->getFeeds($loggedUserDao, null, $communityDao, $policy, $limit);
-    } //end getFeedsByCommunity
+        return $this->getFeeds($loggedUserDao, null, $communityDao, $policy, $limit);
+    }
 
-  /** Create a feed
-   * @return FeedDao */
-  function createFeed($userDao, $type, $ressource, $communityDao = null)
+    /** Create a feed
+     *
+     * @return FeedDao
+     */
+    public function createFeed($userDao, $type, $resource, $communityDao = null)
     {
-    if(!$userDao instanceof UserDao && !is_numeric($type) && !is_object($ressource))
-      {
-      throw new Zend_Exception("Error in parameters, userdao, type, and ressource.");
-      }
-    $feed = MidasLoader::newDao('FeedDao');
-    $feed->setUserId($userDao->getKey());
-    $feed->setType($type);
-    $feed->setDate(date("Y-m-d H:i:s"));
-    switch($type)
-      {
-      case MIDAS_FEED_CREATE_COMMUNITY:
-      case MIDAS_FEED_UPDATE_COMMUNITY:
-        if(!$ressource instanceof CommunityDao)
-          {
-          throw new Zend_Exception("Error in parameter ressource, expecting CommunityDao, type:".$type);
-          }
-        $feed->setRessource($ressource->getKey());
-        break;
-      case MIDAS_FEED_COMMUNITY_INVITATION:
-        if(!$ressource instanceof CommunityInvitationDao)
-          {
-          throw new Zend_Exception("Error in parameter ressource, expecting CommunityInvitationDao, type:".$type);
-          }
-        $feed->setRessource($ressource->getKey());
-        break;
-      case MIDAS_FEED_CREATE_FOLDER:
-        if(!$ressource instanceof FolderDao)
-          {
-          throw new Zend_Exception("Error in parameter ressource, expecting FolderDao, type:".$type);
-          }
-        $feed->setRessource($ressource->getKey());
-        break;
-      case MIDAS_FEED_CREATE_LINK_ITEM:
-      case MIDAS_FEED_CREATE_ITEM:
-        if(!$ressource instanceof ItemDao)
-          {
-          throw new Zend_Exception("Error in parameter ressource, expecting ItemDao, type:".$type);
-          }
-        $feed->setRessource($ressource->getKey());
-        break;
-      case MIDAS_FEED_CREATE_REVISION:
-        if(!$ressource instanceof ItemRevisionDao)
-          {
-          throw new Zend_Exception("Error in parameter ressource, expecting ItemRevisionDao, type:".$type);
-          }
-        $feed->setRessource($ressource->getKey());
-        break;
-      case MIDAS_FEED_CREATE_USER:
-        if(!$ressource instanceof UserDao)
-          {
-          throw new Zend_Exception("Error in parameter ressource, expecting UserDao, type:".$type);
-          }
-        $feed->setRessource($ressource->getKey());
-        break;
-      case MIDAS_FEED_DELETE_COMMUNITY:
-      case MIDAS_FEED_DELETE_FOLDER:
-      case MIDAS_FEED_DELETE_ITEM:
-        if(!is_string($ressource))
-          {
-          throw new Zend_Exception("Error in parameter ressource, expecting string, type:".$type);
-          }
-        $feed->setRessource($ressource);
-        break;
-      default:
-        throw new Zend_Exception("Unable to find an expected type of feed");
-        break;
-      }
-    $this->save($feed);
+        if (!$userDao instanceof UserDao && !is_numeric($type) && !is_object($resource)
+        ) {
+            throw new Zend_Exception("Error in parameters, userdao, type, and resource.");
+        }
 
-    if($communityDao instanceof CommunityDao)
-      {
-      $this->addCommunity($feed, $communityDao);
-      $feed->community = $communityDao;
-      }
-    return $feed;
-    } // end createFeed()
-  } // end class
+        /** @var FeedDao $feed */
+        $feed = MidasLoader::newDao('FeedDao');
+        $feed->setUserId($userDao->getKey());
+        $feed->setType($type);
+        $feed->setDate(date('Y-m-d H:i:s'));
+        switch ($type) {
+            case MIDAS_FEED_CREATE_COMMUNITY:
+            case MIDAS_FEED_UPDATE_COMMUNITY:
+                if (!$resource instanceof CommunityDao) {
+                    throw new Zend_Exception("Error in parameter resource, expecting CommunityDao, type:".$type);
+                }
+                $feed->setResource($resource->getKey());
+                break;
+            case MIDAS_FEED_COMMUNITY_INVITATION:
+                if (!$resource instanceof CommunityInvitationDao) {
+                    throw new Zend_Exception(
+                        "Error in parameter resource, expecting CommunityInvitationDao, type:".$type
+                    );
+                }
+                $feed->setResource($resource->getKey());
+                break;
+            case MIDAS_FEED_CREATE_FOLDER:
+                if (!$resource instanceof FolderDao) {
+                    throw new Zend_Exception("Error in parameter resource, expecting FolderDao, type:".$type);
+                }
+                $feed->setResource($resource->getKey());
+                break;
+            case MIDAS_FEED_CREATE_LINK_ITEM:
+            case MIDAS_FEED_CREATE_ITEM:
+                if (!$resource instanceof ItemDao) {
+                    throw new Zend_Exception("Error in parameter resource, expecting ItemDao, type:".$type);
+                }
+                $feed->setResource($resource->getKey());
+                break;
+            case MIDAS_FEED_CREATE_REVISION:
+                if (!$resource instanceof ItemRevisionDao) {
+                    throw new Zend_Exception("Error in parameter resource, expecting ItemRevisionDao, type:".$type);
+                }
+                $feed->setResource($resource->getKey());
+                break;
+            case MIDAS_FEED_CREATE_USER:
+                if (!$resource instanceof UserDao) {
+                    throw new Zend_Exception("Error in parameter resource, expecting UserDao, type:".$type);
+                }
+                $feed->setResource($resource->getKey());
+                break;
+            case MIDAS_FEED_DELETE_COMMUNITY:
+            case MIDAS_FEED_DELETE_FOLDER:
+            case MIDAS_FEED_DELETE_ITEM:
+                if (!is_string($resource)) {
+                    throw new Zend_Exception("Error in parameter resource, expecting string, type:".$type);
+                }
+                $feed->setResource($resource);
+                break;
+            default:
+                throw new Zend_Exception("Unable to find an expected type of feed");
+                break;
+        }
+        $this->save($feed);
+
+        if ($communityDao instanceof CommunityDao) {
+            $this->addCommunity($feed, $communityDao);
+            $feed->community = $communityDao;
+        }
+
+        return $feed;
+    }
+}

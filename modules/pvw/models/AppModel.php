@@ -20,6 +20,6 @@
 
 /** Base model class for PVW module */
 class Pvw_AppModel extends MIDASModel
-  {
-  public $moduleName = 'pvw';
-  }
+{
+    public $moduleName = 'pvw';
+}

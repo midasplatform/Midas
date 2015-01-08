@@ -21,42 +21,44 @@
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/user/user.emailregister.js');
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/user/user.emailregister.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/user/user.emailregister.css"/>
 
 <div class="viewMain">
-  Fill in the form below to complete your registration and join the community.
+    Fill in the form below to complete your registration and join the community.
 
-  <div>
-  </div>
-  <form class="genericForm" id="registerForm" method="POST">
-    <input type="hidden" name="email" value="<?php echo $this->email?>" />
-    <input type="hidden" name="authKey" value="<?php echo $this->authKey?>" />
-    <div class="emailLabelContainer">
-      <label>Email</label>
-      <span class="emailDisplay"><?php echo $this->email?></span>
-    </div>
     <div>
-      <label for="firstName">First name</label>
-      <input type="text" name="firstName" />
     </div>
-    <div>
-      <label for="lastName">Last name</label>
-      <input type="text" name="lastName" />
-    </div>
-    <div>
-      <label for="password">Password</label>
-      <input type="password" name="password1" />
-    </div>
-    <div>
-      <label for="password2">Retype password</label>
-      <input type="password" name="password2" />
-    </div>
-    <div class="tosContainer">
-      <label for="conditions"></label>
-      <?php echo $this->t("I have read and accept the")?> <a class='termOfService' href='javascript:;'>
-      <?php echo $this->t('terms of service')?></a>
-      <input type="checkbox" name="conditions" class="tosAccept" />
-    </div>
-    <input type="submit" name="submitRegistration" value="Submit" />
-  </form>
+    <form class="genericForm" id="registerForm" method="POST">
+        <input type="hidden" name="email" value="<?php echo $this->escape($this->email); ?>"/>
+        <input type="hidden" name="authKey" value="<?php echo $this->escape($this->authKey); ?>"/>
+
+        <div class="emailLabelContainer">
+            <label>Email</label>
+            <span class="emailDisplay"><?php echo $this->escape($this->email); ?></span>
+        </div>
+        <div>
+            <label for="firstName">First name</label>
+            <input type="text" name="firstName"/>
+        </div>
+        <div>
+            <label for="lastName">Last name</label>
+            <input type="text" name="lastName"/>
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" name="password1"/>
+        </div>
+        <div>
+            <label for="password2">Retype password</label>
+            <input type="password" name="password2"/>
+        </div>
+        <div class="tosContainer">
+            <label for="conditions"></label>
+            <?php echo $this->t("I have read and accept the") ?>
+            <a class='termOfService' href='javascript:;'>
+                <?php echo $this->t('terms of service') ?></a>
+            <input type="checkbox" name="conditions" class="tosAccept"/>
+        </div>
+        <input type="submit" name="submitRegistration" value="Submit"/>
+    </form>
 </div>

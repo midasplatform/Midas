@@ -19,8 +19,10 @@
 =========================================================================*/
 
 /**
+ * Generic model class.
  *
+ * @package Core\Model
  */
 class AppModel extends MIDASModel
-  {
-  }
+{
+}

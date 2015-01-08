@@ -18,70 +18,71 @@
  limitations under the License.
 =========================================================================*/
 
-echo '<script type="text/javascript" src="' . $this->coreWebroot . '/public/js/item/item.editmetadata.js?'.time().'"></script>';
+echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/item/item.editmetadata.js?'.time(
+    ).'"></script>';
 ?>
 
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot?>/public/css/item/item.editmetadata.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/item/item.editmetadata.css"/>
 
-<form id="editMetadataForm" class="genericForm" method="POST"  action="<?php echo $this->webroot?>/item/<?php echo $this->itemDao->getKey()?>">
+<form id="editMetadataForm" class="genericForm" method="POST"
+      action="<?php echo $this->webroot ?>/item/<?php echo $this->escape($this->itemDao->getKey()); ?>">
     <?php
-    if($this->metadata)
-      {
-      echo '<input type="hidden" name="updateMetadata" value ="true"/>';
-      $id = $this->metadata->getKey();
-      }
-    else
-      {
-      $id = '';
-      }
-   ?>
-   <?php
-    if($this->itemrevision)
-      {
-      echo '<input type="hidden" name="itemrevision" value="'.$this->itemrevision.'"/>';
-      }
-   ?>
-   <input type="hidden" name="metadataId" value="<?php echo $id; ?>"/>
-   <input type="hidden" name="editMetadata" value="1" />
-      <div>
+    if ($this->metadata) {
+        echo '<input type="hidden" name="updateMetadata" value ="true"/>';
+        $id = $this->metadata->getKey();
+    } else {
+        $id = '';
+    }
+    ?>
+    <?php
+    if ($this->itemrevision) {
+        echo '<input type="hidden" name="itemrevision" value="'.$this->escape($this->itemrevision).'"/>';
+    }
+    ?>
+    <input type="hidden" name="metadataId" value="<?php echo $this->escape($id); ?>"/>
+    <input type="hidden" name="editMetadata" value="1"/>
+
+    <div>
         <label for="metadatatype"><?php echo $this->t('Data Type'); ?></label>
         <select id="midas_item_metadata_metadatatype" name="metadatatype">
-        <?php
-          foreach($this->metadataTypes as $const => $name)
-            {
-            echo '<option value="'.$const.'"';
-            if($this->metadata && $const == $this->metadata->getMetadatatype())
-              {
-              echo ' selected ';
-              }
-            echo '>'.$name.'</option>';
+            <?php
+            foreach ($this->metadataTypes as $const => $name) {
+                echo '<option value="'.$this->escape($const).'"';
+                if ($this->metadata && $const == $this->metadata->getMetadatatype()
+                ) {
+                    echo ' selected ';
+                }
+                echo '>'.$this->escape($name).'</option>';
             }
             ?>
         </select>
-      </div>
-      <div>
-        <label for="element"><?php echo $this->t('Element')?></label>
-        <input id="midas_item_metadata_element" name ="element" <?php if($this->metadata) { echo ' readonly '; } ?> value="<?php echo (!$this->metadata)?'':$this->metadata->getElement()?>"/>
-      </div>
-      <div>
-        <label for="qualifier"><?php echo $this->t('Qualifier (Optional)')?></label>
-        <input id="midas_item_metadata_qualifier" name ="qualifier" <?php if($this->metadata) { echo ' readonly '; } ?> value ="<?php echo (!$this->metadata)?'':$this->metadata->getQualifier()?>"/>
-      </div>
-      <div>
-        <label for="value"><?php echo $this->t('Value')?></label>
-        <input id="midas_item_metadata_value" name ="value" value ="<?php echo (!$this->metadata)?'':$this->metadata->getValue()?>"/>
-      </div>
-      <?php
-      if($this->metadata)
-        {
-        echo
-          '<div>
+    </div>
+    <div>
+        <label for="element"><?php echo $this->t('Element') ?></label>
+        <input id="midas_item_metadata_element" name="element" <?php if ($this->metadata) {
+            echo ' readonly ';
+        } ?> value="<?php echo (!$this->metadata) ? '' : $this->escape($this->metadata->getElement()); ?>"/>
+    </div>
+    <div>
+        <label for="qualifier"><?php echo $this->t('Qualifier (Optional)') ?></label>
+        <input id="midas_item_metadata_qualifier" name="qualifier" <?php if ($this->metadata) {
+            echo ' readonly ';
+        } ?> value="<?php echo (!$this->metadata) ? '' : $this->escape($this->metadata->getQualifier()); ?>"/>
+    </div>
+    <div>
+        <label for="value"><?php echo $this->t('Value') ?></label>
+        <input id="midas_item_metadata_value" name="value"
+               value="<?php echo (!$this->metadata) ? '' : $this->escape($this->metadata->getValue()); ?>"/>
+    </div>
+    <?php
+    if ($this->metadata) {
+        echo '<div>
             <input type="submit" value="'.$this->t("Save").'"/>
           </div>';
-        }
-      ?>
+    }
+    ?>
 </form>
 
-<div id="jsonMetadata" style ='display:none;'>
-  <?php echo $this->jsonMetadataType?>
+<div id="jsonMetadata" style='display:none;'>
+    <?php echo $this->jsonMetadataType ?>
 </div>

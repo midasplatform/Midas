@@ -1,11 +1,17 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+
+var midas = midas || {};
+
 function highlightCurrentPreview(currentElement) {
+    'use strict';
     $('#fullscreenVisualize').find('a.linkedcontentLink').css('font-weight', 'normal');
     $('#fullscreenVisualize').find('a.linkedcontentLink[element=' + currentElement + ']').css('font-weight', 'bold');
 }
 
 function createInfoAjaxVisualize(itemId) {
+    'use strict';
     $('img.infoLoading').show();
     $('div.ajaxInfoElement').html('');
     $.ajax({
@@ -23,12 +29,13 @@ function createInfoAjaxVisualize(itemId) {
 }
 
 $(document).ready(function () {
+    'use strict';
     var currentElement = json.item.item_id;
 
     /** create preview page */
     var height = $(window).height() - 100;
     var width = 800;
-    var url = json.global.webroot + "/visualize/?itemId=" + json.item.item_id + '&height=' + height + '&width=' + width + '&viewMode=' + json.viewMode;
+    var url = json.global.webroot + "/visualize/?itemId=" + encodeURIComponent(json.item.item_id) + '&height=' + encodeURIComponent(height) + '&width=' + encodeURIComponent(width) + '&viewMode=' + encodeURIComponent(json.viewMode);
     var html = '<div id="fullscreenVisualize" style="min-width:1200px">';
     html += '<div id="fullscreenPanel">';
     html += '<div style="float:left;margin-right:2px;" class="genericBigButton ">';
@@ -62,7 +69,7 @@ $(document).ready(function () {
     $('#fullscreenVisualize').find('a.linkedcontentLink').click(function () {
         var height = $(window).height() - 100;
         var width = 900;
-        var url = json.global.webroot + "/visualize/?height=" + height + '&width=' + width + '&itemId=' + $(this).attr('element');
+        var url = json.global.webroot + "/visualize/?height=" + encodeURIComponent(height) + '&width=' + encodeURIComponent(width) + '&itemId=' + encodeURIComponent($(this).attr('element'));
         $('iframe#fullscreenVisualizeIframe').attr('src', url);
         currentElement = $(this).attr('element');
         highlightCurrentPreview(currentElement);
@@ -72,12 +79,12 @@ $(document).ready(function () {
         var objTmp = obj.parents('li').prev().find('a');
         $('a.nextVisu').show();
         $('a.previousVisu').show();
-        if (objTmp.length == 0) {
+        if (objTmp.length === 0) {
             $('a.previousVisu').hide();
         }
 
         objTmp = obj.parents('li').next().find('a');
-        if (objTmp.length == 0) {
+        if (objTmp.length === 0) {
             $('a.nextVisu').hide();
         }
     });
@@ -86,7 +93,7 @@ $(document).ready(function () {
         var obj = $('#fullscreenVisualize').find('a.linkedcontentLink[element=' + currentElement + ']').parents('li').prev().find('a');
         var height = $(window).height() - 100;
         var width = 900;
-        var url = json.global.webroot + "/visualize/?height=" + height + '&width=' + width + '&itemId=' + obj.attr('element');
+        var url = json.global.webroot + "/visualize/?height=" + encodeURIComponent(height) + '&width=' + encodeURIComponent(width) + '&itemId=' + encodeURIComponent(obj.attr('element'));
         $('iframe#fullscreenVisualizeIframe').attr('src', url);
         currentElement = obj.attr('element');
         highlightCurrentPreview(currentElement);
@@ -94,7 +101,7 @@ $(document).ready(function () {
         $('a.nextVisu').show();
 
         obj = obj.parents('li').prev().find('a');
-        if (obj.length == 0) {
+        if (obj.length === 0) {
             $('a.previousVisu').hide();
         }
     });
@@ -103,14 +110,14 @@ $(document).ready(function () {
         var obj = $('#fullscreenVisualize').find('a.linkedcontentLink[element=' + currentElement + ']').parents('li').next().find('a');
         var height = $(window).height() - 100;
         var width = 900;
-        var url = json.global.webroot + "/visualize/?height=" + height + '&width=' + width + '&itemId=' + obj.attr('element');
+        var url = json.global.webroot + "/visualize/?height=" + encodeURIComponent(height) + '&width=' + encodeURIComponent(width) + '&itemId=' + encodeURIComponent(obj.attr('element'));
         $('iframe#fullscreenVisualizeIframe').attr('src', url);
         currentElement = obj.attr('element');
         highlightCurrentPreview(currentElement);
         createInfoAjaxVisualize(currentElement);
 
         obj = obj.parents('li').next().find('a');
-        if (obj.length == 0) {
+        if (obj.length === 0) {
             $('a.nextVisu').hide();
         }
     });
@@ -121,6 +128,6 @@ $(document).ready(function () {
     //$('.Header').hide();
     $('.SubWrapper').hide();
     $('#fullscreenVisualize').find('a.closeVisuButton').click(function () {
-        window.location.replace(json.global.webroot + "/item/" + json.item.item_id);
+        window.location.replace(json.global.webroot + "/item/" + encodeURIComponent(json.item.item_id));
     });
 });

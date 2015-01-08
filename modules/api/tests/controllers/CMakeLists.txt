@@ -17,11 +17,14 @@
 # limitations under the License.
 #=============================================================================
 
-add_midas_test( ApiKeyControllerTest ApiKeyControllerTest.php )
-add_midas_test( ApiIndexControllerTest ApiIndexControllerTest.php )
-add_midas_test( ApiCallUserMethodsTest ApiCallUserMethodsTest.php )
-add_midas_test( ApiCallItemMethodsTest ApiCallItemMethodsTest.php )
-add_midas_test( ApiCallFolderMethodsTest ApiCallFolderMethodsTest.php )
-add_midas_test( ApiCallGroupMethodsTest ApiCallGroupMethodsTest.php )
-add_midas_test( ApiCallCommunityMethodsTest ApiCallCommunityMethodsTest.php )
-add_midas_test( ApiCallMiscMethodsTest ApiCallMiscMethodsTest.php )
+set(module_name api)
+to_titlecase(${module_name} module_name_titlecase)
+
+add_midas_test(${module_name_titlecase}CallCommunityMethodsTest CallCommunityMethodsTest.php)
+add_midas_test(${module_name_titlecase}CallFolderMethodsTest CallFolderMethodsTest.php)
+add_midas_test(${module_name_titlecase}CallGroupMethodsTest CallGroupMethodsTest.php)
+add_midas_test(${module_name_titlecase}CallItemMethodsTest CallItemMethodsTest.php)
+add_midas_test(${module_name_titlecase}CallMiscMethodsTest CallMiscMethodsTest.php)
+add_midas_test(${module_name_titlecase}CallUserMethodsTest CallUserMethodsTest.php)
+add_midas_test(${module_name_titlecase}IndexControllerTest IndexControllerTest.php)
+add_midas_test(${module_name_titlecase}KeyControllerTest KeyControllerTest.php)

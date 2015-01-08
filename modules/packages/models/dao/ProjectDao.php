@@ -22,7 +22,7 @@
  * Project DAO
  */
 class Packages_ProjectDao extends AppDao
-  {
-  public $_model = 'Project';
-  public $_module = 'packages';
-  }
+{
+    public $_model = 'Project';
+    public $_module = 'packages';
+}

@@ -1,6 +1,10 @@
 // MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global json */
+/* global sliceFileName */
+
 $(document).ready(function () {
+    'use strict';
     json.search.keyword = $("<div/>").html(json.search.keyword).text(); // remove html entity encoding
     $('#live_search_value').val($('#live_search').val());
     $('#live_search').val(json.search.keyword);
@@ -70,6 +74,7 @@ var iterator;
 var type;
 
 function changeSorting(order) {
+    'use strict';
     $('img.searchLoading').show();
     $('ul#searchResults').hide();
     $.post(json.global.webroot + '/search', {
@@ -78,13 +83,14 @@ function changeSorting(order) {
             order: order
         },
         function (data) {
-            var tmp = jQuery.parseJSON(data);
+            var tmp = $.parseJSON(data);
             json.search.results = tmp.results;
             initSearchResults(type, false);
         });
 }
 
 function initSearchResults(type, append) {
+    'use strict';
     var i = 0;
     var j = 0;
     if (append) {
@@ -97,8 +103,8 @@ function initSearchResults(type, append) {
         $('ul#searchResults li').remove();
     }
     while (i < numberOfResults) {
-        if (json.search.results[j] == undefined) {
-            if (i == 0 && !append) {
+        if (json.search.results[j] === undefined) {
+            if (i === 0 && !append) {
                 $('ul#searchResults').append('<li>' + json.search.noResults + '</li>');
             }
             break;
@@ -109,7 +115,7 @@ function initSearchResults(type, append) {
         }
         j++;
     }
-    if (i == numberOfResults && json.search.results[j] != undefined) {
+    if (i == numberOfResults && json.search.results[j] !== undefined) {
         iterator = j;
         $('ul#searchResults').append('<li id="moreResults"><a>' + json.search.moreResults + '</a></li>');
         $('li#moreResults').click(function () {
@@ -121,28 +127,29 @@ function initSearchResults(type, append) {
 }
 
 function createSearchResults(element) {
+    'use strict';
     var html = '';
     if (element.resultType == 'user') {
         html = "<img class='imageSearchResult' alt='' src='" + json.global.coreWebroot + "/public/images/icons/unknownUser-small.png'/>";
-        html += "<a class='nameSearchResult' href='" + json.global.webroot + "/user/" + element.user_id + "'>" + sliceFileName(element.firstname + ' ' + element.lastname, 45) + "</a><br/>";
+        html += "<a class='nameSearchResult' href='" + json.global.webroot + "/user/" + encodeURIComponent(element.user_id) + "'>" + sliceFileName(element.firstname + ' ' + element.lastname, 45) + "</a><br/>";
         html += "<span class='descriptionSearchResult' >" + element.company + "</span>";
         html += "<span class='dateSearchResult' >" + element.formattedDate + "</span>";
     }
     if (element.resultType == 'item') {
         html = "<img class='imageSearchResult' alt='' src='" + json.global.coreWebroot + "/public/images/FileTree/txt.png'/>";
-        html += "<a class='nameSearchResult' href='" + json.global.webroot + "/item/" + element.item_id + "'>" + sliceFileName(element.name, 45) + "</a><br/>";
+        html += "<a class='nameSearchResult' href='" + json.global.webroot + "/item/" + encodeURIComponent(element.item_id) + "'>" + sliceFileName(element.name, 45) + "</a><br/>";
         html += "<span class='descriptionSearchResult' >" + element.description + "</span>";
         html += "<span class='dateSearchResult' >" + element.formattedDate + "</span>";
     }
     if (element.resultType == 'folder') {
         html = "<img class='imageSearchResult' alt='' src='" + json.global.coreWebroot + "/public/images/FileTree/directory.png'/>";
-        html += "<a class='nameSearchResult' href='" + json.global.webroot + "/folder/" + element.folder_id + "'>" + sliceFileName(element.name, 45) + "</a><br/>";
+        html += "<a class='nameSearchResult' href='" + json.global.webroot + "/folder/" + encodeURIComponent(element.folder_id) + "'>" + sliceFileName(element.name, 45) + "</a><br/>";
         html += "<span class='descriptionSearchResult' >" + element.description + "</span>";
         html += "<span class='dateSearchResult' >" + element.formattedDate + "</span>";
     }
     if (element.resultType == 'community') {
         html = "<img class='imageSearchResult' alt='' src='" + json.global.coreWebroot + "/public/images/icons/community.png'/>";
-        html += "<a class='nameSearchResult' href='" + json.global.webroot + "/community/" + element.community_id + "'>" + sliceFileName(element.name, 45) + "</a><br/>";
+        html += "<a class='nameSearchResult' href='" + json.global.webroot + "/community/" + encodeURIComponent(element.community_id) + "'>" + sliceFileName(element.name, 45) + "</a><br/>";
         html += "<span class='descriptionSearchResult' >" + element.description + "</span>";
         html += "<span class='dateSearchResult' >" + element.formattedDate + "</span>";
     }

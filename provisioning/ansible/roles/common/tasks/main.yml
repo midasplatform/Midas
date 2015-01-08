@@ -27,3 +27,6 @@
     - cmake
     - git
     - unzip
+
+- name: chmod 0777
+  file: path=core/configs mode=0777 recurse=yes state=directory

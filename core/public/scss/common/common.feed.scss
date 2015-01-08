@@ -1,0 +1,43 @@
+/* MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+
+div.feedContainer div {
+    &.feedElement {
+        border-bottom: 1px dotted #E4E4E4;
+        min-height: 30px;
+        position: relative;
+    }
+    &.feedUserImage {
+        float: left;
+    }
+    &.feedDate {
+        bottom: 0;
+        color: #808080;
+        font-size: 10px;
+        position: absolute;
+        right: 0;
+    }
+}
+
+img.feedDeleteLink {
+    cursor: pointer;
+    display: none;
+    height: 10px;
+    text-align: center;
+    vertical-align: middle;
+    width: 10px;
+}
+
+div.feedDelete {
+    height: 10px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 10px;
+}
+
+img.newFeedElement {
+    float: right;
+    position: relative;
+    left: -13px;
+    top: 2px;
+}

@@ -18,17 +18,17 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH . '/modules/api/library/APIEnabledNotification.php';
+require_once BASE_PATH.'/modules/api/library/APIEnabledNotification.php';
 
-/** notification manager*/
+/** Notification manager for the api module */
 class Api_Notification extends ApiEnabled_Notification
-  {
-  public $moduleName = 'api';
-  public $_moduleComponents = array('Api');
+{
+    public $moduleName = 'api';
+    public $_moduleComponents = array('Api');
 
-  /** init notification process*/
-  public function init()
+    /** init notification process */
+    public function init()
     {
-    $this->enableWebAPI('api');
-    }//end init
-  } // end class
+        $this->enableWebAPI('api');
+    }
+}
