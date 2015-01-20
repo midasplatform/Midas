@@ -30,23 +30,23 @@ $this->headScript()->appendFile(
 );
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.cursor.min.js');
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/trend/trend.view.css"/>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/jquery/jquery.jqplot.min.css"/>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/common/common.browser.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot; ?>/public/css/trend/trend.view.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot; ?>/public/css/jquery/jquery.jqplot.min.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot; ?>/public/css/common/common.browser.css"/>
 
 <div class="viewMain">
     <div class="itemsContainer">
         <div>
             <?php
-            if (count($this->trends) == 1) {
-                /** @var Tracker_TrendDao $trend */
-                $trend = $this->trends[0];
+            if (count($this->trends) === 1) {
+                /** @var Tracker_TrendDao $trendDao */
+                $trendDao = $this->trends[0];
                 ?>
             Configuration data:
                 <?php
-                if ($trend->getConfigItemId()) {
-                    echo '<a href="'.$this->webroot.'/item/'.$this->escape($trend->getConfigItemId(
-                        )).'">'.$this->escape($trend->getConfigItem()->getName()).'</a>';
+                if ($trendDao->getConfigItemId()) {
+                    echo '<a href="'.$this->webroot.'/item/'.$this->escape($trendDao->getConfigItemId(
+                        )).'">'.$this->escape($trendDao->getConfigItem()->getName()).'</a>';
                 } else {
                     echo '<span class="itemLinkNone">none</span>';
                 }
@@ -55,9 +55,9 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
         <div>
             Test data:
                 <?php
-                if ($trend->getTestDatasetId()) {
-                    echo '<a href="'.$this->webroot.'/item/'.$this->escape($trend->getTestDatasetId(
-                        )).'">'.$this->escape($trend->getTestDatasetItem()->getName()).'</a>';
+                if ($trendDao->getTestDatasetId()) {
+                    echo '<a href="'.$this->webroot.'/item/'.$this->escape($trendDao->getTestDatasetId(
+                        )).'">'.$this->escape($trendDao->getTestDatasetItem()->getName()).'</a>';
                 } else {
                     echo '<span class="itemLinkNone">none</span>';
                 }
@@ -66,9 +66,9 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
         <div>
             Ground truth data:
                 <?php
-                if ($trend->getTruthDatasetId()) {
-                    echo '<a href="'.$this->webroot.'/item/'.$this->escape($trend->getTruthDatasetId(
-                        )).'">'.$this->escape($trend->getTruthDatasetItem()->getName()).'</a>';
+                if ($trendDao->getTruthDatasetId()) {
+                    echo '<a href="'.$this->webroot.'/item/'.$this->escape($trendDao->getTruthDatasetId(
+                        )).'">'.$this->escape($trendDao->getTruthDatasetItem()->getName()).'</a>';
                 } else {
                     echo '<span class="itemLinkNone">none</span>';
                 }
@@ -83,7 +83,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
         <input class="dateSelect" type="text" id="enddate" name="enddate"/>
         <input type="button" class="globalButton" id="filterButton" value="Update"/>
         <img alt="" style="display: none;" id="dateRangeUpdating"
-             src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>
+             src="<?php echo $this->coreWebroot; ?>/public/images/icons/loading.gif"/>
     </div>
     <div class="branchFilterContainer">
         <label for="branchfilter">Filter by branch:</label>
@@ -116,28 +116,28 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
         <h1>Actions</h1>
         <ul>
             <?php
-            if ($this->isAdmin && count($this->trends) == 1) {
-                /** @var Tracker_TrendDao $trend */
-                $trend = $this->trends[0];
+            if ($this->isAdmin && count($this->trends) === 1) {
+                /** @var Tracker_TrendDao $trendDao */
+                $trendDao = $this->trends[0];
                 ?>
                 <li>
-                    <a href="<?php echo $this->webroot ?>/tracker/trend/edit?trendId=<?php echo $trend->getKey(
+                    <a href="<?php echo $this->webroot; ?>/tracker/trend/edit?trendId=<?php echo $trendDao->getKey(
                     ) ?>">
-                        <img alt="" src="<?php echo $this->coreWebroot ?>/public/images/icons/edit.png"/> Edit
+                        <img alt="" src="<?php echo $this->coreWebroot; ?>/public/images/icons/edit.png"/> Edit
                     </a>
                 </li>
                 <li>
                     <a class="deleteTrend"><img alt=""
-                                                src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png"/>
+                                                src="<?php echo $this->coreWebroot; ?>/public/images/icons/close.png"/>
                         Delete</a>
                 </li>
             <?php
             }
-            if ($this->logged && count($this->trends) == 1) {
+            if ($this->logged && count($this->trends) === 1) {
                 ?>
                 <li>
                     <a class="thresholdAction"><img alt=""
-                                                    src="<?php echo $this->coreWebroot ?>/public/images/icons/email_error.png"/>
+                                                    src="<?php echo $this->coreWebroot; ?>/public/images/icons/email_error.png"/>
                         Notifications</a>
                 </li>
             <?php
@@ -145,11 +145,11 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
             ?>
             <li>
                 <a class="resetZoomAction"><img alt=""
-                                                src="<?php echo $this->coreWebroot ?>/public/images/icons/magnifier_zoom_out.png"/>
+                                                src="<?php echo $this->coreWebroot; ?>/public/images/icons/magnifier_zoom_out.png"/>
                     Reset plot zoom</a>
             </li>
             <li>
-                <a class="axesControl"><img alt="" src="<?php echo $this->moduleWebroot ?>/public/images/axes.png"/>
+                <a class="axesControl"><img alt="" src="<?php echo $this->moduleWebroot; ?>/public/images/axes.png"/>
                     Axes</a>
             </li>
             <li>

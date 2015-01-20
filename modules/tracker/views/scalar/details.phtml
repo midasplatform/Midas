@@ -18,8 +18,8 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<script type="text/javascript" src="<?php echo $this->moduleWebroot ?>/public/js/scalar/scalar.details.js"></script>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/scalar/scalar.details.css"/>
+<script type="text/javascript" src="<?php echo $this->moduleWebroot; ?>/public/js/scalar/scalar.details.js"></script>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot; ?>/public/css/scalar/scalar.details.css"/>
 
 <input type="hidden" class="scalarId" value="<?php echo $this->escape($this->scalar->getKey()); ?>"/>
 
@@ -151,15 +151,15 @@ if (count($this->extraParams)) {
     <?php
     /** @var array $result */
     foreach ($this->resultItems as $result) {
-        /** @var ItemDao $item */
-        $item = $result['item'];
+        /** @var ItemDao $itemDao */
+        $itemDao = $result['item'];
         echo '<div class="resultItemContainer"><span class="resultItemLabel">'.$this->escape($result['label']).':</span> ';
-        echo '<a element="'.$this->escape($item->getKey()).'" class="resultItemLink" href="'.$this->webroot.'/item/'.$this->escape($item->getKey(
+        echo '<a element="'.$this->escape($itemDao->getKey()).'" class="resultItemLink" href="'.$this->webroot.'/item/'.$this->escape($itemDao->getKey(
             )).'" ';
-        echo 'thumbnail="'.$this->escape($item->getThumbnailId()).'">'.$this->escape($item->getName()).'</a>';
+        echo 'thumbnail="'.$this->escape($itemDao->getThumbnailId()).'">'.$this->escape($itemDao->getName()).'</a>';
         echo '</div>';
     }
-    if (count($this->resultItems) === 0) {
+    if (empty($this->resultItems)) {
         echo '<span class="itemLinkNone">No result items submitted</span>';
     }
     ?>

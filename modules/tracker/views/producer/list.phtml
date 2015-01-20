@@ -18,8 +18,8 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<script type="text/javascript" src="<?php echo $this->moduleWebroot ?>/public/js/producer/producer.list.js"></script>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/producer/producer.list.css"/>
+<script type="text/javascript" src="<?php echo $this->moduleWebroot; ?>/public/js/producer/producer.list.js"></script>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot; ?>/public/css/producer/producer.list.css"/>
 
 <div class="producersTabWrapper">
     <div class="introText">The <?php echo $this->escape($this->community->getName()); ?> community contains the following producers:
@@ -27,18 +27,18 @@
 
     <div class="producerList">
         <?php
-        if (count($this->producers) == 0) {
+        if (empty($this->producers)) {
             echo '<div class="noProducers">There are no producers for this community yet.</div>';
         }
 
-        /** @var Tracker_ProducerDao $producer */
-        foreach ($this->producers as $producer) {
+        /** @var Tracker_ProducerDao $producerDao */
+        foreach ($this->producers as $producerDao) {
             echo '<div class="producerContainer">';
-            echo '<a class="producerLink" href="'.$this->webroot.'/tracker/producer/view?producerId='.$this->escape($producer->getKey(
+            echo '<a class="producerLink" href="'.$this->webroot.'/tracker/producer/view?producerId='.$this->escape($producerDao->getKey(
                 )).'">';
-            echo $producer->getDisplayName().'</a>';
-            if ($producer->getDescription() != '') {
-                echo '<div class="producerDescription">'.$this->escape($producer->getDescription()).'</div>';
+            echo $producerDao->getDisplayName().'</a>';
+            if ($producerDao->getDescription() != '') {
+                echo '<div class="producerDescription">'.$this->escape($producerDao->getDescription()).'</div>';
             }
             echo '</div>';
         }

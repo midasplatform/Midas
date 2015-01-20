@@ -18,15 +18,15 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<script type="text/javascript" src="<?php echo $this->coreWebroot ?>/public/js/jquery/jquery.form.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot; ?>/public/js/jquery/jquery.form.js"></script>
 <script type="text/javascript"
-        src="<?php echo $this->coreWebroot ?>/public/js/jquery/jquery.autogrow-textarea.js"></script>
-<script type="text/javascript" src="<?php echo $this->moduleWebroot ?>/public/js/producer/producer.edit.js"></script>
+        src="<?php echo $this->coreWebroot; ?>/public/js/jquery/jquery.autogrow-textarea.js"></script>
+<script type="text/javascript" src="<?php echo $this->moduleWebroot; ?>/public/js/producer/producer.edit.js"></script>
 
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/producer/producer.edit.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot; ?>/public/css/producer/producer.edit.css"/>
 
 <div class="formWrapper">
-    <form class="editProducerForm genericForm" action="<?php echo $this->webroot ?>/tracker/producer/editsubmit"
+    <form class="editProducerForm genericForm" action="<?php echo $this->webroot; ?>/tracker/producer/editsubmit"
           method="POST">
         <div class="formRow">
             <label for="displayName">Name</label>
