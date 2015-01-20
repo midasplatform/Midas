@@ -104,6 +104,7 @@ class ApiController extends REST_Controller
      *   => function name in the corresponding ApiComponent. This array must have
      *   'default' in its keys.
      * @param null|string $moduleName module from which to get the ApiComponent
+     * @param bool $rpcStyle wrap data in RPC-style "data" and "msg" fields
      *
      * {@example
      * _genericAction(array('id' => 2), 'get', $apiFunctionArray) is called and
@@ -118,7 +119,7 @@ class ApiController extends REST_Controller
      * 'itemDuplicate' in ApiComponent (in core module) to do the API work.
      * }
      */
-    protected function _genericAction($args, $resource, $restAction, $apiFunctions, $moduleName = null)
+    protected function _genericAction($args, $resource, $restAction, $apiFunctions, $moduleName = null, $rpcStyle = true)
     {
         $ApiComponent = MidasLoader::loadComponent('Api'.$resource, $moduleName);
         $httpCode = $this->httpSuccessCode[strtolower($restAction)];
@@ -138,10 +139,14 @@ class ApiController extends REST_Controller
                 $calledFunction = $calledFunction.'Wrapper';
             }
             $resultsArray = $ApiComponent->$calledFunction($args, $userDao);
-            if (isset($resultsArray)) {
-                $apiResults['data'] = $resultsArray;
-            } else { // if the api function doesn't provide an return value
-                $apiResults['msg'] = "succeed!"; // there is no exception if code reaches here
+            if ($rpcStyle) {
+                if (isset($resultsArray)) {
+                    $apiResults['data'] = $resultsArray;
+                } else { // if the api function doesn't provide an return value
+                    $apiResults['msg'] = "succeed!"; // there is no exception if code reaches here
+                }
+            } else {
+                $apiResults = $resultsArray;
             }
         } catch (Exception $e) {
             list($apiResults['error'], $httpCode) = $this->_exceptionHandler($e);
