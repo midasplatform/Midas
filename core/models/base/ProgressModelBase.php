@@ -19,20 +19,22 @@
 =========================================================================*/
 
 /**
- * Progress model base class
+ * Producer base model class.
  *
- * The progress object is used to store a generic representation
- * of the progress of some event.  It is used within Midas to keep track
- * of events that can take a long time to run.  As the event is running on the server,
- * clients may asynchronously poll the server to request the current progress
- * of the event's execution.
+ * The progress object is used to store a generic representation of the
+ * progress of some event. It is used within the Midas Server to keep track of
+ * events that can take a long time to run. As the event is running on the
+ * server, clients may asynchronously poll the server to request the current
+ * progress of the event's execution.
  *
- * If the progress object has a maximum value of 0, that means that the
- * progress is indeterminate.
+ * If the progress object has a maximum value of 0, then the progress is
+ * indeterminate.
+ *
+ * @package Core\Model
  */
 abstract class ProgressModelBase extends AppModel
 {
-    /** constructor */
+    /** Constructor. */
     public function __construct()
     {
         parent::__construct();
@@ -51,11 +53,11 @@ abstract class ProgressModelBase extends AppModel
     }
 
     /**
-     * Create a new progress record beginning with current value 0
+     * Create a new progress record beginning with the current value equal to 0.
      *
-     * @param max The max (default is 0 for indeterminate)
-     * @param message The initial progress message (defaults to empty)
-     * @return The progress dao that was created
+     * @param int $max maximum value of the progress (default is 0 for indeterminate)
+     * @param string $message initial progress message (default is empty)
+     * @return ProgressDao progress DAO
      */
     public function createProgress($max = 0, $message = '')
     {
@@ -73,10 +75,11 @@ abstract class ProgressModelBase extends AppModel
     }
 
     /**
-     * Update a progress record.  Touches its update timestamp and sets its value.
+     * Update a progress record. Touches its update timestamp and sets its value.
      *
-     * @param progressDao The progress record to update
-     * @param currentValue The current value of the progress
+     * @param ProgressDao $progressDao progress record to update
+     * @param int $currentValue current value of the progress
+     * @param string $message progress message
      */
     public function updateProgress($progressDao, $currentValue, $message = '')
     {
@@ -88,13 +91,15 @@ abstract class ProgressModelBase extends AppModel
     }
 
     /**
-     * Override default save so that we can unlock the session,
-     * which is required for concurrent progress polling.  See documentation of
-     * session_write_close for explanation.
+     * Override the default save so that we can unlock the session, which is
+     * required for concurrent progress polling.  See documentation of
+     * session_write_close for an explanation.
+     *
+     * @param ProgressDao $progressDao
      */
-    public function save($dao)
+    public function save($progressDao)
     {
         session_write_close();
-        parent::save($dao);
+        parent::save($progressDao);
     }
 }
