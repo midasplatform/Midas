@@ -30,25 +30,25 @@
           method="POST">
         <div class="formRow">
             <label for="displayName">Name</label>
-            <input type="text" name="displayName" value="<?php echo $this->producer->getDisplayName(); ?>"/>
+            <input type="text" id="displayName" name="displayName" value="<?php echo $this->producer->getDisplayName(); ?>"/>
         </div>
         <div class="formRow">
             <label for="description">Description</label>
-            <textarea class="description" name="description"><?php echo $this->producer->getDescription(); ?></textarea>
+            <textarea class="description" id="description" name="description"><?php echo $this->producer->getDescription(); ?></textarea>
         </div>
         <div class="formRow">
             <label for="repository">Repository URL</label>
-            <input type="text" name="repository" value="<?php echo $this->producer->getRepository(); ?>"/>
+            <input type="text" id="repository" name="repository" value="<?php echo $this->producer->getRepository(); ?>"/>
         </div>
         <div class="formRow">
             <label for="revisionUrl">Revision URL</label>
-            <input type="text" name="revisionUrl" value="<?php echo $this->producer->getRevisionUrl(); ?>"/>
+            <input type="text" id="revisionUrl" name="revisionUrl" value="<?php echo $this->producer->getRevisionUrl(); ?>"/>
         </div>
         <div class="formRow">
             <label for="executableName">Executable Name</label>
-            <input type="text" name="executableName" value="<?php echo $this->producer->getExecutableName(); ?>"/>
+            <input type="text" id="executableName" name="executableName" value="<?php echo $this->producer->getExecutableName(); ?>"/>
         </div>
-        <input type="hidden" name="producerId" value="<?php echo $this->producer->getKey(); ?>"/>
+        <input type="hidden" id="producerId" name="producerId" value="<?php echo $this->producer->getKey(); ?>"/>
 
         <div class="submitButtonContainer">
             <input type="submit" class="globalButton" value="Save"/>

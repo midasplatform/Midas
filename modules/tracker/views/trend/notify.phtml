@@ -26,10 +26,10 @@
 <form id="thresholdNotifyForm" class="genericForm" method="POST"
       action="<?php echo $this->webroot ?>/tracker/trend/notifysubmit">
     <div>
-        <input type="radio" id="noNotify" name="doNotify" value="no"/>Do not send me emails for this trend
+        <input type="radio" id="noNotify" name="doNotify" value="no"/><label for="noNotify">Do not send me emails for this trend</label>
     </div>
     <div>
-        <input type="radio" id="yesNotify" name="doNotify" value="yes"/>Send me an email alert
+        <input type="radio" id="yesNotify" name="doNotify" value="yes"/><label for="yesNotify">Send me an email alert</label>
     </div>
     <div class="thresholdInfoContainer">
         When submitted value is
@@ -39,7 +39,7 @@
             <option value="&gt;=">&gt;=</option>
             <option value="&lt;=">&lt;=</option>
         </select>
-        <input type="text" class="thresholdValue" name="value"
+        <input type="text" class="thresholdValue" id="value" name="value"
             <?php
             if ($this->setting) {
                 echo ' value="'.$this->escape($this->setting->getValue()).'"';

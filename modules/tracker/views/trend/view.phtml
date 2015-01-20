@@ -174,19 +174,19 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
     <table class="yValuesTable">
         <tbody>
         <tr>
-            <th>Y range:</th>
-            <td><input class="yMin" type="text"/></td>
-            <td>to</td>
-            <td><input class="yMax" type="text"/></td>
+            <th><label for="yMin">Y range:</label></th>
+            <td><input id="yMin" class="yMin" type="text"/></td>
+            <td><label for="yMax">to</label></td>
+            <td><input id="yMax" class="yMax" type="text"/></td>
         </tr>
         <?php
         if ($this->rightTrend) {
             ?>
             <tr>
-                <th>Y2 range:</th>
-                <td><input class="y2Min" type="text"/></td>
-                <td>to</td>
-                <td><input class="y2Max" type="text"/></td>
+                <th><label for="y2Min">Y2 range:</label></th>
+                <td><input id="y2Min" class="y2Min" type="text"/></td>
+                <td><label for="y2Max">to</label></td>
+                <td><input id="y2Max"  type="text"/></td>
             </tr>
         <?php
         }
