@@ -19,10 +19,33 @@
 =========================================================================*/
 
 /**
- * Producer DAO
+ * Producer DAO for the tracker module.
+ *
+ * @method int getProducerId()
+ * @method void setProducerId(int $producerId)
+ * @method int getCommunityId()
+ * @method void setCommunityId(int $communityId)
+ * @method string getRepository()
+ * @method void setRepository(string $repository)
+ * @method string getRevisionUrl()
+ * @method void setRevisionUrl(string $revisionUrl)
+ * @method string getExecutableName()
+ * @method void setExecutableName(string $executableName)
+ * @method string getDisplayName()
+ * @method void setDisplayName(string $displayName)
+ * @method string getDescription()
+ * @method void setDescription(string $description)
+ * @method CommunityDao getCommunity()
+ * @method void setCommunity(CommunityDao $communityDao)
+ * @method array getTrends()
+ * @method void setTrends(array $trendDaos)
+ * @package Modules\Tracker\DAO
  */
 class Tracker_ProducerDao extends Tracker_AppDao
 {
+    /** @var string */
     public $_model = 'Producer';
+
+    /** @var string */
     public $_module = 'tracker';
 }

@@ -40,33 +40,40 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/produc
     <div class="sectionTitle">Trends</div>
 
     <?php
-    foreach ($this->trendGroups as $trendGroup)
-    {
-    echo '<div class="trendGroupContainer">';
-    if ($trendGroup['configItem']) {
-        echo '<div class="datasetHeader"><b>Configuration:</b> ';
-        echo '<a href='.$this->webroot.'/item/'.$this->escape($trendGroup['configItem']->getKey(
-            )).'>'.$this->escape($trendGroup['configItem']->getName()).'</a>';
-        echo '</div>';
-    }
-    if ($trendGroup['testDataset']) {
-        echo '<div class="datasetHeader"><b>Test Data:</b> ';
-        echo '<a href='.$this->webroot.'/item/'.$this->escape($trendGroup['testDataset']->getKey(
-            )).'>'.$this->escape($trendGroup['testDataset']->getName()).'</a>';
-        echo '</div>';
-    }
-    if ($trendGroup['truthDataset']) {
-        echo '<div class="datasetHeader"><b>Ground Truth Data: </b>';
-        echo '<a href='.$this->webroot.'/item/'.$this->escape($trendGroup['truthDataset']->getKey(
-            )).'>'.$this->escape($trendGroup['truthDataset']->getName()).'</a>';
-        echo '</div>';
-    }
-    if ($trendGroup['configItem'] || $trendGroup['testDataset'] || $trendGroup['truthDataset']) {
-        echo '<div class="headerSeparator"></div>';
-    }
-    ?>
+    /** @var array $trendGroup */
+    foreach ($this->trendGroups as $trendGroup) {
+        echo '<div class="trendGroupContainer">';
+        if ($trendGroup['configItem']) {
+            /** @var ItemDao $configItem */
+            $configItem = $trendGroup['configItem'];
+            echo '<div class="datasetHeader"><b>Configuration:</b> ';
+            echo '<a href='.$this->webroot.'/item/'.$this->escape($configItem->getKey(
+                )).'>'.$this->escape($configItem->getName()).'</a>';
+            echo '</div>';
+        }
+        if ($trendGroup['testDataset']) {
+            /** @var ItemDao $testDatasetItem */
+            $testDatasetItem = $trendGroup['testDataset'];
+            echo '<div class="datasetHeader"><b>Test Data:</b> ';
+            echo '<a href='.$this->webroot.'/item/'.$this->escape($testDatasetItem->getKey(
+                )).'>'.$this->escape($testDatasetItem->getName()).'</a>';
+            echo '</div>';
+        }
+        if ($trendGroup['truthDataset']) {
+            /** @var ItemDao $truthDatasetItem */
+            $truthDatasetItem = $trendGroup['truthDataset'];
+            echo '<div class="datasetHeader"><b>Ground Truth Data: </b>';
+            echo '<a href='.$this->webroot.'/item/'.$this->escape($truthDatasetItem->getKey(
+                )).'>'.$this->escape($truthDatasetItem->getName()).'</a>';
+            echo '</div>';
+        }
+        if ($trendGroup['configItem'] || $trendGroup['testDataset'] || $trendGroup['truthDataset']) {
+            echo '<div class="headerSeparator"></div>';
+        }
+        ?>
     <div class="producerTrendsContainer">
         <?php
+        /** @var Tracker_TrendDao $trend */
         foreach ($trendGroup['trends'] as $trend) {
             echo '<div class="trendContainer">';
             echo '<input type="checkbox" class="selectTrend" element="'.$this->escape($trend->getKey()).'" />';
@@ -77,8 +84,8 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/produc
         ?>
     </div>
 </div>
-<?php
-}
+    <?php
+    }
 ?>
 </div>
 

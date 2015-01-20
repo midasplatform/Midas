@@ -19,10 +19,41 @@
 =========================================================================*/
 
 /**
- * Trend DAO
+ * Trend DAO for the tracker module.
+ *
+ * @method int getTrendId()
+ * @method void setTrendId(int $trendId)
+ * @method int getProducerId()
+ * @method void setProducerId(int $producerId)
+ * @method string getMetricName()
+ * @method void setMetricName(string $metricName)
+ * @method string getDisplayName()
+ * @method void setDisplayName(string $displayName)
+ * @method string getUnit()
+ * @method void setUnit(string $unit)
+ * @method int getConfigItemId()
+ * @method void setConfigItemId(int $configItemId)
+ * @method int getTestDatasetId()
+ * @method void setTestDatasetId(int $testDatasetId)
+ * @method int getTruthDatasetId()
+ * @method void setTruthDatasetId(int $truthDatasetId)
+ * @method Tracker_ProducerDao getProducer()
+ * @method void setProducer(Tracker_ProducerDao $producerDao)
+ * @method ItemDao getConfigItem()
+ * @method void setConfigItem(ItemDao $configItemDao)
+ * @method ItemDao getTestDatasetItem()
+ * @method void setTestDatasetItem(ItemDao $testDatasetItemDao)
+ * @method ItemDao getTruthDatasetItem()
+ * @method void setTruthDatasetItem(ItemDao $truthDatasetItemDao)
+ * @method array getScalars()
+ * @method void setScalars(array $scalarDaos)
+ * @package Modules\Tracker\DAO
  */
 class Tracker_TrendDao extends Tracker_AppDao
 {
+    /** @var string */
     public $_model = 'Trend';
+
+    /** @var string */
     public $_module = 'tracker';
 }

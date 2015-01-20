@@ -23,6 +23,8 @@
  * record indicating which user uploaded the scalar, a binary "official" flag to
  * a scalar record indicating if it is an official or experimental submission,
  * and add a user_id index to the tracker_scalar table.
+ *
+ * @package Modules\Tracker\Database
  */
 class Tracker_Upgrade_1_0_1 extends MIDASUpgrade
 {

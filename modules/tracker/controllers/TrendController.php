@@ -18,31 +18,49 @@
  limitations under the License.
 =========================================================================*/
 
-/** Trend controller */
+/**
+ * Trend controller for the tracker module.
+ *
+ * @property Tracker_ProducerModel $Tracker_Producer
+ * @property Tracker_ScalarModel $Tracker_Scalar
+ * @property Tracker_ThresholdNotificationModel $Tracker_ThresholdNotification
+ * @property Tracker_TrendModel $Tracker_Trend
+ * @package Modules\Tracker\Controller
+ */
 class Tracker_TrendController extends Tracker_AppController
 {
+    /** @var array */
     public $_components = array('Breadcrumb');
+
+    /** @var array */
     public $_models = array('Community');
+
+    /** @var array */
     public $_moduleModels = array('Producer', 'Scalar', 'ThresholdNotification', 'Trend');
 
     /**
-     * View a given trend
+     * View a given trend.
      *
-     * @param trendId Comma separated list of trends to show using the left Y axis
-     * @param rightTrendId (optional) The id of the trend to display on the right Y axis
-     * @param startDate (optional) The start date to retrieve scalars
-     * @param endDate (optional) The end date to retrieve scalars
-     * @param yMin (optional) Minimum value of the left y axis
-     * @param yMax (optional) Maximum value of the left y axis
-     * @param y2Min (optional) Minimum value of the right y axis
-     * @param y2Max (optional) Maximum value of the right y axis
+     * Request parameters:
+     *     trendId - Comma separated list of trends to show using the left Y axis
+     *     rightTrendId (optional) - The id of the trend to display on the right Y axis
+     *     startDate (optional) - The start date to retrieve scalars
+     *     endDate (optional) - The end date to retrieve scalars
+     *     yMin (optional) - Minimum value of the left y axis
+     *     yMax (optional) - Maximum value of the left y axis
+     *     y2Min (optional) - Minimum value of the right y axis
+     *     y2Max (optional) - Maximum value of the right y axis
+     *
      * @throws Zend_Exception
      */
     public function viewAction()
     {
+        /** @var int $trendId */
         $trendId = $this->getParam('trendId');
         $startDate = $this->getParam('startDate');
         $endDate = $this->getParam('endDate');
+
+        /** @var int $rightTrendId */
         $rightTrendId = $this->getParam('rightTrendId');
         $yMin = $this->getParam('yMin');
         $yMax = $this->getParam('yMax');
@@ -71,7 +89,10 @@ class Tracker_TrendController extends Tracker_AppController
         $trendIds = explode(' ', trim(str_replace(',', ' ', $trendId)));
         $this->view->trends = array();
         $this->view->allBranches = $this->Tracker_Scalar->getDistinctBranches();
+
+        /** @var int $trendId */
         foreach ($trendIds as $trendId) {
+            /** @var Tracker_TrendDao $trend */
             $trend = $this->Tracker_Trend->load($trendId);
             $comm = $trend->getProducer()->getCommunity();
             if (!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ)
@@ -91,8 +112,9 @@ class Tracker_TrendController extends Tracker_AppController
             $this->view->trends[] = $trend;
         }
         if (isset($rightTrendId)) {
+            /** @var Tracker_TrendDao $rightTrend */
             $rightTrend = $this->Tracker_Trend->load($rightTrendId);
-            if ($comm->getKey() != $rightTrend->getProducer()->getCommunityId()
+            if (isset($comm) && $comm->getKey() != $rightTrend->getProducer()->getCommunityId()
             ) {
                 throw new Zend_Exception('Right trend must belong to the same community', 403);
             }
@@ -111,11 +133,13 @@ class Tracker_TrendController extends Tracker_AppController
         );
 
         if (count($this->view->trends) == 1) {
-            $text = $this->view->trends[0]->getDisplayName();
+            /** @var Tracker_TrendDao $trend */
+            $trend = $this->view->trends[0];
+            $text = $trend->getDisplayName();
         } else {
             $text = count($this->view->trends).' trends';
         }
-        if ($this->view->rightTrend) {
+        if (isset($rightTrend)) {
             $text .= ' &amp; '.$rightTrend->getDisplayName();
         }
         $breadcrumbs[] = array(
@@ -149,17 +173,24 @@ class Tracker_TrendController extends Tracker_AppController
     }
 
     /**
-     * Ajax action for getting a new list of scalars belonging to a set of trends for a specified date range
+     * AJAX action for getting a new list of scalars belonging to a set of trends for a specified date range.
      *
-     * @param trendId Comma separated list of trend id's to view
-     * @param startDate The start date to retrieve scalars
-     * @param endDate The end date to retrieve scalars
+     * Request parameters:
+     *     trendId - Comma separated list of trend id's to view
+     *     startDate - The start date to retrieve scalars
+     *     endDate - The end date to retrieve scalars
+     *
+     * @throws Zend_Exception
      */
     public function scalarsAction()
     {
         $this->disableView();
         $this->disableLayout();
+
+        /** @var int $trendId */
         $trendId = $this->getParam('trendId');
+
+        /** @var int $rightTrendId */
         $rightTrendId = $this->getParam('rightTrendId');
         $startDate = $this->getParam('startDate');
         $endDate = $this->getParam('endDate');
@@ -174,7 +205,10 @@ class Tracker_TrendController extends Tracker_AppController
         $endDate = date('Y-m-d H:i:s', strtotime($endDate.' 23:59:59')); // go to end of the day
 
         $scalars = array();
+
+        /** @var int $trendId */
         foreach ($trendIds as $trendId) {
+            /** @var Tracker_TrendDao $trend */
             $trend = $this->Tracker_Trend->load($trendId);
             $comm = $trend->getProducer()->getCommunity();
             if (!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ)
@@ -186,6 +220,7 @@ class Tracker_TrendController extends Tracker_AppController
         $retVal = array('status' => 'ok', 'scalars' => $scalars);
 
         if (isset($rightTrendId)) {
+            /** @var Tracker_TrendDao $rightTrend */
             $rightTrend = $this->Tracker_Trend->load($rightTrendId);
             if ($comm->getKey() != $rightTrend->getProducer()->getCommunityId()
             ) {
@@ -198,18 +233,23 @@ class Tracker_TrendController extends Tracker_AppController
     }
 
     /**
-     * Delete a trend, deleting all scalar records within it (requires community admin)
+     * Delete a trend, deleting all scalar records within it (requires community admin).
+     *
+     * @throws Zend_Exception
      */
     public function deleteAction()
     {
         $this->disableLayout();
         $this->disableView();
 
+        /** @var int $trendId */
         $trendId = $this->getParam('trendId');
 
         if (!isset($trendId)) {
             throw new Zend_Exception('Must pass trendId parameter');
         }
+
+        /** @var Tracker_TrendDao $trend */
         $trend = $this->Tracker_Trend->load($trendId);
         $comm = $trend->getProducer()->getCommunity();
         if (!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN)
@@ -220,15 +260,20 @@ class Tracker_TrendController extends Tracker_AppController
     }
 
     /**
-     * Show the view for editing the trend information
+     * Show the view for editing the trend information.
+     *
+     * @throws Zend_Exception
      */
     public function editAction()
     {
+        /** @var int $trendId */
         $trendId = $this->getParam('trendId');
 
         if (!isset($trendId)) {
             throw new Zend_Exception('Must pass trendId parameter');
         }
+
+        /** @var Tracker_TrendDao $trend */
         $trend = $this->Tracker_Trend->load($trendId);
         $comm = $trend->getProducer()->getCommunity();
         if (!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN)
@@ -249,19 +294,26 @@ class Tracker_TrendController extends Tracker_AppController
     }
 
     /**
-     * Handle edit form submission
+     * Handle edit form submission.
      *
-     * @param trendId The id of the trend to edit
+     * Request parameters:
+     *     trendId - The id of the trend to edit
+     *
+     * @throws Zend_Exception
      */
     public function editsubmitAction()
     {
         $this->disableLayout();
         $this->disableView();
+
+        /** @var int $trendId */
         $trendId = $this->getParam('trendId');
 
         if (!isset($trendId)) {
             throw new Zend_Exception('Must pass trendId parameter');
         }
+
+        /** @var Tracker_TrendDao $trend */
         $trend = $this->Tracker_Trend->load($trendId);
         if (!$this->Community->policyCheck(
             $trend->getProducer()->getCommunity(),
@@ -274,8 +326,14 @@ class Tracker_TrendController extends Tracker_AppController
         $metricName = $this->getParam('metricName');
         $displayName = $this->getParam('displayName');
         $unit = $this->getParam('unit');
+
+        /** @var int $configItemId */
         $configItemId = $this->getParam('configItemId');
+
+        /** @var int $testItemId */
         $testItemId = $this->getParam('testItemId');
+
+        /** @var int $truthItemId */
         $truthItemId = $this->getParam('truthItemId');
 
         if (isset($metricName)) {
@@ -314,13 +372,18 @@ class Tracker_TrendController extends Tracker_AppController
     }
 
     /**
-     * Show the dialog for email notification
+     * Show the dialog for email notification.
      *
-     * @param trendId The id of the trend
+     * Request parameters:
+     *     trendId - The id of the trend
+     *
+     * @throws Zend_Exception
      */
     public function notifyAction()
     {
         $this->disableLayout();
+
+        /** @var int $trendId */
         $trendId = $this->getParam('trendId');
         if (!$this->logged) {
             throw new Zend_Exception('Must be logged in');
@@ -328,6 +391,8 @@ class Tracker_TrendController extends Tracker_AppController
         if (!isset($trendId)) {
             throw new Zend_Exception('Must pass trendId parameter');
         }
+
+        /** @var Tracker_TrendDao $trend */
         $trend = $this->Tracker_Trend->load($trendId);
         if (!$trend) {
             throw new Zend_Exception('Invalid trendId', 404);
@@ -344,12 +409,15 @@ class Tracker_TrendController extends Tracker_AppController
     }
 
     /**
-     * Handle form submission from email notification dialog
+     * Handle form submission from email notification dialog.
      *
-     * @param trendId The trend id
-     * @param doNotify Will be either "yes" or "no"
-     * @param operator One of "<", ">", "<=", ">="
-     * @param value The comparison value (must be numeric)
+     * Request parameters:
+     *     trendId - The trend id
+     *     doNotify - Will be either "yes" or "no"
+     *     operator - One of "<", ">", "<=", ">="
+     *     value - The comparison value (must be numeric)
+     *
+     * @throws Zend_Exception
      */
     public function notifysubmitAction()
     {
@@ -360,10 +428,14 @@ class Tracker_TrendController extends Tracker_AppController
 
             return;
         }
+
+        /** @var int $trendId */
         $trendId = $this->getParam('trendId');
         if (!isset($trendId)) {
             throw new Zend_Exception('Must pass trendId parameter');
         }
+
+        /** @var Tracker_TrendDao $trend */
         $trend = $this->Tracker_Trend->load($trendId);
         if (!$trend) {
             throw new Zend_Exception('Invalid trendId', 404);

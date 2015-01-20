@@ -18,26 +18,43 @@
  limitations under the License.
 =========================================================================*/
 
-/** Producer controller */
+/**
+ * Producer controller for the tracker module.
+ *
+ * @property Tracker_ProducerModel $Tracker_Producer
+ * @property Tracker_TrendModel $Tracker_Trend
+ * @package Modules\Tracker\Controller
+ */
 class Tracker_ProducerController extends Tracker_AppController
 {
+    /** @var array */
     public $_components = array('Breadcrumb');
+
+    /** @var array */
     public $_models = array('Community');
+
+    /** @var array */
     public $_moduleModels = array('Producer', 'Trend');
 
     /**
      * List all producers for a given community (in the tab). Requires read permission on community.
      *
-     * @param communityId The community id
+     * Request parameters:
+     *     communityId - The community id
+     *
      * @throws Zend_Exception
      */
     public function listAction()
     {
         $this->disableLayout();
+
+        /** @var int $commId */
         $commId = $this->getParam('communityId');
         if (!isset($commId)) {
             throw new Zend_Exception('Must pass communityId parameter');
         }
+
+        /** @var CommunityDao $comm */
         $comm = $this->Community->load($commId);
         if (!$comm || !$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ)
         ) {
@@ -48,17 +65,22 @@ class Tracker_ProducerController extends Tracker_AppController
     }
 
     /**
-     * View a producer, displaying all available trends
+     * View a producer, displaying all available trends.
      *
-     * @param producerId The id of the producer to display (requires community read permission)
+     * Request parameters:
+     *     producerId - The id of the producer to display (requires community read permission)
+     *
      * @throws Zend_Exception
      */
     public function viewAction()
     {
+        /** @var int $producerId */
         $producerId = $this->getParam('producerId');
         if (!isset($producerId)) {
             throw new Zend_Exception('Must pass producerId parameter');
         }
+
+        /** @var Tracker_ProducerDao $producer */
         $producer = $this->Tracker_Producer->load($producerId);
         $comm = $producer->getCommunity();
         if (!$producer || !$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ)
@@ -80,19 +102,25 @@ class Tracker_ProducerController extends Tracker_AppController
     }
 
     /**
-     * Delete a producer, deleting all trend data within it (requires community admin)
+     * Delete a producer, deleting all trend data within it (requires community admin).
      *
-     * @param producerId The id of the producer to delete
+     * Request parameters:
+     *     producerId - The id of the producer to delete
+     *
      * @throws Zend_Exception
      */
     public function deleteAction()
     {
         $this->disableLayout();
         $this->disableView();
+
+        /** @var int $producerId */
         $producerId = $this->getParam('producerId');
         if (!isset($producerId)) {
             throw new Zend_Exception('Must pass producerId parameter');
         }
+
+        /** @var Tracker_ProducerDao $producer */
         $producer = $this->Tracker_Producer->load($producerId);
         $comm = $producer->getCommunity();
         if (!$producer || !$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN)
@@ -103,17 +131,20 @@ class Tracker_ProducerController extends Tracker_AppController
     }
 
     /**
-     * Show the dialog for editing the producer information
+     * Show the dialog for editing the producer information.
      *
      * @throws Zend_Exception
      */
     public function editAction()
     {
+        /** @var int $producerId */
         $producerId = $this->getParam('producerId');
 
         if (!isset($producerId)) {
             throw new Zend_Exception('Must pass producerId parameter');
         }
+
+        /** @var Tracker_ProducerDao $producer */
         $producer = $this->Tracker_Producer->load($producerId);
         if (!$producer) {
             throw new Zend_Exception('Invalid producerId', 404);
@@ -127,20 +158,26 @@ class Tracker_ProducerController extends Tracker_AppController
     }
 
     /**
-     * Handle edit form submission
+     * Handle edit form submission.
      *
-     * @param producerId The id of the producer to edit
+     * Request parameters:
+     *     producerId - The id of the producer to edit
+     *
      * @throws Zend_Exception
      */
     public function editsubmitAction()
     {
         $this->disableLayout();
         $this->disableView();
+
+        /** @var int $producerId */
         $producerId = $this->getParam('producerId');
 
         if (!isset($producerId)) {
             throw new Zend_Exception('Must pass producerId parameter');
         }
+
+        /** @var Tracker_ProducerDao $producer */
         $producer = $this->Tracker_Producer->load($producerId);
         if (!$this->Community->policyCheck($producer->getCommunity(), $this->userSession->Dao, MIDAS_POLICY_ADMIN)
         ) {

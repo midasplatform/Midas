@@ -19,11 +19,13 @@
 =========================================================================*/
 
 /**
- * Trend Model Base
+ * Trend base model class for the tracker module.
+ *
+ * @package Modules\Tracker\Model
  */
 abstract class Tracker_TrendModelBase extends Tracker_AppModel
 {
-    /** constructor */
+    /** Constructor. */
     public function __construct()
     {
         parent::__construct();
@@ -74,20 +76,51 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
         $this->initialize();
     }
 
-    /** Get match */
+    /**
+     * Return the trend DAO that matches the given the producer id, metric name, and associated items.
+     *
+     * @param int $producerId producer id
+     * @param string $metricName metric name
+     * @param null|int $configItemId configuration item id
+     * @param null|int $testDatasetId test dataset item id
+     * @param null|int $truthDatasetId truth dataset item id
+     * @return false|Tracker_TrendDao trend DAO or false if none exists
+     */
     abstract public function getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId);
 
-    /** Get all by params */
+    /**
+     * Return the trend DAOs that match the given associative array of database columns and values.
+     *
+     * @param array $params associative array of database columns and values
+     * @return array trend DAOs
+     */
     abstract public function getAllByParams($params);
 
-    /** Get scalars */
+    /**
+     * Return a chronologically ordered list of scalars for the given trend.
+     *
+     * @param Tracker_TrendDao $trend trend DAO
+     * @param null|string $startDate start date
+     * @param null|string $endDate end date
+     * @param null|int $userId user id
+     * @param null|string $branch branch name
+     * @return array scalar DAOs
+     */
     abstract public function getScalars($trend, $startDate = null, $endDate = null, $userId = null, $branch = null);
 
-    /** Get trends grouped by dataset */
+    /**
+     * Return all trends corresponding to the given producer. They will be grouped by distinct
+     * config/test/truth dataset combinations.
+     *
+     * @param Tracker_ProducerDao $producerDao producer DAO
+     * @return array
+     */
     abstract public function getTrendsGroupByDatasets($producerDao);
 
     /**
-     * Override the default save to make sure that we explicitly set null values in the database
+     * Save the given trend. Ensure that null values are explicitly set in the database.
+     *
+     * @param Tracker_TrendDao $trendDao trend DAO
      */
     public function save($trendDao)
     {
@@ -96,8 +129,15 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
     }
 
     /**
-     * If the producer with the matching parameters exists, return it.
-     * If not, it will create it and return it.
+     * Return the trend DAO that matches the given producer id, metric name, and associated items if it exists.
+     * Otherwise, create the trend DAO.
+     *
+     * @param int $producerId producer id
+     * @param string $metricName metric name
+     * @param null|int $configItemId configuration item id
+     * @param null|int $testDatasetId test dataset item id
+     * @param null|int $truthDatasetId truth dataset item id
+     * @return Tracker_TrendDao trend DAO
      */
     public function createIfNeeded($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId)
     {
@@ -125,7 +165,10 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
     }
 
     /**
-     * Delete the trend (deletes all child scalars as well)
+     * Delete the given trend and all associated scalars.
+     *
+     * @param Tracker_TrendDao $trend trend DAO
+     * @param null|ProgressDao $progressDao progress DAO
      */
     public function delete($trend, $progressDao = null)
     {
@@ -141,17 +184,22 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
             $progressModel->save($progressDao);
         }
         $scalars = $trend->getScalars();
+        $scalarIndex = 0;
         if ($progressDao) {
             $progressDao->setMaximum(count($scalars));
+
+            /** @noinspection PhpUndefinedVariableInspection */
             $progressModel->save($progressDao);
-            $i = 0;
         }
 
+        /** @var Tracker_ScalarDao $scalar */
         foreach ($scalars as $scalar) {
             if ($progressDao) {
-                $i++;
-                $message = 'Deleting scalars: '.$i.' of '.$progressDao->getMaximum();
-                $progressModel->updateProgress($progressDao, $i, $message);
+                $scalarIndex++;
+                $message = 'Deleting scalars: '.$scalarIndex.' of '.$progressDao->getMaximum();
+
+                /** @noinspection PhpUndefinedVariableInspection */
+                $progressModel->updateProgress($progressDao, $scalarIndex, $message);
             }
             $scalarModel->delete($scalar);
         }

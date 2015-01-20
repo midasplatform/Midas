@@ -19,11 +19,13 @@
 =========================================================================*/
 
 /**
- * Scalar Model Base
+ * Scalar base model class for the tracker module.
+ *
+ * @package Modules\Tracker\Model
  */
 abstract class Tracker_ScalarModelBase extends Tracker_AppModel
 {
-    /** constructor */
+    /** Constructor. */
     public function __construct()
     {
         parent::__construct();
@@ -58,27 +60,72 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
         $this->initialize();
     }
 
-    /** Associate item */
+    /**
+     * Associate the given scalar and item.
+     *
+     * @param Tracker_ScalarDao $scalar scalar DAO
+     * @param ItemDao $item item DAO
+     * @param string $label label
+     */
     abstract public function associateItem($scalar, $item, $label);
 
-    /** Get associated items */
+    /**
+     * Return the items associated with the given scalar.
+     *
+     * @param Tracker_ScalarDao $scalar scalar DAO
+     * @return array array of associative arrays with keys "item" and "label"
+     */
     abstract public function getAssociatedItems($scalar);
 
-    /** Get other scalars from submission */
+    /**
+     * Return any other scalars from the same submission as the given scalar.
+     *
+     * @param Tracker_ScalarDao $scalar scalar DAO
+     * @return array scalar DAOs
+     */
     abstract public function getOtherScalarsFromSubmission($scalar);
 
-    /** Get other values from submission */
+    /**
+     * Return any other values from the same submission as the given scalar.
+     *
+     * @param Tracker_ScalarDao $scalar scalar DAO
+     * @return array associative array with keys equal to the metric names
+     */
     abstract public function getOtherValuesFromSubmission($scalar);
 
-    /** Get by trend and timestamp */
-    abstract public function getByTrendAndTimestamp($trendId, $timestamp, $user = null);
+    /**
+     * Return a scalar given a trend id, submit time, and user id.
+     *
+     * @param int $trendId trend id
+     * @param string $submitTime submit time
+     * @param null|int $userId user id
+     * @return false|Tracker_ScalarDao scalar DAO or false if none exists
+     */
+    abstract public function getByTrendAndTimestamp($trendId, $submitTime, $userId = null);
 
-    /** Get distinct branches */
+    /**
+     * Return all distinct branch names of revisions producing scalars.
+     *
+     * @return array branch names
+     */
     abstract public function getDistinctBranches();
 
     /**
-     * Add a new scalar point to the trend.  If overwrite is true, and a scalar
-     * already exists on the trend with the same submit time and user, this will replace that scalar value.
+     * Add a new scalar to the trend. If overwrite is true, and a scalar already exists on the trend with the same
+     * submit time and user, then this will replace that scalar.
+     *
+     * @param Tracker_TrendDao $trend trend DAO
+     * @param string $submitTime submit time
+     * @param string $producerRevision producer revision
+     * @param float $value scalar value
+     * @param UserDao $user user DAO
+     * @param bool $overwrite true if a scalar with the same trend, submit time, and user should be overwritten
+     * @param bool $official true if the submission containing the scalar should be official
+     * @param string $buildResultsUrl build results URL
+     * @param null|string $branch branch name
+     * @param null|string|array $params parameters
+     * @param null|string|array $extraUrls extra URLs
+     * @return Tracker_ScalarDao scalar DAO
      */
     public function addToTrend(
         $trend,

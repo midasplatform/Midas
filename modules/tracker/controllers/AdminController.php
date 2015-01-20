@@ -18,7 +18,11 @@
  limitations under the License.
 =========================================================================*/
 
-/** Admin controller for the tracker module. */
+/**
+ * Admin controller for the tracker module.
+ *
+ * @package Modules\Tracker\Controller
+ */
 class Tracker_AdminController extends Tracker_AppController
 {
     /** @var array */
@@ -32,8 +36,11 @@ class Tracker_AdminController extends Tracker_AppController
         $this->view->pageTitle = 'Tracker Module Configuration';
         $form = new Tracker_Form_Admin();
 
-        if ($this->getRequest()->isPost()) {
-            $data = $this->getRequest()->getPost();
+        /** @var Zend_Controller_Request_Http $request */
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $data = $request->getPost();
 
             if ($form->isValid($data)) {
                 $values = $form->getValues();
@@ -49,6 +56,7 @@ class Tracker_AdminController extends Tracker_AppController
         } else {
             $elements = $form->getElements();
 
+            /** @var Zend_Form_Element $element */
             foreach ($elements as $element) {
                 $name = $element->getName();
 

@@ -21,6 +21,8 @@
 /**
  * Upgrade the tracker module to version 1.0.4. Add the branch name to the
  * scalar submission table and add an index for it.
+ *
+ * @package Modules\Tracker\Database
  */
 class Tracker_Upgrade_1_0_4 extends MIDASUpgrade
 {

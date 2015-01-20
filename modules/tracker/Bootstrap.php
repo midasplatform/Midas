@@ -18,7 +18,11 @@
  limitations under the License.
 =========================================================================*/
 
-/** Bootstrap for the tracker module. */
+/**
+ * Bootstrap for the tracker module.
+ *
+ * @package Modules\Tracker\Bootstrap
+ */
 class Tracker_Bootstrap extends Zend_Application_Module_Bootstrap
 {
 }

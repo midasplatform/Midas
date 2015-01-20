@@ -18,25 +18,40 @@
  limitations under the License.
 =========================================================================*/
 
-/** Scalar controller */
+/**
+ * Scalar controller for the tracker module.
+ *
+ * @property Tracker_ScalarModel $Tracker_Scalar
+ * @property Tracker_TrendModel $Tracker_Trend
+ * @package Modules\Tracker\Controller
+ */
 class Tracker_ScalarController extends Tracker_AppController
 {
+    /** @var array */
     public $_models = array('Community');
+
+    /** @var array */
     public $_moduleModels = array('Scalar', 'Trend');
 
     /**
-     * Display the dialog of scalar details, including associated result items with thumbnails
+     * Display the dialog of scalar details, including associated result items with thumbnails.
      *
-     * @param scalarId The id of the scalar
+     * Request parameters:
+     *     scalarId - The id of the scalar
+     *
      * @throws Zend_Exception
      */
     public function detailsAction()
     {
         $this->disableLayout();
+
+        /** @var int $scalarId */
         $scalarId = $this->getParam('scalarId');
         if (!isset($scalarId)) {
             throw new Zend_Exception('Must set scalarId parameter');
         }
+
+        /** @var Tracker_ScalarDao $scalar */
         $scalar = $this->Tracker_Scalar->load($scalarId);
         if (!$scalar) {
             throw new Zend_Exception('Scalar with that id does not exist', 404);
@@ -70,19 +85,25 @@ class Tracker_ScalarController extends Tracker_AppController
     }
 
     /**
-     * Delete a scalar value (requires community admin)
+     * Delete a scalar value (requires community admin).
      *
-     * @param scalarId
+     * Request parameters:
+     *     scalarId - The id of the scalar
+     *
      * @throws Zend_Exception
      */
     public function deleteAction()
     {
         $this->disableLayout();
         $this->disableView();
+
+        /** @var int $scalarId */
         $scalarId = $this->getParam('scalarId');
         if (!isset($scalarId)) {
             throw new Zend_Exception('Must set scalarId parameter');
         }
+
+        /** @var Tracker_ScalarDao $scalar */
         $scalar = $this->Tracker_Scalar->load($scalarId);
         if (!$scalar) {
             throw new Zend_Exception('Scalar with that id does not exist', 404);

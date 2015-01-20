@@ -19,11 +19,13 @@
 =========================================================================*/
 
 /**
- * Producer Model Base
+ * Producer base model class for the tracker module.
+ *
+ * @package Modules\Tracker\Model
  */
 abstract class Tracker_ProducerModelBase extends Tracker_AppModel
 {
-    /** constructor */
+    /** Constructor. */
     public function __construct()
     {
         parent::__construct();
@@ -54,15 +56,31 @@ abstract class Tracker_ProducerModelBase extends Tracker_AppModel
         $this->initialize();
     }
 
-    /** Get by community id */
+    /**
+     * Return all producers for the given community id.
+     *
+     * @param int $communityId community id
+     * @return array producer DAOs
+     */
     abstract public function getByCommunityId($communityId);
 
-    /**  Get by community id and name */
+    /**
+     * Return the producer with the given display name for the given community id.
+     *
+     * @param int $communityId community id
+     * @param string $displayName display name
+     * @return false|Tracker_ProducerDao producer DAO or false if no such producer exists
+     * @throws Zend_Exception
+     */
     abstract public function getByCommunityIdAndName($communityId, $displayName);
 
     /**
-     * If the producer with the given displayName and communityId exists, returns it.
-     * If not, it will create it and return it.
+     * Return the producer DAO that matches the given display name and community id if it exists.
+     * Otherwise, create the producer DAO.
+     *
+     * @param int $communityId community id
+     * @param string $displayName display name
+     * @return Tracker_ProducerDao producer DAO
      */
     public function createIfNeeded($communityId, $displayName)
     {
@@ -83,13 +101,17 @@ abstract class Tracker_ProducerModelBase extends Tracker_AppModel
     }
 
     /**
-     * Delete the producer (deletes all related trends as well)
+     * Delete the given producer and all associated trends.
+     *
+     * @param Tracker_ProducerDao $producer producer DAO
      */
     public function delete($producer)
     {
-        /** @var Tracker_ScalarModel $trendModel */
+        /** @var Tracker_TrendModel $trendModel */
         $trendModel = MidasLoader::loadModel('Trend', $this->moduleName);
         $trends = $producer->getTrends();
+
+        /** @var Tracker_TrendDao $trend */
         foreach ($trends as $trend) {
             $trendModel->delete($trend);
         }

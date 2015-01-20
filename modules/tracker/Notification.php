@@ -20,15 +20,34 @@
 
 require_once BASE_PATH.'/modules/api/library/APIEnabledNotification.php';
 
-/** Notification manager for the tracker module */
+/**
+ * Notification manager for the tracker module.
+ *
+ * @property Tracker_ScalarModel $Tracker_Scalar
+ * @property Tracker_TrendModel $Tracker_Trend
+ * @package Modules\Tracker\Notification
+ */
 class Tracker_Notification extends ApiEnabled_Notification
 {
+    /** @var string */
     public $moduleName = 'tracker';
+
+    /** @var array */
     public $_models = array('User');
+
+    /** @var array */
     public $_moduleModels = array('Scalar', 'Trend');
+
+    /** @var array */
     public $_moduleComponents = array('Api');
 
-    /** init notification process */
+    /** @var string */
+    public $moduleWebroot = null;
+
+    /** @var string */
+    public $webroot = null;
+
+    /** Initialize the notification process. */
     public function init()
     {
         $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
@@ -51,61 +70,85 @@ class Tracker_Notification extends ApiEnabled_Notification
     }
 
     /**
-     * Show trackers tab on the community view page
+     * Show the trackers tab on the community view page.
+     *
+     * @param array $args associative array of parameters including the key "community"
+     * @return array
      */
     public function communityViewTabs($args)
     {
+        /** @var CommunityDao $community */
         $community = $args['community'];
 
         return array('Trackers' => $this->moduleWebroot.'/producer/list?communityId='.$community->getKey());
     }
 
     /**
-     * When a community is deleted, we must delete all associated producers
+     * When a community is deleted, we must delete all associated producers.
+     *
+     * @todo
+     * @param array $args associative array of parameters including the key "community"
      */
     public function communityDeleted($args)
     {
-        // TODO
-        // $comm = $args['community'];
+        // TODO: Implement communityDeleted().
     }
 
     /**
-     * When an item is deleted, we must delete associated item2scalar records
+     * When an item is deleted, we must delete associated item2scalar records.
+     *
+     * @todo
+     * @param array $args associative array of parameters including the key "item"
      */
     public function itemDeleted($args)
     {
-        // TODO
-        // $item = $args['item'];
+        // TODO: Implement itemDeleted().
     }
 
     /**
-     * When a user is deleted, we should delete their threshold notifications
+     * When a user is deleted, we should delete their threshold notifications.
+     *
+     * @todo
+     * @param array $args associative array of parameters including the key "userDao"
      */
     public function userDeleted($args)
     {
-        // TODO
-        // $user = $args['userDao'];
+        // TODO: Implement userDeleted().
     }
 
     /**
      * Delete temporary (unofficial) scalars after n hours, where n is specified as
-     * a module configuration option
+     * a module configuration option.
+     *
+     * @param array $params associative array of parameters including the key "scalarId"
      */
     public function deleteTempScalar($params)
     {
+        /** @var int $scalarId */
         $scalarId = $params['scalarId'];
+
+        /** @var Tracker_ScalarDao $scalar */
         $scalar = $this->Tracker_Scalar->load($scalarId);
         $this->Tracker_Scalar->delete($scalar);
     }
 
     /**
-     * Send an email to the user that a threshold was crossed
+     * Send an email to the user that a threshold was crossed.
+     *
+     * @param array $params associative array of parameters including the keys "notification" and "scalar"
      */
     public function sendEmail($params)
     {
+        /** @var array $notification */
         $notification = $params['notification'];
+
+        /** @var array $scalar */
         $scalar = $params['scalar'];
+
+        /** @var Tracker_TrendDao $trend */
         $trend = $this->Tracker_Trend->load($scalar['trend_id']);
+
+        /** @var UserDao $user */
         $user = $this->User->load($notification['recipient_id']);
         $producer = $trend->getProducer();
 
@@ -129,7 +172,7 @@ class Tracker_Notification extends ApiEnabled_Notification
             ).'">'.$trend->getDisplayName().'</a><br/>';
         $body .= '<b>Value:</b> '.$scalar['value'];
 
-        $result = Zend_Registry::get('notifier')->callback(
+        Zend_Registry::get('notifier')->callback(
             'CALLBACK_CORE_SEND_MAIL_MESSAGE',
             array(
                 'to' => $email,

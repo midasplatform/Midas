@@ -18,16 +18,25 @@
  limitations under the License.
 =========================================================================*/
 
-/** Component for performing threshold notifications */
+/**
+ * Threshold notification component for the tracker module.
+ *
+ * @package Modules\Tracker\Component
+ */
 class Tracker_ThresholdNotificationComponent extends AppComponent
 {
     /**
-     * Add scheduled tasks for emailing users that the threshold was crossed
+     * Add scheduled tasks for notifying users that a threshold was crossed.
+     *
+     * @param Tracker_ScalarDao $scalar scalar DAO
+     * @param array $notifications threshold notification DAOs
      */
     public function scheduleNotifications($scalar, $notifications)
     {
         /** @var Scheduler_JobModel $jobModel */
         $jobModel = MidasLoader::loadModel('Job', 'scheduler');
+
+        /** @var Tracker_ThresholdNotificationDao $notification */
         foreach ($notifications as $notification) {
             /** @var Scheduler_JobDao $job */
             $job = MidasLoader::newDao('JobDao', 'scheduler');
