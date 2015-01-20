@@ -28,27 +28,30 @@ class Tracker_ThresholdNotificationComponent extends AppComponent
     /**
      * Add scheduled tasks for notifying users that a threshold was crossed.
      *
-     * @param Tracker_ScalarDao $scalar scalar DAO
-     * @param array $notifications threshold notification DAOs
+     * @param Tracker_ScalarDao $scalarDao scalar DAO
+     * @param array $thresholdNotificationDaos threshold notification DAOs
      */
-    public function scheduleNotifications($scalar, $notifications)
+    public function scheduleNotifications($scalarDao, $thresholdNotificationDaos)
     {
         /** @var Scheduler_JobModel $jobModel */
         $jobModel = MidasLoader::loadModel('Job', 'scheduler');
 
-        /** @var Tracker_ThresholdNotificationDao $notification */
-        foreach ($notifications as $notification) {
-            /** @var Scheduler_JobDao $job */
-            $job = MidasLoader::newDao('JobDao', 'scheduler');
-            $job->setTask('TASK_TRACKER_SEND_THRESHOLD_NOTIFICATION');
-            $job->setPriority(1);
-            $job->setRunOnlyOnce(1);
-            $job->setFireTime(date('Y-m-d H:i:s'));
-            $job->setTimeInterval(0);
-            $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
-            $job->setCreatorId($notification->getRecipientId());
-            $job->setParams(JsonComponent::encode(array('notification' => $notification, 'scalar' => $scalar)));
-            $jobModel->save($job);
+        /** @var Tracker_ThresholdNotificationDao $thresholdNotificationDao */
+        foreach ($thresholdNotificationDaos as $thresholdNotificationDao) {
+            /** @var Scheduler_JobDao $jobDao */
+            $jobDao = MidasLoader::newDao('JobDao', 'scheduler');
+            $jobDao->setTask('TASK_TRACKER_SEND_THRESHOLD_NOTIFICATION');
+            $jobDao->setPriority(1);
+            $jobDao->setRunOnlyOnce(1);
+            $jobDao->setFireTime(date('Y-m-d H:i:s'));
+            $jobDao->setTimeInterval(0);
+            $jobDao->setStatus(SCHEDULER_JOB_STATUS_TORUN);
+            $jobDao->setCreatorId($thresholdNotificationDao->getRecipientId());
+            $jobDao->setParams(JsonComponent::encode(array(
+                'notification' => $thresholdNotificationDao,
+                'scalar' => $scalarDao,
+            )));
+            $jobModel->save($jobDao);
         }
     }
 }
