@@ -44,19 +44,19 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
             $metricName
         );
 
-        if ($configItemId == null) {
+        if (is_null($configItemId)) {
             $sql->where('config_item_id IS NULL');
         } else {
             $sql->where('config_item_id = ?', $configItemId);
         }
 
-        if ($truthDatasetId == null) {
+        if (is_null($truthDatasetId)) {
             $sql->where('truth_dataset_id IS NULL');
         } else {
             $sql->where('truth_dataset_id = ?', $truthDatasetId);
         }
 
-        if ($testDatasetId == null) {
+        if (is_null($testDatasetId)) {
             $sql->where('test_dataset_id IS NULL');
         } else {
             $sql->where('test_dataset_id = ?', $testDatasetId);
@@ -68,37 +68,41 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
     /**
      * Return a chronologically ordered list of scalars for the given trend.
      *
-     * @param Tracker_TrendDao $trend trend DAO
+     * @param Tracker_TrendDao $trendDao trend DAO
      * @param null|string $startDate start date
      * @param null|string $endDate end date
      * @param null|int $userId user id
      * @param null|string $branch branch name
      * @return array scalar DAOs
      */
-    public function getScalars($trend, $startDate = null, $endDate = null, $userId = null, $branch = null)
+    public function getScalars($trendDao, $startDate = null, $endDate = null, $userId = null, $branch = null)
     {
         $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_scalar')->where(
             'trend_id = ?',
-            $trend->getKey()
+            $trendDao->getKey()
         )->order(array('submit_time ASC'));
-        if ($startDate) {
+
+        if (!is_null($startDate)) {
             $sql->where('submit_time >= ?', $startDate);
         }
-        if ($endDate) {
+
+        if (!is_null($endDate)) {
             $sql->where('submit_time <= ?', $endDate);
         }
-        if ($branch !== null) {
+
+        if (!is_null($branch)) {
             $sql->where('branch = ?', $branch);
         }
-        $scalars = array();
-        $rowset = $this->database->fetchAll($sql);
+
+        $scalarDaos = array();
+        $rows = $this->database->fetchAll($sql);
 
         /** @var Zend_Db_Table_Row_Abstract $row */
-        foreach ($rowset as $row) {
-            $scalars[] = $this->initDao('Scalar', $row, $this->moduleName);
+        foreach ($rows as $row) {
+            $scalarDaos[] = $this->initDao('Scalar', $row, $this->moduleName);
         }
 
-        return $scalars;
+        return $scalarDaos;
     }
 
     /**
@@ -122,13 +126,13 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
 
         /** @var Zend_Db_Table_Row_Abstract $row */
         foreach ($rows as $row) {
-            $configItem = $row['config_item_id'] == null ? null : $itemModel->load($row['config_item_id']);
-            $testDataset = $row['test_dataset_id'] == null ? null : $itemModel->load($row['test_dataset_id']);
-            $truthDataset = $row['truth_dataset_id'] == null ? null : $itemModel->load($row['truth_dataset_id']);
+            $configItemDao = $row['config_item_id'] == null ? null : $itemModel->load($row['config_item_id']);
+            $testDatasetItemDao = $row['test_dataset_id'] == null ? null : $itemModel->load($row['test_dataset_id']);
+            $truthDatasetItemDao = $row['truth_dataset_id'] == null ? null : $itemModel->load($row['truth_dataset_id']);
             $result = array(
-                'configItem' => $configItem,
-                'testDataset' => $testDataset,
-                'truthDataset' => $truthDataset,
+                'configItem' => $configItemDao,
+                'testDataset' => $testDatasetItemDao,
+                'truthDataset' => $truthDatasetItemDao,
             );
             $result['trends'] = $this->getAllByParams(
                 array(
@@ -153,22 +157,28 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
     public function getAllByParams($params)
     {
         $sql = $this->database->select()->setIntegrityCheck(false);
+
+        /**
+         * @var string $column
+         * @var mixed $value
+         */
         foreach ($params as $column => $value) {
-            if ($value === null) {
+            if (is_null($value)) {
                 $sql->where($column.' IS NULL');
             } else {
                 $sql->where($column.' = ?', $value);
             }
         }
+
         $sql->order('display_name ASC');
         $rows = $this->database->fetchAll($sql);
-        $trends = array();
+        $trendDaos = array();
 
         /** @var Zend_Db_Table_Row_Abstract $row */
         foreach ($rows as $row) {
-            $trends[] = $this->initDao('Trend', $row, $this->moduleName);
+            $trendDaos[] = $this->initDao('Trend', $row, $this->moduleName);
         }
 
-        return $trends;
+        return $trendDaos;
     }
 }

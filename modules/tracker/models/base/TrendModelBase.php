@@ -29,6 +29,7 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
     public function __construct()
     {
         parent::__construct();
+
         $this->_name = 'tracker_trend';
         $this->_key = 'trend_id';
         $this->_mainData = array(
@@ -73,6 +74,7 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
                 'child_column' => 'trend_id',
             ),
         );
+
         $this->initialize();
     }
 
@@ -99,14 +101,14 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
     /**
      * Return a chronologically ordered list of scalars for the given trend.
      *
-     * @param Tracker_TrendDao $trend trend DAO
+     * @param Tracker_TrendDao $trendDao trend DAO
      * @param null|string $startDate start date
      * @param null|string $endDate end date
      * @param null|int $userId user id
      * @param null|string $branch branch name
      * @return array scalar DAOs
      */
-    abstract public function getScalars($trend, $startDate = null, $endDate = null, $userId = null, $branch = null);
+    abstract public function getScalars($trendDao, $startDate = null, $endDate = null, $userId = null, $branch = null);
 
     /**
      * Return all trends corresponding to the given producer. They will be grouped by distinct
@@ -125,6 +127,7 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
     public function save($trendDao)
     {
         $trendDao->setExplicitNullFields = true;
+
         parent::save($trendDao);
     }
 
@@ -141,69 +144,101 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
      */
     public function createIfNeeded($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId)
     {
-        $trend = $this->getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId);
-        if (!$trend) {
-            /** @var Tracker_TrendDao $trend */
-            $trend = MidasLoader::newDao('TrendDao', $this->moduleName);
-            $trend->setProducerId($producerId);
-            $trend->setMetricName($metricName);
-            $trend->setDisplayName($metricName);
-            $trend->setUnit('');
-            if ($configItemId != null) {
-                $trend->setConfigItemId($configItemId);
+        $trendDao = $this->getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId);
+
+        if ($trendDao === false) {
+            /** @var Tracker_TrendDao $trendDao */
+            $trendDao = MidasLoader::newDao('TrendDao', $this->moduleName);
+            $trendDao->setProducerId($producerId);
+            $trendDao->setMetricName($metricName);
+            $trendDao->setDisplayName($metricName);
+            $trendDao->setUnit('');
+
+            if (!is_null($configItemId)) {
+                $trendDao->setConfigItemId($configItemId);
             }
-            if ($testDatasetId != null) {
-                $trend->setTestDatasetId($testDatasetId);
+
+            if (!is_null($testDatasetId)) {
+                $trendDao->setTestDatasetId($testDatasetId);
             }
-            if ($truthDatasetId != null) {
-                $trend->setTruthDatasetId($truthDatasetId);
+
+            if (!is_null($truthDatasetId)) {
+                $trendDao->setTruthDatasetId($truthDatasetId);
             }
-            $this->save($trend);
+
+            $this->save($trendDao);
         }
 
-        return $trend;
+        return $trendDao;
     }
 
     /**
      * Delete the given trend and all associated scalars.
      *
-     * @param Tracker_TrendDao $trend trend DAO
+     * @param Tracker_TrendDao $trendDao trend DAO
      * @param null|ProgressDao $progressDao progress DAO
      */
-    public function delete($trend, $progressDao = null)
+    public function delete($trendDao, $progressDao = null)
     {
         /** @var Tracker_ScalarModel $scalarModel */
         $scalarModel = MidasLoader::loadModel('Scalar', $this->moduleName);
 
         /** @var Tracker_ThresholdNotificationModel $notificationModel */
         $notificationModel = MidasLoader::loadModel('ThresholdNotification', $this->moduleName);
-        if ($progressDao) {
+
+        if (!is_null($progressDao)) {
             /** @var ProgressModel $progressModel */
             $progressModel = MidasLoader::loadModel('Progress');
             $progressDao->setMessage('Counting scalar points...');
             $progressModel->save($progressDao);
         }
-        $scalars = $trend->getScalars();
+
+        $scalarDaos = $trendDao->getScalars();
         $scalarIndex = 0;
-        if ($progressDao) {
-            $progressDao->setMaximum(count($scalars));
+
+        if (!is_null($progressDao)) {
+            $progressDao->setMaximum(count($scalarDaos));
 
             /** @noinspection PhpUndefinedVariableInspection */
             $progressModel->save($progressDao);
         }
 
-        /** @var Tracker_ScalarDao $scalar */
-        foreach ($scalars as $scalar) {
-            if ($progressDao) {
+        /** @var Tracker_ScalarDao $scalarDao */
+        foreach ($scalarDaos as $scalarDao) {
+            if (!is_null($progressDao)) {
                 $scalarIndex++;
                 $message = 'Deleting scalars: '.$scalarIndex.' of '.$progressDao->getMaximum();
 
                 /** @noinspection PhpUndefinedVariableInspection */
                 $progressModel->updateProgress($progressDao, $scalarIndex, $message);
             }
-            $scalarModel->delete($scalar);
+
+            $scalarModel->delete($scalarDao);
         }
-        $notificationModel->deleteByTrend($trend);
-        parent::delete($trend);
+
+        $notificationModel->deleteByTrend($trendDao);
+
+        parent::delete($trendDao);
+    }
+
+    /**
+     * Check whether the given policy is valid for the given trend and user.
+     *
+     * @param Tracker_TrendDao $trendDao trend DAO
+     * @param null|UserDao $userDao user DAO
+     * @param int $policy policy
+     * @return bool true if the given policy is valid for the given trend and user
+     */
+    public function policyCheck($trendDao, $userDao = null, $policy = MIDAS_POLICY_READ)
+    {
+        if (is_null($trendDao) || $trendDao === false) {
+            return false;
+        }
+
+        /** @var Tracker_ProducerModel $producerModel */
+        $producerModel = MidasLoader::loadModel('Producer', $this->moduleName);
+        $producerDao = $trendDao->getProducer();
+
+        return $producerModel->policyCheck($producerDao, $userDao, $policy);
     }
 }
