@@ -22,16 +22,12 @@
  * Scalar controller for the tracker module.
  *
  * @property Tracker_ScalarModel $Tracker_Scalar
- * @property Tracker_TrendModel $Tracker_Trend
  * @package Modules\Tracker\Controller
  */
 class Tracker_ScalarController extends Tracker_AppController
 {
     /** @var array */
-    public $_models = array('Community');
-
-    /** @var array */
-    public $_moduleModels = array('Scalar', 'Trend');
+    public $_moduleModels = array('Scalar');
 
     /**
      * Display the dialog of scalar details, including associated result items with thumbnails.
@@ -47,38 +43,39 @@ class Tracker_ScalarController extends Tracker_AppController
 
         /** @var int $scalarId */
         $scalarId = $this->getParam('scalarId');
+
         if (!isset($scalarId)) {
-            throw new Zend_Exception('Must set scalarId parameter');
+            throw new Zend_Exception('The required scalarId parameter is missing');
         }
 
-        /** @var Tracker_ScalarDao $scalar */
-        $scalar = $this->Tracker_Scalar->load($scalarId);
-        if (!$scalar) {
-            throw new Zend_Exception('Scalar with that id does not exist', 404);
-        }
-        $producer = $scalar->getTrend()->getProducer();
-        $comm = $producer->getCommunity();
-        if (!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ)
+        /** @var Tracker_ScalarDao $scalarDao */
+        $scalarDao = $this->Tracker_Scalar->load($scalarId);
+
+        if ($this->Tracker_Scalar->policyCheck($scalarDao, $this->userSession->Dao, MIDAS_POLICY_READ) === false
         ) {
-            throw new Zend_Exception('Permission denied', 403);
+            throw new Zend_Exception('The scalar does not exist or you do not have the necessary permission', 403);
         }
-        $this->view->isAdmin = $this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
-        $this->view->scalar = $scalar;
-        $this->view->extraParams = json_decode($scalar->getParams(), true);
-        $this->view->extraUrls = json_decode($scalar->getExtraUrls(), true);
-        $rev = $scalar->getProducerRevision();
-        $repoBrowserUrl = $producer->getRevisionUrl();
-        if ($repoBrowserUrl) {
-            $repoBrowserUrl = preg_replace('/%revision/', $rev, $repoBrowserUrl);
-            $this->view->revisionHtml = '<a target="_blank" href="'.$repoBrowserUrl.'">'.$rev.'</a>';
-        } else {
-            $this->view->revisionHtml = $rev;
-        }
-        $this->view->resultItems = $this->Tracker_Scalar->getAssociatedItems($scalar);
-        $this->view->otherValues = $this->Tracker_Scalar->getOtherValuesFromSubmission($scalar);
 
-        if ($scalar->getUserId() != -1) {
-            $this->view->submittedBy = $scalar->getUser();
+        $this->view->isAdmin = $this->Tracker_Scalar->policyCheck($scalarDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
+        $this->view->scalar = $scalarDao;
+        $this->view->extraParams = json_decode($scalarDao->getParams(), true);
+        $this->view->extraUrls = json_decode($scalarDao->getExtraUrls(), true);
+
+        $revisionUrl = $scalarDao->getTrend()->getProducer()->getRevisionUrl();
+        $producerRevision = $scalarDao->getProducerRevision();
+
+        if (!is_null($revisionUrl)) {
+            $producerRevisionUrl = preg_replace('/%revision/', $producerRevision, $revisionUrl);
+            $this->view->revisionHtml = '<a target="_blank" href="'.$producerRevisionUrl.'">'.$producerRevision.'</a>';
+        } else {
+            $this->view->revisionHtml = $producerRevision;
+        }
+
+        $this->view->resultItems = $this->Tracker_Scalar->getAssociatedItems($scalarDao);
+        $this->view->otherValues = $this->Tracker_Scalar->getOtherValuesFromSubmission($scalarDao);
+
+        if ($scalarDao->getUserId() !== -1) {
+            $this->view->submittedBy = $scalarDao->getUser();
         } else {
             $this->view->submittedBy = null;
         }
@@ -99,21 +96,20 @@ class Tracker_ScalarController extends Tracker_AppController
 
         /** @var int $scalarId */
         $scalarId = $this->getParam('scalarId');
+
         if (!isset($scalarId)) {
-            throw new Zend_Exception('Must set scalarId parameter');
+            throw new Zend_Exception('The required scalarId parameter is missing');
         }
 
-        /** @var Tracker_ScalarDao $scalar */
-        $scalar = $this->Tracker_Scalar->load($scalarId);
-        if (!$scalar) {
-            throw new Zend_Exception('Scalar with that id does not exist', 404);
-        }
-        $comm = $scalar->getTrend()->getProducer()->getCommunity();
-        if (!$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN)
+        /** @var Tracker_ScalarDao $scalarDao */
+        $scalarDao = $this->Tracker_Scalar->load($scalarId);
+
+        if ($this->Tracker_Scalar->policyCheck($scalarDao, $this->userSession->Dao, MIDAS_POLICY_READ) === false
         ) {
-            throw new Zend_Exception('Permission denied', 403);
+            throw new Zend_Exception('The scalar does not exist or you do not have the necessary permission', 403);
         }
-        $this->Tracker_Scalar->delete($scalar);
+
+        $this->Tracker_Scalar->delete($scalarDao);
         echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Scalar deleted'));
     }
 }
