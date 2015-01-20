@@ -193,7 +193,7 @@ class Tracker_ProducerController extends Tracker_AppController
             $producer->setDisplayName($displayName);
         }
         if (isset($description)) {
-            $producer->setDescription(UtilityComponent::filterHtmlTags($description));
+            $producer->setDescription($description);
         }
         if (isset($repository)) {
             $producer->setRepository($repository);
