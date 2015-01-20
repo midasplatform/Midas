@@ -50,9 +50,8 @@ class Tracker_Notification extends ApiEnabled_Notification
     /** Initialize the notification process. */
     public function init()
     {
-        $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
-        $this->moduleWebroot = $baseUrl.'/'.$this->moduleName;
-        $this->webroot = $baseUrl;
+        $this->webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
+        $this->moduleWebroot = $this->webroot.'/'.$this->moduleName;
 
         $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_VIEW_TABS', 'communityViewTabs');
         $this->addCallBack('CALLBACK_CORE_GET_COMMUNITY_DELETED', 'communityDeleted');
@@ -77,10 +76,10 @@ class Tracker_Notification extends ApiEnabled_Notification
      */
     public function communityViewTabs($args)
     {
-        /** @var CommunityDao $community */
-        $community = $args['community'];
+        /** @var CommunityDao $communityDao */
+        $communityDao = $args['community'];
 
-        return array('Trackers' => $this->moduleWebroot.'/producer/list?communityId='.$community->getKey());
+        return array('Trackers' => $this->moduleWebroot.'/producer/list?communityId='.$communityDao->getKey());
     }
 
     /**
@@ -127,9 +126,9 @@ class Tracker_Notification extends ApiEnabled_Notification
         /** @var int $scalarId */
         $scalarId = $params['scalarId'];
 
-        /** @var Tracker_ScalarDao $scalar */
-        $scalar = $this->Tracker_Scalar->load($scalarId);
-        $this->Tracker_Scalar->delete($scalar);
+        /** @var Tracker_ScalarDao $scalarDao */
+        $scalarDao = $this->Tracker_Scalar->load($scalarId);
+        $this->Tracker_Scalar->delete($scalarDao);
     }
 
     /**
@@ -142,35 +141,43 @@ class Tracker_Notification extends ApiEnabled_Notification
         /** @var array $notification */
         $notification = $params['notification'];
 
-        /** @var array $scalar */
-        $scalar = $params['scalar'];
+        /** @var UserDao $userDao */
+        $userDao = $this->User->load($notification['recipient_id']);
 
-        /** @var Tracker_TrendDao $trend */
-        $trend = $this->Tracker_Trend->load($scalar['trend_id']);
-
-        /** @var UserDao $user */
-        $user = $this->User->load($notification['recipient_id']);
-        $producer = $trend->getProducer();
-
-        if (!$user) {
+        if ($userDao === false) {
             $this->getLogger()->warn(
                 'Attempting to send threshold notification to user id '.$notification['recipient_id'].': No such user.'
             );
 
             return;
         }
-        $baseUrl = UtilityComponent::getServerURL().$this->webroot;
 
-        $email = $user->getEmail();
-        $subject = 'Tracker Threshold Notification';
-        $body = 'Hello,<br/><br/>This email was sent because a submitted scalar value violates a threshold that you specified.<br/><br/>';
-        $body .= '<b>Community:</b> <a href="'.$baseUrl.'/community/'.$producer->getCommunityId(
-            ).'">'.$producer->getCommunity()->getName().'</a><br/>';
-        $body .= '<b>Producer:</b> <a href="'.$baseUrl.'/tracker/producer/view?producerId='.$producer->getKey(
-            ).'">'.$producer->getDisplayName().'</a><br/>';
-        $body .= '<b>Trend:</b> <a href="'.$baseUrl.'/tracker/trend/view?trendId='.$trend->getKey(
-            ).'">'.$trend->getDisplayName().'</a><br/>';
-        $body .= '<b>Value:</b> '.$scalar['value'];
+        /** @var array $scalar */
+        $scalar = $params['scalar'];
+
+        /** @var Tracker_TrendDao $trendDao */
+        $trendDao = $this->Tracker_Trend->load($scalar['trend_id']);
+
+        if ($trendDao === false) {
+            $this->getLogger()->warn(
+                'Attempting to send threshold notification for trend id '.$scalar['trend_id'].': No such trend.'
+            );
+
+            return;
+        }
+
+        $producerDao = $trendDao->getProducer();
+        $fullUrl = UtilityComponent::getServerURL().$this->webroot;
+        $email = $userDao->getEmail();
+        $subject = 'Tracker Dashboard Threshold Notification';
+        $body = 'Hello,<br/><br/>This email was sent because a submitted scalar value exceeded a threshold that you specified.<br/><br/>';
+        $body .= '<b>Community:</b> <a href="'.$fullUrl.'/community/'.$producerDao->getCommunityId(
+            ).'">'.htmlspecialchars($producerDao->getCommunity()->getName(), ENT_QUOTES, 'UTF-8').'</a><br/>';
+        $body .= '<b>Producer:</b> <a href="'.$fullUrl.'/'.$this->moduleName.'/producer/view?producerId='.$producerDao->getKey(
+            ).'">'.htmlspecialchars($producerDao->getDisplayName(), ENT_QUOTES, 'UTF-8').'</a><br/>';
+        $body .= '<b>Trend:</b> <a href="'.$fullUrl.'/'.$this->moduleName.'/trend/view?trendId='.$trendDao->getKey(
+            ).'">'.htmlspecialchars($trendDao->getMetric()->getDisplayName(), ENT_QUOTES, 'UTF-8').'</a><br/>';
+        $body .= '<b>Value:</b> '.htmlspecialchars($scalar['value'], ENT_QUOTES, 'UTF-8');
 
         Zend_Registry::get('notifier')->callback(
             'CALLBACK_CORE_SEND_MAIL_MESSAGE',
