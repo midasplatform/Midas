@@ -48,20 +48,23 @@ class Tracker_ProducerController extends Tracker_AppController
     {
         $this->disableLayout();
 
-        /** @var int $commId */
-        $commId = $this->getParam('communityId');
-        if (!isset($commId)) {
-            throw new Zend_Exception('Must pass communityId parameter');
+        /** @var int $communityId */
+        $communityId = $this->getParam('communityId');
+
+        if (!isset($communityId)) {
+            throw new Zend_Exception('The required communityId parameter is missing');
         }
 
-        /** @var CommunityDao $comm */
-        $comm = $this->Community->load($commId);
-        if (!$comm || !$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ)
+        /** @var CommunityDao $communityDao */
+        $communityDao = $this->Community->load($communityId);
+
+        if ($communityDao === false || $this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_READ) === false
         ) {
-            throw new Zend_Exception('Read permission required on the community', 403);
+            throw new Zend_Exception('The community does not exist or you do not have the necessary permission', 403);
         }
-        $this->view->community = $comm;
-        $this->view->producers = $this->Tracker_Producer->getByCommunityId($commId);
+
+        $this->view->community = $communityDao;
+        $this->view->producers = $this->Tracker_Producer->getByCommunityId($communityId);
     }
 
     /**
@@ -76,27 +79,36 @@ class Tracker_ProducerController extends Tracker_AppController
     {
         /** @var int $producerId */
         $producerId = $this->getParam('producerId');
+
         if (!isset($producerId)) {
-            throw new Zend_Exception('Must pass producerId parameter');
+            throw new Zend_Exception('The required producerId parameter is missing');
         }
 
-        /** @var Tracker_ProducerDao $producer */
-        $producer = $this->Tracker_Producer->load($producerId);
-        $comm = $producer->getCommunity();
-        if (!$producer || !$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_READ)
+        /** @var Tracker_ProducerDao $producerDao */
+        $producerDao = $this->Tracker_Producer->load($producerId);
+
+        if ($this->Tracker_Producer->policyCheck($producerDao, $this->userSession->Dao, MIDAS_POLICY_READ) === false
         ) {
-            throw new Zend_Exception('Read permission required on the community', 403);
+            throw new Zend_Exception('The producer does not exist or you do not have the necessary permission on its community', 403);
         }
-        $this->view->producer = $producer;
-        $this->view->trendGroups = $this->Tracker_Trend->getTrendsGroupByDatasets($producer);
-        $this->view->isAdmin = $this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
-        $this->view->json['tracker']['producer'] = $producer;
 
-        $breadcrumbs = array(array('type' => 'community', 'object' => $comm, 'tab' => 'Trackers'));
-        $breadcrumbs[] = array(
-            'type' => 'custom',
-            'text' => $producer->getDisplayName(),
-            'icon' => $this->view->coreWebroot.'/public/images/icons/cog_go.png',
+        $this->view->producer = $producerDao;
+        $this->view->trendGroups = $this->Tracker_Trend->getTrendsGroupByDatasets($producerDao);
+        $this->view->isAdmin = $this->Tracker_Producer->policyCheck($producerDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
+        $this->view->json['tracker']['producer'] = $producerDao;
+
+        $breadcrumbs = array(
+            array(
+                'type' => 'community',
+                'object' => $producerDao->getCommunity(),
+                'tab' => 'Trackers',
+            ),
+            array(
+                'type' => 'custom',
+                'text' => $producerDao->getDisplayName(),
+                'icon' => $this->view->baseUrl('core/public/images/icons/cog_go.png'),
+            ),
+
         );
         $this->Component->Breadcrumb->setBreadcrumbHeader($breadcrumbs, $this->view);
     }
@@ -116,18 +128,20 @@ class Tracker_ProducerController extends Tracker_AppController
 
         /** @var int $producerId */
         $producerId = $this->getParam('producerId');
+
         if (!isset($producerId)) {
-            throw new Zend_Exception('Must pass producerId parameter');
+            throw new Zend_Exception('The required producerId parameter is missing');
         }
 
-        /** @var Tracker_ProducerDao $producer */
-        $producer = $this->Tracker_Producer->load($producerId);
-        $comm = $producer->getCommunity();
-        if (!$producer || !$this->Community->policyCheck($comm, $this->userSession->Dao, MIDAS_POLICY_ADMIN)
+        /** @var Tracker_ProducerDao $producerDao */
+        $producerDao = $this->Tracker_Producer->load($producerId);
+
+        if ($this->Tracker_Producer->policyCheck($producerDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN) === false
         ) {
-            throw new Zend_Exception('Admin permission required on the community', 403);
+            throw new Zend_Exception('The producer does not exist or you do not have the necessary permission on its community', 403);
         }
-        $this->Tracker_Producer->delete($producer);
+
+        $this->Tracker_Producer->delete($producerDao);
     }
 
     /**
@@ -141,20 +155,19 @@ class Tracker_ProducerController extends Tracker_AppController
         $producerId = $this->getParam('producerId');
 
         if (!isset($producerId)) {
-            throw new Zend_Exception('Must pass producerId parameter');
+            throw new Zend_Exception('The required producerId parameter is missing');
         }
 
-        /** @var Tracker_ProducerDao $producer */
-        $producer = $this->Tracker_Producer->load($producerId);
-        if (!$producer) {
-            throw new Zend_Exception('Invalid producerId', 404);
-        }
-        if (!$this->Community->policyCheck($producer->getCommunity(), $this->userSession->Dao, MIDAS_POLICY_ADMIN)
+        /** @var Tracker_ProducerDao $producerDao */
+        $producerDao = $this->Tracker_Producer->load($producerId);
+
+        if ($this->Tracker_Producer->policyCheck($producerDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN) === false
         ) {
-            throw new Zend_Exception('Admin permission required on the community', 403);
+            throw new Zend_Exception('The producer does not exist or you do not have the necessary permission on its community', 403);
         }
+
         $this->disableLayout();
-        $this->view->producer = $producer;
+        $this->view->producer = $producerDao;
     }
 
     /**
@@ -177,34 +190,50 @@ class Tracker_ProducerController extends Tracker_AppController
             throw new Zend_Exception('Must pass producerId parameter');
         }
 
-        /** @var Tracker_ProducerDao $producer */
-        $producer = $this->Tracker_Producer->load($producerId);
-        if (!$this->Community->policyCheck($producer->getCommunity(), $this->userSession->Dao, MIDAS_POLICY_ADMIN)
+        /** @var Tracker_ProducerDao $producerDao */
+        $producerDao = $this->Tracker_Producer->load($producerId);
+
+        if ($this->Tracker_Producer->policyCheck($producerDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN) === false
         ) {
-            throw new Zend_Exception('Admin permission required on the community', 403);
+            throw new Zend_Exception('The producer does not exist or you do not have the necessary permission on its community', 403);
         }
+
+        /** @var string $displayName */
         $displayName = $this->getParam('displayName');
-        $description = $this->getParam('description');
-        $repository = $this->getParam('repository');
-        $revisionUrl = $this->getParam('revisionUrl');
-        $executableName = $this->getParam('executableName');
 
         if (isset($displayName)) {
-            $producer->setDisplayName($displayName);
+            $producerDao->setDisplayName($displayName);
         }
+
+        /** @var string $description */
+        $description = $this->getParam('description');
+
         if (isset($description)) {
-            $producer->setDescription($description);
+            $producerDao->setDescription($description);
         }
+
+        /** @var string $repository */
+        $repository = $this->getParam('repository');
+
         if (isset($repository)) {
-            $producer->setRepository($repository);
+            $producerDao->setRepository($repository);
         }
-        if (isset($executableName)) {
-            $producer->setExecutableName($executableName);
-        }
+
+        /** @var string $revisionUrl */
+        $revisionUrl = $this->getParam('revisionUrl');
+
         if (isset($revisionUrl)) {
-            $producer->setRevisionUrl($revisionUrl);
+            $producerDao->setRevisionUrl($revisionUrl);
         }
-        $this->Tracker_Producer->save($producer);
-        echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Changes saved', 'producer' => $producer));
+
+        /** @var string $executableName */
+        $executableName = $this->getParam('executableName');
+
+        if (isset($executableName)) {
+            $producerDao->setExecutableName($executableName);
+        }
+
+        $this->Tracker_Producer->save($producerDao);
+        echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Changes saved', 'producer' => $producerDao));
     }
 }

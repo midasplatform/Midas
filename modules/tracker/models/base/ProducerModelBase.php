@@ -29,6 +29,7 @@ abstract class Tracker_ProducerModelBase extends Tracker_AppModel
     public function __construct()
     {
         parent::__construct();
+
         $this->_name = 'tracker_producer';
         $this->_key = 'producer_id';
         $this->_mainData = array(
@@ -53,6 +54,7 @@ abstract class Tracker_ProducerModelBase extends Tracker_AppModel
                 'child_column' => 'producer_id',
             ),
         );
+
         $this->initialize();
     }
 
@@ -84,37 +86,60 @@ abstract class Tracker_ProducerModelBase extends Tracker_AppModel
      */
     public function createIfNeeded($communityId, $displayName)
     {
-        $producer = $this->getByCommunityIdAndName($communityId, $displayName);
-        if (!$producer) {
-            /** @var Tracker_ProducerDao $producer */
-            $producer = MidasLoader::newDao('ProducerDao', $this->moduleName);
-            $producer->setCommunityId($communityId);
-            $producer->setDisplayName($displayName);
-            $producer->setDescription('');
-            $producer->setExecutableName('');
-            $producer->setRepository('');
-            $producer->setRevisionUrl('');
-            $this->save($producer);
+        $producerDao = $this->getByCommunityIdAndName($communityId, $displayName);
+
+        if ($producerDao === false) {
+            /** @var Tracker_ProducerDao $producerDao */
+            $producerDao = MidasLoader::newDao('ProducerDao', $this->moduleName);
+            $producerDao->setCommunityId($communityId);
+            $producerDao->setDisplayName($displayName);
+            $producerDao->setDescription('');
+            $producerDao->setExecutableName('');
+            $producerDao->setRepository('');
+            $producerDao->setRevisionUrl('');
+            $this->save($producerDao);
         }
 
-        return $producer;
+        return $producerDao;
     }
 
     /**
      * Delete the given producer and all associated trends.
      *
-     * @param Tracker_ProducerDao $producer producer DAO
+     * @param Tracker_ProducerDao $producerDao producer DAO
      */
-    public function delete($producer)
+    public function delete($producerDao)
     {
         /** @var Tracker_TrendModel $trendModel */
         $trendModel = MidasLoader::loadModel('Trend', $this->moduleName);
-        $trends = $producer->getTrends();
+        $trendDaos = $producerDao->getTrends();
 
-        /** @var Tracker_TrendDao $trend */
-        foreach ($trends as $trend) {
-            $trendModel->delete($trend);
+        /** @var Tracker_TrendDao $trendDao */
+        foreach ($trendDaos as $trendDao) {
+            $trendModel->delete($trendDao);
         }
-        parent::delete($producer);
+
+        parent::delete($producerDao);
+    }
+
+    /**
+     * Check whether the given policy is valid for the given producer and user.
+     *
+     * @param Tracker_ProducerDao $producerDao producer DAO
+     * @param null|UserDao $userDao user DAO
+     * @param int $policy policy
+     * @return bool true if the given policy is valid for the given producer and user
+     */
+    public function policyCheck($producerDao, $userDao = null, $policy = MIDAS_POLICY_READ)
+    {
+        if (is_null($producerDao) || $producerDao === false) {
+            return false;
+        }
+
+        /** @var CommunityModel $communityModel */
+        $communityModel = MidasLoader::loadModel('Community');
+        $communityDao = $producerDao->getCommunity();
+
+        return $communityDao !== false && $communityModel->policyCheck($communityDao, $userDao, $policy);
     }
 }
