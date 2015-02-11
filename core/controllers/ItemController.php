@@ -190,7 +190,7 @@ class ItemController extends AppController
                 $date->add($interval)->getTimestamp(),
                 '/',
                 $request->getHttpHost(),
-                (int) Zend_Registry::get('configGlobal')->get('cookie_secure', 1) === 1,
+                (int) Zend_Registry::get('configGlobal')->get('cookie_secure', 0) === 1,
                 true
             );
         }

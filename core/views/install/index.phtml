@@ -47,12 +47,16 @@
         }
     }
 
-    if (empty($this->phpextension_missing)) {
+    if(!$this->writable){
+      echo "<li><span style=\"color:#d48304\">To use Midas Platform, the folder \"".LOCAL_CONFIGS_PATH."\" must be writable by your web server.</span></li>";
+    }
+
+    if (empty($this->phpextension_missing) && $this->writable) {
         echo "<li><span style=\"color:green\"> Your system is OK.</span></li>";
     }
     echo "</ul>";
 
-    if (empty($this->phpextension_missing)) {
+    if (empty($this->phpextension_missing) && $this->writable) {
         echo "<form method='post' action=''>";
         echo "<input type='submit' name='submit' value='Go to next step'>";
         echo "</form>";

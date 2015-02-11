@@ -44,6 +44,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     {
         // init language
         $configGlobal = new Zend_Config_Ini(APPLICATION_CONFIG, 'global', true);
+
         if (isset($_COOKIE[MIDAS_LANGUAGE_COOKIE_NAME])) {
             $configGlobal->application->lang = $_COOKIE[MIDAS_LANGUAGE_COOKIE_NAME];
         }
@@ -62,7 +63,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                 $date->add($interval)->getTimestamp(),
                 '/',
                 !empty($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'],
-                (int) $configGlobal->get('cookie_secure', 1) === 1,
+                (int) $configGlobal->get('cookie_secure', 0) === 1,
                 true
             );
         }
@@ -420,7 +421,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $config = Zend_Registry::get('configGlobal');
         $options = array(
             'cookie_httponly' => true,
-            'cookie_secure' => (int) $config->get('cookie_secure', 1) === 1,
+            'cookie_secure' => (int) $config->get('cookie_secure', 0) === 1,
             'gc_maxlifetime' => 600,
         );
         Zend_Session::setOptions($options);
