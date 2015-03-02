@@ -36,6 +36,10 @@ matrix:
     - php: 7
     - php: hhvm
 
+cache:
+  directories:
+    - $HOME/.composer/cache
+
 before_install:
   - travis_retry composer self-update -n
 
