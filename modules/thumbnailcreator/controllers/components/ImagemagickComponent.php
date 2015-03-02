@@ -20,6 +20,170 @@
 
 include_once BASE_PATH.'/library/KWUtils.php';
 
+if (extension_loaded('fileinfo') === false) {
+    define('FILEINFO_NONE', 0);
+    define('FILEINFO_SYMLINK', 2);
+    define('FILEINFO_DEVICES', 8);
+    define('FILEINFO_CONTINUE', 32);
+    define('FILEINFO_PRESERVE_ATIME', 128);
+    define('FILEINFO_RAW', 256);
+    define('FILEINFO_MIME_TYPE', 16);
+    define('FILEINFO_MIME_ENCODING', 1024);
+    define('FILEINFO_MIME', 1040);
+
+    /**
+     * Return information about a given string.
+     *
+     * @param null|int|resource $finfo fileinfo resource
+     * @param null|string $string content of the file to be checked
+     * @param int $options fileinfo constant (FILEINFO_NONE | FILEINFO_MIME_TYPE | FILEINFO_MIME_ENCODING | FILEINFO_MIME)
+     * @param null|resource $context context (not implemented)
+     * @return false|string a textual description of the given string or false on failure
+     */
+    function finfo_buffer($finfo, $string = null, $options = FILEINFO_NONE, $context = null)
+    {
+        if ($finfo !== false && !is_null($string) && is_null($context)) {
+            if ($options === FILEINFO_NONE && ($finfo & FILEINFO_MIME_TYPE === FILEINFO_MIME_TYPE || $finfo & FILEINFO_MIME_ENCODING === FILEINFO_MIME_ENCODING)) {
+                $options = $finfo;
+            }
+
+            if ($options & FILEINFO_MIME_TYPE === FILEINFO_MIME_TYPE || $options & FILEINFO_MIME_ENCODING === FILEINFO_MIME_ENCODING) {
+                if (substr($string, 8) === "\x89PNG\x0d\x0a\x1a\x0a") {
+                    $mimeType = 'image/png';
+                } elseif (substr($string, 6) === 'GIF87a' || substr($string, 6) === 'GIF89a') {
+                    $mimeType = 'image/gif';
+                } elseif (substr($string, 4) === "MM\x00\x2a" || substr($string, 4) === "II\x2a\x00") {
+                    $mimeType = 'image/tiff';
+                } elseif (substr($string, 4) === '8BPS') {
+                    $mimeType = 'image/vnd.adobe.photoshop';
+                } elseif (substr($string, 3) === "\xFF\xD8\xFF") {
+                    $mimeType = 'image/jpeg';
+                } elseif (substr($string, 2) === 'BM') {
+                    $mimeType = 'image/bmp';
+                } else {
+                    return false;
+                }
+
+                if ($options & FILEINFO_MIME === FILEINFO_MIME) {
+                    return $mimeType.'; charset=binary';
+                }
+
+                if ($options & FILEINFO_MIME_TYPE === FILEINFO_MIME_TYPE) {
+                    return $mimeType;
+                }
+
+                return 'binary';
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Close a given fileinfo resource.
+     *
+     * @param null|resource $finfo fileinfo resource
+     * @return bool true on success or false on failure
+     */
+    function finfo_close($finfo)
+    {
+        return $finfo !== false;
+    }
+
+    /**
+     * Return information about a given file.
+     *
+     * @param null|int|resource $finfo fileinfo resource
+     * @param null|string $filename name of the file to be checked
+     * @param int $options fileinfo constant (FILEINFO_NONE | FILEINFO_MIME_TYPE | FILEINFO_MIME_ENCODING | FILEINFO_MIME)
+     * @param null|resource $context context (partially implemented)
+     * @return false|string a textual description of the contents of the given file or false on failure
+     */
+    function finfo_file($finfo, $filename = null, $options = FILEINFO_NONE, $context = null)
+    {
+        if ($finfo !== false && !is_null($filename)) {
+            if ($options === FILEINFO_NONE && ($finfo & FILEINFO_MIME_TYPE === FILEINFO_MIME_TYPE || $finfo & FILEINFO_MIME_ENCODING === FILEINFO_MIME_ENCODING)) {
+                $options = $finfo;
+            }
+
+            if ($options & FILEINFO_MIME_TYPE === FILEINFO_MIME_TYPE || $options & FILEINFO_MIME_ENCODING === FILEINFO_MIME_ENCODING) {
+                $mimeType = finfo_buffer($finfo, file_get_contents($filename, false, $context), $options, $context);
+
+                if ($mimeType === false) {
+                    $extension = strtolower(end(explode('.', basename($filename))));
+
+                    switch ($extension) {
+                        case 'bmp':
+                            $mimeType = 'image/bmp';
+                            break;
+                        case 'gif':
+                            $mimeType = 'image/gif';
+                            break;
+                        case 'ico':
+                            $mimeType = 'image/x-icon';
+                            break;
+                        case 'jpe':
+                        case 'jpeg':
+                        case 'jpg':
+                            $mimeType = 'image/jpeg';
+                            break;
+                        case 'png':
+                            $mimeType = 'image/png';
+                            break;
+                        case 'psd':
+                            $mimeType = 'image/vnd.adobe.photoshop';
+                            break;
+                        case 'tif':
+                        case 'tiff':
+                            $mimeType = 'image/tiff';
+                            break;
+                        default:
+                            return false;
+                    }
+
+                    if ($options & FILEINFO_MIME === FILEINFO_MIME) {
+                        return $mimeType.'; charset=binary';
+                    }
+
+                    if ($options & FILEINFO_MIME_TYPE === FILEINFO_MIME_TYPE) {
+                        return $mimeType;
+                    }
+
+                    return 'binary';
+                }
+
+                return $mimeType;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Create a new fileinfo resource.
+     *
+     * @param int $options fileinfo constant (FILEINFO_NONE | FILEINFO_MIME_TYPE | FILEINFO_MIME_ENCODING | FILEINFO_MIME)
+     * @param null|string $magic name of a magic database file (not implemented)
+     * @return null|int|resource a fileinfo resource on success or false on failure.
+     */
+    function finfo_open($options = FILEINFO_NONE, $magic = null)
+    {
+        return is_null($magic) ? $options : false;
+    }
+
+    /**
+     * Set the magic configuration options (not implemented).
+     *
+     * @param null|int|resource $finfo fileinfo resource
+     * @param int $options fileinfo constant (FILEINFO_NONE | FILEINFO_MIME_TYPE | FILEINFO_MIME_ENCODING | FILEINFO_MIME)
+     * @return bool true on success or false on failure
+     */
+    function finfo_set_flags($finfo, $options)
+    {
+        return $finfo === $options;
+    }
+}
+
 /** Component used to create thumbnails using phMagick library (on top of ImageMagick) */
 class Thumbnailcreator_ImagemagickComponent extends AppComponent
 {
