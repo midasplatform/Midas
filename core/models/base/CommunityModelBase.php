@@ -226,7 +226,7 @@ abstract class CommunityModelBase extends AppModel
                 $feedpolicygroupModel->createPolicy($anonymousGroup, $feed, MIDAS_POLICY_READ);
             }
         }
-
+        Zend_Registry::get('notifier')->callback('CALLBACK_CORE_NEW_COMMUNITY_ADDED', array('community' => $communityDao));
         return $communityDao;
     }
 
