@@ -7,4 +7,5 @@ composer.lock
 composer.phar
 cron.yaml
 node_modules/
+site/
 vendor/

@@ -18,8 +18,10 @@
 #=============================================================================
 
 ---
-# Enable the task scheduler module and rename this file "cron.yaml".
-cron:
-- description: task scheduler job
-  url: /scheduler/run
-  schedule: every 10 minutes
+site_name: Midas Server
+site_url: https://midas-server.readthedocs.org/
+repo_url: https://github.com/midasplatform/Midas
+site_description: Server component of the Midas Platform
+site_favicon: ../favicon.ico
+theme: readthedocs
+markdown_extensions: [admonition, smarty]

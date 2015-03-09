@@ -47,8 +47,8 @@ env_variables:
 
 skip_files:
 - ^(.*/)?.*/(\.DS_Store|\.htaccess|\.gitignore|CMakeLists\.txt|.*\.java)$
-- ^(.*/)?(\.coveralls\.yml|\.travis\.yml|AUTHORS|bower\.json|composer\.json|composer\.lock|COPYRIGHT|CTestConfig\.cmake|cron-sample\.yaml|LICENSE|README\.md|Vagrantfile)$
+- ^(.*/)?(\.coveralls\.yml|\.travis\.yml|AUTHORS|bower\.json|composer\.json|composer\.lock|COPYRIGHT|CTestConfig\.cmake|cron-sample\.yaml|LICENSE|mkdocs\.yml|README\.md|requirements\.txt|Vagrantfile)$
 - ^(.*/)?core/configs/.*\.local\.ini$
-- ^(.*/)?(\.git|\.idea|\.vagrant|data|log|provisioning|tests|tmp|utils)/.*
+- ^(.*/)?(\.git|\.idea|\.vagrant|data|docs|log|provisioning|site|tests|tmp|utils)/.*
 - ^(.*/)?(core|modules/.*)/(database/(pgsql|sqlite)|tests)/.*
 - ^(.*/)?modules/(archive|batchmake|dicom.*|example|javauploaddownload|metadataextractor|pvw|remoteprocessing|solr|statistics|visualize)/.*
