@@ -42,6 +42,7 @@ cache:
 
 before_install:
   - travis_retry composer self-update -n
+  - if [[ $TRAVIS_PHP_VERSION = hhvm || $TRAVIS_PHP_VERSION = 7 ]]; then sed -i '/ext-xdebug/d' composer.json; fi
 
 install:
   - travis_retry composer install -n --prefer-dist
