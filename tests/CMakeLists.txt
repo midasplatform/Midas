@@ -41,6 +41,9 @@ function(add_midas_mysql_test TestName TestFile)
     if(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/mysql.ini)
         set(Environment "midas_data_path=$ENV{midas_data_path};midas_local_configs_path=$ENV{midas_local_configs_path};midas_logs_path=$ENV{midas_logs_path};midas_temp_path=$ENV{midas_temp_path}")
         set(TestParams --debug --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php)
+        if(MIDAS_RUN_TESTS_WITH_COVERAGE)
+            set(TestParams ${TestParams} --coverage-php ${CMAKE_BINARY_DIR}/cov/MySQL${TestName}.cov)
+        endif()
         add_test(
             MySQL${TestName}
             ${PHP} ${CMAKE_SOURCE_DIR}/tests/PHPUnitMySQL.php ${TestParams} ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
@@ -58,6 +61,9 @@ function(add_midas_pgsql_test TestName TestFile)
     if(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/pgsql.ini)
         set(Environment "midas_data_path=$ENV{midas_data_path};midas_local_configs_path=$ENV{midas_local_configs_path};midas_logs_path=$ENV{midas_logs_path};midas_temp_path=$ENV{midas_temp_path}")
         set(TestParams --debug --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php)
+        if(MIDAS_RUN_TESTS_WITH_COVERAGE)
+            set(TestParams ${TestParams} --coverage-php ${CMAKE_BINARY_DIR}/cov/PgSQL${TestName}.cov)
+        endif()
         add_test(
             PgSQL${TestName}
             ${PHP} ${CMAKE_SOURCE_DIR}/tests/PHPUnitPgSQL.php ${TestParams} ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}
@@ -75,6 +81,9 @@ function(add_midas_sqlite_test TestName TestFile)
     if(EXISTS ${CMAKE_SOURCE_DIR}/tests/configs/sqlite.ini)
         set(Environment "midas_data_path=$ENV{midas_data_path};midas_local_configs_path=$ENV{midas_local_configs_path};midas_logs_path=$ENV{midas_logs_path};midas_temp_path=$ENV{midas_temp_path}")
         set(TestParams --debug --bootstrap ${CMAKE_SOURCE_DIR}/tests/TestsBootstrap.php)
+        if(MIDAS_RUN_TESTS_WITH_COVERAGE)
+            set(TestParams ${TestParams} --coverage-php ${CMAKE_BINARY_DIR}/cov/SQLite${TestName}.cov)
+        endif()
         add_test(
             SQLite${TestName}
             ${PHP} ${CMAKE_SOURCE_DIR}/tests/PHPUnitSQLite.php ${TestParams} ${CMAKE_CURRENT_SOURCE_DIR}/${TestFile}

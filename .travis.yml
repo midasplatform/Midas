@@ -20,24 +20,37 @@
 ---
 language: php
 
+sudo: false
+
 php:
   - 5.4
   - 5.5
   - 5.6
+  - 7
+  - hhvm
+
+matrix:
+  fast_finish: true
+
+  allow_failures:
+    - php: 7
+    - php: hhvm
+
+cache:
+  directories:
+    - $HOME/.composer/cache
 
 before_install:
-  - composer self-update -n
+  - travis_retry composer self-update -n
+  - if [[ $TRAVIS_PHP_VERSION = hhvm || $TRAVIS_PHP_VERSION = 7 ]]; then sed -i '/ext-xdebug/d' composer.json; fi
 
 install:
-  - composer install -n --prefer-dist
+  - travis_retry composer install -n --prefer-dist
 
 before_script:
-  - cp tests/travis/mysql.ini tests/configs/mysql.ini
-  - cp tests/travis/pgsql.ini tests/configs/pgsql.ini
-  - cp tests/travis/sqlite.ini tests/configs/sqlite.ini
-  - mysql -u root -e 'create database midas_test;'
-  - psql -U postgres -c 'create database midas_test;'
-  - touch midas_test.db
+  - cp tests/travis/mysql.ini tests/configs/mysql.ini && mysql -u root -e 'create database midas_test;'
+  - if [[ $TRAVIS_PHP_VERSION != hhvm ]]; then cp tests/travis/pgsql.ini tests/configs/pgsql.ini && psql -U postgres -c 'create database midas_test;'; fi
+  - cp tests/travis/sqlite.ini tests/configs/sqlite.ini && touch midas_test.db
 
 script:
   - mkdir _test && cd _test

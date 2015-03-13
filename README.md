@@ -1,28 +1,29 @@
-Midas Platform
-==============
+# Midas Server #
 
-![Midas Platform](https://raw.githubusercontent.com/midasplatform/Midas/master/core/public/images/midas-200.png)
+![Midas Server](https://raw.githubusercontent.com/midasplatform/Midas/master/core/public/images/midas-200.png)
 
-_Version 3.x_
+_Server component of the Midas Platform_
 
-[![Build Status](https://travis-ci.org/midasplatform/Midas.svg)](https://travis-ci.org/midasplatform/Midas)
-[![Coverage Status](https://img.shields.io/coveralls/midasplatform/Midas.svg)](https://coveralls.io/r/midasplatform/Midas?)
+[![Build Status](https://img.shields.io/travis/midasplatform/Midas.svg)](https://travis-ci.org/midasplatform/Midas)
+[![Coverage Status](https://img.shields.io/coveralls/midasplatform/Midas.svg)](https://coveralls.io/r/midasplatform/Midas)
+[![Documentation Status](https://readthedocs.org/projects/midas-server/badge/?version=latest)](https://readthedocs.org/projects/midas-server/?badge=latest)
+[![Code Climate](https://img.shields.io/codeclimate/github/midasplatform/Midas.svg)](https://codeclimate.com/github/midasplatform/Midas)
+[![Packagist Version](https://img.shields.io/packagist/v/midas-platform/midas-server.svg)](https://packagist.org/packages/midas-platform/midas-server)
+[![Packagist License](https://img.shields.io/packagist/l/midas-platform/midas-server.svg)](https://packagist.org/packages/midas-platform/midas-server)
 
-Overview
---------
+## Overview ##
 
-Midas Platform is an open-source toolkit that enables the rapid creation of
+Midas Server is an open-source application that enables the rapid creation of
 tailored, web-enabled data storage. Designed to meet the needs of advanced
-data-centric computing, Midas Platform addresses the growing challenge of large
-data by providing a flexible, intelligent data storage system. The system
+data-centric computing, Midas Server addresses the growing challenge of large
+data by providing a flexible, intelligent data storage system. Midas Server
 integrates multimedia server technology with other open-source data analysis
 and visualization tools to enable data-intensive applications that easily
 interface with existing workflows.
 
 <http://www.midasplatform.org/>
 
-Installation
-------------
+## Installation ##
 
 ```
 git clone https://github.com/midasplatform/Midas.git midas
@@ -31,7 +32,6 @@ curl -sS https://getcomposer.org/installer | php
 php composer.phar install
 ```
 
-License
--------
+## License ##
 
-Midas Platform is licensed under the Apache License, Version 2.0.
+Midas Server is licensed under the Apache License, Version 2.0.

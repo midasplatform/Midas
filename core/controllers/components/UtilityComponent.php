@@ -595,7 +595,9 @@ class UtilityComponent extends AppComponent
      */
     public static function markdown($text)
     {
-        return Michelf\MarkdownExtra::defaultTransform($text);
+        $extra = new \ParsedownExtra();
+
+        return $extra->text($text);
     }
 
     /**
