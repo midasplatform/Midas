@@ -17,7 +17,6 @@
 # limitations under the License.
 #=============================================================================
 
----
 coverage_clover: ./log/clover.xml
 json_path: ./log/coveralls-upload.json
 src_dir: .
