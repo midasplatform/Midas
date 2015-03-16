@@ -22,13 +22,13 @@
 class UTF8Tools
 {
     /** @var array */
-    protected $excludedDirs = array('_build', '_test', '.git', 'bin', 'bower_components', 'build', 'data', 'library', 'log', 'node_modules', 'tmp', 'vendor');
+    protected $excludedDirs = array('_build', '_test', '.git', '.idea', '.sass-cache', '.vagrant', 'bin', 'bower_components', 'build', 'env', 'data', 'library', 'log', 'node_modules', 'site', 'tmp', 'vendor');
 
     /** @var array */
-    protected $excludedExts = array('db', 'gif', 'ico', 'ini', 'jar', 'jpeg', 'jpg', 'keystore', 'phar', 'png', 'psd', 'swc', 'swf', 'zip');
+    protected $excludedExts = array('db', 'gif', 'gz', 'ico', 'ini', 'jar', 'jpeg', 'jpg', 'keystore', 'lock', 'phar', 'png', 'psd', 'swc', 'swf', 'yaml', 'yml', 'zip');
 
     /** @var array */
-    protected $excludedFiles = array('.coveralls.yml', '.DS_Store', '.htaccess', '.gitignore', '.travis.yml', 'appveyor.yml');
+    protected $excludedFiles = array('.DS_Store', '.editorconfig', '.htaccess', '.gitignore');
 
     /**
      * return true if the string is UTF8 encoded.
