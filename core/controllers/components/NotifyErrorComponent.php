@@ -1,9 +1,9 @@
 <?php
 /*=========================================================================
- MIDAS Server
- Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ Midas Server
+ Copyright Kitware SAS, 26 rue Louis Guérin, 69100 Villeurbanne, France.
  All rights reserved.
- More information http://www.kitware.com
+ For more information visit http://www.kitware.com/.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -121,7 +121,7 @@ class NotifyErrorComponent extends AppComponent
                     ) {
                         $fc = Zend_Controller_Front::getInstance();
                         $webroot = $fc->getBaseUrl();
-                        echo "Midas Platform is not installed. <a href='".$webroot."/install?reset=true'>Click here to reset MIDAS and go to the installation page.</a>";
+                        echo "Midas Server is not installed. <a href='".$webroot."/install?reset=true'>Click here to reset Midas Server and go to the installation page.</a>";
 
                         return;
                     }

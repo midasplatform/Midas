@@ -1,4 +1,4 @@
--- MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+-- Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 -- PostgreSQL core database, version 3.2.0
 
