@@ -35,7 +35,7 @@ class Solr_Form_Admin extends Zend_Form
         $host->setLabel('Solr Host');
         $host->setRequired(true);
         $host->addValidator('NotEmpty', true);
-        $host->addValidator('Hostname', true);
+        $host->addValidator('Hostname', true, array('allow' => Zend_Validate_Hostname::ALLOW_ALL, 'tld' => false));
 
         $port = new Zend_Form_Element_Text(SOLR_PORT_KEY);
         $port->setLabel('Solr Port');

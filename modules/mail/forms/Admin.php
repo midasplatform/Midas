@@ -66,7 +66,7 @@ class Mail_Form_Admin extends Zend_Form
         $smtpHost = new Zend_Form_Element_Text(MAIL_SMTP_HOST_KEY);
         $smtpHost->setLabel('Server name');
         $smtpHost->addValidator('NotEmpty', true);
-        $smtpHost->addValidator('Hostname', true);
+        $smtpHost->addValidator('Hostname', true, array('allow' => Zend_Validate_Hostname::ALLOW_ALL, 'tld' => false));
 
         $smtpPort = new Zend_Form_Element_Text(MAIL_SMTP_PORT_KEY);
         $smtpPort->setLabel('Port');
