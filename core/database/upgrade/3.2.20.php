@@ -43,4 +43,3 @@ class Upgrade_3_2_20 extends MIDASUpgrade
     $this->db->query("ALTER TABLE userapi ALTER apikey TYPE character varying(64);");
     }
 }
-
