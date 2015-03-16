@@ -18,7 +18,11 @@
  limitations under the License.
 =========================================================================*/
 
-/** Upgrade the tracker module to version 1.0.3. Add a build results link. */
+/**
+ * Upgrade the tracker module to version 1.0.3. Add a build results link.
+ *
+ * @package Modules\Tracker\Database
+ */
 class Tracker_Upgrade_1_0_3 extends MIDASUpgrade
 {
     /** Upgrade a MySQL database. */

@@ -19,14 +19,17 @@
 =========================================================================*/
 
 /**
- * Producer Model Base
+ * Producer base model class for the tracker module.
+ *
+ * @package Modules\Tracker\Model
  */
 abstract class Tracker_ProducerModelBase extends Tracker_AppModel
 {
-    /** constructor */
+    /** Constructor. */
     public function __construct()
     {
         parent::__construct();
+
         $this->_name = 'tracker_producer';
         $this->_key = 'producer_id';
         $this->_mainData = array(
@@ -51,48 +54,92 @@ abstract class Tracker_ProducerModelBase extends Tracker_AppModel
                 'child_column' => 'producer_id',
             ),
         );
+
         $this->initialize();
     }
 
-    /** Get by community id */
+    /**
+     * Return all producers for the given community id.
+     *
+     * @param int $communityId community id
+     * @return array producer DAOs
+     */
     abstract public function getByCommunityId($communityId);
 
-    /**  Get by community id and name */
+    /**
+     * Return the producer with the given display name for the given community id.
+     *
+     * @param int $communityId community id
+     * @param string $displayName display name
+     * @return false|Tracker_ProducerDao producer DAO or false if no such producer exists
+     * @throws Zend_Exception
+     */
     abstract public function getByCommunityIdAndName($communityId, $displayName);
 
     /**
-     * If the producer with the given displayName and communityId exists, returns it.
-     * If not, it will create it and return it.
+     * Return the producer DAO that matches the given display name and community id if it exists.
+     * Otherwise, create the producer DAO.
+     *
+     * @param int $communityId community id
+     * @param string $displayName display name
+     * @return Tracker_ProducerDao producer DAO
      */
     public function createIfNeeded($communityId, $displayName)
     {
-        $producer = $this->getByCommunityIdAndName($communityId, $displayName);
-        if (!$producer) {
-            /** @var Tracker_ProducerDao $producer */
-            $producer = MidasLoader::newDao('ProducerDao', $this->moduleName);
-            $producer->setCommunityId($communityId);
-            $producer->setDisplayName($displayName);
-            $producer->setDescription('');
-            $producer->setExecutableName('');
-            $producer->setRepository('');
-            $producer->setRevisionUrl('');
-            $this->save($producer);
+        $producerDao = $this->getByCommunityIdAndName($communityId, $displayName);
+
+        if ($producerDao === false) {
+            /** @var Tracker_ProducerDao $producerDao */
+            $producerDao = MidasLoader::newDao('ProducerDao', $this->moduleName);
+            $producerDao->setCommunityId($communityId);
+            $producerDao->setDisplayName($displayName);
+            $producerDao->setDescription('');
+            $producerDao->setExecutableName('');
+            $producerDao->setRepository('');
+            $producerDao->setRevisionUrl('');
+            $this->save($producerDao);
         }
 
-        return $producer;
+        return $producerDao;
     }
 
     /**
-     * Delete the producer (deletes all related trends as well)
+     * Delete the given producer and all associated trends.
+     *
+     * @param Tracker_ProducerDao $producerDao producer DAO
      */
-    public function delete($producer)
+    public function delete($producerDao)
     {
-        /** @var Tracker_ScalarModel $trendModel */
+        /** @var Tracker_TrendModel $trendModel */
         $trendModel = MidasLoader::loadModel('Trend', $this->moduleName);
-        $trends = $producer->getTrends();
-        foreach ($trends as $trend) {
-            $trendModel->delete($trend);
+        $trendDaos = $producerDao->getTrends();
+
+        /** @var Tracker_TrendDao $trendDao */
+        foreach ($trendDaos as $trendDao) {
+            $trendModel->delete($trendDao);
         }
-        parent::delete($producer);
+
+        parent::delete($producerDao);
+    }
+
+    /**
+     * Check whether the given policy is valid for the given producer and user.
+     *
+     * @param Tracker_ProducerDao $producerDao producer DAO
+     * @param null|UserDao $userDao user DAO
+     * @param int $policy policy
+     * @return bool true if the given policy is valid for the given producer and user
+     */
+    public function policyCheck($producerDao, $userDao = null, $policy = MIDAS_POLICY_READ)
+    {
+        if (is_null($producerDao) || $producerDao === false) {
+            return false;
+        }
+
+        /** @var CommunityModel $communityModel */
+        $communityModel = MidasLoader::loadModel('Community');
+        $communityDao = $producerDao->getCommunity();
+
+        return $communityDao !== false && $communityModel->policyCheck($communityDao, $userDao, $policy);
     }
 }

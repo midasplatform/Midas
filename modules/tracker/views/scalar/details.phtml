@@ -18,8 +18,8 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<script type="text/javascript" src="<?php echo $this->moduleWebroot ?>/public/js/scalar/scalar.details.js"></script>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/scalar/scalar.details.css"/>
+<script type="text/javascript" src="<?php echo $this->moduleWebroot; ?>/public/js/scalar/scalar.details.js"></script>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot; ?>/public/css/scalar/scalar.details.css"/>
 
 <input type="hidden" class="scalarId" value="<?php echo $this->escape($this->scalar->getKey()); ?>"/>
 
@@ -80,17 +80,20 @@
         <?php
         }
         if ($this->extraUrls) {
+            /** @var array $linkInfo */
             foreach ($this->extraUrls as $linkInfo) {
                 echo '<tr><th>'.$this->escape($linkInfo['label']).':</th><td>';
                 echo '<a target="_blank" href="'.$this->escape($linkInfo['href']).'">'.$this->escape($linkInfo['text']).'</a>';
                 echo '</td></tr>';
             }
         }
-        $htmltArray = Zend_Registry::get('notifier')->callback(
+        $htmlArray = Zend_Registry::get('notifier')->callback(
             'CALLBACK_TRACKER_SCALAR_DETAIL_INFO',
             array('scalar' => $this->scalar)
         );
-        foreach ($htmltArray as $html) {
+
+        /** @var string $html */
+        foreach ($htmlArray as $html) {
             if (!empty($html)) {
                 echo $html;
             }
@@ -100,21 +103,29 @@
     </table>
 </div>
 
-<?php if (count($this->extraParams)) {
+<?php
+if (count($this->extraParams)) {
     ?>
     <div class="extraParams">
         <div class="sectionDivider">
             <span class="sectionTitle">Other Information</span></div>
         <table class="scalarInfoTable">
             <tbody>
-            <?php foreach ($this->extraParams as $key => $value) {
+            <?php
+            /**
+             * @var string $key
+             * @var mixed $value
+             */
+            foreach ($this->extraParams as $key => $value) {
                 echo '<tr><th>'.$this->escape($key).':</th><td>'.$this->escape($value).'</td></tr>';
             }
             ?>
             </tbody>
         </table>
     </div>
-<?php } ?>
+    <?php
+}
+?>
 
 <div class="otherScalars">
     <div class="sectionDivider">
@@ -122,6 +133,10 @@
     <table class="otherScalarTable">
         <tbody>
         <?php
+        /**
+         * @var string $metricName
+         * @var float $value
+         */
         foreach ($this->otherValues as $metricName => $value) {
             echo '<tr><th>'.$this->escape($metricName).':</th><td>'.$this->escape($value).'</td></tr>';
         }
@@ -134,15 +149,17 @@
     <div class="sectionDivider"><span class="sectionTitle">Result items</span>
     </div>
     <?php
+    /** @var array $result */
     foreach ($this->resultItems as $result) {
-        $item = $result['item'];
+        /** @var ItemDao $itemDao */
+        $itemDao = $result['item'];
         echo '<div class="resultItemContainer"><span class="resultItemLabel">'.$this->escape($result['label']).':</span> ';
-        echo '<a element="'.$this->escape($item->getKey()).'" class="resultItemLink" href="'.$this->webroot.'/item/'.$this->escape($item->getKey(
+        echo '<a element="'.$this->escape($itemDao->getKey()).'" class="resultItemLink" href="'.$this->webroot.'/item/'.$this->escape($itemDao->getKey(
             )).'" ';
-        echo 'thumbnail="'.$this->escape($item->getThumbnailId()).'">'.$this->escape($item->getName()).'</a>';
+        echo 'thumbnail="'.$this->escape($itemDao->getThumbnailId()).'">'.$this->escape($itemDao->getName()).'</a>';
         echo '</div>';
     }
-    if (count($this->resultItems) === 0) {
+    if (empty($this->resultItems)) {
         echo '<span class="itemLinkNone">No result items submitted</span>';
     }
     ?>
@@ -150,10 +167,11 @@
 </div>
 
 <div class="bottomButtons">
-    <?php if ($this->isAdmin) {
+    <?php
+    if ($this->isAdmin) {
         ?>
         <input type="button" class="globalButton" id="deleteScalar" value="Delete"/>
-    <?php
+        <?php
     }
     ?>
 </div>

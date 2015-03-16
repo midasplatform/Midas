@@ -18,18 +18,26 @@
  limitations under the License.
 =========================================================================*/
 
-/** Component for api methods */
+/**
+ * API component for the tracker module.
+ *
+ * @package Modules\Tracker\Component
+ */
 class Tracker_ApiComponent extends AppComponent
 {
 	/** @var string */
 	public $moduleName = 'tracker';
 
     /**
-     * Helper function for verifying keys in an input array
+     * Helper function for verifying keys in an input array.
+     *
+     * @param array $keys keys
+     * @param array $values values
      * @throws Exception
      */
     private function _checkKeys($keys, $values)
     {
+        /** @var string $key */
         foreach ($keys as $key) {
             if (!array_key_exists($key, $values)) {
                 throw new Exception('Parameter '.$key.' must be set.', -1);
@@ -38,7 +46,10 @@ class Tracker_ApiComponent extends AppComponent
     }
 
     /**
-     * Helper function to get the user from token or session authentication
+     * Helper function to get the user from token or session authentication.
+     *
+     * @param array $args parameters
+     * @return false|UserDao user DAO or false on failure
      */
     private function _getUser($args)
     {
@@ -69,6 +80,7 @@ class Tracker_ApiComponent extends AppComponent
         $this->_checkKeys(array('scalarIds', 'itemId', 'label'), $args);
         $user = $this->_getUser($args);
 
+        /** @var ItemDao $item */
         $item = $itemModel->load($args['itemId']);
         if (!$item) {
             throw new Exception('Invalid itemId', 404);
@@ -78,7 +90,10 @@ class Tracker_ApiComponent extends AppComponent
         }
 
         $scalarIds = explode(',', $args['scalarIds']);
+
+        /** @var int $scalarId */
         foreach ($scalarIds as $scalarId) {
+            /** @var Tracker_ScalarDao $scalar */
             $scalar = $scalarModel->load($scalarId);
 
             if (!$scalar) {
@@ -97,7 +112,7 @@ class Tracker_ApiComponent extends AppComponent
     }
 
     /**
-     * Create a new scalar data point (must have write access to the community)
+     * Create a new scalar data point (must have write access to the community).
      *
      * @param communityId The id of the community that owns the producer
      * @param producerDisplayName The display name of the producer
@@ -105,16 +120,16 @@ class Tracker_ApiComponent extends AppComponent
      * @param producerRevision The repository revision of the producer that produced this value
      * @param submitTime The submit timestamp. Must be parseable with PHP strtotime().
      * @param value The value of the scalar
-     * @param buildResultsUrl (Optional) The URL where build results can be viewed.
+     * @param buildResultsUrl (Optional) The URL where build results can be viewed
      * @param extraUrls (Optional) JSON list of additional links
-     * @param params (Optional) JSON object of arbitrary key/value pairs to display.
+     * @param params (Optional) JSON object of arbitrary key/value pairs to display
      * @param branch (Optional) The branch name within the source repository
      * @param configItemId (Optional) If this value pertains to a specific configuration item, pass its id here
      * @param testDatasetId (Optional) If this value pertains to a specific test dataset, pass its id here
      * @param truthDatasetId (Optional) If this value pertains to a specific ground truth dataset, pass its id here
      * @param silent (Optional) If set, do not perform threshold-based email notifications for this scalar
      * @param unofficial (Optional) If passed, creates an unofficial scalar visible only to the user performing the submission
-     * @return The scalar dao that was created
+     * @return The scalar DAO that was created
      * @throws Exception
      */
     public function scalarAdd($args)
@@ -132,6 +147,7 @@ class Tracker_ApiComponent extends AppComponent
 
         $official = !array_key_exists('unofficial', $args);
 
+        /** @var CommunityDao $community */
         $community = $communityModel->load($args['communityId']);
         if (!$community || !$communityModel->policyCheck(
                 $community,
@@ -158,7 +174,10 @@ class Tracker_ApiComponent extends AppComponent
 
         list($configItemId, $testDatasetId, $truthDatasetId) = array(null, null, null);
         if (isset($args['configItemId'])) {
+            /** @var int $configItemId */
             $configItemId = $args['configItemId'];
+
+            /** @var ItemDao $configItem */
             $configItem = $itemModel->load($configItemId);
             if (!$configItem || !$itemModel->policyCheck($configItem, $user, MIDAS_POLICY_READ)
             ) {
@@ -174,7 +193,10 @@ class Tracker_ApiComponent extends AppComponent
         }
 
         if (isset($args['testDatasetId'])) {
+            /** @var int $testDatasetId */
             $testDatasetId = $args['testDatasetId'];
+
+            /** @var ItemDao $testDatasetItem */
             $testDatasetItem = $itemModel->load($testDatasetId);
             if (!$testDatasetItem || !$itemModel->policyCheck($testDatasetItem, $user, MIDAS_POLICY_READ)
             ) {
@@ -190,7 +212,10 @@ class Tracker_ApiComponent extends AppComponent
         }
 
         if (isset($args['truthDatasetId'])) {
+            /** @var int $truthDatasetId */
             $truthDatasetId = $args['truthDatasetId'];
+
+            /** @var ItemDao $truthDatasetItem */
             $truthDatasetItem = $itemModel->load($truthDatasetId);
             if (!$truthDatasetItem || !$itemModel->policyCheck($truthDatasetItem, $user, MIDAS_POLICY_READ)
             ) {
@@ -260,11 +285,13 @@ class Tracker_ApiComponent extends AppComponent
             /** @var Tracker_ThresholdNotificationModel $notificationModel */
             $notificationModel = MidasLoader::loadModel('ThresholdNotification', 'tracker');
             $notifications = $notificationModel->getNotifications($scalar);
+
+            /** @var Tracker_ThresholdNotificationComponent $notifyComponent */
             $notifyComponent = MidasLoader::loadComponent('ThresholdNotification', 'tracker');
             $notifyComponent->scheduleNotifications($scalar, $notifications);
         }
         if (!$official) {
-            /** @var Tracker_JobModel $jobModel */
+            /** @var Scheduler_JobModel $jobModel */
             $jobModel = MidasLoader::loadModel('Job', 'scheduler');
 
             /** @var SettingModel $settingModel */
@@ -292,7 +319,7 @@ class Tracker_ApiComponent extends AppComponent
     }
 
     /**
-     * Upload a json file containing numeric scoring results to be added as scalars. File is parsed and then deleted from the server.
+     * Upload a JSON file containing numeric scoring results to be added as scalars. File is parsed and then deleted from the server.
      *
      * @param communityId The id of the community that owns the producer
      * @param producerDisplayName The display name of the producer
@@ -301,11 +328,11 @@ class Tracker_ApiComponent extends AppComponent
      * @param buildResultsUrl (Optional) The URL where build results can be viewed.
      * @param branch (Optional) The branch name within the source repository
      * @param extraUrls (Optional) JSON list of additional links
-     * @param params (Optional) JSON object of arbitrary key/value pairs to display.
+     * @param params (Optional) JSON object of arbitrary key/value pairs to display
      * @param configItemId (Optional) If this value pertains to a specific configuration item, pass its id here
      * @param testDatasetId (Optional) If this value pertains to a specific test dataset, pass its id here
      * @param truthDatasetId (Optional) If this value pertains to a specific ground truth dataset, pass its id here
-     * @param parentKeys (Optional) Semicolon -separated list of parent keys to look for numeric results under.  Use '.' to denote nesting, like in normal javascript syntax.
+     * @param parentKeys (Optional) Semicolon-separated list of parent keys to look for numeric results under.  Use '.' to denote nesting, like in normal JavaScript syntax.
      * @param silent (Optional) If set, do not perform threshold-based email notifications for this scalar
      * @param unofficial (Optional) If passed, creates an unofficial scalar visible only to the user performing the submission
      * @return The list of scalars that were created.  Non-numeric values are ignored.
@@ -335,6 +362,8 @@ class Tracker_ApiComponent extends AppComponent
         }
 
         // Unofficial submissions only require read access to the community
+
+        /** @var CommunityDao $community */
         $community = $communityModel->load($args['communityId']);
         if (!$community || !$communityModel->policyCheck(
                 $community,
@@ -358,7 +387,10 @@ class Tracker_ApiComponent extends AppComponent
 
         list($configItemId, $testDatasetId, $truthDatasetId) = array(null, null, null);
         if (isset($args['configItemId'])) {
+            /** @var int $configItemId */
             $configItemId = $args['configItemId'];
+
+            /** @var ItemDao $configItem */
             $configItem = $itemModel->load($configItemId);
             if (!$configItem || !$itemModel->policyCheck($configItem, $user, MIDAS_POLICY_READ)
             ) {
@@ -374,7 +406,10 @@ class Tracker_ApiComponent extends AppComponent
         }
 
         if (isset($args['testDatasetId'])) {
+            /** @var int $testDatasetId */
             $testDatasetId = $args['testDatasetId'];
+
+            /** @var ItemDao $testDatasetItem */
             $testDatasetItem = $itemModel->load($testDatasetId);
             if (!$testDatasetItem || !$itemModel->policyCheck($testDatasetItem, $user, MIDAS_POLICY_READ)
             ) {
@@ -390,7 +425,10 @@ class Tracker_ApiComponent extends AppComponent
         }
 
         if (isset($args['truthDatasetId'])) {
+            /** @var int $truthDatasetId */
             $truthDatasetId = $args['truthDatasetId'];
+
+            /** @var ItemDao $truthDatasetItem */
             $truthDatasetItem = $itemModel->load($truthDatasetId);
             if (!$truthDatasetItem || !$itemModel->policyCheck($truthDatasetItem, $user, MIDAS_POLICY_READ)
             ) {
@@ -442,6 +480,8 @@ class Tracker_ApiComponent extends AppComponent
 
         if (isset($args['parentKeys'])) { // iterate through all child keys of the set of specified parent keys
             $parentKeys = explode(';', $args['parentKeys']);
+
+            /** @var string $parentKey */
             foreach ($parentKeys as $parentKey) {
                 $nodes = explode('.', $parentKey);
                 $currentArr = $json;
@@ -454,6 +494,11 @@ class Tracker_ApiComponent extends AppComponent
                     }
                     $currentArr = $currentArr[$node];
                 }
+
+                /**
+                 * @var string $metricName
+                 * @var float $value
+                 */
                 foreach ($currentArr as $metricName => $value) { // iterate through all children of this parent key
                     if (!is_numeric($value)) { // ignore non-numeric child keys
                         continue;
@@ -484,6 +529,8 @@ class Tracker_ApiComponent extends AppComponent
                         /** @var Tracker_ThresholdNotificationModel $notificationModel */
                         $notificationModel = MidasLoader::loadModel('ThresholdNotification', 'tracker');
                         $notifications = $notificationModel->getNotifications($scalar);
+
+                        /** @var Tracker_ThresholdNotificationComponent $notifyComponent */
                         $notifyComponent = MidasLoader::loadComponent('ThresholdNotification', 'tracker');
                         $notifyComponent->scheduleNotifications($scalar, $notifications);
                     }
@@ -494,17 +541,26 @@ class Tracker_ApiComponent extends AppComponent
                             $job->setTask('TASK_TRACKER_DELETE_TEMP_SCALAR');
                             $job->setPriority(1);
                             $job->setRunOnlyOnce(1);
+
+                            /** @noinspection PhpUndefinedVariableInspection */
                             $job->setFireTime(date('Y-m-d H:i:s', strtotime('+'.$nHours.' hours')));
                             $job->setTimeInterval(0);
                             $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
                             $job->setCreatorId($user->getKey());
                             $job->setParams(JsonComponent::encode(array('scalarId' => $scalar->getKey())));
+
+                            /** @noinspection PhpUndefinedVariableInspection */
                             $jobModel->save($job);
                         }
                     }
                 }
             }
         } else { // just read all the top level keys
+
+            /**
+             * @var string $metricName
+             * @var float $value
+             */
             foreach ($json as $metricName => $value) {
                 if (!is_numeric($value)) {
                     continue;
@@ -531,6 +587,8 @@ class Tracker_ApiComponent extends AppComponent
                     /** @var Tracker_ThresholdNotificationModel $notificationModel */
                     $notificationModel = MidasLoader::loadModel('ThresholdNotification', 'tracker');
                     $notifications = $notificationModel->getNotifications($scalar);
+
+                    /** @var Tracker_ThresholdNotificationComponent $notifyComponent */
                     $notifyComponent = MidasLoader::loadComponent('ThresholdNotification', 'tracker');
                     $notifyComponent->scheduleNotifications($scalar, $notifications);
                 }
@@ -541,19 +599,33 @@ class Tracker_ApiComponent extends AppComponent
     }
 
     /**
-     * @param string $itemName
-     * @param CommunityDao $community
-     * @return ItemDao
+     * Create or find an item with the given name in the given community.
+     *
+     * @param string $itemName item name
+     * @param CommunityDao $community community DAO
+     * @return ItemDao item DAO
+     * @throws Exception
      */
     private function _createOrFindByName($itemName, $community)
     {
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $items = $itemModel->getByName($itemName);
-        if (count($items) == 0) {
-            return $itemModel->createItem($itemName, '', $community->getPrivateFolder());
-        } else {
-            return $items[0];
+        if (count($items) === 0) {
+            $folders = $community->getFolder()->getFolders();
+            $privateFolder = null;
+            /** @var FolderDao $folder */
+            foreach ($folders as $folder) {
+                if ($folder->getName() === 'Private' && $folder->getPrivacyStatus() === MIDAS_PRIVACY_PRIVATE) {
+                    $privateFolder = $folder;
+                    break;
+                }
+            }
+            if (is_null($privateFolder)) {
+                throw new Exception('No private folder in the given community in which to create an item', -1);
+            }
+            return $itemModel->createItem($itemName, '', $privateFolder);
         }
+        return $items[0];
     }
 }

@@ -21,40 +21,47 @@
 require_once BASE_PATH.'/modules/tracker/models/base/ScalarModelBase.php';
 
 /**
- * Scalar PDO Model
+ * Scalar model for the tracker module.
+ *
+ * @package Modules\Tracker\Model
  */
 class Tracker_ScalarModel extends Tracker_ScalarModelBase
 {
     /**
-     * Associate an item with a particular scalar
+     * Associate the given scalar and item.
      *
-     * @param scalar The scalar dao
-     * @param item The item dao
-     * @param label The association label
+     * @param Tracker_ScalarDao $scalarDao scalar DAO
+     * @param ItemDao $itemDao item DAO
+     * @param string $label label
      */
-    public function associateItem($scalar, $item, $label)
+    public function associateItem($scalarDao, $itemDao, $label)
     {
-        $data = array('scalar_id' => $scalar->getKey(), 'item_id' => $item->getKey(), 'label' => $label);
-        Zend_Registry::get('dbAdapter')->insert('tracker_scalar2item', $data);
+        $data = array('scalar_id' => $scalarDao->getKey(), 'item_id' => $itemDao->getKey(), 'label' => $label);
+        $this->database->getDB()->insert('tracker_scalar2item', $data);
     }
 
     /**
-     * Return all items associated with this scalar, and their corresponding labels
+     * Return the items associated with the given scalar.
+     *
+     * @param Tracker_ScalarDao $scalarDao scalar DAO
+     * @return array array of associative arrays with keys "item" and "label"
      */
-    public function getAssociatedItems($scalar)
+    public function getAssociatedItems($scalarDao)
     {
         $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_scalar2item')->where(
             'scalar_id = ?',
-            $scalar->getKey()
+            $scalarDao->getKey()
         );
         $rows = $this->database->fetchAll($sql);
         $results = array();
 
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var Zend_Db_Table_Row_Abstract $row */
         foreach ($rows as $row) {
-            $item = $itemModel->load($row['item_id']);
-            $results[] = array('label' => $row['label'], 'item' => $item);
+            $itemDao = $itemModel->load($row['item_id']);
+            $results[] = array('label' => $row['label'], 'item' => $itemDao);
         }
         usort(
             $results,
@@ -67,74 +74,96 @@ class Tracker_ScalarModel extends Tracker_ScalarModelBase
     }
 
     /**
-     * Return other scalars that are from the same submission (same submit_time, producer, and user id)
+     * Return any other scalars from the same submission as the given scalar.
+     *
+     * @param Tracker_ScalarDao $scalarDao scalar DAO
+     * @return array scalar DAOs
      */
-    public function getOtherScalarsFromSubmission($scalar)
+    public function getOtherScalarsFromSubmission($scalarDao)
     {
         $sql = $this->database->select()->from('tracker_scalar')->join(
             'tracker_trend',
             'tracker_scalar.trend_id = tracker_trend.trend_id',
             array()
-        )->where('tracker_scalar.submit_time = ?', $scalar->getSubmitTime())->where(
+        )->where('tracker_scalar.submit_time = ?', $scalarDao->getSubmitTime())->where(
             'tracker_scalar.user_id = ?',
-            $scalar->getUserId()
-        )->where('tracker_trend.producer_id = ?', $scalar->getTrend()->getProducerId());
+            $scalarDao->getUserId()
+        )->where('tracker_trend.producer_id = ?', $scalarDao->getTrend()->getProducerId());
         $rows = $this->database->fetchAll($sql);
-        $scalars = array();
+        $scalarDaos = array();
+
+        /** @var Zend_Db_Table_Row_Abstract $row */
         foreach ($rows as $row) {
-            $scalars[] = $this->initDao('Scalar', $row, $this->moduleName);
+            $scalarDaos[] = $this->initDao('Scalar', $row, $this->moduleName);
         }
 
-        return $scalars;
+        return $scalarDaos;
     }
 
     /**
-     * Return other values that are from the same submission (same submit_time, producer, and user id)
+     * Return any other values from the same submission as the given scalar.
+     *
+     * @param Tracker_ScalarDao $scalarDao scalar DAO
+     * @return array associative array with keys equal to the metric names
      */
-    public function getOtherValuesFromSubmission($scalar)
+    public function getOtherValuesFromSubmission($scalarDao)
     {
         $sql = $this->database->select()->setIntegrityCheck(false)->from(array('s' => 'tracker_scalar'))->join(
             array('t' => 'tracker_trend'),
             's.trend_id = t.trend_id'
-        )->where('s.submit_time = ?', $scalar->getSubmitTime())->where(
+        )->where('s.submit_time = ?', $scalarDao->getSubmitTime())->where(
             's.user_id = ?',
-            $scalar->getUserId()
-        )->where('t.producer_id = ?', $scalar->getTrend()->getProducerId())->order('metric_name ASC');
+            $scalarDao->getUserId()
+        )->where('t.producer_id = ?', $scalarDao->getTrend()->getProducerId())->order('metric_name ASC');
         $rows = $this->database->fetchAll($sql);
-        $scalars = array();
+        $scalarDaos = array();
+
+        /** @var Zend_Db_Table_Row_Abstract $row */
         foreach ($rows as $row) {
-            $scalars[$row['metric_name']] = $row['value'].' '.$row['unit'];
+            $scalarDaos[$row['metric_name']] = $row['value'].' '.$row['unit'];
         }
 
-        return $scalars;
+        return $scalarDaos;
     }
 
     /**
-     * Delete the scalar (deletes all result item associations as well)
+     * Delete the given scalar and any associations to items.
+     *
+     * @param Tracker_ScalarDao $scalarDao scalar DAO
      */
-    public function delete($scalar)
+    public function delete($scalarDao)
     {
-        Zend_Registry::get('dbAdapter')->delete('tracker_scalar2item', 'scalar_id = '.$scalar->getKey());
-        parent::delete($scalar);
+        $this->database->getDB()->delete('tracker_scalar2item', 'scalar_id = '.$scalarDao->getKey());
+
+        parent::delete($scalarDao);
     }
 
     /**
-     * Get a scalar dao based on trend and timestamp
+     * Return a scalar given a trend id, submit time, and user id.
+     *
+     * @param int $trendId trend id
+     * @param string $submitTime submit time
+     * @param null|int $userId user id
+     * @return false|Tracker_ScalarDao scalar DAO or false if none exists
      */
-    public function getByTrendAndTimestamp($trendId, $timestamp, $userId = null)
+    public function getByTrendAndTimestamp($trendId, $submitTime, $userId = null)
     {
         $sql = $this->database->select()->setIntegrityCheck(false)->where('trend_id = ?', $trendId)->where(
             'submit_time = ?',
-            $timestamp
+            $submitTime
         );
-        if ($userId !== null) {
+        if (!is_null($userId)) {
             $sql->where('user_id = ?', $userId);
         }
 
         return $this->initDao('Scalar', $this->database->fetchRow($sql), $this->moduleName);
     }
 
-    /** Get distinct branches. */
+    /**
+     * Return all distinct branch names of revisions producing scalars.
+     *
+     * @return array branch names
+     */
     public function getDistinctBranches()
     {
         $sql = $this->database->select()->setIntegrityCheck(false)->from(
@@ -143,6 +172,8 @@ class Tracker_ScalarModel extends Tracker_ScalarModelBase
         )->distinct();
         $rows = $this->database->fetchAll($sql);
         $branches = array();
+
+        /** @var Zend_Db_Table_Row_Abstract $row */
         foreach ($rows as $row) {
             $branches[] = $row['branch'];
         }

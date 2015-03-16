@@ -19,10 +19,31 @@
 =========================================================================*/
 
 /**
- * ThresholdNotification DAO
+ * Threshold notification DAO for the tracker module.
+ *
+ * @method int getThresholdId()
+ * @method void setThresholdId(int $thresholdId)
+ * @method int getTrendId()
+ * @method void setTrendId(int $trendId)
+ * @method float getValue()
+ * @method void setValue(float $value)
+ * @method string getComparison()
+ * @method void setComparison(string $comparison)
+ * @method string getAction()
+ * @method void setAction(string $action)
+ * @method int getRecipientId()
+ * @method void setRecipientId(int $recipientId)
+ * @method Tracker_TrendDao getTrend()
+ * @method void setTrend(Tracker_TrendDao $trendDao)
+ * @method UserDao getRecipient()
+ * @method void setRecipient(UserDao $recipient)
+ * @package Modules\Tracker\DAO
  */
 class Tracker_ThresholdNotificationDao extends Tracker_AppDao
 {
+    /** @var string */
     public $_model = 'ThresholdNotification';
+
+    /** @var string */
     public $_module = 'tracker';
 }

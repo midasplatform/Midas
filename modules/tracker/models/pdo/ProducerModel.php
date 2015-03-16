@@ -21,18 +21,25 @@
 require_once BASE_PATH.'/modules/tracker/models/base/ProducerModelBase.php';
 
 /**
- * Producer PDO Model
+ * Producer model for the tracker module.
+ *
+ * @package Modules\Tracker\Model
  */
 class Tracker_ProducerModel extends Tracker_ProducerModelBase
 {
     /**
-     * Return all producers for the given community
+     * Return all producers for the given community id.
+     *
+     * @param int $communityId community id
+     * @return array producer DAOs
      */
     public function getByCommunityId($communityId)
     {
         $sql = $this->database->select()->setIntegrityCheck(false)->where('community_id = ?', $communityId);
         $rowset = $this->database->fetchAll($sql);
         $producers = array();
+
+        /** @var Zend_Db_Table_Row_Abstract $row */
         foreach ($rowset as $row) {
             $producers[] = $this->initDao('Producer', $row, $this->moduleName);
         }
@@ -41,7 +48,11 @@ class Tracker_ProducerModel extends Tracker_ProducerModelBase
     }
 
     /**
-     * Return the producer with the given display name under the given community
+     * Return the producer with the given display name for the given community id.
+     *
+     * @param int $communityId community id
+     * @param string $displayName display name
+     * @return false|Tracker_ProducerDao producer DAO or false if none exists
      */
     public function getByCommunityIdAndName($communityId, $displayName)
     {

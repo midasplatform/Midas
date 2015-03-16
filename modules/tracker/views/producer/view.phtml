@@ -20,8 +20,8 @@
 
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/producer.view.js');
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/producer/producer.view.css"/>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/common/common.browser.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot; ?>/public/css/producer/producer.view.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot; ?>/public/css/common/common.browser.css"/>
 
 <div class="viewMain">
     <div class="producerInfoContainer">
@@ -40,45 +40,52 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/produc
     <div class="sectionTitle">Trends</div>
 
     <?php
-    foreach ($this->trendGroups as $trendGroup)
-    {
-    echo '<div class="trendGroupContainer">';
-    if ($trendGroup['configItem']) {
-        echo '<div class="datasetHeader"><b>Configuration:</b> ';
-        echo '<a href='.$this->webroot.'/item/'.$this->escape($trendGroup['configItem']->getKey(
-            )).'>'.$this->escape($trendGroup['configItem']->getName()).'</a>';
-        echo '</div>';
-    }
-    if ($trendGroup['testDataset']) {
-        echo '<div class="datasetHeader"><b>Test Data:</b> ';
-        echo '<a href='.$this->webroot.'/item/'.$this->escape($trendGroup['testDataset']->getKey(
-            )).'>'.$this->escape($trendGroup['testDataset']->getName()).'</a>';
-        echo '</div>';
-    }
-    if ($trendGroup['truthDataset']) {
-        echo '<div class="datasetHeader"><b>Ground Truth Data: </b>';
-        echo '<a href='.$this->webroot.'/item/'.$this->escape($trendGroup['truthDataset']->getKey(
-            )).'>'.$this->escape($trendGroup['truthDataset']->getName()).'</a>';
-        echo '</div>';
-    }
-    if ($trendGroup['configItem'] || $trendGroup['testDataset'] || $trendGroup['truthDataset']) {
-        echo '<div class="headerSeparator"></div>';
-    }
-    ?>
+    /** @var array $trendGroup */
+    foreach ($this->trendGroups as $trendGroup) {
+        echo '<div class="trendGroupContainer">';
+        if ($trendGroup['configItem']) {
+            /** @var ItemDao $configItemDao */
+            $configItemDao = $trendGroup['configItem'];
+            echo '<div class="datasetHeader"><b>Configuration:</b> ';
+            echo '<a href='.$this->webroot.'/item/'.$this->escape($configItemDao->getKey(
+                )).'>'.$this->escape($configItemDao->getName()).'</a>';
+            echo '</div>';
+        }
+        if ($trendGroup['testDataset']) {
+            /** @var ItemDao $testDatasetItemDao */
+            $testDatasetItemDao = $trendGroup['testDataset'];
+            echo '<div class="datasetHeader"><b>Test Data:</b> ';
+            echo '<a href='.$this->webroot.'/item/'.$this->escape($testDatasetItemDao->getKey(
+                )).'>'.$this->escape($testDatasetItemDao->getName()).'</a>';
+            echo '</div>';
+        }
+        if ($trendGroup['truthDataset']) {
+            /** @var ItemDao $truthDatasetItemDao */
+            $truthDatasetItemDao = $trendGroup['truthDataset'];
+            echo '<div class="datasetHeader"><b>Ground Truth Data: </b>';
+            echo '<a href='.$this->webroot.'/item/'.$this->escape($truthDatasetItemDao->getKey(
+                )).'>'.$this->escape($truthDatasetItemDao->getName()).'</a>';
+            echo '</div>';
+        }
+        if ($trendGroup['configItem'] || $trendGroup['testDataset'] || $trendGroup['truthDataset']) {
+            echo '<div class="headerSeparator"></div>';
+        }
+        ?>
     <div class="producerTrendsContainer">
         <?php
-        foreach ($trendGroup['trends'] as $trend) {
+        /** @var Tracker_TrendDao $trendDao */
+        foreach ($trendGroup['trends'] as $trendDao) {
             echo '<div class="trendContainer">';
-            echo '<input type="checkbox" class="selectTrend" element="'.$this->escape($trend->getKey()).'" />';
-            echo '<a class="trendLink" href="'.$this->webroot.'/tracker/trend/view?trendId='.$this->escape($trend->getKey()).'">';
-            echo $this->escape($trend->getDisplayName()).'</a>';
+            echo '<input type="checkbox" class="selectTrend" element="'.$this->escape($trendDao->getKey()).'" />';
+            echo '<a class="trendLink" href="'.$this->webroot.'/tracker/trend/view?trendId='.$this->escape($trendDao->getKey()).'">';
+            echo $this->escape($trendDao->getDisplayName()).'</a>';
             echo '</div>';
         }
         ?>
     </div>
 </div>
-<?php
-}
+    <?php
+    }
 ?>
 </div>
 
@@ -90,25 +97,23 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/produc
                 ?>
                 <li>
                     <a class="editProducerInfo">
-                        <img alt="" src="<?php echo $this->coreWebroot ?>/public/images/icons/edit.png"/> Edit
+                        <img alt="" src="<?php echo $this->coreWebroot; ?>/public/images/icons/edit.png"/> Edit
                     </a>
                 </li>
                 <li>
                     <a class="deleteProducer"><img alt=""
-                                                   src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png"/>
+                                                   src="<?php echo $this->coreWebroot; ?>/public/images/icons/close.png"/>
                         Delete</a>
                 </li>
             <?php
             }
             ?>
             <li>
-                <a style="display: none;" class="visualizeSelected"><img alt=""
-                                                                         src="<?php echo $this->moduleWebroot ?>/public/images/chart_line.png"/>
+                <a style="display: none;" class="visualizeSelected"><img alt="" src="<?php echo $this->moduleWebroot; ?>/public/images/chart_line.png"/>
                     Plot selected (<span class="selectedTrendCount"></span>)</a>
             </li>
             <li>
-                <a style="display: none;" class="visualizeDualAxis"><img alt=""
-                                                                         src="<?php echo $this->moduleWebroot ?>/public/images/chart_line.png"/>
+                <a style="display: none;" class="visualizeDualAxis"><img alt="" src="<?php echo $this->moduleWebroot; ?>/public/images/chart_line.png"/>
                     Dual axis plot</a>
             </li>
         </ul>

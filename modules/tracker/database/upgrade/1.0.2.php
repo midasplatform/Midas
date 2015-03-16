@@ -21,6 +21,8 @@
 /**
  * Upgrade the tracker module to version 1.0.2. Add the revision URL as a
  * configuration parameter on producers.
+ *
+ * @package Modules\Tracker\Database
  */
 class Tracker_Upgrade_1_0_2 extends MIDASUpgrade
 {

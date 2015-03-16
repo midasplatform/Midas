@@ -21,6 +21,9 @@
 require_once BASE_PATH.'/core/models/base/ProgressModelBase.php';
 
 /**
+ * Progress model.
+ *
+ * @package Core\Model
  */
 class ProgressModel extends ProgressModelBase
 {

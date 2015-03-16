@@ -272,14 +272,16 @@ abstract class CommunityModelBase extends AppModel
         $communityDao->saved = false;
     }
 
-    /** check if the policy is valid
+    /**
+     * Check whether the given policy is valid for the given community and user.
      *
-     * @param  FolderDao $folderDao
-     * @param  UserDao $userDao
-     * @param  type $policy
-     * @return boolean
+     * @param  CommunityDao $communityDao community DAO
+     * @param  null|UserDao $userDao user DAO
+     * @param  int $policy policy
+     * @return bool true if the given policy is valid for the given community and user
+     * @throws Zend_Exception
      */
-    public function policyCheck($communityDao, $userDao = null, $policy = 0)
+    public function policyCheck($communityDao, $userDao = null, $policy = MIDAS_POLICY_READ)
     {
         if (!$communityDao instanceof CommunityDao || !is_numeric($policy)) {
             throw new Zend_Exception(

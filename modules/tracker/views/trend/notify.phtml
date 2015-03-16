@@ -18,18 +18,18 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<script type="text/javascript" src="<?php echo $this->coreWebroot ?>/public/js/jquery/jquery.form.js"></script>
-<script type="text/javascript" src="<?php echo $this->moduleWebroot ?>/public/js/trend/trend.notify.js"></script>
+<script type="text/javascript" src="<?php echo $this->coreWebroot; ?>/public/js/jquery/jquery.form.js"></script>
+<script type="text/javascript" src="<?php echo $this->moduleWebroot; ?>/public/js/trend/trend.notify.js"></script>
 
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/trend/trend.notify.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot; ?>/public/css/trend/trend.notify.css"/>
 
 <form id="thresholdNotifyForm" class="genericForm" method="POST"
-      action="<?php echo $this->webroot ?>/tracker/trend/notifysubmit">
+      action="<?php echo $this->webroot; ?>/tracker/trend/notifysubmit">
     <div>
-        <input type="radio" id="noNotify" name="doNotify" value="no"/>Do not send me emails for this trend
+        <input type="radio" id="noNotify" name="doNotify" value="no"/><label for="noNotify">Do not send me emails for this trend</label>
     </div>
     <div>
-        <input type="radio" id="yesNotify" name="doNotify" value="yes"/>Send me an email alert
+        <input type="radio" id="yesNotify" name="doNotify" value="yes"/><label for="yesNotify">Send me an email alert</label>
     </div>
     <div class="thresholdInfoContainer">
         When submitted value is
@@ -38,8 +38,10 @@
             <option value="&lt;">&lt;</option>
             <option value="&gt;=">&gt;=</option>
             <option value="&lt;=">&lt;=</option>
+            <option value="==">==</option>
+            <option value="!=">!=</option>
         </select>
-        <input type="text" class="thresholdValue" name="value"
+        <input type="text" class="thresholdValue" id="value" name="value"
             <?php
             if ($this->setting) {
                 echo ' value="'.$this->escape($this->setting->getValue()).'"';

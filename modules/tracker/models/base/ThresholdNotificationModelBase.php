@@ -19,14 +19,17 @@
 =========================================================================*/
 
 /**
- * Threshold Notification Model Base
+ * Threshold notification base model class for the tracker module.
+ *
+ * @package Modules\Tracker\Model
  */
 abstract class Tracker_ThresholdNotificationModelBase extends Tracker_AppModel
 {
-    /** constructor */
+    /** Constructor. */
     public function __construct()
     {
         parent::__construct();
+
         $this->_name = 'tracker_threshold_notification';
         $this->_daoName = 'ThresholdNotificationDao';
         $this->_key = 'threshold_id';
@@ -44,34 +47,65 @@ abstract class Tracker_ThresholdNotificationModelBase extends Tracker_AppModel
                 'parent_column' => 'trend_id',
                 'child_column' => 'trend_id',
             ),
+            'recipient' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'User',
+                'parent_column' => 'recipient_id',
+                'child_column' => 'user_id',
+            ),
         );
+
         $this->initialize();
     }
 
-    /** Get notifications */
-    abstract public function getNotifications($scalar);
-
-    /** Get user setting */
-    abstract public function getUserSetting($user, $trend);
-
-    /** Delete by trend */
-    abstract public function deleteByTrend($trend);
+    /**
+     * Return the threshold notifications whose conditions are met by the given scalar.
+     *
+     * @param Tracker_ScalarDao $scalarDao scalar DAO
+     * @return array threshold notification DAOs
+     */
+    abstract public function getNotifications($scalarDao);
 
     /**
-     * Check whether the given scalar value meets the threshold condition.
-     * Returns true if the action should be taken, i.e. the threshold was crossed.
+     * Return the threshold notification for the given user and trend.
+     *
+     * @param UserDao $userDao user DAO
+     * @param Tracker_TrendDao $trendDao trend DAO
+     * @return false|Tracker_ThresholdNotificationDao threshold notification DAO or false if none exists
      */
-    public function testThreshold($value, $threshold)
+    abstract public function getUserSetting($userDao, $trendDao);
+
+    /**
+     * Delete all thresholds for the given trend.
+     *
+     * @param Tracker_TrendDao $trendDao trend DAO
+     */
+    abstract public function deleteByTrend($trendDao);
+
+    /**
+     * Check whether the given scalar value meets the threshold notification condition.
+     *
+     * @param float $value scalar value
+     * @param Tracker_ThresholdNotificationDao $thresholdNotificationDao threshold notification DAO
+     * @return bool true if the threshold notification condition was met
+     */
+    public function testThreshold($value, $thresholdNotificationDao)
     {
-        switch ($threshold->getComparison()) {
+        $thresholdValue = $thresholdNotificationDao->getValue();
+
+        switch ($thresholdNotificationDao->getComparison()) {
             case '>':
-                return $value > $threshold->getValue();
+                return $value > $thresholdValue;
             case '<':
-                return $value < $threshold->getValue();
+                return $value < $thresholdValue;
             case '>=':
-                return $value >= $threshold->getValue();
+                return $value >= $thresholdValue;
             case '<=':
-                return $value <= $threshold->getValue();
+                return $value <= $thresholdValue;
+            case '==':
+                return $value === $thresholdValue;
+            case '!=':
+                return $value !== $thresholdValue;
             default:
                 return false;
         }

@@ -30,47 +30,48 @@ $this->headScript()->appendFile(
 );
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqplot.cursor.min.js');
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/trend/trend.view.css"/>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/jquery/jquery.jqplot.min.css"/>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/common/common.browser.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot; ?>/public/css/trend/trend.view.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot; ?>/public/css/jquery/jquery.jqplot.min.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot; ?>/public/css/common/common.browser.css"/>
 
 <div class="viewMain">
     <div class="itemsContainer">
         <div>
             <?php
-            if (count($this->trends) == 1)
-            {
-            ?>
+            if (count($this->trends) === 1) {
+                /** @var Tracker_TrendDao $trendDao */
+                $trendDao = $this->trends[0];
+                ?>
             Configuration data:
-            <?php
-            if ($this->trends[0]->getConfigItemId()) {
-                echo '<a href="'.$this->webroot.'/item/'.$this->escape($this->trends[0]->getConfigItemId(
-                    )).'">'.$this->escape($this->trends[0]->getConfigItem()->getName()).'</a>';
-            } else {
-                echo '<span class="itemLinkNone">none</span>';
-            }
-            ?>
+                <?php
+                if ($trendDao->getConfigItemId()) {
+                    echo '<a href="'.$this->webroot.'/item/'.$this->escape($trendDao->getConfigItemId(
+                        )).'">'.$this->escape($trendDao->getConfigItem()->getName()).'</a>';
+                } else {
+                    echo '<span class="itemLinkNone">none</span>';
+                }
+                ?>
         </div>
         <div>
             Test data:
-            <?php
-            if ($this->trends[0]->getTestDatasetId()) {
-                echo '<a href="'.$this->webroot.'/item/'.$this->escape($this->trends[0]->getTestDatasetId(
-                    )).'">'.$this->escape($this->trends[0]->getTestDatasetItem()->getName()).'</a>';
-            } else {
-                echo '<span class="itemLinkNone">none</span>';
-            }
-            ?>
+                <?php
+                if ($trendDao->getTestDatasetId()) {
+                    echo '<a href="'.$this->webroot.'/item/'.$this->escape($trendDao->getTestDatasetId(
+                        )).'">'.$this->escape($trendDao->getTestDatasetItem()->getName()).'</a>';
+                } else {
+                    echo '<span class="itemLinkNone">none</span>';
+                }
+                ?>
         </div>
         <div>
             Ground truth data:
-            <?php
-            if ($this->trends[0]->getTruthDatasetId()) {
-                echo '<a href="'.$this->webroot.'/item/'.$this->escape($this->trends[0]->getTruthDatasetId(
-                    )).'">'.$this->escape($this->trends[0]->getTruthDatasetItem()->getName()).'</a>';
-            } else {
-                echo '<span class="itemLinkNone">none</span>';
-            }
+                <?php
+                if ($trendDao->getTruthDatasetId()) {
+                    echo '<a href="'.$this->webroot.'/item/'.$this->escape($trendDao->getTruthDatasetId(
+                        )).'">'.$this->escape($trendDao->getTruthDatasetItem()->getName()).'</a>';
+                } else {
+                    echo '<span class="itemLinkNone">none</span>';
+                }
             }
             ?>
         </div>
@@ -82,26 +83,32 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
         <input class="dateSelect" type="text" id="enddate" name="enddate"/>
         <input type="button" class="globalButton" id="filterButton" value="Update"/>
         <img alt="" style="display: none;" id="dateRangeUpdating"
-             src="<?php echo $this->coreWebroot ?>/public/images/icons/loading.gif"/>
+             src="<?php echo $this->coreWebroot; ?>/public/images/icons/loading.gif"/>
     </div>
     <div class="branchFilterContainer">
         <label for="branchfilter">Filter by branch:</label>
         <select id="branchfilter" class="branchfilter">
             <option value="">[all branches]</option>
-            <?php foreach ($this->allBranches as $branch) {
+            <?php
+            /** @var string $branch */
+            foreach ($this->allBranches as $branch) {
                 echo '<option>'.$this->escape($branch).'</option>';
-            } ?>
+            }
+            ?>
         </select>
         <button class="add-branchfilter">Add branch trend</button>
     </div>
     <div id="chartDiv" class="chartContainer"></div>
-    <?php if ($this->logged) {
+    <?php
+    if ($this->logged) {
         ?>
         <div class="belowChartText">
             * Points in
             <span class="redText">red</span> represent unofficial submissions to this trend.
         </div>
-    <?php } ?>
+        <?php
+    }
+    ?>
 </div>
 
 <div class="viewSideBar">
@@ -109,26 +116,28 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
         <h1>Actions</h1>
         <ul>
             <?php
-            if ($this->isAdmin && count($this->trends) == 1) {
+            if ($this->isAdmin && count($this->trends) === 1) {
+                /** @var Tracker_TrendDao $trendDao */
+                $trendDao = $this->trends[0];
                 ?>
                 <li>
-                    <a href="<?php echo $this->webroot ?>/tracker/trend/edit?trendId=<?php echo $this->trends[0]->getKey(
+                    <a href="<?php echo $this->webroot; ?>/tracker/trend/edit?trendId=<?php echo $trendDao->getKey(
                     ) ?>">
-                        <img alt="" src="<?php echo $this->coreWebroot ?>/public/images/icons/edit.png"/> Edit
+                        <img alt="" src="<?php echo $this->coreWebroot; ?>/public/images/icons/edit.png"/> Edit
                     </a>
                 </li>
                 <li>
                     <a class="deleteTrend"><img alt=""
-                                                src="<?php echo $this->coreWebroot ?>/public/images/icons/close.png"/>
+                                                src="<?php echo $this->coreWebroot; ?>/public/images/icons/close.png"/>
                         Delete</a>
                 </li>
             <?php
             }
-            if ($this->logged && count($this->trends) == 1) {
+            if ($this->logged && count($this->trends) === 1) {
                 ?>
                 <li>
                     <a class="thresholdAction"><img alt=""
-                                                    src="<?php echo $this->coreWebroot ?>/public/images/icons/email_error.png"/>
+                                                    src="<?php echo $this->coreWebroot; ?>/public/images/icons/email_error.png"/>
                         Notifications</a>
                 </li>
             <?php
@@ -136,18 +145,17 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
             ?>
             <li>
                 <a class="resetZoomAction"><img alt=""
-                                                src="<?php echo $this->coreWebroot ?>/public/images/icons/magnifier_zoom_out.png"/>
+                                                src="<?php echo $this->coreWebroot; ?>/public/images/icons/magnifier_zoom_out.png"/>
                     Reset plot zoom</a>
             </li>
             <li>
-                <a class="axesControl"><img alt="" src="<?php echo $this->moduleWebroot ?>/public/images/axes.png"/>
+                <a class="axesControl"><img alt="" src="<?php echo $this->moduleWebroot; ?>/public/images/axes.png"/>
                     Axes</a>
             </li>
             <li>
                 <a class="toggleUnofficialVisibility">
                     <div class="toggleUnofficialIcon toHide"></div>
                     <span class="linkText">Hide unofficial submissions</a>
-                </a>
             </li>
         </ul>
     </div>
@@ -166,19 +174,19 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
     <table class="yValuesTable">
         <tbody>
         <tr>
-            <th>Y range:</th>
-            <td><input class="yMin" type="text"/></td>
-            <td>to</td>
-            <td><input class="yMax" type="text"/></td>
+            <th><label for="yMin">Y range:</label></th>
+            <td><input id="yMin" class="yMin" type="text"/></td>
+            <td><label for="yMax">to</label></td>
+            <td><input id="yMax" class="yMax" type="text"/></td>
         </tr>
         <?php
         if ($this->rightTrend) {
             ?>
             <tr>
-                <th>Y2 range:</th>
-                <td><input class="y2Min" type="text"/></td>
-                <td>to</td>
-                <td><input class="y2Max" type="text"/></td>
+                <th><label for="y2Min">Y2 range:</label></th>
+                <td><input id="y2Min" class="y2Min" type="text"/></td>
+                <td><label for="y2Max">to</label></td>
+                <td><input id="y2Max"  type="text"/></td>
             </tr>
         <?php
         }

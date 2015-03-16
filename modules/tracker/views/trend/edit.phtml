@@ -21,28 +21,28 @@
 $this->headScript()->appendFile($this->moduleWebroot.'/public/js/trend/trend.edit.js');
 $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.form.js');
 ?>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot ?>/public/css/trend/trend.edit.css"/>
-<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot ?>/public/css/common/common.browser.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot; ?>/public/css/trend/trend.edit.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot; ?>/public/css/common/common.browser.css"/>
 
 <div class="formWrapper">
     <div class="editTitle">
         Edit trend information
     </div>
-    <form class="editTrendForm genericForm" action="<?php echo $this->webroot ?>/tracker/trend/editsubmit"
+    <form class="editTrendForm genericForm" action="<?php echo $this->webroot; ?>/tracker/trend/editsubmit"
           method="POST">
         <div class="formRow">
             <label for="metricName">Metric name</label>
-            <input type="text" name="metricName" value="<?php echo $this->escape($this->trend->getMetricName()); ?>"
+            <input type="text" id="metricName" name="metricName" value="<?php echo $this->escape($this->trend->getMetricName()); ?>"
                    qtip="The metric name that submission clients use to identify this trend"/>
         </div>
         <div class="formRow">
             <label for="displayName">Display name</label>
-            <input type="text" name="displayName" value="<?php echo $this->escape($this->trend->getDisplayName()); ?>"
+            <input type="text" id="displayName" name="displayName" value="<?php echo $this->escape($this->trend->getDisplayName()); ?>"
                    qtip="The title that is displayed in Midas for this trend"/>
         </div>
         <div class="formRow">
             <label for="unit">Unit</label>
-            <input type="text" name="unit" value="<?php echo $this->escape($this->trend->getUnit()); ?>"
+            <input type="text" id="unit" name="unit" value="<?php echo $this->escape($this->trend->getUnit()); ?>"
                    qtip="The unit of measurement for this metric (optional)"/>
         </div>
         <div class="formRow">
