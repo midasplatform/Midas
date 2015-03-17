@@ -7,7 +7,7 @@ include(CMakeParseArguments)
 #
 # midas_api_login
 #
-#   API_URL The url of the MIDAS server
+#   API_URL The url of the Midas Server
 #   API_EMAIL The email to use to authenticate to the server
 #   API_KEY The default api key to use to authenticate to the server
 function(midas_api_login)
@@ -46,7 +46,7 @@ function(midas_api_login)
   string(LENGTH ${token} tokenlength)
   if(NOT tokenlength EQUAL 40)
     set(token "")
-    message(WARNING "Failed to login to MIDAS server\n"
+    message(WARNING "Failed to login to Midas Server\n"
                     "  url: ${MY_API_URL}\n"
                     "  email: ${email}\n"
                     "  apikey: ${apikey}\n"
@@ -68,7 +68,7 @@ endif()
 #
 # Uploads a file and create the associated item in the given folder.
 #
-#   API_URL    The url of the MIDAS server
+#   API_URL    The url of the Midas Server
 #   API_EMAIL  The email to use to authenticate to the server
 #   API_KEY The default api key to use to authenticate to the server
 #
@@ -125,7 +125,7 @@ endfunction()
 #
 # Uploads a file into a given item.
 #
-#   API_URL    The url of the MIDAS server
+#   API_URL    The url of the Midas Server
 #   API_EMAIL  The email to use to authenticate to the server
 #   API_KEY The default api key to use to authenticate to the server
 #
@@ -181,9 +181,9 @@ endfunction()
 
 
 #
-# Uploads an item to the MIDAS server.
+# Uploads an item to the Midas Server.
 #
-#   API_URL    The url of the MIDAS server
+#   API_URL    The url of the Midas Server
 #   API_EMAIL  The email to use to authenticate to the server
 #   API_KEY The default api key to use to authenticate to the server
 #
@@ -231,9 +231,9 @@ endfunction()
 
 
 #
-# Create an item on the MIDAS server.
+# Create an item on the Midas Server.
 #
-#   API_URL    The url of the MIDAS server
+#   API_URL    The url of the Midas Server
 #   API_EMAIL  The email to use to authenticate to the server
 #   API_KEY The default api key to use to authenticate to the server
 #
@@ -353,7 +353,7 @@ endfunction()
 # [SUBMISSION_TYPE] Submission type (nightly, experimental, etc)
 # [CODEBASE] Sub-name of the application
 # [RELEASE] Release tag for this package (e.g. 1.2.3)
-# 
+#
 function(midas_api_package_upload)
   include(CMakeParseArguments)
   set(options)

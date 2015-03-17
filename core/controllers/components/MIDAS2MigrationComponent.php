@@ -1,9 +1,9 @@
 <?php
 /*=========================================================================
- MIDAS Server
- Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ Midas Server
+ Copyright Kitware SAS, 26 rue Louis Guérin, 69100 Villeurbanne, France.
  All rights reserved.
- More information http://www.kitware.com
+ For more information visit http://www.kitware.com/.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -138,7 +138,7 @@ class MIDAS2MigrationComponent extends AppComponent
                     $Folderpolicyuser->createPolicy($user, $folderDao, $policyValue);
                 }
 
-                // Add specific MIDAS policies for users (not dealing with groups)
+                // Add specific policies for users (not dealing with groups)
                 $policyquery = pg_query(
                     "SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
                                 FROM resourcepolicy
@@ -198,7 +198,7 @@ class MIDAS2MigrationComponent extends AppComponent
                         $Itempolicygroup->createPolicy($anonymousGroup, $itemdao, MIDAS_POLICY_READ);
                     }
 
-                    // Add specific MIDAS policies for users
+                    // Add specific policies for users
                     $policyquery = pg_query(
                         "SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
                                   FROM resourcepolicy
@@ -399,7 +399,7 @@ class MIDAS2MigrationComponent extends AppComponent
                     $Folderpolicyuser->createPolicy($user, $folderDao, $policyValue);
                 }
 
-                // Add specific MIDAS policies for users (not dealing with groups)
+                // Add specific policies for users (not dealing with groups)
                 $policyquery = pg_query(
                     "SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
                                 FROM resourcepolicy
@@ -485,7 +485,7 @@ class MIDAS2MigrationComponent extends AppComponent
                     $Folderpolicyuser->createPolicy($user, $folderDao, $policyValue);
                 }
 
-                // Add specific MIDAS policies for users (not dealing with groups)
+                // Add specific policies for users (not dealing with groups)
                 $policyquery = pg_query(
                     "SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
                                 FROM resourcepolicy

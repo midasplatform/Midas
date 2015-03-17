@@ -1,9 +1,9 @@
 <?php
 /*=========================================================================
- MIDAS Server
- Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ Midas Server
+ Copyright Kitware SAS, 26 rue Louis Guérin, 69100 Villeurbanne, France.
  All rights reserved.
- More information http://www.kitware.com
+ For more information visit http://www.kitware.com/.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -252,7 +252,7 @@ class Ldap_Notification extends MIDAS_Notification
                     // Bind as this user
                     set_error_handler('Ldap_Notification::eatWarnings'); // must not print and log warnings
                     if (@ldap_bind($ldap, $principal, $password)) {
-                        // Try to find the user in the MIDAS database
+                        // Try to find the user in the database
                         $someone = $this->Ldap_User->getLdapUser($email);
                         if ($someone) {
                             // convert to core user dao

@@ -7,3 +7,7 @@ data by providing a flexible, intelligent data storage system. Midas Server
 integrates multimedia server technology with other open-source data analysis
 and visualization tools to enable data-intensive applications that easily
 interface with existing workflows.
+
+The remainder of the documentation is organized as follows:
+
+* [Installation and Configuration](installation/index.md)

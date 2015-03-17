@@ -1,8 +1,8 @@
 #=============================================================================
-# MIDAS Server
-# Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+# Midas Server
+# Copyright Kitware SAS, 26 rue Louis Guérin, 69100 Villeurbanne, France.
 # All rights reserved.
-# More information http://www.kitware.com
+# For more information visit http://www.kitware.com/.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,5 +23,13 @@ site_url: https://midas-server.readthedocs.org/
 repo_url: https://github.com/midasplatform/Midas
 site_description: Server component of the Midas Platform
 site_favicon: ../favicon.ico
+pages:
+- [index.md, Home]
+- [installation/index.md, Installation]
+- [installation/linux.md, Installation, Linux]
+- [installation/os-x.md, Installation, OS X]
+- [installation/bsd.md, Installation, BSD]
+- [installation/cloud-services.md, Installation, Cloud Services]
+
 theme: readthedocs
 markdown_extensions: [admonition, smarty]

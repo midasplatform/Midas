@@ -1,9 +1,9 @@
 <?php
 /*=========================================================================
- MIDAS Server
- Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ Midas Server
+ Copyright Kitware SAS, 26 rue Louis Guérin, 69100 Villeurbanne, France.
  All rights reserved.
- More information http://www.kitware.com
+ For more information visit http://www.kitware.com/.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ class Mail_Form_Admin extends Zend_Form
         $smtpHost = new Zend_Form_Element_Text(MAIL_SMTP_HOST_KEY);
         $smtpHost->setLabel('Server name');
         $smtpHost->addValidator('NotEmpty', true);
-        $smtpHost->addValidator('Hostname', true);
+        $smtpHost->addValidator('Hostname', true, array('allow' => Zend_Validate_Hostname::ALLOW_ALL, 'tld' => false));
 
         $smtpPort = new Zend_Form_Element_Text(MAIL_SMTP_PORT_KEY);
         $smtpPort->setLabel('Port');

@@ -1,9 +1,9 @@
 <?php
 /*=========================================================================
- MIDAS Server
- Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ Midas Server
+ Copyright Kitware SAS, 26 rue Louis Guérin, 69100 Villeurbanne, France.
  All rights reserved.
- More information http://www.kitware.com
+ For more information visit http://www.kitware.com/.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ class Ldap_Form_Admin extends Zend_Form
         $hostName->setLabel('LDAP Server Name');
         $hostName->setRequired(true);
         $hostName->addValidator('NotEmpty', true);
-        $hostName->addValidator('Hostname', true);
+        $hostName->addValidator('Hostname', true, array('allow' => Zend_Validate_Hostname::ALLOW_ALL, 'tld' => false));
 
         $port = new Zend_Form_Element_Text(LDAP_PORT_KEY);
         $port->setLabel('LDAP Server Port');
@@ -48,7 +48,7 @@ class Ldap_Form_Admin extends Zend_Form
         $backupServer = new Zend_Form_Element_Text(LDAP_BACKUP_SERVER_KEY);
         $backupServer->setLabel('Backup Server Name');
         $backupServer->addValidator('NotEmpty', true);
-        $backupServer->addValidator('Hostname', true);
+        $backupServer->addValidator('Hostname', true, array('allow' => Zend_Validate_Hostname::ALLOW_ALL, 'tld' => false));
 
         $bindRdn = new Zend_Form_Element_Text(LDAP_BIND_RDN_KEY);
         $bindRdn->setLabel('Bind DN');

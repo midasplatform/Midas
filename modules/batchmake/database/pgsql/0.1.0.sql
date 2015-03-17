@@ -1,4 +1,4 @@
--- MIDAS Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+-- Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 -- PostgreSQL database for the batchmake module, version 0.1.0
 

@@ -1,9 +1,9 @@
 <?php
 /*=========================================================================
- MIDAS Server
- Copyright (c) Kitware SAS. 26 rue Louis Guérin. 69100 Villeurbanne, FRANCE
+ Midas Server
+ Copyright Kitware SAS, 26 rue Louis Guérin, 69100 Villeurbanne, France.
  All rights reserved.
- More information http://www.kitware.com
+ For more information visit http://www.kitware.com/.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -111,7 +111,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
     }
 
     /**
-     * The client Ping Midas and MIDAS tells what it should do
+     * The client ping Midas Server and the server tells it what it should do
      *
      * @param token
      * @return Array
@@ -203,7 +203,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
     }
 
     /**
-     * The client sends the results to MIDAS (put request)
+     * The client sends the results to Midas Server (put request)
      *
      * @param token
      *

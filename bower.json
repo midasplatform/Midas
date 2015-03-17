@@ -1,6 +1,6 @@
 {
     "name": "midas-server",
-    "description": "Midas Platform",
+    "description": "Server component of the Midas Platform",
     "homepage": "http://www.midasplatform.org",
     "license": "Apache-2.0",
     "repository": {
