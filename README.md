@@ -28,9 +28,14 @@ interface with existing workflows.
 ```
 git clone https://github.com/midasplatform/Midas.git midas
 cd midas
+chmod a+w core/configs/ data/ log/ tmp/
 curl -sS https://getcomposer.org/installer | php
 php composer.phar install
 ```
+
+Full installation documentation is available at
+
+<https://midas-server.readthedocs.org/>
 
 ## License ##
 
