@@ -21,8 +21,12 @@
 - name: apt install
   apt: name={{ item }} state=present
   with_items:
-    - php5-sqlite
-    - sqlite3
+    - libapache2-mod-php5
+    - php5
+    - php5-curl
+    - php5-gd
+    - php5-json
+    - php5-xdebug
   notify:
     - restart apache2
   when: ansible_pkg_mgr == 'apt'
@@ -30,15 +34,40 @@
 - name: yum install
   yum: name={{ item }} state=present
   with_items:
-    - php-pdo
-    - sqlite
+    - php
+    - php-gd
+    - php-pecl-xdebug
   notify:
     - restart apache2
   when: ansible_pkg_mgr == 'yum'
 
-- name: db
-  file: path={{ item }} state=touch
-  with_items:
-    - /vagrant/data/midas.db
-    - /vagrant/data/midas_test.db
+- name: yum install php-pecl-jsonc
+  yum: name=php-pecl-jsonc state=present
+  notify:
+    - restart apache2
+  when: ansible_distribution == 'Fedora'
+
+- name: php.ini debian
+  template: src=etc-php5-apache2-php.ini.j2 dest=/etc/php5/apache2/php.ini
+  notify:
+    - restart apache2
+  when: ansible_os_family == 'Debian'
+
+- name: php.ini redhat
+  template: src=etc-php.ini.j2 dest=/etc/php.ini
+  notify:
+    - restart apache2
+  when: ansible_os_family == 'RedHat'
+
+- name: curl getcomposer.org
+  shell: curl https://getcomposer.org/installer | php chdir=/vagrant creates=/vagrant/composer.phar
+
+- name: mv composer.phar
+  command: mv /vagrant/composer.phar /usr/local/bin/composer creates=/usr/local/bin/composer
+
+- name: chmod 0755 composer
+  file: path=/usr/local/bin/composer mode=0755 state=file
+
+- name: composer install
+  composer: command=install no_dev=no prefer_dist=yes working_dir=/vagrant
   sudo: no

@@ -18,13 +18,15 @@
 #=============================================================================
 
 ---
-- name: midas
+- name: midas server
   hosts: all
   sudo: yes
   roles:
     - common
     - apache2
     - memcached
+    - php
     - mysql
     - postgresql
+    - python
     - sqlite

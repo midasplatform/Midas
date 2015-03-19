@@ -18,3 +18,32 @@
 #=============================================================================
 
 ---
+- name: apt install
+  apt: name={{ item }} state=present
+  with_items:
+    - python
+    - python-jinja2
+    - python-markdown
+    - python-pip
+    - python-requests
+    - python-virtualenv
+    - python-yaml
+  when: ansible_pkg_mgr == 'apt'
+
+- name: yum install
+  yum: name={{ item }} state=present
+  with_items:
+    - python
+    - python-jinja2
+    - python-markdown
+    - python-pip
+    - python-requests
+    - python-virtualenv
+    - PyYAML
+  when: ansible_pkg_mgr == 'yum'
+
+- name: pip install
+  pip: name={{ item }} virtualenv=/vagrant/env state=present
+  with_items:
+    - mkdocs
+    - pydas

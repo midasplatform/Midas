@@ -19,5 +19,4 @@
 
 ---
 dependencies:
-  - { role: common }
-  - { role: apache2 }
+  - { role: php }
