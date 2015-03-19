@@ -51,6 +51,7 @@ Install the PHP CLI and GD PHP extension:
 ```bash
 sudo yum install php-cli php-gd
 ```
+
 The JSON PHP extension is installed along with the PHP preprocessor.
 
 Install Python 2.7:
@@ -98,6 +99,7 @@ Install the Xdebug PHP extension:
 ```bash
 sudo yum install php-pecl-xdebug
 ```
+
 The cURL PHP extension was previously installed along with the PHP
 preprocessor.
 
@@ -108,6 +110,7 @@ sudo yum install mariadb-server
 sudo systemctl enable mariadb.service
 sudo systemctl start mariadb.service
 ```
+
 MariaDB is a fork of MySQL.
 
 Install the Git distributed version control system and Subversion version
@@ -130,6 +133,7 @@ brew upgrade
 brew install php56
 echo /usr/local/opt/php56/bin | sudo tee -a /etc/paths.d/20-PHP56
 ```
+
 The GD and JSON PHP extensions are installed along with the PHP preprocessor.
 
 Install the Xdebug PHP extension:
@@ -137,6 +141,7 @@ Install the Xdebug PHP extension:
 ```bash
 brew install php56-xdebug
 ```
+
 The cURL PHP extension was previously installed along with the PHP
 preprocessor.
 
