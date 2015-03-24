@@ -435,7 +435,7 @@ class ApisystemComponent extends AppComponent
         /** @var HttpuploadComponent $uploadComponent */
         $uploadComponent = MidasLoader::loadComponent('Httpupload');
         $apiSetup = $apihelperComponent->getApiSetup();
-        $uploadComponent->setTestingMode($apiSetup['testing']);
+        $uploadComponent->setTestingMode(Zend_Registry::get('configGlobal')->environment === 'testing');
 
         return $uploadComponent->generateToken($args, $userDao->getKey().'/'.$item->getKey());
     }
@@ -513,12 +513,12 @@ class ApisystemComponent extends AppComponent
         /** @var HttpuploadComponent $httpUploadComponent */
         $httpUploadComponent = MidasLoader::loadComponent('Httpupload');
         $apiSetup = $apihelperComponent->getApiSetup();
-        $httpUploadComponent->setTestingMode($apiSetup['testing']);
+        $httpUploadComponent->setTestingMode(Zend_Registry::get('configGlobal')->environment === 'testing');
 
         if (array_key_exists('testingmode', $args)) {
             $httpUploadComponent->setTestingMode(true);
             if (!array_key_exists('localinput', $args)) {
-                $args['localinput'] = $apiSetup['tmpDirectory'].'/'.$args['filename'];
+                $args['localinput'] = UtilityComponent::getTempDirectory().'/'.$args['filename'];
             }
         }
 
@@ -617,7 +617,7 @@ class ApisystemComponent extends AppComponent
         /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apiSetup = $apihelperComponent->getApiSetup();
-        $uploadComponent->setTestingMode($apiSetup['testing']);
+        $uploadComponent->setTestingMode(Zend_Registry::get('configGlobal')->environment === 'testing');
 
         return $uploadComponent->getOffset($args);
     }
