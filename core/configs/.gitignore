@@ -1,4 +1,4 @@
+# Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
 *.local.ini
-*.local.ini.old
-*.local.ini.test
 termsofservice.txt

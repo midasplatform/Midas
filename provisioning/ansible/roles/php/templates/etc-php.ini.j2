@@ -83,8 +83,6 @@
 ; development version only in development environments as errors shown to
 ; application users can inadvertently leak otherwise secure information.
 
-; This is php.ini-development INI file.
-
 ;;;;;;;;;;;;;;;;;;;
 ; Quick Reference ;
 ;;;;;;;;;;;;;;;;;;;
@@ -199,12 +197,13 @@
 engine = On
 
 ; This directive determines whether or not PHP will recognize code between
-; <? and ?> tags as PHP source which should be processed as such. It is
-; generally recommended that <?php and ?> should be used and that this feature
-; should be disabled, as enabling it may result in issues when generating XML
-; documents, however this remains supported for backward compatibility reasons.
-; Note that this directive does not control the <?= shorthand tag, which can be
-; used regardless of this directive.
+; <? and ?> tags as PHP source which should be processed as such. It's been
+; recommended for several years that you not use the short tag "short cut" and
+; instead to use the full <?php and ?> tag combination. With the wide spread use
+; of XML and use of these tags by other languages, the server can become easily
+; confused and end up parsing the wrong code in the wrong context. But because
+; this short cut has been a feature for such a long time, it's currently still
+; supported for backwards compatibility, but we recommend you don't use them.
 ; Default Value: On
 ; Development Value: Off
 ; Production Value: Off
@@ -306,19 +305,13 @@ serialize_precision = 17
 ; or per-virtualhost web server configuration file. This directive is
 ; *NOT* affected by whether Safe Mode is turned On or Off.
 ; http://php.net/open-basedir
-
-; NOTE: this is considered a "broken" security measure.
-;       Applications relying on this feature will not receive full
-;       support by the security team.  For more information please
-;       see /usr/share/doc/php5-common/README.Debian.security
-;
 ;open_basedir =
 
 ; This directive allows you to disable certain functions for security reasons.
 ; It receives a comma-delimited list of function names. This directive is
 ; *NOT* affected by whether Safe Mode is turned On or Off.
 ; http://php.net/disable-functions
-disable_functions = pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,
+disable_functions =
 
 ; This directive allows you to disable certain classes for security reasons.
 ; It receives a comma-delimited list of class names. This directive is
@@ -709,7 +702,7 @@ default_mimetype = "text/html"
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; UNIX: "/path1:/path2"
-;include_path = ".:/usr/share/php"
+;include_path = ".:/php/includes"
 ;
 ; Windows: "\path1;\path2"
 ;include_path = ".;c:\php\includes"
@@ -735,10 +728,6 @@ user_dir =
 ; extension_dir = "./"
 ; On windows:
 ; extension_dir = "ext"
-
-; Directory where the temporary files should be placed.
-; Defaults to the system default (see sys_get_temp_dir)
-; sys_temp_dir = "/tmp"
 
 ; Whether or not to enable the dl() function.  The dl() function does NOT work
 ; properly in multithreaded servers, such as IIS or Zeus, and is automatically
@@ -869,51 +858,11 @@ default_socket_timeout = 60
 ;
 ; If you only provide the name of the extension, PHP will look for it in its
 ; default extension directory.
-;
-; Windows Extensions
-; Note that ODBC support is built in, so no dll is needed for it.
-; Note that many DLL files are located in the extensions/ (PHP 4) ext/ (PHP 5)
-; extension folders as well as the separate PECL DLL download (PHP 5).
-; Be sure to appropriately set the extension_dir directive.
-;
-;extension=php_bz2.dll
-;extension=php_curl.dll
-;extension=php_fileinfo.dll
-;extension=php_gd2.dll
-;extension=php_gettext.dll
-;extension=php_gmp.dll
-;extension=php_intl.dll
-;extension=php_imap.dll
-;extension=php_interbase.dll
-;extension=php_ldap.dll
-;extension=php_mbstring.dll
-;extension=php_exif.dll      ; Must be after mbstring as it depends on it
-;extension=php_mysql.dll
-;extension=php_mysqli.dll
-;extension=php_oci8.dll      ; Use with Oracle 10gR2 Instant Client
-;extension=php_oci8_11g.dll  ; Use with Oracle 11gR2 Instant Client
-;extension=php_openssl.dll
-;extension=php_pdo_firebird.dll
-;extension=php_pdo_mysql.dll
-;extension=php_pdo_oci.dll
-;extension=php_pdo_odbc.dll
-;extension=php_pdo_pgsql.dll
-;extension=php_pdo_sqlite.dll
-;extension=php_pgsql.dll
-;extension=php_pspell.dll
-;extension=php_shmop.dll
 
-; The MIBS data available in the PHP distribution must be installed.
-; See http://www.php.net/manual/en/snmp.installation.php
-;extension=php_snmp.dll
-
-;extension=php_soap.dll
-;extension=php_sockets.dll
-;extension=php_sqlite3.dll
-;extension=php_sybase_ct.dll
-;extension=php_tidy.dll
-;extension=php_xmlrpc.dll
-;extension=php_xsl.dll
+;;;;
+; Note: packaged extension modules are now loaded via the .ini files
+; found in the directory /etc/php.d; these are loaded by default.
+;;;;
 
 ;;;;;;;;;;;;;;;;;;;
 ; Module Settings ;
@@ -1017,7 +966,7 @@ smtp_port = 25
 
 ; For Unix only.  You may supply arguments as well (default: "sendmail -t -i").
 ; http://php.net/sendmail-path
-;sendmail_path =
+sendmail_path = /usr/sbin/sendmail -t -i
 
 ; Force the addition of the specified parameters to be passed as extra parameters
 ; to the sendmail binary. These parameters will always replace the value of
@@ -1030,8 +979,6 @@ mail.add_x_header = On
 ; The path to a log file that will log all mail() calls. Log entries include
 ; the full path of the script, line number, To address and headers.
 ;mail.log =
-; Log mail to syslog (Event Log on NT, not valid in Windows 95).
-;mail.log = syslog
 
 [SQL]
 ; http://php.net/sql.safe-mode
@@ -1403,15 +1350,11 @@ session.save_handler = files
 ; where MODE is the octal representation of the mode. Note that this
 ; does not overwrite the process's umask.
 ; http://php.net/session.save-path
-;session.save_path = "/var/lib/php5"
 
-; Whether to use strict session mode.
-; Strict session mode does not accept uninitialized session ID and regenerate
-; session ID if browser sends uninitialized session ID. Strict mode protects
-; applications from session fixation via session adoption vulnerability. It is
-; disabled by default for maximum compatibility, but enabling it is encouraged.
-; https://wiki.php.net/rfc/strict_sessions
-session.use_strict_mode = 0
+; RPM note : session directory must be owned by process owner
+; for mod_php, see /etc/httpd/conf.d/php.conf
+; for php-fpm, see /etc/php-fpm.d/*conf
+;session.save_path = "/tmp"
 
 ; Whether to use cookies.
 ; http://php.net/session.use-cookies
@@ -1465,7 +1408,7 @@ session.serialize_handler = php
 ; Development Value: 1
 ; Production Value: 1
 ; http://php.net/session.gc-probability
-session.gc_probability = 0
+session.gc_probability = 1
 
 ; Defines the probability that the 'garbage collection' process is started on every
 ; session initialization. The probability is calculated by using the following equation:
@@ -1492,7 +1435,7 @@ session.gc_maxlifetime = 1440
 ;       collection through a shell script, cron entry, or some other method.
 ;       For example, the following script would is the equivalent of
 ;       setting session.gc_maxlifetime to 1440 (1440 seconds = 24 minutes):
-;          find /path/to/sessions -cmin +24 -type f | xargs rm
+;          find /path/to/sessions -cmin +24 | xargs rm
 
 ; PHP 4.2 and less have an undocumented feature/bug that allows you to
 ; to initialize a session variable in the global scope.
@@ -1711,35 +1654,10 @@ mssql.secure_connection = Off
 ; http://php.net/assert.quiet-eval
 ;assert.quiet_eval = 0
 
-[COM]
-; path to a file containing GUIDs, IIDs or filenames of files with TypeLibs
-; http://php.net/com.typelib-file
-;com.typelib_file =
-
-; allow Distributed-COM calls
-; http://php.net/com.allow-dcom
-;com.allow_dcom = true
-
-; autoregister constants of a components typlib on com_load()
-; http://php.net/com.autoregister-typelib
-;com.autoregister_typelib = true
-
-; register constants casesensitive
-; http://php.net/com.autoregister-casesensitive
-;com.autoregister_casesensitive = false
-
-; show warnings on duplicate constant registrations
-; http://php.net/com.autoregister-verbose
-;com.autoregister_verbose = true
-
-; The default character set code-page to use when passing strings to and from COM objects.
-; Default: system ANSI code page
-;com.code_page=
-
 [mbstring]
 ; language for internal character representation.
 ; http://php.net/mbstring.language
-;mbstring.language = Japanese
+;mbstring.language = English
 
 ; internal/script encoding.
 ; Some encoding cannot work as internal encoding.
@@ -1873,104 +1791,3 @@ ldap.max_links = -1
 
 [dba]
 ;dba.default_handler=
-
-[opcache]
-; Determines if Zend OPCache is enabled
-;opcache.enable=0
-
-; Determines if Zend OPCache is enabled for the CLI version of PHP
-;opcache.enable_cli=0
-
-; The OPcache shared memory storage size.
-;opcache.memory_consumption=64
-
-; The amount of memory for interned strings in Mbytes.
-;opcache.interned_strings_buffer=4
-
-; The maximum number of keys (scripts) in the OPcache hash table.
-; Only numbers between 200 and 100000 are allowed.
-;opcache.max_accelerated_files=2000
-
-; The maximum percentage of "wasted" memory until a restart is scheduled.
-;opcache.max_wasted_percentage=5
-
-; When this directive is enabled, the OPcache appends the current working
-; directory to the script key, thus eliminating possible collisions between
-; files with the same name (basename). Disabling the directive improves
-; performance, but may break existing applications.
-;opcache.use_cwd=1
-
-; When disabled, you must reset the OPcache manually or restart the
-; webserver for changes to the filesystem to take effect.
-;opcache.validate_timestamps=1
-
-; How often (in seconds) to check file timestamps for changes to the shared
-; memory storage allocation. ("1" means validate once per second, but only
-; once per request. "0" means always validate)
-;opcache.revalidate_freq=2
-
-; Enables or disables file search in include_path optimization
-;opcache.revalidate_path=0
-
-; If disabled, all PHPDoc comments are dropped from the code to reduce the
-; size of the optimized code.
-;opcache.save_comments=1
-
-; If disabled, PHPDoc comments are not loaded from SHM, so "Doc Comments"
-; may be always stored (save_comments=1), but not loaded by applications
-; that don't need them anyway.
-;opcache.load_comments=1
-
-; If enabled, a fast shutdown sequence is used for the accelerated code
-;opcache.fast_shutdown=0
-
-; Allow file existence override (file_exists, etc.) performance feature.
-;opcache.enable_file_override=0
-
-; A bitmask, where each bit enables or disables the appropriate OPcache
-; passes
-;opcache.optimization_level=0xffffffff
-
-;opcache.inherited_hack=1
-;opcache.dups_fix=0
-
-; The location of the OPcache blacklist file (wildcards allowed).
-; Each OPcache blacklist file is a text file that holds the names of files
-; that should not be accelerated. The file format is to add each filename
-; to a new line. The filename may be a full path or just a file prefix
-; (i.e., /var/www/x  blacklists all the files and directories in /var/www
-; that start with 'x'). Line starting with a ; are ignored (comments).
-;opcache.blacklist_filename=
-
-; Allows exclusion of large files from being cached. By default all files
-; are cached.
-;opcache.max_file_size=0
-
-; Check the cache checksum each N requests.
-; The default value of "0" means that the checks are disabled.
-;opcache.consistency_checks=0
-
-; How long to wait (in seconds) for a scheduled restart to begin if the cache
-; is not being accessed.
-;opcache.force_restart_timeout=180
-
-; OPcache error_log file name. Empty string assumes "stderr".
-;opcache.error_log=
-
-; All OPcache errors go to the Web server log.
-; By default, only fatal errors (level 0) or errors (level 1) are logged.
-; You can also enable warnings (level 2), info messages (level 3) or
-; debug messages (level 4).
-;opcache.log_verbosity_level=1
-
-; Preferred Shared Memory back-end. Leave empty and let the system decide.
-;opcache.preferred_memory_model=
-
-; Protect the shared memory from unexpected writing during script execution.
-; Useful for internal debugging only.
-;opcache.protect_memory=0
-
-[curl]
-; A default value for the CURLOPT_CAINFO option. This is required to be an
-; absolute path.
-;curl.cainfo =

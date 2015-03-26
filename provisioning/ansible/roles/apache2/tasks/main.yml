@@ -18,41 +18,56 @@
 #=============================================================================
 
 ---
+- name: include vars
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+    - default.yml
+
 - name: apt install
   apt: name={{ item }} state=present
   with_items:
     - apache2
-    - php5
-    - php5-gd
     - sendmail
+  when: ansible_pkg_mgr == 'apt'
 
-- name: php.ini
-  template: src=etc-php5-apache2-php.ini.j2 dest=/etc/php5/apache2/php.ini
-  notify:
-    - restart apache2
-
-- name: enable modules
-  apache2_module: name={{ item }} state=present
+- name: yum install
+  yum: name={{ item }} state=present
   with_items:
-    - rewrite
-    - vhost_alias
+    - httpd
+    - sendmail
+  when: ansible_pkg_mgr == 'yum'
+
+- name: enable rewrite module
+  apache2_module: name=rewrite state=present
   notify:
     - restart apache2
+  when: ansible_os_family == 'Debian'
 
-- name: ln
-  command: ln -s /vagrant /var/www/vagrant creates=/var/www/vagrant
+- name: ln vagrant
+  file: src=/vagrant dest=/var/www/vagrant state=link
 
 - name: sites-available
   template: src=etc-apache2-sites-available-vagrant.conf.j2 dest=/etc/apache2/sites-available/vagrant.conf
   notify:
     - restart apache2
+  when: ansible_os_family == 'Debian'
 
 - name: disable site
   command: a2dissite 000-default.conf removes=/etc/apache2/sites-enabled/000-default.conf
   notify:
     - restart apache2
+  when: ansible_os_family == 'Debian'
 
 - name: enable site
   command: a2ensite vagrant.conf creates=/etc/apache2/sites-enabled/vagrant.conf
   notify:
     - restart apache2
+  when: ansible_os_family == 'Debian'
+
+- name: conf.d
+  template: src=etc-httpd-conf.d-vagrant.conf.j2 dest=/etc/httpd/conf.d/vagrant.conf
+  notify:
+    - restart apache2
+  when: ansible_os_family == 'RedHat'

@@ -49,9 +49,9 @@ install:
   - travis_retry composer install -n --prefer-dist
 
 before_script:
-  - cp tests/travis/mysql.ini tests/configs/mysql.ini && mysql -u root -e 'create database midas_test;'
-  - if [[ $TRAVIS_PHP_VERSION != hhvm ]]; then cp tests/travis/pgsql.ini tests/configs/pgsql.ini && psql -U postgres -c 'create database midas_test;'; fi
-  - cp tests/travis/sqlite.ini tests/configs/sqlite.ini && touch midas_test.db
+  - cp tests/ci/travis/mysql.ini tests/configs/mysql.ini && mysql -u root -e 'create database midas_test;'
+  - if [[ $TRAVIS_PHP_VERSION != hhvm ]]; then cp tests/ci/travis/pgsql.ini tests/configs/pgsql.ini && psql -U postgres -c 'create database midas_test;'; fi
+  - cp tests/ci/travis/sqlite.ini tests/configs/sqlite.ini && touch midas_test.db
 
 script:
   - mkdir _test && cd _test

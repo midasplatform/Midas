@@ -71,11 +71,7 @@ class ApihelperComponent extends AppComponent
      */
     public function getApiSetup()
     {
-        $apiSetup = array();
-        $apiSetup['testing'] = Zend_Registry::get('configGlobal')->environment == 'testing';
-        $apiSetup['tmpDirectory'] = UtilityComponent::getTempDirectory();
-
-        return $apiSetup;
+        return array();
     }
 
     /**

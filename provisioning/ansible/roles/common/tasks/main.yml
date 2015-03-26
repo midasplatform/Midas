@@ -20,13 +20,48 @@
 ---
 - name: apt update
   apt: cache_valid_time=3600 update_cache=yes
+  when: ansible_pkg_mgr == 'apt'
 
 - name: apt install
   apt: name={{ item }} state=present
   with_items:
+    - bzip2
     - cmake
+    - curl
     - git
+    - gzip
+    - nano
+    - subversion
+    - tar
     - unzip
+  when: ansible_pkg_mgr == 'apt'
+
+- name: yum update
+  yum: update_cache=yes
+  when: ansible_pkg_mgr == 'yum'
+
+- name: yum install epel-release
+  yum: name=epel-release state=present
+  when: ansible_distribution in ['CentOS', 'RedHat']
+
+- name: yum install
+  yum: name={{ item }} state=present
+  with_items:
+    - bzip2
+    - cmake
+    - curl
+    - git
+    - gzip
+    - nano
+    - subversion
+    - tar
+    - unzip
+  when: ansible_pkg_mgr == 'yum'
 
 - name: chmod 0777
-  file: path=core/configs mode=0777 recurse=yes state=directory
+  file: path={{ item }} mode=0777 state=directory
+  with_items:
+    - /vagrant/core/configs
+    - /vagrant/data
+    - /vagrant/log
+    - /vagrant/tmp

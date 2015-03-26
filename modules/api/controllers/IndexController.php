@@ -41,8 +41,6 @@ class Api_IndexController extends Api_AppController
         $this->apiEnable = true;
 
         // define api parameters
-        $this->apiSetup['testing'] = Zend_Registry::get('configGlobal')->environment == 'testing';
-        $this->apiSetup['tmpDirectory'] = $this->getTempDirectory();
         $this->apiSetup['apiMethodPrefix'] = $this->Setting->getValueByName(API_METHOD_PREFIX_KEY, $this->moduleName);
 
         $this->action = $actionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();

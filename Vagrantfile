@@ -1,4 +1,5 @@
 # -*- mode: ruby -*-
+# vi: set ft=ruby :
 #=============================================================================
 # Midas Server
 # Copyright Kitware SAS, 26 rue Louis Guérin, 69100 Villeurbanne, France.
@@ -18,11 +19,17 @@
 # limitations under the License.
 #=============================================================================
 
-Vagrant.configure("2") do |config|
-    config.vm.box = "ubuntu/trusty64"
-    config.vm.network "forwarded_port", guest: 80, host: 8080
-    config.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".git/"
-    config.vm.provision "ansible" do |ansible|
-        ansible.playbook = "provisioning/ansible/site.yml"
+Vagrant.configure('2') do |config|
+    if Vagrant.has_plugin?('vagrant-cachier')
+        config.cache.auto_detect = false
+        config.cache.enable :apt
+        config.cache.enable :apt_lists
+        config.cache.enable :composer
+        config.cache.scope = :box
+    end
+    config.vm.box = 'ubuntu/trusty64'
+    config.vm.network 'forwarded_port', guest: 80, host: 8080, auto_correct: true
+    config.vm.provision 'ansible' do |ansible|
+        ansible.playbook = 'provisioning/ansible/site.yml'
     end
 end

@@ -17,4 +17,7 @@
 # limitations under the License.
 #=============================================================================
 
----
+set(module_name googleappengine)
+to_titlecase(${module_name} module_name_titlecase)
+
+add_midas_style_test(Style${module_name_titlecase} ${CMAKE_SOURCE_DIR}/modules/${module_name})

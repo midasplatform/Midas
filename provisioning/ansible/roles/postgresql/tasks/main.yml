@@ -22,10 +22,31 @@
   apt: name={{ item }} state=present
   with_items:
     - postgresql
+    - php5-pgsql
     - python-psycopg2
+  notify:
+    - restart apache2
+  when: ansible_pkg_mgr == 'apt'
+
+- name: yum install
+  yum: name={{ item }} state=present
+  with_items:
+    - postgresql-server
+    - php-pgsql
+    - python-psycopg2
+  notify:
+    - restart apache2
+  when: ansible_pkg_mgr == 'yum'
 
 - name: db
   postgresql_db: name={{ item }} state=present
+  with_items:
+    - midas
+    - midas_test
+  sudo_user: postgres
+
+- name: user
+  postgresql_user: db={{ item }} user=vagrant password=vagrant priv=ALL state=present
   with_items:
     - midas
     - midas_test

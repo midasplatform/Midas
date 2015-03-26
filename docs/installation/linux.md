@@ -16,7 +16,7 @@ superset of the requirements for production:
 ```bash
 sudo apt-get update
 sudo apt-get dist-upgrade
-sudo apt-get install apache2 cmake curl git libapache2-mod-php5 memcached mysql-server nano php5 php5-curl php5-gd php5-json php5-memcached php5-xdebug postgresql python python-jinja2 python-markdown python-pip python-yaml sqlite3 subversion
+sudo apt-get install apache2 cmake curl git libapache2-mod-php5 memcached mysql-server nano php5 php5-curl php5-gd php5-json php5-memcached php5-mysqlnd php5-pgsql php5-sqlite php5-xdebug postgresql python python-jinja2 python-markdown python-pip python-yaml sqlite3 subversion
 sudo pip install mkdocs
 sudo a2enmod rewrite
 echo -e "<VirtualHost *:80>\nServerAdmin webmaster@example.org\nServerName example.org\nServerAlias www.example.org\nDocumentRoot /var/www/example.org/html\nErrorLog \${APACHE_LOG_DIR}/error.log\nCustomLog \${APACHE_LOG_DIR}/access.log combined\n</VirtualHost>" | sudo tee -a /etc/apache2/sites-available/example.org.conf
@@ -151,8 +151,20 @@ Install the MySQL 5.5 database server:
 ```bash
 sudo apt-get install mysql-server
 ```
-The PDO_MYSQL PHP extension was previously installed along with the PHP
-preprocessor.
+
+Install the PDO_MYSQL PHP extension:
+
+```bash
+sudo apt-get install php5-mysqlnd
+```
+
+This also installs the MySQL native driver for PHP.
+
+Restart the web server to load the additional PHP extensions:
+
+```bash
+sudo service apache2 restart
+```
 
 ### PostgreSQL ###
 
@@ -161,8 +173,20 @@ Install the PostgreSQL 9.3 database server:
 ```bash
 sudo apt-get install postgresql
 ```
-The PDO_PGSQL PHP extension was previously installed along with the PHP
-preprocessor.
+
+Install the PDO_PGSQL PHP extension:
+
+```bash
+sudo apt-get install php5-pgsql
+```
+
+This also installs the PostgreSQL PHP extension.
+
+Restart the web server to load the additional PHP extensions:
+
+```bash
+sudo service apache2 restart
+```
 
 ### SQLite ###
 
@@ -171,8 +195,20 @@ Install the SQLite 3.8 database program:
 ```bash
 sudo apt-get install sqlite3
 ```
-The PDO_SQLITE PHP extension was previously installed along with the PHP
-preprocessor.
+
+Install the PDO_SQLITE PHP extension:
+
+```bash
+sudo apt-get install php5-sqlite
+```
+
+This also installs the SQLite PHP extension.
+
+Restart the web server to load the additional PHP extensions:
+
+```bash
+sudo service apache2 restart
+```
 
 ## Development Tools ##
 
@@ -184,7 +220,6 @@ control system, and Subversion 1.8 version control system:
 
 ```bash
 sudo apt-get install cmake git subversion
-sudo service apache2 restart
 ```
 
 Install the cURL and Xdebug PHP extensions:
@@ -257,6 +292,7 @@ Install the Apache 2.4 web server:
 ```bash
 sudo yum install httpd
 ```
+
 The mod_rewrite Apache module is enabled by default.
 
 Install the PHP 5.6 preprocessor:
@@ -264,6 +300,7 @@ Install the PHP 5.6 preprocessor:
 ```bash
 sudo yum install php
 ```
+
 The mod_php5 Apache module is installed along with the PHP preprocessor.
 
 Install the GD and JSON-C PHP extensions:
@@ -359,6 +396,7 @@ Install the MariaDB 10.0 database server:
 ```bash
 sudo yum install mariadb-server
 ```
+
 MariaDB is a fork of MySQL.
 
 Enable and start the MariaDB database server:
@@ -373,9 +411,10 @@ Install the PDO_MYSQL PHP extension:
 ```bash
 sudo yum install php-mysqlnd
 ```
+
 This also installs the MySQL native driver for PHP.
 
-Restart the web server to load the additional PHP extension:
+Restart the web server to load the additional PHP extensions:
 
 ```bash
 sudo systemctl restart httpd.service
@@ -407,9 +446,10 @@ Install the PDO_PGSQL PHP extension:
 ```bash
 sudo yum install php-pgsql
 ```
+
 This also installs the PostgreSQL PHP extension.
 
-Restart the web server to load the additional PHP extension:
+Restart the web server to load the additional PHP extensions:
 
 ```bash
 sudo systemctl restart httpd.service
@@ -452,6 +492,7 @@ Install the Xdebug PHP extension:
 ```bash
 sudo yum install php-pecl-xdebug
 ```
+
 The cURL PHP extension was previously installed along with the PHP
 preprocessor.
 
@@ -530,6 +571,7 @@ Install the Apache 2.4 web server:
 ```bash
 sudo yum install httpd
 ```
+
 The mod_rewrite Apache module is enabled by default.
 
 Install the PHP 5.4 preprocessor:
@@ -537,6 +579,7 @@ Install the PHP 5.4 preprocessor:
 ```bash
 sudo yum install php
 ```
+
 The mod_php5 Apache module is installed along with the PHP preprocessor.
 
 Install the GD PHP extension:
@@ -544,6 +587,7 @@ Install the GD PHP extension:
 ```bash
 sudo yum install php-gd
 ```
+
 The JSON PHP extension was previously installed along with the PHP
 preprocessor.
 
@@ -634,6 +678,7 @@ Install the MariaDB 5.5 database server:
 ```bash
 sudo yum install mariadb-server
 ```
+
 MariaDB is a fork of MySQL.
 
 Enable and start the MariaDB database server:
@@ -648,9 +693,10 @@ Install the PDO_MYSQL PHP extension:
 ```bash
 sudo yum install php-mysqlnd
 ```
+
 This also installs the MySQL native driver for PHP.
 
-Restart the web server to load the additional PHP extension:
+Restart the web server to load the additional PHP extensions:
 
 ```bash
 sudo systemctl restart httpd.service
@@ -682,9 +728,10 @@ Install the PDO_PGSQL PHP extension:
 ```bash
 sudo yum install php-pgsql
 ```
+
 This also installs the PostgreSQL PHP extension.
 
-Restart the web server to load the additional PHP extension:
+Restart the web server to load the additional PHP extensions:
 
 ```bash
 sudo systemctl restart httpd.service
@@ -727,6 +774,7 @@ Install the Xdebug PHP extension:
 ```bash
 sudo yum install php-pecl-xdebug
 ```
+
 The cURL PHP extension was previously installed along with the PHP
 preprocessor.
 

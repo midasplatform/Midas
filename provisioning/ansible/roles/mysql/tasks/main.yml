@@ -18,21 +18,41 @@
 #=============================================================================
 
 ---
+- name: include vars
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+    - default.yml
+
 - name: apt install
   apt: name={{ item }} state=present
   with_items:
     - mysql-server
+    - php5-mysqlnd
     - python-mysqldb
   notify:
     - restart apache2
+  when: ansible_pkg_mgr == 'apt'
 
-- name: my.cnf
-  template: src=etc-mysql-my.cnf.j2 dest=/etc/mysql/my.cnf
+- name: yum install
+  yum: name={{ item }} state=present
+  with_items:
+    - mariadb-server
+    - MySQL-python
+    - php-mysqlnd
   notify:
-    - restart mysql
+    - restart apache2
+  when: ansible_pkg_mgr == 'yum'
 
 - name: db
   mysql_db: name={{ item }} state=present
+  with_items:
+    - midas
+    - midas_test
+
+- name: user
+  mysql_user: user=vagrant password=vagrant priv={{ item }}.*:ALL state=present
   with_items:
     - midas
     - midas_test

@@ -25,8 +25,13 @@
     - php5-memcached
   notify:
     - restart apache2
+  when: ansible_pkg_mgr == 'apt'
 
-- name: memcached.conf
-  template: src=etc-memcached.conf.j2 dest=/etc/memcached.conf
+- name: yum install
+  yum: name={{ item }} state=present
+  with_items:
+    - memcached
+    - php-pecl-memcached
   notify:
-    - restart memcached
+    - restart apache2
+  when: ansible_pkg_mgr == 'yum'

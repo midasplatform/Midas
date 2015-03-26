@@ -76,8 +76,10 @@ class HttpuploadComponent extends AppComponent
         if (!array_key_exists('filename', $args)) {
             throw new Exception('Parameter filename is not defined', MIDAS_HTTPUPLOAD_FILENAME_PARAM_UNDEFINED);
         }
+
+        $tempDirectory = UtilityComponent::getTempDirectory();
         $dir = $dirname === '' ? '' : '/'.$dirname;
-        $dir = UtilityComponent::getTempDirectory().$dir;
+        $dir = $tempDirectory.$dir;
 
         if (!file_exists($dir)) {
             if (!mkdir($dir, 0777, true)) {
@@ -91,7 +93,7 @@ class HttpuploadComponent extends AppComponent
             $uniqueIdentifier = $dirname.'/'.$uniqueIdentifier;
         }
 
-        $path = UtilityComponent::getTempDirectory().'/'.$uniqueIdentifier;
+        $path = $tempDirectory.'/'.$uniqueIdentifier;
         if (file_exists($path)) {
             throw new Exception('Failed to generate upload token', MIDAS_HTTPUPLOAD_UPLOAD_TOKEN_GENERATION_FAILED);
         }
