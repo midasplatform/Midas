@@ -35,3 +35,6 @@
   notify:
     - restart apache2
   when: ansible_pkg_mgr == 'yum'
+
+- name: start memcached
+  service: name=memcached state=started

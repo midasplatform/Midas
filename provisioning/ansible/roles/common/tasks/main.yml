@@ -36,10 +36,6 @@
     - unzip
   when: ansible_pkg_mgr == 'apt'
 
-- name: yum update
-  yum: update_cache=yes
-  when: ansible_pkg_mgr == 'yum'
-
 - name: yum install epel-release
   yum: name=epel-release state=present
   when: ansible_distribution in ['CentOS', 'RedHat']

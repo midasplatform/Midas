@@ -254,7 +254,7 @@ superset of the requirements for production:
 
 ```bash
 sudo yum update
-sudo yum install cmake curl git httpd mariadb-server memcached nano php php-gd php-mysqlnd php-pdo php-pecl-jsonc php-pecl-memcached php-pecl-xdebug php-pgsql postgresql-server python python-jinja2 python-markdown python-pip python-watchdog PyYAML sqlite subversion
+sudo yum install cmake curl git httpd mariadb-server memcached nano php php-bcmath php-gd php-mysqlnd php-pdo php-pecl-jsonc php-pecl-memcached php-pecl-xdebug php-pgsql postgresql-server python python-jinja2 python-markdown python-pip python-watchdog PyYAML sqlite subversion
 sudo pip install mkdocs
 sudo mkdir -p /var/www/example.org/html
 sudo chown $USER:$USER /var/www/example.org/html
@@ -303,10 +303,10 @@ sudo yum install php
 
 The mod_php5 Apache module is installed along with the PHP preprocessor.
 
-Install the GD and JSON-C PHP extensions:
+Install the BC Math, GD, and JSON-C PHP extensions:
 
 ```bash
-sudo yum install php-gd php-pecl-jsonc
+sudo yum install php-bcmath php-gd php-pecl-jsonc
 ```
 
 !!! important
@@ -527,7 +527,7 @@ superset of the requirements for production:
 ```bash
 sudo yum install epel-release
 sudo yum update
-sudo yum install cmake curl git httpd mariadb-server memcached nano php php-gd php-mysqlnd php-pdo php-pecl-memcached php-pecl-xdebug php-pgsql postgresql-server python python-jinja2 python-markdown python-pip PyYAML sqlite subversion
+sudo yum install cmake curl git httpd mariadb-server memcached nano php php-bcmath php-gd php-mysqlnd php-pdo php-pecl-memcached php-pecl-xdebug php-pgsql postgresql-server python python-jinja2 python-markdown python-pip PyYAML sqlite subversion
 sudo pip install mkdocs
 sudo mkdir -p /var/www/example.org/html
 sudo chown $USER:$USER /var/www/example.org/html
@@ -582,10 +582,10 @@ sudo yum install php
 
 The mod_php5 Apache module is installed along with the PHP preprocessor.
 
-Install the GD PHP extension:
+Install the BC Math and GD PHP extensions:
 
 ```bash
-sudo yum install php-gd
+sudo yum install php-bcmath php-gd
 ```
 
 The JSON PHP extension was previously installed along with the PHP

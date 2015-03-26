@@ -45,14 +45,17 @@
     - restart apache2
   when: ansible_pkg_mgr == 'yum'
 
-- name: db
+- name: start mysql
+  service: name={{ mysql_service }} state=started
+
+- name: mysql db
   mysql_db: name={{ item }} state=present
   with_items:
     - midas
     - midas_test
 
-- name: user
-  mysql_user: user=vagrant password=vagrant priv={{ item }}.*:ALL state=present
+- name: mysql user
+  mysql_user: user={{ ansible_env.SUDO_USER }} password={{ ansible_env.SUDO_USER }} priv={{ item }}.*:ALL state=present
   with_items:
     - midas
     - midas_test

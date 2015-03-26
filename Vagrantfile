@@ -19,7 +19,7 @@
 # limitations under the License.
 #=============================================================================
 
-Vagrant.configure('2') do |config|
+Vagrant.configure(2) do |config|
     if Vagrant.has_plugin?('vagrant-cachier')
         config.cache.auto_detect = false
         config.cache.enable :apt
@@ -29,6 +29,18 @@ Vagrant.configure('2') do |config|
     end
     config.vm.box = 'ubuntu/trusty64'
     config.vm.network 'forwarded_port', guest: 80, host: 8080, auto_correct: true
+    config.vm.provider 'virtualbox' do |virtualbox|
+        virtualbox.cpus = 2
+        virtualbox.memory = 4096
+    end
+    config.vm.provider 'vmware_fusion' do |vmware_fusion|
+        vmware_fusion.vmx['memsize'] = 4096
+        vmware_fusion.vmx['numvcpus'] = 2
+    end
+    config.vm.provider 'vmware_workstation' do |vmware_workstation|
+        vmware_workstation.vmx['memsize'] = 4096
+        vmware_workstation.vmx['numvcpus'] = 2
+    end
     config.vm.provision 'ansible' do |ansible|
         ansible.playbook = 'provisioning/ansible/site.yml'
     end

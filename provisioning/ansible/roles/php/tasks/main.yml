@@ -35,7 +35,9 @@
   yum: name={{ item }} state=present
   with_items:
     - php
+    - php-bcmath
     - php-gd
+    - php-pdo
     - php-pecl-xdebug
   notify:
     - restart apache2
@@ -62,8 +64,8 @@
 - name: curl getcomposer.org
   shell: curl https://getcomposer.org/installer | php chdir=/vagrant creates=/vagrant/composer.phar
 
-- name: mv composer.phar
-  command: mv /vagrant/composer.phar /usr/local/bin/composer creates=/usr/local/bin/composer
+- name: cp composer.phar
+  command: cp /vagrant/composer.phar /usr/local/bin/composer creates=/usr/local/bin/composer
 
 - name: chmod 0755 composer
   file: path=/usr/local/bin/composer mode=0755 state=file
