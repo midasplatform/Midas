@@ -78,17 +78,17 @@ class Remoteprocessing_AdminController extends Remoteprocessing_AppController
         $this->disableView();
 
         ob_start();
-        $zip = new ZipStream('RemoteScript.zip');
+        $zip = new \ZipStream\ZipStream('RemoteScript.zip');
         $file = BASE_PATH.'/modules/remoteprocessing/remotescript/main.py';
-        $zip->add_file_from_path(basename($file), $file);
+        $zip->addFileFromPath(basename($file), $file);
         $file = BASE_PATH.'/modules/remoteprocessing/remotescript/config.cfg';
-        $zip->add_file_from_path(basename($file), $file);
+        $zip->addFileFromPath(basename($file), $file);
         $dirname = BASE_PATH.'/modules/remoteprocessing/remotescript/pydas/';
         $dir = opendir($dirname);
 
         while ($file = readdir($dir)) {
             if ($file != '.' && $file != '..' && !is_dir($dirname.$file)) {
-                $zip->add_file_from_path('pydas/'.basename($dirname.$file), $dirname.$file);
+                $zip->addFileFromPath('pydas/'.basename($dirname.$file), $dirname.$file);
             }
         }
 
