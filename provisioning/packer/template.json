@@ -1,0 +1,121 @@
+{
+    "builders": [
+        {
+            "type": "virtualbox-iso",
+            "iso_checksum": "8acd2f56bfcba2f7ac74a7e4a5e565ce68c024c38525c0285573e41c86ae90c0",
+            "iso_checksum_type": "sha256",
+            "iso_url": "http://releases.ubuntu.com/trusty/ubuntu-14.04.2-server-amd64.iso",
+            "ssh_username": "vagrant",
+            "boot_command": [
+                "<esc><esc><enter><wait>",
+                "/install/vmlinuz noapic preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+                "debian-installer=en_US auto locale=en_US kbd-chooser/method=us hostname={{ .Name }} ",
+                "fb=false debconf/frontend=noninteractive console-setup/ask_detect=false ",
+                "keyboard-configuration/layoutcode=us keyboard-configuration/modelcode=pc104 ",
+                "initrd=/install/initrd.gz -- <enter>"
+            ],
+            "boot_wait": "3s",
+            "disk_size": "40000",
+            "guest_os_type": "Ubuntu_64",
+            "http_directory": "http",
+            "shutdown_command": "/bin/echo 'vagrant' | /usr/bin/sudo -S /sbin/shutdown -P now",
+            "ssh_password": "vagrant",
+            "vboxmanage": [
+                ["modifyvm", "{{.Name}}", "--cpus", "2"],
+                ["modifyvm", "{{.Name}}", "--memory", "4096"]
+            ],
+            "vm_name": "midas-server-{{timestamp}}"
+        },
+        {
+            "type": "vmware-iso",
+            "iso_checksum": "8acd2f56bfcba2f7ac74a7e4a5e565ce68c024c38525c0285573e41c86ae90c0",
+            "iso_checksum_type": "sha256",
+            "iso_url": "http://releases.ubuntu.com/trusty/ubuntu-14.04.2-server-amd64.iso",
+            "ssh_username": "vagrant",
+            "boot_command": [
+                "<esc><esc><enter><wait>",
+                "/install/vmlinuz noapic preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+                "debian-installer=en_US auto locale=en_US kbd-chooser/method=us hostname={{ .Name }} ",
+                "fb=false debconf/frontend=noninteractive console-setup/ask_detect=false ",
+                "keyboard-configuration/layoutcode=us keyboard-configuration/modelcode=pc104 ",
+                "initrd=/install/initrd.gz -- <enter>"
+            ],
+            "boot_wait": "3s",
+            "disk_size": "40000",
+            "guest_os_type": "ubuntu-64",
+            "http_directory": "http",
+            "shutdown_command": "/bin/echo 'vagrant' | /usr/bin/sudo -S /sbin/shutdown -P now",
+            "ssh_password": "vagrant",
+            "tools_upload_flavor": "linux",
+            "vm_name": "midas-server-{{timestamp}}",
+            "vmdk_name": "midas-server-{{timestamp}}",
+            "vmx_data": {
+                "memsize": "4096",
+                "numvcpus": "2"
+            }
+        }
+    ],
+    "provisioners": [
+         {
+            "type": "shell",
+            "inline": [
+                "/bin/echo %vagrant ALL=NOPASSWD:ALL > /etc/sudoers.d/vagrant",
+                "/bin/chmod 0440 /etc/sudoers.d/vagrant"
+            ],
+            "execute_command": "/bin/echo 'vagrant' | {{.Vars}} /usr/bin/sudo -E -S /bin/bash '{{.Path}}'"
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "/usr/bin/apt-get -qq update",
+                "/usr/bin/apt-get -q -y -o Dpkg::Options::=--force-confdef -o DPkg::Options::=--force-confnew dist-upgrade",
+                "/usr/bin/apt-get -q -y -o Dpkg::Options::=--force-confdef -o DPkg::Options::=--force-confnew install git nfs-common ntp software-properties-common",
+                "/usr/bin/apt-add-repository -y ppa:ansible/ansible",
+                "/usr/bin/apt-get -qq update",
+                "/usr/bin/apt-get -q -y -o Dpkg::Options::=--force-confdef -o DPkg::Options::=--force-confnew install ansible",
+                "/usr/bin/git clone https://github.com/midasplatform/Midas.git /vagrant",
+                "/bin/chown -R vagrant:vagrant /vagrant"
+            ],
+            "execute_command": "{{.Vars}} /usr/bin/sudo -E /bin/bash '{{.Path}}'"
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "/usr/bin/apt-get -q -y -o Dpkg::Options::=--force-confdef -o DPkg::Options::=--force-confnew install dkms",
+                "/bin/mount -o loop /home/vagrant/VBoxGuestAdditions.iso /mnt",
+                "/usr/bin/yes | /bin/bash /mnt/VBoxLinuxAdditions.run",
+                "/bin/umount /mnt",
+                "/bin/rm -f /home/vagrant/VBoxGuestAdditions.iso"
+            ],
+            "execute_command": "{{.Vars}} /usr/bin/sudo -E /bin/bash '{{.Path}}'",
+            "only": ["virtualbox-iso"]
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "/usr/bin/apt-get -q -y -o Dpkg::Options::=--force-confdef -o DPkg::Options::=--force-confnew install build-essential linux-headers-$(/bin/uname -r)",
+                "/bin/mount -o loop /home/vagrant/linux.iso /mnt",
+                "/bin/tar -xf /mnt/VMwareTools-*.tar.gz -C /tmp",
+                "/bin/bash /tmp/vmware-tools-distrib/vmware-install.pl -d",
+                "/bin/umount /mnt",
+                "/bin/rm -rf /tmp/vmware-tools-distrib",
+                "/bin/rm -f /home/vagrant/linux.iso"
+            ],
+            "execute_command": "{{.Vars}} /usr/bin/sudo -E /bin/bash '{{.Path}}'",
+            "only": ["vmware-iso"]
+        },
+        {
+            "type": "ansible-local",
+            "playbook_file": "../ansible/site.yml",
+            "playbook_dir": "../ansible"
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "/usr/bin/apt-get -q -y autoremove",
+                "/usr/bin/apt-get -q -y clean"
+            ],
+            "execute_command": "{{.Vars}} /usr/bin/sudo -E /bin/bash '{{.Path}}'"
+        }
+    ]
+}
