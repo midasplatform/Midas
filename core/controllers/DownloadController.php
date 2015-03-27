@@ -157,12 +157,12 @@ class DownloadController extends AppController
                 $name = $revision->getItem()->getName();
                 $name = substr($name, 0, 50);
                 session_write_close(); // unlock session writing for concurrent access
-                $zip = new ZipStream($name.'.zip');
+                $zip = new \ZipStream\ZipStream($name.'.zip');
                 foreach ($bitstreams as $bitstream) {
                     $filename = $bitstream->getName();
                     $path = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
                     Zend_Registry::get('dbAdapter')->closeConnection();
-                    $zip->add_file_from_path($filename, $path);
+                    $zip->addFileFromPath($filename, $path);
                 }
                 $zip->finish();
                 $this->Item->incrementDownloadCount($revision->getItem());
@@ -191,7 +191,7 @@ class DownloadController extends AppController
 
             session_write_close(); // unlock session writing for concurrent access
             ob_start();
-            $zip = new ZipStream($name.'.zip');
+            $zip = new \ZipStream\ZipStream($name.'.zip');
             UtilityComponent::disableMemoryLimit();
             foreach ($revisions as $revision) {
                 $item = $revision->getItem();
@@ -208,7 +208,7 @@ class DownloadController extends AppController
                     $filename = $path.$bitstream->getName();
                     $fullpath = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
                     Zend_Registry::get('dbAdapter')->closeConnection();
-                    $zip->add_file_from_path($filename, $fullpath);
+                    $zip->addFileFromPath($filename, $fullpath);
                 }
                 $this->Item->incrementDownloadCount($item);
                 unset($item);
@@ -363,7 +363,7 @@ class DownloadController extends AppController
 
             return;
         }
-        $zip = new ZipStream($name.'.zip');
+        $zip = new \ZipStream\ZipStream($name.'.zip');
         $zip->finish();
         exit();
     }

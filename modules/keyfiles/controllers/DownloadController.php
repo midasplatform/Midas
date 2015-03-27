@@ -52,10 +52,10 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
 
         $this->_emptyOutputBuffer();
         ob_start(); //must start a new buffer for ZipStream to work
-        $zip = new ZipStream($item->getName().'.zip');
+        $zip = new \ZipStream\ZipStream($item->getName().'.zip');
         $bitstreams = $revision->getBitstreams();
         foreach ($bitstreams as $bitstream) {
-            $zip->add_file($bitstream->getName().'.md5', $bitstream->getChecksum());
+            $zip->addFile($bitstream->getName().'.md5', $bitstream->getChecksum());
         }
         $zip->finish();
         exit();
@@ -138,7 +138,7 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
         }
         $this->_emptyOutputBuffer();
         ob_start(); //must start a new output buffer for ZipStream to work
-        $zip = new ZipStream('Keyfiles.zip');
+        $zip = new \ZipStream\ZipStream('Keyfiles.zip');
         // Iterate over top level items
         foreach ($items as $item) {
             if (!$this->Item->policyCheck($item, $this->userSession->Dao)) {
@@ -160,7 +160,7 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
                 }
                 $filename = $path.$bitstream->getName().'.md5';
                 Zend_Registry::get('dbAdapter')->closeConnection();
-                $zip->add_file($filename, $bitstream->getChecksum());
+                $zip->addFile($filename, $bitstream->getChecksum());
             }
             $this->Item->incrementDownloadCount($item);
             unset($item);
@@ -192,6 +192,6 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
             $path .= '/'.$item->getName();
         }
         $path .= '/'.$bitstream->getName().'.md5';
-        $zip->add_file($path, $bitstream->getChecksum());
+        $zip->addFile($path, $bitstream->getChecksum());
     }
 }

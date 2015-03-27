@@ -39,6 +39,9 @@
     - sendmail
   when: ansible_pkg_mgr == 'yum'
 
+- name: start apache2
+  service: name={{ apache2_service }} state=started
+
 - name: enable rewrite module
   apache2_module: name=rewrite state=present
   notify:

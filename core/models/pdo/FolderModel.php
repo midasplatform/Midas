@@ -1352,7 +1352,7 @@ class FolderModel extends FolderModelBase
             $rev = $this->Item->getLastRevision($item);
 
             if (!$rev) {
-                $zip->add_file($path.'/'.$item->getName(), ''); // add empty item
+                $zip->addFile($path.'/'.$item->getName(), ''); // add empty item
                 continue;
             }
             $bitstreams = $rev->getBitstreams();
@@ -1370,7 +1370,7 @@ class FolderModel extends FolderModelBase
                     } else {
                         $currPath = $path.'/'.$bitstream->getName();
                     }
-                    $zip->add_file_from_path(
+                    $zip->addFileFromPath(
                         $currPath,
                         $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath()
                     );
