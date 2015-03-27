@@ -53,7 +53,7 @@
   sudo_user: postgres
 
 - name: postgresql user
-  postgresql_user: db={{ item }} user={{ ansible_env.SUDO_USER }} password={{ ansible_env.SUDO_USER }} priv=ALL state=present
+  postgresql_user: db={{ item }} user=vagrant password=vagrant priv=ALL state=present
   with_items:
     - midas
     - midas_test
