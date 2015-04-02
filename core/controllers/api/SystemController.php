@@ -92,6 +92,24 @@ class Rest_SystemController extends ApiController
     }
 
     /**
+     * The put action handles PUT requests and receives an 'id' parameter; it
+     * should update the server resource state of the resource identified by
+     * the 'id' value.
+     */
+    public function putAction()
+    {
+        $apiFunctions = array(
+            'upload' => 'uploadPerform',
+        );
+        $this->_genericAction(
+            $this->_request->getParams(),
+            $this->_request->getControllerName(),
+            'put',
+            $apiFunctions
+        );
+    }
+
+    /**
      * The options action handles OPTIONS requests; it should respond with
      * the HTTP methods that the server supports for specified URL.
      */
