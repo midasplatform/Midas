@@ -159,7 +159,6 @@ class ApisystemComponent extends AppComponent
      */
     public function userApikeyDefault($args)
     {
-
         /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->validateParams($args, array('email', 'password'));
@@ -178,41 +177,44 @@ class ApisystemComponent extends AppComponent
         } catch (Zend_Exception $exc) {
             throw new Exception('Login failed', MIDAS_INVALID_PARAMETER);
         }
-        $authModule = false;
-        foreach ($notifications as $user) {
-            if ($user) {
-                $userDao = $user;
-                $authModule = true;
+        $userDao = false;
+        foreach ($notifications as $notification) {
+            if ($notification) {
+                $userDao = $notification;
                 break;
             }
         }
+        $hasAuthenticationModule = $userDao !== false;
 
         /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
 
         /** @var UserapiModel $userApiModel */
         $userApiModel = MidasLoader::loadModel('Userapi');
-        if (!$authModule) {
+        if ($userDao === false) {
             $userDao = $userModel->getByEmail($email);
-            if (!$userDao) {
+            if ($userDao === false) {
                 throw new Exception('Login failed', MIDAS_INVALID_PARAMETER);
             }
         }
 
-        $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
-        if ($authModule || $userModel->hashExists(
-                hash($userDao->getHashAlg(), $instanceSalt.$userDao->getSalt().$password)
+        $prefix = Zend_Registry::get('configGlobal')->password->prefix;
+        if ($hasAuthenticationModule || $userModel->hashExists(
+                hash($userDao->getHashAlg(), $prefix.$userDao->getSalt().$password)
             )
         ) {
             if ($userDao->getSalt() == '') {
                 $userModel->convertLegacyPasswordHash($userDao, $password);
             }
-            $defaultApiKey = $userApiModel->getByAppAndEmail('Default', $email)->getApikey();
+            $userApiDao = $userApiModel->getByAppAndEmail('Default', $email);
+            if ($userApiDao === false) {
+            	throw new Exception('User has no default API key', MIDAS_INVALID_PARAMETER);
+            }
 
-            return array('apikey' => $defaultApiKey);
-        } else {
-            throw new Exception('Login failed', MIDAS_INVALID_PARAMETER);
+            return array('apikey' => $userApiDao->getApikey());
         }
+
+        throw new Exception('Login failed', MIDAS_INVALID_PARAMETER);
     }
 
     /**
