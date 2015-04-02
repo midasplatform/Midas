@@ -42,6 +42,13 @@
   command: postgresql-setup initdb creates=/var/lib/pgsql/data/postgresql.conf
   when: ansible_os_family == 'RedHat'
 
+- name: pg_hba.conf
+  template: src=var-lib-pgsql-data-pg_hba.conf.j2 dest=/var/lib/pgsql/data/pg_hba.conf
+  notify:
+    - restart postgresql
+  sudo_user: postgres
+  when: ansible_os_family == 'RedHat'
+
 - name: start postgresql
   service: name=postgresql state=started
 

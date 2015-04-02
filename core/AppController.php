@@ -511,14 +511,26 @@ class AppController extends MIDAS_GlobalController
     }
 
     /**
-     * Ensure that the user is logged in and has admin privileges.
+     * Ensure that a user is logged in and has admin privileges.
      *
      * @throws Zend_Exception
      */
     public function requireAdminPrivileges()
     {
-        if (!$this->logged || !$this->userSession->Dao->getAdmin() == 1) {
+        if ($this->logged === false || $this->userSession->Dao->getAdmin() != 1) {
             throw new Zend_Exception(MIDAS_ADMIN_PRIVILEGES_REQUIRED, 403);
+        }
+    }
+
+    /**
+     * Ensure that a user is logged in.
+     *
+     * @throws Zend_Exception
+     */
+    public function requireUserPrivileges()
+    {
+        if ($this->logged === false) {
+            throw new Zend_Exception(MIDAS_LOGIN_REQUIRED, 403);
         }
     }
 
