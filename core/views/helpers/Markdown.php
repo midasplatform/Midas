@@ -29,6 +29,6 @@ class Zend_View_Helper_Markdown extends Zend_View_Helper_Abstract
      */
     public function markdown($text)
     {
-        return UtilityComponent::markdown(htmlspecialchars($text, ENT_QUOTES, 'UTF-8'));
+        return UtilityComponent::markdown(htmlspecialchars($text, ENT_COMPAT, 'UTF-8'));
     }
 }
