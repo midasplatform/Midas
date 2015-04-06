@@ -25,7 +25,9 @@
     - php5
     - php5-curl
     - php5-gd
+    - php5-imagick
     - php5-json
+    - php5-ldap
     - php5-xdebug
   notify:
     - restart apache2
@@ -37,14 +39,19 @@
     - php
     - php-bcmath
     - php-gd
+    - php-ldap
     - php-pdo
+    - php-pecl-imagick
     - php-pecl-xdebug
   notify:
     - restart apache2
   when: ansible_pkg_mgr == 'yum'
 
-- name: yum install php-pecl-jsonc
-  yum: name=php-pecl-jsonc state=present
+- name: yum install fedora
+  yum: name={{ item }} state=present
+  with_items:
+    - php-pecl-jsonc
+    - php-pecl-zip
   notify:
     - restart apache2
   when: ansible_distribution == 'Fedora'
