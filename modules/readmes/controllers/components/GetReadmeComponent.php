@@ -49,7 +49,7 @@ class Readmes_GetReadmeComponent extends AppComponent
         $path = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
         $contents = file_get_contents($path);
         MidasLoader::loadComponent('Utility');
-        $parsedContents = UtilityComponent::markdown(htmlspecialchars($contents, ENT_QUOTES, 'UTF-8'));
+        $parsedContents = UtilityComponent::markdown(htmlspecialchars($contents, ENT_COMPAT, 'UTF-8'));
 
         return array('text' => $parsedContents);
     }
