@@ -43,36 +43,41 @@ if (extension_loaded('fileinfo') === false) {
     function finfo_buffer($finfo, $string = null, $options = FILEINFO_NONE, $context = null)
     {
         if ($finfo !== false && !is_null($string) && is_null($context)) {
-            if ($options === FILEINFO_NONE && ($finfo & FILEINFO_MIME_TYPE === FILEINFO_MIME_TYPE || $finfo & FILEINFO_MIME_ENCODING === FILEINFO_MIME_ENCODING)) {
+            if ($options === FILEINFO_NONE && (($finfo & FILEINFO_MIME_TYPE) === FILEINFO_MIME_TYPE || ($finfo & FILEINFO_MIME_ENCODING) === FILEINFO_MIME_ENCODING)) {
                 $options = $finfo;
             }
 
-            if ($options & FILEINFO_MIME_TYPE === FILEINFO_MIME_TYPE || $options & FILEINFO_MIME_ENCODING === FILEINFO_MIME_ENCODING) {
-                if (substr($string, 8) === "\x89PNG\x0d\x0a\x1a\x0a") {
+            if (($options & FILEINFO_MIME_TYPE) === FILEINFO_MIME_TYPE || ($options & FILEINFO_MIME_ENCODING) === FILEINFO_MIME_ENCODING) {
+                $mimeEncoding = 'binary';
+
+                if (substr($string, 0, 8) === "\x89PNG\x0d\x0a\x1a\x0a") {
                     $mimeType = 'image/png';
-                } elseif (substr($string, 6) === 'GIF87a' || substr($string, 6) === 'GIF89a') {
+                } elseif (substr($string, 0, 6) === 'GIF87a' || substr($string, 0, 6) === 'GIF89a') {
                     $mimeType = 'image/gif';
-                } elseif (substr($string, 4) === "MM\x00\x2a" || substr($string, 4) === "II\x2a\x00") {
+                } elseif (substr($string, 0, 4) === "MM\x00\x2a" || substr($string, 0, 4) === "II\x2a\x00") {
                     $mimeType = 'image/tiff';
-                } elseif (substr($string, 4) === '8BPS') {
+                } elseif (substr($string, 0, 4) === '8BPS') {
                     $mimeType = 'image/vnd.adobe.photoshop';
-                } elseif (substr($string, 3) === "\xFF\xD8\xFF") {
+                } elseif (substr($string, 0, 3) === "\xFF\xD8\xFF") {
                     $mimeType = 'image/jpeg';
-                } elseif (substr($string, 2) === 'BM') {
+                } elseif (substr($string, 0, 2) === 'BM') {
                     $mimeType = 'image/bmp';
+                } elseif (strpos($string, "\x00") !== false) {
+                    $mimeType = 'application/octet-stream';
                 } else {
-                    return false;
+                    $mimeEncoding = 'utf-8';
+                    $mimeType = 'text/plain';
                 }
 
-                if ($options & FILEINFO_MIME === FILEINFO_MIME) {
-                    return $mimeType.'; charset=binary';
+                if (($options & FILEINFO_MIME) === FILEINFO_MIME) {
+                    return $mimeType.'; charset='.$mimeEncoding;
                 }
 
-                if ($options & FILEINFO_MIME_TYPE === FILEINFO_MIME_TYPE) {
+                if (($options & FILEINFO_MIME_TYPE) === FILEINFO_MIME_TYPE) {
                     return $mimeType;
                 }
 
-                return 'binary';
+                return $mimeEncoding;
             }
         }
 
@@ -102,14 +107,14 @@ if (extension_loaded('fileinfo') === false) {
     function finfo_file($finfo, $filename = null, $options = FILEINFO_NONE, $context = null)
     {
         if ($finfo !== false && !is_null($filename)) {
-            if ($options === FILEINFO_NONE && ($finfo & FILEINFO_MIME_TYPE === FILEINFO_MIME_TYPE || $finfo & FILEINFO_MIME_ENCODING === FILEINFO_MIME_ENCODING)) {
+            if ($options === FILEINFO_NONE && (($finfo & FILEINFO_MIME_TYPE) === FILEINFO_MIME_TYPE || ($finfo & FILEINFO_MIME_ENCODING) === FILEINFO_MIME_ENCODING)) {
                 $options = $finfo;
             }
 
-            if ($options & FILEINFO_MIME_TYPE === FILEINFO_MIME_TYPE || $options & FILEINFO_MIME_ENCODING === FILEINFO_MIME_ENCODING) {
+            if (($options & FILEINFO_MIME_TYPE) === FILEINFO_MIME_TYPE || ($options & FILEINFO_MIME_ENCODING) === FILEINFO_MIME_ENCODING) {
                 $mimeType = finfo_buffer($finfo, file_get_contents($filename, false, $context), $options, $context);
 
-                if ($mimeType === false) {
+                if ($mimeType === false || $mimeType === 'application/octet-stream') {
                     $extension = strtolower(end(explode('.', basename($filename))));
 
                     switch ($extension) {
@@ -137,22 +142,26 @@ if (extension_loaded('fileinfo') === false) {
                         case 'tiff':
                             $mimeType = 'image/tiff';
                             break;
+                        case 'text':
+                        case 'txt':
+                            $mimeType = 'text/plain';
+                            break;
                         default:
-                            return false;
+                            $mimeType = 'application/octet-stream';
                     }
-
-                    if ($options & FILEINFO_MIME === FILEINFO_MIME) {
-                        return $mimeType.'; charset=binary';
-                    }
-
-                    if ($options & FILEINFO_MIME_TYPE === FILEINFO_MIME_TYPE) {
-                        return $mimeType;
-                    }
-
-                    return 'binary';
                 }
 
-                return $mimeType;
+                $mimeEncoding = $mimeType === 'text/plain' ? 'utf-8' : 'binary';
+
+                if (($options & FILEINFO_MIME) === FILEINFO_MIME) {
+                    return $mimeType.'; charset='.$mimeEncoding;
+                }
+
+                if (($options & FILEINFO_MIME_TYPE) === FILEINFO_MIME_TYPE) {
+                    return $mimeType;
+                }
+
+                return $mimeEncoding;
             }
         }
 
@@ -348,6 +357,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
 
                 $image->save($pathThumbnail);
             } catch (\RuntimeException $exception) {
+                Zend_Registry::get('logger')->err($exception->getMessage());
                 throw new Zend_Exception('Thumbnail creation failed');
             }
         } else {
