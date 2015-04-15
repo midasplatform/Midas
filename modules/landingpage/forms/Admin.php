@@ -35,8 +35,8 @@ class Landingpage_Form_Admin extends Zend_Form
         $text->setLabel('Landing Page Text');
         $text->setRequired(true);
         $text->addValidator('NotEmpty', true);
-        $text->setAttrib('cols', '120');
-        $text->setAttrib('rows', '100');
+        $text->setAttrib('cols', '80');
+        $text->setAttrib('rows', '40');
 
         $this->addDisplayGroup(array($text), 'global');
 

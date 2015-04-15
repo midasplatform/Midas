@@ -72,7 +72,7 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
      * @param null|string $startDate start date
      * @param null|string $endDate end date
      * @param null|int $userId user id
-     * @param null|string $branch branch name
+     * @param null|string|array $branch branch name
      * @return array scalar DAOs
      */
     public function getScalars($trendDao, $startDate = null, $endDate = null, $userId = null, $branch = null)
@@ -91,7 +91,11 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
         }
 
         if (!is_null($branch)) {
-            $sql->where('branch = ?', $branch);
+            if (is_array($branch)) {
+                $sql->where('branch IN (?)', $branch);
+            } else {
+                $sql->where('branch = ?', $branch);
+            }
         }
 
         $scalarDaos = array();
