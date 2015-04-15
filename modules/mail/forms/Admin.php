@@ -91,6 +91,6 @@ class Mail_Form_Admin extends Zend_Form
         $submit = new Zend_Form_Element_Submit('submit');
         $submit->setLabel('Save');
 
-        $this->addElements(array($csrf, $provider, $fromAddress, $addressVerification, $smtpHost, $smtpPort, $smtpUseSsl, $smtpUsername, $smtpPassword, $submit));
+        $this->addElements(array($csrf, $provider, $fromAddress, $addressVerification, $sendGridUsername, $sendGridPassword, $smtpHost, $smtpPort, $smtpUseSsl, $smtpUsername, $smtpPassword, $submit));
     }
 }
