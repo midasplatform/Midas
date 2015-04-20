@@ -18,7 +18,7 @@
 #=============================================================================
 
 cmake_minimum_required(VERSION 2.8.7)
-project(Midas)
+project(midas NONE)
 
 get_filename_component(REAL_SOURCE_DIR ${CMAKE_SOURCE_DIR} REALPATH)
 get_filename_component(REAL_BINARY_DIR "${CMAKE_BINARY_DIR}" REALPATH)
