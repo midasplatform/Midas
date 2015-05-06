@@ -39,7 +39,7 @@ class Mail_Notification extends MIDAS_Notification
      * @param array $params parameters
      * @return bool true on success
      */
-    protected function handleSendMailMessage($params)
+    public function handleSendMailMessage($params)
     {
         $provider = $this->Setting->getValueByName(MAIL_PROVIDER_KEY, $this->moduleName);
 
