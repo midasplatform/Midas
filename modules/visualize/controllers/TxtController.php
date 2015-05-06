@@ -37,9 +37,12 @@ class Visualize_TxtController extends Visualize_AppController
         }
 
         $revision = $this->Item->getLastRevision($item);
+        if ($revision === false) {
+            throw new Zend_Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+        }
         $bitstreams = $revision->getBitstreams();
-        if (count($bitstreams) != 1) {
-            throw new Zend_Exception('Error');
+        if (count($bitstreams) === 0) {
+            throw new Zend_Exception('The item has no bitstreams', MIDAS_INVALID_POLICY);
         }
         $this->bistream = $bitstreams[0];
         if (Zend_Registry::get('configGlobal')->environment != 'testing') {

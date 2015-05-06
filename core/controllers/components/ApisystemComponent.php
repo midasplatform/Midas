@@ -398,7 +398,7 @@ class ApisystemComponent extends AppComponent
                 ) {
                     $revision = $itemModel->getLastRevision($item);
 
-                    if ($revision == false) {
+                    if ($revision === false) {
                         // Create new revision if none exists yet
                         Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH.'/core/models/dao');
                         $revision = new ItemRevisionDao();

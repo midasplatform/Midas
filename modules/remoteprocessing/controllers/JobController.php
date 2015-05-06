@@ -257,8 +257,11 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
             } elseif ($item->type == MIDAS_REMOTEPROCESSING_RELATION_TYPE_INPUT) {
                 $inputs[$item->getName()] = $item;
             } elseif ($item->type == MIDAS_REMOTEPROCESSING_RELATION_TYPE_OUPUT) {
-                $reviesion = $this->Item->getLastRevision($item);
-                $metadata = $this->ItemRevision->getMetadata($reviesion);
+                $revision = $this->Item->getLastRevision($item);
+                if ($revision === false) {
+                    throw new Zend_Exception('The item must have at least one revision to have metadata', MIDAS_INVALID_POLICY);
+                }
+                $metadata = $this->ItemRevision->getMetadata($revision);
                 $item->metadata = $metadata;
 
                 foreach ($metadata as $m) {
@@ -271,11 +274,14 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
 
                 $outputs[] = $item;
             } elseif ($item->type == MIDAS_REMOTEPROCESSING_RELATION_TYPE_RESULTS) {
-                $reviesion = $this->Item->getLastRevision($item);
-                $metadata = $this->ItemRevision->getMetadata($reviesion);
+                $revision = $this->Item->getLastRevision($item);
+                if ($revision === false) {
+                    throw new Zend_Exception('The item must have at least one revision to have metadata', MIDAS_INVALID_POLICY);
+                }
+                $metadata = $this->ItemRevision->getMetadata($revision);
                 $item->metadata = $metadata;
 
-                $bitstreams = $reviesion->getBitstreams();
+                $bitstreams = $revision->getBitstreams();
                 if (count($bitstreams) == 1) {
                     $log = file_get_contents($bitstreams[0]->getFullPath());
                 }

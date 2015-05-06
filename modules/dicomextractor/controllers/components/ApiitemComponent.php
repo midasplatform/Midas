@@ -53,6 +53,9 @@ class Dicomextractor_ApiitemComponent extends AppComponent
         }
 
         $revisionDao = $itemModel->getLastRevision($itemDao);
+        if ($revisionDao === false) {
+            throw new Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+        }
 
         /** @var Dicomextractor_ExtractorComponent $dicomComponent */
         $dicomComponent = MidasLoader::loadComponent('Extractor', 'dicomextractor');

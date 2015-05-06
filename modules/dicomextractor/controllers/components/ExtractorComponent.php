@@ -153,6 +153,10 @@ class Dicomextractor_ExtractorComponent extends AppComponent
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel("Item");
         $revision = $itemModel->getLastRevision($item);
+        if ($revision === false) {
+            return;
+        }
+
         $bitstreams = $revision->getBitstreams();
         $numBitstreams = count($bitstreams);
         if ($numBitstreams < 1) {

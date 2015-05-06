@@ -91,7 +91,13 @@ class Visualize_MainComponent extends AppComponent
             );
             $itemModel->copyParentPolicies($newItem, $parent);
             $newRevision = $itemModel->getLastRevision($newItem);
+            if ($newRevision === false) {
+                throw new Zend_Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+            }
             $bitstreams = $newRevision->getBitstreams();
+            if (count($bitstreams) === 0) {
+                throw new Zend_Exception('The item has no bitstreams', MIDAS_INVALID_POLICY);
+            }
             $bitstreamDao = $bitstreams[0];
 
             Zend_Loader::loadClass('BitstreamDao', BASE_PATH.'/core/models/dao');
@@ -133,11 +139,11 @@ class Visualize_MainComponent extends AppComponent
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
-        if (empty($revision)) {
+        if ($revision === false) {
             return false;
         }
         $bitstreams = $revision->getBitstreams();
-        if (count($bitstreams) == 0) {
+        if (count($bitstreams) === 0) {
             return false;
         }
 
@@ -162,11 +168,11 @@ class Visualize_MainComponent extends AppComponent
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
-        if (empty($revision)) {
+        if ($revision === false) {
             return false;
         }
         $bitstreams = $revision->getBitstreams();
-        if (count($bitstreams) == 0) {
+        if (count($bitstreams) === 0) {
             return false;
         }
 
@@ -191,11 +197,11 @@ class Visualize_MainComponent extends AppComponent
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
-        if (empty($revision)) {
+        if ($revision === false) {
             return false;
         }
         $bitstreams = $revision->getBitstreams();
-        if (count($bitstreams) == 0) {
+        if (count($bitstreams) === 0) {
             return false;
         }
 
@@ -212,11 +218,11 @@ class Visualize_MainComponent extends AppComponent
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
-        if (empty($revision)) {
+        if ($revision === false) {
             return false;
         }
         $bitstreams = $revision->getBitstreams();
-        if (count($bitstreams) == 0) {
+        if (count($bitstreams) === 0) {
             return false;
         }
 
@@ -233,7 +239,7 @@ class Visualize_MainComponent extends AppComponent
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
-        if (empty($revision)) {
+        if ($revision === false) {
             return false;
         }
         $bitstreams = $revision->getBitstreams();
@@ -258,11 +264,11 @@ class Visualize_MainComponent extends AppComponent
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
-        if (empty($revision)) {
+        if ($revision === false) {
             return false;
         }
         $bitstreams = $revision->getBitstreams();
-        if (count($bitstreams) == 0) {
+        if (count($bitstreams) === 0) {
             return false;
         }
 
@@ -279,11 +285,11 @@ class Visualize_MainComponent extends AppComponent
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
-        if (empty($revision)) {
+        if ($revision === false) {
             return false;
         }
         $bitstreams = $revision->getBitstreams();
-        if (count($bitstreams) == 0) {
+        if (count($bitstreams) === 0) {
             return false;
         }
 
@@ -300,11 +306,11 @@ class Visualize_MainComponent extends AppComponent
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
-        if (empty($revision)) {
+        if ($revision === false) {
             return false;
         }
         $bitstreams = $revision->getBitstreams();
-        if (count($bitstreams) == 0) {
+        if (count($bitstreams) === 0) {
             return false;
         }
 
@@ -341,6 +347,9 @@ class Visualize_MainComponent extends AppComponent
         $tmpFolderName = $pathArray['folderName'];
 
         $revision = $itemModel->getLastRevision($itemDao);
+        if ($revision === false) {
+            throw new Zend_Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+        }
         $bitstreams = $revision->getBitstreams();
         foreach ($bitstreams as $bitstream) {
             if ($useSymlinks) {

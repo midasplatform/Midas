@@ -350,6 +350,9 @@ class Dicomserver_ApiserverComponent extends AppComponent
         }
 
         $revisionDao = $itemModel->getLastRevision($itemDao);
+        if ($revisionDao === false) {
+            throw new Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+        }
 
         /** @var Dicomserver_ServerComponent $dicomComponent */
         $dicomComponent = MidasLoader::loadComponent('Server', 'dicomserver');

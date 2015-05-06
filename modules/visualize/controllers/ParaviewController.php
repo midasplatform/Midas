@@ -65,6 +65,9 @@ class Visualize_ParaviewController extends Visualize_AppController
         $tmpFolderName = $pathArray['folderName'];
 
         $revision = $this->Item->getLastRevision($item);
+        if ($revision === false) {
+            throw new Zend_Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+        }
         $bitstreams = $revision->getBitstreams();
         foreach ($bitstreams as $bitstream) {
             if ($useSymlinks) {
@@ -157,6 +160,9 @@ class Visualize_ParaviewController extends Visualize_AppController
             $subPath = $path.'/'.$side;
             mkdir($subPath);
             $revision = $this->Item->getLastRevision($item);
+            if ($revision === false) {
+                throw new Zend_Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+            }
             $bitstreams = $revision->getBitstreams();
             foreach ($bitstreams as $bitstream) {
                 if ($useSymlinks) {
@@ -244,6 +250,9 @@ class Visualize_ParaviewController extends Visualize_AppController
         $tmpFolderName = $pathArray['folderName'];
 
         $revision = $this->Item->getLastRevision($item);
+        if ($revision === false) {
+            throw new Zend_Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+        }
         $bitstreams = $revision->getBitstreams();
         foreach ($bitstreams as $bitstream) {
             if ($useSymlinks) {
@@ -281,6 +290,9 @@ class Visualize_ParaviewController extends Visualize_AppController
                 throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
             }
             $revision = $this->Item->getLastRevision($otherItem);
+            if ($revision === false) {
+                throw new Zend_Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+            }
             $bitstreams = $revision->getBitstreams();
             foreach ($bitstreams as $bitstream) {
                 $otherFile = $path.'/'.$bitstream->getName();
@@ -393,6 +405,9 @@ class Visualize_ParaviewController extends Visualize_AppController
         $tmpFolderName = $pathArray['folderName'];
 
         $revision = $this->Item->getLastRevision($item);
+        if ($revision === false) {
+            throw new Zend_Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+        }
         $bitstreams = $revision->getBitstreams();
         foreach ($bitstreams as $bitstream) {
             if ($useSymlinks) {
@@ -430,6 +445,9 @@ class Visualize_ParaviewController extends Visualize_AppController
                 throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
             }
             $revision = $this->Item->getLastRevision($otherItem);
+            if ($revision === false) {
+                throw new Zend_Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+            }
             $bitstreams = $revision->getBitstreams();
             foreach ($bitstreams as $bitstream) {
                 $otherFile = $path.'/'.$bitstream->getName();

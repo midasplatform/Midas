@@ -116,7 +116,7 @@ class ApihelperComponent extends AppComponent
             if ($revisionDao) {
                 return $revisionDao;
             } else {
-                throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
+                throw new Exception('The item must have at least one revision to have metadata', MIDAS_INVALID_POLICY);
             }
         }
 
@@ -129,7 +129,7 @@ class ApihelperComponent extends AppComponent
         }
         $revisions = $item->getRevisions();
         if (count($revisions) === 0) {
-            throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
+            throw new Exception('The item must have at least one revision to have metadata', MIDAS_INVALID_POLICY);
         }
         // check revisions exist
         foreach ($revisions as $revision) {
@@ -231,7 +231,7 @@ class ApihelperComponent extends AppComponent
 
         // If no module handles this metadata, we add it as normal metadata on the item revision
         if (!$revisionDao) {
-            throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
+            throw new Exception('The item must have at least one revision to have metadata', MIDAS_INVALID_POLICY);
         }
 
         /** @var MetadataModel $metadataModel */

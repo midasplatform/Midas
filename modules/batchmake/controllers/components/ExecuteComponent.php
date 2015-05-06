@@ -62,9 +62,12 @@ class Batchmake_ExecuteComponent extends AppComponent
         foreach ($itemsForExport as $itemName => $itemId) {
             $itemDao = $itemModel->load($itemId);
             $revisionDao = $itemModel->getLastRevision($itemDao);
+            if ($revisionDao === false) {
+                throw new Zend_Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+            }
             $bitstreamDaos = $revisionDao->getBitstreams();
             if (empty($bitstreamDaos)) {
-                throw new Zend_Exception("Item ".$itemId." had no bitstreams.");
+                throw new Zend_Exception("Item ".$itemId." has no bitstreams.");
             }
             $imageBitstreamDao = $bitstreamDaos[0];
             $exportedBitstreamPath = $datapath.'/'.$itemId.'/'.$imageBitstreamDao->getName();

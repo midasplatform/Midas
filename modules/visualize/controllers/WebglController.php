@@ -49,6 +49,9 @@ class Visualize_WebglController extends Visualize_AppController
                 continue;
             }
             $revision = $this->Item->getLastRevision($item);
+            if ($revision === false) {
+                continue;
+            }
             $bitstreams = $revision->getBitstreams();
             if (count($bitstreams) == 1) {
                 continue;

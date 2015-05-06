@@ -68,6 +68,9 @@ class ItemController extends AppController
         } else {
             $metadataItemRevision = $this->Item->getLastRevision($itemDao);
         }
+        if ($metadataItemRevision === false) {
+            throw new Zend_Exception('The item must have at least one revision to have metadata', MIDAS_INVALID_POLICY);
+        }
         $metadatavalues = $this->ItemRevision->getMetadata($metadataItemRevision);
         $this->view->metadata = null;
 
@@ -120,6 +123,9 @@ class ItemController extends AppController
                 $metadataItemRevision = $this->Item->getRevision($itemDao, $itemRevisionNumber);
             } else {
                 $metadataItemRevision = $itemRevision;
+            }
+            if ($metadataItemRevision === false) {
+                throw new Zend_Exception('The item must have at least one revision to have metadata', MIDAS_INVALID_POLICY);
             }
             $deleteMetadata = $this->getParam('deleteMetadata');
             $editMetadata = $this->getParam('editMetadata');
@@ -602,6 +608,9 @@ class ItemController extends AppController
                 $metadataItemRevision = $this->Item->getRevision($itemDao, $itemRevisionNumber);
             } else {
                 $metadataItemRevision = $this->Item->getLastRevision($itemDao);
+            }
+            if ($metadataItemRevision === false) {
+                throw new Zend_Exception('The item must have at least one revision to have metadata', MIDAS_INVALID_POLICY);
             }
             $metadataDao->setItemrevisionId($metadataItemRevision->getKey());
             if ($this->Metadata->getMetadataValueExists($metadataDao)) {

@@ -74,6 +74,9 @@ class Remoteprocessing_ExecutableController extends Remoteprocessing_AppControll
             file_put_contents($pathFile, $xmlContent);
 
             $revision = $this->Item->getLastRevision($itemDao);
+            if ($revision === false) {
+                throw new Zend_Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+            }
             $bitstreams = $revision->getBitstreams();
 
             $itemRevisionDao = new ItemRevisionDao();

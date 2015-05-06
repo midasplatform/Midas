@@ -43,11 +43,11 @@ class Pvw_ValidationComponent extends AppComponent
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
-        if (empty($revision)) {
+        if ($revision === false) {
             return false;
         }
         $bitstreams = $revision->getBitstreams();
-        if (count($bitstreams) == 0) {
+        if (count($bitstreams) === 0) {
             return false;
         }
 

@@ -32,6 +32,9 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
+        if ($revision === false) {
+            return false;
+        }
         $bitstreams = $revision->getBitstreams();
         $metaFile = false;
         foreach ($bitstreams as $b) {
@@ -52,6 +55,9 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
+        if ($revision === false) {
+            return false;
+        }
         $bitstreams = $revision->getBitstreams();
         foreach ($bitstreams as $b) {
             if (is_executable($b->getFullPath())) {

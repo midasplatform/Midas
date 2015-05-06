@@ -265,7 +265,7 @@ class ApiitemComponent extends AppComponent
         ) {
             $revisions = $item->getRevisions();
             if (count($revisions) === 0) {
-                throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
+                throw new Exception('The item must have at least one revision to have metadata', MIDAS_INVALID_POLICY);
             }
             foreach ($revisions as $revisionDao) {
                 $itemRevisionModel->deleteMetadata($revisionDao);

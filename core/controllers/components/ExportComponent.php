@@ -109,9 +109,9 @@ class ExportComponent extends AppComponent
                 }
                 // Use the given revision_number if it is not empty
                 if (isset($tmpId[1])) {
-                    $revisionNum = $itemModel->getRevision($item, $tmpId[1]);
-                    if ($revisionNum !== false) {
-                        $revisions[] = $revisionNum;
+                    $revision = $itemModel->getRevision($item, $tmpId[1]);
+                    if ($revision !== false) {
+                        $revisions[] = $revision;
                     } else {
                         throw new Zend_Exception(
                             "Revision number ".$tmpId[1]." for item ".$tmpId[0]." does not exist. Please check your input."
@@ -119,8 +119,10 @@ class ExportComponent extends AppComponent
                     }
                 } else {
                     // Otherwise use the latest revision
-                    $revisionNum = $itemModel->getLastRevision($item);
-                    $revisions[] = $revisionNum;
+                    $revision = $itemModel->getLastRevision($item);
+                    if ($revision !== false) {
+                        $revisions[] = $revision;
+                    }
                 }
             }
         }

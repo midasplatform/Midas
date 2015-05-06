@@ -1351,7 +1351,7 @@ class FolderModel extends FolderModelBase
             $item = $this->initDao('Item', $row);
             $rev = $this->Item->getLastRevision($item);
 
-            if (!$rev) {
+            if ($rev === false) {
                 $zip->addFile($path.'/'.$item->getName(), ''); // add empty item
                 continue;
             }

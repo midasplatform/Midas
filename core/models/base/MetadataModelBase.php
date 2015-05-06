@@ -122,7 +122,9 @@ abstract class MetadataModelBase extends AppModel
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $lastrevision = $itemModel->getLastRevision($item);
-
+        if ($lastrevision === false) {
+            throw new Zend_Exception('The item must have at least one revision to have metadata', MIDAS_INVALID_POLICY);
+        }
         // refresh zend search index if latest revision has changed
         if ($lastrevision->getKey() == $itemRevisionDao->getKey()) {
             $itemModel->save($item, $passItemMetadataChanged);

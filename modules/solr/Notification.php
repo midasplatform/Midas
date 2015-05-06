@@ -87,7 +87,7 @@ class Solr_Notification extends ApiEnabled_Notification
 
             $revision = $this->Item->getLastRevision($item);
 
-            if ($revision != false) {
+            if ($revision !== false) {
                 $metadata = $this->ItemRevision->getMetadata($revision);
                 $metadataString = '';
 

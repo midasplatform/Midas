@@ -95,6 +95,9 @@ class ItemRevisionModel extends ItemRevisionModelBase
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $lastrevision = $itemModel->getLastRevision($item);
+        if ($lastrevision === false) {
+            throw new Zend_Exception('The item must have at least one revision to have metadata', MIDAS_INVALID_POLICY);
+        }
 
         // refresh lucene search index
         if ($lastrevision->getKey() == $revisiondao->getKey()) {

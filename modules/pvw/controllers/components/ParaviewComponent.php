@@ -242,14 +242,26 @@ class Pvw_ParaviewComponent extends AppComponent
         /** @var ItemRevisionModel $revisionModel */
         $revisionModel = MidasLoader::loadModel('ItemRevision');
         $rev = $itemModel->getLastRevision($itemDao);
+        if ($rev === false) {
+            throw new Zend_Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+        }
         $bitstreams = $rev->getBitstreams();
+        if (count($bitstreams) === 0) {
+            throw new Zend_Exception('The item has no bitstreams', MIDAS_INVALID_POLICY);
+        }
         $src = $bitstreams[0]->getFullpath();
         symlink($src, $path.'/main/'.$bitstreams[0]->getName());
 
         // Symlink all the surfaces into the surfaces subdir
         foreach ($meshItems as $meshItem) {
             $rev = $itemModel->getLastRevision($meshItem);
+            if ($rev === false) {
+                continue;
+            }
             $bitstreams = $rev->getBitstreams();
+            if (count($bitstreams) === 0) {
+                continue;
+            }
             $src = $bitstreams[0]->getFullpath();
             $linkPath = $path.'/surfaces/'.$meshItem->getKey().'_'.$bitstreams[0]->getName();
             symlink($src, $linkPath);

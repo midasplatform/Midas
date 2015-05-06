@@ -215,9 +215,11 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
         }
 
         $revision = $itemModel->getLastRevision($item);
+        if ($revision === false) {
+            return;
+        }
         $bitstreams = $revision->getBitstreams();
-
-        if (count($bitstreams) < 1) {
+        if (count($bitstreams) === 0) {
             return;
         }
 

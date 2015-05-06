@@ -301,11 +301,13 @@ class ShareController extends AppController
             case 'folder':
                 $dao = $this->Folder->load($id);
                 $name = $dao->getName().'.zip';
+                $hasDownload = true;
                 break;
             case 'item':
                 $dao = $this->Item->load($id);
-                $headRev = $this->Item->getLastRevision($dao);
                 $name = $dao->getName();
+                $headRev = $this->Item->getLastRevision($dao);
+                $hasDownload = $headRev !== false;
                 if (count($headRev->getBitstreams()) > 1) {
                     $name .= '.zip';
                 }
@@ -318,6 +320,10 @@ class ShareController extends AppController
         $this->view->type = $type;
         $this->view->id = $id;
         $this->view->viewUrl = $baseUrl.'/'.$type.'/'.$id;
-        $this->view->downloadUrl = $baseUrl.'/download/'.$type.'/'.$id.'/'.urlencode($name);
+        if ($hasDownload === false) {
+            $this->view->downloadUrl = '';
+        } else {
+            $this->view->downloadUrl = $baseUrl.'/download/'.$type.'/'.$id.'/'.urlencode($name);
+        }
     }
 }

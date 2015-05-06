@@ -32,13 +32,16 @@ class Visualize_ImageController extends Visualize_AppController
 
         if ($item === false || !$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_READ)
         ) {
-            throw new Zend_Exception("This item doesn't exist  or you don't have the permissions.");
+            throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
         }
 
         $revision = $this->Item->getLastRevision($item);
+        if ($revision === false) {
+            throw new Zend_Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+        }
         $bitstreams = $revision->getBitstreams();
-        if (count($bitstreams) != 1) {
-            throw new Zend_Exception('Error');
+        if (count($bitstreams) === 0) {
+            throw new Zend_Exception('The item has no bitstreams', MIDAS_INVALID_POLICY);
         }
         $this->bistream = $bitstreams[0];
 

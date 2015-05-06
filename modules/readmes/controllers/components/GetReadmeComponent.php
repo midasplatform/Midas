@@ -44,7 +44,13 @@ class Readmes_GetReadmeComponent extends AppComponent
             return array('text' => '');
         }
         $revisionDao = $itemModel->getLastRevision($readmeItem);
+        if ($revisionDao === false) {
+            return array('text' => '');
+        }
         $bitstreams = $revisionDao->getBitstreams();
+        if (count($bitstreams) === 0) {
+            return array('text' => '');
+        }
         $bitstream = $bitstreams[0];
         $path = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
         $contents = file_get_contents($path);

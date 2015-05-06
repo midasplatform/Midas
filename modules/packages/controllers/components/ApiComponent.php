@@ -104,7 +104,13 @@ class Packages_ApiComponent extends AppComponent
 
         foreach ($daos as $dao) {
             $revision = $itemModel->getLastRevision($dao->getItem());
+            if ($revision === false) {
+                continue;
+            }
             $bitstreams = $revision->getBitstreams();
+            if (count($bitstreams) === 0) {
+                continue;
+            }
             $bitstream = $bitstreams[0];
 
             $results[] = array(
@@ -231,6 +237,9 @@ class Packages_ApiComponent extends AppComponent
             /** @var ItemRevisionModel $itemRevisionModel */
             $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
             $itemRevision = $itemModel->getLastRevision($item);
+            if ($itemRevision === false) {
+                throw new Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+            }
             $itemRevision->setChanges($args['revision']);
             $itemRevisionModel->save($itemRevision);
 
@@ -317,6 +326,9 @@ class Packages_ApiComponent extends AppComponent
         $results = array();
         foreach ($daos as $dao) {
             $revision = $itemModel->getLastRevision($dao->getItem());
+            if ($revision === false) {
+                continue;
+            }
             $bitstreams = $revision->getBitstreams();
             $bitstreamsArray = array();
             foreach ($bitstreams as $bitstream) {
