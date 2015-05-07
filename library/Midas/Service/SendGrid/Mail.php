@@ -121,10 +121,10 @@ class Midas_Service_SendGrid_Mail implements Midas_Service_Mail
         $email->setText($mail->getBodyText(true));
         $email->setTos($mail->getTo());
 
-        $response = $this->_client->send($email);
-
-        if ($response->code !== 200) {
-            throw new Midas_Service_SendGrid_Exception('Could not send mail: '.$response->raw_body);
+        try {
+            $this->_client->send($email);
+        } catch(\SendGrid\Exception $exception) {
+            throw new Midas_Service_SendGrid_Exception('Could not send mail');
         }
     }
 }
