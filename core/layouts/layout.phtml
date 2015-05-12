@@ -223,7 +223,7 @@ echo $this->doctype().PHP_EOL;
         </div>
         <div class="HeaderAction">
             <ul>
-                <li class="uploadFile" title="Upload"
+                <li class="uploadFile uploadFile-top" title="Upload"
                     rel="<?php echo $this->baseUrl('upload/simpleupload'); ?><?php if (isset($this->mainFolder)) {
                         echo '/?parent='.$this->escape($this->mainFolder->folder_id);
                     } ?>">
