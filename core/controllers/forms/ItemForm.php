@@ -33,7 +33,7 @@ class ItemForm extends AppForm
 
         $description = new Zend_Form_Element_Textarea('description');
         $submit = new  Zend_Form_Element_Submit('submit');
-        $submit->setLabel($this->t("Save"));
+        $submit->setLabel($this->t('Save'));
 
         $form->addElements(array($name, $description, $submit));
 
@@ -52,7 +52,7 @@ class ItemForm extends AppForm
 
         $mimetype = new Zend_Form_Element_Text('mimetype');
         $submit = new  Zend_Form_Element_Submit('submit');
-        $submit->setLabel($this->t("Save"));
+        $submit->setLabel($this->t('Save'));
 
         $form->addElements(array($name, $mimetype, $submit));
 

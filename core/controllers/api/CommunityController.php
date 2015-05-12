@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- *  Web API controller for the Community resource
- */
+/** Web API controller for the Community resource. */
 class Rest_CommunityController extends ApiController
 {
     /**

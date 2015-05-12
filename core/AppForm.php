@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic form class.
- *
- * @package Core\Forms
- */
+/** Generic form class. */
 class AppForm
 {
     /** Constructor. */
@@ -40,7 +36,7 @@ class AppForm
      */
     protected function t($text)
     {
-        Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
+        Zend_Loader::loadClass('InternationalizationComponent', BASE_PATH.'/core/controllers/components');
 
         return InternationalizationComponent::translate($text);
     }

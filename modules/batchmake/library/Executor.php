@@ -36,7 +36,7 @@ class Batchmake_Executor
      * @param null|mixed $return_val
      * @throws Zend_Exception
      */
-    public function exec($command, &$output = null, $chdir = "", &$return_val = null)
+    public function exec($command, &$output = null, $chdir = '', &$return_val = null)
     {
         KWUtils::exec($command, $output, $chdir, $return_val);
     }

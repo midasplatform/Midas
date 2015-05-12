@@ -20,9 +20,7 @@
 
 require_once BASE_PATH.'/core/models/base/ItemRevisionModelBase.php';
 
-/**
- * Pdo Model
- */
+/** Pdo Model. */
 class ItemRevisionModel extends ItemRevisionModelBase
 {
     /**
@@ -49,7 +47,7 @@ class ItemRevisionModel extends ItemRevisionModelBase
     public function getMetadata($revisiondao)
     {
         if (!$revisiondao instanceof ItemRevisionDao) {
-            throw new Zend_Exception("Error in param revisiondao when getting Metadata.");
+            throw new Zend_Exception('Error in param revisiondao when getting Metadata.');
         }
 
         $metadatavalues = array();
@@ -109,7 +107,7 @@ class ItemRevisionModel extends ItemRevisionModelBase
      * -The revision itself
      * -All bitstreams of the revision
      * -The feed for the creation of the revision
-     * -The metadata associated with the revision
+     * -The metadata associated with the revision.
      *
      * @param ItemRevisionDao $revisiondao
      * @throws Zend_Exception
@@ -117,7 +115,7 @@ class ItemRevisionModel extends ItemRevisionModelBase
     public function delete($revisiondao)
     {
         if (!$revisiondao instanceof ItemRevisionDao) {
-            throw new Zend_Exception("Error in param revisiondao when deleting an ItemRevision.");
+            throw new Zend_Exception('Error in param revisiondao when deleting an ItemRevision.');
         }
         $bitstreams = $revisiondao->getBitstreams();
 

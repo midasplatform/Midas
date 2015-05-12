@@ -22,7 +22,7 @@
 class SearchComponent extends AppComponent
 {
     /**
-     * Search all the results
+     * Search all the results.
      *
      * @param UserDao $userDao
      * @param string $search
@@ -66,7 +66,7 @@ class SearchComponent extends AppComponent
     }
 
     /**
-     * Format search results
+     * Format search results.
      *
      * @param string $order
      * @param array $items

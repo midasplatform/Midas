@@ -24,7 +24,7 @@ require_once BASE_PATH.'/modules/statistics/models/base/IpLocationModelBase.php'
 class Statistics_IpLocationModel extends Statistics_IpLocationModelBase
 {
     /**
-     * Return the record for the given ip
+     * Return the record for the given ip.
      */
     public function getByIp($ip)
     {
@@ -41,7 +41,7 @@ class Statistics_IpLocationModel extends Statistics_IpLocationModelBase
     }
 
     /**
-     * Return entries that have not yet had geolocation run on them
+     * Return entries that have not yet had geolocation run on them.
      */
     public function getAllUnlocated()
     {

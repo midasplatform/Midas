@@ -24,6 +24,6 @@ class Scheduler_Upgrade_1_0_3 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query("ALTER TABLE `scheduler_job` ADD COLUMN `creator_id` bigint(20);");
+        $this->db->query('ALTER TABLE `scheduler_job` ADD COLUMN `creator_id` bigint(20);');
     }
 }

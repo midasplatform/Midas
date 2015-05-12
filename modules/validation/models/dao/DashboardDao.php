@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Dashboard DAO
- */
+/** Dashboard DAO. */
 class Validation_DashboardDao extends AppDao
 {
     public $_model = 'Dashboard';

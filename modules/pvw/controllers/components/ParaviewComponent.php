@@ -25,7 +25,7 @@
 class Pvw_ParaviewComponent extends AppComponent
 {
     /** @var string */
-	public $moduleName = 'pvw';
+    public $moduleName = 'pvw';
 
     /**
      * Creates a new pvpython instance and a corresponding database record for it.
@@ -108,7 +108,7 @@ class Pvw_ParaviewComponent extends AppComponent
             putenv('DISPLAY='.$displayEnv);
         }
         $cmd = implode(' ', $cmdArray);
-        exec(sprintf("%s > %s 2>&1 & echo $!", $cmd, $dataPath.'/pvw.log'), $output);
+        exec(sprintf('%s > %s 2>&1 & echo $!', $cmd, $dataPath.'/pvw.log'), $output);
         $pid = trim(implode('', $output));
         if (!is_numeric($pid) || $pid == 0) {
             throw new Zend_Exception('Expected pid output, got: '.$pid, 500);
@@ -145,7 +145,7 @@ class Pvw_ParaviewComponent extends AppComponent
     }
 
     /**
-     * Kills the pvpython process and deletes the instance record from the database
+     * Kills the pvpython process and deletes the instance record from the database.
      *
      * @param Pvw_InstanceDao $instance instance DAO to kill
      * @throws Zend_Exception

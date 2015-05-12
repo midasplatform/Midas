@@ -147,7 +147,7 @@ class ApifolderComponent extends AppComponent
     }
 
     /**
-     * Move a folder to the destination folder
+     * Move a folder to the destination folder.
      *
      * @path /folder/move/{id}
      * @http PUT
@@ -186,7 +186,7 @@ class ApifolderComponent extends AppComponent
             throw new Exception("This folder doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY);
         }
         if ($dstFolder == false) {
-            throw new Exception("Unable to load destination folder.", MIDAS_INVALID_POLICY);
+            throw new Exception('Unable to load destination folder.', MIDAS_INVALID_POLICY);
         }
         $folderModel->move($folder, $dstFolder);
 
@@ -196,7 +196,7 @@ class ApifolderComponent extends AppComponent
     }
 
     /**
-     * Get information about the folder
+     * Get information about the folder.
      *
      * @path /folder/{id}
      * @http GET
@@ -232,7 +232,7 @@ class ApifolderComponent extends AppComponent
     }
 
     /**
-     * Wrapper function for cleaning output of folderGet
+     * Wrapper function for cleaning output of folderGet.
      *
      * @param array $args
      * @return array
@@ -288,7 +288,7 @@ class ApifolderComponent extends AppComponent
             throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
         }
         if (!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN)) {
-            throw new Exception("Admin privileges required on the folder to list permissions.", MIDAS_INVALID_POLICY);
+            throw new Exception('Admin privileges required on the folder to list permissions.', MIDAS_INVALID_POLICY);
         }
 
         return $apihelperComponent->listResourcePermissions(
@@ -299,7 +299,7 @@ class ApifolderComponent extends AppComponent
     }
 
     /**
-     * Get the immediate children of a folder (non-recursive)
+     * Get the immediate children of a folder (non-recursive).
      *
      * @path /folder/children/{id}
      * @http GET
@@ -370,7 +370,7 @@ class ApifolderComponent extends AppComponent
             throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
         }
         if (!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN)) {
-            throw new Exception("Admin privileges required on the folder to set privacy.", MIDAS_INVALID_POLICY);
+            throw new Exception('Admin privileges required on the folder to set privacy.', MIDAS_INVALID_POLICY);
         }
 
         $privacyCode = $apihelperComponent->getValidPrivacyCode($args['privacy']);
@@ -425,7 +425,7 @@ class ApifolderComponent extends AppComponent
             throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
         }
         if (!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN)) {
-            throw new Exception("Admin privileges required on the folder.", MIDAS_INVALID_POLICY);
+            throw new Exception('Admin privileges required on the folder.', MIDAS_INVALID_POLICY);
         }
 
         /** @var GroupModel $groupModel */
@@ -487,7 +487,7 @@ class ApifolderComponent extends AppComponent
             throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
         }
         if (!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN)) {
-            throw new Exception("Admin privileges required on the folder.", MIDAS_INVALID_POLICY);
+            throw new Exception('Admin privileges required on the folder.', MIDAS_INVALID_POLICY);
         }
 
         /** @var GroupModel $groupModel */
@@ -553,7 +553,7 @@ class ApifolderComponent extends AppComponent
         }
         if (!$folderModel->policyCheck($folder, $adminUser, MIDAS_POLICY_ADMIN)
         ) {
-            throw new Exception("Admin privileges required on the folder.", MIDAS_INVALID_POLICY);
+            throw new Exception('Admin privileges required on the folder.', MIDAS_INVALID_POLICY);
         }
 
         /** @var UserModel $userModel */
@@ -616,7 +616,7 @@ class ApifolderComponent extends AppComponent
             throw new Exception("This folder doesn't exist.", MIDAS_INVALID_PARAMETER);
         }
         if (!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_ADMIN)) {
-            throw new Exception("Admin privileges required on the folder.", MIDAS_INVALID_POLICY);
+            throw new Exception('Admin privileges required on the folder.', MIDAS_INVALID_POLICY);
         }
 
         /** @var UserModel $userModel */
@@ -648,7 +648,7 @@ class ApifolderComponent extends AppComponent
     }
 
     /**
-     * Delete a folder. Requires admin privileges on the folder
+     * Delete a folder. Requires admin privileges on the folder.
      *
      * @path /folder/{id}
      * @http DELETE
@@ -683,7 +683,7 @@ class ApifolderComponent extends AppComponent
     }
 
     /**
-     * Download a folder
+     * Download a folder.
      *
      * @path /folder/download/{id}
      * @http GET

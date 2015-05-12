@@ -107,7 +107,7 @@ class ApidocsComponent extends AppComponent
                 } elseif (strpos($doc, 'idparam') === 0) {
                     $idParam = trim(substr($doc, 8));
                 } elseif (strpos($doc, 'throws') === 0) {
-                   continue;
+                    continue;
                 } else {
                     $description = $doc;
                 }
@@ -141,7 +141,7 @@ class ApidocsComponent extends AppComponent
     }
 
     /**
-     * This function is for getting the Swagger Api docs for a single model
+     * This function is for getting the Swagger Api docs for a single model.
      *
      * @param string $resource
      * @param string $module

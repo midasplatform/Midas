@@ -25,7 +25,7 @@ class Oauth_AuthorizeController extends Oauth_AppController
     public $_moduleModels = array('Client', 'Code');
 
     /**
-     * Renders the oauth login screen. See http://tools.ietf.org/html/draft-ietf-oauth-v2-31#section-4.1.1
+     * Renders the oauth login screen. See http://tools.ietf.org/html/draft-ietf-oauth-v2-31#section-4.1.1.
      *
      * @param response_type Should be set to "code".
      * @param client_id The identifier of the client
@@ -80,7 +80,7 @@ class Oauth_AuthorizeController extends Oauth_AppController
     }
 
     /**
-     * Submit login form.  Will redirect the user to the redirect_uri on success
+     * Submit login form.  Will redirect the user to the redirect_uri on success.
      *
      * @param redirect_uri The client's desired redirect URI
      * @param login The user's login

@@ -25,7 +25,6 @@
  * @method void setLandingpageId(int $landingpageId)
  * @method string getText()
  * @method void setText(string $text)
- * @package Modules\Landingpage\DAO
  */
 class Landingpage_TextDao extends AppDao
 {

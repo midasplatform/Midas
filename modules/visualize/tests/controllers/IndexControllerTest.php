@@ -55,7 +55,7 @@ class Visualize_IndexControllerTest extends ControllerTestCase
         $privateFolder = $folderModel->load(1002);
         $item = $uploadComponent->createUploadedItem(
             $userDao,
-            "test.png",
+            'test.png',
             BASE_PATH.'/tests/testfiles/search.png',
             $privateFolder,
             null,
@@ -65,22 +65,22 @@ class Visualize_IndexControllerTest extends ControllerTestCase
         $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
         $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
         $this->params['itemId'] = $item->getKey();
-        $this->dispatchUrl("/visualize/index/index");
-        $this->assertController("index");
+        $this->dispatchUrl('/visualize/index/index');
+        $this->assertController('index');
 
-        $this->dispatchUrl("/visualize/image/index");
-        $this->assertController("image");
+        $this->dispatchUrl('/visualize/image/index');
+        $this->assertController('image');
 
-        $this->dispatchUrl("/visualize/media/index");
-        $this->assertController("media");
+        $this->dispatchUrl('/visualize/media/index');
+        $this->assertController('media');
 
-        $this->dispatchUrl("/visualize/pdf/index");
-        $this->assertController("pdf");
+        $this->dispatchUrl('/visualize/pdf/index');
+        $this->assertController('pdf');
 
-        $this->dispatchUrl("/visualize/txt/index");
-        $this->assertController("txt");
+        $this->dispatchUrl('/visualize/txt/index');
+        $this->assertController('txt');
 
-        $this->dispatchUrl("/visualize/webgl/index");
-        $this->assertController("webgl");
+        $this->dispatchUrl('/visualize/webgl/index');
+        $this->assertController('webgl');
     }
 }

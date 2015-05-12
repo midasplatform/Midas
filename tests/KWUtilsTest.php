@@ -41,7 +41,7 @@ class KWUtilsTest extends ControllerTestCase
         //
         // create a nested set of directories
         $tmpDir = UtilityComponent::getTempDirectory();
-        $subDirs = array("KWUtilsTest", "1", "2", "3");
+        $subDirs = array('KWUtilsTest', '1', '2', '3');
         $outDir = KWUtils::createSubDirectories($tmpDir.'/', $subDirs);
 
         // now check that all the subdirs have been created
@@ -105,7 +105,7 @@ class KWUtilsTest extends ControllerTestCase
         rmdir($execDir);
 
         // pass in a bad cwd, be sure that we get an exception
-        $chdir = "/this/dir/probably/will/not/exist/anywhere";
+        $chdir = '/this/dir/probably/will/not/exist/anywhere';
         $output = null;
         $returnVal = null;
         try {
@@ -153,9 +153,9 @@ class KWUtilsTest extends ControllerTestCase
     {
         // first try something that should be in the path, php, and check that it
         // is executable
-        $app = "php";
+        $app = 'php';
         if (KWUtils::isWindows()) {
-            $app .= ".exe";
+            $app .= '.exe';
         }
 
         KWUtils::findApp($app, true);
@@ -174,9 +174,9 @@ class KWUtilsTest extends ControllerTestCase
     {
         // this is tricky to test, as it is hard to make assumptions that hold
         // up across platforms
-        $app = "php";
+        $app = 'php';
         if (KWUtils::isWindows()) {
-            $app .= ".exe";
+            $app .= '.exe';
         }
 
         // for now assume that 'php' will not be found when not looking in the path
@@ -188,9 +188,9 @@ class KWUtilsTest extends ControllerTestCase
     /** tests prepareExecCommand function */
     public function testPrepareExecCommand()
     {
-        $app = "php";
+        $app = 'php';
         if (KWUtils::isWindows()) {
-            $app .= ".exe";
+            $app .= '.exe';
         }
 
         $returnVal = KWUtils::prepareExecCommand($app, array('blah1', 'blah2', 'blah3'));

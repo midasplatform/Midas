@@ -35,7 +35,6 @@
  * @method void setLogFilename(string $logFilename)
  * @method string getPostFilename()
  * @method void setPostFilename(string $postFilename)
- * @package Modules\Batchmake\DAO
  */
 class Batchmake_CondorJobDao extends AppDao
 {

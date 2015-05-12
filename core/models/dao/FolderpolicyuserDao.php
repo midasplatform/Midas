@@ -33,7 +33,6 @@
  * @method void setFolder(FolderDao $folder)
  * @method UserDao getUser()
  * @method void setUser(UserDao $user)
- * @package Core\DAO
  */
 class FolderpolicyuserDao extends AppDao
 {

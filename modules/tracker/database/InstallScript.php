@@ -20,11 +20,7 @@
 
 require_once BASE_PATH.'/modules/tracker/constant/module.php';
 
-/**
- * Install the tracker module.
- *
- * @package Modules\Tracker\Database
- */
+/** Install the tracker module. */
 class Tracker_InstallScript extends MIDASModuleInstallScript
 {
     /** @var string */

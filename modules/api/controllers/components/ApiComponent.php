@@ -68,11 +68,11 @@ class Api_ApiComponent extends AppComponent
             return $rtn;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Get the server version
+     * Get the server version.
      *
      * @return Server version in the form <major>.<minor>.<patch>
      */
@@ -82,7 +82,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Get the enabled modules on the server
+     * Get the enabled modules on the server.
      *
      * @return List of enabled modules on the server
      */
@@ -92,7 +92,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * List all available web api methods on the server
+     * List all available web api methods on the server.
      *
      * @return List of api method names and their corresponding documentation
      */
@@ -115,7 +115,7 @@ class Api_ApiComponent extends AppComponent
 
     /**
      * Get the server information including version, modules enabled,
-     * and available web api methods (names do not include the global prefix)
+     * and available web api methods (names do not include the global prefix).
      *
      * @return Server information
      */
@@ -125,7 +125,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Login as a user using a web api key
+     * Login as a user using a web api key.
      *
      * @param appname The application name
      * @param email The user email
@@ -138,7 +138,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Get a resource by its UUID
+     * Get a resource by its UUID.
      *
      * @param uuid Universal identifier for the resource
      * @param folder (Optional) If set, will return the folder instead of the community record
@@ -167,7 +167,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Returns a path of uuids from the root folder to the given node
+     * Returns a path of uuids from the root folder to the given node.
      *
      * @param uuid Unique identifier of the resource
      * @return An ordered list of uuids representing a path from the root node
@@ -178,7 +178,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Returns a path of uuids from the given node to the root node
+     * Returns a path of uuids from the given node to the root node.
      *
      * @param uuid Unique identifier of the resource
      * @return An ordered list of uuids representing a path to the root node
@@ -221,7 +221,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Search items for the given words
+     * Search items for the given words.
      *
      * @param token (Optional) Authentication token
      * @param search The search query
@@ -250,7 +250,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Search resources for the given words
+     * Search resources for the given words.
      *
      * @param token (Optional) Authentication token
      * @param search The search query
@@ -277,9 +277,8 @@ class Api_ApiComponent extends AppComponent
      * Create a link bitstream.
      *
      * @param token Authentication token.
-     * @param folderid
-    The id of the folder in which to create a new item that will
-     * contain the link. The new item will have the same name as
+     * @param folderid The id of the folder in which to create a new item that
+     * will contain the link. The new item will have the same name as
      * <b>url</b> unless <b>itemname</b> is supplied.
      * @param url The URL of the link you will create, will be used as the name
      * of the bitstream and of the item (unless <b>itemname</b> is
@@ -304,9 +303,9 @@ class Api_ApiComponent extends AppComponent
      *
      * @param token Authentication token.
      * @param itemid
-    The id of the item to upload into.
+     The id of the item to upload into.
      * @param folderid
-    The id of the folder to create a new item in and then upload to.
+     The id of the folder to create a new item in and then upload to.
      * The new item will have the same name as <b>filename</b> unless <b>itemname</b>
      * is supplied.
      * @param filename The filename of the file you will upload, will be used as the
@@ -335,7 +334,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Get the size of a partially completed upload
+     * Get the size of a partially completed upload.
      *
      * @param uploadtoken The upload token for the file
      * @return [offset] The size of the file currently on the server
@@ -371,7 +370,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Create a new community or update an existing one using the uuid
+     * Create a new community or update an existing one using the uuid.
      *
      * @param token Authentication token
      * @param name The community name
@@ -387,7 +386,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Get a community's information based on the id OR name
+     * Get a community's information based on the id OR name.
      *
      * @param token (Optional) Authentication token
      * @param id The id of the community
@@ -400,7 +399,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Get the immediate children of a community (non-recursive)
+     * Get the immediate children of a community (non-recursive).
      *
      * @param token (Optional) Authentication token
      * @param id The id of the community
@@ -412,7 +411,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Return a list of all communities visible to a user
+     * Return a list of all communities visible to a user.
      *
      * @param token (Optional) Authentication token
      * @return A list of all communities
@@ -423,7 +422,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Delete a community. Requires admin privileges on the community
+     * Delete a community. Requires admin privileges on the community.
      *
      * @param token Authentication token
      * @param id The id of the community
@@ -454,7 +453,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Get information about the folder
+     * Get information about the folder.
      *
      * @param token (Optional) Authentication token
      * @param id The id of the folder
@@ -466,7 +465,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Get the immediate children of a folder (non-recursive)
+     * Get the immediate children of a folder (non-recursive).
      *
      * @param token (Optional) Authentication token
      * @param id The id of the folder
@@ -478,7 +477,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Delete a folder. Requires admin privileges on the folder
+     * Delete a folder. Requires admin privileges on the folder.
      *
      * @param token Authentication token
      * @param id The id of the folder
@@ -489,7 +488,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Download a folder
+     * Download a folder.
      *
      * @param token (Optional) Authentication token
      * @param id The id of the folder
@@ -501,7 +500,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Move a folder to the destination folder
+     * Move a folder to the destination folder.
      *
      * @param token Authentication token
      * @param id The id of the folder
@@ -634,7 +633,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Check whether an item with the given name exists in the given folder
+     * Check whether an item with the given name exists in the given folder.
      *
      * @param parentid The id of the parent folder
      * @param name The name of the item
@@ -667,7 +666,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Get an item's information
+     * Get an item's information.
      *
      * @param token (Optional) Authentication token
      * @param id The item id
@@ -680,7 +679,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Download an item
+     * Download an item.
      *
      * @param token (Optional) Authentication token
      * @param id The id of the item
@@ -693,7 +692,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Delete an item
+     * Delete an item.
      *
      * @param token Authentication token
      * @param id The id of the item
@@ -704,7 +703,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Get the item's metadata
+     * Get the item's metadata.
      *
      * @param token (Optional) Authentication token
      * @param id The id of the item
@@ -718,7 +717,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Set a metadata field on an item
+     * Set a metadata field on an item.
      *
      * @param token Authentication token
      * @param itemId The id of the item
@@ -814,7 +813,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Duplicate an item to the destination folder
+     * Duplicate an item to the destination folder.
      *
      * @param token Authentication token
      * @param id The id of the item
@@ -827,7 +826,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Share an item to the destination folder
+     * Share an item to the destination folder.
      *
      * @param token Authentication token
      * @param id The id of the item
@@ -858,7 +857,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Move an item from the source folder to the desination folder
+     * Move an item from the source folder to the desination folder.
      *
      * @param token Authentication token
      * @param id The id of the item
@@ -872,7 +871,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Return all items
+     * Return all items.
      *
      * @param token (Optional) Authentication token
      * @param name The name of the item to search by
@@ -884,7 +883,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Return all items with a given name and parent folder id
+     * Return all items with a given name and parent folder id.
      *
      * @param token (Optional) Authentication token
      * @param name The name of the item to search by
@@ -897,7 +896,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Return all items with a given name and parent folder name
+     * Return all items with a given name and parent folder name.
      *
      * @param token (Optional) Authentication token
      * @param name The name of the item to search by
@@ -982,7 +981,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Return a list of top level folders belonging to the user
+     * Return a list of top level folders belonging to the user.
      *
      * @param token Authentication token
      * @return List of the user's top level folders
@@ -1038,7 +1037,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Fetch the information about a bitstream
+     * Fetch the information about a bitstream.
      *
      * @param token (Optional) Authentication token
      * @param id The id of the bitstream
@@ -1110,7 +1109,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * Get the metadata types stored in the system
+     * Get the metadata types stored in the system.
      */
     public function metadataTypesList()
     {
@@ -1208,7 +1207,7 @@ class Api_ApiComponent extends AppComponent
 
     /**
      * list the users for a group, requires admin privileges on the community
-     * associated with the group
+     * associated with the group.
      *
      * @param group_id id of group
      * @return array users => a list of user ids mapped to a two element list of
@@ -1224,7 +1223,7 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
-     * list the groups for a community, requires admin privileges on the community
+     * list the groups for a community, requires admin privileges on the community.
      *
      * @param community_id id of community
      * @return array groups => a list of group ids mapped to group names

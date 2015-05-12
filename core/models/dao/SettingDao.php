@@ -29,7 +29,6 @@
  * @method void setModule(string $module)
  * @method string getValue()
  * @method void setValue(string $value)
- * @package Core\DAO
  */
 class SettingDao extends AppDao
 {

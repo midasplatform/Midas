@@ -20,9 +20,7 @@
 
 require_once BASE_PATH.'/modules/batchmake/tests/controllers/ControllerTestCase.php';
 
-/**
- * KWBatchmakeComponent tests
- */
+/** KWBatchmakeComponent tests. */
 class Batchmake_KWBatchmakeComponentTest extends Batchmake_ControllerTestCase
 {
     protected $kwBatchmakeComponent;
@@ -74,38 +72,38 @@ class Batchmake_KWBatchmakeComponentTest extends Batchmake_ControllerTestCase
     }
 
     /**
-     * tests that all the bmScripts that have been entered for testing are found
+     * tests that all the bmScripts that have been entered for testing are found.
      */
     public function testGetBatchmakeScripts()
     {
         $foundTestScripts = $this->kwBatchmakeComponent->getBatchmakeScripts();
         sort($foundTestScripts);
         $expectedTestScripts = array(
-            "CompileEmptyOutput.bms",
-            "CompileReturnNonzero.bms",
-            "Compiles.bms",
-            "Myscript2.bms",
-            "noscripts.bms",
-            "anotherscript.bms",
-            "anotherscriptwitherrors.bms",
-            "bmmswitherrors.bms",
-            "cycle1.bms",
-            "cycle31.bms",
-            "cycle32.bms",
-            "cycle33.bms",
-            "nocycle1.bms",
-            "nocycle2.bms",
-            "nocycle3.bms",
-            "myscript.bms",
-            "PixelCounter.bms",
-            "CompileErrors.bms",
+            'CompileEmptyOutput.bms',
+            'CompileReturnNonzero.bms',
+            'Compiles.bms',
+            'Myscript2.bms',
+            'noscripts.bms',
+            'anotherscript.bms',
+            'anotherscriptwitherrors.bms',
+            'bmmswitherrors.bms',
+            'cycle1.bms',
+            'cycle31.bms',
+            'cycle32.bms',
+            'cycle33.bms',
+            'nocycle1.bms',
+            'nocycle2.bms',
+            'nocycle3.bms',
+            'myscript.bms',
+            'PixelCounter.bms',
+            'CompileErrors.bms',
         );
         sort($expectedTestScripts);
         $this->assertEquals($foundTestScripts, $expectedTestScripts);
     }
 
     /**
-     * helper function to clear out any files in a directory
+     * helper function to clear out any files in a directory.
      */
     protected function clearDirFiles($dirToClear)
     {
@@ -117,7 +115,7 @@ class Batchmake_KWBatchmakeComponentTest extends Batchmake_ControllerTestCase
     }
 
     /**
-     * helper function to run a test case
+     * helper function to run a test case.
      */
     protected function preparePipelineScriptsTestcase($workDir, $scriptName, $expectedSet)
     {
@@ -139,7 +137,7 @@ class Batchmake_KWBatchmakeComponentTest extends Batchmake_ControllerTestCase
         $this->assertEquals(
             $expectedSet,
             $foundScripts,
-            "Expected batchmake scripts not found rooted from ".$scriptName
+            'Expected batchmake scripts not found rooted from '.$scriptName
         );
 
         // add in '.' and '..'
@@ -151,12 +149,12 @@ class Batchmake_KWBatchmakeComponentTest extends Batchmake_ControllerTestCase
         $this->assertEquals(
             $expectedSet,
             $bmScriptsProcessed,
-            "Expected batchmake scripts not equal to those returned from processing ".$scriptName
+            'Expected batchmake scripts not equal to those returned from processing '.$scriptName
         );
     }
 
     /**
-     * helper function to run a test case that is expected to throw an exception
+     * helper function to run a test case that is expected to throw an exception.
      */
     protected function preparePipelineScriptsTestcaseException($workDir, $scriptName)
     {
@@ -180,16 +178,16 @@ class Batchmake_KWBatchmakeComponentTest extends Batchmake_ControllerTestCase
 
         $scriptName = 'anotherscript.bms';
         $expectedSet = array(
-            "myscript.bms",
-            "Myscript2.bms",
-            "anotherscript.bms",
-            "noscripts.bms",
-            "PixelCounter.bms",
+            'myscript.bms',
+            'Myscript2.bms',
+            'anotherscript.bms',
+            'noscripts.bms',
+            'PixelCounter.bms',
         );
         $this->preparePipelineScriptsTestcase($workDir, $scriptName, $expectedSet);
 
-        $scriptName = "noscripts.bms";
-        $expectedSet = array("noscripts.bms");
+        $scriptName = 'noscripts.bms';
+        $expectedSet = array('noscripts.bms');
         $this->preparePipelineScriptsTestcase($workDir, $scriptName, $expectedSet);
 
         // try symlinking all the batchmake files starting with anotherscriptwitherrors.bms
@@ -201,8 +199,8 @@ class Batchmake_KWBatchmakeComponentTest extends Batchmake_ControllerTestCase
 
         // check a script with no cycle,1->2, 1->3, 3->2
         // clear the directory of the symlinked files
-        $scriptName = "nocycle1.bms";
-        $expectedSet = array("nocycle1.bms", "nocycle2.bms", "nocycle3.bms");
+        $scriptName = 'nocycle1.bms';
+        $expectedSet = array('nocycle1.bms', 'nocycle2.bms', 'nocycle3.bms');
         $this->preparePipelineScriptsTestcase($workDir, $scriptName, $expectedSet);
 
         // expect an exception, as this script has a simple cycle
@@ -255,12 +253,12 @@ class Batchmake_KWBatchmakeComponentTest extends Batchmake_ControllerTestCase
         sort($foundBmms_anotherscript);
 
         $expectedBmms_anotherscript = array(
-            "AnotherApp.bmm",
-            "MyApp2.bmm",
-            "PixelCounter.bmm",
-            "TestApp1.bmm",
-            "TestApp2.bmm",
-            "myapp.bmm",
+            'AnotherApp.bmm',
+            'MyApp2.bmm',
+            'PixelCounter.bmm',
+            'TestApp1.bmm',
+            'TestApp2.bmm',
+            'myapp.bmm',
         );
         sort($expectedBmms_anotherscript);
 
@@ -268,12 +266,12 @@ class Batchmake_KWBatchmakeComponentTest extends Batchmake_ControllerTestCase
         $this->assertEquals(
             $processedBmms_anotherscript,
             $expectedBmms_anotherscript,
-            "BMMs: processed != expected, for anotherscript.bms"
+            'BMMs: processed != expected, for anotherscript.bms'
         );
         $this->assertEquals(
             $processedBmms_anotherscript,
             $foundBmms_anotherscript,
-            "BMMs: processed != found, for anotherscript.bms"
+            'BMMs: processed != found, for anotherscript.bms'
         );
     }
 

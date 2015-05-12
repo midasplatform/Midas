@@ -88,57 +88,54 @@ abstract class Validation_DashboardModelBase extends Validation_AppModel
     }
 
     /**
-     * Set the truth folder of the dashboard
+     * Set the truth folder of the dashboard.
      *
      * @param dashboard the target dashboard
      * @param folder the target folder
-     * @return void
      */
     public function setTruth($dashboard, $folder)
     {
         if (!$dashboard instanceof Validation_DashboardDao) {
-            throw new Zend_Exception("Should be a dasboard.");
+            throw new Zend_Exception('Should be a dasboard.');
         }
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
         $dashboard->setTruthfolderId($folder->getKey());
         parent::save($dashboard);
     }
 
     /**
-     * Set the training folder of the dashboard
+     * Set the training folder of the dashboard.
      *
      * @param dashboard the target dashboard
      * @param folder the target folder
-     * @return void
      */
     public function setTraining($dashboard, $folder)
     {
         if (!$dashboard instanceof Validation_DashboardDao) {
-            throw new Zend_Exception("Should be a dasboard.");
+            throw new Zend_Exception('Should be a dasboard.');
         }
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
         $dashboard->setTrainingfolderId($folder->getKey());
         parent::save($dashboard);
     }
 
     /**
-     * Set the testing folder of the dashboard
+     * Set the testing folder of the dashboard.
      *
      * @param dashboard the target dashboard
      * @param folder the target folder
-     * @return void
      */
     public function setTesting($dashboard, $folder)
     {
         if (!$dashboard instanceof Validation_DashboardDao) {
-            throw new Zend_Exception("Should be a dasboard.");
+            throw new Zend_Exception('Should be a dasboard.');
         }
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
         $dashboard->setTestingfolderId($folder->getKey());
         parent::save($dashboard);
@@ -149,12 +146,12 @@ abstract class Validation_DashboardModelBase extends Validation_AppModel
      * number of items and that the item names correspond.
      *
      * @param dashboard the target dashboard
-     * @return boolean true if valid, false if invalid
+     * @return bool true if valid, false if invalid
      */
     public function checkConsistency($dashboard)
     {
         if (!$dashboard instanceof Validation_DashboardDao) {
-            throw new Zend_Exception("Should be a dashboard.");
+            throw new Zend_Exception('Should be a dashboard.');
         }
         $testing = $dashboard->getTesting();
         $training = $dashboard->getTraining();

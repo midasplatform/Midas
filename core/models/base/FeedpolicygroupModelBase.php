@@ -55,22 +55,21 @@ abstract class FeedpolicygroupModelBase extends AppModel
     abstract public function deleteGroupPolicies($group);
 
     /** create a policy
-     *
      * @return FeedpolicygroupDao
      */
     public function createPolicy($group, $feed, $policy)
     {
         if (!$group instanceof GroupDao) {
-            throw new Zend_Exception("Should be a group.");
+            throw new Zend_Exception('Should be a group.');
         }
         if (!$feed instanceof FeedDao) {
-            throw new Zend_Exception("Should be a feedDao.");
+            throw new Zend_Exception('Should be a feedDao.');
         }
         if (!is_numeric($policy)) {
-            throw new Zend_Exception("Should be a number.");
+            throw new Zend_Exception('Should be a number.');
         }
         if (!$group->saved && !$feed->saved) {
-            throw new Zend_Exception("Save the daos first.");
+            throw new Zend_Exception('Save the daos first.');
         }
         if ($this->getPolicy($group, $feed) !== false) {
             $this->delete($this->getPolicy($group, $feed));

@@ -123,7 +123,7 @@ class Midas_Service_SendGrid_Mail implements Midas_Service_Mail
 
         try {
             $this->_client->send($email);
-        } catch(\SendGrid\Exception $exception) {
+        } catch (\SendGrid\Exception $exception) {
             throw new Midas_Service_SendGrid_Exception('Could not send mail');
         }
     }

@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic DAO class for the statistics module.
- *
- * @package Modules\Statistics\DAO
- */
+/** Generic DAO class for the statistics module. */
 class Statistics_AppDao extends MIDAS_GlobalDao
 {
     /** @var string */

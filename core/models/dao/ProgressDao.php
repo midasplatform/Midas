@@ -33,7 +33,6 @@
  * @method void setDateCreation(string $dateCreation)
  * @method string getLastUpdate()
  * @method void setLastUpdate(string $lastUpdate)
- * @package Core\DAO
  */
 class ProgressDao extends AppDao
 {

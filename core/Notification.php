@@ -20,11 +20,7 @@
 
 require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 
-/**
- * Generic notification manager class.
- *
- * @package Core\Notification
- */
+/** Generic notification manager class. */
 class Notification extends MIDAS_Notification
 {
     /** @var array */

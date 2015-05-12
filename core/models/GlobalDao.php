@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic DAO base class.
- *
- * @package Core\DAO
- */
+/** Generic DAO base class. */
 class MIDAS_GlobalDao
 {
     /** @var string */
@@ -46,7 +42,7 @@ class MIDAS_GlobalDao
         Zend_Registry::set('components', array());
         if (isset($this->_components)) {
             foreach ($this->_components as $component) {
-                $nameComponent = $component."Component";
+                $nameComponent = $component.'Component';
                 Zend_Loader::loadClass($nameComponent, BASE_PATH.'/core/controllers/components');
                 if (!isset($this->Component)) {
                     $this->Component = new stdClass();
@@ -66,7 +62,7 @@ class MIDAS_GlobalDao
     public function initValues($key)
     {
         if (!isset($key)) {
-            throw new Zend_Exception("Model ".$this->getModel()->_name.": key is not defined here.");
+            throw new Zend_Exception('Model '.$this->getModel()->_name.': key is not defined here.');
         }
         $values = $this->getModel()->getValues($key);
         if ($values == null) {
@@ -112,7 +108,7 @@ class MIDAS_GlobalDao
     public function getKey()
     {
         if ($this->_key == false) {
-            throw new Zend_Exception("Model  ".$this->getModel()->getName().": key is not defined here.");
+            throw new Zend_Exception('Model  '.$this->getModel()->getName().': key is not defined here.');
         }
         $key = $this->getModel()->getKey();
 
@@ -131,7 +127,7 @@ class MIDAS_GlobalDao
         $maindata = $this->getModel()->getMainData();
         if (!isset($maindata[$var])) {
             throw new Zend_Exception(
-                "Model ".$this->getModel()->getName().": var ".$var." is not defined here."
+                'Model '.$this->getModel()->getName().': var '.$var.' is not defined here.'
             );
         }
         if (method_exists($this, 'get'.ucfirst($var))) {
@@ -163,7 +159,7 @@ class MIDAS_GlobalDao
         $maindata = $this->getModel()->getMainData();
         if (!isset($maindata[$var])) {
             throw new Zend_Exception(
-                "Model ".$this->getModel()->getName().": var ".$var." is not defined here."
+                'Model '.$this->getModel()->getName().': var '.$var.' is not defined here.'
             );
         }
         if (method_exists($this, 'set'.ucfirst($var))) {
@@ -221,9 +217,9 @@ class MIDAS_GlobalDao
                 return $this->get($var);
             } else {
                 throw new Zend_Exception(
-                    "Dao:  ".__CLASS__.": method ".$method." doesn't exist (".strtolower(
+                    'Dao:  '.__CLASS__.': method '.$method." doesn't exist (".strtolower(
                         substr($method, 3)
-                    )." is not defined."
+                    ).' is not defined.'
                 );
             }
         } elseif (substr($method, 0, 3) == 'set') {
@@ -233,13 +229,13 @@ class MIDAS_GlobalDao
                 return $this->set($var, $params[0]);
             } else {
                 throw new Zend_Exception(
-                    "Dao:  ".__CLASS__.": method ".$method." doesn't exist (".strtolower(
+                    'Dao:  '.__CLASS__.': method '.$method." doesn't exist (".strtolower(
                         substr($method, 3)
-                    )." is not defined."
+                    ).' is not defined.'
                 );
             }
         } else {
-            throw new Zend_Exception("Dao:  ".__CLASS__.": method ".$method." doesn't exist.");
+            throw new Zend_Exception('Dao:  '.__CLASS__.': method '.$method." doesn't exist.");
         }
     }
 
@@ -251,7 +247,7 @@ class MIDAS_GlobalDao
      */
     private function _getRealName($var)
     {
-        $return = "";
+        $return = '';
         preg_match_all('/[A-Z][^A-Z]*/', $var, $results);
 
         foreach ($results[0] as $key => $r) {

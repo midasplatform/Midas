@@ -27,7 +27,6 @@
  * @method void setItemId(int $itemId)
  * @method int getRevisionId()
  * @method void setRevisionId(int $revisionId)
- * @package Modules\Dicomserver\DAO
  */
 class Dicomserver_RegistrationDao extends AppDao
 {

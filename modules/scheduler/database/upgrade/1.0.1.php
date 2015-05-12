@@ -24,7 +24,7 @@ class Scheduler_Upgrade_1_0_1 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query("
+        $this->db->query('
             CREATE TABLE IF NOT EXISTS `scheduler_job_log` (
                 `log_id` bigint(20) NOT NULL,
                 `job_id` bigint(20),
@@ -32,6 +32,6 @@ class Scheduler_Upgrade_1_0_1 extends MIDASUpgrade
                 `log` text,
                 PRIMARY KEY (`log_id`)
             ) DEFAULT CHARSET=utf8;
-        ");
+        ');
     }
 }

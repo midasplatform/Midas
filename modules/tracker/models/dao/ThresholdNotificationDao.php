@@ -37,7 +37,6 @@
  * @method void setTrend(Tracker_TrendDao $trendDao)
  * @method UserDao getRecipient()
  * @method void setRecipient(UserDao $recipient)
- * @package Modules\Tracker\DAO
  */
 class Tracker_ThresholdNotificationDao extends Tracker_AppDao
 {

@@ -45,7 +45,6 @@
  * @method void setUser(UserDao $user)
  * @method LicenseDao getLicense()
  * @method void setLicense(LicenseDao $license)
- * @package Core\DAO
  */
 class ItemRevisionDao extends AppDao
 {

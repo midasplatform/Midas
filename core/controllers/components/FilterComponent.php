@@ -22,7 +22,7 @@
 class FilterComponent extends AppComponent
 {
     /**
-     * Get a filter
+     * Get a filter.
      *
      * @param string $filter
      * @return mixed
@@ -32,7 +32,7 @@ class FilterComponent extends AppComponent
     {
         Zend_Loader::loadClass($filter, BASE_PATH.'/core/controllers/components/filters');
         if (!class_exists($filter)) {
-            throw new Zend_Exception("Unable to load filter: ".$filter);
+            throw new Zend_Exception('Unable to load filter: '.$filter);
         }
 
         return new $filter();

@@ -48,7 +48,7 @@ class Batchmake_ControllerTestCase extends ControllerTestCase
         // create a test batchmake setup in the temp dir
         // and initialize test data
         $tmpDir = $this->getTempDirectory();
-        $subDirs = array("batchmake", "tests");
+        $subDirs = array('batchmake', 'tests');
         KWUtils::createSubDirectories($tmpDir.'/', $subDirs);
         $configProps = array(
             MIDAS_BATCHMAKE_TMP_DIR_PROPERTY => $tmpDir.'/batchmake/tests/tmp',
@@ -110,7 +110,7 @@ class Batchmake_ControllerTestCase extends ControllerTestCase
     /**
      * looks in the srcDir, finds all files ending with $extension, and
      * symlinks them to targetDir if there isn't already a file there
-     * by that name
+     * by that name.
      *
      * @param string $srcDir
      * @param string $targetDir

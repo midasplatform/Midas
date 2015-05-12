@@ -20,7 +20,7 @@
 
 /**
  *  Assetstore Controller
- *  Assetstore Controller
+ *  Assetstore Controller.
  */
 class AssetstoreController extends AppController
 {
@@ -30,11 +30,11 @@ class AssetstoreController extends AppController
     public $_forms = array('Assetstore');
 
     /**
-     * Init Controller
+     * Init Controller.
      */
     public function init()
     {
-        $this->view->menu = "assetstore";
+        $this->view->menu = 'assetstore';
     }
 
     /** change default assetstore */
@@ -43,8 +43,8 @@ class AssetstoreController extends AppController
         $this->requireAdminPrivileges();
         $this->disableLayout();
         $this->disableView();
-        $change = $this->getParam("submitDefaultAssetstore");
-        $element = $this->getParam("element");
+        $change = $this->getParam('submitDefaultAssetstore');
+        $element = $this->getParam('element');
         if (isset($change) && isset($element)) {
             $assetstore = $this->Assetstore->load($element);
             if ($assetstore != false) {
@@ -63,7 +63,7 @@ class AssetstoreController extends AppController
         $this->requireAdminPrivileges();
         $this->disableLayout();
         $this->disableView();
-        $assetstoreId = $this->getParam("assetstoreId");
+        $assetstoreId = $this->getParam('assetstoreId');
         if (isset($assetstoreId)) {
             $assetstore = $this->Assetstore->load($assetstoreId);
             if ($assetstore != false) {
@@ -82,9 +82,9 @@ class AssetstoreController extends AppController
         $this->requireAdminPrivileges();
         $this->disableLayout();
         $this->disableView();
-        $assetstoreId = $this->getParam("assetstoreId");
-        $assetstoreName = $this->getParam("assetstoreName");
-        $assetstorePath = $this->getParam("assetstorePath");
+        $assetstoreId = $this->getParam('assetstoreId');
+        $assetstoreName = $this->getParam('assetstoreName');
+        $assetstorePath = $this->getParam('assetstorePath');
         if (!is_dir($assetstorePath)) {
             echo JsonComponent::encode(array(false, 'The path provided is not a valid directory'));
 
@@ -117,7 +117,7 @@ class AssetstoreController extends AppController
     }
 
     /**
-     * called from ajax
+     * called from ajax.
      */
     public function addAction()
     {
@@ -183,7 +183,7 @@ class AssetstoreController extends AppController
     }
 
     /**
-     * Prompt an admin user to move files from one assetstore to another
+     * Prompt an admin user to move files from one assetstore to another.
      *
      * @param srcAssetstoreId The assetstore id to move files from
      */

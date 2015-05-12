@@ -47,7 +47,7 @@ class ErrorController extends AppController
         $this->_error = $error;
 
         $this->_environment = $environment;
-        $this->view->setScriptPath(BASE_PATH."/core/views");
+        $this->view->setScriptPath(BASE_PATH.'/core/views');
     }
 
     /** Error Action */
@@ -62,7 +62,7 @@ class ErrorController extends AppController
 
         $controller = $error->request->getParams();
         $controller = $controller['controller'];
-        if ($controller != 'install' && !file_exists(LOCAL_CONFIGS_PATH."/database.local.ini")
+        if ($controller != 'install' && !file_exists(LOCAL_CONFIGS_PATH.'/database.local.ini')
         ) {
             $this->view->message = "Midas is not installed. Please go the <a href = '".$this->view->webroot."/install'> install page</a>.";
 

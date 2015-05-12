@@ -31,7 +31,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
     }
 
     /**
-     * STUB: Test the index action
+     * STUB: Test the index action.
      */
     public function testIndexAction()
     {
@@ -41,7 +41,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
     }
 
     /**
-     * STUB: Test view action
+     * STUB: Test view action.
      */
     public function testViewAction()
     {
@@ -52,7 +52,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
     }
 
     /**
-     * STUB: Test delete action
+     * STUB: Test delete action.
      */
     public function testDeleteAction()
     {
@@ -74,7 +74,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test manage action
+     * Test manage action.
      */
     public function testManageAction()
     {
@@ -105,8 +105,8 @@ class Core_CommunityControllerTest extends ControllerTestCase
         $this->resetAll();
         $this->request->setMethod('POST');
         $this->params['communityId'] = $comm->getKey();
-        $newName = "newname";
-        $newDesc = "newdesc";
+        $newName = 'newname';
+        $newDesc = 'newdesc';
         $this->params['name'] = $newName;
         $this->params['description'] = $newDesc;
         $this->params['modifyInfo'] = 'true';
@@ -153,7 +153,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test promote dialog and promote action
+     * Test promote dialog and promote action.
      */
     public function testPromote()
     {
@@ -280,7 +280,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test the community invitation dialog
+     * Test the community invitation dialog.
      */
     public function testInvitationAction()
     {
@@ -311,7 +311,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test select group dialog
+     * Test select group dialog.
      */
     public function testSelectgroupAction()
     {
@@ -353,7 +353,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test addusertogroup action
+     * Test addusertogroup action.
      */
     public function testAddusertogroupAction()
     {
@@ -380,7 +380,7 @@ class Core_CommunityControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test sendinvitation action
+     * Test sendinvitation action.
      */
     public function testSendinvitationAction()
     {

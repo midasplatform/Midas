@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic DAO class for the example module.
- *
- * @package Modules\Example\DAO
- */
+/** Generic DAO class for the example module. */
 class Example_AppDao extends MIDAS_GlobalDao
 {
     /** @var string */

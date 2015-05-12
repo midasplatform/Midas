@@ -20,13 +20,11 @@
 
 require_once BASE_PATH.'/core/models/base/FolderpolicyuserModelBase.php';
 
-/**
- * Pdo Model
- */
+/** Pdo Model. */
 class FolderpolicyuserModel extends FolderpolicyuserModelBase
 {
     /**
-     * Get policy
+     * Get policy.
      *
      * @param UserDao $user
      * @param FolderDao $folder
@@ -36,10 +34,10 @@ class FolderpolicyuserModel extends FolderpolicyuserModelBase
     public function getPolicy($user, $folder)
     {
         if (!$user instanceof UserDao) {
-            throw new Zend_Exception("Should be a user.");
+            throw new Zend_Exception('Should be a user.');
         }
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
 
         return $this->initDao(

@@ -26,8 +26,7 @@ class Communityagreement_CommunityController extends Communityagreement_AppContr
     public $_moduleForms = array('Community');
 
     /** community agreement tab
-     *
-     * Shown in the community manage page when the 'community agreement' module is enabled
+     * Shown in the community manage page when the 'community agreement' module is enabled.
      *
      * @throws Zend_Exception on invalid communityId
      */
@@ -35,9 +34,9 @@ class Communityagreement_CommunityController extends Communityagreement_AppContr
     {
         $this->disableLayout();
 
-        $communityId = $this->getParam("communityId");
+        $communityId = $this->getParam('communityId');
         if (!isset($communityId) || !is_numeric($communityId)) {
-            throw new Zend_Exception("Community ID should be a number");
+            throw new Zend_Exception('Community ID should be a number');
         }
         $community = $this->Community->load($communityId);
         if (!$community) {
@@ -87,7 +86,7 @@ class Communityagreement_CommunityController extends Communityagreement_AppContr
     }
 
     /**
-     * community agreement dialog
+     * community agreement dialog.
      *
      * When a user wants to read the community agreement before joining the community, the "agreement" link will be clicked
      * and this dialog will be shown
@@ -100,9 +99,9 @@ class Communityagreement_CommunityController extends Communityagreement_AppContr
             $this->_helper->layout->disableLayout();
         }
 
-        $communityId = $this->getParam("communityId");
+        $communityId = $this->getParam('communityId');
         if (!isset($communityId) || !is_numeric($communityId)) {
-            throw new Zend_Exception("Community ID should be a number");
+            throw new Zend_Exception('Community ID should be a number');
         }
 
         $agreementDao = $this->Communityagreement_Agreement->getByCommunityId($communityId);

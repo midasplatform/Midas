@@ -234,7 +234,7 @@ abstract class UserModelBase extends AppModel
     public function incrementViewCount($userDao)
     {
         if (!$userDao instanceof UserDao) {
-            throw new Zend_Exception("Error in param userDao when incrementing view count.");
+            throw new Zend_Exception('Error in param userDao when incrementing view count.');
         }
         $user = Zend_Registry::get('userSession');
         if (isset($user)) {
@@ -250,7 +250,7 @@ abstract class UserModelBase extends AppModel
 
     /**
      * Users who existed prior to the great salting and hashing switch will be
-     * transparently converted to the new system the next time they log in
+     * transparently converted to the new system the next time they log in.
      */
     public function convertLegacyPasswordHash($userDao, $password)
     {
@@ -268,7 +268,7 @@ abstract class UserModelBase extends AppModel
     }
 
     /**
-     * Change a user's password by generating a new salt and re-hashing
+     * Change a user's password by generating a new salt and re-hashing.
      */
     public function changePassword($userDao, $password)
     {
@@ -292,12 +292,12 @@ abstract class UserModelBase extends AppModel
                 $lastname
             ) || empty($lastname) || !is_numeric($admin)
         ) {
-            throw new Zend_Exception("Error in Parameters when creating a user.");
+            throw new Zend_Exception('Error in Parameters when creating a user.');
         }
 
         // Check if the user already exists based on the email address
         if ($this->getByEmail($email) !== false) {
-            throw new Zend_Exception("User already exists.");
+            throw new Zend_Exception('User already exists.');
         }
 
         /** @var UserDao $userDao */
@@ -373,7 +373,7 @@ abstract class UserModelBase extends AppModel
         $userDao->setFolderId($folderGlobal->getKey());
 
         $this->save($userDao);
-        $this->getLogger()->debug(__METHOD__." Registration: ".$userDao->getFullName()." ".$userDao->getKey());
+        $this->getLogger()->debug(__METHOD__.' Registration: '.$userDao->getFullName().' '.$userDao->getKey());
 
         $feed = $feedModel->createFeed($userDao, MIDAS_FEED_CREATE_USER, $userDao);
         $feedpolicygroupModel->createPolicy($anonymousGroup, $feed, MIDAS_POLICY_READ);
@@ -400,7 +400,7 @@ abstract class UserModelBase extends AppModel
     {
         $url = 'https://secure.gravatar.com/avatar/';
         $url .= md5(strtolower(trim($email)));
-        $url .= "?s=".$s."&d=".$d."&r=".$r;
+        $url .= '?s='.$s.'&d='.$d.'&r='.$r;
         if ($img) {
             $url = '<img src="'.$url.'"';
             foreach ($atts as $key => $val) {

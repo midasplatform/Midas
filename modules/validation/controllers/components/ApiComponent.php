@@ -38,7 +38,7 @@ class Validation_ApiComponent extends AppComponent
     }
 
     /**
-     * Get the name of the requested dashboard
+     * Get the name of the requested dashboard.
      *
      * @param dashboard_id the id of the dashboard
      * @return the name of the dashboard
@@ -68,7 +68,7 @@ class Validation_ApiComponent extends AppComponent
     }
 
     /**
-     * Get all available validation dashboards
+     * Get all available validation dashboards.
      *
      * @return an array of validation dashboards
      */
@@ -95,7 +95,7 @@ class Validation_ApiComponent extends AppComponent
     }
 
     /**
-     * Create a dashboard with the given name and description
+     * Create a dashboard with the given name and description.
      *
      * @param name the name of the new dashboard
      * @param description the name of the new dashboard
@@ -126,7 +126,7 @@ class Validation_ApiComponent extends AppComponent
     }
 
     /**
-     * Associate a folder as testing data
+     * Associate a folder as testing data.
      *
      * @param dashboard_id the id of the target dashboard
      * @param folder_id the id of the testing folder
@@ -161,7 +161,7 @@ class Validation_ApiComponent extends AppComponent
     }
 
     /**
-     * Associate a folder as truth data
+     * Associate a folder as truth data.
      *
      * @param dashboard_id the id of the target dashboard
      * @param folder_id the id of the truth folder
@@ -196,7 +196,7 @@ class Validation_ApiComponent extends AppComponent
     }
 
     /**
-     * Associate a folder as training data
+     * Associate a folder as training data.
      *
      * @param dashboard_id the id of the target dashboard
      * @param folder_id the id of the testing folder
@@ -231,7 +231,7 @@ class Validation_ApiComponent extends AppComponent
     }
 
     /**
-     * Associate a folder as a result set
+     * Associate a folder as a result set.
      *
      * @param dashboard_id the id of the target dashboard
      * @param folder_id the id of the result folder
@@ -266,7 +266,7 @@ class Validation_ApiComponent extends AppComponent
     }
 
     /**
-     * Remove a result folder
+     * Remove a result folder.
      *
      * @param dashboard_id the id of the target dashboard
      * @param folder_id the id of the result folder to be removed
@@ -308,7 +308,7 @@ class Validation_ApiComponent extends AppComponent
     }
 
     /**
-     * Get the result folders associated with a dashboard
+     * Get the result folders associated with a dashboard.
      *
      * @param dashboard_id the id of the target dashboard
      * @return and array of folder_id's corresponding to result folders assigned
@@ -336,7 +336,7 @@ class Validation_ApiComponent extends AppComponent
     }
 
     /**
-     * Set a single scalar result value
+     * Set a single scalar result value.
      *
      * @param dashboard_id the id of the target dashboard
      * @param folder_id the id of the target result folder
@@ -400,7 +400,7 @@ class Validation_ApiComponent extends AppComponent
     }
 
     /**
-     * Get a single scalar result value
+     * Get a single scalar result value.
      *
      * @param dashboard_id the id of the target dashboard
      * @param folder_id the id of the target result folder
@@ -446,7 +446,7 @@ class Validation_ApiComponent extends AppComponent
     }
 
     /**
-     * Get the scalar results associated with one result folder
+     * Get the scalar results associated with one result folder.
      *
      * @param dashboard_id the id of the target dashboard
      * @param folder_id the id of the target result folder
@@ -487,7 +487,7 @@ class Validation_ApiComponent extends AppComponent
     }
 
     /**
-     * Get all scalar results associated with a dashboard
+     * Get all scalar results associated with a dashboard.
      *
      * @param dashboard_id the id of the target dashboard
      * @return the scalar results for the specified dashboard

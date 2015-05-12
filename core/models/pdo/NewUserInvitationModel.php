@@ -20,9 +20,7 @@
 
 require_once BASE_PATH.'/core/models/base/NewUserInvitationModelBase.php';
 
-/**
- * Pdo Model for a new user invitation
- */
+/** Pdo Model for a new user invitation. */
 class NewUserInvitationModel extends NewUserInvitationModelBase
 {
     /**

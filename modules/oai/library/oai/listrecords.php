@@ -149,8 +149,8 @@ if (count($items) - $deliveredrecords > $MAXRECORDS) {
     $token = get_token();
 
     // Check that the tokens directory exists
-    if (!file_exists($MidasTempDirectory."/tokens")) {
-        mkdir($MidasTempDirectory."/tokens");
+    if (!file_exists($MidasTempDirectory.'/tokens')) {
+        mkdir($MidasTempDirectory.'/tokens');
     }
 
     $fp = fopen($MidasTempDirectory."/tokens/re-$token", 'w');

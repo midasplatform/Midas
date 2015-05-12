@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- *  Web API controller for the User resource
- */
+/** Web API controller for the User resource. */
 class Rest_UserController extends ApiController
 {
     /**

@@ -36,7 +36,7 @@ class Oauth_Notification extends MIDAS_Notification
     }
 
     /**
-     * Remove expired auth codes and access tokens from the database
+     * Remove expired auth codes and access tokens from the database.
      */
     public function cleanExpired()
     {
@@ -45,7 +45,7 @@ class Oauth_Notification extends MIDAS_Notification
     }
 
     /**
-     * Set the required permissions in global registry for use later
+     * Set the required permissions in global registry for use later.
      */
     public function requirePermissions($params)
     {

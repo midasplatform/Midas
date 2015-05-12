@@ -20,13 +20,11 @@
 
 require_once BASE_PATH.'/core/models/base/FeedpolicygroupModelBase.php';
 
-/**
- * Pdo Model
- */
+/** Pdo Model. */
 class FeedpolicygroupModel extends FeedpolicygroupModelBase
 {
     /**
-     * Get policy
+     * Get policy.
      *
      * @param GroupDao $group
      * @param FeedDao $feed
@@ -36,10 +34,10 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
     public function getPolicy($group, $feed)
     {
         if (!$group instanceof GroupDao) {
-            throw new Zend_Exception("Should be a group.");
+            throw new Zend_Exception('Should be a group.');
         }
         if (!$feed instanceof FeedDao) {
-            throw new Zend_Exception("Should be a feed.");
+            throw new Zend_Exception('Should be a feed.');
         }
 
         return $this->initDao(
@@ -54,7 +52,7 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
     }
 
     /**
-     * Deletes all feedpolicygroup rows associated with the passed in group
+     * Deletes all feedpolicygroup rows associated with the passed in group.
      *
      * @param GroupDao $group
      * @throws Zend_Exception
@@ -62,7 +60,7 @@ class FeedpolicygroupModel extends FeedpolicygroupModelBase
     public function deleteGroupPolicies($group)
     {
         if (!$group instanceof GroupDao) {
-            throw new Zend_Exception("Should be a group.");
+            throw new Zend_Exception('Should be a group.');
         }
         $clause = 'group_id = '.$group->getKey();
         Zend_Registry::get('dbAdapter')->delete($this->_name, $clause);

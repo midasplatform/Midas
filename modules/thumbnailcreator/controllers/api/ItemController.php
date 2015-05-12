@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- *  Web API controller for the Item resource (in thumbnailcreator module)
- */
+/** Web API controller for the Item resource (in thumbnailcreator module). */
 class Apithumbnailcreator_ItemController extends ApiController
 {
     /**

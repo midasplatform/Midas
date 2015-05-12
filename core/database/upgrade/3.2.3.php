@@ -27,12 +27,12 @@ class Upgrade_3_2_3 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query("ALTER TABLE `bitstream` ADD KEY (`checksum`);");
+        $this->db->query('ALTER TABLE `bitstream` ADD KEY (`checksum`);');
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $this->db->query("CREATE INDEX bitstream_idx_checksum ON bitstream (checksum);");
+        $this->db->query('CREATE INDEX bitstream_idx_checksum ON bitstream (checksum);');
     }
 }

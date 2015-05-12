@@ -74,7 +74,6 @@ class Mail_Notification extends MIDAS_Notification
             }
 
             $transport = new Zend_Mail_Transport_Smtp($host, $config);
-
         } else {
             $transport = new Zend_Mail_Transport_Sendmail();
         }

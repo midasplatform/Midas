@@ -42,7 +42,7 @@ class Keyfiles_Notification extends MIDAS_Notification
         $item = $params['item'];
         $revisions = $item->getRevisions();
         if (count($revisions) === 0) {
-            return null;
+            return;
         }
         $webroot = Zend_Controller_Front::getInstance()->getBaseUrl();
 

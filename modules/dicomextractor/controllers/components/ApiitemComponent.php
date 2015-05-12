@@ -22,7 +22,7 @@
 class Dicomextractor_ApiitemComponent extends AppComponent
 {
     /**
-     * Extract the dicom metadata from a revision
+     * Extract the dicom metadata from a revision.
      *
      * @path /dicomextractor/item/{id}
      * @http PUT
@@ -39,7 +39,7 @@ class Dicomextractor_ApiitemComponent extends AppComponent
         $apihelperComponent->validateParams($args, array('id'));
 
         /** @var ItemModel $itemModel */
-        $itemModel = MidasLoader::loadModel("Item");
+        $itemModel = MidasLoader::loadModel('Item');
 
         /** @var AuthenticationComponent $authComponent */
         $authComponent = MidasLoader::loadComponent('Authentication');

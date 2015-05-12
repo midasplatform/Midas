@@ -20,11 +20,7 @@
 
 require_once BASE_PATH.'/modules/tracker/models/base/ThresholdNotificationModelBase.php';
 
-/**
- * Threshold notification model for the tracker module.
- *
- * @package Modules\Tracker\Model
- */
+/** Threshold notification model for the tracker module. */
 class Tracker_ThresholdNotificationModel extends Tracker_ThresholdNotificationModelBase
 {
     /**

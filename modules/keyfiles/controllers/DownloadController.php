@@ -21,10 +21,10 @@
 /** Controller for downloading key files */
 class Keyfiles_DownloadController extends Keyfiles_AppController
 {
-    var $_models = array('Bitstream', 'Folder', 'Item');
+    public $_models = array('Bitstream', 'Folder', 'Item');
 
     /**
-     * Download all key files for the head revision of an item
+     * Download all key files for the head revision of an item.
      */
     public function itemAction()
     {
@@ -62,7 +62,7 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
     }
 
     /**
-     * Download the key file for a specific bitstream
+     * Download the key file for a specific bitstream.
      */
     public function bitstreamAction()
     {
@@ -103,7 +103,7 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
     }
 
     /**
-     * Kill the whole ob stack (Zend uses double nested output buffers)
+     * Kill the whole ob stack (Zend uses double nested output buffers).
      */
     private function _emptyOutputBuffer()
     {
@@ -113,7 +113,7 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
     }
 
     /**
-     * Download key files for a selected group of folders and/or items
+     * Download key files for a selected group of folders and/or items.
      * @param items List of item id's separated by -
      * @param folders List of folder id's separated by -
      */
@@ -184,7 +184,7 @@ class Keyfiles_DownloadController extends Keyfiles_AppController
     /**
      * Output callback override function for use in FolderModel::zipStream.
      * Overrides the default behavior of streaming the file, and instead just
-     * adds a file whose contents are the bitstream's checksum
+     * adds a file whose contents are the bitstream's checksum.
      */
     public function outputCallback(&$zip, $path, $item, $bitstream, $count)
     {

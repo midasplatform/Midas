@@ -34,28 +34,28 @@ class Upgrade_3_2_6 extends MIDASUpgrade
         try {
             $this->assetstore = $assetStoreModel->getDefault();
         } catch (Exception $e) {
-        	// DO NOTHING
+            // DO NOTHING
         }
     }
 
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query("ALTER TABLE `item` ADD COLUMN `thumbnail_id` bigint(20) NULL DEFAULT NULL;");
+        $this->db->query('ALTER TABLE `item` ADD COLUMN `thumbnail_id` bigint(20) NULL DEFAULT NULL;');
 
         $this->_moveAllThumbnails();
 
-        $this->db->query("ALTER TABLE `item` DROP `thumbnail`;");
+        $this->db->query('ALTER TABLE `item` DROP `thumbnail`;');
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $this->db->query("ALTER TABLE item ADD COLUMN thumbnail_id bigint NULL DEFAULT NULL;");
+        $this->db->query('ALTER TABLE item ADD COLUMN thumbnail_id bigint NULL DEFAULT NULL;');
 
         $this->_moveAllThumbnails();
 
-        $this->db->query("ALTER TABLE item DROP COLUMN thumbnail;");
+        $this->db->query('ALTER TABLE item DROP COLUMN thumbnail;');
     }
 
     private function _moveAllThumbnails()
@@ -84,7 +84,7 @@ class Upgrade_3_2_6 extends MIDASUpgrade
         $oldpath = BASE_PATH.'/'.$thumbnail;
         if (!file_exists($oldpath)) { //thumbnail file no longer exists, so we remove its reference
 
-            return null;
+            return;
         }
 
         $bitstreamDao = $bitstreamModel->createThumbnail($this->assetstore, $oldpath);

@@ -29,7 +29,7 @@ class Zend_View_Helper_T extends Zend_View_Helper_Abstract
      */
     public function t($text)
     {
-        Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
+        Zend_Loader::loadClass('InternationalizationComponent', BASE_PATH.'/core/controllers/components');
 
         return htmlspecialchars(InternationalizationComponent::translate($text), ENT_QUOTES, 'UTF-8');
     }

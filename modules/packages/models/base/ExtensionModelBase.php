@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Packages Extension Model Base
- */
+/** Packages Extension Model Base. */
 abstract class Packages_ExtensionModelBase extends Packages_AppModel
 {
     /** constructor */
@@ -102,7 +100,7 @@ abstract class Packages_ExtensionModelBase extends Packages_AppModel
             )
         );
         if ($results['total'] == 0) {
-            return null;
+            return;
         } else {
             return $results['extensions'][0];
         }

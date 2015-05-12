@@ -22,8 +22,6 @@
  * Static methods used to load model, component, and DAO objects. Handles
  * importing the required file and instantiating the object of the desired
  * type.
- *
- * @package Core
  */
 class MidasLoader
 {
@@ -52,7 +50,7 @@ class MidasLoader
                 )) {
                     include_once BASE_PATH.'/privateModules/'.$module.'/controllers/components/'.$component.'Component.php';
                 } else {
-                    throw new Zend_Exception("A component named ".$component." doesn't "."exist.");
+                    throw new Zend_Exception('A component named '.$component." doesn't ".'exist.');
                 }
 
                 $name = ucfirst($module).'_'.$component.'Component';
@@ -104,7 +102,7 @@ class MidasLoader
                 )) {
                     include_once BASE_PATH.'/privateModules/'.$module.'/models/pdo/'.$model.'Model.php';
                 } else {
-                    throw new Zend_Exception("Unable to find model file ".$model);
+                    throw new Zend_Exception('Unable to find model file '.$model);
                 }
 
                 $name = ucfirst($module).'_'.$model.'Model';
@@ -162,7 +160,7 @@ class MidasLoader
             } elseif (file_exists(BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name.'.php')) {
                 require_once BASE_PATH.'/privateModules/'.$module.'/models/dao/'.$name.'.php';
             } else {
-                throw new Zend_Exception("Unable to find dao file ".$name);
+                throw new Zend_Exception('Unable to find dao file '.$name);
             }
 
             $classname = ucfirst($module).'_'.$name;

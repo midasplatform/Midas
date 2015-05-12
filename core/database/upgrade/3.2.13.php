@@ -24,7 +24,7 @@ class Upgrade_3_2_13 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query("
+        $this->db->query('
             CREATE TABLE IF NOT EXISTS `api_userapi` (
                 `userapi_id` bigint(20) NOT NULL AUTO_INCREMENT,
                 `user_id` bigint(20) NOT NULL,
@@ -34,10 +34,10 @@ class Upgrade_3_2_13 extends MIDASUpgrade
                 `creation_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (`userapi_id`)
             ) DEFAULT CHARSET=utf8;
-        ");
-        $this->db->query("RENAME TABLE `api_userapi` to `userapi`;");
+        ');
+        $this->db->query('RENAME TABLE `api_userapi` to `userapi`;');
 
-        $this->db->query("
+        $this->db->query('
             CREATE TABLE IF NOT EXISTS `api_token` (
                 `token_id` bigint(20) NOT NULL AUTO_INCREMENT,
                 `userapi_id` bigint(20) NOT NULL,
@@ -45,14 +45,14 @@ class Upgrade_3_2_13 extends MIDASUpgrade
                 `expiration_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (`token_id`)
             ) DEFAULT CHARSET=utf8;
-        ");
-        $this->db->query("RENAME TABLE `api_token` to `token`;");
+        ');
+        $this->db->query('RENAME TABLE `api_token` to `token`;');
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $this->db->query("
+        $this->db->query('
             CREATE TABLE IF NOT EXISTS api_userapi (
                 userapi_id serial PRIMARY KEY,
                 user_id bigint NOT NULL,
@@ -61,21 +61,21 @@ class Upgrade_3_2_13 extends MIDASUpgrade
                 token_expiration_time integer NOT NULL,
                 creation_date timestamp without time zone
             );
-        ");
-        $this->db->query("ALTER TABLE api_userapi_userapi_id_seq RENAME TO userapi_userapi_id_seq;");
-        $this->db->query("ALTER TABLE api_userapi RENAME TO userapi;");
-        $this->db->query("ALTER INDEX api_userapi_pkey RENAME TO userapi_pkey;");
-        $this->db->query("
+        ');
+        $this->db->query('ALTER TABLE api_userapi_userapi_id_seq RENAME TO userapi_userapi_id_seq;');
+        $this->db->query('ALTER TABLE api_userapi RENAME TO userapi;');
+        $this->db->query('ALTER INDEX api_userapi_pkey RENAME TO userapi_pkey;');
+        $this->db->query('
             CREATE TABLE IF NOT EXISTS api_token (
                 token_id serial PRIMARY KEY,
                 userapi_id bigint NOT NULL,
                 token character varying(40) NOT NULL,
                 expiration_date timestamp without time zone DEFAULT CURRENT_TIMESTAMP
             );
-        ");
-        $this->db->query("ALTER TABLE api_token_token_id_seq RENAME TO token_token_id_seq;");
-        $this->db->query("ALTER TABLE api_token RENAME TO token;");
-        $this->db->query("ALTER INDEX api_token_pkey RENAME TO token_pkey;");
+        ');
+        $this->db->query('ALTER TABLE api_token_token_id_seq RENAME TO token_token_id_seq;');
+        $this->db->query('ALTER TABLE api_token RENAME TO token;');
+        $this->db->query('ALTER INDEX api_token_pkey RENAME TO token_pkey;');
     }
 
     /** Post database upgrade. */

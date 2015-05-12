@@ -20,9 +20,7 @@
 
 require_once BASE_PATH.'/core/models/base/ItemModelBase.php';
 
-/**
- * Pdo Model
- */
+/** Pdo Model. */
 class ItemModel extends ItemModelBase
 {
     /**
@@ -39,7 +37,7 @@ class ItemModel extends ItemModelBase
     public function getItemsFromSearch($searchterm, $userDao, $limit = 14, $group = true, $order = 'view')
     {
         if ($userDao != null && !$userDao instanceof UserDao) {
-            throw new Zend_Exception("Should be a user.");
+            throw new Zend_Exception('Should be a user.');
         }
 
         // Allow modules to handle special search queries.  If any module accepts the query given its format,
@@ -100,7 +98,7 @@ class ItemModel extends ItemModelBase
     }
 
     /**
-     * Get all
+     * Get all.
      *
      * @return array
      * @throws Zend_Exception
@@ -117,7 +115,7 @@ class ItemModel extends ItemModelBase
     }
 
     /**
-     * Get the total number of items in the database
+     * Get the total number of items in the database.
      *
      * @return int
      */
@@ -129,7 +127,7 @@ class ItemModel extends ItemModelBase
     }
 
     /**
-     * get by UUID
+     * get by UUID.
      *
      * @param string $uuid
      * @return false|ItemDao
@@ -144,7 +142,7 @@ class ItemModel extends ItemModelBase
     }
 
     /**
-     * Get all items with the name provided
+     * Get all items with the name provided.
      *
      * @param string $name
      * @return array
@@ -162,7 +160,7 @@ class ItemModel extends ItemModelBase
     }
 
     /**
-     * Get all items with the given name and parent folder id
+     * Get all items with the given name and parent folder id.
      *
      * @param string $name
      * @param int $folderId
@@ -189,7 +187,7 @@ class ItemModel extends ItemModelBase
     }
 
     /**
-     * Get all items with the given name and parent folder name
+     * Get all items with the given name and parent folder name.
      *
      * @param string $name
      * @param string $folderName
@@ -243,7 +241,7 @@ class ItemModel extends ItemModelBase
     }
 
     /**
-     * Get items shared to the given community
+     * Get items shared to the given community.
      *
      * @param CommunityDao $communityDao
      * @param int $limit
@@ -274,7 +272,7 @@ class ItemModel extends ItemModelBase
     }
 
     /**
-     * Get the most popular items
+     * Get the most popular items.
      *
      * @param UserDao $userDao
      * @param int $limit
@@ -298,7 +296,7 @@ class ItemModel extends ItemModelBase
     }
 
     /**
-     * Get items owned by the given user
+     * Get items owned by the given user.
      *
      * @param UserDao $userDao
      * @param int $limit
@@ -332,7 +330,7 @@ class ItemModel extends ItemModelBase
     }
 
     /**
-     * Get items shared to the given user
+     * Get items shared to the given user.
      *
      * @param UserDao $userDao
      * @param int $limit
@@ -366,7 +364,7 @@ class ItemModel extends ItemModelBase
     }
 
     /**
-     * Delete an item
+     * Delete an item.
      *
      * @param ItemDao $itemdao
      * @throws Zend_Exception
@@ -374,7 +372,7 @@ class ItemModel extends ItemModelBase
     public function delete($itemdao)
     {
         if (!$itemdao instanceof ItemDao) {
-            throw new Zend_Exception("Error in parameter itemdao when deleting an Item.");
+            throw new Zend_Exception('Error in parameter itemdao when deleting an Item.');
         }
 
         $deleteType = array(MIDAS_FEED_CREATE_ITEM, MIDAS_FEED_CREATE_LINK_ITEM);
@@ -487,7 +485,7 @@ class ItemModel extends ItemModelBase
     }
 
     /**
-     * Check if the policy is valid
+     * Check if the policy is valid.
      *
      * @param ItemDao $itemdao
      * @param null|UserDao $userDao
@@ -498,12 +496,12 @@ class ItemModel extends ItemModelBase
     public function policyCheck($itemdao, $userDao = null, $policy = 0)
     {
         if (!$itemdao instanceof ItemDao || !is_numeric($policy)) {
-            throw new Zend_Exception("Error in parameter itemdao or policy when checking Item policy.");
+            throw new Zend_Exception('Error in parameter itemdao or policy when checking Item policy.');
         }
         if ($userDao == null) {
             $userId = -1;
         } elseif (!$userDao instanceof UserDao) {
-            throw new Zend_Exception("Should be an user.");
+            throw new Zend_Exception('Should be an user.');
         } else {
             $userId = $userDao->getUserId();
             if ($userDao->isAdmin()) {
@@ -559,7 +557,7 @@ class ItemModel extends ItemModelBase
         if ($userDao == null) {
             $userId = -1;
         } elseif (!$userDao instanceof UserDao) {
-            throw new Zend_Exception("Should be an user.");
+            throw new Zend_Exception('Should be an user.');
         } else {
             $userId = $userDao->getUserId();
         }
@@ -647,7 +645,7 @@ class ItemModel extends ItemModelBase
     public function getLastRevision($itemdao)
     {
         if (!$itemdao instanceof ItemDao || !$itemdao->saved) {
-            throw new Zend_Exception("Error in param itemdao when getting last Item revision.");
+            throw new Zend_Exception('Error in param itemdao when getting last Item revision.');
         }
 
         return $this->initDao(
@@ -672,7 +670,7 @@ class ItemModel extends ItemModelBase
     public function getRevision($itemdao, $number)
     {
         if (!$itemdao instanceof ItemDao || !$itemdao->saved) {
-            throw new Zend_Exception("Error in param itemdao when getting Item revision.");
+            throw new Zend_Exception('Error in param itemdao when getting Item revision.');
         }
 
         return $this->initDao(
@@ -729,7 +727,7 @@ class ItemModel extends ItemModelBase
     }
 
     /**
-     * Remove all orphaned item records
+     * Remove all orphaned item records.
      *
      * @param null|ProgressDao $progressDao
      * @throws Zend_Exception

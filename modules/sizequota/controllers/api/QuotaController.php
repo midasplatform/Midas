@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- *  Web API controller for the Quota resource (in sizequota module)
- */
+/** Web API controller for the Quota resource (in sizequota module). */
 class Apisizequota_QuotaController extends ApiController
 {
     /**

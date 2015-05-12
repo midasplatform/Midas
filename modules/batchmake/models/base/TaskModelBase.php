@@ -49,7 +49,7 @@ class Batchmake_TaskModelBase extends Batchmake_AppModel
     public function createTask($userDao, $tmpWorkDirRoot)
     {
         if (!$userDao instanceof UserDao) {
-            throw new Zend_Exception("Error parameters.");
+            throw new Zend_Exception('Error parameters.');
         }
 
         /** @var Batchmake_TaskDao $task */
@@ -60,7 +60,7 @@ class Batchmake_TaskModelBase extends Batchmake_AppModel
         $taskId = $task->getKey();
         $subdirs = array(MIDAS_BATCHMAKE_SSP_DIR, $userId, $taskId);
         // create a workDir based on the task and user
-        $workDir = KWUtils::createSubDirectories($tmpWorkDirRoot."/", $subdirs);
+        $workDir = KWUtils::createSubDirectories($tmpWorkDirRoot.'/', $subdirs);
         $task->setWorkDir($workDir);
         $this->save($task);
 

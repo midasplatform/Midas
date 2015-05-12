@@ -23,7 +23,7 @@ class ApigroupComponent extends AppComponent
 {
     /**
      * list the users for a group, requires admin privileges on the community
-     * associated with the group
+     * associated with the group.
      *
      * @path /group/users/{id}
      * @http GET
@@ -59,7 +59,7 @@ class ApigroupComponent extends AppComponent
         $communityModel = MidasLoader::loadModel('Community');
         if (!$communityModel->policyCheck($group->getCommunity(), $userDao, MIDAS_POLICY_ADMIN)
         ) {
-            throw new Zend_Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+            throw new Zend_Exception('Community Admin permissions required.', MIDAS_INVALID_POLICY);
         }
 
         $users = $group->getUsers();
@@ -119,7 +119,7 @@ class ApigroupComponent extends AppComponent
     }
 
     /**
-     * for use in array_map in groupGet
+     * for use in array_map in groupGet.
      *
      * @param UserDao $user
      * @return mixed
@@ -130,7 +130,7 @@ class ApigroupComponent extends AppComponent
     }
 
     /**
-     * Get information about the group
+     * Get information about the group.
      *
      * @path /group/{id}
      * @http GET
@@ -205,7 +205,7 @@ class ApigroupComponent extends AppComponent
         }
         if (!$communityModel->policyCheck($community, $userDao, MIDAS_POLICY_ADMIN)
         ) {
-            throw new Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+            throw new Exception('Community Admin permissions required.', MIDAS_INVALID_POLICY);
         }
 
         $name = $args['name'];
@@ -254,7 +254,7 @@ class ApigroupComponent extends AppComponent
         $communityModel = MidasLoader::loadModel('Community');
         if (!$communityModel->policyCheck($group->getCommunity(), $userDao, MIDAS_POLICY_ADMIN)
         ) {
-            throw new Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+            throw new Exception('Community Admin permissions required.', MIDAS_INVALID_POLICY);
         }
 
         $groupModel->delete($group);

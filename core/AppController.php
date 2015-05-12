@@ -19,18 +19,13 @@
 =========================================================================*/
 
 // Exception Messages
-define('MIDAS_ADMIN_PRIVILEGES_REQUIRED', "Administrative privileges required.");
-define('MIDAS_AJAX_REQUEST_ONLY', "This page should only be requested by ajax.");
-define('MIDAS_LOGIN_REQUIRED', "User should be logged in to access this page.");
+define('MIDAS_ADMIN_PRIVILEGES_REQUIRED', 'Administrative privileges required.');
+define('MIDAS_AJAX_REQUEST_ONLY', 'This page should only be requested by ajax.');
+define('MIDAS_LOGIN_REQUIRED', 'User should be logged in to access this page.');
 
-/**
- * Generic controller class.
- *
- * @package Core\Controller
- */
+/** Generic controller class. */
 class AppController extends MIDAS_GlobalController
 {
-
     /** @var string */
     protected $coreWebroot;
 
@@ -46,7 +41,6 @@ class AppController extends MIDAS_GlobalController
     /**
      * Pre-dispatch routines.
      *
-     * @return void
      * @throws Zend_Exception
      */
     public function preDispatch()
@@ -54,7 +48,7 @@ class AppController extends MIDAS_GlobalController
         parent::preDispatch();
         $this->view->setEncoding('UTF-8');
 
-        $this->view->setScriptPath(BASE_PATH."/core/views");
+        $this->view->setScriptPath(BASE_PATH.'/core/views');
 
         $fc = Zend_Controller_Front::getInstance();
         $module = $fc->getRequest()->getModuleName();
@@ -205,22 +199,22 @@ class AppController extends MIDAS_GlobalController
 
         // create a global javascript json array
         $jsonGlobal = array(
-            "webroot" => $this->view->webroot,
-            "coreWebroot" => $this->view->coreWebroot,
-            "logged" => $this->logged,
-            "needToLog" => false,
-            "currentUri" => $this->getRequest()->REQUEST_URI,
-            "lang" => Zend_Registry::get('configGlobal')->application->lang,
-            "dynamichelp" => $this->isDynamicHelp(),
-            "dynamichelpAnimate" => $this->isDynamicHelp() && isset($_GET['first']),
-            "startingGuide" => $this->isStartingGuide(),
-            "Yes" => $this->t('Yes'),
-            "No" => $this->t('No'),
+            'webroot' => $this->view->webroot,
+            'coreWebroot' => $this->view->coreWebroot,
+            'logged' => $this->logged,
+            'needToLog' => false,
+            'currentUri' => $this->getRequest()->REQUEST_URI,
+            'lang' => Zend_Registry::get('configGlobal')->application->lang,
+            'dynamichelp' => $this->isDynamicHelp(),
+            'dynamichelpAnimate' => $this->isDynamicHelp() && isset($_GET['first']),
+            'startingGuide' => $this->isStartingGuide(),
+            'Yes' => $this->t('Yes'),
+            'No' => $this->t('No'),
         );
 
         $login = array(
-            "titleUploadLogin" => $this->t('Please log in'),
-            "contentUploadLogin" => $this->t('You need to be logged in to be able to upload files.'),
+            'titleUploadLogin' => $this->t('Please log in'),
+            'contentUploadLogin' => $this->t('You need to be logged in to be able to upload files.'),
         );
 
         $browse = array(
@@ -260,7 +254,7 @@ class AppController extends MIDAS_GlobalController
             ),
         );
 
-        $feed = array("deleteFeed" => $this->t('Do you really want to delete the feed?'));
+        $feed = array('deleteFeed' => $this->t('Do you really want to delete the feed?'));
 
         $this->view->json = array('global' => $jsonGlobal, 'login' => $login, 'feed' => $feed, 'browse' => $browse);
 
@@ -542,7 +536,7 @@ class AppController extends MIDAS_GlobalController
      */
     protected function t($text)
     {
-        Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
+        Zend_Loader::loadClass('InternationalizationComponent', BASE_PATH.'/core/controllers/components');
 
         return InternationalizationComponent::translate($text);
     }

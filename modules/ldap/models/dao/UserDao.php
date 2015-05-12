@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Ldap User Dao
- */
+/** Ldap User Dao. */
 class Ldap_UserDao extends Ldap_AppDao
 {
     public $_model = 'User';

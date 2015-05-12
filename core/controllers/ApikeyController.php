@@ -31,7 +31,7 @@ class ApikeyController extends AppController
     public $_components = array('Date');
 
     /**
-     * Configuration action for a user's api keys
+     * Configuration action for a user's api keys.
      *
      * @param userId The id of the user to display
      * @throws Zend_Exception

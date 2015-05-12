@@ -37,7 +37,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
 
     /**
      * accessor function to return the names of the config properties, and
-     * their filesystem requirements;
+     * their filesystem requirements;.
      */
     public static function getConfigPropertiesRequirements()
     {
@@ -91,7 +91,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
     }
 
     /**
-     * helper function to load the correct config file
+     * helper function to load the correct config file.
      *
      * @param  bool $processSections param to be passed on to parse_ini_file,
      *                                 default is false
@@ -103,7 +103,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
             $config = parse_ini_file(MIDAS_BATCHMAKE_MODULE_LOCAL_CONFIG, $processSections);
         } else {
             throw new Zend_Exception(
-                "The Batchmake module has not been enabled.  Enable it through the Midas administration tab"
+                'The Batchmake module has not been enabled.  Enable it through the Midas administration tab'
             );
         }
 
@@ -135,10 +135,10 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
     }
 
     /**
-     * will load the configuration property values for this module
+     * will load the configuration property values for this module.
      *
      * @param  string $alternateConfig an array of alternate config props
-     * @param  boolean $batchmakeOnly whether to get all properties or only config
+     * @param  bool $batchmakeOnly whether to get all properties or only config
      *                                  properties that are in the 'batchmake.' config namespace,
      *                                  removing the 'batchmake.' from the key name if true.
      * @return array   of batchmake module specific config properties
@@ -211,7 +211,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
     protected function checkFileFlag($file, $processUserUid, $options = 0x0)
     {
         $exist = file_exists($file);
-        Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
+        Zend_Loader::loadClass('InternationalizationComponent', BASE_PATH.'/core/controllers/components');
         $status = ($exist ? InternationalizationComponent::translate(
             MIDAS_BATCHMAKE_EXIST_STRING
         ) : InternationalizationComponent::translate(MIDAS_BATCHMAKE_NOT_FOUND_ON_CURRENT_SYSTEM_STRING));
@@ -219,24 +219,24 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
 
         if ($exist && ($options & MIDAS_BATCHMAKE_CHECK_IF_READABLE)) {
             $readable = is_readable($file);
-            $status .= $readable ? " / Readable" : " / NotReadable";
+            $status .= $readable ? ' / Readable' : ' / NotReadable';
             $ret = $ret && $readable;
         }
 
         if ($exist && ($options & MIDAS_BATCHMAKE_CHECK_IF_WRITABLE)) {
             $writable = is_writable($file);
-            $status .= $writable ? " / Writable" : " / NotWritable";
+            $status .= $writable ? ' / Writable' : ' / NotWritable';
             $ret = $ret && $writable;
         }
         if ($exist && ($options & MIDAS_BATCHMAKE_CHECK_IF_EXECUTABLE)) {
             $executable = is_executable($file);
-            $status .= $executable ? " / Executable" : " / NotExecutable";
+            $status .= $executable ? ' / Executable' : ' / NotExecutable';
             $ret = $ret && $executable;
         }
         if (!KWUtils::isWindows() && $exist && ($options & MIDAS_BATCHMAKE_CHECK_IF_CHMODABLE)
         ) {
             $chmodable = $this->IsChmodable($file, $processUserUid);
-            $status .= $chmodable ? " / Chmodable" : " / NotChmodable";
+            $status .= $chmodable ? ' / Chmodable' : ' / NotChmodable';
             $ret = $ret && $chmodable;
         }
 
@@ -258,7 +258,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
         }
 
         if (!file_exists($fileOrDirectory)) {
-            Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
+            Zend_Loader::loadClass('InternationalizationComponent', BASE_PATH.'/core/controllers/components');
             self::Error(
                 InternationalizationComponent::translate(
                     MIDAS_BATCHMAKE_FILE_OR_DIRECTORY_DOESNT_EXIST_STRING
@@ -313,7 +313,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
             $configToTest = $this->componentConfig;
         }
 
-        Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
+        Zend_Loader::loadClass('InternationalizationComponent', BASE_PATH.'/core/controllers/components');
 
         // Process web server user information
 
@@ -338,10 +338,10 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
         $phpProcessUserShellString = $phpProcessUserString.'['.$phpProcessShellString.']';
 
         $processProperties = array(
-            $phpProcessUserNameString => !empty($processUser[MIDAS_BATCHMAKE_PHP_PROCESS_NAME_STRING]) ? $processUser[MIDAS_BATCHMAKE_PHP_PROCESS_NAME_STRING] : "",
-            $phpProcessUserGroupString => !empty($processGroup[MIDAS_BATCHMAKE_PHP_PROCESS_NAME_STRING]) ? $processGroup[MIDAS_BATCHMAKE_PHP_PROCESS_NAME_STRING] : "",
-            $phpProcessUserHomeString => !empty($processUser[MIDAS_BATCHMAKE_DIR_KEY]) ? $processUser[MIDAS_BATCHMAKE_DIR_KEY] : "",
-            $phpProcessUserShellString => !empty($processUser[MIDAS_BATCHMAKE_PHP_PROCESS_SHELL_STRING]) ? $processUser[MIDAS_BATCHMAKE_PHP_PROCESS_SHELL_STRING] : "",
+            $phpProcessUserNameString => !empty($processUser[MIDAS_BATCHMAKE_PHP_PROCESS_NAME_STRING]) ? $processUser[MIDAS_BATCHMAKE_PHP_PROCESS_NAME_STRING] : '',
+            $phpProcessUserGroupString => !empty($processGroup[MIDAS_BATCHMAKE_PHP_PROCESS_NAME_STRING]) ? $processGroup[MIDAS_BATCHMAKE_PHP_PROCESS_NAME_STRING] : '',
+            $phpProcessUserHomeString => !empty($processUser[MIDAS_BATCHMAKE_DIR_KEY]) ? $processUser[MIDAS_BATCHMAKE_DIR_KEY] : '',
+            $phpProcessUserShellString => !empty($processUser[MIDAS_BATCHMAKE_PHP_PROCESS_SHELL_STRING]) ? $processUser[MIDAS_BATCHMAKE_PHP_PROCESS_SHELL_STRING] : '',
         );
 
         foreach ($processProperties as $property => $value) {
@@ -385,7 +385,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
         // for now assuming will run via condor, so require all of the condor setup
 
         foreach (self::$applicationsPaths as $app => $pathProperty) {
-            $appPath = $configToTest[$pathProperty]."/".KWUtils::formatAppName($app);
+            $appPath = $configToTest[$pathProperty].'/'.KWUtils::formatAppName($app);
             list($result, $status) = $this->checkFileFlag($appPath, MIDAS_BATCHMAKE_CHECK_IF_EXECUTABLE);
             $applicationString = InternationalizationComponent::translate(MIDAS_BATCHMAKE_APPLICATION_STRING);
             $configStatus[] = array(
@@ -403,7 +403,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
     }
 
     /**
-     * helper method to return true if the config is correct, false otherwise
+     * helper method to return true if the config is correct, false otherwise.
      *
      * @param  array $alternateConfigValues an alternative set of values to test,
      *                                      usually testing a possible configuration set to be saved.
@@ -439,7 +439,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
     }
 
     /**
-     * will create a new batchmake task, along with a work directory
+     * will create a new batchmake task, along with a work directory.
      *
      * @param  type $userDao
      * @return string the path to the workDir for this batchmake task
@@ -471,7 +471,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
     {
         // check for cycles
         if (array_search($scriptName, $currentPath) !== false) {
-            throw new Zend_Exception("Cycle found in the include graph of batchmake scripts.");
+            throw new Zend_Exception('Cycle found in the include graph of batchmake scripts.');
         }
         // push this script onto the currentPath
         $currentPath[] = $scriptName;
@@ -592,7 +592,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
 
         if ($returnVal !== 0) {
             throw new Zend_Exception(
-                "compileBatchMakeScript: Failed to run: [".$cmd."], output: [".implode(",", $output)."]"
+                'compileBatchMakeScript: Failed to run: ['.$cmd.'], output: ['.implode(',', $output).']'
             );
         }
 
@@ -601,14 +601,14 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
             if (preg_match("/(\d+) error/", $val, $matches)) {
                 // number of errors is index 1, this is based on BatchMake's output
                 // it will output the number of errors even if 0
-                if ($matches[1] == "0") {
+                if ($matches[1] == '0') {
                     return true;
                 } else {
                     throw new Zend_Exception(
-                        "compileBatchMakeScript: Compiling script [".$bmScript."] yielded output: [".implode(
-                            ",",
+                        'compileBatchMakeScript: Compiling script ['.$bmScript.'] yielded output: ['.implode(
+                            ',',
                             $output
-                        )."]"
+                        ).']'
                     );
                 }
             }
@@ -616,9 +616,9 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
 
         throw new Zend_Exception(
             "compileBatchMakeScript: Error in BatchMake script, the compile step didn't report errors, output: [".implode(
-                ",",
+                ',',
                 $output
-            )."]"
+            ).']'
         );
     }
 
@@ -658,7 +658,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
 
         if ($returnVal !== 0) {
             throw new Zend_Exception(
-                "generateCondorDag: Failed to run: [".$cmd."], output: [".implode(",", $output)."]"
+                'generateCondorDag: Failed to run: ['.$cmd.'], output: ['.implode(',', $output).']'
             );
         }
 
@@ -667,7 +667,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
 
     /**
      * will submit the passed in $dagScript to condor,
-     * executing in the passed in $workDir
+     * executing in the passed in $workDir.
      *
      * @param string $workDir
      * @param string $dagScript
@@ -688,7 +688,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
 
         if ($returnVal !== 0) {
             throw new Zend_Exception(
-                "condorSubmitDag: Failed to run: [".$cmd."], output: [".implode(",", $output)."]"
+                'condorSubmitDag: Failed to run: ['.$cmd.'], output: ['.implode(',', $output).']'
             );
         }
     }

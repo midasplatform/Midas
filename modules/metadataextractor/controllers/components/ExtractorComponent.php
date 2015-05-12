@@ -62,13 +62,13 @@ class Metadataextractor_ExtractorComponent extends AppComponent
             $command = $settingModel->getValueByName(METADATAEXTRACTOR_HACHOIR_METADATA_COMMAND_KEY, $this->moduleName);
             exec(str_replace("'", '"', $command).' "'.$bitstream->getFullPath().'"', $output);
 
-            if (!isset($output[0]) || $output[0] != "Metadata:") {
+            if (!isset($output[0]) || $output[0] != 'Metadata:') {
                 return;
             }
             unset($output[0]);
             foreach ($output as $out) {
                 $out = substr($out, 2);
-                $pos = strpos($out, ": ");
+                $pos = strpos($out, ': ');
                 $name = strtolower(substr($out, 0, $pos));
                 $value = substr($out, $pos + 2);
                 try {

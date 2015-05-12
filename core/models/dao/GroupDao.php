@@ -31,7 +31,6 @@
  * @method void setCommunity(CommunityDao $community)
  * @method array getUsers()
  * @method void setUsers(array $users)
- * @package Core\DAO
  */
 class GroupDao extends AppDao
 {

@@ -20,9 +20,7 @@
 
 require_once BASE_PATH.'/core/models/base/ErrorlogModelBase.php';
 
-/**
- * Pdo Model
- */
+/** Pdo Model. */
 class ErrorlogModel extends ErrorlogModelBase
 {
     /**
@@ -77,7 +75,7 @@ class ErrorlogModel extends ErrorlogModelBase
     }
 
     /**
-     * Count the number of log entries since a certain date
+     * Count the number of log entries since a certain date.
      *
      * @param string $startDate start date
      * @param null|array $priorities priorities to filter by. If null, selects all.

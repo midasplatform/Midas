@@ -21,28 +21,27 @@
 /** Upgrade the core to version 3.2.18. */
 class Upgrade_3_2_18 extends MIDASUpgrade
 {
-
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query("ALTER TABLE `folder` DROP KEY `left_indice`;");
-        $this->db->query("ALTER TABLE `folder` DROP KEY `right_indice`;");
-        $this->db->query("ALTER TABLE `folder` CHANGE  `left_indice` `left_index` bigint(20) NOT NULL;");
-        $this->db->query("ALTER TABLE `folder` CHANGE  `right_indice` `right_index` bigint(20) NOT NULL;");
-        $this->db->query("ALTER TABLE `folder` ADD KEY (`left_index`);");
-        $this->db->query("ALTER TABLE `folder` ADD KEY (`right_index`);");
-        $this->db->query("ALTER TABLE `feed` CHANGE  `ressource` `resource` varchar(255) NOT NULL;");
+        $this->db->query('ALTER TABLE `folder` DROP KEY `left_indice`;');
+        $this->db->query('ALTER TABLE `folder` DROP KEY `right_indice`;');
+        $this->db->query('ALTER TABLE `folder` CHANGE  `left_indice` `left_index` bigint(20) NOT NULL;');
+        $this->db->query('ALTER TABLE `folder` CHANGE  `right_indice` `right_index` bigint(20) NOT NULL;');
+        $this->db->query('ALTER TABLE `folder` ADD KEY (`left_index`);');
+        $this->db->query('ALTER TABLE `folder` ADD KEY (`right_index`);');
+        $this->db->query('ALTER TABLE `feed` CHANGE  `ressource` `resource` varchar(255) NOT NULL;');
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $this->db->query("DROP INDEX IF EXISTS folder_idx_left_indice;");
-        $this->db->query("DROP INDEX IF EXISTS folder_idx_right_indice;");
-        $this->db->query("ALTER TABLE folder RENAME left_indice TO left_index;");
-        $this->db->query("ALTER TABLE folder RENAME right_indice TO right_index;");
-        $this->db->query("CREATE INDEX folder_idx_left_index ON folder (left_index);");
-        $this->db->query("CREATE INDEX folder_idx_right_index ON folder (right_index);");
-        $this->db->query("ALTER TABLE feed RENAME ressource TO resource;");
+        $this->db->query('DROP INDEX IF EXISTS folder_idx_left_indice;');
+        $this->db->query('DROP INDEX IF EXISTS folder_idx_right_indice;');
+        $this->db->query('ALTER TABLE folder RENAME left_indice TO left_index;');
+        $this->db->query('ALTER TABLE folder RENAME right_indice TO right_index;');
+        $this->db->query('CREATE INDEX folder_idx_left_index ON folder (left_index);');
+        $this->db->query('CREATE INDEX folder_idx_right_index ON folder (right_index);');
+        $this->db->query('ALTER TABLE feed RENAME ressource TO resource;');
     }
 }

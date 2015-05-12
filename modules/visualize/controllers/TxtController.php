@@ -48,8 +48,8 @@ class Visualize_TxtController extends Visualize_AppController
         if (Zend_Registry::get('configGlobal')->environment != 'testing') {
             header('content-type: text/plain');
         }
-        echo "<pre>";
+        echo '<pre>';
         echo file_get_contents($this->bistream->getFullPath());
-        echo "</pre>";
+        echo '</pre>';
     }
 }

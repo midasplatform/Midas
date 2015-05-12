@@ -25,7 +25,7 @@ class Ratings_ItemratingModel extends Ratings_ItemratingModelBase
 {
     /**
      * Set the rating on an item for a user (overwrites if already exists)
-     * If a 0 rating is passed, any existing rating will be removed
+     * If a 0 rating is passed, any existing rating will be removed.
      */
     public function setRating($user, $item, $rating)
     {
@@ -88,7 +88,7 @@ class Ratings_ItemratingModel extends Ratings_ItemratingModelBase
     }
 
     /**
-     * Return the user's rating for the item (1-5), or 0 if none exists
+     * Return the user's rating for the item (1-5), or 0 if none exists.
      */
     public function getByUser($user, $item)
     {

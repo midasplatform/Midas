@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Admin form for the tracker module.
- *
- * @package Modules\Tracker\Database
- */
+/** Admin form for the tracker module. */
 class Tracker_Form_Admin extends Zend_Form
 {
     /** Initialize this form. */

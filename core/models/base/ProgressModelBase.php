@@ -29,8 +29,6 @@
  *
  * If the progress object has a maximum value of 0, then the progress is
  * indeterminate.
- *
- * @package Core\Model
  */
 abstract class ProgressModelBase extends AppModel
 {

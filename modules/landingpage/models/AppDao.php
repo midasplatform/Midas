@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic DAO class for the landingpage module.
- *
- * @package Modules\Landingpage\DAO
- */
+/** Generic DAO class for the landingpage module. */
 class Landingpage_AppDao extends MIDAS_GlobalDao
 {
     /** @var string */

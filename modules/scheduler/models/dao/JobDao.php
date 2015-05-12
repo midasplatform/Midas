@@ -45,7 +45,6 @@
  * @method void setLogs(array $logs)
  * @method UserDao getCreator()
  * @method void setCreator(UserDao $creator)
- * @package Modules\Scheduler\DAO
  */
 class Scheduler_JobDao extends Scheduler_AppDao
 {

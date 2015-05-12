@@ -231,5 +231,5 @@ function env($key)
             break;
     }
 
-    return null;
+    return;
 }

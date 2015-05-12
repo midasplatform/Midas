@@ -45,12 +45,12 @@ class Communityagreement_CommunityControllerTest extends ControllerTestCase
         $page = '/communityagreement/community/agreementdialog?communityId='.$community_id;
         $this->dispatchUrl($page);
 
-        $this->assertModule("communityagreement");
-        $this->assertController("community");
-        $this->assertAction("agreementdialog");
+        $this->assertModule('communityagreement');
+        $this->assertController('community');
+        $this->assertAction('agreementdialog');
 
         $body = $this->getBody();
-        if (strpos($body, "Community agreement for Community test User 1") === false
+        if (strpos($body, 'Community agreement for Community test User 1') === false
         ) {
             $this->fail('Unable to find body element');
         }
@@ -68,7 +68,7 @@ class Communityagreement_CommunityControllerTest extends ControllerTestCase
         $this->params['email'] = 'user1@user1.com';
         $this->params['password'] = 'test';
         $this->request->setMethod('POST');
-        $this->dispatchUrl("/user/login");
+        $this->dispatchUrl('/user/login');
 
         $this->resetAll();
         $page = '/communityagreement/community/agreementtab?communityId='.$community_id;
@@ -76,8 +76,8 @@ class Communityagreement_CommunityControllerTest extends ControllerTestCase
         $this->getRequest()->setMethod('GET');
         $this->dispatchUrl($page, null, true);
 
-        $this->assertController("error");
-        $this->assertAction("error");
+        $this->assertController('error');
+        $this->assertAction('error');
 
         $this->resetAll();
         $this->params['agreement'] = 'test agreement tab';

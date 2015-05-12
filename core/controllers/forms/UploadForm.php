@@ -36,7 +36,7 @@ class UploadForm extends AppForm
         $url->setValue('http://')->setRequired(true)->addValidator($validator)->addValidator('NotEmpty', true);
 
         $submit = new  Zend_Form_Element_Submit('submit');
-        $submit->setLabel($this->t("Save Link"))->setAttrib('class', 'globalButton');
+        $submit->setLabel($this->t('Save Link'))->setAttrib('class', 'globalButton');
 
         $form->addElements(array($name, $url, $submit));
 

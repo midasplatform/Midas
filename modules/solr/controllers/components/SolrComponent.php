@@ -40,7 +40,7 @@ class Solr_SolrComponent extends AppComponent
     }
 
     /**
-     * Rebuilds the search index by iterating over all items and folders and indexing each of them
+     * Rebuilds the search index by iterating over all items and folders and indexing each of them.
      */
     public function rebuildIndex($progressDao = null)
     {

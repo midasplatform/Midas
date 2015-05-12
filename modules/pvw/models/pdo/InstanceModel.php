@@ -24,7 +24,7 @@ require_once BASE_PATH.'/modules/pvw/models/base/InstanceModelBase.php';
 class Pvw_InstanceModel extends Pvw_InstanceModelBase
 {
     /**
-     * Return all daos of this type
+     * Return all daos of this type.
      */
     public function getAll()
     {

@@ -60,7 +60,7 @@ foreach ($cssArray as $module => $list) {
         array('item' => $this->itemDao, 'isModerator' => $this->isModerator, 'isAdmin' => $this->isAdmin)
     );
     $htmltArray = array_diff($htmltArray, array(''));
-    echo join(" ", $htmltArray);
+    echo implode(" ", $htmltArray);
     ?>
     <br/>
 </div>

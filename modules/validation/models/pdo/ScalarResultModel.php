@@ -20,13 +20,11 @@
 
 require_once BASE_PATH.'/modules/validation/models/base/ScalarResultModelBase.php';
 
-/**
- * ScalarResult PDO Model
- */
+/** ScalarResult PDO Model. */
 class Validation_ScalarResultModel extends Validation_ScalarResultModelBase
 {
     /**
-     * Return all the record in the table
+     * Return all the record in the table.
      *
      * @return array of ScalarResultDao
      */

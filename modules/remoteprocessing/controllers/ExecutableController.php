@@ -28,9 +28,9 @@ class Remoteprocessing_ExecutableController extends Remoteprocessing_AppControll
     /** define an executable */
     public function defineAction()
     {
-        $itemId = $this->getParam("itemId");
+        $itemId = $this->getParam('itemId');
         if (!isset($itemId) || !is_numeric($itemId)) {
-            throw new Zend_Exception("itemId  should be a number");
+            throw new Zend_Exception('itemId  should be a number');
         }
 
         $isAjax = $this->getRequest()->isXmlHttpRequest();
@@ -45,9 +45,9 @@ class Remoteprocessing_ExecutableController extends Remoteprocessing_AppControll
         }
         if (!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE)
         ) {
-            throw new Zend_Exception("Problem policies.");
+            throw new Zend_Exception('Problem policies.');
         }
-        $this->view->header = $this->t("Manage Configuration: ".$itemDao->getName());
+        $this->view->header = $this->t('Manage Configuration: '.$itemDao->getName());
         $metaFile = $this->ModuleComponent->Executable->getMetaIoFile($itemDao);
 
         if (isset($_GET['init'])) {

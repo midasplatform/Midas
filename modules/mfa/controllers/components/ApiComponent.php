@@ -38,7 +38,7 @@ class Mfa_ApiComponent extends AppComponent
     }
 
     /**
-     * Submit your OTP after calling core login, and you will receive your api token
+     * Submit your OTP after calling core login, and you will receive your api token.
      *
      * @param otp The one-time password
      * @param mfaTokenId The id of the temporary MFA token

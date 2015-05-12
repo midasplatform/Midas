@@ -37,7 +37,7 @@ class RandomComponent extends AppComponent
     public function generateInt($minimum = 0, $maximum = PHP_INT_MAX)
     {
         if (is_null($this->_factory)) {
-            $this->_factory = new \RandomLib\Factory;
+            $this->_factory = new \RandomLib\Factory();
             $this->_generator = $this->_factory->getMediumStrengthGenerator();
         }
 
@@ -54,7 +54,7 @@ class RandomComponent extends AppComponent
     public function generateString($length, $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
     {
         if (is_null($this->_factory)) {
-            $this->_factory = new \RandomLib\Factory;
+            $this->_factory = new \RandomLib\Factory();
             $this->_generator = $this->_factory->getMediumStrengthGenerator();
         }
 

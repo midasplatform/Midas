@@ -24,7 +24,7 @@ include_once BASE_PATH.'/library/KWUtils.php';
 class Dicomserver_ApiserverComponent extends AppComponent
 {
     /**
-     * Start DICOM server
+     * Start DICOM server.
      *
      * @path /dicomserver/server/start
      * @http POST
@@ -148,7 +148,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
         $python_params[] = '-f '.$dcmqrscp_pacs_dir.MIDAS_DICOMSERVER_DCMQRSCP_CFG_FILE;
         $start_server_command = KWUtils::prepareExeccommand($python_cmd, $python_params);
         if (array_key_exists('get_command', $args)) {
-            $start_server_command_string = str_replace("'", "", $start_server_command);
+            $start_server_command_string = str_replace("'", '', $start_server_command);
 
             return escapeshellarg($start_server_command_string);
         }
@@ -174,7 +174,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
     }
 
     /**
-     * Check DICOM server status
+     * Check DICOM server status.
      *
      * @path /dicomserver/server/status
      * @http GET
@@ -243,7 +243,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
     }
 
     /**
-     * Stop DICOM server
+     * Stop DICOM server.
      *
      * @path /dicomserver/server/stop
      * @http POST
@@ -306,7 +306,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
         $python_params[] = '-q '.$dcmqrscp_cmd;
         $stop_server_command = KWUtils::prepareExeccommand($python_cmd, $python_params);
         if (array_key_exists('get_command', $args)) {
-            $stop_server_command_string = str_replace("'", "", $stop_server_command);
+            $stop_server_command_string = str_replace("'", '', $stop_server_command);
 
             return escapeshellarg($stop_server_command_string);
         }
@@ -336,7 +336,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
         $apihelperComponent->validateParams($args, array('item'));
 
         /** @var ItemModel $itemModel */
-        $itemModel = MidasLoader::loadModel("Item");
+        $itemModel = MidasLoader::loadModel('Item');
 
         /** @var AuthenticationComponent $authComponent */
         $authComponent = MidasLoader::loadComponent('Authentication');
@@ -375,7 +375,7 @@ class Dicomserver_ApiserverComponent extends AppComponent
         $apihelperComponent->validateParams($args, array('item'));
 
         /** @var ItemModel $itemModel */
-        $itemModel = MidasLoader::loadModel("Item");
+        $itemModel = MidasLoader::loadModel('Item');
 
         /** @var AuthenticationComponent $authComponent */
         $authComponent = MidasLoader::loadComponent('Authentication');

@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- *  AJAX request for the admin Controller
- */
+/** AJAX request for the admin Controller. */
 class BrowseController extends AppController
 {
     public $_models = array('User', 'Community', 'Folder', 'Item', 'ItemRevision');
@@ -78,11 +76,11 @@ class BrowseController extends AppController
             $folders = $this->Folder->load($folderIds);
             $items = $this->Item->load($itemIds);
             $destinationFolder = $this->Folder->load($destination);
-            if (empty($folders) && empty ($items)) {
-                throw new Zend_Exception("No element selected");
+            if (empty($folders) && empty($items)) {
+                throw new Zend_Exception('No element selected');
             }
             if ($destinationFolder == false) {
-                throw new Zend_Exception("Unable to load destination");
+                throw new Zend_Exception('Unable to load destination');
             }
             if (!$this->Folder->policyCheck($destinationFolder, $this->userSession->Dao, MIDAS_POLICY_WRITE)
             ) {
@@ -132,10 +130,10 @@ class BrowseController extends AppController
                     $from = $this->getParam('from');
                     $fromFolder = $from ? $this->Folder->load($from) : null;
                     if ($destinationFolder == false) {
-                        throw new Zend_Exception("Unable to load destination");
+                        throw new Zend_Exception('Unable to load destination');
                     }
                     if ($from && $fromFolder == false) {
-                        throw new Zend_Exception("Unable to load move from folder");
+                        throw new Zend_Exception('Unable to load move from folder');
                     }
                     if (!$from) { // make sure item has only one parent in batch case
                         $parents = $item->getFolders();
@@ -178,8 +176,8 @@ class BrowseController extends AppController
             $itemIds = explode('-', $itemIds);
             $folders = $this->Folder->load($folderIds);
             $items = $this->Item->load($itemIds);
-            if (empty($folders) && empty ($items)) {
-                throw new Zend_Exception("No element selected");
+            if (empty($folders) && empty($items)) {
+                throw new Zend_Exception('No element selected');
             }
             if (!$this->logged) {
                 throw new Zend_Exception(MIDAS_LOGIN_REQUIRED, 403);
@@ -306,7 +304,7 @@ class BrowseController extends AppController
         $limit = (int) $this->getParam('limit', -1);
 
         if (!isset($folderIds)) {
-            throw new Zend_Exception("Please set the folder Id");
+            throw new Zend_Exception('Please set the folder Id');
         }
         $folderIds = explode('-', $folderIds);
         $parents = $this->Folder->load($folderIds);
@@ -389,7 +387,7 @@ class BrowseController extends AppController
         $this->disableView();
         $folderIds = $this->getParam('folders');
         if (!isset($folderIds)) {
-            echo "[]";
+            echo '[]';
 
             return;
         }
@@ -415,7 +413,7 @@ class BrowseController extends AppController
         $element = $this->getParam('type');
         $id = $this->getParam('id');
         if (!isset($id) || !isset($element)) {
-            throw new Zend_Exception("Please double check the parameters");
+            throw new Zend_Exception('Please double check the parameters');
         }
         $jsonContent = array('type' => $element);
         switch ($element) {
@@ -471,7 +469,7 @@ class BrowseController extends AppController
                 $jsonContent['size'] = $this->Component->Utility->formatSize($jsonContent['sizebytes']);
                 break;
             default:
-                throw new Zend_Exception("Please select the right type of element.");
+                throw new Zend_Exception('Please select the right type of element.');
                 break;
         }
         $jsonContent['translation']['Created'] = $this->t('Created');
@@ -521,7 +519,7 @@ class BrowseController extends AppController
     }
 
     /**
-     * Delete a set of folders and items. Called by ajax from common.browser.js
+     * Delete a set of folders and items. Called by ajax from common.browser.js.
      *
      * @param folders A list of folder ids separated by '-'
      * @param items A list of item ids separated by '-'

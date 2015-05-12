@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Mock object simulating condor_submit_dag executable.
- */
+/** Mock object simulating condor_submit_dag executable. */
 class Batchmake_CondorSubmitDagMock
 {
     // Problematic to throw exceptions as many test cases expect exceptions
@@ -38,14 +36,14 @@ class Batchmake_CondorSubmitDagMock
      * @param null|mixed $return_val
      * @throws Zend_Exception
      */
-    public function exec($command, &$output = null, $chdir = "", &$return_val = null)
+    public function exec($command, &$output = null, $chdir = '', &$return_val = null)
     {
         // just doing the same things as the actual KWUtils exec to check
         // that this function will work the same as the exec function other
         // than the actual exec system call
         if (!empty($chdir) && is_dir($chdir)) {
             if (!chdir($chdir)) {
-                throw new Zend_Exception("Failed to change directory: [".$chdir."]");
+                throw new Zend_Exception('Failed to change directory: ['.$chdir.']');
             }
         }
         // on Linux need to add redirection to handle stderr

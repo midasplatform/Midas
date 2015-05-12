@@ -31,7 +31,7 @@ class Core_MetadataModelTest extends DatabaseTestCase
     }
 
     /**
-     * tests getMetadata and addMetadata
+     * tests getMetadata and addMetadata.
      */
     public function testGetMetadata()
     {
@@ -52,7 +52,7 @@ class Core_MetadataModelTest extends DatabaseTestCase
     }
 
     /**
-     * tests getAllMetadata
+     * tests getAllMetadata.
      */
     public function testGetAllMetadata()
     {
@@ -60,36 +60,36 @@ class Core_MetadataModelTest extends DatabaseTestCase
         $metadataDaos = $this->Metadata->getAllMetadata();
 
         // look for 2 arrays of at least 14 each, and in specific author and created
-        $author = array("element" => "contributor", "qualifier" => "author");
-        $created = array("element" => "date", "qualifier" => "created");
+        $author = array('element' => 'contributor', 'qualifier' => 'author');
+        $created = array('element' => 'date', 'qualifier' => 'created');
 
         $rawMetadata = $metadataDaos['raw'];
         $sortedGlobalMetadata = $metadataDaos['sorted'][MIDAS_METADATA_TEXT];
-        $this->assertEquals(7, count($rawMetadata), "expected at least 6 raw metadata");
-        $this->assertEquals(3, count($sortedGlobalMetadata['DICOM']), "expected at least 4 sorted DICOM metadata");
+        $this->assertEquals(7, count($rawMetadata), 'expected at least 6 raw metadata');
+        $this->assertEquals(3, count($sortedGlobalMetadata['DICOM']), 'expected at least 4 sorted DICOM metadata');
 
         $authorFound = false;
         $createdFound = false;
 
         foreach ($rawMetadata as $metadata) {
-            if ($metadata->getElement() === $author["element"] &&
-                $metadata->getQualifier() === $author["qualifier"]
+            if ($metadata->getElement() === $author['element'] &&
+                $metadata->getQualifier() === $author['qualifier']
             ) {
                 $authorFound = true;
             }
-            if ($metadata->getElement() === $created["element"] &&
-                $metadata->getQualifier() === $created["qualifier"]
+            if ($metadata->getElement() === $created['element'] &&
+                $metadata->getQualifier() === $created['qualifier']
             ) {
                 $createdFound = true;
             }
         }
 
-        $this->assertTrue($authorFound, "Did not find author metadata");
-        $this->assertTrue($createdFound, "Did not find created metadata");
+        $this->assertTrue($authorFound, 'Did not find author metadata');
+        $this->assertTrue($createdFound, 'Did not find created metadata');
     }
 
     /**
-     * tests getTableValueName
+     * tests getTableValueName.
      */
     public function testGetTableValueName()
     {
@@ -107,9 +107,9 @@ class Core_MetadataModelTest extends DatabaseTestCase
     public function testGetMetadataValueExists()
     {
         // get a metadata
-        $metadata = $this->Metadata->getMetadata(MIDAS_METADATA_TEXT, "contributor", "author");
+        $metadata = $this->Metadata->getMetadata(MIDAS_METADATA_TEXT, 'contributor', 'author');
         $metadata->setItemrevisionId(1);
-        $metadata->setValue("DFW");
+        $metadata->setValue('DFW');
         $this->assertFalse($this->Metadata->getMetadataValueExists($metadata));
 
         $itemRevision = $this->ItemRevision->load(1);
@@ -118,7 +118,7 @@ class Core_MetadataModelTest extends DatabaseTestCase
     }
 
     /**
-     * Testing the retrieval of valid metadata types
+     * Testing the retrieval of valid metadata types.
      */
     public function testGetMetadataTypes()
     {
@@ -128,7 +128,7 @@ class Core_MetadataModelTest extends DatabaseTestCase
     }
 
     /**
-     * Testing the retrieval of valid metadata elements
+     * Testing the retrieval of valid metadata elements.
      */
     public function testGetMetadataElements()
     {
@@ -138,7 +138,7 @@ class Core_MetadataModelTest extends DatabaseTestCase
     }
 
     /**
-     * Testing the retrieval of valid metadata qualifiers
+     * Testing the retrieval of valid metadata qualifiers.
      */
     public function testGetMetadataQualifiers()
     {

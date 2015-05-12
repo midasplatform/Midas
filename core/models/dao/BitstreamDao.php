@@ -43,7 +43,6 @@
  * @method void setItemrevision(ItemrevisionDao $itemRevision)
  * @method AssetstoreDao getAssetstore()
  * @method void setAssetstore(AssetstoreDao $assetStore)
- * @package Core\DAO
  */
 class BitstreamDao extends AppDao
 {

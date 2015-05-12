@@ -33,7 +33,6 @@
  * @method void setValue(string $value)
  * @method ItemRevisionDao getItemrevisionId()
  * @method void setItemrevisionId(ItemRevisionDao $itemRevisionId)
- * @package Core\DAO
  */
 class MetadataDao extends AppDao
 {

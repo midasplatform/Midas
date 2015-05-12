@@ -41,7 +41,7 @@ class HttpuploadComponent extends AppComponent
     public $testingEnable = false;
 
     /**
-     * Set whether we are in testing mode or not (boolean)
+     * Set whether we are in testing mode or not (boolean).
      *
      * @param bool $testing
      */
@@ -51,7 +51,7 @@ class HttpuploadComponent extends AppComponent
     }
 
     /**
-     * Set the name of the uploadtoken parameter that is being passed
+     * Set the name of the uploadtoken parameter that is being passed.
      *
      * @param string $name
      */
@@ -107,7 +107,7 @@ class HttpuploadComponent extends AppComponent
     }
 
     /**
-     * Handle the upload
+     * Handle the upload.
      *
      * @param array $args
      * @return array
@@ -213,7 +213,7 @@ class HttpuploadComponent extends AppComponent
     }
 
     /**
-     * Get the amount of data already uploaded
+     * Get the amount of data already uploaded.
      *
      * @param array $args
      * @return array

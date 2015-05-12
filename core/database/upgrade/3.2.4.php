@@ -48,6 +48,6 @@ class Upgrade_3_2_4 extends MIDASUpgrade
             date_creation timestamp without time zone NOT NULL DEFAULT now(),
             last_update timestamp without time zone NOT NULL);
         ");
-        $this->db->query("CREATE INDEX activedownload_idx_ip ON activedownload (ip);");
+        $this->db->query('CREATE INDEX activedownload_idx_ip ON activedownload (ip);');
     }
 }

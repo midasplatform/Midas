@@ -9,7 +9,7 @@ class REST_Serializer_Adapter_Xml extends Zend_Serializer_Adapter_AdapterAbstrac
     );
 
     /**
-     * Serialize PHP value to XML
+     * Serialize PHP value to XML.
      *
      * @param  mixed $value
      * @param  array $opts
@@ -24,6 +24,7 @@ class REST_Serializer_Adapter_Xml extends Zend_Serializer_Adapter_AdapterAbstrac
             $dom = new DOMDocument('1.0', 'utf-8');
             $root = $dom->appendChild($dom->createElement($opts['rootNode']));
             $this->createNodes($dom, $value, $root, false);
+
             return $dom->saveXml();
         } catch (Exception $e) {
             require_once 'Zend/Serializer/Exception.php';
@@ -32,7 +33,7 @@ class REST_Serializer_Adapter_Xml extends Zend_Serializer_Adapter_AdapterAbstrac
     }
 
     /**
-     * Deserialize XML to PHP value
+     * Deserialize XML to PHP value.
      *
      * @param  string $json
      * @param  array $opts
@@ -42,6 +43,7 @@ class REST_Serializer_Adapter_Xml extends Zend_Serializer_Adapter_AdapterAbstrac
     {
         try {
             Zend_Json::fromXml($xml);
+
             return (array) Zend_Json::decode($json, Zend_Json::TYPE_OBJECT);
         } catch (Exception $e) {
             require_once 'Zend/Serializer/Exception.php';
@@ -75,8 +77,7 @@ class REST_Serializer_Adapter_Xml extends Zend_Serializer_Adapter_AdapterAbstrac
             case 'object':
             case 'array':
                 foreach ($data as $key => $value) {
-
-                    if (is_object($value) and $value instanceOf DOMDocument and !empty($value->firstChild)) {
+                    if (is_object($value) and $value instanceof DOMDocument and !empty($value->firstChild)) {
                         $node = $dom->importNode($value->firstChild, true);
                         $parent->appendChild($node);
                     } else {
@@ -85,38 +86,32 @@ class REST_Serializer_Adapter_Xml extends Zend_Serializer_Adapter_AdapterAbstrac
                         // SimpleXMLElements can contain key with @attribute as the key name
                         // which indicates an associated array that should be applied to the xml element
 
-                        if (is_object($value) and $value instanceOf SimpleXMLElement) {
+                        if (is_object($value) and $value instanceof SimpleXMLElement) {
                             $attributes = $value->attributes();
                             $value = (array) $value;
                         }
 
                         // don't emit @attribute as an element of it's own
-                        if ($key[0] !== '@')
-                        {
+                        if ($key[0] !== '@') {
                             if (gettype($value) == 'array' and !is_numeric($key)) {
                                 $child = $parent->appendChild($dom->createElement($key));
 
-                                if ($attributes)
-                                {
-                                    foreach ($attributes as $attrKey => $attrValue)
-                                    {
+                                if ($attributes) {
+                                    foreach ($attributes as $attrKey => $attrValue) {
                                         $child->setAttribute($attrKey, $attrValue);
                                     }
                                 }
 
                                 $this->createNodes($dom, $value, $child);
                             } else {
-
                                 if (is_numeric($key)) {
                                     $key = sprintf('%s', $this->depluralize($parent->tagName));
                                 }
 
                                 $child = $parent->appendChild($dom->createElement($key));
 
-                                if ($attributes)
-                                {
-                                    foreach ($attributes as $attrKey => $attrValue)
-                                    {
+                                if ($attributes) {
+                                    foreach ($attributes as $attrKey => $attrValue) {
                                         $child->setAttribute($attrKey, $attrValue);
                                     }
                                 }
@@ -131,7 +126,8 @@ class REST_Serializer_Adapter_Xml extends Zend_Serializer_Adapter_AdapterAbstrac
         }
     }
 
-    private function depluralize($word) {
+    private function depluralize($word)
+    {
         $rules = array(
             'ss' => false,
             'os' => 'o',
@@ -140,11 +136,11 @@ class REST_Serializer_Adapter_Xml extends Zend_Serializer_Adapter_AdapterAbstrac
             'oes' => 'o',
             'ies' => 'y',
             'ves' => 'f',
-            's' => null
+            's' => null,
         );
 
         // Loop through all the rules
-        foreach(array_keys($rules) as $key) {
+        foreach (array_keys($rules) as $key) {
             // If the end of the word doesn't match the key, it's not a candidate for replacement.
             if (substr($word, (strlen($key) * -1)) != $key) {
                 continue;
@@ -156,7 +152,7 @@ class REST_Serializer_Adapter_Xml extends Zend_Serializer_Adapter_AdapterAbstrac
             }
 
             // apply the rule
-            return substr($word, 0, strlen($word) - strlen($key)) . $rules[$key];
+            return substr($word, 0, strlen($word) - strlen($key)).$rules[$key];
         }
 
         return $word;

@@ -52,7 +52,7 @@ class Dicomextractor_Notification extends ApiEnabled_Notification
 
     /**
      * Get javascript for the item view that will specify the ajax call
-     * for DICOM extraction
+     * for DICOM extraction.
      */
     public function getJs($params)
     {

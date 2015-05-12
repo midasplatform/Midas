@@ -35,7 +35,6 @@
  * @method void setCreationDate(string $creationDate)
  * @method UserDao getUser()
  * @method void setUser(UserDao $user)
- * @package Core\DAO
  */
 class UserapiDao extends AppDao
 {

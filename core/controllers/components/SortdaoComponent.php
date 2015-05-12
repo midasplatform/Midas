@@ -39,7 +39,7 @@ class SortdaoComponent extends AppComponent
     {
         $field = $this->field;
         if ($this->field == '' || !isset($a->$field)) {
-            throw new Zend_Exception("Error in field required by sortByDate.");
+            throw new Zend_Exception('Error in field required by sortByDate.');
         }
 
         $a_t = strtotime($a->$field);
@@ -68,7 +68,7 @@ class SortdaoComponent extends AppComponent
     {
         $field = $this->field;
         if ($this->field == '' || !isset($a->$field)) {
-            throw new Zend_Exception("Error in field required sortByName.");
+            throw new Zend_Exception('Error in field required sortByName.');
         }
         $a_n = strtolower($a->$field);
         $b_n = strtolower($b->$field);
@@ -97,7 +97,7 @@ class SortdaoComponent extends AppComponent
         $field = $this->field;
         $field2 = $this->field2;
         if ($this->field == '' || !isset($a->$field) || $this->field2 == '' || !isset($a->$field2)) {
-            throw new Zend_Exception("Error in field required by sortByNumberThenName.");
+            throw new Zend_Exception('Error in field required by sortByNumberThenName.');
         }
         $a_n = strtolower($a->$field);
         $b_n = strtolower($b->$field);
@@ -143,7 +143,7 @@ class SortdaoComponent extends AppComponent
     {
         $field = $this->field;
         if ($this->field == '' || !isset($a->$field)) {
-            throw new Zend_Exception("Error in field required by sortByNumber.");
+            throw new Zend_Exception('Error in field required by sortByNumber.');
         }
         $a_n = strtolower($a->$field);
         $b_n = strtolower($b->$field);
@@ -160,7 +160,7 @@ class SortdaoComponent extends AppComponent
     }
 
     /**
-     * Unique
+     * Unique.
      *
      * @param array $array
      * @param bool $keep_key_assoc

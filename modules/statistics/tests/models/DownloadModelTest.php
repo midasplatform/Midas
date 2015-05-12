@@ -32,7 +32,7 @@ class Statistics_DownloadModelTest extends DatabaseTestCase
     }
 
     /**
-     * Test that we receive the correct daily totals from our model
+     * Test that we receive the correct daily totals from our model.
      */
     public function testDailyTotals()
     {

@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Application DAO
- */
+/** Application DAO. */
 class Packages_ApplicationDao extends AppDao
 {
     public $_model = 'Application';

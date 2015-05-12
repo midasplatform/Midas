@@ -28,23 +28,23 @@ class Visualize_WrapperController extends Visualize_AppController
     /** indexAction */
     public function indexAction()
     {
-        $this->view->header = $this->t("Preview");
+        $this->view->header = $this->t('Preview');
         $this->view->Date = $this->Component->Date;
         $this->view->Utility = $this->Component->Utility;
-        $itemId = $this->getParam("itemId");
+        $itemId = $this->getParam('itemId');
         $viewMode = $this->getParam('viewMode');
         if (!isset($viewMode)) {
             $viewMode = 'volume';
         }
         if (!isset($itemId) || !is_numeric($itemId)) {
-            throw new Zend_Exception("itemId  should be a number");
+            throw new Zend_Exception('itemId  should be a number');
         }
         $itemDao = $this->Item->load($itemId);
         if ($itemDao === false) {
             throw new Zend_Exception("This item doesn't exist.");
         }
         if (!$this->Item->policyCheck($itemDao, $this->userSession->Dao)) {
-            throw new Zend_Exception("Problem policies.");
+            throw new Zend_Exception('Problem policies.');
         }
 
         $itemRevision = $this->Item->getLastRevision($itemDao);
@@ -58,11 +58,11 @@ class Visualize_WrapperController extends Visualize_AppController
         $this->view->metaDescription = substr($itemDao->getDescription(), 0, 160);
         $this->view->viewMode = $viewMode;
 
-        $tmp = Zend_Registry::get('notifier')->callback("CALLBACK_VISUALIZE_CAN_VISUALIZE", array('item' => $itemDao));
+        $tmp = Zend_Registry::get('notifier')->callback('CALLBACK_VISUALIZE_CAN_VISUALIZE', array('item' => $itemDao));
         if (isset($tmp['visualize']) && $tmp['visualize'] == true) {
             $this->view->preview = true;
         } else {
-            throw new Zend_Exception("Unable to preview this item.");
+            throw new Zend_Exception('Unable to preview this item.');
         }
 
         $items = array();
@@ -85,7 +85,7 @@ class Visualize_WrapperController extends Visualize_AppController
         }
 
         foreach ($items as $key => $item) {
-            $tmp = Zend_Registry::get('notifier')->callback("CALLBACK_VISUALIZE_CAN_VISUALIZE", array('item' => $item));
+            $tmp = Zend_Registry::get('notifier')->callback('CALLBACK_VISUALIZE_CAN_VISUALIZE', array('item' => $item));
             if (isset($tmp['visualize']) && $tmp['visualize'] == true) {
                 $items[$key]->preview = 'true';
             } else {

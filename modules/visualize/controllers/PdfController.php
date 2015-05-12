@@ -45,10 +45,10 @@ class Visualize_PdfController extends Visualize_AppController
             throw new Zend_Exception('The item has no bitstreams', MIDAS_INVALID_POLICY);
         }
         $this->bistream = $bitstreams[0];
-        echo "<html>";
-        echo "<object height='750' width='750' type='application/pdf' data='".$this->view->webroot."/download?items=".$item->getKey(
-            )."'> <param name='src' value='".$this->view->webroot."/download?items=".$item->getKey()."'/></object>";
+        echo '<html>';
+        echo "<object height='750' width='750' type='application/pdf' data='".$this->view->webroot.'/download?items='.$item->getKey(
+            )."'> <param name='src' value='".$this->view->webroot.'/download?items='.$item->getKey()."'/></object>";
 
-        echo "</html>";
+        echo '</html>';
     }
 }

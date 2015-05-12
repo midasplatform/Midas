@@ -38,7 +38,6 @@
  * @method void setFeedpolicygroup(FeedpolicygroupDao $feedPolicyGroup)
  * @method FeedpolicyuserDao getFeedpolicyuser()
  * @method void setFeedpolicyuser(FeedpolicyuserDao $feedPolicyUser)
- * @package Core\DAO
  */
 class FeedDao extends AppDao
 {

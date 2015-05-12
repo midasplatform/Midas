@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Tests the Import Controller that drives the local uploader
- */
+/** Tests the Import Controller that drives the local uploader. */
 class Core_ImportControllerTest extends ControllerTestCase
 {
     /** init tests */
@@ -139,7 +137,7 @@ class Core_ImportControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test that the import works correctly
+     * Test that the import works correctly.
      */
     public function testImportAction()
     {
@@ -164,7 +162,7 @@ class Core_ImportControllerTest extends ControllerTestCase
         $this->resetAll();
         $this->getRequest()->setMethod('POST');
         $this->params = array();
-        $this->params['uploadid'] = "1109853050";
+        $this->params['uploadid'] = '1109853050';
         $this->params['inputdirectory'] = $this->getTempDirectory().'/test/A';
         $this->params['importassetstoretype'] = '0';
         $this->params['assetstore'] = $this->Assetstore->getDefault()->getKey();
@@ -180,7 +178,7 @@ class Core_ImportControllerTest extends ControllerTestCase
         $this->resetAll();
         $this->getRequest()->setMethod('POST');
         $this->params = array();
-        $this->params['uploadid'] = "1109853050";
+        $this->params['uploadid'] = '1109853050';
         $this->params['inputdirectory'] = $this->getTempDirectory().'/test/A';
         $this->params['importassetstoretype'] = '0';
         $this->params['assetstore'] = $this->Assetstore->getDefault()->getKey();
@@ -205,7 +203,7 @@ class Core_ImportControllerTest extends ControllerTestCase
         $this->resetAll();
         $this->getRequest()->setMethod('POST');
         $this->params = array();
-        $this->params['uploadid'] = "1109853050";
+        $this->params['uploadid'] = '1109853050';
         $this->params['inputdirectory'] = $this->getTempDirectory().'/test/A';
         $this->params['importassetstoretype'] = '0';
         $this->params['assetstore'] = $this->Assetstore->getDefault()->getKey();

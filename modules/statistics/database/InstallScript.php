@@ -36,6 +36,5 @@ class Statistics_InstallScript extends MIDASModuleInstallScript
         $settingModel->setConfig(STATISTICS_PIWIK_API_KEY_KEY, STATISTICS_PIWIK_API_KEY_DEFAULT_VALUE, $this->moduleName);
         $settingModel->setConfig(STATISTICS_IP_INFO_DB_API_KEY_KEY, STATISTICS_IP_INFO_DB_API_KEY_DEFAULT_VALUE, $this->moduleName);
         $settingModel->setConfig(STATISTICS_SEND_DAILY_REPORTS_KEY, STATISTICS_SEND_DAILY_REPORTS_DEFAULT_VALUE, $this->moduleName);
-
     }
 }

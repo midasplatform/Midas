@@ -80,7 +80,7 @@ class Pvw_Notification extends MIDAS_Notification
     }
 
     /**
-     * Return the ParaViewWeb admin tab link
+     * Return the ParaViewWeb admin tab link.
      */
     public function getAdminTab()
     {

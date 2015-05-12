@@ -20,13 +20,11 @@
 
 require_once BASE_PATH.'/modules/packages/models/base/ProjectModelBase.php';
 
-/**
- * Package PDO Model
- */
+/** Package PDO Model. */
 class Packages_ProjectModel extends Packages_ProjectModelBase
 {
     /**
-     * Get all enabled project communities
+     * Get all enabled project communities.
      */
     public function getAllEnabled()
     {

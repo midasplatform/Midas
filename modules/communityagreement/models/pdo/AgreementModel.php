@@ -20,18 +20,11 @@
 
 require_once BASE_PATH.'/modules/communityagreement/models/base/AgreementModelBase.php';
 
-/**
- * Communityagreement_AgreementModel
- *
- * agreement pdo model
- *
- * @category   Midas modules
- * @package    communityagreement
- */
+/** Communityagreement_AgreementModel. */
 class Communityagreement_AgreementModel extends Communityagreement_AgreementModelBase
 {
     /**
-     * get all the community agreements
+     * get all the community agreements.
      *
      * @return array of agreementDao
      */
@@ -49,7 +42,7 @@ class Communityagreement_AgreementModel extends Communityagreement_AgreementMode
     }
 
     /**
-     * Get an agreement by communityid
+     * Get an agreement by communityid.
      *
      * @param  string $community_id
      * @return agreementDao

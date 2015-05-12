@@ -24,7 +24,7 @@ class Readmes_Notification extends MIDAS_Notification
     public $_models = array('Community', 'Folder');
 
     /**
-     * init notification process
+     * init notification process.
      */
     public function init()
     {
@@ -33,7 +33,7 @@ class Readmes_Notification extends MIDAS_Notification
     }
 
     /**
-     * callback function to get javascript for the folder
+     * callback function to get javascript for the folder.
      *
      * @return array
      */
@@ -46,7 +46,7 @@ class Readmes_Notification extends MIDAS_Notification
     }
 
     /**
-     * callback function to get javascript for the community
+     * callback function to get javascript for the community.
      *
      * @return array
      */

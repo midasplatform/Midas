@@ -5,7 +5,7 @@ class REST_Request extends Zend_Controller_Request_Http
 
     public function setError($code, $message)
     {
-        $this->_error = new stdClass;
+        $this->_error = new stdClass();
         $this->_error->code = $code;
         $this->_error->message = $message;
 

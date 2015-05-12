@@ -47,7 +47,7 @@ abstract class Mfa_ApitokenModelBase extends Mfa_AppModel
     }
 
     /**
-     * Create a temporary token that will be used to fetch the user's real API token later
+     * Create a temporary token that will be used to fetch the user's real API token later.
      *
      * @param UserDao $user user to create the token for
      * @param TokenDao $tokenDao token DAO

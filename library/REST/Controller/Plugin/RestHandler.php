@@ -2,7 +2,7 @@
 /**
  * Responsible for setting the HTTP Vary header,
  * setting the context switch based on the Accept header
- * and processing the incoming request formats
+ * and processing the incoming request formats.
  */
 class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
 {
@@ -16,22 +16,22 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
         'html',
         'xml',
         'php',
-        'json'
+        'json',
     );
 
     private $responseTypes = array(
-        'text/html'                         => 'html',
-        'application/xhtml+xml'             => 'html',
-        'text/xml'                          => 'xml',
-        'application/xml'                   => 'xml',
-        'application/xhtml+xml'             => 'xml',
-        'text/php'                          => 'php',
-        'application/php'                   => 'php',
-        'application/x-httpd-php'           => 'php',
-        'application/x-httpd-php-source'    => 'php',
-        'text/javascript'                   => 'json',
-        'application/json'                  => 'json',
-        'application/javascript'            => 'json'
+        'text/html' => 'html',
+        'application/xhtml+xml' => 'html',
+        'text/xml' => 'xml',
+        'application/xml' => 'xml',
+        'application/xhtml+xml' => 'xml',
+        'text/php' => 'php',
+        'application/php' => 'php',
+        'application/x-httpd-php' => 'php',
+        'application/x-httpd-php-source' => 'php',
+        'text/javascript' => 'json',
+        'application/json' => 'json',
+        'application/javascript' => 'json',
     );
 
     private $requestTypes = array(
@@ -46,7 +46,7 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
         'text/javascript',
         'application/json',
         'application/javascript',
-        false
+        false,
     );
 
     public function __construct(Zend_Controller_Front $frontController)
@@ -101,7 +101,7 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
         array_shift($tokens); // remove 'rest' prefix
         if (!empty($tokens)) {
             if (in_array($tokens[0], Zend_Registry::get('modulesHaveApi'))) {
-                $apiModuleName = 'api' . array_shift($tokens);
+                $apiModuleName = 'api'.array_shift($tokens);
                 $controllerName = array_shift($tokens);
                 $request->setParam('module', $apiModuleName);
                 $request->setParam('controller', $controllerName);
@@ -124,13 +124,13 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
             $action = $request->getActionName();
             if (empty($tokens) && ($action == 'get' || $action == 'index')) {
                 $request->setActionName('index');
-            } else if (empty($tokens) && ($action == 'post' || $action == 'put')) {
+            } elseif (empty($tokens) && ($action == 'post' || $action == 'put')) {
                 $request->setActionName('post');
-            } else if (!empty($tokens) && is_numeric($tokens[0])) {
+            } elseif (!empty($tokens) && is_numeric($tokens[0])) {
                 $request->setParam('id', array_shift($tokens));
             } else {
                 $this->_response->setHttpResponseCode(400); // 400 Bad Request
-                throw new Exception('The web API ' . $request->getPathInfo() . ' is not supported.', 400);
+                throw new Exception('The web API '.$request->getPathInfo().' is not supported.', 400);
             }
         }
     }
@@ -150,7 +150,7 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
 
     /**
      * sets the response format and content type
-     * uses the "format" query string paramter and the HTTP Accept header
+     * uses the "format" query string paramter and the HTTP Accept header.
      */
     private function setResponseFormat(Zend_Controller_Request_Abstract $request)
     {
@@ -192,7 +192,6 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
 
         foreach ($methods as &$method) {
             if ($method->getDeclaringClass()->name != 'REST_Controller') {
-
                 $name = strtoupper($method->name);
 
                 if ($name == '__CALL' and $method->class != 'Zend_Controller_Action') {
@@ -218,7 +217,7 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
 
     /**
      * PHP only parses the body into $_POST if its a POST request
-     * this parses the reqest body in accordance with RFC2616 spec regardless of the HTTP method
+     * this parses the reqest body in accordance with RFC2616 spec regardless of the HTTP method.
      */
     private function handleRequestBody(Zend_Controller_Request_Abstract $request)
     {
@@ -268,7 +267,7 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
                             if (preg_match(sprintf('/--%s(.+)--%s--/s', $boundary, $boundary), $rawBody, $regs)) {
 
                                 // split into chuncks
-                                $chunks = explode('--' . $boundary, trim($regs[1]));
+                                $chunks = explode('--'.$boundary, trim($regs[1]));
 
                                 foreach ($chunks as $chunk) {
                                     // parse each chunk
@@ -287,7 +286,7 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
                                                 'name' => $regs['filename'],
                                                 'type' => $headers['Content-Type'],
                                                 'size' => mb_strlen($data),
-                                                'content' => base64_encode($data)
+                                                'content' => base64_encode($data),
                                             );
                                         // otherwise its a regular key=value combination
                                         } else {
@@ -330,17 +329,16 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
                 }
 
                 $request->setParams($_POST);
-
             } catch (Exception $e) {
                 $request->dispatchError(REST_Response::BAD_REQUEST, 'Invalid Payload Format');
+
                 return;
             }
         }
     }
 
-
     /**
-     * constructs reflection class of the requested controoler
+     * constructs reflection class of the requested controoler.
      **/
     private function getReflectionClass(Zend_Controller_Request_Abstract $request)
     {
@@ -348,9 +346,11 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
             // get the dispatcher to load the controller class
             $controller = $this->dispatcher->getControllerClass($request);
             // if no controller present escape silently...
-            if ($controller === false) return false;
+            if ($controller === false) {
+                return false;
+            }
             // ... load controller class
-            $className  = $this->dispatcher->loadClass($controller);
+            $className = $this->dispatcher->loadClass($controller);
 
             // extract the actions through reflection
             $this->reflectionClass = new ReflectionClass($className);
@@ -360,7 +360,7 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
     }
 
     /**
-     * determines if the requested controller is a RESTful controller
+     * determines if the requested controller is a RESTful controller.
      **/
     private function isRestClass($class)
     {
@@ -375,7 +375,7 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
 
     /**
      * utility function to replace http_parse_headers when its not available
-     * see: http://pecl.php.net/pecl_http
+     * see: http://pecl.php.net/pecl_http.
      **/
     private function parseHeaders($header)
     {
@@ -385,10 +385,10 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
 
         $retVal = array();
         $fields = explode("\r\n", preg_replace('/\x0D\x0A[\x09\x20]+/', ' ', $header));
-        foreach( $fields as $field ) {
-            if( preg_match('/([^:]+): (.+)/m', $field, $match) ) {
+        foreach ($fields as $field) {
+            if (preg_match('/([^:]+): (.+)/m', $field, $match)) {
                 $match[1] = preg_replace('/(?<=^|[\x09\x20\x2D])./e', 'strtoupper("\0")', strtolower(trim($match[1])));
-                if( isset($retVal[$match[1]]) ) {
+                if (isset($retVal[$match[1]])) {
                     $retVal[$match[1]] = array($retVal[$match[1]], $match[2]);
                 } else {
                     $retVal[$match[1]] = trim($match[2]);
@@ -401,7 +401,7 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
 
     /**
      * utility function to replace http_negotiate_content_type when its not available
-     * see: http://pecl.php.net/pecl_http
+     * see: http://pecl.php.net/pecl_http.
      **/
     private function negotiateContentType($request)
     {
@@ -428,7 +428,7 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
                 // divide "mime/type;q=X" into two parts: "mime/type" / "X"
                 list($type, $quality) = explode(';q=', $type);
             } elseif (strpos($type, ';')) {
-                list($type, ) = explode(';', $type);
+                list($type) = explode(';', $type);
             }
 
             // WARNING: $q == 0 means, that mime-type isn't supported!

@@ -53,7 +53,7 @@ abstract class Statistics_IpLocationModelBase extends Statistics_AppModel
 
     /**
      * Performs the geolocation job on any ip entries that haven't been
-     * geolocated yet
+     * geolocated yet.
      */
     public function performGeolocation($apiKey)
     {

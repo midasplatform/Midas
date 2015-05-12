@@ -29,7 +29,7 @@ class Statistics_Upgrade_1_0_1 extends MIDASUpgrade
     public function mysql()
     {
         // Create a new table mapping ip -> lat/long
-        $sql = "
+        $sql = '
             CREATE TABLE IF NOT EXISTS `statistics_ip_location` (
                 `ip_location_id` bigint(20) NOT NULL AUTO_INCREMENT,
                 `ip` varchar(50) NOT NULL,
@@ -38,11 +38,11 @@ class Statistics_Upgrade_1_0_1 extends MIDASUpgrade
                 PRIMARY KEY (`ip_location_id`),
                 UNIQUE KEY (`ip`)
             ) DEFAULT CHARSET=utf8;
-        ";
+        ';
         $this->db->query($sql);
 
         // Add a logical foreign key into the download table
-        $this->db->query("ALTER TABLE `statistics_download` ADD COLUMN `ip_location_id` bigint(20) NOT NULL;");
+        $this->db->query('ALTER TABLE `statistics_download` ADD COLUMN `ip_location_id` bigint(20) NOT NULL;');
 
         // Copy the entries from our old table into the new one
         $sql = $this->db->select()
@@ -66,13 +66,13 @@ class Statistics_Upgrade_1_0_1 extends MIDASUpgrade
         }
 
         // Drop the columns from the download table
-        $this->db->query("ALTER TABLE `statistics_download` DROP `ip`;");
-        $this->db->query("ALTER TABLE `statistics_download` DROP `latitude`;");
-        $this->db->query("ALTER TABLE `statistics_download` DROP `longitude`;");
+        $this->db->query('ALTER TABLE `statistics_download` DROP `ip`;');
+        $this->db->query('ALTER TABLE `statistics_download` DROP `latitude`;');
+        $this->db->query('ALTER TABLE `statistics_download` DROP `longitude`;');
 
         // Add item id index to the download table for faster item statistics lookup
-        $this->db->query("ALTER TABLE `statistics_download` ADD KEY (`item_id`);");
+        $this->db->query('ALTER TABLE `statistics_download` ADD KEY (`item_id`);');
         // Add latitude index to the geolocation table for quick selection of blank entries
-        $this->db->query("ALTER TABLE `statistics_ip_location` ADD KEY (`latitude`);");
+        $this->db->query('ALTER TABLE `statistics_ip_location` ADD KEY (`latitude`);');
     }
 }

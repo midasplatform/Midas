@@ -22,7 +22,7 @@
 class Solr_ApisearchComponent extends AppComponent
 {
     /**
-     * Search using Lucene search text queries
+     * Search using Lucene search text queries.
      *
      * @path /solr/search
      * @http GET

@@ -35,9 +35,9 @@ class Core_GroupModelTest extends DatabaseTestCase
     {
         $usersFile = $this->loadData('User', 'default');
         $communitiesFile = $this->loadData('Community', 'default');
-        $newgroup = $this->Group->createGroup($communitiesFile[0], "testName");
+        $newgroup = $this->Group->createGroup($communitiesFile[0], 'testName');
         $this->assertNotEquals(false, $newgroup);
-        $this->assertEquals("testName", $newgroup->getName());
+        $this->assertEquals('testName', $newgroup->getName());
 
         $this->Group->addUser($newgroup, $usersFile[0]);
         $users = $newgroup->getUsers();

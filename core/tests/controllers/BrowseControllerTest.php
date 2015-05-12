@@ -32,7 +32,7 @@ class Core_BrowseControllerTest extends ControllerTestCase
 
     /**
      * Test the batch delete controller exposed as "delete all selected"
-     * action in the browse views
+     * action in the browse views.
      */
     public function testBatchDeleteAction()
     {
@@ -103,7 +103,7 @@ class Core_BrowseControllerTest extends ControllerTestCase
     }
 
     /**
-     * Renders the "explore" page
+     * Renders the "explore" page.
      */
     public function testIndexAction()
     {
@@ -111,7 +111,7 @@ class Core_BrowseControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test the movecopy view and action
+     * Test the movecopy view and action.
      */
     public function testMovecopyAction()
     {
@@ -197,7 +197,7 @@ class Core_BrowseControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test selectitem and selectfolder actions
+     * Test selectitem and selectfolder actions.
      */
     public function testSelectDialogs()
     {
@@ -227,7 +227,7 @@ class Core_BrowseControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test the ajax action for listing folder children
+     * Test the ajax action for listing folder children.
      */
     public function testGetfolderscontentAction()
     {
@@ -247,7 +247,7 @@ class Core_BrowseControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test retrieving a folder's size
+     * Test retrieving a folder's size.
      */
     public function testGetfolderssizeAction()
     {
@@ -270,7 +270,7 @@ class Core_BrowseControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test retrieval of item and folder information
+     * Test retrieval of item and folder information.
      */
     public function testGetelementinfoAction()
     {

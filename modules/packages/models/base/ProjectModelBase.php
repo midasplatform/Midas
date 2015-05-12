@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Project Model Base
- */
+/** Project Model Base. */
 abstract class Packages_ProjectModelBase extends Packages_AppModel
 {
     /** constructor */
@@ -57,7 +55,7 @@ abstract class Packages_ProjectModelBase extends Packages_AppModel
     abstract public function getByCommunityId($communityId);
 
     /**
-     * Enable or disable the community as a package-hosting project
+     * Enable or disable the community as a package-hosting project.
      *
      * @param community The community dao
      * @param $value Boolean value for whether or not the community is a package-hosting project
@@ -75,7 +73,7 @@ abstract class Packages_ProjectModelBase extends Packages_AppModel
     }
 
     /**
-     * Delete the project (deletes all applications within the project as well)
+     * Delete the project (deletes all applications within the project as well).
      */
     public function delete($project)
     {

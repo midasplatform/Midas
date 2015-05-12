@@ -120,10 +120,10 @@ class RestCallMethodsTestCase extends ControllerTestCase
         $anonymousGroup = $groupModel->load(MIDAS_GROUP_ANONYMOUS_KEY);
 
         /** @var FolderpolicygroupModel $folderpolicygroupModel */
-        $folderpolicygroupModel = MidasLoader::loadModel("Folderpolicygroup");
+        $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
 
         /** @var ItempolicygroupModel $itempolicygroupModel */
-        $itempolicygroupModel = MidasLoader::loadModel("Itempolicygroup");
+        $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
 
         foreach ($testFolders as $folder) {
             if ($desiredPrivacyStatus != $folderpolicygroupModel->computePolicyStatus($folder)
@@ -138,7 +138,7 @@ class RestCallMethodsTestCase extends ControllerTestCase
             $this->assertEquals(
                 $folderpolicygroupModel->computePolicyStatus($folder),
                 $desiredPrivacyStatus,
-                $folder->getName()." has wrong privacy value after initialization"
+                $folder->getName().' has wrong privacy value after initialization'
             );
         }
 
@@ -155,7 +155,7 @@ class RestCallMethodsTestCase extends ControllerTestCase
             $this->assertEquals(
                 $itempolicygroupModel->computePolicyStatus($item),
                 $desiredPrivacyStatus,
-                $item->getName()." has wrong privacy value after initialization"
+                $item->getName().' has wrong privacy value after initialization'
             );
         }
     }
@@ -169,19 +169,19 @@ class RestCallMethodsTestCase extends ControllerTestCase
         $folderModel = MidasLoader::loadModel('Folder');
 
         /** @var FolderpolicygroupModel $folderpolicygroupModel */
-        $folderpolicygroupModel = MidasLoader::loadModel("Folderpolicygroup");
+        $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
 
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
 
         /** @var ItempolicygroupModel $itempolicygroupModel */
-        $itempolicygroupModel = MidasLoader::loadModel("Itempolicygroup");
+        $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
         foreach ($testFolders as $folder) {
             $folder = $folderModel->load($folder->getFolderId());
             $this->assertEquals(
                 $folderpolicygroupModel->computePolicyStatus($folder),
                 $expectedPrivacyStatus,
-                $folder->getName()." has wrong privacy value"
+                $folder->getName().' has wrong privacy value'
             );
         }
         foreach ($testItems as $item) {
@@ -189,7 +189,7 @@ class RestCallMethodsTestCase extends ControllerTestCase
             $this->assertEquals(
                 $itempolicygroupModel->computePolicyStatus($item),
                 $expectedPrivacyStatus,
-                $item->getName()." has wrong privacy value"
+                $item->getName().' has wrong privacy value'
             );
         }
     }
@@ -204,13 +204,13 @@ class RestCallMethodsTestCase extends ControllerTestCase
         $folderModel = MidasLoader::loadModel('Folder');
 
         /** @var FolderpolicygroupModel $folderpolicygroupModel */
-        $folderpolicygroupModel = MidasLoader::loadModel("Folderpolicygroup");
+        $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
 
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
 
         /** @var ItempolicygroupModel $itempolicygroupModel */
-        $itempolicygroupModel = MidasLoader::loadModel("Itempolicygroup");
+        $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
         foreach ($testFolders as $folder) {
             $folder = $folderModel->load($folder->getFolderId());
             $folderpolicygroup = $folderpolicygroupModel->getPolicy($group, $folder);
@@ -249,13 +249,13 @@ class RestCallMethodsTestCase extends ControllerTestCase
         $folderModel = MidasLoader::loadModel('Folder');
 
         /** @var FolderpolicygroupModel $folderpolicygroupModel */
-        $folderpolicygroupModel = MidasLoader::loadModel("Folderpolicygroup");
+        $folderpolicygroupModel = MidasLoader::loadModel('Folderpolicygroup');
 
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
 
         /** @var ItempolicygroupModel $itempolicygroupModel */
-        $itempolicygroupModel = MidasLoader::loadModel("Itempolicygroup");
+        $itempolicygroupModel = MidasLoader::loadModel('Itempolicygroup');
         foreach ($testFolders as $folder) {
             $folder = $folderModel->load($folder->getFolderId());
             $folderpolicygroup = $folderpolicygroupModel->getPolicy($group, $folder);
@@ -284,13 +284,13 @@ class RestCallMethodsTestCase extends ControllerTestCase
         $folderModel = MidasLoader::loadModel('Folder');
 
         /** @var FolderpolicyuserModel $folderpolicyuserModel */
-        $folderpolicyuserModel = MidasLoader::loadModel("Folderpolicyuser");
+        $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
 
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
 
         /** @var ItempolicyuserModel $itempolicyuserModel */
-        $itempolicyuserModel = MidasLoader::loadModel("Itempolicyuser");
+        $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
         foreach ($testFolders as $folder) {
             $folder = $folderModel->load($folder->getFolderId());
             $folderpolicyuser = $folderpolicyuserModel->getPolicy($user, $folder);
@@ -328,13 +328,13 @@ class RestCallMethodsTestCase extends ControllerTestCase
         $folderModel = MidasLoader::loadModel('Folder');
 
         /** @var FolderpolicyuserModel $folderpolicyuserModel */
-        $folderpolicyuserModel = MidasLoader::loadModel("Folderpolicyuser");
+        $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
 
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
 
         /** @var ItempolicyuserModel $itempolicyuserModel */
-        $itempolicyuserModel = MidasLoader::loadModel("Itempolicyuser");
+        $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
         foreach ($testFolders as $folder) {
             $folder = $folderModel->load($folder->getFolderId());
             $folderpolicyuser = $folderpolicyuserModel->getPolicy($user, $folder);
@@ -357,7 +357,7 @@ class RestCallMethodsTestCase extends ControllerTestCase
      * helper function to test simple invalid cases:
      * will test all invalid users sending in all required valid params
      * will also test all combinations of invalid params with a valid user
-     * for each required param
+     * for each required param.
      *
      * @param $method full name of api method
      * @param type $validUser userDao of a user authorized to make the api call
@@ -412,7 +412,7 @@ class RestCallMethodsTestCase extends ControllerTestCase
                     // 2s mean a valid form of the param is sent
                     $this->params[$requiredParam['name']] = $requiredParam['valid'];
                 } elseif ($state < 0 || $state > 2) {
-                    throw new Exception("left most param state is invalid value: ".$state);
+                    throw new Exception('left most param state is invalid value: '.$state);
                 }
             }
             if (!$skipTestCase) {
@@ -439,7 +439,7 @@ class RestCallMethodsTestCase extends ControllerTestCase
                     $rightMost += 1;
                     $requiredParamStates[$incrementIndex] = $rightMost;
                 } else {
-                    throw new Exception("left most param state is 3");
+                    throw new Exception('left most param state is 3');
                 }
             }
         }

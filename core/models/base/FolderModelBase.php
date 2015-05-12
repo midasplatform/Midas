@@ -154,12 +154,11 @@ abstract class FolderModelBase extends AppModel
     /** Zip stream */
     abstract public function zipStream(&$zip, $path, $folder, &$userDao, &$overrideOutputFunction = null);
 
-
     /** copy another folder's policies */
     public function copyFolderPolicies($folderdao, $referenceFolderdao)
     {
         if (!$folderdao instanceof FolderDao || !$referenceFolderdao instanceof FolderDao) {
-            throw new Zend_Exception("Error in param folderdao or referenceFolderdao when copying parent policies.");
+            throw new Zend_Exception('Error in param folderdao or referenceFolderdao when copying parent policies.');
         }
         $groupPolicies = $referenceFolderdao->getFolderpolicygroup();
         $userPolicies = $referenceFolderdao->getFolderpolicyuser();
@@ -181,7 +180,7 @@ abstract class FolderModelBase extends AppModel
     public function getRoot($folder)
     {
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder");
+            throw new Zend_Exception('Should be a folder');
         }
 
         $root = $folder;
@@ -199,7 +198,7 @@ abstract class FolderModelBase extends AppModel
     public function incrementViewCount($folder)
     {
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("folder should be instance of FolderDao.");
+            throw new Zend_Exception('folder should be instance of FolderDao.');
         }
         $user = Zend_Registry::get('userSession');
         if (isset($user)) {
@@ -217,15 +216,15 @@ abstract class FolderModelBase extends AppModel
     public function createFolder($name, $description, $parent, $uuid = '')
     {
         if (!$parent instanceof FolderDao && !is_numeric($parent)) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
 
         if (!is_string($name)) {
-            throw new Zend_Exception("Name should be a string.");
+            throw new Zend_Exception('Name should be a string.');
         }
 
         if (empty($name) && $name !== '0') {
-            throw new Zend_Exception("Name cannot be empty.");
+            throw new Zend_Exception('Name cannot be empty.');
         }
 
         if ($parent instanceof FolderDao) {
@@ -256,7 +255,7 @@ abstract class FolderModelBase extends AppModel
 
     /**
      * Count the bitstreams under this folder.
-     * Returns array('size'=>size_in_bytes, 'count'=>total_number_of_bitstreams)
+     * Returns array('size'=>size_in_bytes, 'count'=>total_number_of_bitstreams).
      */
     public function countBitstreams($folderDao, $userDao = null)
     {

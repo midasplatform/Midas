@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Validation AppModel
- */
+/** Validation AppModel. */
 class Validation_AppModel extends MIDASModel
 {
     public $moduleName = 'validation';

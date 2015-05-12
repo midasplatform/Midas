@@ -33,7 +33,6 @@
  * @method void setFeed(FeedDao $feed)
  * @method GroupDao getGroup()
  * @method void setGroup(GroupDao $group)
- * @package Core\DAO
  */
 class FeedpolicygroupDao extends AppDao
 {

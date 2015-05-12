@@ -103,7 +103,7 @@ class MIDAS_Notifier
                 if (isset($this->tasks[$name])) {
                     throw new Zend_Exception('Task already exits');
                 }
-                if (strpos($name, "TASK_") === false || !is_string($name)) {
+                if (strpos($name, 'TASK_') === false || !is_string($name)) {
                     throw new Zend_Exception('Task name should be a string: TASK_MODULE_NAME');
                 }
                 $this->tasks[$name] = $task;
@@ -123,14 +123,14 @@ class MIDAS_Notifier
 
                 foreach ($notificationArray as $notification) {
                     if ($notification['type'] == 'callback') {
-                        if (strpos($name, "CALLBACK_") === false || !is_string($name)
+                        if (strpos($name, 'CALLBACK_') === false || !is_string($name)
                         ) {
                             throw new Zend_Exception(
                                 'Callback name should be a string: CALLBACK_MODULE_NAME. Was '.$name
                             );
                         }
                     } else {
-                        if (strpos($name, "EVENT_") === false || !is_string($name)
+                        if (strpos($name, 'EVENT_') === false || !is_string($name)
                         ) {
                             throw new Zend_Exception('Event name should be a string: EVENT_MODULE_NAME. Was '.$name);
                         }
@@ -157,7 +157,7 @@ class MIDAS_Notifier
      */
     public function notifyEvent($name, $params = null, $moduleFilter = array())
     {
-        if (strpos($name, "EVENT_") === false || !is_string($name)) {
+        if (strpos($name, 'EVENT_') === false || !is_string($name)) {
             throw new Zend_Exception('Event name should be a string: EVENT_MODULE_NAME. Was '.$name);
         }
         if (!isset($this->notifications[$name])) {
@@ -220,7 +220,7 @@ class MIDAS_Notifier
      */
     public function callback($name, $params = null, $moduleFilter = array())
     {
-        if (strpos($name, "CALLBACK_") === false || !is_string($name)) {
+        if (strpos($name, 'CALLBACK_') === false || !is_string($name)) {
             throw new Zend_Exception('Callback name should be a string: CALLBACK_MODULE_NAME. Was '.$name);
         }
         if (!isset($this->notifications[$name])) {

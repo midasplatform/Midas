@@ -21,8 +21,6 @@
 /**
  * Bootstrap. Provides common functionality including dependency checking
  * algorithms and the ability to load bootstrap resources on demand.
- *
- * @package Core
  */
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
@@ -73,8 +71,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         Zend_Registry::set('configCore', $configCore);
 
         // check if internationalization enabled
-        if (isset($configCore->internationalization) && $configCore->internationalization == "0") {
-            $configGlobal->application->lang = "en";
+        if (isset($configCore->internationalization) && $configCore->internationalization == '0') {
+            $configGlobal->application->lang = 'en';
         }
 
         $config = new Zend_Config_Ini(APPLICATION_CONFIG, $configGlobal->environment, true);
@@ -194,7 +192,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                     'Exception',
                     'File' => array('basePath' => BASE_PATH),
                     'Html',
-                )
+                ),
             );
 
             $debug = new ZFDebug_Controller_Plugin_Debug($options);
@@ -289,28 +287,28 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $apiModules = array();
         foreach ($modules as $key => $module) {
             if ($module == 1 && file_exists(BASE_PATH.'/modules/'.$key) && file_exists(
-                    BASE_PATH."/modules/".$key."/AppController.php"
+                    BASE_PATH.'/modules/'.$key.'/AppController.php'
                 )
             ) {
                 $listeModule[] = $key;
                 // get web API controller directories and web API module names for enabled modules
-                if (file_exists(BASE_PATH."/modules/".$key."/controllers/api")) {
+                if (file_exists(BASE_PATH.'/modules/'.$key.'/controllers/api')) {
                     $frontController->addControllerDirectory(
-                        BASE_PATH."/modules/".$key."/controllers/api",
-                        "api".$key
+                        BASE_PATH.'/modules/'.$key.'/controllers/api',
+                        'api'.$key
                     );
                     $apiModules[] = $key;
                 }
             } elseif ($module == 1 && file_exists(BASE_PATH.'/privateModules/'.$key) && file_exists(
-                    BASE_PATH."/privateModules/".$key."/AppController.php"
+                    BASE_PATH.'/privateModules/'.$key.'/AppController.php'
                 )
             ) {
                 $listeModule[] = $key;
                 // get web API controller directories and web API module names for enabled modules
-                if (file_exists(BASE_PATH."/privateModules/".$key."/controllers/api")) {
+                if (file_exists(BASE_PATH.'/privateModules/'.$key.'/controllers/api')) {
                     $frontController->addControllerDirectory(
-                        BASE_PATH."/privateModules/".$key."/controllers/api",
-                        "api".$key
+                        BASE_PATH.'/privateModules/'.$key.'/controllers/api',
+                        'api'.$key
                     );
                     $apiModules[] = $key;
                 }
@@ -318,7 +316,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
 
         // get web API controller directory for core APIs
-        require_once BASE_PATH."/core/ApiController.php";
+        require_once BASE_PATH.'/core/ApiController.php';
         $frontController->addControllerDirectory(BASE_PATH.'/core/controllers/api', 'rest');
         // add RESTful route for web APIs
         $restRoute = new Zend_Rest_Route($frontController, array(), array('rest'));
@@ -328,63 +326,63 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             $route = $m;
             $nameModule = $m;
             $router->addRoute(
-                $nameModule."-1",
+                $nameModule.'-1',
                 new Zend_Controller_Router_Route(
-                    "".$route."/:controller/:action/*", array('module' => $nameModule)
+                    ''.$route.'/:controller/:action/*', array('module' => $nameModule)
                 )
             );
             $router->addRoute(
-                $nameModule."-2",
+                $nameModule.'-2',
                 new Zend_Controller_Router_Route(
-                    "".$route."/:controller/",
+                    ''.$route.'/:controller/',
                     array('module' => $nameModule, 'action' => 'index')
                 )
             );
             $router->addRoute(
-                $nameModule."-3",
+                $nameModule.'-3',
                 new Zend_Controller_Router_Route(
-                    "".$route."/",
+                    ''.$route.'/',
                     array('module' => $nameModule, 'controller' => 'index', 'action' => 'index')
                 )
             );
 
-            if (file_exists(BASE_PATH."/modules/".$route."/AppController.php")) {
-                require_once BASE_PATH."/modules/".$route."/AppController.php";
+            if (file_exists(BASE_PATH.'/modules/'.$route.'/AppController.php')) {
+                require_once BASE_PATH.'/modules/'.$route.'/AppController.php';
             }
-            if (file_exists(BASE_PATH."/modules/".$route."/models/AppDao.php")) {
-                require_once BASE_PATH."/modules/".$route."/models/AppDao.php";
+            if (file_exists(BASE_PATH.'/modules/'.$route.'/models/AppDao.php')) {
+                require_once BASE_PATH.'/modules/'.$route.'/models/AppDao.php';
             }
-            if (file_exists(BASE_PATH."/modules/".$route."/models/AppModel.php")) {
-                require_once BASE_PATH."/modules/".$route."/models/AppModel.php";
+            if (file_exists(BASE_PATH.'/modules/'.$route.'/models/AppModel.php')) {
+                require_once BASE_PATH.'/modules/'.$route.'/models/AppModel.php';
             }
-            if (file_exists(BASE_PATH."/modules/".$route."/constant/module.php")) {
-                require_once BASE_PATH."/modules/".$route."/constant/module.php";
-            }
-
-            if (file_exists(BASE_PATH."/privateModules/".$route."/AppController.php")) {
-                require_once BASE_PATH."/privateModules/".$route."/AppController.php";
-            }
-            if (file_exists(BASE_PATH."/privateModules/".$route."/models/AppDao.php")) {
-                require_once BASE_PATH."/privateModules/".$route."/models/AppDao.php";
-            }
-            if (file_exists(BASE_PATH."/privateModules/".$route."/models/AppModel.php")) {
-                require_once BASE_PATH."/privateModules/".$route."/models/AppModel.php";
-            }
-            if (file_exists(BASE_PATH."/privateModules/".$route."/constant/module.php")) {
-                require_once BASE_PATH."/privateModules/".$route."/constant/module.php";
+            if (file_exists(BASE_PATH.'/modules/'.$route.'/constant/module.php')) {
+                require_once BASE_PATH.'/modules/'.$route.'/constant/module.php';
             }
 
-            $dir = BASE_PATH."/modules/".$route."/models/base";
+            if (file_exists(BASE_PATH.'/privateModules/'.$route.'/AppController.php')) {
+                require_once BASE_PATH.'/privateModules/'.$route.'/AppController.php';
+            }
+            if (file_exists(BASE_PATH.'/privateModules/'.$route.'/models/AppDao.php')) {
+                require_once BASE_PATH.'/privateModules/'.$route.'/models/AppDao.php';
+            }
+            if (file_exists(BASE_PATH.'/privateModules/'.$route.'/models/AppModel.php')) {
+                require_once BASE_PATH.'/privateModules/'.$route.'/models/AppModel.php';
+            }
+            if (file_exists(BASE_PATH.'/privateModules/'.$route.'/constant/module.php')) {
+                require_once BASE_PATH.'/privateModules/'.$route.'/constant/module.php';
+            }
+
+            $dir = BASE_PATH.'/modules/'.$route.'/models/base';
             if (!is_dir($dir)) {
-                $dir = BASE_PATH."/privateModules/".$route."/models/base";
+                $dir = BASE_PATH.'/privateModules/'.$route.'/models/base';
             }
 
             if (is_dir($dir)) {
                 $objects = scandir($dir);
                 foreach ($objects as $object) {
-                    if ($object != "." && $object != "..") {
-                        if (filetype($dir."/".$object) != "dir") {
-                            require_once $dir."/".$object;
+                    if ($object != '.' && $object != '..') {
+                        if (filetype($dir.'/'.$object) != 'dir') {
+                            require_once $dir.'/'.$object;
                         }
                     }
                 }

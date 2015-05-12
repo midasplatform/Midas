@@ -83,7 +83,7 @@ class Batchmake_ItemmetricModelTest extends DatabaseTestCase
     }
 
     /**
-     * tests getAll abstract function
+     * tests getAll abstract function.
      */
     public function testGetAll()
     {
@@ -103,7 +103,7 @@ class Batchmake_ItemmetricModelTest extends DatabaseTestCase
                 }
             }
             if (!$found) {
-                $this->fail("Did not find a testdata itemmetric , with getAll");
+                $this->fail('Did not find a testdata itemmetric , with getAll');
             }
         }
     }

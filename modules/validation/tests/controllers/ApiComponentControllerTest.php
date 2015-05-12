@@ -70,7 +70,7 @@ class Validation_ApiComponentControllerTest extends ControllerTestCase
     /** Test to see that the response is bad (for testing exceptional cases) */
     private function _assertStatusFailed($resp)
     {
-        $this->assertEquals($resp->stat, "fail");
+        $this->assertEquals($resp->stat, 'fail');
         $this->assertEquals($resp->code, -1);
     }
 
@@ -141,13 +141,13 @@ class Validation_ApiComponentControllerTest extends ControllerTestCase
         $this->_assertStatusOk($resp);
         $dashboards = $resp->data;
         $this->assertEquals(1, count($dashboards));
-        $this->assertEquals($dashboards[0]->dashboard_id, "1");
-        $this->assertEquals($dashboards[0]->owner_id, "1");
-        $this->assertEquals($dashboards[0]->name, "foo");
-        $this->assertEquals($dashboards[0]->description, "bar");
-        $this->assertEquals($dashboards[0]->truthfolder_id, "1");
-        $this->assertEquals($dashboards[0]->testingfolder_id, "2");
-        $this->assertEquals($dashboards[0]->trainingfolder_id, "3");
+        $this->assertEquals($dashboards[0]->dashboard_id, '1');
+        $this->assertEquals($dashboards[0]->owner_id, '1');
+        $this->assertEquals($dashboards[0]->name, 'foo');
+        $this->assertEquals($dashboards[0]->description, 'bar');
+        $this->assertEquals($dashboards[0]->truthfolder_id, '1');
+        $this->assertEquals($dashboards[0]->testingfolder_id, '2');
+        $this->assertEquals($dashboards[0]->trainingfolder_id, '3');
     }
 
     /** test getDashboard */
@@ -159,13 +159,13 @@ class Validation_ApiComponentControllerTest extends ControllerTestCase
         $resp = $this->_callJsonApi();
         $this->_assertStatusOk($resp);
         $dashboard = $resp->data;
-        $this->assertEquals($dashboard->dashboard_id, "1");
-        $this->assertEquals($dashboard->owner_id, "1");
-        $this->assertEquals($dashboard->name, "foo");
-        $this->assertEquals($dashboard->description, "bar");
-        $this->assertEquals($dashboard->truthfolder_id, "1");
-        $this->assertEquals($dashboard->testingfolder_id, "2");
-        $this->assertEquals($dashboard->trainingfolder_id, "3");
+        $this->assertEquals($dashboard->dashboard_id, '1');
+        $this->assertEquals($dashboard->owner_id, '1');
+        $this->assertEquals($dashboard->name, 'foo');
+        $this->assertEquals($dashboard->description, 'bar');
+        $this->assertEquals($dashboard->truthfolder_id, '1');
+        $this->assertEquals($dashboard->testingfolder_id, '2');
+        $this->assertEquals($dashboard->trainingfolder_id, '3');
     }
 
     /** test getDashboard (failure case) */
@@ -175,8 +175,8 @@ class Validation_ApiComponentControllerTest extends ControllerTestCase
         $this->params['dashboard_id'] = 2;
         $this->request->setMethod('POST');
         $resp = $this->_callJsonApi();
-        $this->assertEquals($resp->message, "No dashboard found with that id.");
-        $this->assertEquals($resp->stat, "fail");
+        $this->assertEquals($resp->message, 'No dashboard found with that id.');
+        $this->assertEquals($resp->stat, 'fail');
         $this->assertEquals($resp->code, -1);
     }
 
@@ -185,8 +185,8 @@ class Validation_ApiComponentControllerTest extends ControllerTestCase
     {
         $this->params['token'] = $this->_loginUsingApiKeyAsAdmin();
         $this->params['method'] = 'midas.validation.createdashboard';
-        $this->params['name'] = "testing123";
-        $this->params['description'] = "testing456";
+        $this->params['name'] = 'testing123';
+        $this->params['description'] = 'testing456';
         $this->request->setMethod('POST');
         $resp = $this->_callJsonApi();
         $this->_assertStatusOk($resp);
@@ -200,8 +200,8 @@ class Validation_ApiComponentControllerTest extends ControllerTestCase
         $this->_assertStatusOk($resp);
         $dashboard = $resp->data;
         $this->assertEquals($dashboard->dashboard_id, $dashboardId);
-        $this->assertEquals($dashboard->name, "testing123");
-        $this->assertEquals($dashboard->description, "testing456");
+        $this->assertEquals($dashboard->name, 'testing123');
+        $this->assertEquals($dashboard->description, 'testing456');
     }
 
     /** test createDashboard (without admin credentials)*/
@@ -209,24 +209,24 @@ class Validation_ApiComponentControllerTest extends ControllerTestCase
     {
         // Test as anon
         $this->params['method'] = 'midas.validation.createdashboard';
-        $this->params['name'] = "testing123";
-        $this->params['description'] = "testing456";
+        $this->params['name'] = 'testing123';
+        $this->params['description'] = 'testing456';
         $this->request->setMethod('POST');
         $resp = $this->_callJsonApi();
-        $this->assertEquals($resp->message, "Only an admin can create a dashboard.");
-        $this->assertEquals($resp->stat, "fail");
+        $this->assertEquals($resp->message, 'Only an admin can create a dashboard.');
+        $this->assertEquals($resp->stat, 'fail');
         $this->assertEquals($resp->code, -1);
         $this->resetAll();
 
         // Test as normal user
         $this->params['token'] = $this->_loginUsingApiKey();
         $this->params['method'] = 'midas.validation.createdashboard';
-        $this->params['name'] = "testing123";
-        $this->params['description'] = "testing456";
+        $this->params['name'] = 'testing123';
+        $this->params['description'] = 'testing456';
         $this->request->setMethod('POST');
         $resp = $this->_callJsonApi();
-        $this->assertEquals($resp->message, "Only an admin can create a dashboard.");
-        $this->assertEquals($resp->stat, "fail");
+        $this->assertEquals($resp->message, 'Only an admin can create a dashboard.');
+        $this->assertEquals($resp->stat, 'fail');
         $this->assertEquals($resp->code, -1);
     }
 
@@ -427,7 +427,7 @@ class Validation_ApiComponentControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test removing a result folder as an administrative user
+     * Test removing a result folder as an administrative user.
      */
     public function testRemoveResultFolderAsAdmin()
     {
@@ -452,7 +452,7 @@ class Validation_ApiComponentControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test removing a result folder
+     * Test removing a result folder.
      */
     public function testRemoveResultFolderAsUser()
     {
@@ -476,7 +476,7 @@ class Validation_ApiComponentControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test removing a result folder as anonymous
+     * Test removing a result folder as anonymous.
      */
     public function testRemoveResultFolderAsAnonymous()
     {
@@ -499,7 +499,7 @@ class Validation_ApiComponentControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test getting the result folders
+     * Test getting the result folders.
      */
     public function testGetResults()
     {
@@ -544,7 +544,7 @@ class Validation_ApiComponentControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test setting and getting a scalar result
+     * Test setting and getting a scalar result.
      */
     public function testGetSetScalarResult()
     {
@@ -595,7 +595,7 @@ class Validation_ApiComponentControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test getting scalar results in batch
+     * Test getting scalar results in batch.
      * @SuppressWarnings controlCloseCurly
      */
     public function testGetScores()
@@ -650,7 +650,7 @@ class Validation_ApiComponentControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test getting all scalar results for a given dashboard
+     * Test getting all scalar results for a given dashboard.
      * @SuppressWarnings controlCloseCurly
      */
     public function testGetAllScores()

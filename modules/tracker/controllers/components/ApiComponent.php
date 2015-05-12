@@ -18,15 +18,11 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * API component for the tracker module.
- *
- * @package Modules\Tracker\Component
- */
+/** API component for the tracker module. */
 class Tracker_ApiComponent extends AppComponent
 {
-	/** @var string */
-	public $moduleName = 'tracker';
+    /** @var string */
+    public $moduleName = 'tracker';
 
     /**
      * Helper function for verifying keys in an input array.
@@ -624,8 +620,10 @@ class Tracker_ApiComponent extends AppComponent
             if (is_null($privateFolder)) {
                 throw new Exception('No private folder in the given community in which to create an item', -1);
             }
+
             return $itemModel->createItem($itemName, '', $privateFolder);
         }
+
         return $items[0];
     }
 }

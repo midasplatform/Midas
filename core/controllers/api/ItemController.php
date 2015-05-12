@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- *  Web API Controller for the Item resource
- */
+/** Web API Controller for the Item resource. */
 class Rest_ItemController extends ApiController
 {
     /**

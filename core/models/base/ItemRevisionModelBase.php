@@ -134,7 +134,7 @@ abstract class ItemRevisionModelBase extends AppModel
                 $tmpPath = UtilityComponent::getDataDirectory('thumbnail');
                 if (!file_exists($tmpPath)) {
                     throw new Zend_Exception(
-                        "Problem thumbnail path: ".UtilityComponent::getDataDirectory('thumbnail')
+                        'Problem thumbnail path: '.UtilityComponent::getDataDirectory('thumbnail')
                     );
                 }
 
@@ -146,7 +146,7 @@ abstract class ItemRevisionModelBase extends AppModel
                 }
                 $pathThumbnail = $destination;
 
-                list ($x, $y) = getimagesize($tmpfile);  //--- get size of img ---
+                list($x, $y) = getimagesize($tmpfile);  //--- get size of img ---
                 $thumb = 100;  //--- max. size of thumb ---
                 if ($x > $y) {
                     $tx = $thumb;  //--- landscape ---

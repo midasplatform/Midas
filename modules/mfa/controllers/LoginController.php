@@ -26,7 +26,7 @@ class Mfa_LoginController extends Mfa_AppController
     public $_moduleComponents = array('Otp');
 
     /**
-     * Renders the dialog for the user to enter his or her OTP
+     * Renders the dialog for the user to enter his or her OTP.
      */
     public function dialogAction()
     {
@@ -44,7 +44,7 @@ class Mfa_LoginController extends Mfa_AppController
     }
 
     /**
-     * When the user actually submits their otp, this authenticates it
+     * When the user actually submits their otp, this authenticates it.
      */
     public function submitAction()
     {
@@ -83,7 +83,7 @@ class Mfa_LoginController extends Mfa_AppController
             $authUser->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
             $authUser->Dao = $user;
             $authUser->lock();
-            $this->getLogger()->debug(__METHOD__." Log in : ".$user->getFullName());
+            $this->getLogger()->debug(__METHOD__.' Log in : '.$user->getFullName());
 
             echo JsonComponent::encode(array('status' => 'ok'));
         } else {

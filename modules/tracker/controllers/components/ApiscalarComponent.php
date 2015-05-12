@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * API scalar component for the tracker module.
- *
- * @package Modules\Tracker\Component
- */
+/** API scalar component for the tracker module. */
 class Tracker_ApiscalarComponent extends AppComponent
 {
     /** @var string */

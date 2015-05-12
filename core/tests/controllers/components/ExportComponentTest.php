@@ -21,12 +21,9 @@
 require_once BASE_PATH.'/library/KWUtils.php';
 
 /**
- * ExportComponentTest
+ * ExportComponentTest.
  *
  * This class tests export component
- *
- * @category   Midas controller Test
- * @package    Midas Test
  */
 class Core_ExportComponentTest extends ControllerTestCase
 {
@@ -40,7 +37,7 @@ class Core_ExportComponentTest extends ControllerTestCase
     }
 
     /**
-     * Helper function to upload items
+     * Helper function to upload items.
      *
      * @param type $userDao User who will upload items
      */
@@ -55,19 +52,19 @@ class Core_ExportComponentTest extends ControllerTestCase
         $midas_exporttest_dir = $this->getTempDirectory().'/exportTest';
         if (file_exists($midas_exporttest_dir)) {
             if (!KWUtils::recursiveRemoveDirectory($midas_exporttest_dir)) {
-                throw new Zend_Exception($midas_exporttest_dir." has already existed and we cannot delete it.");
+                throw new Zend_Exception($midas_exporttest_dir.' has already existed and we cannot delete it.');
             }
         }
         if (!mkdir($midas_exporttest_dir)) {
-            throw new Zend_Exception("Cannot create directory: ".$midas_exporttest_dir);
+            throw new Zend_Exception('Cannot create directory: '.$midas_exporttest_dir);
         }
         chmod($midas_exporttest_dir, 0777);
 
         // upload an item to user1's public folder
         $user1_public_path = $midas_exporttest_dir.'/public.file';
         copy(BASE_PATH.'/tests/testfiles/search.png', $user1_public_path);
-        $user1_public_fh = fopen($user1_public_path, "a+");
-        fwrite($user1_public_fh, "content:user1_public");
+        $user1_public_fh = fopen($user1_public_path, 'a+');
+        fwrite($user1_public_fh, 'content:user1_public');
         fclose($user1_public_fh);
         $user1_public_filename = 'public.file';
         $user1_public_parent = '1001';
@@ -85,8 +82,8 @@ class Core_ExportComponentTest extends ControllerTestCase
         // upload an item to user1's private folder
         $user1_private_path = $midas_exporttest_dir.'/private.png';
         copy(BASE_PATH.'/tests/testfiles/search.png', $user1_private_path);
-        $user1_private_fh = fopen($user1_private_path, "a+");
-        fwrite($user1_private_fh, "content:user1_private");
+        $user1_private_fh = fopen($user1_private_path, 'a+');
+        fwrite($user1_private_fh, 'content:user1_private');
         fclose($user1_private_fh);
         $user1_private_filename = 'private.png';
         $user1_private_parent = '1002';
@@ -104,7 +101,7 @@ class Core_ExportComponentTest extends ControllerTestCase
 
     /**
      * Helper function to get ItemIds as an input parameter
-     * for ExportComponentTest::exportBitstreams
+     * for ExportComponentTest::exportBitstreams.
      *
      * @param  array $fileNames array of file names
      * @return array of itemIds
@@ -130,7 +127,7 @@ class Core_ExportComponentTest extends ControllerTestCase
     }
 
     /**
-     * Test ExportComponentTest::exportBitstreams 'createSymlinks' functionality
+     * Test ExportComponentTest::exportBitstreams 'createSymlinks' functionality.
      *
      * 1) user1 upload one file to his public folder, another file to his private folder
      * 2) export these two items as user1, both files should be exported.
@@ -148,8 +145,8 @@ class Core_ExportComponentTest extends ControllerTestCase
         require_once BASE_PATH.'/core/controllers/components/ExportComponent.php';
         $exportCompoenent = new ExportComponent();
         $filenames = array();
-        $filenames[] = "public.file";
-        $filenames[] = "private.png";
+        $filenames[] = 'public.file';
+        $filenames[] = 'private.png';
         $itemIds = $this->getItemIds($filenames);
         // symlinks should not exist before export
         $this->assertFalse(file_exists($midas_exporttest_dir.'/'.$itemIds[0].'/public.file'));
@@ -200,7 +197,7 @@ class Core_ExportComponentTest extends ControllerTestCase
     }
 
     /**
-     * Test ExportComponentTest::exportBitstreams 'copy' functionality
+     * Test ExportComponentTest::exportBitstreams 'copy' functionality.
      *
      * Because testCreateSymlinks function has covered most testing aspects,
      * this test only use a simple scenario
@@ -219,7 +216,7 @@ class Core_ExportComponentTest extends ControllerTestCase
         require_once BASE_PATH.'/core/controllers/components/ExportComponent.php';
         $exportCompoenent = new ExportComponent();
         $filenames = array();
-        $filenames[] = "private.png";
+        $filenames[] = 'private.png';
         $itemIds = $this->getItemIds($filenames);
         // file should not exist before export
         $this->assertFalse(file_exists($midas_exporttest_dir.'/'.$itemIds[0].'/private.png'));
@@ -243,7 +240,7 @@ class Core_ExportComponentTest extends ControllerTestCase
     }
 
     /**
-     * Test ExportComponentTest::exportBitstreams function using invalid input
+     * Test ExportComponentTest::exportBitstreams function using invalid input.
      *
      * test case 1) input parameter itemIds is not an array; expect an exception
      * test case 2) use valid item id with invalid revision number; expect an exception
@@ -259,7 +256,7 @@ class Core_ExportComponentTest extends ControllerTestCase
 
         require_once BASE_PATH.'/core/controllers/components/ExportComponent.php';
         $exportCompoenent = new ExportComponent();
-        $validFile = "public.file";
+        $validFile = 'public.file';
         $validItems = $this->Item->getItemsFromSearch($validFile, $userDao);
         $validItemId = $validItems[0]->getKey();
         $invalidRevision = 100;

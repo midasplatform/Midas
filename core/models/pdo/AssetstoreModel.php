@@ -20,9 +20,7 @@
 
 require_once BASE_PATH.'/core/models/base/AssetstoreModelBase.php';
 
-/**
- * Pdo Model
- */
+/** Pdo Model. */
 class AssetstoreModel extends AssetstoreModelBase
 {
     /**
@@ -36,7 +34,7 @@ class AssetstoreModel extends AssetstoreModelBase
     }
 
     /**
-     * Move all bitstreams from one asset store to another
+     * Move all bitstreams from one asset store to another.
      *
      * @param AssetstoreDao $srcAssetstore The source asset store
      * @param AssetstoreDao $dstAssetstore The destination asset store

@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- *  Controller for downloading elements.
- */
+/** Controller for downloading elements. */
 class DownloadController extends AppController
 {
     /** @var array */
@@ -91,7 +89,7 @@ class DownloadController extends AppController
             return;
         }
         if (!isset($itemIds) && !isset($folderIds)) {
-            throw new Zend_Exception("No parameters, expecting itemIds or folderIds.");
+            throw new Zend_Exception('No parameters, expecting itemIds or folderIds.');
         }
         $folderIds = explode('-', $folderIds);
         $folders = $this->Folder->load($folderIds);
@@ -186,7 +184,7 @@ class DownloadController extends AppController
                     }
                 }
             } else {
-                $name = "Custom";
+                $name = 'Custom';
             }
 
             session_write_close(); // unlock session writing for concurrent access
@@ -355,7 +353,7 @@ class DownloadController extends AppController
         if (isset($item) && $item instanceof ItemDao) {
             $name = $item->getName();
         } else {
-            $name = "No_item_selected";
+            $name = 'No_item_selected';
         }
         $name = substr($name, 0, 50);
         if (headers_sent()) {

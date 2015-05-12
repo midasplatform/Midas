@@ -20,13 +20,11 @@
 
 require_once BASE_PATH.'/modules/packages/models/base/ExtensionModelBase.php';
 
-/**
- * Package PDO Model
- */
+/** Package PDO Model. */
 class Packages_ExtensionModel extends Packages_ExtensionModelBase
 {
     /**
-     * Return all the records in the table
+     * Return all the records in the table.
      *
      * @param array $params Optional associative array specifying 'extension_id', 'os', 'arch',
      *                      'submissiontype', 'packagetype', 'slicer_revision', 'revision',

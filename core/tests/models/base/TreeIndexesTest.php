@@ -121,7 +121,7 @@ class Core_TreeIndexesTest extends DatabaseTestCase
     }
 
     /**
-     * Test that orphaned items are successfully removed
+     * Test that orphaned items are successfully removed.
      */
     public function testRemoveOrphanedItems()
     {
@@ -148,7 +148,7 @@ class Core_TreeIndexesTest extends DatabaseTestCase
     }
 
     /**
-     * Test that orphaned itemrevisions are successfully removed
+     * Test that orphaned itemrevisions are successfully removed.
      */
     public function testRemoveOrphanedRevisions()
     {
@@ -175,7 +175,7 @@ class Core_TreeIndexesTest extends DatabaseTestCase
     }
 
     /**
-     * Test that orphaned bitstreams are successfully removed
+     * Test that orphaned bitstreams are successfully removed.
      */
     public function testRemoveOrphanedBitstreams()
     {
@@ -202,7 +202,7 @@ class Core_TreeIndexesTest extends DatabaseTestCase
     }
 
     /**
-     * Assert that a folder has a certain index span
+     * Assert that a folder has a certain index span.
      */
     protected function _assertSpan($folder, $span)
     {
@@ -211,7 +211,7 @@ class Core_TreeIndexesTest extends DatabaseTestCase
 
     /**
      * Assert that two folders' spans do not overlap at all; that is, that one is not
-     * in the subtree of another
+     * in the subtree of another.
      */
     protected function _assertNoOverlap($folder1, $folder2)
     {
@@ -225,7 +225,7 @@ class Core_TreeIndexesTest extends DatabaseTestCase
     }
 
     /**
-     * Assert that $descendant is in the subtree of $ancestor
+     * Assert that $descendant is in the subtree of $ancestor.
      */
     protected function _assertDescendant($ancestor, $descendant)
     {

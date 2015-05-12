@@ -24,6 +24,6 @@ class Statistics_Upgrade_1_0_2 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query("ALTER TABLE `statistics_download` ADD COLUMN `user_agent` varchar(255);");
+        $this->db->query('ALTER TABLE `statistics_download` ADD COLUMN `user_agent` varchar(255);');
     }
 }

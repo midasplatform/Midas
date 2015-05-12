@@ -24,7 +24,7 @@ class Communityagreement_Notification extends MIDAS_Notification
     public $_models = array('Community');
 
     /**
-     * init notification process
+     * init notification process.
      */
     public function init()
     {
@@ -34,7 +34,7 @@ class Communityagreement_Notification extends MIDAS_Notification
     }
 
     /**
-     * callback function to get 'community agreement' tab
+     * callback function to get 'community agreement' tab.
      *
      * @return array
      */
@@ -47,7 +47,7 @@ class Communityagreement_Notification extends MIDAS_Notification
     }
 
     /**
-     * callback function to get java script
+     * callback function to get java script.
      *
      * @return array
      */
@@ -61,7 +61,7 @@ class Communityagreement_Notification extends MIDAS_Notification
 
     /**
      * Callback function to get extra html on the community view page.
-     * Adds an element for whether the community has an agreement set or not
+     * Adds an element for whether the community has an agreement set or not.
      */
     public function getCommunityViewExtraHtml($params)
     {

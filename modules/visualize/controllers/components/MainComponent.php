@@ -58,22 +58,22 @@ class Visualize_MainComponent extends AppComponent
             return;
         }
         $bitstream = $bitstreams[0];
-        $filenameArray = explode(".", $bitstream->getName());
+        $filenameArray = explode('.', $bitstream->getName());
         $ext = end($filenameArray);
-        if ($ext != "obj") {
+        if ($ext != 'obj') {
             return;
         }
 
-        if (file_exists(UtilityComponent::getTempDirectory()."/tmpThreeJs.js")) {
-            unlink(UtilityComponent::getTempDirectory()."/tmpThreeJs.js");
+        if (file_exists(UtilityComponent::getTempDirectory().'/tmpThreeJs.js')) {
+            unlink(UtilityComponent::getTempDirectory().'/tmpThreeJs.js');
         }
         exec(
-            "python ".dirname(__FILE__)."/scripts/convert_obj_three.py -i ".$bitstream->GetFullPath(
-            )." -o ".UtilityComponent::getTempDirectory()."/tmpThreeJs.js -t binary",
+            'python '.dirname(__FILE__).'/scripts/convert_obj_three.py -i '.$bitstream->GetFullPath(
+            ).' -o '.UtilityComponent::getTempDirectory().'/tmpThreeJs.js -t binary',
             $output
         );
-        if (file_exists(UtilityComponent::getTempDirectory()."/tmpThreeJs.js") && file_exists(
-                UtilityComponent::getTempDirectory()."/tmpThreeJs.bin"
+        if (file_exists(UtilityComponent::getTempDirectory().'/tmpThreeJs.js') && file_exists(
+                UtilityComponent::getTempDirectory().'/tmpThreeJs.bin'
             )
         ) {
             /** @var AssetstoreModel $assetstoreModel */
@@ -85,8 +85,8 @@ class Visualize_MainComponent extends AppComponent
 
             $newItem = $uploadComponent->createUploadedItem(
                 $userDao,
-                $item->getName().".threejs.bin",
-                UtilityComponent::getTempDirectory()."/tmpThreeJs.bin",
+                $item->getName().'.threejs.bin',
+                UtilityComponent::getTempDirectory().'/tmpThreeJs.bin',
                 $parent
             );
             $itemModel->copyParentPolicies($newItem, $parent);
@@ -101,19 +101,19 @@ class Visualize_MainComponent extends AppComponent
             $bitstreamDao = $bitstreams[0];
 
             Zend_Loader::loadClass('BitstreamDao', BASE_PATH.'/core/models/dao');
-            $content = file_get_contents(UtilityComponent::getTempDirectory()."/tmpThreeJs.js");
+            $content = file_get_contents(UtilityComponent::getTempDirectory().'/tmpThreeJs.js');
             $fc = Zend_Controller_Front::getInstance();
             $content = str_replace(
-                "tmpThreeJs.bin",
-                $fc->getBaseUrl()."/download/?bitstream=".$bitstreamDao->getKey(),
+                'tmpThreeJs.bin',
+                $fc->getBaseUrl().'/download/?bitstream='.$bitstreamDao->getKey(),
                 $content
             );
-            file_put_contents(UtilityComponent::getTempDirectory()."/tmpThreeJs.js", $content);
+            file_put_contents(UtilityComponent::getTempDirectory().'/tmpThreeJs.js', $content);
 
             $bitstreamDao = new BitstreamDao();
-            $bitstreamDao->setName($item->getName().".threejs.js");
-            $bitstreamDao->setPath(UtilityComponent::getTempDirectory()."/tmpThreeJs.js");
-            $bitstreamDao->setChecksum("");
+            $bitstreamDao->setName($item->getName().'.threejs.js');
+            $bitstreamDao->setPath(UtilityComponent::getTempDirectory().'/tmpThreeJs.js');
+            $bitstreamDao->setChecksum('');
             $bitstreamDao->fillPropertiesFromPath();
             $bitstreamDao->setAssetstoreId($assetstoreDao->getKey());
 
@@ -243,7 +243,7 @@ class Visualize_MainComponent extends AppComponent
             return false;
         }
         $bitstreams = $revision->getBitstreams();
-        if (strpos($itemDao->getName(), "threejs") === false) {
+        if (strpos($itemDao->getName(), 'threejs') === false) {
             return false;
         }
 
@@ -360,7 +360,7 @@ class Visualize_MainComponent extends AppComponent
 
             $ext = strtolower(substr(strrchr($bitstream->getName(), '.'), 1));
             if ($ext != 'pvsm') {
-                $filePath = $paraViewWorkDirectory."/".$tmpFolderName.'/'.$bitstream->getName();
+                $filePath = $paraViewWorkDirectory.'/'.$tmpFolderName.'/'.$bitstream->getName();
                 $mainBitstream = $bitstream;
             }
         }
@@ -370,12 +370,12 @@ class Visualize_MainComponent extends AppComponent
             if ($ext == 'pvsm') {
                 $file_contents = file_get_contents($path.'/'.$bitstream->getName());
                 $file_contents = preg_replace(
-                    '/\"([a-zA-Z0-9_.\/\\\:]{1,1000})'.str_replace('.', '\.', $mainBitstream->getName())."/",
+                    '/\"([a-zA-Z0-9_.\/\\\:]{1,1000})'.str_replace('.', '\.', $mainBitstream->getName()).'/',
                     '"'.$filePath,
                     $file_contents
                 );
-                $filePath = $paraViewWorkDirectory."/".$tmpFolderName.'/'.$bitstream->getName();
-                $inF = fopen($path.'/'.$bitstream->getName(), "w");
+                $filePath = $paraViewWorkDirectory.'/'.$tmpFolderName.'/'.$bitstream->getName();
+                $inF = fopen($path.'/'.$bitstream->getName(), 'w');
                 fwrite($inF, $file_contents);
                 fclose($inF);
                 $this->view->json['visualize']['openState'] = true;
@@ -398,17 +398,17 @@ class Visualize_MainComponent extends AppComponent
         }
 
         $return = file_get_contents(
-            str_replace("PWApp", 'processData', $pwApp)."?file=".$filePath."&pvbatch=".$pvBatch
+            str_replace('PWApp', 'processData', $pwApp).'?file='.$filePath.'&pvbatch='.$pvBatch
         );
         if (strpos($return, 'PROBLEME') !== false) {
             return;
         }
-        copy(str_replace("PWApp", 'processData', $pwApp)."/screenshot1.png", $tmpPath.'/screenshot1.png');
-        copy(str_replace("PWApp", 'processData', $pwApp)."/screenshot2.png", $tmpPath.'/screenshot2.png');
-        copy(str_replace("PWApp", 'processData', $pwApp)."/screenshot4.png", $tmpPath.'/screenshot4.png');
-        copy(str_replace("PWApp", 'processData', $pwApp)."/screenshot3.png", $tmpPath.'/screenshot3.png');
+        copy(str_replace('PWApp', 'processData', $pwApp).'/screenshot1.png', $tmpPath.'/screenshot1.png');
+        copy(str_replace('PWApp', 'processData', $pwApp).'/screenshot2.png', $tmpPath.'/screenshot2.png');
+        copy(str_replace('PWApp', 'processData', $pwApp).'/screenshot4.png', $tmpPath.'/screenshot4.png');
+        copy(str_replace('PWApp', 'processData', $pwApp).'/screenshot3.png', $tmpPath.'/screenshot3.png');
 
-        $json = file_get_contents(str_replace("PWApp", 'processData', $pwApp)."/metadata.txt");
+        $json = file_get_contents(str_replace('PWApp', 'processData', $pwApp).'/metadata.txt');
 
         $metadata = json_decode($json);
 
@@ -476,7 +476,7 @@ class Visualize_MainComponent extends AppComponent
         $randomComponent = MidasLoader::loadComponent('Random');
         $thumbnailPath = UtilityComponent::getDataDirectory('thumbnail').'/'.$randomComponent->generateInt();
         if (!file_exists(UtilityComponent::getDataDirectory('thumbnail'))) {
-            throw new Zend_Exception("Problem thumbnail path: ".UtilityComponent::getDataDirectory('thumbnail'));
+            throw new Zend_Exception('Problem thumbnail path: '.UtilityComponent::getDataDirectory('thumbnail'));
         }
         if (!file_exists($thumbnailPath)) {
             mkdir($thumbnailPath);
@@ -485,13 +485,13 @@ class Visualize_MainComponent extends AppComponent
         if (!file_exists($thumbnailPath)) {
             mkdir($thumbnailPath);
         }
-        $destination = $thumbnailPath."/".$randomComponent->generateInt().'.jpg';
+        $destination = $thumbnailPath.'/'.$randomComponent->generateInt().'.jpg';
         while (file_exists($destination)) {
-            $destination = $thumbnailPath."/".$randomComponent->generateInt().'.jpg';
+            $destination = $thumbnailPath.'/'.$randomComponent->generateInt().'.jpg';
         }
         $pathThumbnail = $destination;
 
-        list ($x, $y) = getimagesize($tmpPath.'/screenshot1.png');  //--- get size of img ---
+        list($x, $y) = getimagesize($tmpPath.'/screenshot1.png');  //--- get size of img ---
         $thumb = 100;  //--- max. size of thumb ---
         if ($x > $y) {
             $tx = $thumb;  //--- landscape ---
@@ -576,11 +576,11 @@ class Visualize_MainComponent extends AppComponent
         }
 
         foreach ($objects as $object) {
-            if ($object != "." && $object != "..") {
-                if (filetype($dir."/".$object) == "dir") {
-                    $this->_rrmdir($dir."/".$object);
+            if ($object != '.' && $object != '..') {
+                if (filetype($dir.'/'.$object) == 'dir') {
+                    $this->_rrmdir($dir.'/'.$object);
                 } else {
-                    unlink($dir."/".$object);
+                    unlink($dir.'/'.$object);
                 }
             }
         }

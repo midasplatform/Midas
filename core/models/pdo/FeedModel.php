@@ -20,9 +20,7 @@
 
 require_once BASE_PATH.'/core/models/base/FeedModelBase.php';
 
-/**
- * Pdo Model
- */
+/** Pdo Model. */
 class FeedModel extends FeedModelBase
 {
     /**
@@ -67,12 +65,12 @@ class FeedModel extends FeedModelBase
     public function policyCheck($feedDao, $userDao = null, $policy = 0)
     {
         if (!$feedDao instanceof FeedDao || !is_numeric($policy)) {
-            throw new Zend_Exception("Error in params when checking Feed Policy.");
+            throw new Zend_Exception('Error in params when checking Feed Policy.');
         }
         if ($userDao == null) {
             $userId = -1;
         } elseif (!$userDao instanceof UserDao) {
-            throw new Zend_Exception("Should be an user.");
+            throw new Zend_Exception('Should be an user.');
         } else {
             $userId = $userDao->getUserId();
             if ($userDao->isAdmin()) {
@@ -131,7 +129,7 @@ class FeedModel extends FeedModelBase
         if ($loggedUserDao == null) {
             $userId = -1;
         } elseif (!$loggedUserDao instanceof UserDao) {
-            throw new Zend_Exception("Should be an user.");
+            throw new Zend_Exception('Should be an user.');
         } else {
             $userId = $loggedUserDao->getUserId();
             if ($loggedUserDao->isAdmin()) {
@@ -140,11 +138,11 @@ class FeedModel extends FeedModelBase
         }
 
         if ($userDao != null && !$userDao instanceof UserDao) {
-            throw new Zend_Exception("Should be an user.");
+            throw new Zend_Exception('Should be an user.');
         }
 
         if ($communityDao != null && !$communityDao instanceof CommunityDao) {
-            throw new Zend_Exception("Should be a community.");
+            throw new Zend_Exception('Should be a community.');
         }
 
         $sql = $this->database->select()->setIntegrityCheck(false)->from(array('f' => 'feed'))->limit($limit);
@@ -235,10 +233,10 @@ class FeedModel extends FeedModelBase
     public function addCommunity($feed, $community)
     {
         if (!$community instanceof CommunityDao) {
-            throw new Zend_Exception("Should be a community.");
+            throw new Zend_Exception('Should be a community.');
         }
         if (!$feed instanceof FeedDao) {
-            throw new Zend_Exception("Should be an feed.");
+            throw new Zend_Exception('Should be an feed.');
         }
         $this->database->link('communities', $feed, $community);
     }

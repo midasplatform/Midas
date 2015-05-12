@@ -25,7 +25,7 @@ class Archive_ExtractController extends Archive_AppController
     public $_moduleComponents = array('Extract');
 
     /**
-     * Show the extract archive dialog
+     * Show the extract archive dialog.
      *
      * @param itemId The item in question
      */

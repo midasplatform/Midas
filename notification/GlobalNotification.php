@@ -69,7 +69,7 @@ class MIDAS_Notification
      */
     protected function t($text)
     {
-        Zend_Loader::loadClass("InternationalizationComponent", BASE_PATH.'/core/controllers/components');
+        Zend_Loader::loadClass('InternationalizationComponent', BASE_PATH.'/core/controllers/components');
 
         return InternationalizationComponent::translate($text);
     }
@@ -171,7 +171,7 @@ class MIDAS_Notification
 
         if (isset($this->_daos)) {
             foreach ($this->_daos as $dao) {
-                Zend_Loader::loadClass($dao."Dao", BASE_PATH.'/core/models/dao');
+                Zend_Loader::loadClass($dao.'Dao', BASE_PATH.'/core/models/dao');
             }
         }
 
@@ -179,7 +179,7 @@ class MIDAS_Notification
 
         if (isset($this->_components)) {
             foreach ($this->_components as $component) {
-                $nameComponent = $component."Component";
+                $nameComponent = $component.'Component';
                 Zend_Loader::loadClass($nameComponent, BASE_PATH.'/core/controllers/components');
                 if (!isset($this->Component)) {
                     $this->Component = new stdClass();
@@ -191,7 +191,7 @@ class MIDAS_Notification
         Zend_Registry::set('forms', array());
         if (isset($this->_forms)) {
             foreach ($this->_forms as $forms) {
-                $nameForm = $forms."Form";
+                $nameForm = $forms.'Form';
 
                 Zend_Loader::loadClass($nameForm, BASE_PATH.'/core/controllers/forms');
                 if (!isset($this->Form)) {
@@ -222,12 +222,12 @@ class MIDAS_Notification
 
         if (isset($this->_moduleDaos)) {
             foreach ($this->_moduleDaos as $dao) {
-                if (file_exists(BASE_PATH."/modules/".$this->moduleName."/models/dao/".$dao."Dao.php")) {
-                    include_once BASE_PATH."/modules/".$this->moduleName."/models/dao/".$dao."Dao.php";
+                if (file_exists(BASE_PATH.'/modules/'.$this->moduleName.'/models/dao/'.$dao.'Dao.php')) {
+                    include_once BASE_PATH.'/modules/'.$this->moduleName.'/models/dao/'.$dao.'Dao.php';
                 } elseif (file_exists(
-                    BASE_PATH."/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php"
+                    BASE_PATH.'/privateModules/'.$this->moduleName.'/models/dao/'.$dao.'Dao.php'
                 )) {
-                    include_once BASE_PATH."/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php";
+                    include_once BASE_PATH.'/privateModules/'.$this->moduleName.'/models/dao/'.$dao.'Dao.php';
                 } else {
                     throw new Zend_Exception('Unable to find dao  '.$dao);
                 }
@@ -236,15 +236,15 @@ class MIDAS_Notification
 
         if (isset($this->_moduleComponents)) {
             foreach ($this->_moduleComponents as $component) {
-                $nameComponent = ucfirst($this->moduleName).'_'.$component."Component";
+                $nameComponent = ucfirst($this->moduleName).'_'.$component.'Component';
                 if (file_exists(
-                    BASE_PATH."/modules/".$this->moduleName."/controllers/components/".$component."Component.php"
+                    BASE_PATH.'/modules/'.$this->moduleName.'/controllers/components/'.$component.'Component.php'
                 )) {
-                    include_once BASE_PATH."/modules/".$this->moduleName."/controllers/components/".$component."Component.php";
+                    include_once BASE_PATH.'/modules/'.$this->moduleName.'/controllers/components/'.$component.'Component.php';
                 } elseif (file_exists(
-                    BASE_PATH."/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php"
+                    BASE_PATH.'/privateModules/'.$this->moduleName.'/controllers/components/'.$component.'Component.php'
                 )) {
-                    include_once BASE_PATH."/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php";
+                    include_once BASE_PATH.'/privateModules/'.$this->moduleName.'/controllers/components/'.$component.'Component.php';
                 } else {
                     throw new Zend_Exception('Unable to find components  '.$component);
                 }
@@ -260,16 +260,16 @@ class MIDAS_Notification
 
         if (isset($this->_moduleForms)) {
             foreach ($this->_moduleForms as $forms) {
-                $nameForm = ucfirst($this->moduleName).'_'.$forms."Form";
-                include_once BASE_PATH."/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php";
+                $nameForm = ucfirst($this->moduleName).'_'.$forms.'Form';
+                include_once BASE_PATH.'/modules/'.$this->moduleName.'/controllers/forms/'.$forms.'Form.php';
                 if (file_exists(
-                    BASE_PATH."/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php"
+                    BASE_PATH.'/modules/'.$this->moduleName.'/controllers/forms/'.$forms.'Form.php'
                 )) {
-                    include_once BASE_PATH."/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php";
+                    include_once BASE_PATH.'/modules/'.$this->moduleName.'/controllers/forms/'.$forms.'Form.php';
                 } elseif (file_exists(
-                    BASE_PATH."/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php"
+                    BASE_PATH.'/privateModules/'.$this->moduleName.'/controllers/forms/'.$forms.'Form.php'
                 )) {
-                    include_once BASE_PATH."/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php";
+                    include_once BASE_PATH.'/privateModules/'.$this->moduleName.'/controllers/forms/'.$forms.'Form.php';
                 } else {
                     throw new Zend_Exception('Unable to find form  '.$forms);
                 }

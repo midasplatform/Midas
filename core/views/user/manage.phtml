@@ -101,7 +101,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
         <?php
         if (!empty($this->userCommunities)) {
             foreach ($this->userCommunities as $communityDao) {
-                echo "<P>";?>
+                echo "<p>";?>
                 <div class="communityBlock">
       <span class="communityTitle">
       <?php echo $this->escape($communityDao->getName()); ?></span>

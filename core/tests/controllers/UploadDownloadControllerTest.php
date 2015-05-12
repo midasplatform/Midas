@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Tests uploading and downloading of files
- */
+/** Tests uploading and downloading of files. */
 class Core_UploadDownloadControllerTest extends ControllerTestCase
 {
     /** init tests */
@@ -36,7 +34,7 @@ class Core_UploadDownloadControllerTest extends ControllerTestCase
     public function testSimpleuploadAction()
     {
         $this->setupDatabase(array('default'));
-        $this->dispatchUrl("/upload/simpleupload", null, true);
+        $this->dispatchUrl('/upload/simpleupload', null, true);
 
         $usersFile = $this->loadData('User', 'default');
         $userDao = $this->User->load($usersFile[0]->getKey());
@@ -56,7 +54,7 @@ class Core_UploadDownloadControllerTest extends ControllerTestCase
     public function testRevision()
     {
         $this->setupDatabase(array('default'));
-        $this->dispatchUrl("/upload/revision", null, true);
+        $this->dispatchUrl('/upload/revision', null, true);
 
         $usersFile = $this->loadData('User', 'default');
         $userDao = $this->User->load($usersFile[0]->getKey());
@@ -64,7 +62,7 @@ class Core_UploadDownloadControllerTest extends ControllerTestCase
         $itemsFile = $this->loadData('Item', 'default');
         $itemDao = $this->Item->load($itemsFile[1]->getKey());
 
-        $this->dispatchUrl("/upload/revision?itemId=".$itemDao->getKey(), $userDao);
+        $this->dispatchUrl('/upload/revision?itemId='.$itemDao->getKey(), $userDao);
 
         $this->resetAll();
     }
@@ -73,7 +71,7 @@ class Core_UploadDownloadControllerTest extends ControllerTestCase
     public function testSavelinkAction()
     {
         $this->setupDatabase(array('default'));
-        $this->dispatchUrl("/upload/savelink", null, true);
+        $this->dispatchUrl('/upload/savelink', null, true);
 
         $usersFile = $this->loadData('User', 'default');
         $userDao = $this->User->load($usersFile[0]->getKey());
@@ -94,7 +92,7 @@ class Core_UploadDownloadControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test the download controller in the case of a one-bitstream item
+     * Test the download controller in the case of a one-bitstream item.
      */
     public function testDownloadAction()
     {
@@ -167,7 +165,7 @@ class Core_UploadDownloadControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test active download locking mechanism
+     * Test active download locking mechanism.
      */
     public function testActiveDownloadLocking()
     {

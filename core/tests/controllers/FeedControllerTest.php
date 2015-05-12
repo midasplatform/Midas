@@ -33,9 +33,9 @@ class Core_FeedControllerTest extends ControllerTestCase
     /** test index */
     public function testIndexAction()
     {
-        $this->dispatchUrl("/feed");
-        $this->assertController("feed");
-        $this->assertAction("index");
+        $this->dispatchUrl('/feed');
+        $this->assertController('feed');
+        $this->assertAction('index');
 
         // test if we have the feed public
         $this->assertQuery("div.feedElement[element='1']");
@@ -46,9 +46,9 @@ class Core_FeedControllerTest extends ControllerTestCase
         $usersFile = $this->loadData('User', 'default');
         $userDao = $this->User->load($usersFile[0]->getKey());
 
-        $this->dispatchUrl("/feed", $userDao);
-        $this->assertController("feed");
-        $this->assertAction("index");
+        $this->dispatchUrl('/feed', $userDao);
+        $this->assertController('feed');
+        $this->assertAction('index');
 
         $this->assertQuery("div.feedElement[element='1']");
         $this->assertQuery("div.feedElement[element='3']");

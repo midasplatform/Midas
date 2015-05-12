@@ -23,8 +23,6 @@
  * record indicating which user uploaded the scalar, a binary "official" flag to
  * a scalar record indicating if it is an official or experimental submission,
  * and add a user_id index to the tracker_scalar table.
- *
- * @package Modules\Tracker\Database
  */
 class Tracker_Upgrade_1_0_1 extends MIDASUpgrade
 {
@@ -33,14 +31,14 @@ class Tracker_Upgrade_1_0_1 extends MIDASUpgrade
     {
         $this->db->query("ALTER TABLE `tracker_scalar` ADD COLUMN `user_id` bigint(20) NOT NULL DEFAULT '-1';");
         $this->db->query("ALTER TABLE `tracker_scalar` ADD COLUMN `official` tinyint(4) NOT NULL DEFAULT '1';");
-        $this->db->query("ALTER TABLE `tracker_scalar` ADD KEY (`user_id`);");
+        $this->db->query('ALTER TABLE `tracker_scalar` ADD KEY (`user_id`);');
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $this->db->query("ALTER TABLE tracker_scalar ADD COLUMN user_id bigint NOT NULL DEFAULT -1::bigint;");
-        $this->db->query("ALTER TABLE tracker_scalar ADD COLUMN official smallint NOT NULL DEFAULT 1::smallint;");
-        $this->db->query("CREATE INDEX tracker_scalar_idx_user_id ON tracker_scalar (user_id);");
+        $this->db->query('ALTER TABLE tracker_scalar ADD COLUMN user_id bigint NOT NULL DEFAULT -1::bigint;');
+        $this->db->query('ALTER TABLE tracker_scalar ADD COLUMN official smallint NOT NULL DEFAULT 1::smallint;');
+        $this->db->query('CREATE INDEX tracker_scalar_idx_user_id ON tracker_scalar (user_id);');
     }
 }

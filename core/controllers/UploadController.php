@@ -121,7 +121,7 @@ class UploadController extends AppController
 
         $this->view->allLicenses = $this->License->getAll();
 
-        if (array_key_exists('HTTPS', $_SERVER) && $_SERVER["HTTPS"] === 'on') {
+        if (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS'] === 'on') {
             $this->view->protocol = 'https';
         } else {
             $this->view->protocol = 'http';

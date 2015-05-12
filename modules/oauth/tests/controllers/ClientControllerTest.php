@@ -33,7 +33,7 @@ class Oauth_ClientControllerTest extends ControllerTestCase
     }
 
     /**
-     * TODO stub
+     * TODO stub.
      */
     public function testStub()
     {

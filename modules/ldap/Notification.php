@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- * Notification manager for the ldap module
+ * Notification manager for the ldap module.
  *
  * @property Ldap_UserModel $Ldap_User
  */
@@ -48,7 +48,7 @@ class Ldap_Notification extends MIDAS_Notification
     }
 
     /**
-     * Add an LDAP login field to the user profile form
+     * Add an LDAP login field to the user profile form.
      *
      * @param array $params parameters
      * @return array
@@ -56,7 +56,7 @@ class Ldap_Notification extends MIDAS_Notification
     public function getLdapLoginField($params)
     {
         if (!$this->userSession->Dao || !$this->userSession->Dao->isAdmin()) {
-            return null;
+            return;
         }
         $user = $params['user'];
 
@@ -336,23 +336,24 @@ class Ldap_Notification extends MIDAS_Notification
         if ($ldapUser !== false) {
             $hostName = $this->Setting->getValueByName(LDAP_HOST_NAME_KEY, $this->moduleName);
             $email = $params['user']->getEmail();
-            $subject = "Password Request";
-            $body = "You have requested a new password for Midas Platform.<br/><br/>";
-            $body .= "We could not fulfill this request because your user account is managed by an external LDAP server.<br/><br/>";
-            $body .= "Please contact the administrator of the LDAP server at <b>".$hostName."</b> to have your password changed.";
-			$result = Zend_Registry::get('notifier')->callback(
-				'CALLBACK_CORE_SEND_MAIL_MESSAGE',
-				array(
-					'to' => $email,
-					'subject' => $subject,
-					'html' => $body,
-					'event' => 'ldap_reset_password',
-				)
-			);
+            $subject = 'Password Request';
+            $body = 'You have requested a new password for Midas Platform.<br/><br/>';
+            $body .= 'We could not fulfill this request because your user account is managed by an external LDAP server.<br/><br/>';
+            $body .= 'Please contact the administrator of the LDAP server at <b>'.$hostName.'</b> to have your password changed.';
+            $result = Zend_Registry::get('notifier')->callback(
+                'CALLBACK_CORE_SEND_MAIL_MESSAGE',
+                array(
+                    'to' => $email,
+                    'subject' => $subject,
+                    'html' => $body,
+                    'event' => 'ldap_reset_password',
+                )
+            );
             if ($result) {
                 return array('status' => true, 'message' => 'Password request sent.');
             }
         }
+
         return array('status' => false, 'message' => 'Could not send password request.');
     }
 

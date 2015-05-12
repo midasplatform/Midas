@@ -26,7 +26,7 @@ class Core_FeedDaoTest extends DatabaseTestCase
     {
         $this->setupDatabase(array());
         $this->_models = array('Feed');
-        $this->_daos = array('Feed', 'Community', "Item", 'User', "ItemRevision");
+        $this->_daos = array('Feed', 'Community', 'Item', 'User', 'ItemRevision');
         parent::setUp();
     }
 
@@ -37,45 +37,45 @@ class Core_FeedDaoTest extends DatabaseTestCase
         foreach ($feeds as $feed) {
             $feedDao = $this->Feed->load($feed->getKey());
             if (!$feedDao instanceof FeedDao) {
-                $this->fail("Should be a FeedDao");
+                $this->fail('Should be a FeedDao');
             }
             switch ($feedDao->getType()) {
                 case MIDAS_FEED_CREATE_COMMUNITY:
                 case MIDAS_FEED_UPDATE_COMMUNITY:
                     if (!$feedDao->getResource() instanceof CommunityDao) {
-                        $this->fail("Error Dao");
+                        $this->fail('Error Dao');
                     }
                     break;
                 case MIDAS_FEED_CREATE_FOLDER:
                     if (!$feedDao->getResource() instanceof FolderDao) {
-                        $this->fail("Error Dao");
+                        $this->fail('Error Dao');
                     }
                     break;
                 case MIDAS_FEED_CREATE_ITEM:
                 case MIDAS_FEED_CREATE_LINK_ITEM:
                     if (!$feedDao->getResource() instanceof ItemDao) {
-                        $this->fail("Error Dao");
+                        $this->fail('Error Dao');
                     }
                     break;
                 case MIDAS_FEED_CREATE_REVISION:
                     if (!$feedDao->getResource() instanceof ItemRevisionDao) {
-                        $this->fail("Error Dao");
+                        $this->fail('Error Dao');
                     }
                     break;
                 case MIDAS_FEED_CREATE_USER:
                     if (!$feedDao->getResource() instanceof UserDao) {
-                        $this->fail("Error Dao");
+                        $this->fail('Error Dao');
                     }
                     break;
                 case MIDAS_FEED_DELETE_COMMUNITY:
                 case MIDAS_FEED_DELETE_FOLDER:
                 case MIDAS_FEED_DELETE_ITEM:
                     if (!is_string($feedDao->getResource())) {
-                        $this->fail("Error result");
+                        $this->fail('Error result');
                     }
                     break;
                 default:
-                    $this->fail("Unable to find resource");
+                    $this->fail('Unable to find resource');
             }
         }
     }

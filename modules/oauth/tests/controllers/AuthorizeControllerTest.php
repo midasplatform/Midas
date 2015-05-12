@@ -33,7 +33,7 @@ class Oauth_AuthorizeControllerTest extends ControllerTestCase
     }
 
     /**
-     * Helper function to get test that each parameter in the array is required
+     * Helper function to get test that each parameter in the array is required.
      */
     private function _testParamsRequired($uri, $params, $userDao = null)
     {
@@ -48,7 +48,7 @@ class Oauth_AuthorizeControllerTest extends ControllerTestCase
     }
 
     /**
-     * Tests the login screen used by the user to authorize the client
+     * Tests the login screen used by the user to authorize the client.
      */
     public function testLoginScreen()
     {
@@ -75,7 +75,7 @@ class Oauth_AuthorizeControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test the submission of the login form, authorizing the client
+     * Test the submission of the login form, authorizing the client.
      */
     public function testSubmitAction()
     {

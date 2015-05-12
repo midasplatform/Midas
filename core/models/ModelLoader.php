@@ -22,7 +22,6 @@
  * Legacy model loader.
  *
  * @deprecated replaced by static methods of MidasLoader
- * @package Core\Deprecated
  */
 class MIDAS_ModelLoader
 {

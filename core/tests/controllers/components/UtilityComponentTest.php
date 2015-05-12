@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * UtilityComponentTest
- */
+/** UtilityComponentTest. */
 class Core_UtilityComponentTest extends ControllerTestCase
 {
     /** set up tests */
@@ -31,7 +29,7 @@ class Core_UtilityComponentTest extends ControllerTestCase
     }
 
     /**
-     * Make sure that we are safely filtering html tags
+     * Make sure that we are safely filtering html tags.
      */
     public function testFilterHtmlTags()
     {

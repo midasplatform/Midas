@@ -32,7 +32,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
         if (!$this->logged) {
             throw new Zend_Exception('Must be logged in', 403);
         }
-        $this->view->header = $this->t("Manage Your Jobs");
+        $this->view->header = $this->t('Manage Your Jobs');
 
         /** @var Scheduler_JobModel $schedulerJobModel */
         $schedulerJobModel = MidasLoader::loadModel('Job', 'scheduler');
@@ -46,17 +46,17 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
     /** init a job */
     public function initAction()
     {
-        $this->view->header = $this->t("Create Job Wizard");
+        $this->view->header = $this->t('Create Job Wizard');
 
-        $scheduled = $this->getParam("scheduled");
+        $scheduled = $this->getParam('scheduled');
         if (isset($scheduled)) {
             $scheduled = true;
-            $this->view->header = $this->t("Schedule Job Wizard");
+            $this->view->header = $this->t('Schedule Job Wizard');
         } else {
             $scheduled = false;
         }
 
-        $itemId = $this->getParam("itemId");
+        $itemId = $this->getParam('itemId');
         if (isset($itemId)) {
             $itemDao = $this->Item->load($itemId);
             if ($itemDao === false) {
@@ -68,9 +68,9 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
         $this->view->json['job']['scheduled'] = $scheduled;
         $this->view->scheduled = $scheduled;
         if ($this->_request->isPost()) {
-            $itemId = $this->getParam("itemId");
+            $itemId = $this->getParam('itemId');
             if (!isset($itemId) || !is_numeric($itemId)) {
-                throw new Zend_Exception("itemId  should be a number");
+                throw new Zend_Exception('itemId  should be a number');
             }
 
             $itemDao = $this->Item->load($itemId);
@@ -79,7 +79,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
             }
             if (!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE)
             ) {
-                throw new Zend_Exception("Write permission required", 403);
+                throw new Zend_Exception('Write permission required', 403);
             }
 
             $metaFile = $this->ModuleComponent->Executable->getMetaIoFile($itemDao);
@@ -98,7 +98,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
 
                 $result = $_POST['results'][$i];
                 if ($option->channel == 'ouput') {
-                    $resultArray = explode(";;", $result);
+                    $resultArray = explode(';;', $result);
                     $folder = $this->Folder->load($resultArray[0]);
                     if ($folder == false || !$this->Folder->policyCheck(
                             $folder,
@@ -194,8 +194,8 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
     public function getinitexecutableAction()
     {
         $this->disableLayout();
-        $itemId = $this->getParam("itemId");
-        $scheduled = $this->getParam("scheduled");
+        $itemId = $this->getParam('itemId');
+        $scheduled = $this->getParam('scheduled');
         if (isset($scheduled) && $scheduled == 1) {
             $scheduled = true;
         } else {
@@ -204,7 +204,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
 
         $this->view->scheduled = $scheduled;
         if (!isset($itemId) || !is_numeric($itemId)) {
-            throw new Zend_Exception("itemId  should be a number");
+            throw new Zend_Exception('itemId  should be a number');
         }
 
         $itemDao = $this->Item->load($itemId);
@@ -213,12 +213,12 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
         }
         if (!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE)
         ) {
-            throw new Zend_Exception("Problem policies.");
+            throw new Zend_Exception('Problem policies.');
         }
 
         $metaFile = $this->ModuleComponent->Executable->getMetaIoFile($itemDao);
         if ($metaFile == false) {
-            throw new Zend_Exception("Unable to find meta information");
+            throw new Zend_Exception('Unable to find meta information');
         }
 
         $metaContent = new SimpleXMLElement(file_get_contents($metaFile->getFullPath()));
@@ -231,15 +231,15 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
     /** view a job */
     public function viewAction()
     {
-        $this->view->header = $this->t("Job");
-        $jobId = $this->getParam("jobId");
+        $this->view->header = $this->t('Job');
+        $jobId = $this->getParam('jobId');
         $jobDao = $this->Remoteprocessing_Job->load($jobId);
         if (!$jobDao) {
-            throw new Zend_Exception("Unable to find job.");
+            throw new Zend_Exception('Unable to find job.');
         }
 
         $this->view->job = $jobDao;
-        $this->view->header = $this->t("Job: ".$jobDao->getName());
+        $this->view->header = $this->t('Job: '.$jobDao->getName());
         $items = $jobDao->getItems();
         $inputs = array();
         $outputs = array();
@@ -305,8 +305,8 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
 
         $this->disableLayout();
         $this->disableView();
-        $entry = $this->getParam("entry");
-        $type = $this->getParam("type");
+        $entry = $this->getParam('entry');
+        $type = $this->getParam('type');
         if (!is_string($entry) || !is_string($type)) {
             echo 'false';
 
@@ -317,9 +317,9 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
                 $itemDao = $this->Item->load($entry);
                 if ($itemDao !== false && $this->ModuleComponent->Executable->getExecutable($itemDao) !== false
                 ) {
-                    echo "true";
+                    echo 'true';
                 } else {
-                    echo "false";
+                    echo 'false';
                 }
 
                 return;
@@ -327,14 +327,14 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
                 $itemDao = $this->Item->load($entry);
                 if ($itemDao !== false && $this->ModuleComponent->Executable->getMetaIoFile($itemDao) !== false
                 ) {
-                    echo "true";
+                    echo 'true';
                 } else {
-                    echo "false";
+                    echo 'false';
                 }
 
                 return;
             default:
-                echo "false";
+                echo 'false';
 
                 return;
         }
@@ -345,7 +345,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
     {
         $this->disableLayout();
         $this->disableView();
-        $type = $this->getParam("type");
+        $type = $this->getParam('type');
         if (!is_string($type)) {
             echo JsonComponent::encode(false);
 

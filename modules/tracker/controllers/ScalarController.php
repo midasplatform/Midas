@@ -22,7 +22,6 @@
  * Scalar controller for the tracker module.
  *
  * @property Tracker_ScalarModel $Tracker_Scalar
- * @package Modules\Tracker\Controller
  */
 class Tracker_ScalarController extends Tracker_AppController
 {

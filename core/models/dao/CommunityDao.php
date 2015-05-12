@@ -59,7 +59,6 @@
  * @method void setMemberGroup(GroupDao $memberGroup)
  * @method array getFeeds()
  * @method void setFeeds(array $feeds)
- * @package Core\DAO
  */
 class CommunityDao extends AppDao
 {

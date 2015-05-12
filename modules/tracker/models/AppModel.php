@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic model class for the tracker module.
- *
- * @package Modules\Tracker\Model
- */
+/** Generic model class for the tracker module. */
 class Tracker_AppModel extends MIDASModel
 {
     /** @var string */

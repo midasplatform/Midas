@@ -20,9 +20,7 @@
 
 require_once BASE_PATH.'/core/models/base/CommunityInvitationModelBase.php';
 
-/**
- * Pdo Model
- */
+/** Pdo Model. */
 class CommunityInvitationModel extends CommunityInvitationModelBase
 {
 }

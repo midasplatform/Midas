@@ -38,7 +38,7 @@ class Remoteprocessing_Upgrade_1_1_0 extends MIDASUpgrade
         if (file_exists($configPath)) {
             $config = new Zend_Config_Ini($configPath, 'global');
             $settingModel->setConfig(MIDAS_REMOTEPROCESSING_SECURITY_KEY_KEY, $config->get('securitykey', $securityKey), $this->moduleName);
-            $showButton =  $config->get('showbutton');
+            $showButton = $config->get('showbutton');
 
             if ($showButton === 'true') {
                 $showButton = 1;

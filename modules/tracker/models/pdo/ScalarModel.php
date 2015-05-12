@@ -20,11 +20,7 @@
 
 require_once BASE_PATH.'/modules/tracker/models/base/ScalarModelBase.php';
 
-/**
- * Scalar model for the tracker module.
- *
- * @package Modules\Tracker\Model
- */
+/** Scalar model for the tracker module. */
 class Tracker_ScalarModel extends Tracker_ScalarModelBase
 {
     /**

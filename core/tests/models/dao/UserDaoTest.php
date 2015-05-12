@@ -35,6 +35,6 @@ class Core_UserDaoTest extends DatabaseTestCase
     {
         $usersFile = $this->loadData('User', 'default');
         $userDao = $this->User->load($usersFile[0]->getKey());
-        $this->assertEquals($userDao->getFullName(), $usersFile[0]->firstname." ".$usersFile[0]->lastname);
+        $this->assertEquals($userDao->getFullName(), $usersFile[0]->firstname.' '.$usersFile[0]->lastname);
     }
 }

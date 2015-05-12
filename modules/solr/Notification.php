@@ -120,7 +120,7 @@ class Solr_Notification extends ApiEnabled_Notification
     }
 
     /**
-     * Override the default item search behavior
+     * Override the default item search behavior.
      */
     public function itemSearch($args)
     {
@@ -153,7 +153,7 @@ class Solr_Notification extends ApiEnabled_Notification
     }
 
     /**
-     * When an item is deleted, we should remove its
+     * When an item is deleted, we should remove its.
      */
     public function itemDeleted($args)
     {
@@ -230,7 +230,7 @@ class Solr_Notification extends ApiEnabled_Notification
     }
 
     /**
-     * Override the default folder search behavior
+     * Override the default folder search behavior.
      */
     public function folderSearch($args)
     {
@@ -263,7 +263,7 @@ class Solr_Notification extends ApiEnabled_Notification
     }
 
     /**
-     * When a folder is deleted, we should remove its
+     * When a folder is deleted, we should remove its.
      */
     public function folderDeleted($args)
     {

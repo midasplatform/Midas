@@ -30,12 +30,12 @@ class Example_Upgrade_1_0_1 extends MIDASUpgrade
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $this->db->query("ALTER TABLE example_wallet ADD COLUMN credit_card_count integer NOT NULL DEFAULT 0;");
+        $this->db->query('ALTER TABLE example_wallet ADD COLUMN credit_card_count integer NOT NULL DEFAULT 0;');
     }
 
     /** Upgrade a SQLite database. */
     public function sqlite()
     {
-        $this->db->query("ALTER TABLE example_wallet ADD COLUMN credit_card_count INTEGER NOT NULL DEFAULT 0;");
+        $this->db->query('ALTER TABLE example_wallet ADD COLUMN credit_card_count INTEGER NOT NULL DEFAULT 0;');
     }
 }

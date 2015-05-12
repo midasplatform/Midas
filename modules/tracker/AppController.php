@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic controller class for the tracker module.
- *
- * @package Modules\Tracker\Controller
- */
+/** Generic controller class for the tracker module. */
 class Tracker_AppController extends MIDAS_GlobalModule
 {
     /** @var string */

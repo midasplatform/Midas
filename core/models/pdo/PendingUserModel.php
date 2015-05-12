@@ -20,9 +20,7 @@
 
 require_once BASE_PATH.'/core/models/base/PendingUserModelBase.php';
 
-/**
- * Pdo Model for a pending user
- */
+/** Pdo Model for a pending user. */
 class PendingUserModel extends PendingUserModelBase
 {
     /**

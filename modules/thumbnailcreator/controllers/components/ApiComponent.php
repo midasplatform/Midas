@@ -30,7 +30,7 @@ class Thumbnailcreator_ApiComponent extends AppComponent
             return $rtn;
         }
 
-        return null;
+        return;
     }
 
     /**

@@ -22,7 +22,7 @@
 class Packages_ApiComponent extends AppComponent
 {
     /**
-     * Helper function for verifying keys in an input array
+     * Helper function for verifying keys in an input array.
      */
     private function _checkKeys($keys, $values)
     {
@@ -34,7 +34,7 @@ class Packages_ApiComponent extends AppComponent
     }
 
     /**
-     * Helper function to get the user from token or session authentication
+     * Helper function to get the user from token or session authentication.
      */
     private function _getUser($args)
     {
@@ -71,7 +71,7 @@ class Packages_ApiComponent extends AppComponent
     }
 
     /**
-     * Get a filtered list of available extensions
+     * Get a filtered list of available extensions.
      *
      * @param extension_id (Optional) The extension id
      * @param os (Optional) The target operating system of the package (linux | win | macosx)
@@ -146,7 +146,7 @@ class Packages_ApiComponent extends AppComponent
     }
 
     /**
-     * Upload an extension package
+     * Upload an extension package.
      *
      * @param os The target operating system of the package
      * @param arch The os chip architecture (i386, amd64, etc)
@@ -297,7 +297,7 @@ class Packages_ApiComponent extends AppComponent
     }
 
     /**
-     * Get a filtered list of available packages
+     * Get a filtered list of available packages.
      *
      * @param os (Optional) The target operating system of the package (linux | win | macosx)
      * @param arch (Optional) The os chip architecture (i386 | amd64)
@@ -362,7 +362,7 @@ class Packages_ApiComponent extends AppComponent
     }
 
     /**
-     * Upload a core package
+     * Upload a core package.
      *
      * @param os The target operating system of the package
      * @param arch The os chip architecture (i386, amd64, etc)

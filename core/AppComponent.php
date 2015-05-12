@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic component class.
- *
- * @package Core\Component
- */
+/** Generic component class. */
 class AppComponent extends MIDAS_GlobalComponent
 {
 }

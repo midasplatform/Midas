@@ -25,7 +25,7 @@ class Archive_ExtractComponent extends AppComponent
     public $moduleName = 'archive';
 
     /**
-     * Extract an archive out of an item and into the hierarchy in place
+     * Extract an archive out of an item and into the hierarchy in place.
      *
      * @param ItemDao $itemDao item representing the archive to extract
      * @param bool $deleteArchive whether to delete the archive item when finished extraction
@@ -112,7 +112,7 @@ class Archive_ExtractComponent extends AppComponent
     }
 
     /**
-     * Use the native unzip executable to extract the archive
+     * Use the native unzip executable to extract the archive.
      */
     private function _extractZipNative($bitstreamDao, $nativeCommand, $dir, $progressDao)
     {
@@ -152,7 +152,7 @@ class Archive_ExtractComponent extends AppComponent
     }
 
     /**
-     * Recursively count the total number of entries in a directory
+     * Recursively count the total number of entries in a directory.
      */
     private function _countDir($dir)
     {
@@ -173,7 +173,7 @@ class Archive_ExtractComponent extends AppComponent
 
     /**
      * Use PHP's zip utils to extract the archive.
-     * WARNING: this does not support zip files over 2GB
+     * WARNING: this does not support zip files over 2GB.
      */
     private function _extractZipPhp($bitstreamDao, $dir, $progressDao)
     {
@@ -208,7 +208,7 @@ class Archive_ExtractComponent extends AppComponent
     }
 
     /**
-     * Write a single zip entry to its appropriate location on disk
+     * Write a single zip entry to its appropriate location on disk.
      */
     private function _extractZipEntry($zip, $baseDir, $zipEntry, $entryName)
     {
@@ -236,7 +236,7 @@ class Archive_ExtractComponent extends AppComponent
     }
 
     /**
-     * Recursive function for adding resources to the hierarchy from disk
+     * Recursive function for adding resources to the hierarchy from disk.
      */
     protected function _addToHierarchy($path, $parentFolder, $progressDao)
     {
@@ -266,7 +266,7 @@ class Archive_ExtractComponent extends AppComponent
     }
 
     /**
-     * Add the folder in the specified fullPath to the specified parentFolder
+     * Add the folder in the specified fullPath to the specified parentFolder.
      */
     private function _addFolder($parentFolder, $fullPath)
     {
@@ -288,7 +288,7 @@ class Archive_ExtractComponent extends AppComponent
     }
 
     /**
-     * Add the item at the specified fullPath into the specified parentFolder
+     * Add the item at the specified fullPath into the specified parentFolder.
      */
     private function _addItem($parentFolder, $fullPath)
     {
@@ -297,7 +297,7 @@ class Archive_ExtractComponent extends AppComponent
     }
 
     /**
-     * Helper function to safely open the zip
+     * Helper function to safely open the zip.
      */
     private function _safeOpenZip($path)
     {
@@ -310,7 +310,7 @@ class Archive_ExtractComponent extends AppComponent
     }
 
     /**
-     * Return whether or not the filename has the given extension
+     * Return whether or not the filename has the given extension.
      */
     private function _isFileExtension($filename, $ext)
     {

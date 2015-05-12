@@ -24,7 +24,6 @@
  * @property Tracker_ScalarModel $Tracker_Scalar
  * @property Tracker_ThresholdNotificationModel $Tracker_ThresholdNotification
  * @property Tracker_TrendModel $Tracker_Trend
- * @package Modules\Tracker\Controller
  */
 class Tracker_TrendController extends Tracker_AppController
 {
@@ -156,7 +155,7 @@ class Tracker_TrendController extends Tracker_AppController
             array(
                 'type' => 'community',
                 'object' => $communityDao,
-                'tab' => 'Trackers'
+                'tab' => 'Trackers',
             ),
             array(
                 'type' => 'custom',

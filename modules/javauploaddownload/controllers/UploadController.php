@@ -26,7 +26,7 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
 
     private function _is_https()
     {
-        return array_key_exists('HTTPS', $_SERVER) && $_SERVER["HTTPS"] === 'on';
+        return array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS'] === 'on';
     }
 
     /** Init controller */
@@ -164,7 +164,7 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
     }
 
     /**
-     * Handles the user setting changes and licenses when using the large revision upload applet
+     * Handles the user setting changes and licenses when using the large revision upload applet.
      */
     public function javarevisionsessionAction()
     {
@@ -198,7 +198,7 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
     }
 
     /**
-     * Used when uploading a folder with the applet. Prints the destination folder id
+     * Used when uploading a folder with the applet. Prints the destination folder id.
      */
     public function javadestinationfolderAction()
     {
@@ -216,7 +216,7 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
     }
 
     /**
-     * Used to see how much of a file made it to the server during an interrupted upload attempt
+     * Used to see how much of a file made it to the server during an interrupted upload attempt.
      *
      * @param uploadUniqueIdentifier The upload token to check
      */
@@ -238,7 +238,7 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
     }
 
     /**
-     * Get a unique upload token for the java uploader. Must be logged in to do this
+     * Get a unique upload token for the java uploader. Must be logged in to do this.
      *
      * @param filename The name of the file to be uploaded
      */
@@ -294,7 +294,7 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
     }
 
     /**
-     * Process a java upload
+     * Process a java upload.
      *
      * @param uploadUniqueIdentifier The upload token (see gethttpuploaduniqueidentifierAction)
      * @param filename The name of the file being uploaded
@@ -399,7 +399,7 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
     }
 
     /**
-     * Process a java upload of a new revision
+     * Process a java upload of a new revision.
      *
      * @param uploadUniqueIdentifier The upload token (see gethttpuploaduniqueidentifierAction)
      * @param filename The name of the file being uploaded
@@ -490,11 +490,11 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
                     unlink($data['path']);
                 }
 
-                echo "[ERROR] ".$e->getMessage();
+                echo '[ERROR] '.$e->getMessage();
                 throw $e;
             }
 
-            echo "[OK]";
+            echo '[OK]';
         }
     }
 

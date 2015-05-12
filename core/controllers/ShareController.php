@@ -44,7 +44,7 @@ class ShareController extends AppController
         $type = $this->getParam('type');
         $element = $this->getParam('element');
         if (!isset($type) || !isset($element)) {
-            throw new Zend_Exception("Parameters problem, expecting type or element to be set.");
+            throw new Zend_Exception('Parameters problem, expecting type or element to be set.');
         }
 
         switch ($type) {
@@ -55,12 +55,12 @@ class ShareController extends AppController
                 $element = $this->Item->load($element);
                 break;
             default:
-                throw new Zend_Exception("Unknown type, expected folder or item.");
+                throw new Zend_Exception('Unknown type, expected folder or item.');
                 break;
         }
 
         if ($element == false) {
-            throw new Zend_Exception("Unable to load element.");
+            throw new Zend_Exception('Unable to load element.');
         }
 
         if ($type == 'folder') {
@@ -287,7 +287,7 @@ class ShareController extends AppController
 
     /**
      * Display link URLs for the given resource. No policy checking is performed
-     * since this is really just displaying a formatted string based on the input
+     * since this is really just displaying a formatted string based on the input.
      * @param type The type (folder | item)
      * @param id The id of the resource
      */

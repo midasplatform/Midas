@@ -20,11 +20,7 @@
 
 require_once BASE_PATH.'/modules/tracker/models/base/ProducerModelBase.php';
 
-/**
- * Producer model for the tracker module.
- *
- * @package Modules\Tracker\Model
- */
+/** Producer model for the tracker module. */
 class Tracker_ProducerModel extends Tracker_ProducerModelBase
 {
     /**

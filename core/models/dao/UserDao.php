@@ -75,7 +75,6 @@
  * @method void setFeedpolicyuser(array $feedPolicyUser)
  * @method array getItemrevisions()
  * @method void setItemrevisions(array $itemRevisions)
- * @package Core\DAO
  */
 class UserDao extends AppDao
 {
@@ -103,7 +102,7 @@ class UserDao extends AppDao
      */
     public function getFullName()
     {
-        return $this->getFirstname()." ".$this->getLastname();
+        return $this->getFirstname().' '.$this->getLastname();
     }
 
     /**

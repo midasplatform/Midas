@@ -53,7 +53,7 @@ class UserController extends AppController
     /** Index */
     public function indexAction()
     {
-        $this->view->header = $this->t("Users");
+        $this->view->header = $this->t('Users');
         $this->view->activemenu = 'user'; // set the active menu
 
         $order = $this->getParam('order');
@@ -120,11 +120,11 @@ class UserController extends AppController
 
             $url = $this->getServerURL().$this->view->webroot;
 
-            $subject = "Password Request";
-            $body = "You have requested a new password for Midas Platform.<br />";
-            $body .= "Please go to this page to log into Midas Platform and change your password:<br />";
-            $body .= "<a href=\"".$url."\">".$url."</a><br />";
-            $body .= "Your new password is: ".$pass."<br />";
+            $subject = 'Password Request';
+            $body = 'You have requested a new password for Midas Platform.<br />';
+            $body .= 'Please go to this page to log into Midas Platform and change your password:<br />';
+            $body .= '<a href="'.$url.'">'.$url.'</a><br />';
+            $body .= 'Your new password is: '.$pass.'<br />';
 
             $result = Zend_Registry::get('notifier')->callback(
                 'CALLBACK_CORE_SEND_MAIL_MESSAGE',
@@ -197,7 +197,7 @@ class UserController extends AppController
 
     /**
      * Function for registering a new user; provides an ajax response; does not attempt to redirect,
-     * instead post-register action is left up to the client
+     * instead post-register action is left up to the client.
      */
     public function ajaxregisterAction()
     {
@@ -211,7 +211,7 @@ class UserController extends AppController
         $this->disableLayout();
         if (!$adminCreate && isset(Zend_Registry::get('configGlobal')->closeregistration) && Zend_Registry::get(
                 'configGlobal'
-            )->closeregistration == "1"
+            )->closeregistration == '1'
         ) {
             echo JsonComponent::encode(array('status' => 'error', 'message' => 'New user registration is disabled.'));
 
@@ -270,11 +270,11 @@ class UserController extends AppController
                 if ($adminCreate) {
                     $subject = 'User Registration';
                     $url = $this->getServerURL().$this->view->webroot;
-                    $body = "An administrator has created a user account for you at the following Midas Platform instance:<br/><br/>";
+                    $body = 'An administrator has created a user account for you at the following Midas Platform instance:<br/><br/>';
                     $body .= '<a href="'.$url.'">'.$url.'</a><br /><br />';
 
                     if (!$nopass) {
-                        $body .= "Log in using this email address (".$email.") and your initial password:<br/><br/>";
+                        $body .= 'Log in using this email address ('.$email.') and your initial password:<br/><br/>';
                         $body .= '<b>'.$form->getValue('password1').'</b><br/><br/>';
                     }
 
@@ -318,7 +318,7 @@ class UserController extends AppController
                 $subject = 'User Registration';
                 $url = $this->getServerURL().$this->view->webroot.'/user/verifyemail?email='.$email;
                 $url .= '&authKey='.$pendingUser->getAuthKey();
-                $body = "You have created an account on Midas Platform.<br/><br/>";
+                $body = 'You have created an account on Midas Platform.<br/><br/>';
                 $body .= '<a href="'.$url.'">Click here</a> to verify your email and complete registration.<br/><br/>';
                 $body .= 'If you did not initiate this registration, please disregard this email.<br/><br/>';
 
@@ -348,7 +348,7 @@ class UserController extends AppController
     {
         if (isset(Zend_Registry::get('configGlobal')->closeregistration) && Zend_Registry::get(
                 'configGlobal'
-            )->closeregistration == "1"
+            )->closeregistration == '1'
         ) {
             throw new Zend_Exception('New user registration is disabled.');
         }
@@ -357,7 +357,7 @@ class UserController extends AppController
         ) {
             if ($this->User->getByEmail(strtolower($form->getValue('email'))) !== false
             ) {
-                throw new Zend_Exception("User already exists.");
+                throw new Zend_Exception('User already exists.');
             }
 
             $addressVerification = $this->Setting->getValueByName('address_verification', 'mail');
@@ -387,7 +387,7 @@ class UserController extends AppController
                 $subject = 'User Registration';
                 $url = $this->getServerURL().$this->view->webroot.'/user/verifyemail?email='.$email;
                 $url .= '&authKey='.$pendingUser->getAuthKey();
-                $body = "You have created an account on Midas Platform.<br/><br/>";
+                $body = 'You have created an account on Midas Platform.<br/><br/>';
                 $body .= '<a href="'.$url.'">Click here</a> to verify your email and complete registration.<br/><br/>';
                 $body .= 'If you did not initiate this registration, please disregard this email.<br/><br/>';
 
@@ -422,7 +422,7 @@ class UserController extends AppController
     }
 
     /**
-     * Simple page to tell the user that an email has been sent to them
+     * Simple page to tell the user that an email has been sent to them.
      */
     public function emailsentAction()
     {
@@ -432,7 +432,7 @@ class UserController extends AppController
 
     /**
      * User will receive an email with a link to this action, which will move
-     * their pending user record into a user record if the authKey is correct
+     * their pending user record into a user record if the authKey is correct.
      */
     public function verifyemailAction()
     {
@@ -520,7 +520,7 @@ class UserController extends AppController
             $user->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
             $user->Dao = $userDao;
             $user->lock();
-            $this->getLogger()->debug(__METHOD__." Log in : ".$userDao->getFullName());
+            $this->getLogger()->debug(__METHOD__.' Log in : '.$userDao->getFullName());
             echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Login successful'));
         } else {
             echo JsonComponent::encode(array('status' => 'error', 'message' => 'Invalid username or password'));
@@ -629,7 +629,7 @@ class UserController extends AppController
                             $user->lock();
                         }
                     }
-                    $this->getLogger()->debug(__METHOD__." Log in : ".$userDao->getFullName());
+                    $this->getLogger()->debug(__METHOD__.' Log in : '.$userDao->getFullName());
 
                     if (isset($previousUri) && !empty($previousUri) && (!empty($this->view->webroot)) && strpos(
                             $previousUri,
@@ -718,7 +718,7 @@ class UserController extends AppController
         }
 
         if (empty($userDao) || $userDao == false) {
-            throw new Zend_Exception("Unable to load user");
+            throw new Zend_Exception('Unable to load user');
         }
 
         $notifications = Zend_Registry::get('notifier')->callback(
@@ -931,7 +931,7 @@ class UserController extends AppController
                     $tmpPath = $this->getDataDirectory('thumbnail').'/'.$this->Component->Random->generateInt();
                     if (!file_exists($this->getDataDirectory('thumbnail'))) {
                         throw new Zend_Exception(
-                            "Thumbnail path does not exist: ".$this->getDataDirectory('thumbnail')
+                            'Thumbnail path does not exist: '.$this->getDataDirectory('thumbnail')
                         );
                     }
                     if (!file_exists($tmpPath)) {
@@ -941,13 +941,13 @@ class UserController extends AppController
                     if (!file_exists($tmpPath)) {
                         mkdir($tmpPath);
                     }
-                    $destination = $tmpPath."/".$this->Component->Random->generateInt().'.jpg';
+                    $destination = $tmpPath.'/'.$this->Component->Random->generateInt().'.jpg';
                     while (file_exists($destination)) {
-                        $destination = $tmpPath."/".$this->Component->Random->generateInt().'.jpg';
+                        $destination = $tmpPath.'/'.$this->Component->Random->generateInt().'.jpg';
                     }
                     $pathThumbnail = $destination;
 
-                    list ($x, $y) = getimagesize($path);  //--- get size of img ---
+                    list($x, $y) = getimagesize($path);  //--- get size of img ---
                     $thumb = 32;  //--- max. size of thumb ---
                     if ($x > $y) {
                         $tx = $thumb;  //--- landscape ---
@@ -1056,7 +1056,7 @@ class UserController extends AppController
     public function userpageAction()
     {
         $this->view->Date = $this->Component->Date;
-        $user_id = $this->getParam("user_id");
+        $user_id = $this->getParam('user_id');
 
         if (!isset($user_id) && !$this->logged) {
             $this->view->header = $this->t(MIDAS_LOGIN_REQUIRED);
@@ -1071,12 +1071,12 @@ class UserController extends AppController
             if ($userDao->getPrivacy() == MIDAS_USER_PRIVATE && (!$this->logged || $this->userSession->Dao->getKey(
                     ) != $userDao->getKey()) && (!isset($this->userSession->Dao) || !$this->userSession->Dao->isAdmin())
             ) {
-                throw new Zend_Exception("Permission error");
+                throw new Zend_Exception('Permission error');
             }
         }
 
         if (!$userDao instanceof UserDao) {
-            throw new Zend_Exception("Unable to find user", 404);
+            throw new Zend_Exception('Unable to find user', 404);
         }
 
         $this->view->user = $userDao;
@@ -1163,12 +1163,12 @@ class UserController extends AppController
             $userDao = $this->User->load($userId);
             if (!$this->userSession->Dao->isAdmin() && $this->userSession->Dao->getKey() != $userId
             ) {
-                throw new Zend_Exception("Permission error");
+                throw new Zend_Exception('Permission error');
             }
         }
 
         if (!$userDao instanceof UserDao) {
-            throw new Zend_Exception("Unable to find user");
+            throw new Zend_Exception('Unable to find user');
         }
 
         // Get all the communities this user can see

@@ -22,7 +22,7 @@ require_once BASE_PATH.'/core/models/base/SettingModelBase.php';
 
 /**
  *  SettingModel
- *  Pdo Model
+ *  Pdo Model.
  */
 class SettingModel extends SettingModelBase
 {

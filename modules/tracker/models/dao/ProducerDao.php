@@ -39,7 +39,6 @@
  * @method void setCommunity(CommunityDao $communityDao)
  * @method array getTrends()
  * @method void setTrends(array $trendDaos)
- * @package Modules\Tracker\DAO
  */
 class Tracker_ProducerDao extends Tracker_AppDao
 {

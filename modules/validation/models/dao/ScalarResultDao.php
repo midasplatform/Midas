@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * ScalarResult DAO
- */
+/** ScalarResult DAO. */
 class Validation_ScalarResultDao extends AppDao
 {
     public $_model = 'ScalarResult';

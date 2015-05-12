@@ -34,7 +34,7 @@ class UserapiModel extends UserapiModelBase
     public function getByAppAndEmail($appname, $email)
     {
         if (!is_string($appname) || !is_string($email)) {
-            throw new Zend_Exception("Error in parameter when getting a Userapi by app and email.");
+            throw new Zend_Exception('Error in parameter when getting a Userapi by app and email.');
         }
 
         /** @var UserModel $userModel */
@@ -62,7 +62,7 @@ class UserapiModel extends UserapiModelBase
     public function getByAppAndUser($appname, $userDao)
     {
         if (!is_string($appname) || !$userDao instanceof UserDao) {
-            throw new Zend_Exception("Error in parameter when getting a Userapi by app and user.");
+            throw new Zend_Exception('Error in parameter when getting a Userapi by app and user.');
         }
         $row = $this->database->fetchRow(
             $this->database->select()->where('application_name = ?', $appname)->where('user_id = ?', $userDao->getKey())
@@ -73,7 +73,7 @@ class UserapiModel extends UserapiModelBase
     }
 
     /**
-     * Return the token DAO
+     * Return the token DAO.
      *
      * @param string $email email address
      * @param string $apikey API key
@@ -84,7 +84,7 @@ class UserapiModel extends UserapiModelBase
     public function getToken($email, $apikey, $appname)
     {
         if (!is_string($appname) || !is_string($apikey) || !is_string($email)) {
-            throw new Zend_Exception("Error in parameter when getting Token.");
+            throw new Zend_Exception('Error in parameter when getting Token.');
         }
         // Check if we don't have already a token
         /** @var UserModel $userModel */
@@ -145,7 +145,7 @@ class UserapiModel extends UserapiModelBase
     }
 
     /**
-     * Return the userid from a token
+     * Return the userid from a token.
      *
      * @param TokenDao $token
      * @return false|UserapiDao
@@ -154,7 +154,7 @@ class UserapiModel extends UserapiModelBase
     public function getUserapiFromToken($token)
     {
         if (!is_string($token)) {
-            throw new Zend_Exception("Error in parameter when getting Userapi from token.");
+            throw new Zend_Exception('Error in parameter when getting Userapi from token.');
         }
         $now = date('Y-m-d H:i:s');
 
@@ -170,7 +170,7 @@ class UserapiModel extends UserapiModelBase
     }
 
     /**
-     * Get the user's keys
+     * Get the user's keys.
      *
      * @param UserDao $userDao
      * @return array
@@ -179,7 +179,7 @@ class UserapiModel extends UserapiModelBase
     public function getByUser($userDao)
     {
         if (!$userDao instanceof UserDao) {
-            throw new Zend_Exception("Error in parameter when getting Userapi from user.");
+            throw new Zend_Exception('Error in parameter when getting Userapi from user.');
         }
         $rowset = $this->database->fetchAll($this->database->select()->where('user_id = ?', $userDao->getKey()));
         $return = array();

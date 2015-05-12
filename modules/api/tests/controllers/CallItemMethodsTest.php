@@ -385,7 +385,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $itemDao = $this->Item->load($generatedDuplicateItemId);
         $revisions = $itemDao->getRevisions();
         $this->assertEquals(count($revisions), 0, 'Wrong number of revisions in the new item');
-        $this->assertEquals($itemDao->getName(), "created_item (1)", 'Duplicate Item has wrong name');
+        $this->assertEquals($itemDao->getName(), 'created_item (1)', 'Duplicate Item has wrong name');
         // delete the newly created item
         $this->Item->delete($itemDao);
 
@@ -402,12 +402,12 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $resp = $this->_callJsonApi();
         $this->_assertStatusOk($resp);
         $token = $resp->data->token;
-        $tokenParts = explode("/", $token);
+        $tokenParts = explode('/', $token);
         $generatedDuplicateItemId = $tokenParts[1];
         $itemDao = $this->Item->load($generatedDuplicateItemId);
         $revisions = $itemDao->getRevisions();
         $this->assertEquals(count($revisions), 0, 'Wrong number of revisions in the new item');
-        $this->assertEquals($itemDao->getName(), "created_item (1)", 'Duplicate Item has wrong name');
+        $this->assertEquals($itemDao->getName(), 'created_item (1)', 'Duplicate Item has wrong name');
         // delete the newly created item
         $this->Item->delete($itemDao);
 
@@ -1066,7 +1066,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
             // get the current item name
             $freshItem = $itemModel->load($item->getItemId());
             $itemName = $freshItem->getName();
-            $newItemName = $itemName."suffix";
+            $newItemName = $itemName.'suffix';
             $this->resetAll();
             $this->params['token'] = $this->_loginAsUser($userDao);
             $this->params['method'] = 'midas.item.create';
@@ -1106,7 +1106,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         //              Private -> Private
         //              Private -> Public
         $privacyStatuses = array(MIDAS_PRIVACY_PUBLIC, MIDAS_PRIVACY_PRIVATE);
-        $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
+        $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => 'Public', MIDAS_PRIVACY_PRIVATE => 'Private');
         foreach ($privacyStatuses as $initialStatus) {
             foreach ($privacyStatuses as $finalStatus) {
                 $this->initializePrivacyStatus(array(), array($adminItem), $initialStatus);
@@ -1370,19 +1370,19 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $usersFile = $this->loadData('User', 'default');
 
         // add metadata to an invalid item, should be an error
-        $element1 = "meta_element_1";
-        $value1 = "meta_value_1";
-        $this->_callSetmetadata("-1", $element1, $value1, null, null, null, MIDAS_INVALID_POLICY);
+        $element1 = 'meta_element_1';
+        $value1 = 'meta_value_1';
+        $this->_callSetmetadata('-1', $element1, $value1, null, null, null, MIDAS_INVALID_POLICY);
 
         // get metadata to an invalid item, should be an error
-        $this->_callGetmetadata("-1", null, MIDAS_INVALID_POLICY);
+        $this->_callGetmetadata('-1', null, MIDAS_INVALID_POLICY);
 
-        $multiElement1 = "multi_meta_element_1";
-        $multiValue1 = "multi_meta_value_1";
-        $multiElement2 = "multi_meta_element_2";
-        $multiValue2 = "multi_meta_value_2";
-        $multiElement3 = "multi_meta_element_3";
-        $multiValue3 = "multi_meta_value_3";
+        $multiElement1 = 'multi_meta_element_1';
+        $multiValue1 = 'multi_meta_value_1';
+        $multiElement2 = 'multi_meta_element_2';
+        $multiValue2 = 'multi_meta_value_2';
+        $multiElement3 = 'multi_meta_element_3';
+        $multiValue3 = 'multi_meta_value_3';
         $metadata = array(
             array('element' => $multiElement1, 'value' => $multiValue1),
             array('element' => $multiElement2, 'value' => $multiValue2),
@@ -1398,13 +1398,13 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         );
 
         // add multiple metadata to an invalid item, should be an error
-        $this->_callSetmultiplemetadata("-1", $metadata, null, null, MIDAS_INVALID_POLICY);
+        $this->_callSetmultiplemetadata('-1', $metadata, null, null, MIDAS_INVALID_POLICY);
 
         // delete metadata from an invalid item, should be an error
-        $this->_callDeletemetadata("-1", $element1, null, null, null, MIDAS_INVALID_POLICY);
+        $this->_callDeletemetadata('-1', $element1, null, null, null, MIDAS_INVALID_POLICY);
 
         // delete all metadata from an invalid item, should be an error
-        $this->_callDeletemetadataAll("-1", null, MIDAS_INVALID_POLICY);
+        $this->_callDeletemetadataAll('-1', null, MIDAS_INVALID_POLICY);
 
         // create a new item, it will have zero revisions
         $this->resetAll();
@@ -1439,7 +1439,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $this->_callDeletemetadataAll($generatedItemId, null, MIDAS_INVALID_POLICY);
 
         // delete all metadata all revisions of this item, should be an error as no revisions exist
-        $this->_callDeletemetadataAll($generatedItemId, "all", MIDAS_INVALID_POLICY);
+        $this->_callDeletemetadataAll($generatedItemId, 'all', MIDAS_INVALID_POLICY);
 
         // add a revision to the item
         /** @var ItemRevisionDao $revision */
@@ -1454,35 +1454,35 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         // check that the values are correct, at the same time check getmetadata
         $resp = $this->_callGetmetadata($generatedItemId);
         $metadataArray = $resp->data;
-        $this->assertEquals($metadataArray[0]->element, $element1, "Expected metadata element would be ".$element1);
-        $this->assertEquals($metadataArray[0]->value, $value1, "Expected metadata value would be ".$value1);
+        $this->assertEquals($metadataArray[0]->element, $element1, 'Expected metadata element would be '.$element1);
+        $this->assertEquals($metadataArray[0]->value, $value1, 'Expected metadata value would be '.$value1);
         $this->assertEquals($metadataArray[0]->qualifier, '', "Expected metadata qualifier would be ''");
         $this->assertEquals(
             $metadataArray[0]->metadatatype,
             MIDAS_METADATA_TEXT,
-            "Expected metadata type would be ".MIDAS_METADATA_TEXT
+            'Expected metadata type would be '.MIDAS_METADATA_TEXT
         );
 
         // check the same call, this time passing revision = 1
-        $resp = $this->_callGetmetadata($generatedItemId, "1");
+        $resp = $this->_callGetmetadata($generatedItemId, '1');
         $metadataArray = $resp->data;
-        $this->assertEquals($metadataArray[0]->element, $element1, "Expected metadata element would be ".$element1);
-        $this->assertEquals($metadataArray[0]->value, $value1, "Expected metadata value would be ".$value1);
+        $this->assertEquals($metadataArray[0]->element, $element1, 'Expected metadata element would be '.$element1);
+        $this->assertEquals($metadataArray[0]->value, $value1, 'Expected metadata value would be '.$value1);
         $this->assertEquals($metadataArray[0]->qualifier, '', "Expected metadata qualifier would be ''");
         $this->assertEquals(
             $metadataArray[0]->metadatatype,
             MIDAS_METADATA_TEXT,
-            "Expected metadata type would be ".MIDAS_METADATA_TEXT
+            'Expected metadata type would be '.MIDAS_METADATA_TEXT
         );
 
         // add additional metadata
-        $element2 = "meta_element_2";
-        $value2 = "meta_value_2";
-        $qualifier2 = "meta_qualifier_2";
+        $element2 = 'meta_element_2';
+        $value2 = 'meta_value_2';
+        $qualifier2 = 'meta_qualifier_2';
         $this->_callSetmetadata($generatedItemId, $element2, $value2, $qualifier2);
 
         // check that the metadata was added
-        $resp = $this->_callGetmetadata($generatedItemId, "1");
+        $resp = $this->_callGetmetadata($generatedItemId, '1');
         $metadataArray = $resp->data;
         if ($metadataArray[0]->element === $element1) {
             $ind1 = 0;
@@ -1494,30 +1494,30 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $this->assertEquals(
             $metadataArray[$ind1]->element,
             $element1,
-            "Expected metadata element would be ".$element1
+            'Expected metadata element would be '.$element1
         );
-        $this->assertEquals($metadataArray[$ind1]->value, $value1, "Expected metadata value would be ".$value1);
+        $this->assertEquals($metadataArray[$ind1]->value, $value1, 'Expected metadata value would be '.$value1);
         $this->assertEquals($metadataArray[$ind1]->qualifier, '', "Expected metadata qualifier would be ''");
         $this->assertEquals(
             $metadataArray[$ind1]->metadatatype,
             MIDAS_METADATA_TEXT,
-            "Expected metadata type would be ".MIDAS_METADATA_TEXT
+            'Expected metadata type would be '.MIDAS_METADATA_TEXT
         );
         $this->assertEquals(
             $metadataArray[$ind2]->element,
             $element2,
-            "Expected metadata element would be ".$element2
+            'Expected metadata element would be '.$element2
         );
-        $this->assertEquals($metadataArray[$ind2]->value, $value2, "Expected metadata value would be ".$value2);
+        $this->assertEquals($metadataArray[$ind2]->value, $value2, 'Expected metadata value would be '.$value2);
         $this->assertEquals(
             $metadataArray[$ind2]->qualifier,
             $qualifier2,
-            "Expected metadata qualifier would be ".$qualifier2
+            'Expected metadata qualifier would be '.$qualifier2
         );
         $this->assertEquals(
             $metadataArray[$ind2]->metadatatype,
             MIDAS_METADATA_TEXT,
-            "Expected metadata type would be ".MIDAS_METADATA_TEXT
+            'Expected metadata type would be '.MIDAS_METADATA_TEXT
         );
 
         // add a revision 2 to the item
@@ -1528,8 +1528,8 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $this->Item->addRevision($itemDao, $revision);
 
         // add metadata to rev 2
-        $rev2element = "meta_element_rev_2";
-        $rev2value = "meta_value_rev_2";
+        $rev2element = 'meta_element_rev_2';
+        $rev2value = 'meta_value_rev_2';
         $this->_callSetmetadata($generatedItemId, $rev2element, $rev2value);
 
         // get the metadata from rev 2
@@ -1538,18 +1538,18 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $this->assertEquals(
             $metadataArray[0]->element,
             $rev2element,
-            "Expected metadata element would be ".$rev2element
+            'Expected metadata element would be '.$rev2element
         );
-        $this->assertEquals($metadataArray[0]->value, $rev2value, "Expected metadata value would be ".$rev2value);
+        $this->assertEquals($metadataArray[0]->value, $rev2value, 'Expected metadata value would be '.$rev2value);
         $this->assertEquals($metadataArray[0]->qualifier, '', "Expected metadata qualifier would be ''");
         $this->assertEquals(
             $metadataArray[0]->metadatatype,
             MIDAS_METADATA_TEXT,
-            "Expected metadata type would be ".MIDAS_METADATA_TEXT
+            'Expected metadata type would be '.MIDAS_METADATA_TEXT
         );
 
         // get the metadata from rev 1, checking if revision param works
-        $resp = $this->_callGetmetadata($generatedItemId, "1");
+        $resp = $this->_callGetmetadata($generatedItemId, '1');
         $metadataArray = $resp->data;
         if ($metadataArray[0]->element === $element1) {
             $ind1 = 0;
@@ -1561,30 +1561,30 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $this->assertEquals(
             $metadataArray[$ind1]->element,
             $element1,
-            "Expected metadata element would be ".$element1
+            'Expected metadata element would be '.$element1
         );
-        $this->assertEquals($metadataArray[$ind1]->value, $value1, "Expected metadata value would be ".$value1);
+        $this->assertEquals($metadataArray[$ind1]->value, $value1, 'Expected metadata value would be '.$value1);
         $this->assertEquals($metadataArray[$ind1]->qualifier, '', "Expected metadata qualifier would be ''");
         $this->assertEquals(
             $metadataArray[$ind1]->metadatatype,
             MIDAS_METADATA_TEXT,
-            "Expected metadata type would be ".MIDAS_METADATA_TEXT
+            'Expected metadata type would be '.MIDAS_METADATA_TEXT
         );
         $this->assertEquals(
             $metadataArray[$ind2]->element,
             $element2,
-            "Expected metadata element would be ".$element2
+            'Expected metadata element would be '.$element2
         );
-        $this->assertEquals($metadataArray[$ind2]->value, $value2, "Expected metadata value would be ".$value2);
+        $this->assertEquals($metadataArray[$ind2]->value, $value2, 'Expected metadata value would be '.$value2);
         $this->assertEquals(
             $metadataArray[$ind2]->qualifier,
             $qualifier2,
-            "Expected metadata qualifier would be ".$qualifier2
+            'Expected metadata qualifier would be '.$qualifier2
         );
         $this->assertEquals(
             $metadataArray[$ind2]->metadatatype,
             MIDAS_METADATA_TEXT,
-            "Expected metadata type would be ".MIDAS_METADATA_TEXT
+            'Expected metadata type would be '.MIDAS_METADATA_TEXT
         );
 
         // add a revision 3 to the item
@@ -1602,33 +1602,33 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $this->Item->addRevision($itemDao, $revision);
 
         // add metadata to rev 3
-        $rev3element = "meta_element_rev_3";
-        $rev3value = "meta_value_rev_3";
+        $rev3element = 'meta_element_rev_3';
+        $rev3value = 'meta_value_rev_3';
         $this->_callSetmetadata($generatedItemId, $rev3element, $rev3value, null, null, '3');
 
         // check that revision 3 has the metadata
-        $resp = $this->_callGetmetadata($generatedItemId, "3");
+        $resp = $this->_callGetmetadata($generatedItemId, '3');
         $metadataArray = $resp->data;
         $this->assertEquals(
             $metadataArray[0]->element,
             $rev3element,
-            "Expected metadata element would be ".$rev3element
+            'Expected metadata element would be '.$rev3element
         );
-        $this->assertEquals($metadataArray[0]->value, $rev3value, "Expected metadata value would be ".$rev3value);
+        $this->assertEquals($metadataArray[0]->value, $rev3value, 'Expected metadata value would be '.$rev3value);
         $this->assertEquals($metadataArray[0]->qualifier, '', "Expected metadata qualifier would be ''");
         $this->assertEquals(
             $metadataArray[0]->metadatatype,
             MIDAS_METADATA_TEXT,
-            "Expected metadata type would be ".MIDAS_METADATA_TEXT
+            'Expected metadata type would be '.MIDAS_METADATA_TEXT
         );
 
         // check that revision 4 doesn't have any metadata
-        $resp = $this->_callGetmetadata($generatedItemId, "4");
-        $this->assertTrue(is_array($resp->data), "Expected an empty array from the getmetadata call");
+        $resp = $this->_callGetmetadata($generatedItemId, '4');
+        $this->assertTrue(is_array($resp->data), 'Expected an empty array from the getmetadata call');
         $this->assertEquals(
             count($resp->data),
             0,
-            "Expected an empty array from the getmetadata call, but size was ".count($resp->data)
+            'Expected an empty array from the getmetadata call, but size was '.count($resp->data)
         );
 
         // add a revision 5 to the item
@@ -1654,12 +1654,12 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
 
         // add multiple metadata to this item, revision 5 to test revision param
         $this->_callSetmultiplemetadata($generatedItemId, $metadata, null, '5');
-        $resp = $this->_callGetmetadata($generatedItemId, "5");
+        $resp = $this->_callGetmetadata($generatedItemId, '5');
         $metadataArray = $resp->data;
         $this->assertEquals(
             count($resp->data),
             3,
-            "Expected an array of size 3, but size was ".count($metadataArray)
+            'Expected an array of size 3, but size was '.count($metadataArray)
         );
         // check that all expected values are there
         foreach ($metadata as $metadatum) {
@@ -1674,12 +1674,12 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         }
 
         // check that revision 7 doesn't have any metadata
-        $resp = $this->_callGetmetadata($generatedItemId, "7");
-        $this->assertTrue(is_array($resp->data), "Expected an empty array from the getmetadata call");
+        $resp = $this->_callGetmetadata($generatedItemId, '7');
+        $this->assertTrue(is_array($resp->data), 'Expected an empty array from the getmetadata call');
         $this->assertEquals(
             count($resp->data),
             0,
-            "Expected an empty array from the getmetadata call, but size was ".count($resp->data)
+            'Expected an empty array from the getmetadata call, but size was '.count($resp->data)
         );
 
         // add multiple metadata without a revision, should go to the head revision
@@ -1689,7 +1689,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $this->assertEquals(
             count($metadataArray),
             3,
-            "Expected an array of size 3, but size was ".count($metadataArray)
+            'Expected an array of size 3, but size was '.count($metadataArray)
         );
         // check that all expected values are there
         foreach ($metadata as $metadatum) {
@@ -1704,20 +1704,20 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         }
 
         // delete metadata from revision 1, should leave 1 metadata on that revision
-        $this->_callDeletemetadata($generatedItemId, $element1, null, null, "1");
-        $resp = $this->_callGetmetadata($generatedItemId, "1");
+        $this->_callDeletemetadata($generatedItemId, $element1, null, null, '1');
+        $resp = $this->_callGetmetadata($generatedItemId, '1');
         $metadataArray = $resp->data;
-        $this->assertEquals($metadataArray[0]->element, $element2, "Expected metadata element would be ".$element2);
-        $this->assertEquals($metadataArray[0]->value, $value2, "Expected metadata value would be ".$value2);
+        $this->assertEquals($metadataArray[0]->element, $element2, 'Expected metadata element would be '.$element2);
+        $this->assertEquals($metadataArray[0]->value, $value2, 'Expected metadata value would be '.$value2);
         $this->assertEquals(
             $metadataArray[0]->qualifier,
             $qualifier2,
-            "Expected metadata qualifier would be ".$qualifier2
+            'Expected metadata qualifier would be '.$qualifier2
         );
         $this->assertEquals(
             $metadataArray[0]->metadatatype,
             MIDAS_METADATA_TEXT,
-            "Expected metadata type would be ".MIDAS_METADATA_TEXT
+            'Expected metadata type would be '.MIDAS_METADATA_TEXT
         );
 
         // delete metadata without passing revision, should delete from head revision
@@ -1728,7 +1728,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $this->assertEquals(
             count($metadataArray),
             2,
-            "Expected an array of size 2, but size was ".count($metadataArray)
+            'Expected an array of size 2, but size was '.count($metadataArray)
         );
         // remove the deleted row from $metadata before checking
         array_shift($metadata);
@@ -1744,23 +1744,23 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         }
 
         // try to delete a non-existent metadata row, should return false
-        $resp = $this->_callDeletemetadata($generatedItemId, "some_new_element");
-        $this->assertTrue($resp->data == "", "Deleting a non-existent metadata row should return false.");
+        $resp = $this->_callDeletemetadata($generatedItemId, 'some_new_element');
+        $this->assertTrue($resp->data == '', 'Deleting a non-existent metadata row should return false.');
 
         // delete all metadata from revision 5 of this item
-        $this->_callDeletemetadataAll($generatedItemId, "5");
-        $resp = $this->_callGetmetadata($generatedItemId, "5");
+        $this->_callDeletemetadataAll($generatedItemId, '5');
+        $resp = $this->_callGetmetadata($generatedItemId, '5');
         $this->assertEquals(
             count($resp->data),
             0,
-            "Expected an empty array from the getmetadata call, but size was ".count($resp->data)
+            'Expected an empty array from the getmetadata call, but size was '.count($resp->data)
         );
         // head revision should still have 2 metadata rows (and other revisions have metadata also)
         $resp = $this->_callGetmetadata($generatedItemId);
         $this->assertEquals(
             count($resp->data),
             2,
-            "Expected an array of size 2, but size was ".count($metadataArray)
+            'Expected an array of size 2, but size was '.count($metadataArray)
         );
 
         // delete all metadata without passing revision, should delete from head
@@ -1769,11 +1769,11 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $this->assertEquals(
             count($resp->data),
             0,
-            "Expected an empty array from the getmetadata call, but size was ".count($resp->data)
+            'Expected an empty array from the getmetadata call, but size was '.count($resp->data)
         );
 
         // delete all metadata from all revisions
-        $this->_callDeletemetadataAll($generatedItemId, "all");
+        $this->_callDeletemetadataAll($generatedItemId, 'all');
         $revisions = $itemDao->getRevisions();
         foreach ($revisions as $revision) {
             $revisionNumber = $revision->getRevision();
@@ -1781,7 +1781,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
             $this->assertEquals(
                 count($resp->data),
                 0,
-                "Expected an empty array from the getmetadata call for revision ".$revisionNumber.", but size was ".count(
+                'Expected an empty array from the getmetadata call for revision '.$revisionNumber.', but size was '.count(
                     $resp->data
                 )
             );
@@ -1843,7 +1843,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $this->params = $params;
         $resp = $this->_callJsonApi();
         $this->_assertStatusOk($resp);
-        $this->assertEquals($resp->data->success, "true", 'itemgrouppolicy addition did not work as expected.');
+        $this->assertEquals($resp->data->success, 'true', 'itemgrouppolicy addition did not work as expected.');
 
         $this->assertPolicygroupExistence(array(), array($adminItem), $deletioncommMemberGroup, MIDAS_POLICY_WRITE);
 
@@ -1855,7 +1855,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $this->params = $params;
         $resp = $this->_callJsonApi();
         $this->_assertStatusOk($resp);
-        $this->assertEquals($resp->data->success, "true", 'itemgrouppolicy addition did not work as expected.');
+        $this->assertEquals($resp->data->success, 'true', 'itemgrouppolicy addition did not work as expected.');
 
         $this->assertPolicygroupExistence(array(), array($adminItem), $deletioncommMemberGroup, MIDAS_POLICY_READ);
 
@@ -1879,7 +1879,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $this->params = $params;
         $resp = $this->_callJsonApi();
         $this->_assertStatusOk($resp);
-        $this->assertEquals($resp->data->success, "true", 'itemgrouppolicy removal did not work as expected.');
+        $this->assertEquals($resp->data->success, 'true', 'itemgrouppolicy removal did not work as expected.');
 
         $this->assertPolicygroupNonexistence(array(), array($adminItem), $deletioncommMemberGroup);
     }
@@ -1932,7 +1932,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $this->params = $params;
         $resp = $this->_callJsonApi();
         $this->_assertStatusOk($resp);
-        $this->assertEquals($resp->data->success, "true", 'itemuserpolicy addition did not work as expected.');
+        $this->assertEquals($resp->data->success, 'true', 'itemuserpolicy addition did not work as expected.');
 
         $this->assertPolicyuserExistence(array(), array($adminItem), $targetUser, MIDAS_POLICY_WRITE);
 
@@ -1944,7 +1944,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $this->params = $params;
         $resp = $this->_callJsonApi();
         $this->_assertStatusOk($resp);
-        $this->assertEquals($resp->data->success, "true", 'itemuserpolicy addition did not work as expected.');
+        $this->assertEquals($resp->data->success, 'true', 'itemuserpolicy addition did not work as expected.');
 
         $this->assertPolicyuserExistence(array(), array($adminItem), $targetUser, MIDAS_POLICY_READ);
 
@@ -1968,7 +1968,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $this->params = $params;
         $resp = $this->_callJsonApi();
         $this->_assertStatusOk($resp);
-        $this->assertEquals($resp->data->success, "true", 'itemuserpolicy removal did not work as expected.');
+        $this->assertEquals($resp->data->success, 'true', 'itemuserpolicy removal did not work as expected.');
 
         $this->assertPolicyuserNonexistence(array(), array($adminItem), $targetUser);
     }
@@ -2063,9 +2063,9 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
 
         // ensure user perms are correct from the most recent call
         $privilegeCodes = array(
-            "Admin" => MIDAS_POLICY_ADMIN,
-            "Write" => MIDAS_POLICY_WRITE,
-            "Read" => MIDAS_POLICY_READ,
+            'Admin' => MIDAS_POLICY_ADMIN,
+            'Write' => MIDAS_POLICY_WRITE,
+            'Read' => MIDAS_POLICY_READ,
         );
         $userPolicies = $adminItem->getItempolicyuser();
         $apiUserPolicies = $resp->data->user;

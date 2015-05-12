@@ -22,7 +22,7 @@
 class ApibitstreamComponent extends AppComponent
 {
     /**
-     * Fetch the information about a bitstream
+     * Fetch the information about a bitstream.
      *
      * @path /bitstream/{id}
      * @http GET
@@ -82,7 +82,7 @@ class ApibitstreamComponent extends AppComponent
     }
 
     /**
-     * Wrapper function to make our bitstream get sane
+     * Wrapper function to make our bitstream get sane.
      *
      * @param array $args
      * @return array
@@ -320,7 +320,7 @@ class ApibitstreamComponent extends AppComponent
     }
 
     /**
-     * Download a bitstream by its id
+     * Download a bitstream by its id.
      *
      * @path /bitstream/download/{id}
      * @http GET

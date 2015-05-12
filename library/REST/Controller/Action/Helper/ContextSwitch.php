@@ -1,6 +1,6 @@
 <?php
 /**
- * ContextSwitch
+ * ContextSwitch.
  *
  * extends default context switch and adds AMF3, XML, PHP serialization
  */
@@ -10,17 +10,17 @@ class REST_Controller_Action_Helper_ContextSwitch extends Zend_Controller_Action
 
     // TODO: run through Zend_Serializer::factory()
     protected $_availableAdapters = array(
-        'json'  => 'Zend_Serializer_Adapter_Json',
-        'xml'   => 'REST_Serializer_Adapter_Xml',
-        'php'   => 'Zend_Serializer_Adapter_PhpSerialize',
-        'html'  => 'Zend_Serializer_Adapter_Json'
+        'json' => 'Zend_Serializer_Adapter_Json',
+        'xml' => 'REST_Serializer_Adapter_Xml',
+        'php' => 'Zend_Serializer_Adapter_PhpSerialize',
+        'html' => 'Zend_Serializer_Adapter_Json',
     );
 
     protected $_rest_contexts = array(
         'json' => array(
-            'suffix'    => 'json',
-            'headers'   => array(
-                'Content-Type' => 'application/json'
+            'suffix' => 'json',
+            'headers' => array(
+                'Content-Type' => 'application/json',
             ),
 
             'options' => array(
@@ -29,14 +29,14 @@ class REST_Controller_Action_Helper_ContextSwitch extends Zend_Controller_Action
 
             'callbacks' => array(
                 'init' => 'initAbstractContext',
-                'post' => 'restContext'
+                'post' => 'restContext',
             ),
         ),
 
         'xml' => array(
-            'suffix'    => 'xml',
-            'headers'   => array(
-                'Content-Type' => 'application/xml'
+            'suffix' => 'xml',
+            'headers' => array(
+                'Content-Type' => 'application/xml',
             ),
 
             'options' => array(
@@ -45,14 +45,14 @@ class REST_Controller_Action_Helper_ContextSwitch extends Zend_Controller_Action
 
             'callbacks' => array(
                 'init' => 'initAbstractContext',
-                'post' => 'restContext'
+                'post' => 'restContext',
             ),
         ),
 
         'php' => array(
-            'suffix'    => 'php',
-            'headers'   => array(
-                'Content-Type' => 'application/x-httpd-php'
+            'suffix' => 'php',
+            'headers' => array(
+                'Content-Type' => 'application/x-httpd-php',
             ),
 
             'options' => array(
@@ -61,14 +61,14 @@ class REST_Controller_Action_Helper_ContextSwitch extends Zend_Controller_Action
 
             'callbacks' => array(
                 'init' => 'initAbstractContext',
-                'post' => 'restContext'
-            )
+                'post' => 'restContext',
+            ),
         ),
 
         'html' => array(
-            'suffix'    => 'html',
-            'headers'   => array(
-                'Content-Type' => 'text/html; Charset=UTF-8'
+            'suffix' => 'html',
+            'headers' => array(
+                'Content-Type' => 'text/html; Charset=UTF-8',
             ),
 
             'options' => array(
@@ -77,9 +77,9 @@ class REST_Controller_Action_Helper_ContextSwitch extends Zend_Controller_Action
 
             'callbacks' => array(
                 'init' => 'initAbstractContext',
-                'post' => 'restContext'
-            )
-        )
+                'post' => 'restContext',
+            ),
+        ),
     );
 
     public function __construct($options = null)
@@ -100,6 +100,7 @@ class REST_Controller_Action_Helper_ContextSwitch extends Zend_Controller_Action
     public function getAutoDisableLayout()
     {
         $context = $this->_actionController->getRequest()->getParam($this->getContextParam());
+
         return $this->_rest_contexts[$context]['options']['autoDisableLayout'];
     }
 
@@ -128,12 +129,12 @@ class REST_Controller_Action_Helper_ContextSwitch extends Zend_Controller_Action
         if ($view instanceof Zend_View_Interface) {
             if (method_exists($view, 'getVars')) {
                 $vars = $view->getVars();
-  
+
                 if (isset($vars['apiresults'])) {
                     $data = $vars['apiresults'];
 
                     if (count($data) !== 0) {
-                        $serializer = new $this->_availableAdapters[$this->_currentContext];
+                        $serializer = new $this->_availableAdapters[$this->_currentContext]();
                         $body = $serializer->serialize($data);
 
                         if ($this->_currentContext == 'xml') {
@@ -166,6 +167,7 @@ class REST_Controller_Action_Helper_ContextSwitch extends Zend_Controller_Action
     public function setAutoSerialization($flag)
     {
         $this->_autoSerialization = (bool) $flag;
+
         return $this;
     }
 
@@ -175,7 +177,7 @@ class REST_Controller_Action_Helper_ContextSwitch extends Zend_Controller_Action
     }
 
     /**
-     * Pretty-print JSON string
+     * Pretty-print JSON string.
      *
      * Use 'format' option to select output format - currently html and txt supported, txt is default
      * Use 'indent' option to override the indentation string set in the format - by default for the 'txt' format it's a tab
@@ -190,7 +192,7 @@ class REST_Controller_Action_Helper_ContextSwitch extends Zend_Controller_Action
         $result = '';
         $indent = 0;
 
-        $format= 'txt';
+        $format = 'txt';
 
         $ind = "\t";
 
@@ -216,35 +218,36 @@ class REST_Controller_Action_Helper_ContextSwitch extends Zend_Controller_Action
         }
 
         $inLiteral = false;
-        foreach($tokens as $token) {
-            if($token == '') {
+        foreach ($tokens as $token) {
+            if ($token == '') {
                 continue;
             }
 
             $prefix = str_repeat($ind, $indent);
             if (!$inLiteral && ($token == '{' || $token == '[')) {
                 $indent++;
-                if (($result != '') && ($result[(strlen($result)-1)] == $lineBreak)) {
+                if (($result != '') && ($result[(strlen($result) - 1)] == $lineBreak)) {
                     $result .= $prefix;
                 }
-                $result .= $token . $lineBreak;
+                $result .= $token.$lineBreak;
             } elseif (!$inLiteral && ($token == '}' || $token == ']')) {
                 $indent--;
                 $prefix = str_repeat($ind, $indent);
-                $result .= $lineBreak . $prefix . $token;
+                $result .= $lineBreak.$prefix.$token;
             } elseif (!$inLiteral && $token == ',') {
-                $result .= $token . $lineBreak;
+                $result .= $token.$lineBreak;
             } else {
-                $result .= ( $inLiteral ? '' : $prefix ) . $token;
+                $result .= ($inLiteral ? '' : $prefix).$token;
 
                 // Count # of unescaped double-quotes in token, subtract # of
                 // escaped double-quotes and if the result is odd then we are
                 // inside a string literal
-                if ((substr_count($token, "\"")-substr_count($token, "\\\"")) % 2 != 0) {
+                if ((substr_count($token, '"') - substr_count($token, '\\"')) % 2 != 0) {
                     $inLiteral = !$inLiteral;
                 }
             }
         }
+
         return $result;
-   }
+    }
 }

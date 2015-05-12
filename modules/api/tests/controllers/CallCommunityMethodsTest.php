@@ -124,7 +124,7 @@ class Api_CallCommunityMethodsTest extends Api_CallMethodsTestCase
             // get the current community name
             $freshcommunity = $communityModel->load($comm2001->getCommunityId());
             $communityName = $freshcommunity->getName();
-            $newcommunityName = $communityName."suffix";
+            $newcommunityName = $communityName.'suffix';
             $this->resetAll();
             $this->params['token'] = $this->_loginAsUser($userDao);
             $this->params['method'] = 'midas.community.create';
@@ -165,7 +165,7 @@ class Api_CallCommunityMethodsTest extends Api_CallMethodsTestCase
         //              Private -> Private
         //              Private -> Public
         $privacyStatuses = array(MIDAS_COMMUNITY_PUBLIC, MIDAS_COMMUNITY_PRIVATE);
-        $privacyStrings = array(MIDAS_COMMUNITY_PUBLIC => "Public", MIDAS_COMMUNITY_PRIVATE => "Private");
+        $privacyStrings = array(MIDAS_COMMUNITY_PUBLIC => 'Public', MIDAS_COMMUNITY_PRIVATE => 'Private');
         foreach ($privacyStatuses as $initialStatus) {
             foreach ($privacyStatuses as $finalStatus) {
                 // initialize privacy
@@ -216,8 +216,8 @@ class Api_CallCommunityMethodsTest extends Api_CallMethodsTestCase
         //              Invitation -> Everyone
         $canjoinStatuses = array(MIDAS_COMMUNITY_CAN_JOIN, MIDAS_COMMUNITY_INVITATION_ONLY);
         $canjoinStrings = array(
-            MIDAS_COMMUNITY_CAN_JOIN => "Everyone",
-            MIDAS_COMMUNITY_INVITATION_ONLY => "Invitation",
+            MIDAS_COMMUNITY_CAN_JOIN => 'Everyone',
+            MIDAS_COMMUNITY_INVITATION_ONLY => 'Invitation',
         );
         foreach ($canjoinStatuses as $initialStatus) {
             foreach ($canjoinStatuses as $finalStatus) {
@@ -300,7 +300,7 @@ class Api_CallCommunityMethodsTest extends Api_CallMethodsTestCase
 
         // community list groups
 
-        $communityListMethod = "midas.community.list.groups";
+        $communityListMethod = 'midas.community.list.groups';
         $requiredParams = array(
             array(
                 'name' => 'community_id',

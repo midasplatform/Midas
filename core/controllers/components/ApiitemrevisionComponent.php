@@ -22,7 +22,7 @@
 class ApiitemrevisionComponent extends AppComponent
 {
     /**
-     * Function for grabbing bitstream id (used in itemrevisionGet)
+     * Function for grabbing bitstream id (used in itemrevisionGet).
      *
      * @param BitstreamDao $bitstream
      * @return int
@@ -33,7 +33,7 @@ class ApiitemrevisionComponent extends AppComponent
     }
 
     /**
-     * Fetch the information about an ItemRevision
+     * Fetch the information about an ItemRevision.
      *
      * @path /itemrevision/{id}
      * @http GET

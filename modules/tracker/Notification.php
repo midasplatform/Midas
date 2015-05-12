@@ -25,7 +25,6 @@ require_once BASE_PATH.'/modules/api/library/APIEnabledNotification.php';
  *
  * @property Tracker_ScalarModel $Tracker_Scalar
  * @property Tracker_TrendModel $Tracker_Trend
- * @package Modules\Tracker\Notification
  */
 class Tracker_Notification extends ApiEnabled_Notification
 {

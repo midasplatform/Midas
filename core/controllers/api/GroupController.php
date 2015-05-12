@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- *  Web API controller for the Group resource
- */
+/** Web API controller for the Group resource. */
 class Rest_GroupController extends ApiController
 {
     /**

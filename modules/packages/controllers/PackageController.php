@@ -47,7 +47,7 @@ class Packages_PackageController extends Packages_AppController
     }
 
     /**
-     * Called when the edit form is submitted
+     * Called when the edit form is submitted.
      */
     public function saveAction()
     {
@@ -81,7 +81,7 @@ class Packages_PackageController extends Packages_AppController
     }
 
     /**
-     * Ajax action for getting the latest package of each package type for the given os and arch
+     * Ajax action for getting the latest package of each package type for the given os and arch.
      *
      * @param os The os to match on
      * @param arch The arch to match on

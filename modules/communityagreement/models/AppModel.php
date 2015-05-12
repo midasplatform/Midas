@@ -18,12 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Communityagreement_AppModel
- *
- * @category   Midas modules
- * @package    communityagreement
- */
+/** Communityagreement_AppModel. */
 class Communityagreement_AppModel extends MIDASModel
 {
     public $moduleName = 'communityagreement';

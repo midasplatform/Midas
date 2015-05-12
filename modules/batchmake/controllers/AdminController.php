@@ -74,7 +74,7 @@ class Batchmake_AdminController extends Batchmake_AppController
     /**
      * will create default paths in the temporary directory
      * for any properties not already set, except for the
-     * condor bin dir; imposing a firmer hand on the user
+     * condor bin dir; imposing a firmer hand on the user.
      *
      * @param array $currentConfig current configuration
      * @return array

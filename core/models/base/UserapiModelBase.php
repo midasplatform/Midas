@@ -61,7 +61,7 @@ abstract class UserapiModelBase extends AppModel
     abstract public function getByUser($userDao);
 
     /**
-     * Create the user's default API key (now just a random string)
+     * Create the user's default API key (now just a random string).
      *
      * @param userDao The user dao
      * @return success boolean
@@ -109,7 +109,7 @@ abstract class UserapiModelBase extends AppModel
                 $tokenexperiationtime
             ) || empty($applicationname)
         ) {
-            throw new Zend_Exception("Error parameter when creating API key.");
+            throw new Zend_Exception('Error parameter when creating API key.');
         }
 
         // Check that the applicationname doesn't exist for this user

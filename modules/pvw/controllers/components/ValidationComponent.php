@@ -21,7 +21,7 @@
 /**
  * This component contains method for testing
  * whether a Midas item can be visualized using
- * various paraviewweb apps
+ * various paraviewweb apps.
  */
 class Pvw_ValidationComponent extends AppComponent
 {

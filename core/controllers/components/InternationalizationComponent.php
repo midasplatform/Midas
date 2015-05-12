@@ -25,7 +25,7 @@ class InternationalizationComponent extends AppComponent
     private static $_instance = null;
 
     /**
-     * Instance
+     * Instance.
      *
      * @return InternationalizationComponent
      */
@@ -39,7 +39,7 @@ class InternationalizationComponent extends AppComponent
     }
 
     /**
-     * Translate
+     * Translate.
      *
      * @param string $text
      * @return string
@@ -66,7 +66,7 @@ class InternationalizationComponent extends AppComponent
     }
 
     /**
-     * Is Debug mode ON
+     * Is Debug mode ON.
      *
      * @return bool
      */

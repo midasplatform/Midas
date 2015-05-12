@@ -24,7 +24,7 @@ class Batchmake_ExecuteComponent extends AppComponent
     /**
      * takes a list of itemNames => itemIds, expects these to each have a single bitstream,
      * exports these items to a work dir, and returns a list of
-     * itemName => fullExportPath
+     * itemName => fullExportPath.
      *
      * @param UserDao $userDao
      * @param Batchmake_TaskDao $taskDao
@@ -67,7 +67,7 @@ class Batchmake_ExecuteComponent extends AppComponent
             }
             $bitstreamDaos = $revisionDao->getBitstreams();
             if (empty($bitstreamDaos)) {
-                throw new Zend_Exception("Item ".$itemId." has no bitstreams.");
+                throw new Zend_Exception('Item '.$itemId.' has no bitstreams.');
             }
             $imageBitstreamDao = $bitstreamDaos[0];
             $exportedBitstreamPath = $datapath.'/'.$itemId.'/'.$imageBitstreamDao->getName();
@@ -160,16 +160,16 @@ class Batchmake_ExecuteComponent extends AppComponent
 
         foreach ($appTaskConfigProperties as $varName => $varValue) {
             if (is_array($varValue)) {
-                $configFileLine = "Set(".$varName." ";
+                $configFileLine = 'Set('.$varName.' ';
                 $values = array();
                 foreach ($varValue as $indVarValue) {
                     $values[] = "'".$indVarValue."'";
                 }
-                $configFileLine .= implode(" ", $values);
-                $configFileLine .= ")";
+                $configFileLine .= implode(' ', $values);
+                $configFileLine .= ')';
                 $configFileLines[] = $configFileLine;
             } else {
-                $configFileLines[] = "Set(".$varName." '".$varValue."')";
+                $configFileLines[] = 'Set('.$varName." '".$varValue."')";
             }
         }
         $configFileLines[] = "Set(cfg_condorpostscript '".$condorPostScriptPath."')";
@@ -178,7 +178,7 @@ class Batchmake_ExecuteComponent extends AppComponent
         $configFileLines[] = "Set(cfg_condordagpostscript '".$condorDagPostScriptPath."')";
         $configFileLines[] = "Set(cfg_taskID '".$taskDao->getBatchmakeTaskId()."')";
 
-        $configFilePath = $taskDao->getWorkDir()."/".$configScriptStem.".config.bms";
+        $configFilePath = $taskDao->getWorkDir().'/'.$configScriptStem.'.config.bms';
         if (!file_put_contents($configFilePath, implode("\n", $configFileLines))
         ) {
             throw new Zend_Exception('Unable to write configuration file: '.$configFilePath);

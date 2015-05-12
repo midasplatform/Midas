@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- *  Web API controller for the ItemRevision resource
- */
+/** Web API controller for the ItemRevision resource. */
 class Rest_ItemrevisionController extends ApiController
 {
     /**

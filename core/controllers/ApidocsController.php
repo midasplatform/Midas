@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Apidocs Controller for the web API
- */
+/** Apidocs Controller for the web API. */
 class ApidocsController extends AppController
 {
     public $_components = array('Apidocs');

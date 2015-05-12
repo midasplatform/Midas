@@ -32,7 +32,7 @@ class Example_SampleController extends Example_AppController
     }
 
     /**
-     * view Action
+     * view Action.
      */
     public function viewAction()
     {
@@ -46,7 +46,7 @@ class Example_SampleController extends Example_AppController
     }
 
     /**
-     * delete Action
+     * delete Action.
      */
     public function deleteAction()
     {

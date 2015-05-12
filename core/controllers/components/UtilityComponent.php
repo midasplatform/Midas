@@ -38,7 +38,7 @@ class UtilityComponent extends AppComponent
         }
 
         if ($xml == null) {
-            $xml = simplexml_load_string("<?xml version='1.0' encoding='utf-8'?><".$rootNodeName." />");
+            $xml = simplexml_load_string("<?xml version='1.0' encoding='utf-8'?><".$rootNodeName.' />');
         }
 
         // loop through the data passed in.
@@ -46,7 +46,7 @@ class UtilityComponent extends AppComponent
             // no numeric keys in our xml please!
             if (is_numeric($key)) {
                 // make string key...
-                $key = "unknownNode_".(string) $key;
+                $key = 'unknownNode_'.(string) $key;
             }
 
             // replace anything not alpha numeric
@@ -69,7 +69,7 @@ class UtilityComponent extends AppComponent
     }
 
     /**
-     * Get all the modules
+     * Get all the modules.
      *
      * @return array
      */
@@ -123,7 +123,7 @@ class UtilityComponent extends AppComponent
     }
 
     /**
-     * find modules configuration in a folder
+     * find modules configuration in a folder.
      *
      * @param string $dir
      * @return array
@@ -172,7 +172,7 @@ class UtilityComponent extends AppComponent
     }
 
     /**
-     * format long names
+     * format long names.
      *
      * @param string  $name
      * @param int $nchar
@@ -194,7 +194,7 @@ class UtilityComponent extends AppComponent
     }
 
     /**
-     * create init file
+     * create init file.
      *
      * @param string $path
      * @param array $data
@@ -204,29 +204,29 @@ class UtilityComponent extends AppComponent
     public static function createInitFile($path, $data)
     {
         if (!is_writable(dirname($path))) {
-            throw new Zend_Exception("Unable to write in: ".dirname($path));
+            throw new Zend_Exception('Unable to write in: '.dirname($path));
         }
         if (file_exists($path)) {
             unlink($path);
         }
 
         if (!is_array($data) || empty($data)) {
-            throw new Zend_Exception("Error in parameter: data, it should be a non-empty array");
+            throw new Zend_Exception('Error in parameter: data, it should be a non-empty array');
         }
-        $text = "";
+        $text = '';
 
         foreach ($data as $delimiter => $d) {
-            $text .= "[".$delimiter."]\n";
+            $text .= '['.$delimiter."]\n";
             foreach ($d as $field => $value) {
                 if ($value == 'true' || $value == 'false') {
-                    $text .= $field."=".$value."\n";
+                    $text .= $field.'='.$value."\n";
                 } else {
-                    $text .= $field."=\"".str_replace('"', "'", $value)."\"\n";
+                    $text .= $field.'="'.str_replace('"', "'", $value)."\"\n";
                 }
             }
             $text .= "\n\n";
         }
-        $fp = fopen($path, "w");
+        $fp = fopen($path, 'w');
         fwrite($fp, $text);
         fclose($fp);
 
@@ -257,7 +257,7 @@ class UtilityComponent extends AppComponent
     }
 
     /**
-     * Check if the php function/extension are available
+     * Check if the php function/extension are available.
      *
      * @param array $phpextensions should have the following format:
      *   array(
@@ -276,8 +276,8 @@ class UtilityComponent extends AppComponent
             $is_func_exists = function_exists($name);
             if (!$is_loaded && !$is_func_exists) {
                 $is_critical = $param[0];
-                $message = "<b>".$name."</b>: Unable to find '".$name."' php extension/function. ";
-                $message .= ($param[1] === false ? "Fix the problem and re-run the install script." : $param[1]);
+                $message = '<b>'.$name."</b>: Unable to find '".$name."' php extension/function. ";
+                $message .= ($param[1] === false ? 'Fix the problem and re-run the install script.' : $param[1]);
                 if ($is_critical) {
                     throw  new Zend_Exception($message);
                 }
@@ -290,7 +290,7 @@ class UtilityComponent extends AppComponent
 
     /**
      * Get size in bytes of the file. This also supports files over 2GB in Windows,
-     * which is not supported by PHP's filesize()
+     * which is not supported by PHP's filesize().
      *
      * @param string $path path of the file to check
      * @return int
@@ -356,7 +356,7 @@ class UtilityComponent extends AppComponent
     }
 
     /**
-     * Function to run a SQL script
+     * Function to run a SQL script.
      *
      * @param Zend_Db_Adapter_Abstract $db
      * @param string $sqlfile
@@ -380,7 +380,7 @@ class UtilityComponent extends AppComponent
                 $db->query($query);
             } catch (Zend_Exception $exception) {
                 if (trim($query) != '') {
-                    throw new Zend_Exception("Unable to connect.");
+                    throw new Zend_Exception('Unable to connect.');
                 }
             }
         }
@@ -389,7 +389,7 @@ class UtilityComponent extends AppComponent
     }
 
     /**
-     * Get the data directory
+     * Get the data directory.
      *
      * @param string $subDirectory
      * @param bool $createDirectory
@@ -425,12 +425,12 @@ class UtilityComponent extends AppComponent
             mkdir($path, 0777, true);
         }
 
-        return UtilityComponent::realpath($path);
+        return self::realpath($path);
     }
 
     /**
      * get the midas temporary directory, appending the param $subdir, which
-     * defaults to "misc"
+     * defaults to "misc".
      *
      * @param string $subDirectory
      * @param bool $createDirectory
@@ -464,11 +464,11 @@ class UtilityComponent extends AppComponent
             mkdir($path, 0777, true);
         }
 
-        return UtilityComponent::realpath($path);
+        return self::realpath($path);
     }
 
     /**
-     * get the midas cache directory
+     * get the midas cache directory.
      *
      * @return string
      */
@@ -478,7 +478,7 @@ class UtilityComponent extends AppComponent
     }
 
     /**
-     * install a module
+     * install a module.
      *
      * @param string $moduleName
      * @throws Zend_Exception
@@ -619,7 +619,7 @@ class UtilityComponent extends AppComponent
     /**
      * Normally, PHP warnings are echoed by our default error handler.  If you expect them to happen
      * from, for instance, an underlying library, but want to eat them instead of echoing them, wrap
-     * the offending lines in beginIgnoreWarnings() and endIgnoreWarnings()
+     * the offending lines in beginIgnoreWarnings() and endIgnoreWarnings().
      */
     public static function beginIgnoreWarnings()
     {
@@ -636,7 +636,7 @@ class UtilityComponent extends AppComponent
     }
 
     /**
-     * Recursively delete a directory on disk
+     * Recursively delete a directory on disk.
      *
      * @param string $dir
      */
@@ -684,7 +684,7 @@ class UtilityComponent extends AppComponent
     }
 
     /**
-     * Get the host name of this instance
+     * Get the host name of this instance.
      *
      * @return string
      * @throws Zend_Exception
@@ -694,14 +694,14 @@ class UtilityComponent extends AppComponent
         if (Zend_Registry::get('configGlobal')->environment == 'testing') {
             return 'http://localhost';
         }
-        $currentPort = "";
-        $prefix = "http://";
+        $currentPort = '';
+        $prefix = 'http://';
 
         if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) {
-            $currentPort = ":".$_SERVER['SERVER_PORT'];
+            $currentPort = ':'.$_SERVER['SERVER_PORT'];
         }
         if ((isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) || (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']))) {
-            $prefix = "https://";
+            $prefix = 'https://';
         }
 
         return $prefix.$_SERVER['SERVER_NAME'].$currentPort;
@@ -724,7 +724,7 @@ class UtilityComponent extends AppComponent
     }
 
     /**
-     * Allows the current PHP process to use unlimited memory
+     * Allows the current PHP process to use unlimited memory.
      */
     public static function disableMemoryLimit()
     {
@@ -741,9 +741,9 @@ class UtilityComponent extends AppComponent
      */
     public static function isPortListening($port, $host = 'localhost')
     {
-        UtilityComponent::beginIgnoreWarnings();
+        self::beginIgnoreWarnings();
         $conn = fsockopen($host, $port);
-        UtilityComponent::endIgnoreWarnings();
+        self::endIgnoreWarnings();
 
         if (is_resource($conn)) {
             fclose($conn);
@@ -761,9 +761,9 @@ class UtilityComponent extends AppComponent
      */
     public static function setTimeLimit($seconds)
     {
-        UtilityComponent::beginIgnoreWarnings();
+        self::beginIgnoreWarnings();
         set_time_limit($seconds);
-        UtilityComponent::endIgnoreWarnings();
+        self::endIgnoreWarnings();
     }
 
     /**
@@ -774,9 +774,9 @@ class UtilityComponent extends AppComponent
      */
     public static function diskFreeSpace($directory)
     {
-        UtilityComponent::beginIgnoreWarnings();
+        self::beginIgnoreWarnings();
         $result = disk_free_space($directory);
-        UtilityComponent::endIgnoreWarnings();
+        self::endIgnoreWarnings();
 
         return $result;
     }
@@ -789,9 +789,9 @@ class UtilityComponent extends AppComponent
      */
     public static function diskTotalSpace($directory)
     {
-        UtilityComponent::beginIgnoreWarnings();
+        self::beginIgnoreWarnings();
         $result = disk_total_space($directory);
-        UtilityComponent::endIgnoreWarnings();
+        self::endIgnoreWarnings();
 
         return $result;
     }
@@ -804,9 +804,9 @@ class UtilityComponent extends AppComponent
      */
     public static function realpath($path)
     {
-        UtilityComponent::beginIgnoreWarnings();
+        self::beginIgnoreWarnings();
         $realpath = realpath($path);
-        UtilityComponent::endIgnoreWarnings();
+        self::endIgnoreWarnings();
 
         if ($realpath === false) {
             return $path;

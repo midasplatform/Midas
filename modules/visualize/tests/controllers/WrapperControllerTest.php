@@ -55,7 +55,7 @@ class Visualize_WrapperControllerTest extends ControllerTestCase
         $privateFolder = $folderModel->load(1002);
         $item = $uploadComponent->createUploadedItem(
             $userDao,
-            "test.png",
+            'test.png',
             BASE_PATH.'/tests/testfiles/search.png',
             $privateFolder,
             null,
@@ -66,9 +66,9 @@ class Visualize_WrapperControllerTest extends ControllerTestCase
         $itempolicygroupModel->createPolicy($anonymousGroup, $item, MIDAS_POLICY_READ);
 
         $this->params['itemId'] = $item->getKey();
-        $this->dispatchUrl("/visualize/wrapper");
+        $this->dispatchUrl('/visualize/wrapper');
 
-        $this->assertAction("index");
-        $this->assertModule("visualize");
+        $this->assertAction('index');
+        $this->assertModule('visualize');
     }
 }

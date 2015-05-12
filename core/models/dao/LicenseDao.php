@@ -27,7 +27,6 @@
  * @method void setName(string $name)
  * @method string getFulltext()
  * @method void setFulltext(string $fullText)
- * @package Core\DAO
  */
 class LicenseDao extends AppDao
 {

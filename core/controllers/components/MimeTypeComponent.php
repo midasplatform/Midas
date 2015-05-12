@@ -22,7 +22,7 @@
 class MimeTypeComponent extends AppComponent
 {
     /**
-     * Get mime type
+     * Get mime type.
      *
      * @param string $filename
      * @param null|string $alternateName
@@ -50,7 +50,7 @@ class MimeTypeComponent extends AppComponent
     }
 
     /**
-     * privFindType
+     * privFindType.
      *
      * @param string $filename
      * @return string
@@ -79,7 +79,7 @@ class MimeTypeComponent extends AppComponent
     }
 
     /**
-     * privBuildMimeArray
+     * privBuildMimeArray.
      *
      * @return array
      */

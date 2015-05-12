@@ -22,7 +22,7 @@
 class Readmes_GetReadmeComponent extends AppComponent
 {
     /**
-     * Get the readme text from the specified folder
+     * Get the readme text from the specified folder.
      */
     public function fromFolder($folder)
     {
@@ -61,7 +61,7 @@ class Readmes_GetReadmeComponent extends AppComponent
     }
 
     /**
-     * Get the readme text from the specified community
+     * Get the readme text from the specified community.
      */
     public function fromCommunity($community)
     {

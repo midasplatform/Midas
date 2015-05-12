@@ -35,7 +35,6 @@
  * @method void setUser(UserDao $user)
  * @method ItemDao getItem()
  * @method void setItem(ItemDao $item)
- * @package Modules\Comments\DAO
  */
 class Comments_ItemcommentDao extends Comments_AppDao
 {

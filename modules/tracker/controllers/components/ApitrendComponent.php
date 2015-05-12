@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * API trend component for the tracker module.
- *
- * @package Modules\Tracker\Component
- */
+/** API trend component for the tracker module. */
 class Tracker_ApitrendComponent extends AppComponent
 {
     /** @var string */

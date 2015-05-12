@@ -20,9 +20,7 @@
 
 require_once BASE_PATH.'/modules/thumbnailcreator/models/base/ItemthumbnailModelBase.php';
 
-/**
- * Item thumbnail pdo model
- */
+/** Item thumbnail pdo model. */
 class Thumbnailcreator_ItemthumbnailModel extends Thumbnailcreator_ItemthumbnailModelBase
 {
     /**

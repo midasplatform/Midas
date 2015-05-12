@@ -56,7 +56,7 @@ class Dicomserver_Notification extends ApiEnabled_Notification
 
     /**
      * Get javascript for the item view that will specify the ajax call
-     * for DICOM registration
+     * for DICOM registration.
      */
     public function getJs($params)
     {

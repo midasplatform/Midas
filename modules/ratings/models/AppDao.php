@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic DAO class for the ratings module.
- *
- * @package Modules\Ratings\DAO
- */
+/** Generic DAO class for the ratings module. */
 class Ratings_AppDao extends MIDAS_GlobalDao
 {
     /** @var string */

@@ -20,11 +20,7 @@
 
 require_once BASE_PATH.'/modules/tracker/models/base/TrendModelBase.php';
 
-/**
- * Trend model for the tracker module.
- *
- * @package Modules\Tracker\Model
- */
+/** Trend model for the tracker module. */
 class Tracker_TrendModel extends Tracker_TrendModelBase
 {
     /**

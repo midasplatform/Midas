@@ -19,16 +19,16 @@
 =========================================================================*/
 
 // The old constants file is removed now; copied its contents here for the upgrade
-define("LICENSE_PDDL", 0);
-define("LICENSE_ODC_BY", 1);
-define("LICENSE_ODBL", 2);
-define("LICENSE_RESERVED", 3);
-define("LICENSE_CC_ATTRIBUTION", 4);
-define("LICENSE_CC_ATTRIBUTION_SHAREALIKE", 5);
-define("LICENSE_CC_NODERIVS", 6);
-define("LICENSE_CC_NONCOMMERCIAL", 7);
-define("LICENSE_CC_NONCOMMERCIAL_SHARELIKE", 8);
-define("LICENSE_CC_NONCOMMERCIAL_NODERIVS", 9);
+define('LICENSE_PDDL', 0);
+define('LICENSE_ODC_BY', 1);
+define('LICENSE_ODBL', 2);
+define('LICENSE_RESERVED', 3);
+define('LICENSE_CC_ATTRIBUTION', 4);
+define('LICENSE_CC_ATTRIBUTION_SHAREALIKE', 5);
+define('LICENSE_CC_NODERIVS', 6);
+define('LICENSE_CC_NONCOMMERCIAL', 7);
+define('LICENSE_CC_NONCOMMERCIAL_SHARELIKE', 8);
+define('LICENSE_CC_NONCOMMERCIAL_NODERIVS', 9);
 
 /** Upgrade the core to version 3.2.2. */
 class Upgrade_3_2_2 extends MIDASUpgrade
@@ -171,15 +171,15 @@ class Upgrade_3_2_2 extends MIDASUpgrade
     public function mysql()
     {
         // Create the license table
-        $this->db->query("CREATE TABLE IF NOT EXISTS `license` (
+        $this->db->query('CREATE TABLE IF NOT EXISTS `license` (
       `license_id` bigint(20) NOT NULL AUTO_INCREMENT,
       `name` TEXT NOT NULL,
       `fulltext` TEXT NOT NULL,
       PRIMARY KEY (`license_id`)
-      ) DEFAULT CHARSET=utf8;");
+      ) DEFAULT CHARSET=utf8;');
 
         // Add a logical foreign key for license into the itemrevision table. Can be nullable for no license
-        $this->db->query("ALTER TABLE `itemrevision` ADD COLUMN `license_id` bigint(20) NULL;");
+        $this->db->query('ALTER TABLE `itemrevision` ADD COLUMN `license_id` bigint(20) NULL;');
 
         // Add existing licenses to the database
         foreach ($this->existingLicenses as $value) {
@@ -193,7 +193,7 @@ class Upgrade_3_2_2 extends MIDASUpgrade
         }
 
         // Remove the obsolete column from the item revision table
-        $this->db->query("ALTER TABLE `itemrevision` DROP `license`;");
+        $this->db->query('ALTER TABLE `itemrevision` DROP `license`;');
     }
 
     /** Upgrade a PostgreSQL database. */
@@ -207,7 +207,7 @@ class Upgrade_3_2_2 extends MIDASUpgrade
       );");
 
         // Add a logical foreign key for license into the itemrevision table. Can be nullable for no license
-        $this->db->query("ALTER TABLE itemrevision ADD COLUMN license_id bigint NULL;");
+        $this->db->query('ALTER TABLE itemrevision ADD COLUMN license_id bigint NULL;');
 
         // Add existing licenses to the database
         foreach ($this->existingLicenses as $value) {
@@ -221,6 +221,6 @@ class Upgrade_3_2_2 extends MIDASUpgrade
         }
 
         // Remove the obsolete column from the item revision table
-        $this->db->query("ALTER TABLE itemrevision DROP COLUMN license;");
+        $this->db->query('ALTER TABLE itemrevision DROP COLUMN license;');
     }
 }

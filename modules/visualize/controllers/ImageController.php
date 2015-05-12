@@ -45,6 +45,6 @@ class Visualize_ImageController extends Visualize_AppController
         }
         $this->bistream = $bitstreams[0];
 
-        $this->view->imageUrl = $this->view->webroot."/download?items=".$item->getKey();
+        $this->view->imageUrl = $this->view->webroot.'/download?items='.$item->getKey();
     }
 }

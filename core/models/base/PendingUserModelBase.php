@@ -51,7 +51,7 @@ abstract class PendingUserModelBase extends AppModel
     abstract public function getAllByParams($params);
 
     /**
-     * Create the database record for a user who has registered but not had their email verified yet
+     * Create the database record for a user who has registered but not had their email verified yet.
      */
     public function createPendingUser($email, $firstName, $lastName, $password)
     {

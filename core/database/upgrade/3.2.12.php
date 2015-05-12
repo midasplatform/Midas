@@ -31,16 +31,16 @@ class Upgrade_3_2_12 extends MIDASUpgrade
         $this->db->query("ALTER TABLE `user` ADD COLUMN `salt` varchar(64) NOT NULL default '';");
         $this->db->query("ALTER TABLE `pendinguser` ADD COLUMN `salt` varchar(64) NOT NULL default '';");
 
-        $this->db->query("
+        $this->db->query('
             CREATE TABLE IF NOT EXISTS `password` (
                 `hash` varchar(128) NOT NULL,
                 PRIMARY KEY (`hash`)
             ) DEFAULT CHARSET=utf8;
-        ");
+        ');
         $this->_movePasswords();
 
-        $this->db->query("ALTER TABLE `user` DROP `password`;");
-        $this->db->query("ALTER TABLE `pendinguser` DROP `password`;");
+        $this->db->query('ALTER TABLE `user` DROP `password`;');
+        $this->db->query('ALTER TABLE `pendinguser` DROP `password`;');
     }
 
     /** Upgrade a PostgreSQL database. */
@@ -50,23 +50,23 @@ class Upgrade_3_2_12 extends MIDASUpgrade
         $this->db->query("ALTER TABLE \"user\" ADD COLUMN salt character varying(64) NOT NULL DEFAULT '';");
         $this->db->query("ALTER TABLE \"pendinguser\" ADD COLUMN salt character varying(64) NOT NULL DEFAULT '';");
 
-        $this->db->query("
+        $this->db->query('
             CREATE TABLE IF NOT EXISTS password (
                 hash character varying(128) NOT NULL,
                 CONSTRAINT password_hash PRIMARY KEY (hash)
             );
-        ");
+        ');
         $this->_movePasswords();
 
         // In pgsql we must explicitly sort the rows by using the cluster command
-        $this->db->query("CLUSTER password USING password_hash;");
+        $this->db->query('CLUSTER password USING password_hash;');
 
-        $this->db->query("ALTER TABLE \"user\" DROP COLUMN password;");
-        $this->db->query("ALTER TABLE \"pendinguser\" DROP COLUMN password;");
+        $this->db->query('ALTER TABLE "user" DROP COLUMN password;');
+        $this->db->query('ALTER TABLE "pendinguser" DROP COLUMN password;');
     }
 
     /**
-     * Moves passwords from the user table to the new password hash table
+     * Moves passwords from the user table to the new password hash table.
      */
     private function _movePasswords()
     {

@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Trend base model class for the tracker module.
- *
- * @package Modules\Tracker\Model
- */
+/** Trend base model class for the tracker module. */
 abstract class Tracker_TrendModelBase extends Tracker_AppModel
 {
     /** Constructor. */

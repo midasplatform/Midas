@@ -30,7 +30,6 @@
  * @method ItemDao getItem()
  * @method void setItem(ItemDao $item)
  * @method void setDagFilename(string $dagFilename)
- * @package Modules\Thumbnailcreator\DAO
  */
 class Thumbnailcreator_ItemthumbnailDao extends Thumbnailcreator_AppDao
 {

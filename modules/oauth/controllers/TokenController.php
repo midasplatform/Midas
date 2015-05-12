@@ -28,7 +28,7 @@ class Oauth_TokenController extends Oauth_AppController
      * The token endpoint.
      * Clients should call this with grant_type=authorization_code to exchange an auth code for an access and refresh token,
      * or call it with grant_type=refresh_token to refresh an expired access token.
-     * See http://tools.ietf.org/html/draft-ietf-oauth-v2-31#section-4.1.3
+     * See http://tools.ietf.org/html/draft-ietf-oauth-v2-31#section-4.1.3.
      *
      * @param grant_type Must be set to authorization_code or refresh_token
      * @param [client_id] The id of the client (Only in the case of authorization_code)
@@ -89,7 +89,7 @@ class Oauth_TokenController extends Oauth_AppController
     }
 
     /**
-     * When a user de-authorizes a token, this action is called
+     * When a user de-authorizes a token, this action is called.
      *
      * @param tokenId The id of the token
      */
@@ -120,7 +120,7 @@ class Oauth_TokenController extends Oauth_AppController
     }
 
     /**
-     * Client calls this to exchange an authorization code granted by user login for an access and refresh token
+     * Client calls this to exchange an authorization code granted by user login for an access and refresh token.
      */
     private function _authorizationCode($secret)
     {
@@ -195,7 +195,7 @@ class Oauth_TokenController extends Oauth_AppController
     }
 
     /**
-     * Allows a client to use its refresh token to get a fresh access token
+     * Allows a client to use its refresh token to get a fresh access token.
      */
     private function _refreshToken($secret)
     {
@@ -231,7 +231,7 @@ class Oauth_TokenController extends Oauth_AppController
     }
 
     /**
-     * Helper function for outputting the expected JSON response
+     * Helper function for outputting the expected JSON response.
      */
     private function _doOutput($array)
     {

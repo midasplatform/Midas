@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Admin Controller
- */
+/** Admin Controller. */
 class AdminController extends AppController
 {
     public $_models = array('Assetstore', 'Bitstream', 'Item', 'ItemRevision', 'Folder', 'License', 'Setting');
@@ -46,8 +44,8 @@ class AdminController extends AppController
     {
         $this->requireAdminPrivileges();
 
-        $task = $this->getParam("task");
-        $params = $this->getParam("params");
+        $task = $this->getParam('task');
+        $params = $this->getParam('params');
         if (isset($params)) {
             $params = JsonComponent::decode($params);
         } else {
@@ -69,7 +67,7 @@ class AdminController extends AppController
     public function indexAction()
     {
         $this->requireAdminPrivileges();
-        $this->view->header = "Administration";
+        $this->view->header = 'Administration';
 
         $options = array('allowModifications' => true);
         $config = new Zend_Config_Ini(APPLICATION_CONFIG, null, $options);
@@ -134,9 +132,9 @@ class AdminController extends AppController
             if (isset($submitModule)) {
                 $moduleName = $this->getParam('modulename');
                 $modulevalue = $this->getParam('modulevalue');
-                $moduleConfigLocalFile = LOCAL_CONFIGS_PATH."/".$moduleName.".local.ini";
-                $moduleConfigFile = BASE_PATH."/modules/".$moduleName."/configs/module.ini";
-                $moduleConfigPrivateFile = BASE_PATH."/privateModules/".$moduleName."/configs/module.ini";
+                $moduleConfigLocalFile = LOCAL_CONFIGS_PATH.'/'.$moduleName.'.local.ini';
+                $moduleConfigFile = BASE_PATH.'/modules/'.$moduleName.'/configs/module.ini';
+                $moduleConfigPrivateFile = BASE_PATH.'/privateModules/'.$moduleName.'/configs/module.ini';
                 if (!file_exists($moduleConfigLocalFile) && file_exists($moduleConfigFile)
                 ) {
                     copy($moduleConfigFile, $moduleConfigLocalFile);
@@ -146,7 +144,7 @@ class AdminController extends AppController
                     copy($moduleConfigPrivateFile, $moduleConfigLocalFile);
                     $this->Component->Utility->installModule($moduleName);
                 } elseif (!file_exists($moduleConfigLocalFile)) {
-                    throw new Zend_Exception("Unable to find config file");
+                    throw new Zend_Exception('Unable to find config file');
                 }
 
                 $config->module->$moduleName = $modulevalue;
@@ -206,13 +204,13 @@ class AdminController extends AppController
         $enabledModules = Zend_Registry::get('modulesEnable');
         $adapter = Zend_Registry::get('configDatabase')->database->adapter;
         foreach ($allModules as $key => $module) {
-            if (file_exists(BASE_PATH."/modules/".$key."/controllers/ConfigController.php")) {
+            if (file_exists(BASE_PATH.'/modules/'.$key.'/controllers/ConfigController.php')) {
                 $allModules[$key]->configPage = 'config';
-            } elseif (file_exists(BASE_PATH."/privateModules/".$key."/controllers/ConfigController.php")) {
+            } elseif (file_exists(BASE_PATH.'/privateModules/'.$key.'/controllers/ConfigController.php')) {
                 $allModules[$key]->configPage = 'config';
-            } elseif (file_exists(BASE_PATH."/modules/".$key."/controllers/AdminController.php")) {
+            } elseif (file_exists(BASE_PATH.'/modules/'.$key.'/controllers/AdminController.php')) {
                 $allModules[$key]->configPage = 'admin';
-            } elseif (file_exists(BASE_PATH."/privateModules/".$key."/controllers/AdminController.php")) {
+            } elseif (file_exists(BASE_PATH.'/privateModules/'.$key.'/controllers/AdminController.php')) {
                 $allModules[$key]->configPage = 'admin';
             } else {
                 $allModules[$key]->configPage = false;
@@ -241,7 +239,7 @@ class AdminController extends AppController
         $countModules = array();
         foreach ($allModules as $k => $module) {
             if (!isset($module->category) || empty($module->category)) {
-                $category = "Misc";
+                $category = 'Misc';
             } else {
                 $category = ucfirst($module->category);
             }
@@ -384,7 +382,7 @@ class AdminController extends AppController
     }
 
     /**
-     * called by the server-side file chooser
+     * called by the server-side file chooser.
      */
     public function serversidefilechooserAction()
     {
@@ -412,28 +410,28 @@ class AdminController extends AppController
                 $files = scandir($_POST['dir']);
             }
             natcasesort($files);
-            echo "<ul class=\"jqueryFileTree\" style=\"display: none;\">";
+            echo '<ul class="jqueryFileTree" style="display: none;">';
             foreach ($files as $file) {
                 if (file_exists($_POST['dir'].$file) && $file != '.' && $file != '..' && is_readable(
                         $_POST['dir'].$file
                     )
                 ) {
                     if (is_dir($_POST['dir'].$file)) {
-                        echo "<li class=\"directory collapsed\"><a href=\"#\" rel=\"".htmlspecialchars(
+                        echo '<li class="directory collapsed"><a href="#" rel="'.htmlspecialchars(
                                 $_POST['dir'].$file, ENT_QUOTES, 'UTF-8'
-                            )."/\">".htmlspecialchars($file, ENT_QUOTES, 'UTF-8')."</a></li>";
+                            ).'/">'.htmlspecialchars($file, ENT_QUOTES, 'UTF-8').'</a></li>';
                     } else {
                         // not a directory: a file!
                         $ext = preg_replace('/^.*\./', '', $file);
-                        echo "<li class=\"file ext_".$ext."\"><a href=\"#\" rel=\"".htmlspecialchars(
+                        echo '<li class="file ext_'.$ext.'"><a href="#" rel="'.htmlspecialchars(
                                 $_POST['dir'].$file, ENT_QUOTES, 'UTF-8'
-                            )."\">".htmlspecialchars($file, ENT_QUOTES, 'UTF-8')."</a></li>";
+                            ).'">'.htmlspecialchars($file, ENT_QUOTES, 'UTF-8').'</a></li>';
                     }
                 }
             }
-            echo "</ul>";
+            echo '</ul>';
         } else {
-            echo "File ".$_POST['dir']." doesn't exist";
+            echo 'File '.$_POST['dir']." doesn't exist";
         }
     }
 

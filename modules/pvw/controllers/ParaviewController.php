@@ -93,7 +93,7 @@ class Pvw_ParaviewController extends Pvw_AppController
     }
 
     /**
-     * This should become a RESTful controller for instances
+     * This should become a RESTful controller for instances.
      */
     public function instanceAction()
     {
@@ -114,7 +114,7 @@ class Pvw_ParaviewController extends Pvw_AppController
     }
 
     /**
-     * Surface (mesh) model viewer action
+     * Surface (mesh) model viewer action.
      *
      * @param itemId The id of the item to view
      */
@@ -142,7 +142,7 @@ class Pvw_ParaviewController extends Pvw_AppController
     }
 
     /**
-     * Display a volume rendering of the selected item
+     * Display a volume rendering of the selected item.
      *
      * @param itemId The id of the item to visualize
      * @param jsImports (Optional) List of javascript files to import. These should contain handler
@@ -187,7 +187,7 @@ class Pvw_ParaviewController extends Pvw_AppController
     }
 
     /**
-     * Use the axial slice view mode for MetaImage volume data
+     * Use the axial slice view mode for MetaImage volume data.
      *
      * @param itemId The id of the MetaImage item to visualize
      * @param jsImports (Optional) List of javascript files to import. These should contain handler
@@ -240,7 +240,7 @@ class Pvw_ParaviewController extends Pvw_AppController
     }
 
     /**
-     * Connect to an already running PVW session
+     * Connect to an already running PVW session.
      *
      * @param instanceId The id of the PVW instance
      * @param authKey The authorization key of the instance
@@ -266,7 +266,7 @@ class Pvw_ParaviewController extends Pvw_AppController
     }
 
     /**
-     * Helper method to pass the server host name to json for using web socket renderer
+     * Helper method to pass the server host name to json for using web socket renderer.
      */
     protected function _getHostName()
     {

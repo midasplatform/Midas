@@ -21,7 +21,7 @@
 /**
  * New User Invitation Model Base
  * This model represents the invitation of a user who has not yet registered
- * and has been invited by an existing user into a community group
+ * and has been invited by an existing user into a community group.
  */
 abstract class NewUserInvitationModelBase extends AppModel
 {
@@ -75,7 +75,7 @@ abstract class NewUserInvitationModelBase extends AppModel
     abstract public function deleteByCommunity($community);
 
     /**
-     * Create the database record for inviting a user via email that is not registered yet
+     * Create the database record for inviting a user via email that is not registered yet.
      *
      * @param email The email of the user (should not exist in Midas already)
      * @param group The group to invite the user to

@@ -24,7 +24,7 @@ class Midas_Form_Element_Hash extends Zend_Form_Element_Hash
     /** Generate a CSRF token. */
     protected function _generateHash()
     {
-        $factory = new \RandomLib\Factory;
+        $factory = new \RandomLib\Factory();
         $generator = $factory->getMediumStrengthGenerator();
         $random1 = $generator->generateString(32);
         $random2 = $generator->generateString(32);

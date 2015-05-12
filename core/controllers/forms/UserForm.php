@@ -36,12 +36,12 @@ class UserForm extends AppForm
         $rememberMe = new Zend_Form_Element_Checkbox('remerberMe');
 
         if (isset($this->uri)) {
-            $url = new Zend_Form_Element_Hidden("url");
+            $url = new Zend_Form_Element_Hidden('url');
             $form->addElement($url);
         }
 
         $submit = new  Zend_Form_Element_Submit('submit');
-        $submit->setLabel($this->t("Login"))->setAttrib('class', 'globalButton');
+        $submit->setLabel($this->t('Login'))->setAttrib('class', 'globalButton');
 
         $form->addElements(array($email, $password, $rememberMe, $submit));
 
@@ -81,7 +81,7 @@ class UserForm extends AppForm
         $condiftions = new Zend_Form_Element_Checkbox('conditions');
 
         $submit = new  Zend_Form_Element_Submit('submit');
-        $submit->setLabel($this->t("Register"));
+        $submit->setLabel($this->t('Register'));
 
         $form->addElements(array($email, $firstname, $lastname, $password1, $password2, $condiftions, $submit));
 
@@ -122,13 +122,13 @@ class UserForm extends AppForm
         $biography->addValidator(new Zend_Validate_Alnum());
 
         $submit = new  Zend_Form_Element_Submit('modifyAccount');
-        $submit->setLabel($this->t("Modify"));
+        $submit->setLabel($this->t('Modify'));
 
         $privacy = new Zend_Form_Element_Radio('privacy');
         $privacy->addMultiOptions(
             array(
-                MIDAS_USER_PUBLIC => $this->t("Public (Anyone can see my information, excluding email address)"),
-                MIDAS_USER_PRIVATE => $this->t("Private (User information will be hidden)"),
+                MIDAS_USER_PUBLIC => $this->t('Public (Anyone can see my information, excluding email address)'),
+                MIDAS_USER_PRIVATE => $this->t('Private (User information will be hidden)'),
             )
         )->setRequired(true)->setValue(MIDAS_COMMUNITY_PUBLIC);
 

@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Threshold notification base model class for the tracker module.
- *
- * @package Modules\Tracker\Model
- */
+/** Threshold notification base model class for the tracker module. */
 abstract class Tracker_ThresholdNotificationModelBase extends Tracker_AppModel
 {
     /** Constructor. */

@@ -65,7 +65,6 @@ abstract class MetadataModelBase extends AppModel
     abstract public function getMetadataValueExists($metadataDao);
 
     /** Add a metadata
-     *
      * @return MetadataDao
      */
     public function addMetadata($type, $element, $qualifier, $description = null)
@@ -73,7 +72,7 @@ abstract class MetadataModelBase extends AppModel
         // Gets the metadata
         $metadata = $this->getMetadata($type, $element, $qualifier);
         if ($metadata) {
-            throw new Zend_Exception("Metadata already exists.");
+            throw new Zend_Exception('Metadata already exists.');
         }
 
         /** @var MetadataDao $metadataDao */
@@ -89,7 +88,7 @@ abstract class MetadataModelBase extends AppModel
 
     /**
      * Add a metadata to an itemRevision, updating the value if the row
-     * already exists
+     * already exists.
      *
      * @return MetadataDao
      */
@@ -102,7 +101,7 @@ abstract class MetadataModelBase extends AppModel
         $passItemMetadataChanged = true
     ) {
         if (!$itemRevisionDao instanceof $itemRevisionDao) {
-            throw new Zend_Exception("Error in itemRevisionDao when adding metadata value.");
+            throw new Zend_Exception('Error in itemRevisionDao when adding metadata value.');
         }
 
         // Gets the metadata
@@ -110,7 +109,7 @@ abstract class MetadataModelBase extends AppModel
 
         if (!$metadataDao) {
             throw new Zend_Exception(
-                "Metadata ".$element.".".$qualifier." doesn't exist.
+                'Metadata '.$element.'.'.$qualifier." doesn't exist.
                                 You should add it before adding a value."
             );
         }
@@ -137,7 +136,7 @@ abstract class MetadataModelBase extends AppModel
 
     /**
      * Pass in one of the MIDAS_METADATA_* constants (see core/constants/metadata.php).
-     * Returns the typename (ex: 'int', 'text') expected as the prefix in the Solr schema
+     * Returns the typename (ex: 'int', 'text') expected as the prefix in the Solr schema.
      */
     public function mapTypeToName($typeVal)
     {

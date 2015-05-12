@@ -46,7 +46,7 @@ class Packages_Notification extends ApiEnabled_Notification
     }
 
     /**
-     * Add the link to this module to the left side list
+     * Add the link to this module to the left side list.
      */
     public function getLeftLinks()
     {
@@ -64,7 +64,7 @@ class Packages_Notification extends ApiEnabled_Notification
     }
 
     /**
-     * If this community is a project with packages, show the packages tab
+     * If this community is a project with packages, show the packages tab.
      */
     public function communityViewTabs($args)
     {
@@ -74,11 +74,11 @@ class Packages_Notification extends ApiEnabled_Notification
             return array('Packages' => $this->moduleWebroot.'/view/project?projectId='.$project->getKey());
         }
 
-        return null;
+        return;
     }
 
     /**
-     * When a community is deleted, we must delete its associated project
+     * When a community is deleted, we must delete its associated project.
      */
     public function communityDeleted($args)
     {
@@ -93,7 +93,7 @@ class Packages_Notification extends ApiEnabled_Notification
     }
 
     /**
-     * When an item is deleted, we must delete associated package/extension records
+     * When an item is deleted, we must delete associated package/extension records.
      */
     public function itemDeleted($args)
     {
@@ -115,7 +115,7 @@ class Packages_Notification extends ApiEnabled_Notification
     }
 
     /**
-     * Render the checkbox to allow a community to be a project
+     * Render the checkbox to allow a community to be a project.
      */
     public function communityManageForm($args)
     {
@@ -132,7 +132,7 @@ class Packages_Notification extends ApiEnabled_Notification
     }
 
     /**
-     * Used to set the project flag on a community
+     * Used to set the project flag on a community.
      */
     public function communityEditInfo($args)
     {
@@ -144,7 +144,7 @@ class Packages_Notification extends ApiEnabled_Notification
     }
 
     /**
-     * Add link to the right hand menu in the item view if the item is a package
+     * Add link to the right hand menu in the item view if the item is a package.
      */
     public function getItemMenuLink($params)
     {

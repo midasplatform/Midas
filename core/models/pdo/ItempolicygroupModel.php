@@ -20,9 +20,7 @@
 
 require_once BASE_PATH.'/core/models/base/ItempolicygroupModelBase.php';
 
-/**
- * Pdo Model
- */
+/** Pdo Model. */
 class ItempolicygroupModel extends ItempolicygroupModelBase
 {
     /** compute policy status */
@@ -49,16 +47,15 @@ class ItempolicygroupModel extends ItempolicygroupModelBase
     }
 
     /** getPolicy
-     *
      * @return ItempolicygroupDao
      */
     public function getPolicy($group, $item)
     {
         if (!$group instanceof GroupDao) {
-            throw new Zend_Exception("Should be a group.");
+            throw new Zend_Exception('Should be a group.');
         }
         if (!$item instanceof ItemDao) {
-            throw new Zend_Exception("Should be an item.");
+            throw new Zend_Exception('Should be an item.');
         }
 
         return $this->initDao(
@@ -73,14 +70,14 @@ class ItempolicygroupModel extends ItempolicygroupModelBase
     }
 
     /**
-     * deletes all itempolicygroup rows associated with the passed in group
+     * deletes all itempolicygroup rows associated with the passed in group.
      *
      * @param GroupDao
      */
     public function deleteGroupPolicies($group)
     {
         if (!$group instanceof GroupDao) {
-            throw new Zend_Exception("Should be a group.");
+            throw new Zend_Exception('Should be a group.');
         }
         $clause = 'group_id = '.$group->getKey();
         Zend_Registry::get('dbAdapter')->delete($this->_name, $clause);
