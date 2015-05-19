@@ -19,7 +19,7 @@ Begin by following the appropriate operating-system-specific instructions:
 
 ```bash
 curl -LsS https://github.com/midasplatform/Midas/archive/$LATEST_RELEASE.tar.gz -o Midas-$LATEST_RELEASE.tar.gz
-tar cf Midas-$LATEST_RELEASE.tar.gz
+tar xf Midas-$LATEST_RELEASE.tar.gz
 cp -r Midas-$LATEST_RELEASE/. $DOCUMENT_ROOT
 cd $DOCUMENT_ROOT
 chmod a+w core/configs/ data/ log/ tmp/
@@ -39,7 +39,7 @@ curl -LsS https://github.com/midasplatform/Midas/archive/$LATEST_RELEASE.tar.gz 
 Extract the archive and copy its contents to the document root:
 
 ```bash
-tar cf Midas-$LATEST_RELEASE.tar.gz
+tar xf Midas-$LATEST_RELEASE.tar.gz
 cp -r Midas-$LATEST_RELEASE/. $DOCUMENT_ROOT
 ```
 
