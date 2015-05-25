@@ -47,6 +47,13 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
                 'parent_column' => 'trend_id',
                 'child_column' => 'trend_id',
             ),
+            'submission' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'Submission',
+                'module' => $this->moduleName,
+                'parent_column' => 'submission_id',
+                'child_column' => 'submission_id',
+            ),
             'user' => array(
                 'type' => MIDAS_MANY_TO_ONE,
                 'model' => 'User',
