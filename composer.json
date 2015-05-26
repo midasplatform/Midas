@@ -22,7 +22,7 @@
         "moontoast/math": "~1.1",
         "ramsey/uuid": "~2.8",
         "reprovinci/solr-php-client": "~1.0",
-        "sendgrid/sendgrid": "~3.1",
+        "sendgrid/sendgrid": "~3.2",
         "zendframework/zendframework1": "~1.12"
     },
     "require-dev": {
