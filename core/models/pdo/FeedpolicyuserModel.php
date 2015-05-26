@@ -20,13 +20,11 @@
 
 require_once BASE_PATH.'/core/models/base/FeedpolicyuserModelBase.php';
 
-/**
- * Pdo Model
- */
+/** Pdo Model. */
 class FeedpolicyuserModel extends FeedpolicyuserModelBase
 {
     /**
-     * Get policy
+     * Get policy.
      *
      * @param UserDao $user
      * @param FeedDao $feed
@@ -36,10 +34,10 @@ class FeedpolicyuserModel extends FeedpolicyuserModelBase
     public function getPolicy($user, $feed)
     {
         if (!$user instanceof UserDao) {
-            throw new Zend_Exception("Should be a user.");
+            throw new Zend_Exception('Should be a user.');
         }
         if (!$feed instanceof FeedDao) {
-            throw new Zend_Exception("Should be a feed.");
+            throw new Zend_Exception('Should be a feed.');
         }
 
         return $this->initDao(

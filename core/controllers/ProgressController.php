@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Progress controller
- */
+/** Progress controller. */
 class ProgressController extends AppController
 {
     public $_models = array('Progress');

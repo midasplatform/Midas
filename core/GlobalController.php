@@ -20,11 +20,7 @@
 
 require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
 
-/**
- * Generic controller base class.
- *
- * @package Core\Controller
- */
+/** Generic controller base class. */
 class MIDAS_GlobalController extends Zend_Controller_Action
 {
     /** @var array */
@@ -50,11 +46,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         parent::__construct($request, $response, $invokeArgs);
     }
 
-    /**
-     * Pre-dispatch routines
-     *
-     * @return void
-     */
+    /** Pre-dispatch routines */
     public function preDispatch()
     {
         UtilityComponent::setTimeLimit(0);
@@ -102,7 +94,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
 
         Zend_Registry::set('configsModules', $configs);
 
-        $forward = $this->getParam("forwardModule");
+        $forward = $this->getParam('forwardModule');
         $request = $this->getRequest();
         $response = $this->getResponse();
 
@@ -169,17 +161,15 @@ class MIDAS_GlobalController extends Zend_Controller_Action
     }
 
     /**
-     * Post-dispatch routines
+     * Post-dispatch routines.
      *
      * Common usages for postDispatch() include rendering content in a site wide
      * template, link url correction, setting headers, etc.
-     *
-     * @return void
      */
     public function postDispatch()
     {
         parent::postDispatch();
-        $this->view->addHelperPath(BASE_PATH."/core/views/helpers", "Zend_View_Helper_");
+        $this->view->addHelperPath(BASE_PATH.'/core/views/helpers', 'Zend_View_Helper_');
     }
 
     /**
@@ -229,7 +219,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         Zend_Registry::set('forms', array());
         if (isset($this->_forms)) {
             foreach ($this->_forms as $forms) {
-                $nameForm = $forms."Form";
+                $nameForm = $forms.'Form';
 
                 Zend_Loader::loadClass($nameForm, BASE_PATH.'/core/controllers/forms');
                 if (!isset($this->Form)) {

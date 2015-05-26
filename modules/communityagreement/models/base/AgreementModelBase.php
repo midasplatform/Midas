@@ -18,14 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Communityagreement_AgreementModelBase
- *
- * agreement base model
- *
- * @category   Midas modules
- * @package    communityagreement
- */
+/** Communityagreement_AgreementModelBase. */
 class Communityagreement_AgreementModelBase extends Communityagreement_AppModel
 {
     /** constructor */
@@ -44,7 +37,7 @@ class Communityagreement_AgreementModelBase extends Communityagreement_AppModel
     }
 
     /**
-     * Create a community agreement
+     * Create a community agreement.
      *
      * @param  string $community_id
      * @param  string $agreement

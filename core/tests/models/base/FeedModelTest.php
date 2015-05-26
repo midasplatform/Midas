@@ -82,7 +82,7 @@ class Core_FeedModelTest extends DatabaseTestCase
         $this->Feed->addCommunity($feed, $communityFile [0]);
         $communities = $feed->getCommunities();
         if (($communities[0]->getKey() != $communityFile[0]->getKey())) {
-            $this->fail("Unable to add dao");
+            $this->fail('Unable to add dao');
         }
     }
 

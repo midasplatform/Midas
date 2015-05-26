@@ -36,7 +36,7 @@ class Cleanup_PerformCleanupTest extends ControllerTestCase
      * Tests the behavior of the cleanup module
      * 1. Configures a cleanup cutoff as the admin user
      * 2. Creates some content in the temp dir
-     * 3. Runs the cleanup task via the scheduler
+     * 3. Runs the cleanup task via the scheduler.
      *
      * CAUTION: If this test is run on an instance where the scheduler is being
      * run concurrently, it could cause a race condition that might break

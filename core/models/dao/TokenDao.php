@@ -31,7 +31,6 @@
  * @method void setExpirationDate(string $expirationDate)
  * @method UserapiDao getUserapi()
  * @method void setUserapi(UserapiDao $userApi)
- * @package Core\DAO
  */
 class TokenDao extends AppDao
 {

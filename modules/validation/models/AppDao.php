@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic DAO class for the validation module.
- *
- * @package Modules\Validation\DAO
- */
+/** Generic DAO class for the validation module. */
 class Validation_AppDao extends MIDAS_GlobalDao
 {
     /** @var string */

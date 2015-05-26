@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Scalar base model class for the tracker module.
- *
- * @package Modules\Tracker\Model
- */
+/** Scalar base model class for the tracker module. */
 abstract class Tracker_ScalarModelBase extends Tracker_AppModel
 {
     /** Constructor. */

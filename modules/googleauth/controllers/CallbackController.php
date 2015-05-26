@@ -204,7 +204,6 @@ class Googleauth_CallbackController extends Googleauth_AppController
             true
         );
 
-
         return $user;
     }
 }

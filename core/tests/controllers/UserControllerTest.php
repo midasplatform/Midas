@@ -33,20 +33,20 @@ class Core_UserControllerTest extends ControllerTestCase
     /** test index */
     public function testIndexAction()
     {
-        $this->dispatchUrl("/user");
-        $this->assertController("user");
+        $this->dispatchUrl('/user');
+        $this->assertController('user');
 
-        $this->assertQuery("div.userBlock");
+        $this->assertQuery('div.userBlock');
     }
 
     /** test register */
     public function testRegisterAction()
     {
-        $this->dispatchUrl("/user/register");
-        $this->assertController("user");
-        $this->assertAction("register");
+        $this->dispatchUrl('/user/register');
+        $this->assertController('user');
+        $this->assertAction('register');
 
-        $this->assertQuery("form#registerForm");
+        $this->assertQuery('form#registerForm');
 
         $this->params = array();
         $this->params['email'] = 'user1@user1.com';
@@ -56,7 +56,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['lastname'] = 'Lastname';
         $this->params['submit'] = 'Register';
         $this->request->setMethod('POST');
-        $this->dispatchUrl("/user/register", null, true);
+        $this->dispatchUrl('/user/register', null, true);
 
         $this->params = array();
         $this->params['email'] = 'user2@user1.com';
@@ -67,7 +67,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['submit'] = 'Register';
 
         $this->request->setMethod('POST');
-        $this->dispatchUrl("/user/register");
+        $this->dispatchUrl('/user/register');
 
         $userDao = $this->User->getByEmail($this->params['email']);
         $this->assertTrue($userDao != false, 'Unable to register');
@@ -113,29 +113,29 @@ class Core_UserControllerTest extends ControllerTestCase
     public function testTermofserviceAction()
     {
         $this->resetAll();
-        $this->dispatchUrl("/user/termofservice");
-        $this->assertController("user");
-        $this->assertAction("termofservice");
+        $this->dispatchUrl('/user/termofservice');
+        $this->assertController('user');
+        $this->assertAction('termofservice');
     }
 
     /** test terms */
     public function testRecoverpasswordAction()
     {
         $this->resetAll();
-        $this->dispatchUrl("/user/recoverpassword", null, false);
+        $this->dispatchUrl('/user/recoverpassword', null, false);
 
-        $this->assertQuery("form#recoverPasswordForm");
+        $this->assertQuery('form#recoverPasswordForm');
 
         $usersFile = $this->loadData('User', 'default');
         $userDao = $this->User->load($usersFile[0]->getKey());
-        $this->dispatchUrl("/user/recoverpassword", $userDao, true);
+        $this->dispatchUrl('/user/recoverpassword', $userDao, true);
 
         $this->resetAll();
         $this->params = array();
         $this->params['email'] = 'user1@user1.com';
         $this->request->setMethod('POST');
         $userDao = $this->User->getByEmail($this->params['email']);
-        $this->dispatchUrl("/user/recoverpassword", null);
+        $this->dispatchUrl('/user/recoverpassword', null);
 
         $userDao2 = $this->User->getByEmail($this->params['email']);
         $this->assertNotEquals($userDao->getSalt(), $userDao2->getSalt(), 'Salt should have changed');
@@ -213,7 +213,7 @@ class Core_UserControllerTest extends ControllerTestCase
     public function testSettingsAction()
     {
         $this->resetAll();
-        $this->dispatchUrl("/user/settings", null, false);
+        $this->dispatchUrl('/user/settings', null, false);
         $body = $this->getBody();
         $this->assertTrue(empty($body), 'Should return nothing');
 
@@ -229,9 +229,9 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->dispatchUrl('/user/settings?userId='.$user2Dao->getKey(), $userDao, true);
 
         $this->resetAll();
-        $this->dispatchUrl("/user/settings", $userDao);
-        $this->assertQuery("div#tabsSettings");
-        $this->assertQuery("li.settingsCommunityList");
+        $this->dispatchUrl('/user/settings', $userDao);
+        $this->assertQuery('div#tabsSettings');
+        $this->assertQuery('li.settingsCommunityList');
 
         $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
         // By changing password we will update the salt and hash
@@ -241,7 +241,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['oldPassword'] = 'test';
         $this->params['newPassword'] = 'newPassword';
         $this->request->setMethod('POST');
-        $this->dispatchUrl("/user/settings", $userDao);
+        $this->dispatchUrl('/user/settings', $userDao);
         $resp = json_decode($this->getBody());
         $this->assertTrue($resp[0] == true);
 
@@ -262,7 +262,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['privacy'] = MIDAS_USER_PRIVATE;
         $this->params['modifyAccount'] = 'true';
         $this->request->setMethod('POST');
-        $this->dispatchUrl("/user/settings", $userDao);
+        $this->dispatchUrl('/user/settings', $userDao);
 
         $userCheckDao = $this->User->load($userDao->getKey());
         $this->assertEquals(
@@ -275,7 +275,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params = array();
         $this->params['modifyPicture'] = 'true';
         $this->request->setMethod('POST');
-        $this->dispatchUrl("/user/settings", $userDao);
+        $this->dispatchUrl('/user/settings', $userDao);
 
         $userCheckDao = $this->User->load($userDao->getKey());
 
@@ -292,7 +292,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['privacy'] = MIDAS_USER_PRIVATE;
         $this->params['modifyAccount'] = 'true';
         $this->request->setMethod('POST');
-        $this->dispatchUrl("/user/settings", $userDao);
+        $this->dispatchUrl('/user/settings', $userDao);
         $userCheckDao = $this->User->load($userDao->getKey());
         $this->assertNotEquals($userCheckDao->getEmail(), 'invalid');
         $this->assertEquals($userCheckDao->getFirstname(), 'new First Name');
@@ -308,7 +308,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['privacy'] = MIDAS_USER_PRIVATE;
         $this->params['modifyAccount'] = 'true';
         $this->request->setMethod('POST');
-        $this->dispatchUrl("/user/settings", $userDao);
+        $this->dispatchUrl('/user/settings', $userDao);
         $userCheckDao = $this->User->load($userDao->getKey());
         $this->assertNotEquals($userCheckDao->getEmail(), $user2Dao->getEmail());
         $this->assertEquals($userCheckDao->getFirstname(), 'new First Name');
@@ -324,7 +324,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->params['privacy'] = MIDAS_USER_PRIVATE;
         $this->params['modifyAccount'] = 'true';
         $this->request->setMethod('POST');
-        $this->dispatchUrl("/user/settings", $userDao);
+        $this->dispatchUrl('/user/settings', $userDao);
         $userCheckDao = $this->User->load($userDao->getKey());
         $this->assertEquals($userCheckDao->getEmail(), 'valid@unique.com');
         $this->assertEquals($userCheckDao->getFirstname(), 'Good');
@@ -337,14 +337,14 @@ class Core_UserControllerTest extends ControllerTestCase
     public function testManageAction()
     {
         $this->resetAll();
-        $this->dispatchUrl("/user/manage", null, false);
+        $this->dispatchUrl('/user/manage', null, false);
 
         $body = $this->getBody();
         $this->assertTrue(empty($body), 'The page should be empty');
 
         $usersFile = $this->loadData('User', 'default');
         $userDao = $this->User->load($usersFile[0]->getKey());
-        $this->dispatchUrl("/user/manage", $userDao);
+        $this->dispatchUrl('/user/manage', $userDao);
 
         $this->assertQuery('div.genericInfo');
 

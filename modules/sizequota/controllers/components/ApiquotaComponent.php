@@ -43,7 +43,6 @@ class Sizequota_ApiquotaComponent extends AppComponent
         $apihelperComponent->validateParams($args, array('user'));
         $requestUser = $apihelperComponent->getUser($args);
 
-
         /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
 

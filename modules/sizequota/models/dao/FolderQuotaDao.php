@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Folder quota dao
- */
+/** Folder quota dao. */
 class Sizequota_FolderQuotaDao extends AppDao
 {
     public $_model = 'FolderQuota';

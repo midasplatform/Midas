@@ -24,22 +24,22 @@ class Upgrade_3_2_20 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-    $this->db->query("ALTER TABLE `folder` CHANGE `teaser` `teaser` varchar(255) NULL DEFAULT '';");
-    $this->db->query("ALTER TABLE `item` CHANGE `name` `name` varchar(255) NOT NULL;");
-    $this->db->query("ALTER TABLE `token` CHANGE `token` `token` varchar(64) NOT NULL;");
-    $this->db->query("ALTER TABLE `user` CHANGE COLUMN `biography` `biography` TEXT;");
-    $this->db->query("ALTER TABLE `userapi` CHANGE `apikey` `apikey` varchar(64) NOT NULL, CHANGE `application_name` `application_name` varchar(255) NOT NULL;");
+        $this->db->query("ALTER TABLE `folder` CHANGE `teaser` `teaser` varchar(255) NULL DEFAULT '';");
+        $this->db->query('ALTER TABLE `item` CHANGE `name` `name` varchar(255) NOT NULL;');
+        $this->db->query('ALTER TABLE `token` CHANGE `token` `token` varchar(64) NOT NULL;');
+        $this->db->query('ALTER TABLE `user` CHANGE COLUMN `biography` `biography` TEXT;');
+        $this->db->query('ALTER TABLE `userapi` CHANGE `apikey` `apikey` varchar(64) NOT NULL, CHANGE `application_name` `application_name` varchar(255) NOT NULL;');
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-    $this->db->query("ALTER TABLE folder ALTER teaser TYPE character varying(256);");
-    $this->db->query("ALTER TABLE item ALTER name TYPE character varying(256);");
-    $this->db->query("ALTER TABLE token ALTER token TYPE character varying(64);");
-    $this->db->query("ALTER TABLE newuserinvitation ALTER auth_key TYPE character varying(256), ALTER email TYPE character varying(256);");
-    $this->db->query("ALTER TABLE pendinguser ALTER auth_key TYPE character varying(256), ALTER email TYPE character varying(256), ALTER firstname TYPE character varying(256), ALTER lastname TYPE character varying(256);");
-    $this->db->query("ALTER TABLE \"user\" ALTER website TYPE character varying(256), ALTER biography TYPE text, ALTER biography DROP DEFAULT;");
-    $this->db->query("ALTER TABLE userapi ALTER apikey TYPE character varying(64);");
+        $this->db->query('ALTER TABLE folder ALTER teaser TYPE character varying(256);');
+        $this->db->query('ALTER TABLE item ALTER name TYPE character varying(256);');
+        $this->db->query('ALTER TABLE token ALTER token TYPE character varying(64);');
+        $this->db->query('ALTER TABLE newuserinvitation ALTER auth_key TYPE character varying(256), ALTER email TYPE character varying(256);');
+        $this->db->query('ALTER TABLE pendinguser ALTER auth_key TYPE character varying(256), ALTER email TYPE character varying(256), ALTER firstname TYPE character varying(256), ALTER lastname TYPE character varying(256);');
+        $this->db->query('ALTER TABLE "user" ALTER website TYPE character varying(256), ALTER biography TYPE text, ALTER biography DROP DEFAULT;');
+        $this->db->query('ALTER TABLE userapi ALTER apikey TYPE character varying(64);');
     }
 }

@@ -22,7 +22,7 @@
 class Readmes_ApifolderComponent extends AppComponent
 {
     /**
-     * Get the readme text for a folder
+     * Get the readme text for a folder.
      *
      * @path /readmes/folder/{id}
      * @http GET

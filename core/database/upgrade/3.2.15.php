@@ -29,10 +29,10 @@ class Upgrade_3_2_15 extends MIDASUpgrade
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $this->db->query("ALTER TABLE license ALTER fulltext DROP DEFAULT;");
-        $this->db->query("ALTER TABLE license ALTER name DROP DEFAULT;");
-        $this->db->query("ALTER TABLE errorlog RENAME errorlog_id_id TO errorlog_id;");
-        $this->db->query("DROP INDEX IF EXISTS item2folder_idx_folder_id;");
-        $this->db->query("CREATE INDEX item2folder_idx_folder_id ON item2folder (folder_id);");
+        $this->db->query('ALTER TABLE license ALTER fulltext DROP DEFAULT;');
+        $this->db->query('ALTER TABLE license ALTER name DROP DEFAULT;');
+        $this->db->query('ALTER TABLE errorlog RENAME errorlog_id_id TO errorlog_id;');
+        $this->db->query('DROP INDEX IF EXISTS item2folder_idx_folder_id;');
+        $this->db->query('CREATE INDEX item2folder_idx_folder_id ON item2folder (folder_id);');
     }
 }

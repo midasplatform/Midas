@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic component base class.
- *
- * @package Core\Component
- */
+/** Generic component base class. */
 class MIDAS_GlobalComponent extends Zend_Controller_Action_Helper_Abstract
 {
     /**

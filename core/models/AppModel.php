@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic model class.
- *
- * @package Core\Model
- */
+/** Generic model class. */
 class AppModel extends MIDASModel
 {
 }

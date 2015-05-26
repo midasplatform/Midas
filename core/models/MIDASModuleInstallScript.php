@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Module installation script base class.
- *
- * @package Core\Database
- */
+/** Module installation script base class. */
 class MIDASModuleInstallScript
 {
     /** Constructor. */

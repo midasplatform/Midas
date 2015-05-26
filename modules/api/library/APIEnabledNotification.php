@@ -30,7 +30,6 @@ class ApiEnabled_Notification extends MIDAS_Notification
      * line to your init function.
      *
      * $this->enableWebAPI();
-     *
      */
     public function getWebApiHelp()
     {
@@ -62,7 +61,7 @@ class ApiEnabled_Notification extends MIDAS_Notification
                         $description = $doc;
                     }
                 }
-                $name = strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1.$2", $realName));
+                $name = strtolower(preg_replace('/([^A-Z])([A-Z])/', '$1.$2', $realName));
                 $help = array();
                 $help['params'] = $params;
                 $help['example'] = $example;
@@ -82,7 +81,7 @@ class ApiEnabled_Notification extends MIDAS_Notification
 
     /**
      * Returns the actual method in your module corresponding to the requested method,
-     * or false if the method doesn't exist
+     * or false if the method doesn't exist.
      */
     public function findWebApiMethod($params)
     {

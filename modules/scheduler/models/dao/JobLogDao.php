@@ -31,7 +31,6 @@
  * @method void setLog(string $log)
  * @method Scheduler_JobDao getJob()
  * @method void setJob(Scheduler_JobDao $job)
- * @package Modules\Scheduler\DAO
  */
 class Scheduler_JobLogDao extends Scheduler_AppDao
 {

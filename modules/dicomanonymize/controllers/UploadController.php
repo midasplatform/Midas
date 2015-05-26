@@ -24,7 +24,7 @@ class Dicomanonymize_UploadController extends Dicomanonymize_AppController
     public $_models = array('License');
 
     /**
-     * Configuration view
+     * Configuration view.
      */
     public function indexAction()
     {

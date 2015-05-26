@@ -20,9 +20,7 @@
 
 require_once BASE_PATH.'/core/models/base/FolderModelBase.php';
 
-/**
- * Pdo Model
- */
+/** Pdo Model. */
 class FolderModel extends FolderModelBase
 {
     /**
@@ -111,12 +109,12 @@ class FolderModel extends FolderModelBase
     public function policyCheck($folderDao, $userDao = null, $policy = 0)
     {
         if (!$folderDao instanceof FolderDao || !is_numeric($policy)) {
-            throw new Zend_Exception("Error in params when checking Folder Policy.");
+            throw new Zend_Exception('Error in params when checking Folder Policy.');
         }
         if ($userDao == null) {
             $userId = -1;
         } elseif (!$userDao instanceof UserDao) {
-            throw new Zend_Exception("Should be an user.");
+            throw new Zend_Exception('Should be an user.');
         } else {
             $userId = $userDao->getUserId();
             if ($userDao->isAdmin()) {
@@ -268,7 +266,7 @@ class FolderModel extends FolderModelBase
         if ($userDao == null) {
             $userId = -1;
         } elseif (!$userDao instanceof UserDao) {
-            throw new Zend_Exception("Should be an user.");
+            throw new Zend_Exception('Should be an user.');
         } else {
             $userId = $userDao->getUserId();
             if ($userDao->isAdmin()) {
@@ -277,7 +275,7 @@ class FolderModel extends FolderModelBase
         }
         foreach ($folders as $key => $folder) {
             if (!$folder instanceof FolderDao) {
-                throw new Zend_Exception("Should be a folder");
+                throw new Zend_Exception('Should be a folder');
             }
             $subqueryUser = $this->database->select()->setIntegrityCheck(false)->from(
                 array('f' => 'folder'),
@@ -399,7 +397,7 @@ class FolderModel extends FolderModelBase
     public function getSize($folder)
     {
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder");
+            throw new Zend_Exception('Should be a folder');
         }
         $folders = $this->database->select()->setIntegrityCheck(false)->from(
             array('f' => 'folder'),
@@ -444,7 +442,7 @@ class FolderModel extends FolderModelBase
         if ($userDao == null) {
             $userId = -1;
         } elseif (!$userDao instanceof UserDao) {
-            throw new Zend_Exception("Should be an user.");
+            throw new Zend_Exception('Should be an user.');
         } else {
             $userId = $userDao->getUserId();
             if ($userDao->isAdmin()) {
@@ -457,7 +455,7 @@ class FolderModel extends FolderModelBase
         }
 
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder");
+            throw new Zend_Exception('Should be a folder');
         }
         $subqueryUser = $this->database->select()->setIntegrityCheck(false)->from(array('f' => 'folder'));
         if (!$isAdmin) {
@@ -530,14 +528,14 @@ class FolderModel extends FolderModelBase
     public function delete($folder, $progressDao = null)
     {
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder");
+            throw new Zend_Exception('Should be a folder');
         }
         if (!$folder->saved) {
-            throw new Zend_Exception("The dao should be saved first ...");
+            throw new Zend_Exception('The dao should be saved first ...');
         }
         $key = $folder->getKey();
         if (!isset($key)) {
-            throw new Zend_Exception("Unable to find the key");
+            throw new Zend_Exception('Unable to find the key');
         }
 
         if ($progressDao && !isset($this->Progress)) {
@@ -606,7 +604,7 @@ class FolderModel extends FolderModelBase
     public function move($folder, $parent)
     {
         if ($folder->getKey() == $parent->getKey()) {
-            throw new Zend_Exception("Folder == Parent");
+            throw new Zend_Exception('Folder == Parent');
         }
 
         $tmpParent = $parent->getParent();
@@ -617,16 +615,16 @@ class FolderModel extends FolderModelBase
 
         while ($tmpParent != false) {
             if ($tmpParent->getKey() == $folder->getKey()) {
-                throw new Zend_Exception("Parent is a child of Folder");
+                throw new Zend_Exception('Parent is a child of Folder');
             }
             $tmpParent = $tmpParent->getParent();
         }
 
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Error in parameter folder when moving folder.");
+            throw new Zend_Exception('Error in parameter folder when moving folder.');
         }
         if (!$parent instanceof FolderDao) {
-            throw new Zend_Exception("Error in parameter parent when moving folder.");
+            throw new Zend_Exception('Error in parameter parent when moving folder.');
         }
 
         // Check ifa folder with the same name already exists for the same parent
@@ -701,7 +699,7 @@ class FolderModel extends FolderModelBase
     public function save($folder)
     {
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
 
         if (!isset($folder->uuid) || empty($folder->uuid)) {
@@ -711,7 +709,7 @@ class FolderModel extends FolderModelBase
         }
         $name = $folder->getName();
         if (empty($name) && $name !== '0') {
-            throw new Zend_Exception("Please set a name.");
+            throw new Zend_Exception('Please set a name.');
         }
         if ($folder->getParentId() <= 0) {
             $rightParent = 0;
@@ -788,7 +786,7 @@ class FolderModel extends FolderModelBase
     public function getCommunity($folder)
     {
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
         $dao = $this->initDao(
             'Community',
@@ -813,7 +811,7 @@ class FolderModel extends FolderModelBase
     public function getUser($folder)
     {
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
         $dao = $this->initDao(
             'User',
@@ -1063,7 +1061,7 @@ class FolderModel extends FolderModelBase
     public function getFolderByName($folder, $foldername)
     {
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
         $row = $this->database->fetchRow(
             $this->database->select()->from($this->_name)->where('parent_id=?', $folder->getFolderId())->where(
@@ -1086,10 +1084,10 @@ class FolderModel extends FolderModelBase
     public function addItem($folder, $item, $update = true)
     {
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
         if (!$item instanceof ItemDao) {
-            throw new Zend_Exception("Should be an item.");
+            throw new Zend_Exception('Should be an item.');
         }
 
         /** @var ItemModel $itemModel */
@@ -1112,10 +1110,10 @@ class FolderModel extends FolderModelBase
     public function removeItem($folder, $item)
     {
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
         if (!$item instanceof ItemDao) {
-            throw new Zend_Exception("Should be an item.");
+            throw new Zend_Exception('Should be an item.');
         }
         $this->database->removeLink('items', $folder, $item);
         if (count($item->getFolders()) == 0) {
@@ -1137,7 +1135,7 @@ class FolderModel extends FolderModelBase
     public function getItemByName($folder, $itemname, $caseSensitive = true)
     {
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
 
         if ($caseSensitive) {
@@ -1180,7 +1178,7 @@ class FolderModel extends FolderModelBase
         if ($userDao == null) {
             $userId = -1;
         } elseif (!$userDao instanceof UserDao) {
-            throw new Zend_Exception("Should be an user.");
+            throw new Zend_Exception('Should be an user.');
         } else {
             $userId = $userDao->getUserId();
             if ($userDao->isAdmin()) {
@@ -1248,8 +1246,8 @@ class FolderModel extends FolderModelBase
                 $this->database->getDB()->quoteInto('name LIKE ?', '%'.$search.'%')
             )->where(
                 'name != ?',
-                "Public"
-            )->where('name != ?', "Private")->limit($limit);
+                'Public'
+            )->where('name != ?', 'Private')->limit($limit);
 
             if ($group) {
                 $sql->group('f.name');
@@ -1331,7 +1329,7 @@ class FolderModel extends FolderModelBase
     }
 
     /**
-     * This will zip stream the filtered contents of the fold
+     * This will zip stream the filtered contents of the fold.
      *
      * @param ZipStream $zip ZipStream object to write to (pass-by-reference, should already be started)
      * @param string $path current path in the zip archive
@@ -1351,7 +1349,7 @@ class FolderModel extends FolderModelBase
             $item = $this->initDao('Item', $row);
             $rev = $this->Item->getLastRevision($item);
 
-            if (!$rev) {
+            if ($rev === false) {
                 $zip->addFile($path.'/'.$item->getName(), ''); // add empty item
                 continue;
             }

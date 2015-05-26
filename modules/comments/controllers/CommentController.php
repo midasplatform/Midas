@@ -25,7 +25,7 @@ class Comments_CommentController extends Comments_AppController
     public $_moduleModels = array('Itemcomment');
 
     /**
-     * Add a comment on an item
+     * Add a comment on an item.
      *
      * @param itemId The item id to add the comment to
      * @param comment The text of the comment
@@ -58,7 +58,7 @@ class Comments_CommentController extends Comments_AppController
     }
 
     /**
-     * Used to refresh the list of comments on the page
+     * Used to refresh the list of comments on the page.
      *
      * @param itemId The item id whose comments to get
      * @param limit Max number of comments to display at once
@@ -89,7 +89,7 @@ class Comments_CommentController extends Comments_AppController
     }
 
     /**
-     * Used to delete a comment
+     * Used to delete a comment.
      *
      * @param commentId Id of the comment to delete
      * @throws Zend_Exception
@@ -114,9 +114,9 @@ class Comments_CommentController extends Comments_AppController
         if ($this->userSession->Dao->isAdmin() || $this->userSession->Dao->getKey() == $comment->getUserId()
         ) {
             $this->Comments_Itemcomment->delete($comment);
-            $retVal = array('status' => 'ok', 'message' => "Comment deleted");
+            $retVal = array('status' => 'ok', 'message' => 'Comment deleted');
         } else {
-            $retVal = array('status' => 'error', 'message' => "Cannot delete comment (permission denied)");
+            $retVal = array('status' => 'error', 'message' => 'Cannot delete comment (permission denied)');
         }
         echo JsonComponent::encode($retVal);
     }

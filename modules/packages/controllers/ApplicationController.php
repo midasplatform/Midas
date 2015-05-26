@@ -27,7 +27,7 @@ class Packages_ApplicationController extends Packages_AppController
     public $_moduleModels = array('Application', 'Package', 'Project');
 
     /**
-     * Create a new application under a project
+     * Create a new application under a project.
      *
      * @param projectId Project id
      * @param name Name of the application
@@ -70,7 +70,7 @@ class Packages_ApplicationController extends Packages_AppController
     }
 
     /**
-     * Edit an application's name and description
+     * Edit an application's name and description.
      * @throws Zend_Exception
      */
     public function editAction()
@@ -119,7 +119,7 @@ class Packages_ApplicationController extends Packages_AppController
     }
 
     /**
-     * View the release packages for an application
+     * View the release packages for an application.
      * @throws Zend_Exception
      */
     public function viewAction()
@@ -197,7 +197,7 @@ class Packages_ApplicationController extends Packages_AppController
     }
 
     /**
-     * View for latest builds
+     * View for latest builds.
      * @throws Zend_Exception
      */
     public function latestAction()

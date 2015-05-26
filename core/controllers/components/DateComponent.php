@@ -22,7 +22,7 @@
 class DateComponent extends AppComponent
 {
     /**
-     * Format date (ex: 01/14/2011 or 14/01/2011 (fr or en)
+     * Format date (ex: 01/14/2011 or 14/01/2011 (fr or en).
      *
      * @param int|string $timestamp
      * @return string
@@ -32,7 +32,7 @@ class DateComponent extends AppComponent
         if (!is_numeric($timestamp)) {
             $timestamp = strtotime($timestamp);
             if ($timestamp == false) {
-                return "";
+                return '';
             }
         }
         if (Zend_Registry::get('configGlobal')->application->lang == 'fr') {
@@ -43,7 +43,7 @@ class DateComponent extends AppComponent
     }
 
     /**
-     * Format the date (ex: 5 days ago)
+     * Format the date (ex: 5 days ago).
      *
      * @param int|string $timestamp
      * @param bool $onlyTime
@@ -54,21 +54,21 @@ class DateComponent extends AppComponent
         if (!is_numeric($timestamp)) {
             $timestamp = strtotime($timestamp);
             if ($timestamp == false) {
-                return "";
+                return '';
             }
         }
         $difference = time() - $timestamp;
-        $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
-        $periodsFr = array("seconde", "minute", "heure", "jour", "semaine", "mois", "annee", "decades");
-        $lengths = array("60", "60", "24", "7", "4.35", "12", "10");
+        $periods = array('second', 'minute', 'hour', 'day', 'week', 'month', 'year', 'decade');
+        $periodsFr = array('seconde', 'minute', 'heure', 'jour', 'semaine', 'mois', 'annee', 'decades');
+        $lengths = array('60', '60', '24', '7', '4.35', '12', '10');
         for ($j = 0; $difference >= $lengths[$j]; $j++) {
             $difference /= $lengths[$j];
         }
         $difference = round($difference);
         if ($difference != 1) {
-            $periods[$j] .= "s";
+            $periods[$j] .= 's';
             if ($periodsFr[$j] != 'mois') {
-                $periodsFr[$j] .= "s";
+                $periodsFr[$j] .= 's';
             }
         }
 
@@ -80,16 +80,16 @@ class DateComponent extends AppComponent
             }
         }
         if (Zend_Registry::get('configGlobal')->application->lang == 'fr') {
-            $text = "Il y a ".$difference." ".$periodsFr[$j];
+            $text = 'Il y a '.$difference.' '.$periodsFr[$j];
         } else {
-            $text = $difference." ".$periods[$j]." ago";
+            $text = $difference.' '.$periods[$j].' ago';
         }
 
         return $text;
     }
 
     /**
-     * Format the date (ex: 5 days ago)
+     * Format the date (ex: 5 days ago).
      *
      * @param int|string $timestamp
      * @return string
@@ -99,21 +99,21 @@ class DateComponent extends AppComponent
         if (!is_numeric($timestamp)) {
             $timestamp = strtotime($timestamp);
             if ($timestamp == false) {
-                return "";
+                return '';
             }
         }
         $difference = $timestamp;
-        $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
-        $periodsFr = array("seconde", "minute", "heure", "jour", "semaine", "mois", "annee", "decades");
-        $lengths = array("60", "60", "24", "7", "4.35", "12", "10");
+        $periods = array('second', 'minute', 'hour', 'day', 'week', 'month', 'year', 'decade');
+        $periodsFr = array('seconde', 'minute', 'heure', 'jour', 'semaine', 'mois', 'annee', 'decades');
+        $lengths = array('60', '60', '24', '7', '4.35', '12', '10');
         for ($j = 0; $difference >= $lengths[$j]; $j++) {
             $difference /= $lengths[$j];
         }
         $difference = round($difference);
         if ($difference != 1) {
-            $periods[$j] .= "s";
+            $periods[$j] .= 's';
             if ($periodsFr[$j] != 'mois') {
-                $periodsFr[$j] .= "s";
+                $periodsFr[$j] .= 's';
             }
         }
 
@@ -122,9 +122,9 @@ class DateComponent extends AppComponent
         }
 
         if (Zend_Registry::get('configGlobal')->application->lang == 'fr') {
-            $text = $difference." ".$periodsFr[$j];
+            $text = $difference.' '.$periodsFr[$j];
         } else {
-            $text = $difference." ".$periods[$j];
+            $text = $difference.' '.$periods[$j];
         }
 
         return $text;

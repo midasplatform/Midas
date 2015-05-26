@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * API producer component for the tracker module.
- *
- * @package Modules\Tracker\Component
- */
+/** API producer component for the tracker module. */
 class Tracker_ApiproducerComponent extends AppComponent
 {
     /** @var string */

@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic DAO class for the oauth module.
- *
- * @package Modules\Oauth\DAO
- */
+/** Generic DAO class for the oauth module. */
 class Oauth_AppDao extends MIDAS_GlobalDao
 {
     /** @var string */

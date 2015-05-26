@@ -69,7 +69,7 @@ class Googleauth_Notification extends MIDAS_Notification
     }
 
     /**
-     * If a user is deleted, we must delete any corresponding google auth user
+     * If a user is deleted, we must delete any corresponding google auth user.
      */
     public function handleUserDeleted($params)
     {

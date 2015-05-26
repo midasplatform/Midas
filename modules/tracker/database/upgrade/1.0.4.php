@@ -21,8 +21,6 @@
 /**
  * Upgrade the tracker module to version 1.0.4. Add the branch name to the
  * scalar submission table and add an index for it.
- *
- * @package Modules\Tracker\Database
  */
 class Tracker_Upgrade_1_0_4 extends MIDASUpgrade
 {
@@ -30,13 +28,13 @@ class Tracker_Upgrade_1_0_4 extends MIDASUpgrade
     public function mysql()
     {
         $this->db->query("ALTER TABLE `tracker_scalar` ADD COLUMN `branch` varchar(255) NOT NULL DEFAULT '';");
-        $this->db->query("ALTER TABLE `tracker_scalar` ADD KEY (`branch`);");
+        $this->db->query('ALTER TABLE `tracker_scalar` ADD KEY (`branch`);');
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $this->db->query("ALTER TABLE tracker_scalar ADD COLUMN branch character varying(255) NOT NULL DEFAULT ''::character varying;");
-        $this->db->query("CREATE INDEX tracker_scalar_idx_branch ON tracker_scalar (branch);");
+        $this->db->query('CREATE INDEX tracker_scalar_idx_branch ON tracker_scalar (branch);');
     }
 }

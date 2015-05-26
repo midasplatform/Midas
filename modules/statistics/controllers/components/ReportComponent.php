@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generates and sends piwik statistics reports to admin users
- */
+/** Generates and sends piwik statistics reports to admin users. */
 class Statistics_ReportComponent extends AppComponent
 {
     /** @var string */
@@ -40,12 +38,12 @@ class Statistics_ReportComponent extends AppComponent
 
         $reportContent .= '<br/><br/><b>Status</b>';
         $errors = $errorLogModel->getLog(
-            date("Y-m-d H:i:s", strtotime('-1 day'.date('Y-m-j G:i:s'))),
-            date("Y-m-d H:i:s"),
+            date('Y-m-d H:i:s', strtotime('-1 day'.date('Y-m-j G:i:s'))),
+            date('Y-m-d H:i:s'),
             'all',
             2
         );
-        $reportContent .= "<br/>Yesterday Errors: ".count($errors);
+        $reportContent .= '<br/>Yesterday Errors: '.count($errors);
         $assetStores = $assetStoreModel->getAll();
         foreach ($assetStores as $assetStore) {
             $totalSpace = UtilityComponent::diskTotalSpace($assetStore->getPath());

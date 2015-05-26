@@ -24,14 +24,14 @@ class Upgrade_3_0_10 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query("DROP TABLE metadatatype;");
+        $this->db->query('DROP TABLE metadatatype;');
         $this->renameTableField('metadata', 'metadatatype_id', 'metadatatype', 'int(11)', 'integer', '0');
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $this->db->query("DROP TABLE metadatatype;");
+        $this->db->query('DROP TABLE metadatatype;');
         $this->renameTableField('metadata', 'metadatatype_id', 'metadatatype', 'int(11)', 'integer', '0');
     }
 }

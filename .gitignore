@@ -2,6 +2,7 @@
 
 .DS_Store
 .idea/
+.php_cs.cache
 .sass-cache/
 .vagrant/
 bower_components/

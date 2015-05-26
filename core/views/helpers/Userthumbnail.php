@@ -34,7 +34,7 @@ class Zend_View_Helper_Userthumbnail extends Zend_View_Helper_Abstract
 
         if (empty($thumbnail)) {
             echo '<img id="'.$id.'" class="thumbnailSmall" src="'.$this->view->coreWebroot.'/public/images/icons/unknownUser.png" alt="" />';
-        } elseif (preg_match("@^https?://@", $thumbnail)) {
+        } elseif (preg_match('@^https?://@', $thumbnail)) {
             echo '<img id="'.$id.'" class="thumbnailSmall" src="'.$thumbnail.'" alt="" />';
         } else {
             echo '<img id="'.$id.'" class="thumbnailSmall" src="'.$this->view->webroot.'/'.$thumbnail.'" alt="" />';

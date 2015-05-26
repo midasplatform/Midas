@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- *  Search controller
- */
+/** Search controller. */
 class SearchController extends AppController
 {
     public $_models = array('Item', 'Folder', 'User', 'Community', 'Group');
@@ -42,7 +40,7 @@ class SearchController extends AppController
     /** search live Action */
     public function indexAction()
     {
-        $this->view->header = $this->t("Search");
+        $this->view->header = $this->t('Search');
 
         // Pass the keyword to javascript
         $keyword = $this->getRequest()->getParam('q');

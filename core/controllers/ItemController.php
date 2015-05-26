@@ -27,7 +27,7 @@ class ItemController extends AppController
     public $_forms = array('Item');
 
     /**
-     * Init Controller
+     * Init Controller.
      */
     public function init()
     {
@@ -39,7 +39,7 @@ class ItemController extends AppController
     }
 
     /**
-     * create/edit metadata
+     * create/edit metadata.
      *
      * @throws Zend_Exception on non-logged user, invalid itemId and incorrect access permission
      */
@@ -58,15 +58,18 @@ class ItemController extends AppController
         }
         if (!$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE)
         ) {
-            throw new Zend_Exception("Write permissions required", 403);
+            throw new Zend_Exception('Write permissions required', 403);
         }
 
-        $itemRevisionNumber = $this->getParam("itemrevision");
+        $itemRevisionNumber = $this->getParam('itemrevision');
         if (isset($itemRevisionNumber)) {
             $this->view->itemrevision = $itemRevisionNumber;
             $metadataItemRevision = $this->Item->getRevision($itemDao, $itemRevisionNumber);
         } else {
             $metadataItemRevision = $this->Item->getLastRevision($itemDao);
+        }
+        if ($metadataItemRevision === false) {
+            throw new Zend_Exception('The item must have at least one revision to have metadata', MIDAS_INVALID_POLICY);
         }
         $metadatavalues = $this->ItemRevision->getMetadata($metadataItemRevision);
         $this->view->metadata = null;
@@ -91,16 +94,16 @@ class ItemController extends AppController
     }
 
     /**
-     * View a Item
+     * View a Item.
      *
      * @throws Zend_Exception on invalid itemId and incorrect access permission
      */
     public function viewAction()
     {
         $this->view->Date = $this->Component->Date;
-        $itemId = $this->getParam("itemId");
+        $itemId = $this->getParam('itemId');
         if (!isset($itemId) || !is_numeric($itemId)) {
-            throw new Zend_Exception("itemId should be a number");
+            throw new Zend_Exception('itemId should be a number');
         }
         $itemDao = $this->Item->load($itemId);
         if ($itemDao === false) {
@@ -115,11 +118,14 @@ class ItemController extends AppController
         $this->view->isModerator = $this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_WRITE);
         $itemRevision = $this->Item->getLastRevision($itemDao);
         if ($this->_request->isPost()) {
-            $itemRevisionNumber = $this->getParam("itemrevision");
+            $itemRevisionNumber = $this->getParam('itemrevision');
             if (isset($itemRevisionNumber)) {
                 $metadataItemRevision = $this->Item->getRevision($itemDao, $itemRevisionNumber);
             } else {
                 $metadataItemRevision = $itemRevision;
+            }
+            if ($metadataItemRevision === false) {
+                throw new Zend_Exception('The item must have at least one revision to have metadata', MIDAS_INVALID_POLICY);
             }
             $deleteMetadata = $this->getParam('deleteMetadata');
             $editMetadata = $this->getParam('editMetadata');
@@ -310,7 +316,7 @@ class ItemController extends AppController
     }
 
     /**
-     * Edit an item
+     * Edit an item.
      *
      * @throws Zend_Exception on invalid itemId and incorrect access permission
      */
@@ -320,12 +326,12 @@ class ItemController extends AppController
         $item_id = $this->getParam('itemId');
         $item = $this->Item->load($item_id);
         if (!isset($item_id)) {
-            throw new Zend_Exception("Please set the itemId.");
+            throw new Zend_Exception('Please set the itemId.');
         } elseif ($item === false) {
-            throw new Zend_Exception("The item doesn t exist.");
+            throw new Zend_Exception('The item doesn t exist.');
         } elseif (!$this->Item->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_WRITE)
         ) {
-            throw new Zend_Exception("Permissions error.");
+            throw new Zend_Exception('Permissions error.');
         }
 
         if ($this->_request->isPost()) {
@@ -365,18 +371,18 @@ class ItemController extends AppController
 
         $this->view->allLicenses = $this->License->getAll();
         $revision = $this->ItemRevision->getLatestRevision($item);
-        $this->view->displayUpdateBitstream = "none";
+        $this->view->displayUpdateBitstream = 'none';
         if ($revision != false) {
             $this->view->selectedLicense = $revision->getLicenseId();
             $bitstreams = $revision->getBitstreams();
             if (count($bitstreams) == 1) {
-                $this->view->displayUpdateBitstream = "block";
+                $this->view->displayUpdateBitstream = 'block';
             }
         }
     }
 
     /**
-     * Delete an item
+     * Delete an item.
      *
      * @throws Zend_Exception on invalid itemId and incorrect access permission
      */
@@ -387,7 +393,7 @@ class ItemController extends AppController
 
         $itemId = $this->getParam('itemId');
         if (!isset($itemId) || !is_numeric($itemId)) {
-            throw new Zend_Exception("itemId should be a number");
+            throw new Zend_Exception('itemId should be a number');
         }
         $itemDao = $this->Item->load($itemId);
         if ($itemDao === false || !$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN)
@@ -406,7 +412,7 @@ class ItemController extends AppController
     }
 
     /**
-     * Delete an itemrevision
+     * Delete an itemrevision.
      *
      * @throws Zend_Exception on invalid itemId and incorrect access permission
      */
@@ -415,7 +421,7 @@ class ItemController extends AppController
         // load item and check permissions
         $itemId = $this->getParam('itemId');
         if (!isset($itemId) || !is_numeric($itemId)) {
-            throw new Zend_Exception("itemId should be a number");
+            throw new Zend_Exception('itemId should be a number');
         }
         $itemDao = $this->Item->load($itemId);
         if ($itemDao === false || !$this->Item->policyCheck($itemDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN)
@@ -426,7 +432,7 @@ class ItemController extends AppController
         // load itemrevision, ensure it exists
         $itemRevisionId = $this->getParam('itemrevisionId');
         if (!isset($itemRevisionId) || !is_numeric($itemRevisionId)) {
-            throw new Zend_Exception("itemrevisionId should be a number");
+            throw new Zend_Exception('itemrevisionId should be a number');
         }
         $itemRevisionDao = $this->ItemRevision->load($itemRevisionId);
         if ($itemRevisionDao === false) {
@@ -440,7 +446,7 @@ class ItemController extends AppController
     }
 
     /**
-     * Edit an bitstream
+     * Edit an bitstream.
      *
      * @throws Zend_Exception on invalid itemId/bitstreamId and incorrect access permission
      */
@@ -450,7 +456,7 @@ class ItemController extends AppController
         // load item and check permissions
         $bitstreamId = $this->getParam('bitstreamId');
         if (!isset($bitstreamId) || !is_numeric($bitstreamId)) {
-            throw new Zend_Exception("bitstreamId should be a number");
+            throw new Zend_Exception('bitstreamId should be a number');
         }
         $bitstreamDao = $this->Bitstream->load($bitstreamId);
         if ($bitstreamDao === false) {
@@ -483,7 +489,7 @@ class ItemController extends AppController
     }
 
     /**
-     * Delete a bitstream
+     * Delete a bitstream.
      *
      * @throws Zend_Exception on invalid itemId/bitstreamId and incorrect access permission
      */
@@ -494,7 +500,7 @@ class ItemController extends AppController
         // load item and check permissions
         $bitstreamId = $this->getParam('bitstreamId');
         if (!isset($bitstreamId) || !is_numeric($bitstreamId)) {
-            throw new Zend_Exception("bitstreamId should be a number");
+            throw new Zend_Exception('bitstreamId should be a number');
         }
         $bitstreamDao = $this->Bitstream->load($bitstreamId);
         if ($bitstreamDao === false) {
@@ -516,7 +522,7 @@ class ItemController extends AppController
     }
 
     /**
-     * Merge items
+     * Merge items.
      *
      * @throws Zend_Exception on invalid item name and incorrect access permission
      */
@@ -549,7 +555,7 @@ class ItemController extends AppController
     }
 
     /**
-     * Check if an item is shared
+     * Check if an item is shared.
      *
      * ajax function which checks if an item is shared in other folder/community
      *
@@ -559,7 +565,7 @@ class ItemController extends AppController
     {
         $this->disableLayout();
         $this->disableView();
-        $itemId = $this->getParam("itemId");
+        $itemId = $this->getParam('itemId');
         $itemDao = $this->Item->load($itemId);
         $shareCount = count($itemDao->getFolders());
         $ifShared = false;
@@ -592,7 +598,7 @@ class ItemController extends AppController
         $qualifier = $this->getParam('qualifier');
         $metadataDao = $this->Metadata->getMetadata($metadatatype, $element, $qualifier);
         if ($metadataDao == false) {
-            $metadataValueExists = array("exists" => 0);
+            $metadataValueExists = array('exists' => 0);
         } else {
             $itemDao = $this->Item->load($itemId);
             if ($itemDao === false) {
@@ -603,13 +609,16 @@ class ItemController extends AppController
             } else {
                 $metadataItemRevision = $this->Item->getLastRevision($itemDao);
             }
+            if ($metadataItemRevision === false) {
+                throw new Zend_Exception('The item must have at least one revision to have metadata', MIDAS_INVALID_POLICY);
+            }
             $metadataDao->setItemrevisionId($metadataItemRevision->getKey());
             if ($this->Metadata->getMetadataValueExists($metadataDao)) {
                 $exists = 1;
             } else {
                 $exists = 0;
             }
-            $metadataValueExists = array("exists" => $exists);
+            $metadataValueExists = array('exists' => $exists);
         }
         echo JsonComponent::encode($metadataValueExists);
     }

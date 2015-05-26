@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- *  Web API controller for the System resource
- */
+/** Web API controller for the System resource. */
 class Rest_SystemController extends ApiController
 {
     /**

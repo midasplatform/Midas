@@ -47,7 +47,7 @@ class MIDAS_GlobalModule extends AppController
         parent::__construct($request, $response, $invokeArgs);
         $this->loadModuleElements();
         if (is_null($this->moduleName)) {
-            throw new Zend_Exception("Please set the module name in AppController");
+            throw new Zend_Exception('Please set the module name in AppController');
         }
         $fc = Zend_Controller_Front::getInstance();
         $this->view->moduleWebroot = $fc->getBaseUrl().'/modules/'.$this->moduleName;
@@ -94,8 +94,8 @@ class MIDAS_GlobalModule extends AppController
         if ($this->isTestingEnv()) {
             $this->disableLayout();
         } else {
-            if (file_exists(BASE_PATH."/modules/".$this->moduleName."/layouts/layout.phtml")) {
-                $this->_helper->layout->setLayoutPath(BASE_PATH."/modules/".$this->moduleName."/layouts");
+            if (file_exists(BASE_PATH.'/modules/'.$this->moduleName.'/layouts/layout.phtml')) {
+                $this->_helper->layout->setLayoutPath(BASE_PATH.'/modules/'.$this->moduleName.'/layouts');
             }
         }
     }
@@ -105,7 +105,7 @@ class MIDAS_GlobalModule extends AppController
     {
         parent::postDispatch();
 
-        $this->view->addHelperPath(BASE_PATH."/".$this->moduleName."/views/helpers", "Zend_View_Helper_");
+        $this->view->addHelperPath(BASE_PATH.'/'.$this->moduleName.'/views/helpers', 'Zend_View_Helper_');
     }
 
     /** Load model and components. */
@@ -124,12 +124,12 @@ class MIDAS_GlobalModule extends AppController
 
         if (isset($this->_moduleDaos)) {
             foreach ($this->_moduleDaos as $dao) {
-                if (file_exists(BASE_PATH."/modules/".$this->moduleName."/models/dao/".$dao."Dao.php")) {
-                    include_once BASE_PATH."/modules/".$this->moduleName."/models/dao/".$dao."Dao.php";
+                if (file_exists(BASE_PATH.'/modules/'.$this->moduleName.'/models/dao/'.$dao.'Dao.php')) {
+                    include_once BASE_PATH.'/modules/'.$this->moduleName.'/models/dao/'.$dao.'Dao.php';
                 } elseif (file_exists(
-                    BASE_PATH."/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php"
+                    BASE_PATH.'/privateModules/'.$this->moduleName.'/models/dao/'.$dao.'Dao.php'
                 )) {
-                    include_once BASE_PATH."/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php";
+                    include_once BASE_PATH.'/privateModules/'.$this->moduleName.'/models/dao/'.$dao.'Dao.php';
                 } else {
                     throw new Zend_Exception('Unable to find dao  '.$dao);
                 }
@@ -138,15 +138,15 @@ class MIDAS_GlobalModule extends AppController
 
         if (isset($this->_moduleComponents)) {
             foreach ($this->_moduleComponents as $component) {
-                $nameComponent = ucfirst($this->moduleName).'_'.$component."Component";
+                $nameComponent = ucfirst($this->moduleName).'_'.$component.'Component';
                 if (file_exists(
-                    BASE_PATH."/modules/".$this->moduleName."/controllers/components/".$component."Component.php"
+                    BASE_PATH.'/modules/'.$this->moduleName.'/controllers/components/'.$component.'Component.php'
                 )) {
-                    include_once BASE_PATH."/modules/".$this->moduleName."/controllers/components/".$component."Component.php";
+                    include_once BASE_PATH.'/modules/'.$this->moduleName.'/controllers/components/'.$component.'Component.php';
                 } elseif (file_exists(
-                    BASE_PATH."/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php"
+                    BASE_PATH.'/privateModules/'.$this->moduleName.'/controllers/components/'.$component.'Component.php'
                 )) {
-                    include_once BASE_PATH."/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php";
+                    include_once BASE_PATH.'/privateModules/'.$this->moduleName.'/controllers/components/'.$component.'Component.php';
                 } else {
                     throw new Zend_Exception('Unable to find components  '.$component);
                 }
@@ -162,16 +162,16 @@ class MIDAS_GlobalModule extends AppController
 
         if (isset($this->_moduleForms)) {
             foreach ($this->_moduleForms as $forms) {
-                $nameForm = ucfirst($this->moduleName).'_'.$forms."Form";
-                include_once BASE_PATH."/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php";
+                $nameForm = ucfirst($this->moduleName).'_'.$forms.'Form';
+                include_once BASE_PATH.'/modules/'.$this->moduleName.'/controllers/forms/'.$forms.'Form.php';
                 if (file_exists(
-                    BASE_PATH."/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php"
+                    BASE_PATH.'/modules/'.$this->moduleName.'/controllers/forms/'.$forms.'Form.php'
                 )) {
-                    include_once BASE_PATH."/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php";
+                    include_once BASE_PATH.'/modules/'.$this->moduleName.'/controllers/forms/'.$forms.'Form.php';
                 } elseif (file_exists(
-                    BASE_PATH."/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php"
+                    BASE_PATH.'/privateModules/'.$this->moduleName.'/controllers/forms/'.$forms.'Form.php'
                 )) {
-                    include_once BASE_PATH."/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php";
+                    include_once BASE_PATH.'/privateModules/'.$this->moduleName.'/controllers/forms/'.$forms.'Form.php';
                 } else {
                     throw new Zend_Exception('Unable to find form  '.$forms);
                 }

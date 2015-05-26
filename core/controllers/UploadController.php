@@ -113,15 +113,15 @@ class UploadController extends AppController
 
         // Check if the revision exists and if it does, we send its license ID to
         // the view. If it does not exist we use our default license
-        if ($itemRevision) {
-            $this->view->selectedLicense = $itemRevision->getLicenseId();
-        } else {
+        if ($itemRevision === false) {
             $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
+        } else {
+            $this->view->selectedLicense = $itemRevision->getLicenseId();
         }
 
         $this->view->allLicenses = $this->License->getAll();
 
-        if (array_key_exists('HTTPS', $_SERVER) && $_SERVER["HTTPS"] === 'on') {
+        if (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS'] === 'on') {
             $this->view->protocol = 'https';
         } else {
             $this->view->protocol = 'http';

@@ -100,14 +100,14 @@ class Visualize_Notification extends MIDAS_Notification
     /** get server's url */
     public function getServerURL()
     {
-        $currentPort = "";
-        $prefix = "http://";
+        $currentPort = '';
+        $prefix = 'http://';
 
-        if (isset($_SERVER["SERVER_PORT"]) && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) {
-            $currentPort = ":".$_SERVER['SERVER_PORT'];
+        if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) {
+            $currentPort = ':'.$_SERVER['SERVER_PORT'];
         }
-        if ((isset($_SERVER["SERVER_PORT"]) && $_SERVER['SERVER_PORT'] == 443) || (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']))) {
-            $prefix = "https://";
+        if ((isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) || (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']))) {
+            $prefix = 'https://';
         }
 
         return $prefix.$_SERVER['SERVER_NAME'].$currentPort;

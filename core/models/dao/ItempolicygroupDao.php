@@ -33,7 +33,6 @@
  * @method void setItem(ItemDao $item)
  * @method GroupDao getGroup()
  * @method void setGroup(GroupDao $group)
- * @package Core\DAO
  */
 class ItempolicygroupDao extends AppDao
 {

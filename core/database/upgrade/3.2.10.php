@@ -24,7 +24,7 @@ class Upgrade_3_2_10 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query("
+        $this->db->query('
             CREATE TABLE IF NOT EXISTS `newuserinvitation` (
                 `newuserinvitation_id` bigint(20) NOT NULL AUTO_INCREMENT,
                 `auth_key` varchar(255) NOT NULL,
@@ -35,8 +35,8 @@ class Upgrade_3_2_10 extends MIDASUpgrade
                 `date_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (`newuserinvitation_id`)
             ) DEFAULT CHARSET=utf8;
-        ");
-        $this->db->query("
+        ');
+        $this->db->query('
             CREATE TABLE IF NOT EXISTS `pendinguser` (
                 `pendinguser_id` bigint(20) NOT NULL AUTO_INCREMENT,
                 `auth_key` varchar(255) NOT NULL,
@@ -47,14 +47,14 @@ class Upgrade_3_2_10 extends MIDASUpgrade
                 `date_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (`pendinguser_id`)
             ) DEFAULT CHARSET=utf8;
-        ");
-        $this->db->query("ALTER TABLE `communityinvitation` ADD COLUMN `group_id` bigint(20) NULL DEFAULT NULL;");
+        ');
+        $this->db->query('ALTER TABLE `communityinvitation` ADD COLUMN `group_id` bigint(20) NULL DEFAULT NULL;');
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $this->db->query("
+        $this->db->query('
             CREATE TABLE IF NOT EXISTS newuserinvitation (
                 newuserinvitation_id serial PRIMARY KEY,
                 auth_key character varying(255) NOT NULL,
@@ -64,8 +64,8 @@ class Upgrade_3_2_10 extends MIDASUpgrade
                 group_id bigint NOT NULL,
                 date_creation timestamp without time zone NOT NULL DEFAULT now()
             );
-        ");
-        $this->db->query("
+        ');
+        $this->db->query('
             CREATE TABLE IF NOT EXISTS pendinguser (
                 pendinguser_id serial PRIMARY KEY,
                 auth_key character varying(255) NOT NULL,
@@ -75,7 +75,7 @@ class Upgrade_3_2_10 extends MIDASUpgrade
                 lastname character varying(255) NOT NULL,
                 date_creation timestamp without time zone NOT NULL DEFAULT now()
                 );
-        ");
-        $this->db->query("ALTER TABLE communityinvitation ADD COLUMN group_id bigint NULL DEFAULT NULL;");
+        ');
+        $this->db->query('ALTER TABLE communityinvitation ADD COLUMN group_id bigint NULL DEFAULT NULL;');
     }
 }

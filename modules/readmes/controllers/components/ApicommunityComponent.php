@@ -22,7 +22,7 @@
 class Readmes_ApicommunityComponent extends AppComponent
 {
     /**
-     * Get the readme text for a community
+     * Get the readme text for a community.
      *
      * @path /readmes/community/{id}
      * @http GET

@@ -33,7 +33,7 @@ class Statistics_GeolocationLookupTest extends ControllerTestCase
     }
 
     /**
-     * Test geolocation
+     * Test geolocation.
      */
     public function testGeolocationTask()
     {
@@ -89,6 +89,6 @@ class Statistics_GeolocationLookupTest extends ControllerTestCase
         $this->assertEquals(count($logs), 1);
         $this->assertTrue(strpos($logs[0]->getLog(), 'IpInfoDb lookup failed') !== false);
 
-        echo "Log = ".$logs[0]->getLog();
+        echo 'Log = '.$logs[0]->getLog();
     }
 }

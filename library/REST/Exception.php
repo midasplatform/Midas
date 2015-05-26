@@ -1,6 +1,6 @@
 <?php
 /**
- * REST_Exception
+ * REST_Exception.
  *
  * The purpose of class is to provide posibility to work with rest errors
  * through exceptions and then handle it in error controller.

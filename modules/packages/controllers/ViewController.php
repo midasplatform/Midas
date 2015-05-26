@@ -26,7 +26,7 @@ class Packages_ViewController extends Packages_AppController
 
     /**
      * View for the Packages tab within the community view.
-     * Shows a list of all applications and their links
+     * Shows a list of all applications and their links.
      */
     public function projectAction()
     {

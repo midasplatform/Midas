@@ -47,7 +47,6 @@
  * @method void setTruthDatasetItem(ItemDao $truthDatasetItemDao)
  * @method array getScalars()
  * @method void setScalars(array $scalarDaos)
- * @package Modules\Tracker\DAO
  */
 class Tracker_TrendDao extends Tracker_AppDao
 {

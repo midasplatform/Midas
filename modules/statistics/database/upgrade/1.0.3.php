@@ -24,7 +24,7 @@ class Statistics_Upgrade_1_0_3 extends MIDASUpgrade
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $this->db->query("ALTER TABLE statistics_ip_location ADD UNIQUE (ip);");
-        $this->db->query("CREATE INDEX statistics_ip_location_idx_ip ON statistics_ip_location (ip);");
+        $this->db->query('ALTER TABLE statistics_ip_location ADD UNIQUE (ip);');
+        $this->db->query('CREATE INDEX statistics_ip_location_idx_ip ON statistics_ip_location (ip);');
     }
 }

@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Application Model Base
- */
+/** Application Model Base. */
 abstract class Packages_ApplicationModelBase extends Packages_AppModel
 {
     /** constructor */
@@ -55,7 +53,7 @@ abstract class Packages_ApplicationModelBase extends Packages_AppModel
     abstract public function getDistinctPlatforms($application);
 
     /**
-     * Override the save function
+     * Override the save function.
      */
     public function save($application)
     {

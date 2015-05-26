@@ -31,7 +31,7 @@ class Validation_IndexController extends Validation_AppController
     public $_moduleForms = array();
 
     /**
-     * Index Action (first action when we access the application)
+     * Index Action (first action when we access the application).
      */
     public function init()
     {

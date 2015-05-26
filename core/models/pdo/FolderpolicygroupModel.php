@@ -20,13 +20,11 @@
 
 require_once BASE_PATH.'/core/models/base/FolderpolicygroupModelBase.php';
 
-/**
- * Pdo Model
- */
+/** Pdo Model. */
 class FolderpolicygroupModel extends FolderpolicygroupModelBase
 {
     /**
-     * Get policy
+     * Get policy.
      *
      * @param GroupDao $group
      * @param FolderDao $folder
@@ -36,10 +34,10 @@ class FolderpolicygroupModel extends FolderpolicygroupModelBase
     public function getPolicy($group, $folder)
     {
         if (!$group instanceof GroupDao) {
-            throw new Zend_Exception("Should be a group.");
+            throw new Zend_Exception('Should be a group.');
         }
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
 
         return $this->initDao(
@@ -77,7 +75,7 @@ class FolderpolicygroupModel extends FolderpolicygroupModelBase
     }
 
     /**
-     * Deletes all folderpolicygroup rows associated with the passed in group
+     * Deletes all folderpolicygroup rows associated with the passed in group.
      *
      * @param GroupDao $group
      * @throws Zend_Exception
@@ -85,7 +83,7 @@ class FolderpolicygroupModel extends FolderpolicygroupModelBase
     public function deleteGroupPolicies($group)
     {
         if (!$group instanceof GroupDao) {
-            throw new Zend_Exception("Should be a group.");
+            throw new Zend_Exception('Should be a group.');
         }
         $clause = 'group_id = '.$group->getKey();
         Zend_Registry::get('dbAdapter')->delete($this->_name, $clause);

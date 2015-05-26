@@ -119,7 +119,7 @@ class Core_AssetstoreControllerTest extends ControllerTestCase
         $this->getRequest()->setMethod('POST');
         $this->dispatchUrl($pageURI, $this->adminUserDao);
         $response = json_decode($this->getBody());
-        $this->assertEquals(1, $response[0], "Expected true json response");
+        $this->assertEquals(1, $response[0], 'Expected true json response');
 
         $defaultAssetstoreDao = $this->Assetstore->getDefault();
 
@@ -137,7 +137,7 @@ class Core_AssetstoreControllerTest extends ControllerTestCase
         $this->getRequest()->setMethod('POST');
         $this->dispatchUrl($pageURI, $this->adminUserDao);
         $response = json_decode($this->getBody());
-        $this->assertEquals(1, $response[0], "Expected true json response");
+        $this->assertEquals(1, $response[0], 'Expected true json response');
 
         $defaultAssetstoreDao = $this->Assetstore->getDefault();
         $this->assertTrue(
@@ -151,7 +151,7 @@ class Core_AssetstoreControllerTest extends ControllerTestCase
         $this->getRequest()->setMethod('POST');
         $this->dispatchUrl($pageURI, $this->adminUserDao);
         $response = json_decode($this->getBody());
-        $this->assertEquals("", $response[0], "Expected false json response");
+        $this->assertEquals('', $response[0], 'Expected false json response');
 
         // now don't send a submitDefaultAssetstore param and be sure we get an error
         $this->resetAll();
@@ -161,7 +161,7 @@ class Core_AssetstoreControllerTest extends ControllerTestCase
         $this->getRequest()->setMethod('POST');
         $this->dispatchUrl($pageURI, $this->adminUserDao);
         $response = json_decode($this->getBody());
-        $this->assertEquals("", $response[0], "Expected false json response");
+        $this->assertEquals('', $response[0], 'Expected false json response');
     }
 
     /** test delete action */
@@ -179,7 +179,7 @@ class Core_AssetstoreControllerTest extends ControllerTestCase
         $this->getRequest()->setMethod('POST');
         $this->dispatchUrl($pageURI, $this->adminUserDao);
         $response = json_decode($this->getBody());
-        $this->assertEquals(1, $response[0], "Expected true json response");
+        $this->assertEquals(1, $response[0], 'Expected true json response');
 
         // try to load and be sure it is deleted
         $testAssetstoreDao = $this->Assetstore->load($testAssetstoreId);
@@ -202,14 +202,14 @@ class Core_AssetstoreControllerTest extends ControllerTestCase
     protected function expectFalseJson($pageURI, $params)
     {
         $response = $this->dispatchRequestJson($pageURI, $params);
-        $this->assertEquals("", $response[0], "Expected false json response");
+        $this->assertEquals('', $response[0], 'Expected false json response');
     }
 
     /** helper method, expects a true response */
     protected function expectTrueJson($pageURI, $params)
     {
         $response = $this->dispatchRequestJson($pageURI, $params);
-        $this->assertEquals(1, $response[0], "Expected true json response");
+        $this->assertEquals(1, $response[0], 'Expected true json response');
 
         return $response;
     }
@@ -230,7 +230,7 @@ class Core_AssetstoreControllerTest extends ControllerTestCase
         $testAssetstoreId = $this->testAssetstoreDao->getKey();
         $testAssetstoreName = $this->testAssetstoreDao->getName();
         $testAssetstorePath = $this->testAssetstoreDao->getPath();
-        $testAssetstoreNewName = "anewname";
+        $testAssetstoreNewName = 'anewname';
 
         // get the default assetstore
         $defaultAssetstoreDao = $this->Assetstore->getDefault();
@@ -244,42 +244,42 @@ class Core_AssetstoreControllerTest extends ControllerTestCase
         $this->expectFalseJson($pageURI, $params);
 
         // don't send name
-        $params = array("assetstoreId" => $testAssetstoreId);
+        $params = array('assetstoreId' => $testAssetstoreId);
         $this->expectFalseJson($pageURI, $params);
 
         // don't send path
-        $params = array("assetstoreId" => $testAssetstoreId, "assetstoreName" => $testAssetstoreName);
+        $params = array('assetstoreId' => $testAssetstoreId, 'assetstoreName' => $testAssetstoreName);
         $this->expectFalseJson($pageURI, $params);
 
         // send a bad path
         $params = array(
-            "assetstoreId" => $testAssetstoreId,
-            "assetstoreName" => $testAssetstoreName,
-            "assetstorePath" => '/this/path/probably/will/not/exist',
+            'assetstoreId' => $testAssetstoreId,
+            'assetstoreName' => $testAssetstoreName,
+            'assetstorePath' => '/this/path/probably/will/not/exist',
         );
         $this->expectFalseJson($pageURI, $params);
 
         // try to edit to same name as default
         $params = array(
-            "assetstoreId" => $testAssetstoreId,
-            "assetstoreName" => $defaultAssetstoreName,
-            "assetstorePath" => $testAssetstorePath,
+            'assetstoreId' => $testAssetstoreId,
+            'assetstoreName' => $defaultAssetstoreName,
+            'assetstorePath' => $testAssetstorePath,
         );
         $this->expectFalseJson($pageURI, $params);
 
         // try to edit to same path as default
         $params = array(
-            "assetstoreId" => $testAssetstoreId,
-            "assetstoreName" => $testAssetstoreName,
-            "assetstorePath" => $defaultAssetstorePath,
+            'assetstoreId' => $testAssetstoreId,
+            'assetstoreName' => $testAssetstoreName,
+            'assetstorePath' => $defaultAssetstorePath,
         );
         $this->expectFalseJson($pageURI, $params);
 
         // edit name
         $params = array(
-            "assetstoreId" => $testAssetstoreId,
-            "assetstoreName" => $testAssetstoreNewName,
-            "assetstorePath" => $testAssetstorePath,
+            'assetstoreId' => $testAssetstoreId,
+            'assetstoreName' => $testAssetstoreNewName,
+            'assetstorePath' => $testAssetstorePath,
         );
         $this->expectTrueJson($pageURI, $params);
         $updatedTestAssetstore = $this->Assetstore->load($testAssetstoreId);
@@ -287,9 +287,9 @@ class Core_AssetstoreControllerTest extends ControllerTestCase
 
         // edit path
         $params = array(
-            "assetstoreId" => $testAssetstoreId,
-            "assetstoreName" => $testAssetstoreNewName,
-            "assetstorePath" => $this->testAssetstoreAdditionalPath,
+            'assetstoreId' => $testAssetstoreId,
+            'assetstoreName' => $testAssetstoreNewName,
+            'assetstorePath' => $this->testAssetstoreAdditionalPath,
         );
         $this->expectTrueJson($pageURI, $params);
         $updatedTestAssetstore = $this->Assetstore->load($testAssetstoreId);
@@ -297,9 +297,9 @@ class Core_AssetstoreControllerTest extends ControllerTestCase
 
         // edit name and path
         $params = array(
-            "assetstoreId" => $testAssetstoreId,
-            "assetstoreName" => $testAssetstoreName,
-            "assetstorePath" => $testAssetstorePath,
+            'assetstoreId' => $testAssetstoreId,
+            'assetstoreName' => $testAssetstoreName,
+            'assetstorePath' => $testAssetstorePath,
         );
         $this->expectTrueJson($pageURI, $params);
         $updatedTestAssetstore = $this->Assetstore->load($testAssetstoreId);
@@ -318,34 +318,34 @@ class Core_AssetstoreControllerTest extends ControllerTestCase
         $defaultAssetstoreName = $defaultAssetstoreDao->getName();
         $defaultAssetstorePath = $defaultAssetstoreDao->getPath();
 
-        $newAssetstoreName = "anewname";
+        $newAssetstoreName = 'anewname';
 
         // test error conditions first
 
         // try to add as same name as default
         $params = array(
-            "name" => $defaultAssetstoreName,
-            "basedirectory" => $this->testAssetstoreAdditionalPath,
-            "assetstoretype" => '0',
+            'name' => $defaultAssetstoreName,
+            'basedirectory' => $this->testAssetstoreAdditionalPath,
+            'assetstoretype' => '0',
         );
         $this->expectErrorJson($pageURI, $params);
 
         // try to add as same path as default
         $params = array(
-            "name" => $newAssetstoreName,
-            "basedirectory" => $defaultAssetstorePath,
-            "assetstoretype" => '0',
+            'name' => $newAssetstoreName,
+            'basedirectory' => $defaultAssetstorePath,
+            'assetstoretype' => '0',
         );
         $this->expectErrorJson($pageURI, $params);
 
         // add and check saved values
         $params = array(
-            "name" => $newAssetstoreName,
-            "basedirectory" => $this->testAssetstoreAdditionalPath,
-            "assetstoretype" => '1',
+            'name' => $newAssetstoreName,
+            'basedirectory' => $this->testAssetstoreAdditionalPath,
+            'assetstoretype' => '1',
         );
         $response = $this->dispatchRequestJson($pageURI, $params);
-        $this->assertTrue(isset($response->assetstore_id), "Expected error key assetstore_id in response");
+        $this->assertTrue(isset($response->assetstore_id), 'Expected error key assetstore_id in response');
         $createdAssetstoreDao = $this->Assetstore->load($response->assetstore_id);
         $this->assertEquals($createdAssetstoreDao->getName(), $newAssetstoreName);
         $this->assertEquals($createdAssetstoreDao->getPath(), $this->testAssetstoreAdditionalPath);
@@ -356,7 +356,7 @@ class Core_AssetstoreControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test the move bitstreams between assetstores dialog
+     * Test the move bitstreams between assetstores dialog.
      */
     public function testMoveDialog()
     {
@@ -374,7 +374,7 @@ class Core_AssetstoreControllerTest extends ControllerTestCase
     }
 
     /**
-     * Testing moving bitstreams from one assetstore to another
+     * Testing moving bitstreams from one assetstore to another.
      */
     public function testMoveContents()
     {

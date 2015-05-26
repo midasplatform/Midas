@@ -20,9 +20,7 @@
 
 require_once BASE_PATH.'/core/models/base/ItempolicyuserModelBase.php';
 
-/**
- * Pdo Model
- */
+/** Pdo Model. */
 class ItempolicyuserModel extends ItempolicyuserModelBase
 {
     /**
@@ -36,10 +34,10 @@ class ItempolicyuserModel extends ItempolicyuserModelBase
     public function getPolicy($user, $item)
     {
         if (!$user instanceof UserDao) {
-            throw new Zend_Exception("Should be a user.");
+            throw new Zend_Exception('Should be a user.');
         }
         if (!$item instanceof ItemDao) {
-            throw new Zend_Exception("Should be an item.");
+            throw new Zend_Exception('Should be an item.');
         }
 
         return $this->initDao(

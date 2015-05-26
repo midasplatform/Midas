@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Controller for the Advanced Search feature
- */
+/** Controller for the Advanced Search feature. */
 class Solr_AdvancedController extends Solr_AppController
 {
     public $_models = array('Item', 'Setting');

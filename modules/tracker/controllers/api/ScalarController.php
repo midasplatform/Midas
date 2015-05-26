@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * API scalar controller for the tracker module.
- *
- * @package Modules\Tracker\Controller
- */
+/** API scalar controller for the tracker module. */
 class Apitracker_ScalarController extends ApiController
 {
     /** @var string */

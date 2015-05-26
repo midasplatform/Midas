@@ -77,11 +77,11 @@ class Core_ItemModelTest extends DatabaseTestCase
                     $found = true;
                 }
                 if ($revisionDao->getRevision() > $revisionRevision) {
-                    $this->fail("testGetLastRevision found a revision higher than that of getLastRevision()");
+                    $this->fail('testGetLastRevision found a revision higher than that of getLastRevision()');
                 }
             }
         }
-        $this->assertTrue($found, "testGetLastRevision never found the highest revision with getLastRevision()");
+        $this->assertTrue($found, 'testGetLastRevision never found the highest revision with getLastRevision()');
     }
 
     /** testAddRevision */
@@ -94,7 +94,7 @@ class Core_ItemModelTest extends DatabaseTestCase
         $revision = new ItemRevisionDao();
         $revision->setUserId($usersFile[0]->getKey());
         $revision->setDate(date('Y-m-d H:i:s'));
-        $revision->setChanges("change");
+        $revision->setChanges('change');
         $revision->setItemId(0);
         $revision->setRevision(1);
         $this->ItemRevision->save($revision);
@@ -123,7 +123,7 @@ class Core_ItemModelTest extends DatabaseTestCase
         $revision = new ItemRevisionDao();
         $revision->setUserId($usersFile[0]->getKey());
         $revision->setDate(date('Y-m-d H:i:s'));
-        $revision->setChanges("r1");
+        $revision->setChanges('r1');
         $revision->setItemId(0);
         $revision->setRevision(1);
         $this->ItemRevision->save($revision);
@@ -136,7 +136,7 @@ class Core_ItemModelTest extends DatabaseTestCase
         $revision = new ItemRevisionDao();
         $revision->setUserId($usersFile[0]->getKey());
         $revision->setDate(date('Y-m-d H:i:s'));
-        $revision->setChanges("r2");
+        $revision->setChanges('r2');
         $revision->setItemId(0);
         $revision->setRevision(2);
         $this->ItemRevision->save($revision);
@@ -149,7 +149,7 @@ class Core_ItemModelTest extends DatabaseTestCase
         $revision = new ItemRevisionDao();
         $revision->setUserId($usersFile[0]->getKey());
         $revision->setDate(date('Y-m-d H:i:s'));
-        $revision->setChanges("r3");
+        $revision->setChanges('r3');
         $revision->setItemId(0);
         $revision->setRevision(3);
         $this->ItemRevision->save($revision);
@@ -163,16 +163,16 @@ class Core_ItemModelTest extends DatabaseTestCase
         // remove r3, check that last revision changes = r2
         $this->Item->removeRevision($item, $lastRev);
         $lastRev = $this->Item->getLastRevision($item);
-        $this->assertEquals($lastRev->getRevision(), "2");
-        $this->assertEquals($lastRev->getChanges(), "r2");
+        $this->assertEquals($lastRev->getRevision(), '2');
+        $this->assertEquals($lastRev->getChanges(), 'r2');
 
         // now we have 1:r1, 2:r2
         // remove r1, check that last revision changes = r2 and revision = 1
         $rev1 = $this->Item->getRevision($item, 1);
         $this->Item->removeRevision($item, $rev1);
         $lastRev = $this->Item->getLastRevision($item);
-        $this->assertEquals($lastRev->getRevision(), "1");
-        $this->assertEquals($lastRev->getChanges(), "r2");
+        $this->assertEquals($lastRev->getRevision(), '1');
+        $this->assertEquals($lastRev->getChanges(), 'r2');
 
         // now we have 1:r2
         // remove r2, check that there are no revisions

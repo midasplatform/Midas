@@ -89,7 +89,7 @@ class Mfa_Notification extends ApiEnabled_Notification
     }
 
     /**
-     * Adds support for two-factor authentication using the web api
+     * Adds support for two-factor authentication using the web api.
      */
     public function authInterceptApi($params)
     {

@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- *  License controller
- */
+/** License controller. */
 class LicensesController extends AppController
 {
     public $_models = array('License');
@@ -29,7 +27,7 @@ class LicensesController extends AppController
     public $_forms = array();
 
     /**
-     * Index action. Lists all licenses on the admin page
+     * Index action. Lists all licenses on the admin page.
      */
     public function allAction()
     {

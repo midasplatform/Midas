@@ -21,15 +21,13 @@
 /**
  * Upgrade the tracker module to version 1.0.2. Add the revision URL as a
  * configuration parameter on producers.
- *
- * @package Modules\Tracker\Database
  */
 class Tracker_Upgrade_1_0_2 extends MIDASUpgrade
 {
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query("ALTER TABLE `tracker_producer` ADD COLUMN `revision_url` text NOT NULL;");
+        $this->db->query('ALTER TABLE `tracker_producer` ADD COLUMN `revision_url` text NOT NULL;');
     }
 
     /** Upgrade a PostgreSQL database. */

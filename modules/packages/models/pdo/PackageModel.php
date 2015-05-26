@@ -20,13 +20,11 @@
 
 require_once BASE_PATH.'/modules/packages/models/base/PackageModelBase.php';
 
-/**
- * Package PDO Model
- */
+/** Package PDO Model. */
 class Packages_PackageModel extends Packages_PackageModelBase
 {
     /**
-     * Return all the record in the table
+     * Return all the record in the table.
      *
      * @param params Optional associative array specifying an 'os', 'arch', 'submissiontype' and 'packagetype'.
      * @return Array of package Daos
@@ -98,7 +96,7 @@ class Packages_PackageModel extends Packages_PackageModelBase
 
     /**
      * For the given os, arch, and application (and optionally submission type),
-     * return the most recent package of each package type
+     * return the most recent package of each package type.
      */
     public function getLatestOfEachPackageType($application, $os, $arch, $submissiontype = null)
     {

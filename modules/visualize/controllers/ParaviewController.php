@@ -25,7 +25,7 @@ class Visualize_ParaviewController extends Visualize_AppController
     public $_moduleComponents = array('Main');
 
     /**
-     * Surface (mesh) model viewer action
+     * Surface (mesh) model viewer action.
      *
      * @param itemId The id of the item to view
      * @throws Zend_Exception
@@ -65,6 +65,9 @@ class Visualize_ParaviewController extends Visualize_AppController
         $tmpFolderName = $pathArray['folderName'];
 
         $revision = $this->Item->getLastRevision($item);
+        if ($revision === false) {
+            throw new Zend_Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+        }
         $bitstreams = $revision->getBitstreams();
         foreach ($bitstreams as $bitstream) {
             if ($useSymlinks) {
@@ -95,7 +98,7 @@ class Visualize_ParaviewController extends Visualize_AppController
     }
 
     /**
-     * Show a parallel projection slice view of the volume with locked camera controls
+     * Show a parallel projection slice view of the volume with locked camera controls.
      *
      * @param left The id of the item to visualize on the left
      * @param right The id of the item to visualize on the right
@@ -134,12 +137,10 @@ class Visualize_ParaviewController extends Visualize_AppController
         $header .= '<a href="'.$this->view->webroot.'/item/'.$right->getKey().'">'.$right->getName().'</a>';
         $this->view->header = $header;
 
-
         $paraViewWorkDirectory = $this->Setting->getValueByName(VISUALIZE_PARAVIEW_WEB_WORK_DIRECTORY_KEY, $this->moduleName);
         $useParaView = $this->Setting->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
         $useSymlinks = $this->Setting->getValueByName(VISUALIZE_USE_SYMLINKS_KEY, $this->moduleName);
         $pwApp = $this->Setting->getValueByName(VISUALIZE_TOMCAT_ROOT_URL_KEY, $this->moduleName);
-
 
         if (!isset($useParaView) || !$useParaView) {
             throw new Zend_Exception('Please enable the use of a ParaViewWeb server on the module configuration page');
@@ -157,6 +158,9 @@ class Visualize_ParaviewController extends Visualize_AppController
             $subPath = $path.'/'.$side;
             mkdir($subPath);
             $revision = $this->Item->getLastRevision($item);
+            if ($revision === false) {
+                throw new Zend_Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+            }
             $bitstreams = $revision->getBitstreams();
             foreach ($bitstreams as $bitstream) {
                 if ($useSymlinks) {
@@ -194,7 +198,7 @@ class Visualize_ParaviewController extends Visualize_AppController
     }
 
     /**
-     * Display a volume rendering of the selected item
+     * Display a volume rendering of the selected item.
      *
      * @param itemId The id of the MetaImage item to visualize
      * @param jsImports (Optional) List of javascript files to import. These should contain handler
@@ -244,6 +248,9 @@ class Visualize_ParaviewController extends Visualize_AppController
         $tmpFolderName = $pathArray['folderName'];
 
         $revision = $this->Item->getLastRevision($item);
+        if ($revision === false) {
+            throw new Zend_Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+        }
         $bitstreams = $revision->getBitstreams();
         foreach ($bitstreams as $bitstream) {
             if ($useSymlinks) {
@@ -281,6 +288,9 @@ class Visualize_ParaviewController extends Visualize_AppController
                 throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
             }
             $revision = $this->Item->getLastRevision($otherItem);
+            if ($revision === false) {
+                throw new Zend_Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+            }
             $bitstreams = $revision->getBitstreams();
             foreach ($bitstreams as $bitstream) {
                 $otherFile = $path.'/'.$bitstream->getName();
@@ -336,7 +346,7 @@ class Visualize_ParaviewController extends Visualize_AppController
     }
 
     /**
-     * Use the axial slice view mode for MetaImage volume data
+     * Use the axial slice view mode for MetaImage volume data.
      *
      * @param itemId The id of the MetaImage item to visualize
      * @param operations (Optional) Actions to allow from the slice view, separated by ;
@@ -393,6 +403,9 @@ class Visualize_ParaviewController extends Visualize_AppController
         $tmpFolderName = $pathArray['folderName'];
 
         $revision = $this->Item->getLastRevision($item);
+        if ($revision === false) {
+            throw new Zend_Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+        }
         $bitstreams = $revision->getBitstreams();
         foreach ($bitstreams as $bitstream) {
             if ($useSymlinks) {
@@ -430,6 +443,9 @@ class Visualize_ParaviewController extends Visualize_AppController
                 throw new Zend_Exception("This item doesn't exist or you don't have the permissions.");
             }
             $revision = $this->Item->getLastRevision($otherItem);
+            if ($revision === false) {
+                throw new Zend_Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+            }
             $bitstreams = $revision->getBitstreams();
             foreach ($bitstreams as $bitstream) {
                 $otherFile = $path.'/'.$bitstream->getName();
@@ -485,7 +501,7 @@ class Visualize_ParaviewController extends Visualize_AppController
     }
 
     /**
-     * Helper method to pass the server host name to json for using web socket renderer
+     * Helper method to pass the server host name to json for using web socket renderer.
      */
     protected function _getHostName()
     {
@@ -497,7 +513,7 @@ class Visualize_ParaviewController extends Visualize_AppController
     }
 
     /**
-     * Helper function to extract the port Tomcat is listening on
+     * Helper function to extract the port Tomcat is listening on.
      */
     protected function _getTomcatPort($pwapp)
     {

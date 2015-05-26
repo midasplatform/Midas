@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * API trend controller for the tracker module.
- *
- * @package Modules\Tracker\Controller
- */
+/** API trend controller for the tracker module. */
 class Apitracker_TrendController extends ApiController
 {
     /** @var string */

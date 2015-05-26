@@ -47,7 +47,7 @@ abstract class SettingModelBase extends AppModel
     {
         $dao = $this->getDaoByName($name, $module);
         if ($dao === false) {
-            return null;
+            return;
         }
 
         return $dao->getValue();

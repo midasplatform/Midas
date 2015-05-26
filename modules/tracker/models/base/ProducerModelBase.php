@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Producer base model class for the tracker module.
- *
- * @package Modules\Tracker\Model
- */
+/** Producer base model class for the tracker module. */
 abstract class Tracker_ProducerModelBase extends Tracker_AppModel
 {
     /** Constructor. */

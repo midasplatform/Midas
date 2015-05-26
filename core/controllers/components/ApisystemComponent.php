@@ -22,7 +22,7 @@
 class ApisystemComponent extends AppComponent
 {
     /**
-     * Get the server version
+     * Get the server version.
      *
      * @path /system/version
      * @http GET
@@ -36,7 +36,7 @@ class ApisystemComponent extends AppComponent
     }
 
     /**
-     * Get the enabled modules on the server
+     * Get the enabled modules on the server.
      *
      * @path /system/module
      * @http GET
@@ -50,7 +50,7 @@ class ApisystemComponent extends AppComponent
     }
 
     /**
-     * List all available web api resources on the server
+     * List all available web api resources on the server.
      *
      * @path /system/resource
      * @http GET
@@ -79,7 +79,7 @@ class ApisystemComponent extends AppComponent
 
     /**
      * Get the server information including version, modules enabled,
-     * and available resources
+     * and available resources.
      *
      * @path /system/info
      * @http GET
@@ -101,7 +101,7 @@ class ApisystemComponent extends AppComponent
     }
 
     /**
-     * Login as a user using a web API key
+     * Login as a user using a web API key.
      *
      * @path /system/login
      * @http GET
@@ -208,7 +208,7 @@ class ApisystemComponent extends AppComponent
             }
             $userApiDao = $userApiModel->getByAppAndEmail('Default', $email);
             if ($userApiDao === false) {
-            	throw new Exception('User has no default API key', MIDAS_INVALID_PARAMETER);
+                throw new Exception('User has no default API key', MIDAS_INVALID_PARAMETER);
             }
 
             return array('apikey' => $userApiDao->getApikey());
@@ -224,9 +224,8 @@ class ApisystemComponent extends AppComponent
      * @http POST
      * @param useSession (Optional) Authenticate using the current Midas session
      * @param token (Optional) Authentication token
-     * @param folderid
-    The id of the folder in which to create a new item that will
-     * contain the link. The new item will have the same name as
+     * @param folderid The id of the folder in which to create a new item that
+     * will contain the link. The new item will have the same name as
      * <b>url</b> unless <b>itemname</b> is supplied.
      * @param url The URL of the link you will create, will be used as the name
      * of the bitstream and of the item (unless <b>itemname</b> is
@@ -398,7 +397,7 @@ class ApisystemComponent extends AppComponent
                 ) {
                     $revision = $itemModel->getLastRevision($item);
 
-                    if ($revision == false) {
+                    if ($revision === false) {
                         // Create new revision if none exists yet
                         Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH.'/core/models/dao');
                         $revision = new ItemRevisionDao();
@@ -602,7 +601,7 @@ class ApisystemComponent extends AppComponent
     }
 
     /**
-     * Get the size of a partially completed upload
+     * Get the size of a partially completed upload.
      *
      * @path /system/uploadoffset
      * @http GET
@@ -654,7 +653,7 @@ class ApisystemComponent extends AppComponent
     }
 
     /**
-     * Get the metadata types stored in the system
+     * Get the metadata types stored in the system.
      *
      * @path /system/metadatatypes
      * @http GET

@@ -34,7 +34,7 @@ class ApihelperComponent extends AppComponent
     }
 
     /**
-     * Return the user DAO
+     * Return the user DAO.
      *
      * @param array $args
      * @return false|UserDao
@@ -75,7 +75,7 @@ class ApihelperComponent extends AppComponent
     }
 
     /**
-     * Helper function to return any extra fields that should be passed with an item
+     * Helper function to return any extra fields that should be passed with an item.
      *
      * @param ItemDao $item item DAO
      * @return array
@@ -116,20 +116,20 @@ class ApihelperComponent extends AppComponent
             if ($revisionDao) {
                 return $revisionDao;
             } else {
-                throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
+                throw new Exception('The item must have at least one revision to have metadata', MIDAS_INVALID_POLICY);
             }
         }
 
         $revisionNumber = (int) $revisionNumber;
         if (!is_int($revisionNumber) || $revisionNumber < 1) {
             throw new Exception(
-                "Revision Numbers must be integers greater than 0.".$revisionNumber,
+                'Revision Numbers must be integers greater than 0.'.$revisionNumber,
                 MIDAS_INVALID_PARAMETER
             );
         }
         $revisions = $item->getRevisions();
         if (count($revisions) === 0) {
-            throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
+            throw new Exception('The item must have at least one revision to have metadata', MIDAS_INVALID_POLICY);
         }
         // check revisions exist
         foreach ($revisions as $revision) {
@@ -141,7 +141,7 @@ class ApihelperComponent extends AppComponent
         if (isset($revisionDao)) {
             return $revisionDao;
         } else {
-            throw new Exception("This revision number is invalid for this item.", MIDAS_INVALID_PARAMETER);
+            throw new Exception('This revision number is invalid for this item.', MIDAS_INVALID_PARAMETER);
         }
     }
 
@@ -231,7 +231,7 @@ class ApihelperComponent extends AppComponent
 
         // If no module handles this metadata, we add it as normal metadata on the item revision
         if (!$revisionDao) {
-            throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
+            throw new Exception('The item must have at least one revision to have metadata', MIDAS_INVALID_POLICY);
         }
 
         /** @var MetadataModel $metadataModel */
@@ -255,7 +255,7 @@ class ApihelperComponent extends AppComponent
     {
         $count = (int) $args['count'];
         if (!is_int($count) || $count < 1) {
-            throw new Exception("Count must be an integer greater than 0.", MIDAS_INVALID_PARAMETER);
+            throw new Exception('Count must be an integer greater than 0.', MIDAS_INVALID_PARAMETER);
         }
         $metadataTuples = array();
         for ($i = 0; $i < $count; $i = $i + 1) {
@@ -267,13 +267,13 @@ class ApihelperComponent extends AppComponent
             $type_i_key = 'type_'.$counter;
             if (!array_key_exists($element_i_key, $args)) {
                 throw new Exception(
-                    "Count was ".$i." but param ".$element_i_key." is missing.",
+                    'Count was '.$i.' but param '.$element_i_key.' is missing.',
                     MIDAS_INVALID_PARAMETER
                 );
             }
             if (!array_key_exists($value_i_key, $args)) {
                 throw new Exception(
-                    "Count was ".$i." but param ".$value_i_key." is missing.",
+                    'Count was '.$i.' but param '.$value_i_key.' is missing.',
                     MIDAS_INVALID_PARAMETER
                 );
             }
@@ -283,7 +283,7 @@ class ApihelperComponent extends AppComponent
             $type = array_key_exists($type_i_key, $args) ? $args[$qualifier_i_key] : MIDAS_METADATA_TEXT;
             if (!is_int($type) || $type < 0 || $type > 6) {
                 throw new Exception(
-                    "param ".$type_i_key." must be an integer between 0 and 6.",
+                    'param '.$type_i_key.' must be an integer between 0 and 6.',
                     MIDAS_INVALID_PARAMETER
                 );
             }
@@ -349,11 +349,11 @@ class ApihelperComponent extends AppComponent
      */
     public function listResourcePermissions($policyStatus, $userPolicies, $groupPolicies)
     {
-        $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
+        $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => 'Public', MIDAS_PRIVACY_PRIVATE => 'Private');
         $privilegeStrings = array(
-            MIDAS_POLICY_ADMIN => "Admin",
-            MIDAS_POLICY_WRITE => "Write",
-            MIDAS_POLICY_READ => "Read",
+            MIDAS_POLICY_ADMIN => 'Admin',
+            MIDAS_POLICY_WRITE => 'Write',
+            MIDAS_POLICY_READ => 'Read',
         );
 
         $return = array('privacy' => $privacyStrings[$policyStatus]);
@@ -414,7 +414,7 @@ class ApihelperComponent extends AppComponent
         $communityModel = MidasLoader::loadModel('Community');
         if (!$communityModel->policyCheck($group->getCommunity(), $userDao, MIDAS_POLICY_ADMIN)
         ) {
-            throw new Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+            throw new Exception('Community Admin permissions required.', MIDAS_INVALID_POLICY);
         }
 
         $groupUserId = $args['user_id'];

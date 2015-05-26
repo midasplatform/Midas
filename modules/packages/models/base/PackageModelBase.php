@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Package Model Base
- */
+/** Package Model Base. */
 abstract class Packages_PackageModelBase extends Packages_AppModel
 {
     /** constructor */

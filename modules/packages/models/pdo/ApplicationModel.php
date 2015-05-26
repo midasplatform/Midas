@@ -20,13 +20,11 @@
 
 require_once BASE_PATH.'/modules/packages/models/base/ApplicationModelBase.php';
 
-/**
- * Application PDO Model
- */
+/** Application PDO Model. */
 class Packages_ApplicationModel extends Packages_ApplicationModelBase
 {
     /**
-     * Get all applications under a given project
+     * Get all applications under a given project.
      */
     public function getAllByProjectId($projectId)
     {
@@ -67,7 +65,7 @@ class Packages_ApplicationModel extends Packages_ApplicationModelBase
     }
 
     /**
-     * Return all distinct (os, arch) tuples corresponding to this application
+     * Return all distinct (os, arch) tuples corresponding to this application.
      *
      * @param application The application dao
      * @return set of tuples with 'os' and 'arch' keys
@@ -92,7 +90,7 @@ class Packages_ApplicationModel extends Packages_ApplicationModelBase
     }
 
     /**
-     * Deletes the application, as well as all associated package and extension records
+     * Deletes the application, as well as all associated package and extension records.
      */
     public function delete($application)
     {

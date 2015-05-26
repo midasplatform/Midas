@@ -24,7 +24,7 @@ class Upgrade_3_0_3 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query("ALTER TABLE community ADD COLUMN can_join integer DEFAULT 0;");
+        $this->db->query('ALTER TABLE community ADD COLUMN can_join integer DEFAULT 0;');
     }
 
     /** Upgrade a PostgreSQL database. */

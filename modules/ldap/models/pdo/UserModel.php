@@ -20,9 +20,7 @@
 
 require_once BASE_PATH.'/modules/ldap/models/base/UserModelBase.php';
 
-/**
- * Ldap user pdo model
- */
+/** Ldap user pdo model. */
 class Ldap_UserModel extends Ldap_UserModelBase
 {
     /**

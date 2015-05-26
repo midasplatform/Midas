@@ -24,22 +24,22 @@ class Upgrade_3_0_1 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query("ALTER TABLE folderpolicygroup ADD COLUMN date timestamp DEFAULT CURRENT_TIMESTAMP();");
-        $this->db->query("ALTER TABLE folderpolicyuser ADD COLUMN date timestamp DEFAULT CURRENT_TIMESTAMP();");
-        $this->db->query("ALTER TABLE itempolicygroup ADD COLUMN date timestamp DEFAULT CURRENT_TIMESTAMP();");
-        $this->db->query("ALTER TABLE itempolicyuser ADD COLUMN date timestamp DEFAULT CURRENT_TIMESTAMP();");
-        $this->db->query("ALTER TABLE feedpolicygroup ADD COLUMN date timestamp DEFAULT CURRENT_TIMESTAMP();");
-        $this->db->query("ALTER TABLE feedpolicyuser ADD COLUMN date timestamp DEFAULT CURRENT_TIMESTAMP();");
+        $this->db->query('ALTER TABLE folderpolicygroup ADD COLUMN date timestamp DEFAULT CURRENT_TIMESTAMP();');
+        $this->db->query('ALTER TABLE folderpolicyuser ADD COLUMN date timestamp DEFAULT CURRENT_TIMESTAMP();');
+        $this->db->query('ALTER TABLE itempolicygroup ADD COLUMN date timestamp DEFAULT CURRENT_TIMESTAMP();');
+        $this->db->query('ALTER TABLE itempolicyuser ADD COLUMN date timestamp DEFAULT CURRENT_TIMESTAMP();');
+        $this->db->query('ALTER TABLE feedpolicygroup ADD COLUMN date timestamp DEFAULT CURRENT_TIMESTAMP();');
+        $this->db->query('ALTER TABLE feedpolicyuser ADD COLUMN date timestamp DEFAULT CURRENT_TIMESTAMP();');
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $this->db->query("ALTER TABLE folderpolicygroup ADD COLUMN date TIMESTAMP DEFAULT CURRENT_TIMESTAMP;");
-        $this->db->query("ALTER TABLE folderpolicyuser ADD COLUMN date TIMESTAMP DEFAULT CURRENT_TIMESTAMP;");
-        $this->db->query("ALTER TABLE itempolicygroup ADD COLUMN date TIMESTAMP DEFAULT CURRENT_TIMESTAMP;");
-        $this->db->query("ALTER TABLE itempolicyuser ADD COLUMN date TIMESTAMP DEFAULT CURRENT_TIMESTAMP;");
-        $this->db->query("ALTER TABLE feedpolicygroup ADD COLUMN date TIMESTAMP DEFAULT CURRENT_TIMESTAMP;");
-        $this->db->query("ALTER TABLE feedpolicyuser ADD COLUMN date TIMESTAMP DEFAULT CURRENT_TIMESTAMP;");
+        $this->db->query('ALTER TABLE folderpolicygroup ADD COLUMN date TIMESTAMP DEFAULT CURRENT_TIMESTAMP;');
+        $this->db->query('ALTER TABLE folderpolicyuser ADD COLUMN date TIMESTAMP DEFAULT CURRENT_TIMESTAMP;');
+        $this->db->query('ALTER TABLE itempolicygroup ADD COLUMN date TIMESTAMP DEFAULT CURRENT_TIMESTAMP;');
+        $this->db->query('ALTER TABLE itempolicyuser ADD COLUMN date TIMESTAMP DEFAULT CURRENT_TIMESTAMP;');
+        $this->db->query('ALTER TABLE feedpolicygroup ADD COLUMN date TIMESTAMP DEFAULT CURRENT_TIMESTAMP;');
+        $this->db->query('ALTER TABLE feedpolicyuser ADD COLUMN date TIMESTAMP DEFAULT CURRENT_TIMESTAMP;');
     }
 }

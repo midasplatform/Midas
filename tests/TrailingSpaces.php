@@ -22,7 +22,7 @@ $src = false;
 
 for ($i = 1; $i < $_SERVER['argc']; $i++) {
     switch ($_SERVER['argv'][$i]) {
-        case "--src":
+        case '--src':
             $i++;
             $src = $_SERVER['argv'][$i];
             break;
@@ -45,7 +45,7 @@ foreach ($files as $file) {
     while (($line = fgets($fh)) !== false) {
         $i++;
         if (preg_match('/ [\n\r]*$/', $line)) {
-            echo "ERROR: Trailing whitespace: ".$file." (".$i.")\n";
+            echo 'ERROR: Trailing whitespace: '.$file.' ('.$i.")\n";
         }
     }
 

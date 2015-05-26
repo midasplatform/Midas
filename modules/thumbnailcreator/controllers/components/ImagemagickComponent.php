@@ -200,7 +200,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
 
     /**
      * Create a 100x100 thumbnail from an item.
-     * Echoes an error message if a problem occurs (for the scheduler log)
+     * Echoes an error message if a problem occurs (for the scheduler log).
      *
      * @param array|ItemDao $item item to create the thumbnail for
      * @param null|string $inputFile file to thumbnail. If none is specified, uses the first bitstream in the head revision of the item.
@@ -215,9 +215,11 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
         }
 
         $revision = $itemModel->getLastRevision($item);
+        if ($revision === false) {
+            return;
+        }
         $bitstreams = $revision->getBitstreams();
-
-        if (count($bitstreams) < 1) {
+        if (count($bitstreams) === 0) {
             return;
         }
 
@@ -245,7 +247,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
     }
 
     /**
-     * Create a thumbnail for the given file with the given width and height
+     * Create a thumbnail for the given file with the given width and height.
      *
      * @param string $name name of the image to create the thumbnail of
      * @param string $fullPath absolute path to the image to create the thumbnail of
@@ -351,7 +353,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
                     $image->widen($width);
                 } elseif ($width === 0) {
                     $image->heighten($height);
-                } else  {
+                } else {
                     $image->resize($width, $height);
                 }
 
@@ -369,7 +371,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
 
     /**
      * Use thumbnailer to pre-process a bitstream to generate a jpeg file.
-     * Echoes an error message if a problem occurs (for the scheduler log)
+     * Echoes an error message if a problem occurs (for the scheduler log).
      *
      * @param string $name name of the image to be pre-processed
      * @param string $fullPath absolute path to the image to be pre-processed
@@ -424,7 +426,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
 
     /**
      * Check if ImageMagick is available on the path specified
-     * Return an array of the form [Is_Ok, Message]
+     * Return an array of the form [Is_Ok, Message].
      *
      * @return array
      */

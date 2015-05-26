@@ -19,7 +19,7 @@
 =========================================================================*/
 
 /**
- * Import Controller
+ * Import Controller.
  *
  * This controller exists to drive the local import, available from the
  * assetstore pane in the admin panel. This allows a Midas administrator
@@ -239,7 +239,7 @@ class ImportController extends AppController
     }
 
     /**
-     * Index Action (first action when we access the application)
+     * Index Action (first action when we access the application).
      */
     public function indexAction()
     {
@@ -247,8 +247,8 @@ class ImportController extends AppController
 
         // No time limit since import can take a long time
         UtilityComponent::setTimeLimit(0);
-        $this->view->title = $this->t("Import");
-        $this->view->header = $this->t("Import server-side data");
+        $this->view->title = $this->t('Import');
+        $this->view->header = $this->t('Import server-side data');
 
         $this->assetstores = $this->Assetstore->getAll();
         $this->view->assetstores = $this->assetstores;
@@ -257,7 +257,7 @@ class ImportController extends AppController
     }
 
     /**
-     * called from ajax
+     * called from ajax.
      */
     public function importAction()
     {
@@ -302,8 +302,8 @@ class ImportController extends AppController
             $currentdir->setFolderId($currentdirid);
 
             // Set the file locations used to handle the async requests
-            $this->progressfile = $this->getTempDirectory()."/importprogress_".$form->uploadid->getValue();
-            $this->stopfile = $this->getTempDirectory()."/importstop_".$form->uploadid->getValue();
+            $this->progressfile = $this->getTempDirectory().'/importprogress_'.$form->uploadid->getValue();
+            $this->stopfile = $this->getTempDirectory().'/importstop_'.$form->uploadid->getValue();
             $this->assetstoreid = $form->assetstore->getValue();
             $this->importemptydirectories = $form->importemptydirectories->getValue();
 
@@ -349,7 +349,7 @@ class ImportController extends AppController
             $progress['current'] = 0;
             $progress['max'] = 0;
             $progress['percent'] = 'NA';
-            $file = $this->getTempDirectory()."/importprogress_".$this->_request->id;
+            $file = $this->getTempDirectory().'/importprogress_'.$this->_request->id;
             if (file_exists($file)) {
                 $progressfile = explode('/', file_get_contents($file));
                 $progress['current'] = $progressfile[0];
@@ -365,7 +365,7 @@ class ImportController extends AppController
     }
 
     /**
-     * called from ajax
+     * called from ajax.
      */
     public function stopAction()
     {
@@ -375,7 +375,7 @@ class ImportController extends AppController
         $this->_helper->viewRenderer->setNoRender();
 
         if (isset($this->_request->id)) {
-            $this->stopfile = $this->getTempDirectory()."/importstop_".$this->_request->id;
+            $this->stopfile = $this->getTempDirectory().'/importstop_'.$this->_request->id;
             file_put_contents($this->stopfile, $this->_request->id);
 
             return true;

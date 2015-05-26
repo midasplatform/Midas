@@ -38,7 +38,7 @@ class FolderController extends AppController
     }
 
     /**
-     * Simply prints the name of the requested folder.  Used by the large download applet
+     * Simply prints the name of the requested folder.  Used by the large download applet.
      */
     public function getnameAction()
     {
@@ -94,12 +94,12 @@ class FolderController extends AppController
         $folder_id = $this->getParam('folderId');
         $folder = $this->Folder->load($folder_id);
         if (!isset($folder_id)) {
-            throw new Zend_Exception("Please set the folderId.");
+            throw new Zend_Exception('Please set the folderId.');
         } elseif ($folder === false) {
-            throw new Zend_Exception("The folder doesn t exist.");
+            throw new Zend_Exception('The folder doesn t exist.');
         } elseif (!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_WRITE)
         ) {
-            throw new Zend_Exception("Permissions error.");
+            throw new Zend_Exception('Permissions error.');
         }
 
         if ($this->_request->isPost()) {
@@ -196,7 +196,7 @@ class FolderController extends AppController
     }
 
     /**
-     * Prompt the user to confirm deletion of a folder
+     * Prompt the user to confirm deletion of a folder.
      *
      * @param folderId The id of the folder to be deleted
      */
@@ -228,22 +228,22 @@ class FolderController extends AppController
         $folder_id = $this->getParam('folderId');
         $folder = $this->Folder->load($folder_id);
         if (!isset($folder_id)) {
-            throw new Zend_Exception("Please set the folderId.");
+            throw new Zend_Exception('Please set the folderId.');
         } elseif ($folder === false) {
             throw new Zend_Exception("The folder doesn't exist.");
         } elseif (!$this->Folder->policyCheck($folder, $this->userSession->Dao, MIDAS_POLICY_ADMIN)
         ) {
-            throw new Zend_Exception("Permissions error.");
+            throw new Zend_Exception('Permissions error.');
         }
 
         // User cannot delete community's root folder, the default 'Public' folder and the default 'Private' folder
         if ($this->Folder->getCommunity($folder) != false) {
-            throw new Zend_Exception("Community Root Folder. You cannot delete it.");
+            throw new Zend_Exception('Community Root Folder. You cannot delete it.');
         }
 
         // User cannot delete its root folder, the default 'Public' folder and the default 'Private' folder
         if ($this->Folder->getUser($folder) != false) {
-            throw new Zend_Exception("User Root Folder. You cannot delete it.");
+            throw new Zend_Exception('User Root Folder. You cannot delete it.');
         }
 
         if ($this->progressDao) {
@@ -266,10 +266,10 @@ class FolderController extends AppController
         $item = $this->Item->load($item_id);
 
         if (!isset($folder_id)) {
-            throw new Zend_Exception("Please set the folderId.");
+            throw new Zend_Exception('Please set the folderId.');
         }
         if (!isset($item_id)) {
-            throw new Zend_Exception("Please set the folderId.");
+            throw new Zend_Exception('Please set the folderId.');
         } elseif ($folder === false) {
             throw new Zend_Exception("The folder doesn't exist.");
         } elseif ($item === false) {
@@ -298,7 +298,7 @@ class FolderController extends AppController
         $formArray = $this->getFormAsArray($form);
         $this->view->form = $formArray;
         if (!isset($folder_id)) {
-            throw new Zend_Exception("Please set the folderId.");
+            throw new Zend_Exception('Please set the folderId.');
         } elseif ($folder === false) {
             throw new Zend_Exception("The folder doesn't exist.");
         }

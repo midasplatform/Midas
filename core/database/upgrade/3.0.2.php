@@ -24,7 +24,7 @@ class Upgrade_3_0_2 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query("ALTER TABLE itemrevision ADD COLUMN license integer DEFAULT 0;");
+        $this->db->query('ALTER TABLE itemrevision ADD COLUMN license integer DEFAULT 0;');
     }
 
     /** Upgrade a PostgreSQL database. */

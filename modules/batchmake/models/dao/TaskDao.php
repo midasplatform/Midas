@@ -27,7 +27,6 @@
  * @method void setUserId(int $userId)
  * @method string getWorkDir()
  * @method void setWorkDir(string $workDir)
- * @package Modules\Batchmake\DAO
  */
 class Batchmake_TaskDao extends AppDao
 {

@@ -25,7 +25,7 @@ class JsonComponent extends AppComponent
     private static $_instance = null;
 
     /**
-     * Instance
+     * Instance.
      *
      * @return JsonComponent
      */
@@ -40,7 +40,7 @@ class JsonComponent extends AppComponent
 
     /**
      * Decodes the given $encodedValue string which is
-     * encoded in the JSON format
+     * encoded in the JSON format.
      *
      * @param string $encodedValue Encoded in JSON format
      * @param bool
@@ -50,14 +50,14 @@ class JsonComponent extends AppComponent
     {
         $char = substr($encodedValue, 0, 1);
         $isValue = false;
-        if ($char != "{") {
+        if ($char != '{') {
             $isValue = true;
             $encodedValue = '{"toto":'.$encodedValue.'}';
         }
 
         $tab = json_decode($encodedValue, $objectDecodeType);
         if ($isValue) {
-            $tab = $tab["toto"];
+            $tab = $tab['toto'];
         }
         if (is_array($tab)) {
             self::getInstance()->utf8_decode_array($tab);
@@ -69,7 +69,7 @@ class JsonComponent extends AppComponent
     }
 
     /**
-     * Encode the mixed $valueToEncode into the JSON format
+     * Encode the mixed $valueToEncode into the JSON format.
      *
      * @param mixed $valueToEncode
      * @return string JSON encoded object
@@ -87,7 +87,7 @@ class JsonComponent extends AppComponent
     }
 
     /**
-     * Encode array
+     * Encode array.
      *
      * @param array $tab
      */
@@ -97,7 +97,7 @@ class JsonComponent extends AppComponent
     }
 
     /**
-     * Decode Array
+     * Decode Array.
      *
      * @param array $tab
      */
@@ -107,7 +107,7 @@ class JsonComponent extends AppComponent
     }
 
     /**
-     * Encode array
+     * Encode array.
      *
      * @param array $array
      * @param mixed $key
@@ -125,7 +125,7 @@ class JsonComponent extends AppComponent
     }
 
     /**
-     * Decode array
+     * Decode array.
      *
      * @param array $array
      * @param mixed $key

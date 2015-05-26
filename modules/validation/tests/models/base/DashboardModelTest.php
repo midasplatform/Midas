@@ -60,7 +60,7 @@ class Validation_DashboardModelTest extends DatabaseTestCase
     }
 
     /**
-     * test the fetching of results
+     * test the fetching of results.
      */
     public function testGetResults()
     {
@@ -72,7 +72,7 @@ class Validation_DashboardModelTest extends DatabaseTestCase
     }
 
     /**
-     * test the fetching of Testing, Training, and Truth
+     * test the fetching of Testing, Training, and Truth.
      */
     public function testGetTestingTrainingAndTruth()
     {
@@ -169,7 +169,7 @@ class Validation_DashboardModelTest extends DatabaseTestCase
     }
 
     /**
-     * test addResult function
+     * test addResult function.
      */
     public function testAddRemoveResult()
     {
@@ -259,7 +259,7 @@ class Validation_DashboardModelTest extends DatabaseTestCase
     }
 
     /**
-     * test addResult function
+     * test addResult function.
      */
     public function testSetScores()
     {
@@ -358,7 +358,7 @@ class Validation_DashboardModelTest extends DatabaseTestCase
     }
 
     /**
-     * test addResult function
+     * test addResult function.
      */
     public function testGetAllScores()
     {
@@ -482,7 +482,7 @@ class Validation_DashboardModelTest extends DatabaseTestCase
     }
 
     /**
-     * test addResult function
+     * test addResult function.
      */
     public function testSetScore()
     {

@@ -68,10 +68,10 @@ abstract class Validation_ScalarResultModelBase extends Validation_AppModel
     public function setFolder($scalarResult, $folder)
     {
         if (!$scalarResult instanceof Validation_ScalarResultDao) {
-            throw new Zend_Exception("Should be a scalar result.");
+            throw new Zend_Exception('Should be a scalar result.');
         }
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
         $scalarResult->setFolderId($folder->getKey());
         parent::save($scalarResult);
@@ -87,10 +87,10 @@ abstract class Validation_ScalarResultModelBase extends Validation_AppModel
     public function setItem($scalarResult, $item)
     {
         if (!$scalarResult instanceof Validation_ScalarResultDao) {
-            throw new Zend_Exception("Should be a scalar result.");
+            throw new Zend_Exception('Should be a scalar result.');
         }
         if (!$item instanceof ItemDao) {
-            throw new Zend_Exception("Should be an item.");
+            throw new Zend_Exception('Should be an item.');
         }
         $scalarResult->setItemId($item->getKey());
         parent::save($scalarResult);

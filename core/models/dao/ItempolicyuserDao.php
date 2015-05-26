@@ -31,7 +31,6 @@
  * @method void setItem(ItemDao $item)
  * @method UserDao getUser()
  * @method void setUser(UserDao $user)
- * @package Core\DAO
  */
 class ItempolicyuserDao extends AppDao
 {

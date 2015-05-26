@@ -74,7 +74,7 @@ abstract class Oauth_CodeModelBase extends Oauth_AppModel
 
     /**
      * Create and return a new oauth authorization code for the given client and user. Expires after 10 minutes
-     * in accordance with the recommendation in the IETF draft v31
+     * in accordance with the recommendation in the IETF draft v31.
      *
      * @param UserDao $userDao resource owner (end user to authenticate via the client)
      * @param Oauth_ClientDao $clientDao client that will be receiving the code

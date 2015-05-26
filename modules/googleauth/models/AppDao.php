@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic DAO class for the googleauth module.
- *
- * @package Modules\Googleauth\DAO
- */
+/** Generic DAO class for the googleauth module. */
 class Googleauth_AppDao extends MIDAS_GlobalDao
 {
     /** @var string */

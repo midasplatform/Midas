@@ -24,7 +24,7 @@ include_once BASE_PATH.'/modules/dicomserver/constant/module.php';
 abstract class Dicomserver_RegistrationModelBase extends Dicomserver_AppModel
 {
     /**
-     * constructor
+     * constructor.
      */
     public function __construct()
     {
@@ -45,7 +45,7 @@ abstract class Dicomserver_RegistrationModelBase extends Dicomserver_AppModel
     abstract public function checkByItemId($itemId);
 
     /**
-     * Register an item
+     * Register an item.
      *
      * @param  string $item_id
      * @return Dicomserver_RegistrationDao

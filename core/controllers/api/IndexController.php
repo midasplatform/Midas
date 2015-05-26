@@ -18,16 +18,14 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Index controller for the web API
- */
+/** Index controller for the web API. */
 class Rest_IndexController extends AppController
 {
-	/** Pre dispatch. */
+    /** Pre dispatch. */
     public function preDispatch()
     {
         parent::preDispatch();
-        $this->view->setScriptPath(BASE_PATH."/core/views/rest");
+        $this->view->setScriptPath(BASE_PATH.'/core/views/rest');
     }
 
     /** Index action. */

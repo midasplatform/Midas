@@ -42,13 +42,13 @@ class Archive_Notification extends MIDAS_Notification
         $isAdmin = $params['isAdmin'];
 
         if (!$isAdmin) {
-            return null;
+            return;
         }
 
         if (substr(strtolower($item->getName()), -4) === '.zip') {
             return '<li><a class="archiveExtractAction" href="javascript:;">'.'<img alt="" src="'.$this->coreWebroot.'/public/images/icons/page_white_zip.png" /> '.'Extract archive</a></li>';
         } else {
-            return null;
+            return;
         }
     }
 

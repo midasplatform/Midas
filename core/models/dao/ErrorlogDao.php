@@ -31,7 +31,6 @@
  * @method void setDatetime(string $dateTime)
  * @method int getPriority()
  * @method void setPriority(int $priority)
- * @package Core\DAO
  */
 class ErrorlogDao extends AppDao
 {

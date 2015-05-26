@@ -64,7 +64,7 @@ class Core_CommunityModelTest extends DatabaseTestCase
         $parentFolderId = $communityForDeletion->getFolderId();
         $parentFolder = $this->Folder->load($parentFolderId);
         $newFolderName = 'TEST_DELETE_COMMUNITY_MOVED_FOLDER';
-        $createdFolder = $this->Folder->createFolder($newFolderName, "folder desc", $parentFolderId);
+        $createdFolder = $this->Folder->createFolder($newFolderName, 'folder desc', $parentFolderId);
         // copy policies of parent folder, as this is what the Folder Controller does
         $policyGroup = $parentFolder->getFolderpolicygroup();
         $policyUser = $parentFolder->getFolderpolicyuser();
@@ -93,7 +93,7 @@ class Core_CommunityModelTest extends DatabaseTestCase
         $this->assertNotEquals(
             false,
             $movedFolderDeletedCommunityMemberGroupPolicy,
-            "Expected a folderpolicygroup exists, but it does not"
+            'Expected a folderpolicygroup exists, but it does not'
         );
 
         // delete the community
@@ -109,7 +109,7 @@ class Core_CommunityModelTest extends DatabaseTestCase
         // ensure that any folderpolicygroups connected with the deleted community are deleted
         $this->assertFalse(
             $movedFolderDeletedCommunityMemberGroupPolicy,
-            "A moved folder still has folderpolicygroup references to a deleted community"
+            'A moved folder still has folderpolicygroup references to a deleted community'
         );
     }
 }

@@ -25,11 +25,11 @@ class Javauploaddownload_DownloadController extends Javauploaddownload_AppContro
 
     private function _is_https()
     {
-        return array_key_exists('HTTPS', $_SERVER) && $_SERVER["HTTPS"] === 'on';
+        return array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS'] === 'on';
     }
 
     /**
-     * Render the view for the Java download applet
+     * Render the view for the Java download applet.
      *
      * @param itemIds Comma separated list of items to download
      * @param folderIds Comma separated list of folders to download

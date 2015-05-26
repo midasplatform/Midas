@@ -117,7 +117,7 @@ class Mfa_OtpComponent extends AppComponent
             throw new Zend_Exception('RADIUS is not enabled on the server');
         }
 
-        $this->getLogger()->debug("Midas Server RADIUS trying to authenticate user: ".$otpDevice->getSecret());
+        $this->getLogger()->debug('Midas Server RADIUS trying to authenticate user: '.$otpDevice->getSecret());
 
         $rh = radius_auth_open();
         if (!radius_add_server($rh, $radiusserver, $radiusport, $radiuspw, $radiusTimeout, $radiusMaxTries)
@@ -137,21 +137,21 @@ class Mfa_OtpComponent extends AppComponent
 
         switch (radius_send_request($rh)) {
             case RADIUS_ACCESS_ACCEPT:
-                $this->getLogger()->debug("Midas Server RADIUS successful authentication "."for ".$otpDevice->getSecret());
+                $this->getLogger()->debug('Midas Server RADIUS successful authentication '.'for '.$otpDevice->getSecret());
 
                 return true;
             case RADIUS_ACCESS_REJECT:
-                $this->getLogger()->info("Midas Server RADIUS failed authentication for ".$otpDevice->getSecret());
+                $this->getLogger()->info('Midas Server RADIUS failed authentication for '.$otpDevice->getSecret());
 
                 return false;
             case RADIUS_ACCESS_CHALLENGE:
-                $this->getLogger()->info("Midas Server RADIUS challenge requested for ".$otpDevice->getSecret());
+                $this->getLogger()->info('Midas Server RADIUS challenge requested for '.$otpDevice->getSecret());
 
                 return false;
             default:
                 $this->getLogger()->info(
-                    "Midas Server RADIUS error during authentication "."for ".$otpDevice->getSecret(
-                    )." with Token: ".$token.". Error: ".radius_strerror($rh)
+                    'Midas Server RADIUS error during authentication '.'for '.$otpDevice->getSecret(
+                    ).' with Token: '.$token.'. Error: '.radius_strerror($rh)
                 );
                 throw new Zend_Exception('Error during RADIUS authentication: '.radius_strerror($rh));
         }

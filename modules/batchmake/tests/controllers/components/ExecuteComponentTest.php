@@ -20,9 +20,7 @@
 
 require_once BASE_PATH.'/modules/batchmake/tests/controllers/ControllerTestCase.php';
 
-/**
- * ExecuteComponent tests
- */
+/** ExecuteComponent tests. */
 class Batchmake_ExecuteComponentTest extends Batchmake_ControllerTestCase
 {
     protected $executeComponent;
@@ -61,19 +59,19 @@ class Batchmake_ExecuteComponentTest extends Batchmake_ControllerTestCase
         // create a directory for testing the export component
         if (file_exists($tmpDir)) {
             if (!KWUtils::recursiveRemoveDirectory($tmpDir)) {
-                throw new Zend_Exception($tmpDir." already exists and cannot be deleted.");
+                throw new Zend_Exception($tmpDir.' already exists and cannot be deleted.');
             }
         }
         if (!mkdir($tmpDir)) {
-            throw new Zend_Exception("Cannot create directory: ".$tmpDir);
+            throw new Zend_Exception('Cannot create directory: '.$tmpDir);
         }
         chmod($tmpDir, 0777);
 
         // upload an item to user1's public folder
         $user1_public_path = $tmpDir.'/public.file';
         copy(BASE_PATH.'/tests/testfiles/search.png', $user1_public_path);
-        $user1_public_fh = fopen($user1_public_path, "a+");
-        fwrite($user1_public_fh, "content:user1_public");
+        $user1_public_fh = fopen($user1_public_path, 'a+');
+        fwrite($user1_public_fh, 'content:user1_public');
         fclose($user1_public_fh);
         $user1_public_filename = 'public.file';
         $usersFile = $this->loadData('User', 'default');
@@ -119,7 +117,7 @@ class Batchmake_ExecuteComponentTest extends Batchmake_ControllerTestCase
         // check that the exported file now exists on the file system
         $this->assertTrue(
             file_exists($workDir.'/data/'.$itemIds[0].'/'.$this->tmpItem->getName()),
-            "exported item should exist"
+            'exported item should exist'
         );
     }
 
@@ -137,16 +135,16 @@ class Batchmake_ExecuteComponentTest extends Batchmake_ControllerTestCase
         $exportedItems = $this->executeComponent->exportSingleBitstreamItemsToWorkDataDir($userDao, $taskDao, $items);
         // check that the exported file now exists on the file system
         $expectedExportPath = $workDir.'/data/'.$this->tmpItem->getItemId().'/'.$this->tmpItem->getName();
-        $this->assertTrue(file_exists($expectedExportPath), "exported item should exist");
+        $this->assertTrue(file_exists($expectedExportPath), 'exported item should exist');
         // ensure that the name of the returned item is the same as the passed in
         foreach ($exportedItems as $itemName => $exportedPath) {
-            $this->assertEquals($itemName, $this->tmpItem->getName(), "Item names should be equal.");
-            $this->assertEquals($exportedPath, $expectedExportPath, "Expected export path does not match actual.");
+            $this->assertEquals($itemName, $this->tmpItem->getName(), 'Item names should be equal.');
+            $this->assertEquals($exportedPath, $expectedExportPath, 'Expected export path does not match actual.');
         }
     }
 
     /**
-     * tests that a python config file will be generated in the batchmake work dir
+     * tests that a python config file will be generated in the batchmake work dir.
      */
     public function testGeneratePythonConfigParams()
     {
@@ -156,7 +154,7 @@ class Batchmake_ExecuteComponentTest extends Batchmake_ControllerTestCase
         $workDir = $taskDao->getWorkDir();
 
         // need to falsify a webroot for this test
-        $fakeWebroot = "fake_web_root";
+        $fakeWebroot = 'fake_web_root';
         Zend_Registry::set('webroot', $fakeWebroot);
         // need to falsify a HTTP_HOST
         $_SERVER['HTTP_HOST'] = 'localhost';
@@ -167,11 +165,11 @@ class Batchmake_ExecuteComponentTest extends Batchmake_ControllerTestCase
 
         $this->executeComponent->generatePythonConfigParams($taskDao, $userDao);
         $expectedConfigPath = $workDir.'/config.cfg';
-        $this->assertTrue(file_exists($expectedConfigPath), "exported config file should exist");
+        $this->assertTrue(file_exists($expectedConfigPath), 'exported config file should exist');
 
         $this->executeComponent->generatePythonConfigParams($taskDao, $userDao, 'admin');
         $expectedConfigPath = $workDir.'/adminconfig.cfg';
-        $this->assertTrue(file_exists($expectedConfigPath), "exported admin config file should exist");
+        $this->assertTrue(file_exists($expectedConfigPath), 'exported admin config file should exist');
 
         // un-falsify, re-truth?
         Zend_Registry::set('webroot', null);
@@ -179,7 +177,7 @@ class Batchmake_ExecuteComponentTest extends Batchmake_ControllerTestCase
     }
 
     /**
-     * tests that a python config file will be generated in the batchmake work dir
+     * tests that a python config file will be generated in the batchmake work dir.
      */
     public function testGenerateBatchmakeConfig()
     {
@@ -196,7 +194,7 @@ class Batchmake_ExecuteComponentTest extends Batchmake_ControllerTestCase
             'dagscript.py',
             $configScriptStem
         );
-        $expectedConfigPath = $workDir.'/'.$configScriptStem.".config.bms";
-        $this->assertTrue(file_exists($expectedConfigPath), "batchmake config file should exist");
+        $expectedConfigPath = $workDir.'/'.$configScriptStem.'.config.bms';
+        $this->assertTrue(file_exists($expectedConfigPath), 'batchmake config file should exist');
     }
 }

@@ -54,7 +54,7 @@ class Cleanup_AdminController extends Cleanup_AppController
                     }
                 }
 
-				$this->ModuleComponent->Admin->schedulePerformCleanupJob(
+                $this->ModuleComponent->Admin->schedulePerformCleanupJob(
                     $values[CLEANUP_DAYS_TO_KEEP_PARTIAL_FILES_KEY],
                     UtilityComponent::getTempDirectory(),
                     $this->userSession->Dao

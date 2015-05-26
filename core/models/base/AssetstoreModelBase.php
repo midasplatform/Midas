@@ -118,7 +118,7 @@ abstract class AssetstoreModelBase extends AppModel
     public function delete($dao)
     {
         if (!$dao instanceof AssetstoreDao) {
-            throw new Zend_Exception("Deleting an assetstore requires a valid instance of an AssetstoreDao.");
+            throw new Zend_Exception('Deleting an assetstore requires a valid instance of an AssetstoreDao.');
         }
         $bitreams = $dao->getBitstreams();
         $items = array();
@@ -172,7 +172,7 @@ abstract class AssetstoreModelBase extends AppModel
             if (empty($found)) {
                 $found = $this->getAll();
                 if (empty($found)) {
-                    throw new Zend_Exception("No assetstore found in the database");
+                    throw new Zend_Exception('No assetstore found in the database');
                 }
             }
             // otherwise take the first

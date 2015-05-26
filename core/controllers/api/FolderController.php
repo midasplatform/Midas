@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- *  Web API controller for the Folder resource
- */
+/** Web API controller for the Folder resource. */
 class Rest_FolderController extends ApiController
 {
     /**

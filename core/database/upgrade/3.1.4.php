@@ -24,7 +24,7 @@ class Upgrade_3_1_4 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query("
+        $this->db->query('
             CREATE TABLE IF NOT EXISTS `setting` (
                 `setting_id` bigint(20) NOT NULL AUTO_INCREMENT,
                 `name` varchar(255) NOT NULL,
@@ -32,19 +32,19 @@ class Upgrade_3_1_4 extends MIDASUpgrade
                 `value` text NULL DEFAULT NULL ,
                 PRIMARY KEY (`setting_id`)
             ) DEFAULT CHARSET=utf8;
-        ");
+        ');
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $this->db->query("
+        $this->db->query('
             CREATE TABLE  setting (
                 setting_id serial  PRIMARY KEY,
                 name character varying(256) NOT NULL,
                 module character varying(256) NOT NULL,
                 value text NOT NULL
             );
-        ");
+        ');
     }
 }

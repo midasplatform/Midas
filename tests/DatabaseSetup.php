@@ -106,7 +106,7 @@ function dropTables($db, $dbType)
         $tables = $db->listTables();
         foreach ($tables as $table) {
             if ($dbType === 'mysql') {
-                $db->query("DROP TABLE IF EXISTS `".$table."` CASCADE;");
+                $db->query('DROP TABLE IF EXISTS `'.$table.'` CASCADE;');
             } elseif ($dbType === 'pgsql') {
                 $db->query('DROP TABLE IF EXISTS "'.$table.'" CASCADE;');
             } elseif ($dbType === 'sqlite' && $table != 'sqlite_sequence') {
@@ -284,7 +284,7 @@ $dbTypes = getSqlDbTypes($testConfigDir);
 
 foreach ($dbTypes as $dbType) {
     try {
-        echo "Dropping and installing tables for database type: ".$dbType.PHP_EOL;
+        echo 'Dropping and installing tables for database type: '.$dbType.PHP_EOL;
         $dbAdapter = loadDbAdapter($testConfigDir, $dbType);
         dropTables($dbAdapter, $dbType);
         require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';

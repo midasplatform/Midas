@@ -31,7 +31,6 @@
  * @method void setType(int $type)
  * @method array getBitstreams()
  * @method void setBitstreams(array $bitstreams)
- * @package Core\DAO
  */
 class AssetstoreDao extends AppDao
 {

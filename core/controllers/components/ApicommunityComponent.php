@@ -22,7 +22,7 @@
 class ApicommunityComponent extends AppComponent
 {
     /**
-     * Create a new community or update an existing one using the uuid
+     * Create a new community or update an existing one using the uuid.
      *
      * @path /community
      * @http POST
@@ -114,7 +114,7 @@ class ApicommunityComponent extends AppComponent
     }
 
     /**
-     * Get a community's information based on id
+     * Get a community's information based on id.
      *
      * @path /community/{id}
      * @http GET
@@ -182,7 +182,7 @@ class ApicommunityComponent extends AppComponent
     }
 
     /**
-     * Get a community's information based on name
+     * Get a community's information based on name.
      *
      * @path /community/search
      * @http GET
@@ -197,7 +197,7 @@ class ApicommunityComponent extends AppComponent
     }
 
     /**
-     * Get the immediate children of a community (non-recursive)
+     * Get the immediate children of a community (non-recursive).
      *
      * @path /community/children/{id}
      * @http GET
@@ -238,7 +238,7 @@ class ApicommunityComponent extends AppComponent
     }
 
     /**
-     * Return a list of all communities visible to a user
+     * Return a list of all communities visible to a user.
      *
      * @path /community
      * @http GET
@@ -278,7 +278,7 @@ class ApicommunityComponent extends AppComponent
     }
 
     /**
-     * Delete a community. Requires admin privileges on the community
+     * Delete a community. Requires admin privileges on the community.
      *
      * @path /community/{id}
      * @http DELETE
@@ -315,7 +315,7 @@ class ApicommunityComponent extends AppComponent
     }
 
     /**
-     * list the groups for a community, requires admin privileges on the community
+     * list the groups for a community, requires admin privileges on the community.
      *
      * @path /community/group/{id}
      * @http GET
@@ -347,7 +347,7 @@ class ApicommunityComponent extends AppComponent
         }
         if (!$communityModel->policyCheck($community, $userDao, MIDAS_POLICY_ADMIN)
         ) {
-            throw new Exception("Community Admin permissions required.", MIDAS_INVALID_POLICY);
+            throw new Exception('Community Admin permissions required.', MIDAS_INVALID_POLICY);
         }
 
         $groups = $community->getGroups();

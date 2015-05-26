@@ -22,7 +22,7 @@ require_once BASE_PATH.'/core/models/base/UserModelBase.php';
 
 /**
  *  UserModel
- *  Pdo Model
+ *  Pdo Model.
  */
 class UserModel extends UserModelBase
 {
@@ -81,7 +81,7 @@ class UserModel extends UserModelBase
             return array();
         }
         if (!$userDao instanceof UserDao) {
-            throw new Zend_Exception("Should be an user.");
+            throw new Zend_Exception('Should be an user.');
         }
         $sql = $this->database->select()->setIntegrityCheck(false)->from('community')->where(
             'membergroup_id IN ('.new Zend_Db_Expr(
@@ -165,7 +165,7 @@ class UserModel extends UserModelBase
     public function getByFolder($folder)
     {
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder");
+            throw new Zend_Exception('Should be a folder');
         }
 
         $row = $this->database->fetchRow(
@@ -182,7 +182,7 @@ class UserModel extends UserModelBase
 
     /**
      * Stores the given hash (algorithm-agnostic) in the password hashes table only
-     * if it does not already exist there
+     * if it does not already exist there.
      */
     public function storePasswordHash($hash)
     {
@@ -221,7 +221,7 @@ class UserModel extends UserModelBase
         if ($userDao == null) {
             $userId = -1;
         } elseif (!$userDao instanceof UserDao) {
-            throw new Zend_Exception("Should be an user.");
+            throw new Zend_Exception('Should be an user.');
         } else {
             $userId = $userDao->getUserId();
             if ($userDao->isAdmin()) {

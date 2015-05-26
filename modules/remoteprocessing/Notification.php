@@ -33,7 +33,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     public function init()
     {
         $this->enableWebAPI($this->moduleName);
-        $this->addTask("TASK_REMOTEPROCESSING_ADD_JOB", 'addJob', "");
+        $this->addTask('TASK_REMOTEPROCESSING_ADD_JOB', 'addJob', '');
         $this->addCallBack('CALLBACK_REMOTEPROCESSING_IS_EXECUTABLE', 'isExecutable');
         $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_ACTIONMENU', 'getActionMenu');
         $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_INFO', 'getItemInfo');
@@ -83,7 +83,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     public function isExecutable($params)
     {
         $item = $params['item'];
-        $executableComponent = MidasLoader::loadComponent("Executable", "remoteprocessing");
+        $executableComponent = MidasLoader::loadComponent('Executable', 'remoteprocessing');
 
         return $executableComponent->getExecutable($item) !== false;
     }
@@ -96,7 +96,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
             $html = "<li>
             <a href='".Zend_Registry::get(
                     'webroot'
-                )."/remoteprocessing/executable/define/?itemId=".htmlspecialchars($params['item']->getKey(), ENT_QUOTES, 'UTF-8'
+                ).'/remoteprocessing/executable/define/?itemId='.htmlspecialchars($params['item']->getKey(), ENT_QUOTES, 'UTF-8'
                 )."'><img alt='' src='".Zend_Registry::get(
                     'coreWebroot'
                 )."/public/images/icons/xml.png'/> ".$this->t('Define Executable')."</a>
@@ -104,16 +104,16 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
           <li>
             <a href='".Zend_Registry::get(
                     'webroot'
-                )."/remoteprocessing/job/init/?itemId=".htmlspecialchars($params['item']->getKey(), ENT_QUOTES, 'UTF-8'
+                ).'/remoteprocessing/job/init/?itemId='.htmlspecialchars($params['item']->getKey(), ENT_QUOTES, 'UTF-8'
                 )."'><img alt='' src='".Zend_Registry::get(
                     'coreWebroot'
-                )."/public/images/icons/job.png'/> ".$this->t('Create a Job')."</a>
-          </li> ";
+                )."/public/images/icons/job.png'/> ".$this->t('Create a Job').'</a>
+          </li> ';
 
             return $html;
         }
 
-        return "";
+        return '';
     }
 
     /** get action menu */
@@ -130,8 +130,8 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
             $component = new UtilityComponent();
 
             $html = "<div class='sideElement'>
-                    <h1>".$this->t('Related Items')."</h1>
-                      <ul>";
+                    <h1>".$this->t('Related Items').'</h1>
+                      <ul>';
             $itemIds = array();
             $i = 0;
             $nameArrayCurrent = explode('.', $params['item']->getName());
@@ -157,53 +157,53 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
                     continue;
                 }
 
-                $html .= "<li>";
+                $html .= '<li>';
                 $html .= "<a  element='".htmlspecialchars($item->getKey(), ENT_QUOTES, 'UTF-8')."' href='".Zend_Registry::get(
                         'webroot'
-                    )."/item/".htmlspecialchars($item->getKey(), ENT_QUOTES, 'UTF-8')."'>".$component->slicename(
+                    ).'/item/'.htmlspecialchars($item->getKey(), ENT_QUOTES, 'UTF-8')."'>".$component->slicename(
                         htmlspecialchars($item->getName(), ENT_QUOTES, 'UTF-8'),
                         25
-                    )."</a>";
-                $html .= "</li>";
+                    ).'</a>';
+                $html .= '</li>';
                 if ($i > 7) {
-                    $html .= "<li>...</li>";
+                    $html .= '<li>...</li>';
                     break;
                 }
                 $i++;
             }
             if ($i == 0) {
-                return "";
+                return '';
             }
-            $html .= "</ul>";
-            $html .= "</div>";
+            $html .= '</ul>';
+            $html .= '</div>';
 
             $html .= "<div class='sideElementLast'>
-                  <h1>".$this->t('Related Jobs')."</h1>
-                    <ul>";
+                  <h1>".$this->t('Related Jobs').'</h1>
+                    <ul>';
             $i = 0;
             foreach ($jobs as $job) {
                 $name = $job->getName();
                 if (empty($name)) {
                     $name = $job->getCreationDate();
                 }
-                $html .= "<li>";
+                $html .= '<li>';
                 $html .= "<a  element='".htmlspecialchars($job->getKey(), ENT_QUOTES, 'UTF-8')."' href='".Zend_Registry::get(
                         'webroot'
-                    )."/remoteprocessing/job/view/?jobId=".htmlspecialchars($job->getKey(), ENT_QUOTES, 'UTF-8')."'>".htmlspecialchars($name, ENT_QUOTES, 'UTF-8')."</a>";
-                $html .= "</li>";
+                    ).'/remoteprocessing/job/view/?jobId='.htmlspecialchars($job->getKey(), ENT_QUOTES, 'UTF-8')."'>".htmlspecialchars($name, ENT_QUOTES, 'UTF-8').'</a>';
+                $html .= '</li>';
                 if ($i > 3) {
-                    $html .= "<li>...</li>";
+                    $html .= '<li>...</li>';
                     break;
                 }
                 $i++;
             }
-            $html .= "</ul>";
-            $html .= "</div>";
+            $html .= '</ul>';
+            $html .= '</div>';
 
             return $html;
         }
 
-        return "";
+        return '';
     }
 
     /** Process results */
@@ -245,7 +245,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
             if (file_exists($filepath)) {
                 $tmpArray = array_reverse(explode('.', basename($filepath)));
                 $oldfilepath = $filepath;
-                $filepath = str_replace(".".$tmpArray[1].".", ".", $filepath);
+                $filepath = str_replace('.'.$tmpArray[1].'.', '.', $filepath);
                 rename($oldfilepath, $filepath);
                 $item = $uploadComponent->createUploadedItem(
                     $userDao,
@@ -334,7 +334,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
             $date = new Zend_Date();
             $date->add('5', Zend_Date::HOUR);
 
-            $job->setExpirationDate($date->toString("Y-M-d H:m:s"));
+            $job->setExpirationDate($date->toString('Y-M-d H:m:s'));
         }
 
         if (isset($params['params']['creator_id'])) {

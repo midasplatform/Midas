@@ -18,7 +18,6 @@
  limitations under the License.
 =========================================================================*/
 
-
 define('GOOGLE_AUTH_CLIENT_ID_KEY', 'client_id');
 define('GOOGLE_AUTH_CLIENT_ID_DEFAULT_VALUE', '');
 

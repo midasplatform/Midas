@@ -149,8 +149,8 @@ if (count($items) - $deliveredrecords > $MAXRECORDS) {
     $token = get_token();
 
     // Check that the tokens directory exists
-    if (!file_exists($MidasTempDirectory."/tokens")) {
-        mkdir($MidasTempDirectory."/tokens");
+    if (!file_exists($MidasTempDirectory.'/tokens')) {
+        mkdir($MidasTempDirectory.'/tokens');
     }
 
     $fp = fopen($MidasTempDirectory."/tokens/re-$token", 'w');
@@ -199,6 +199,9 @@ while ($countrec++ < $maxrec) {
     $output .= '   </header>'."\n";
 
     $revision = $itemModel->getLastRevision($element);
+    if ($revision === false) {
+        throw new Zend_Exception('The item must have at least one revision to have metadata', MIDAS_INVALID_POLICY);
+    }
     $metadata = $itemRevisionModel->getMetadata($revision);
     include BASE_PATH.'/modules/oai/library/oai/'.$inc_record;
 

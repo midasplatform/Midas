@@ -22,7 +22,7 @@
 class Solr_ApisearchComponent extends AppComponent
 {
     /**
-     * Search using Lucene search text queries
+     * Search using Lucene search text queries.
      *
      * @path /solr/search
      * @http GET
@@ -101,10 +101,12 @@ class Solr_ApisearchComponent extends AppComponent
                 // get bitstreams only from last revision
                 $bitstreamArray = array();
                 $headRevision = $itemModel->getLastRevision($item);
-                $bitstreams = $headRevision->getBitstreams();
-                foreach ($bitstreams as $b) {
-                    $btmp = $b->toArray();
-                    $bitstreamArray[] = $btmp['bitstream_id'];
+                if ($headRevision !== false) {
+                    $bitstreams = $headRevision->getBitstreams();
+                    foreach ($bitstreams as $b) {
+                        $btmp = $b->toArray();
+                        $bitstreamArray[] = $btmp['bitstream_id'];
+                    }
                 }
                 $itemInfo['bitstreams'] = $bitstreamArray;
 

@@ -20,9 +20,7 @@
 
 require_once BASE_PATH.'/core/models/base/MetadataModelBase.php';
 
-/**
- * Pdo Model
- */
+/** Pdo Model. */
 class MetadataModel extends MetadataModelBase
 {
     /**
@@ -86,7 +84,6 @@ class MetadataModel extends MetadataModelBase
     }
 
     /** Return an item by its name
-     *
      * @return MetadataDao
      */
     /**
@@ -108,7 +105,7 @@ class MetadataModel extends MetadataModelBase
     }
 
     /**
-     * Get all the metadata
+     * Get all the metadata.
      *
      * @return array
      */
@@ -151,7 +148,7 @@ class MetadataModel extends MetadataModelBase
     public function getMetadataValueExists($metadataDao)
     {
         if (!$metadataDao instanceof MetadataDao) {
-            throw new Zend_Exception("Should be a metadata.");
+            throw new Zend_Exception('Should be a metadata.');
         }
 
         $row = $this->database->fetchRow(
@@ -180,7 +177,7 @@ class MetadataModel extends MetadataModelBase
     public function saveMetadataValue($metadataDao)
     {
         if (!$metadataDao instanceof MetadataDao) {
-            throw new Zend_Exception("Should be a metadata.");
+            throw new Zend_Exception('Should be a metadata.');
         }
 
         $cols = array('metadata_id' => $metadataDao->getKey(), 'itemrevision_id' => $metadataDao->getItemrevisionId());
@@ -191,7 +188,7 @@ class MetadataModel extends MetadataModelBase
         if ($this->getMetadataValueExists($metadataDao)) {
             $wheres = array();
             foreach ($cols as $col => $val) {
-                $wheres[$col."=?"] = $val;
+                $wheres[$col.'=?'] = $val;
             }
             $table->update($data, $wheres);
         } else {

@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic DAO class for the tracker module.
- *
- * @package Modules\Tracker\DAO
- */
+/** Generic DAO class for the tracker module. */
 class Tracker_AppDao extends MIDAS_GlobalDao
 {
     /** @var string */

@@ -90,7 +90,7 @@ abstract class GroupModelBase extends AppModel
     public function delete($group)
     {
         if (!$group instanceof GroupDao) {
-            throw new Zend_Exception("Should be a group.");
+            throw new Zend_Exception('Should be a group.');
         }
         $users = $group->getUsers();
         foreach ($users as $user) {
@@ -119,16 +119,15 @@ abstract class GroupModelBase extends AppModel
     }
 
     /** create a group
-     *
      * @return GroupDao
      */
     public function createGroup($communityDao, $name)
     {
         if (!$communityDao instanceof CommunityDao) {
-            throw new Zend_Exception("Should be a acommunity.");
+            throw new Zend_Exception('Should be a acommunity.');
         }
         if (!is_string($name)) {
-            throw new Zend_Exception("Should be a string.");
+            throw new Zend_Exception('Should be a string.');
         }
 
         /** @var GroupDao $group */
@@ -141,7 +140,7 @@ abstract class GroupModelBase extends AppModel
     }
 
     /**
-     * Return (bool) whether or not the user is in the group
+     * Return (bool) whether or not the user is in the group.
      */
     public function userInGroup($user, $group)
     {

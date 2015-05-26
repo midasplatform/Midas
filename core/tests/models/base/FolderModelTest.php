@@ -36,7 +36,7 @@ class Core_FolderModelTest extends DatabaseTestCase
      * '0' */
     public function testCreateSaveAndDelete()
     {
-        $folder = $this->Folder->createFolder("TestNameFolder", "Description", 0);
+        $folder = $this->Folder->createFolder('TestNameFolder', 'Description', 0);
         $this->assertEquals(true, $folder->saved);
 
         // Make sure adding anonymous read access recomputes the privacy status
@@ -48,16 +48,16 @@ class Core_FolderModelTest extends DatabaseTestCase
         );
         $this->assertEquals(MIDAS_PRIVACY_PUBLIC, $folder->getPrivacyStatus());
         $id = $folder->getKey();
-        $folder->setName("NewName");
+        $folder->setName('NewName');
         $this->Folder->save($folder);
         $folderTmp = $this->Folder->load($id);
-        $this->assertEquals("NewName", $folderTmp->getName());
+        $this->assertEquals('NewName', $folderTmp->getName());
         $this->Folder->delete($folder);
         $folder = $this->Folder->load($id);
         $this->assertEquals(false, $folder);
 
         // Test creating a folder named 0
-        $folder = $this->Folder->createFolder('0', "Description", 0);
+        $folder = $this->Folder->createFolder('0', 'Description', 0);
         $id = $folder->getKey();
         $folderTmp = $this->Folder->load($id);
         $this->assertEquals('0', $folderTmp->getName());
@@ -70,7 +70,7 @@ class Core_FolderModelTest extends DatabaseTestCase
         $folder = $communitiesFile[0]->getFolder();
         $community = $this->Folder->getCommunity($folder);
         if (!$this->Community->compareDao($community, $communitiesFile[0])) {
-            $this->fail("Unable to get community");
+            $this->fail('Unable to get community');
         }
     }
 
@@ -117,11 +117,11 @@ class Core_FolderModelTest extends DatabaseTestCase
     public function testGetFoldersFromSearch()
     {
         $usersFile = $this->loadData('User', 'default');
-        $results = $this->Folder->getFoldersFromSearch("aaaaaaaaaaZeroResults", $usersFile[0]);
+        $results = $this->Folder->getFoldersFromSearch('aaaaaaaaaaZeroResults', $usersFile[0]);
         $this->assertEquals(0, count($results));
-        $folder = $this->Folder->createFolder("NameSearch", "Description", $usersFile[0]->getFolder());
+        $folder = $this->Folder->createFolder('NameSearch', 'Description', $usersFile[0]->getFolder());
         $this->Folderpolicyuser->createPolicy($usersFile[0], $folder, MIDAS_POLICY_ADMIN);
-        $results = $this->Folder->getFoldersFromSearch("NameSearch", $usersFile[0]);
+        $results = $this->Folder->getFoldersFromSearch('NameSearch', $usersFile[0]);
         $this->assertEquals(1, count($results));
     }
 
@@ -219,7 +219,7 @@ class Core_FolderModelTest extends DatabaseTestCase
     }
 
     /**
-     * Test that calling removeItem from a folder deletes a non-shared item
+     * Test that calling removeItem from a folder deletes a non-shared item.
      */
     public function testRemoveItemDeletesNonSharedItem()
     {
@@ -245,7 +245,7 @@ class Core_FolderModelTest extends DatabaseTestCase
     }
 
     /**
-     * Test if the Folder->isDeleteable function()
+     * Test if the Folder->isDeleteable function().
      */
     public function testFolderIsDeleteable()
     {

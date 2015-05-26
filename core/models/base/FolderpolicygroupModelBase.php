@@ -67,22 +67,21 @@ abstract class FolderpolicygroupModelBase extends AppModel
     }
 
     /** create a policy
-     *
      * @return FolderpolicygroupDao
      */
     public function createPolicy($group, $folder, $policy)
     {
         if (!$group instanceof GroupDao) {
-            throw new Zend_Exception("Should be a group.");
+            throw new Zend_Exception('Should be a group.');
         }
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
         if (!is_numeric($policy)) {
-            throw new Zend_Exception("Should be a number.");
+            throw new Zend_Exception('Should be a number.');
         }
         if (!$group->saved && !$folder->saved) {
-            throw new Zend_Exception("Save the daos first.");
+            throw new Zend_Exception('Save the daos first.');
         }
         $policyGroupDao = $this->getPolicy($group, $folder);
         if ($policyGroupDao !== false) {

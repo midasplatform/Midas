@@ -22,7 +22,7 @@
 class ApiuserComponent extends AppComponent
 {
     /**
-     * Return a list of top level folders belonging to the user
+     * Return a list of top level folders belonging to the user.
      *
      * @path /user/folders
      * @http GET
@@ -86,7 +86,7 @@ class ApiuserComponent extends AppComponent
     }
 
     /**
-     * Wrapper for correcting types on user get
+     * Wrapper for correcting types on user get.
      *
      * @param array $args
      * @return array

@@ -22,7 +22,7 @@
 class Communityagreement_CommunityForm extends AppForm
 {
     /**
-     * Create create_agreement form
+     * Create create_agreement form.
      *
      * @param  string $community_id
      * @return Zend_Form
@@ -36,7 +36,7 @@ class Communityagreement_CommunityForm extends AppForm
         $agreement = new Zend_Form_Element_Textarea('agreement');
 
         $submit = new  Zend_Form_Element_Submit('submit');
-        $submit->setLabel($this->t("Save"));
+        $submit->setLabel($this->t('Save'));
 
         $form->addElements(array($agreement, $submit));
 

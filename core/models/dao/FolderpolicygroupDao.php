@@ -33,7 +33,6 @@
  * @method void setFolder(FolderDao $folder)
  * @method GroupDao getGroup()
  * @method void setGroup(GroupDao $group)
- * @package Core\DAO
  */
 class FolderpolicygroupDao extends AppDao
 {

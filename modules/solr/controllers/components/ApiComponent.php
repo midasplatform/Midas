@@ -30,7 +30,7 @@ class Solr_ApiComponent extends AppComponent
             return $rtn;
         }
 
-        return null;
+        return;
     }
 
     /**

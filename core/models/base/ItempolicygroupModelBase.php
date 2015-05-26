@@ -61,16 +61,16 @@ abstract class ItempolicygroupModelBase extends AppModel
     public function createPolicy($group, $item, $policy)
     {
         if (!$group instanceof GroupDao) {
-            throw new Zend_Exception("Should be a group.");
+            throw new Zend_Exception('Should be a group.');
         }
         if (!$item instanceof ItemDao) {
-            throw new Zend_Exception("Should be an item.");
+            throw new Zend_Exception('Should be an item.');
         }
         if (!is_numeric($policy)) {
-            throw new Zend_Exception("Should be a number.");
+            throw new Zend_Exception('Should be a number.');
         }
         if (!$group->saved && !$item->saved) {
-            throw new Zend_Exception("Save the daos first.");
+            throw new Zend_Exception('Save the daos first.');
         }
         $policyGroupDao = $this->getPolicy($group, $item);
         if ($policyGroupDao !== false) {

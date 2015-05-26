@@ -30,11 +30,11 @@ class Dicomextractor_ApiComponent extends AppComponent
             return $rtn;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Extract the dicom metadata from a revision
+     * Extract the dicom metadata from a revision.
      *
      * @param item the id of the item to be extracted
      * @return the id of the revision

@@ -31,7 +31,7 @@ class Demo_DemoComponent extends AppComponent
 
         $stmt = $db->query("SELECT * FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = '".$dbname."'");
         while ($row = $stmt->fetch()) {
-            $db->query("DELETE FROM `".$row['TABLE_NAME']."`");
+            $db->query('DELETE FROM `'.$row['TABLE_NAME'].'`');
         }
 
         $path = UtilityComponent::getDataDirectory('assetstore');

@@ -56,7 +56,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
     }
 
     /**
-     * Remove any params to the command, returning only the executable argument
+     * Remove any params to the command, returning only the executable argument.
      */
     private function _getExecutableArg($commandWithParams)
     {
@@ -66,7 +66,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
         if ($isQuoted) {
             $executable = $matches[0];
         } else {
-            $commandWithParamsParts = explode(" ", $commandWithParams);
+            $commandWithParamsParts = explode(' ', $commandWithParams);
             $executable = $commandWithParamsParts[0];
         }
 
@@ -82,13 +82,13 @@ class Dicomextractor_ExtractorComponent extends AppComponent
         $settingModel = MidasLoader::loadModel('Setting');
         $dictPath = $settingModel->getValueByName(DICOMEXTRACTOR_DCMDICTPATH_KEY, $this->moduleName);
 
-        if ($dictPath != "") {
+        if ($dictPath != '') {
             $command = 'DCMDICTPATH="'.$dictPath.'" '.$command;
         }
     }
 
     /**
-     * Verify that DCMTK is setup properly
+     * Verify that DCMTK is setup properly.
      */
     public function isDCMTKWorking()
     {
@@ -109,7 +109,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
 
         $dataDictVar = $settingModel->getValueByName(DICOMEXTRACTOR_DCMDICTPATH_KEY, $this->moduleName);
 
-        if ($dataDictVar == "") {
+        if ($dataDictVar == '') {
             if (is_readable('/usr/local/share/dcmtk/dicom.dic') ||  // default on OS X
                 is_readable('/usr/share/dcmtk/dicom.dic')
             ) { // default on Ubuntu
@@ -121,7 +121,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
                 );
             }
         } else {
-            $dictPaths = explode(":", $dataDictVar);
+            $dictPaths = explode(':', $dataDictVar);
             $errorInDictVar = false;
             foreach ($dictPaths as $path) {
                 if (!is_readable($path)) {
@@ -146,13 +146,17 @@ class Dicomextractor_ExtractorComponent extends AppComponent
     }
 
     /**
-     * Create a thumbnail from the series
+     * Create a thumbnail from the series.
      */
     public function thumbnail($item)
     {
         /** @var ItemModel $itemModel */
-        $itemModel = MidasLoader::loadModel("Item");
+        $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($item);
+        if ($revision === false) {
+            return;
+        }
+
         $bitstreams = $revision->getBitstreams();
         $numBitstreams = count($bitstreams);
         if ($numBitstreams < 1) {
@@ -236,7 +240,7 @@ class Dicomextractor_ExtractorComponent extends AppComponent
         }
 
         /** @var MetadataModel $MetadataModel */
-        $MetadataModel = MidasLoader::loadModel("Metadata");
+        $MetadataModel = MidasLoader::loadModel('Metadata');
         foreach ($tagArray as $row) {
             try {
                 $metadataDao = $MetadataModel->getMetadata(MIDAS_METADATA_TEXT, 'DICOM', $row['name']);

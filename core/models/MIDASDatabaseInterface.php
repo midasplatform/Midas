@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic database interface.
- *
- * @package Core\Database
- */
+/** Generic database interface. */
 interface MIDASDatabaseInterface
 {
     /**

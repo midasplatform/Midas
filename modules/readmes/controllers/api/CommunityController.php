@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- *  Web API controller for the Community resource (in readmes module)
- */
+/** Web API controller for the Community resource (in readmes module). */
 class Apireadmes_CommunityController extends ApiController
 {
     /**

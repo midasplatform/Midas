@@ -10,6 +10,8 @@ _Server component of the Midas Platform_
 [![Code Climate](https://img.shields.io/codeclimate/github/midasplatform/Midas.svg)](https://codeclimate.com/github/midasplatform/Midas)
 [![Packagist Version](https://img.shields.io/packagist/v/midas-platform/midas-server.svg)](https://packagist.org/packages/midas-platform/midas-server)
 [![Packagist License](https://img.shields.io/packagist/l/midas-platform/midas-server.svg)](https://packagist.org/packages/midas-platform/midas-server)
+[![PHP Dependencies](https://img.shields.io/versioneye/d/midas-platform/midas-server.svg)](https://www.versioneye.com/user/projects/54fdf4ad4a10649b1b000002)
+[![StyleCI](https://styleci.io/repos/18849230/shield)](https://styleci.io/repos/18849230)
 
 ## Overview ##
 

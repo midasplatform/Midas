@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Threshold notification component for the tracker module.
- *
- * @package Modules\Tracker\Component
- */
+/** Threshold notification component for the tracker module. */
 class Tracker_ThresholdNotificationComponent extends AppComponent
 {
     /**

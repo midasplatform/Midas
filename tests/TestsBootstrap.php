@@ -108,10 +108,10 @@ if (!isset($version)) {
         echo 'Error';
         exit;
     }
-    $MyDirectory = opendir(BASE_PATH."/core/database/".$type);
+    $MyDirectory = opendir(BASE_PATH.'/core/database/'.$type);
     while ($Entry = @readdir($MyDirectory)) {
         if (strpos($Entry, '.sql') != false) {
-            $sqlFile = BASE_PATH."/core/database/".$type."/".$Entry;
+            $sqlFile = BASE_PATH.'/core/database/'.$type.'/'.$Entry;
         }
     }
 

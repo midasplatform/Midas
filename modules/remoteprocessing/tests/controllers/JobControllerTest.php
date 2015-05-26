@@ -65,7 +65,7 @@ class Remoteprocessing_JobControllerTest extends ControllerTestCase
         $this->params = array();
         $this->params['results'][0] = 'foo;foo;foo;foo;foo;foo';
         $this->request->setMethod('POST');
-        $this->dispatchUrl("/remoteprocessing/executable/define?itemId=".$itemFile[0]->getKey(), $userDao);
+        $this->dispatchUrl('/remoteprocessing/executable/define?itemId='.$itemFile[0]->getKey(), $userDao);
 
         $this->resetAll();
         $this->dispatchUrl('/remoteprocessing/job/init?itemId='.$itemFile[0]->getKey(), $userDao, false);

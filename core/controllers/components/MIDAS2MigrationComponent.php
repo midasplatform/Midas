@@ -25,16 +25,16 @@ require_once BASE_PATH.'/core/models/dao/MetadataDao.php';
 require_once BASE_PATH.'/core/models/dao/AssetstoreDao.php';
 require_once BASE_PATH.'/core/controllers/components/UploadComponent.php';
 
-define("MIDAS2_RESOURCE_BITSTREAM", 0);
-define("MIDAS2_RESOURCE_BUNDLE", 1);
-define("MIDAS2_RESOURCE_ITEM", 2);
-define("MIDAS2_RESOURCE_COLLECTION", 3);
-define("MIDAS2_RESOURCE_COMMUNITY", 4);
-define("MIDAS2_POLICY_READ", 0);
-define("MIDAS2_POLICY_WRITE", 1);
-define("MIDAS2_POLICY_DELETE", 2);
-define("MIDAS2_POLICY_ADD", 3);
-define("MIDAS2_POLICY_REMOVE", 4);
+define('MIDAS2_RESOURCE_BITSTREAM', 0);
+define('MIDAS2_RESOURCE_BUNDLE', 1);
+define('MIDAS2_RESOURCE_ITEM', 2);
+define('MIDAS2_RESOURCE_COLLECTION', 3);
+define('MIDAS2_RESOURCE_COMMUNITY', 4);
+define('MIDAS2_POLICY_READ', 0);
+define('MIDAS2_POLICY_WRITE', 1);
+define('MIDAS2_POLICY_DELETE', 2);
+define('MIDAS2_POLICY_ADD', 3);
+define('MIDAS2_POLICY_REMOVE', 4);
 
 /** Migration tool */
 class MIDAS2MigrationComponent extends AppComponent
@@ -42,22 +42,22 @@ class MIDAS2MigrationComponent extends AppComponent
     // These variables should be set by the UI
 
     /** @var string */
-    public $midas2User = "midas";
+    public $midas2User = 'midas';
 
     /** @var string */
-    public $midas2Password = "midas";
+    public $midas2Password = 'midas';
 
     /** @var string */
-    public $midas2Host = "localhost";
+    public $midas2Host = 'localhost';
 
     /** @var string */
-    public $midas2Database = "midas";
+    public $midas2Database = 'midas';
 
     /** @var int */
     public $midas2Port = 5432;
 
     /** @var string */
-    public $midas2Assetstore = "C:/xampp/midas/assetstore"; // without end slash
+    public $midas2Assetstore = 'C:/xampp/midas/assetstore'; // without end slash
 
     /** @var int */
     public $assetstoreId = 1;
@@ -68,7 +68,7 @@ class MIDAS2MigrationComponent extends AppComponent
     public $userId;
 
     /**
-     * Function to create the items
+     * Function to create the items.
      *
      * @param int $collectionId
      * @param int $parentFolderid
@@ -76,37 +76,37 @@ class MIDAS2MigrationComponent extends AppComponent
     private function _createFolderForItem($collectionId, $parentFolderid)
     {
         /** @var FolderModel $Folder */
-        $Folder = MidasLoader::loadModel("Folder");
+        $Folder = MidasLoader::loadModel('Folder');
 
         /** @var ItemModel $Item */
-        $Item = MidasLoader::loadModel("Item");
+        $Item = MidasLoader::loadModel('Item');
 
         /** @var ItemRevisionModel $ItemRevision */
-        $ItemRevision = MidasLoader::loadModel("ItemRevision");
+        $ItemRevision = MidasLoader::loadModel('ItemRevision');
 
         /** @var GroupModel $Group */
-        $Group = MidasLoader::loadModel("Group");
+        $Group = MidasLoader::loadModel('Group');
 
         /** @var AssetstoreModel $Assetstore */
-        $Assetstore = MidasLoader::loadModel("Assetstore");
+        $Assetstore = MidasLoader::loadModel('Assetstore');
 
         /** @var FolderpolicygroupModel $Folderpolicygroup */
-        $Folderpolicygroup = MidasLoader::loadModel("Folderpolicygroup");
+        $Folderpolicygroup = MidasLoader::loadModel('Folderpolicygroup');
 
         /** @var FolderpolicyuserModel $Folderpolicyuser */
-        $Folderpolicyuser = MidasLoader::loadModel("Folderpolicyuser");
+        $Folderpolicyuser = MidasLoader::loadModel('Folderpolicyuser');
 
         /** @var ItempolicygroupModel $Itempolicygroup */
-        $Itempolicygroup = MidasLoader::loadModel("Itempolicygroup");
+        $Itempolicygroup = MidasLoader::loadModel('Itempolicygroup');
 
         /** @var ItempolicyuserModel $Itempolicyuser */
-        $Itempolicyuser = MidasLoader::loadModel("Itempolicyuser");
+        $Itempolicyuser = MidasLoader::loadModel('Itempolicyuser');
 
         /** @var UserModel $User */
-        $User = MidasLoader::loadModel("User");
+        $User = MidasLoader::loadModel('User');
 
         $colquery = pg_query(
-            "SELECT i.item_id, mtitle.text_value AS title, mabstract.text_value AS abstract "."FROM item AS i "."LEFT JOIN metadatavalue AS mtitle ON (i.item_id = mtitle.item_id AND mtitle.metadata_field_id = 64) "."LEFT JOIN metadatavalue AS mabstract ON (i.item_id = mabstract.item_id AND mabstract.metadata_field_id = 27) "."WHERE i.owning_collection=".$collectionId
+            'SELECT i.item_id, mtitle.text_value AS title, mabstract.text_value AS abstract '.'FROM item AS i '.'LEFT JOIN metadatavalue AS mtitle ON (i.item_id = mtitle.item_id AND mtitle.metadata_field_id = 64) '.'LEFT JOIN metadatavalue AS mabstract ON (i.item_id = mabstract.item_id AND mabstract.metadata_field_id = 27) '.'WHERE i.owning_collection='.$collectionId
         );
         while ($colquery_array = pg_fetch_array($colquery)) {
             $item_id = $colquery_array['item_id'];
@@ -140,10 +140,10 @@ class MIDAS2MigrationComponent extends AppComponent
 
                 // Add specific policies for users (not dealing with groups)
                 $policyquery = pg_query(
-                    "SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
+                    'SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
                                 FROM resourcepolicy
                                 LEFT JOIN eperson ON (eperson.eperson_id=resourcepolicy.eperson_id)
-                                 WHERE epersongroup_id IS NULL AND resource_type_id=".MIDAS2_RESOURCE_ITEM." AND resource_id=".$item_id." GROUP BY eperson.eperson_id, email"
+                                 WHERE epersongroup_id IS NULL AND resource_type_id='.MIDAS2_RESOURCE_ITEM.' AND resource_id='.$item_id.' GROUP BY eperson.eperson_id, email'
                 );
 
                 while ($policyquery_array = pg_fetch_array($policyquery)) {
@@ -168,7 +168,7 @@ class MIDAS2MigrationComponent extends AppComponent
             if ($folderDao) {
                 // Create the item from the bitstreams
                 $bitquery = pg_query(
-                    "SELECT   b.bitstream_id, b.name, b.description, b.internal_id FROM bitstream AS b, item2bitstream AS i2b "."WHERE i2b.bitstream_id = b.bitstream_id AND i2b.item_id=".$item_id
+                    'SELECT   b.bitstream_id, b.name, b.description, b.internal_id FROM bitstream AS b, item2bitstream AS i2b '.'WHERE i2b.bitstream_id = b.bitstream_id AND i2b.item_id='.$item_id
                 );
                 while ($bitquery_array = pg_fetch_array($bitquery)) {
                     $filename = $bitquery_array['name'];
@@ -178,8 +178,8 @@ class MIDAS2MigrationComponent extends AppComponent
 
                     // Get the number of downloads and set it
                     $itemstatsquery = pg_query(
-                        "SELECT downloads from midas_resourcelog WHERE
-                                      resource_id_type=".MIDAS2_RESOURCE_ITEM." AND resource_id=".$item_id
+                        'SELECT downloads from midas_resourcelog WHERE
+                                      resource_id_type='.MIDAS2_RESOURCE_ITEM.' AND resource_id='.$item_id
                     );
                     $itemstats_array = pg_fetch_array($itemstatsquery);
                     if ($itemstats_array) {
@@ -191,7 +191,7 @@ class MIDAS2MigrationComponent extends AppComponent
 
                     // Just check if the group anonymous can access the item
                     $policyquery = pg_query(
-                        "SELECT policy_id FROM resourcepolicy WHERE resource_type_id=".MIDAS2_RESOURCE_ITEM." AND resource_id=".$item_id." AND epersongroup_id=0"
+                        'SELECT policy_id FROM resourcepolicy WHERE resource_type_id='.MIDAS2_RESOURCE_ITEM.' AND resource_id='.$item_id.' AND epersongroup_id=0'
                     );
                     if (pg_num_rows($policyquery) > 0) {
                         $anonymousGroup = $Group->load(MIDAS_GROUP_ANONYMOUS_KEY);
@@ -200,10 +200,10 @@ class MIDAS2MigrationComponent extends AppComponent
 
                     // Add specific policies for users
                     $policyquery = pg_query(
-                        "SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
+                        'SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
                                   FROM resourcepolicy
                                   LEFT JOIN eperson ON (eperson.eperson_id=resourcepolicy.eperson_id)
-                                   WHERE epersongroup_id IS NULL AND resource_type_id=".MIDAS2_RESOURCE_ITEM." AND resource_id=".$item_id." GROUP BY eperson.eperson_id, email"
+                                   WHERE epersongroup_id IS NULL AND resource_type_id='.MIDAS2_RESOURCE_ITEM.' AND resource_id='.$item_id.' GROUP BY eperson.eperson_id, email'
                     );
 
                     while ($policyquery_array = pg_fetch_array($policyquery)) {
@@ -232,11 +232,11 @@ class MIDAS2MigrationComponent extends AppComponent
 
                     // Add the metadata
                     /** @var MetadataModel $MetadataModel */
-                    $MetadataModel = MidasLoader::loadModel("Metadata");
+                    $MetadataModel = MidasLoader::loadModel('Metadata');
 
                     //
                     $metadataquery = pg_query(
-                        "SELECT metadata_field_id, text_value FROM metadatavalue WHERE item_id=".$item_id
+                        'SELECT metadata_field_id, text_value FROM metadatavalue WHERE item_id='.$item_id
                     );
                     while ($metadata_array = pg_fetch_array($metadataquery)) {
                         $text_value = $metadata_array['text_value'];
@@ -302,11 +302,11 @@ class MIDAS2MigrationComponent extends AppComponent
                                 $qualifier = 'doi';
                                 break;
                             default:
-                                $element = "";
-                                $qualifier = "";
+                                $element = '';
+                                $qualifier = '';
                         }
 
-                        if ($element != "") {
+                        if ($element != '') {
                             $MetadataModel->addMetadataValue(
                                 $itemRevisionDao,
                                 MIDAS_METADATA_TEXT,
@@ -347,13 +347,13 @@ class MIDAS2MigrationComponent extends AppComponent
                     }
                 }
             } else {
-                echo "Cannot create Folder for item: ".$title."<br>";
+                echo 'Cannot create Folder for item: '.$title.'<br>';
             }
         }
     }
 
     /**
-     * Function to create the collections
+     * Function to create the collections.
      *
      * @param int $communityId
      * @param int $parentFolderid
@@ -361,19 +361,19 @@ class MIDAS2MigrationComponent extends AppComponent
     private function _createFolderForCollection($communityId, $parentFolderid)
     {
         /** @var FolderModel $Folder */
-        $Folder = MidasLoader::loadModel("Folder");
+        $Folder = MidasLoader::loadModel('Folder');
 
         /** @var UserModel $User */
-        $User = MidasLoader::loadModel("User");
+        $User = MidasLoader::loadModel('User');
 
         /** @var FolderpolicygroupModel $Folderpolicygroup */
-        $Folderpolicygroup = MidasLoader::loadModel("Folderpolicygroup");
+        $Folderpolicygroup = MidasLoader::loadModel('Folderpolicygroup');
 
         /** @var FolderpolicyuserModel $Folderpolicyuser */
-        $Folderpolicyuser = MidasLoader::loadModel("Folderpolicyuser");
+        $Folderpolicyuser = MidasLoader::loadModel('Folderpolicyuser');
 
         $colquery = pg_query(
-            "SELECT collection_id, name, short_description, introductory_text FROM collection WHERE owning_community=".$communityId
+            'SELECT collection_id, name, short_description, introductory_text FROM collection WHERE owning_community='.$communityId
         );
         while ($colquery_array = pg_fetch_array($colquery)) {
             $collection_id = $colquery_array['collection_id'];
@@ -401,10 +401,10 @@ class MIDAS2MigrationComponent extends AppComponent
 
                 // Add specific policies for users (not dealing with groups)
                 $policyquery = pg_query(
-                    "SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
+                    'SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
                                 FROM resourcepolicy
                                 LEFT JOIN eperson ON (eperson.eperson_id=resourcepolicy.eperson_id)
-                                 WHERE epersongroup_id IS NULL AND resource_type_id=".MIDAS2_RESOURCE_COLLECTION." AND resource_id=".$collection_id." GROUP BY eperson.eperson_id, email"
+                                 WHERE epersongroup_id IS NULL AND resource_type_id='.MIDAS2_RESOURCE_COLLECTION.' AND resource_id='.$collection_id.' GROUP BY eperson.eperson_id, email'
                 );
 
                 while ($policyquery_array = pg_fetch_array($policyquery)) {
@@ -429,13 +429,13 @@ class MIDAS2MigrationComponent extends AppComponent
                 // We should create the item
                 $this->_createFolderForItem($collection_id, $folderDao->getFolderId());
             } else {
-                echo "Cannot create Folder for collection: ".$name."<br>";
+                echo 'Cannot create Folder for collection: '.$name.'<br>';
             }
         }
     }
 
     /**
-     * Recursive function to create the communities
+     * Recursive function to create the communities.
      *
      * @param int $communityidMIDAS2
      * @param int $parentFolderid
@@ -443,23 +443,23 @@ class MIDAS2MigrationComponent extends AppComponent
     private function _createFolderForCommunity($communityidMIDAS2, $parentFolderid)
     {
         /** @var FolderModel $Folder */
-        $Folder = MidasLoader::loadModel("Folder");
+        $Folder = MidasLoader::loadModel('Folder');
 
         /** @var FolderpolicygroupModel $Folderpolicygroup */
-        $Folderpolicygroup = MidasLoader::loadModel("Folderpolicygroup");
+        $Folderpolicygroup = MidasLoader::loadModel('Folderpolicygroup');
 
         /** @var FolderpolicyuserModel $Folderpolicyuser */
-        $Folderpolicyuser = MidasLoader::loadModel("Folderpolicyuser");
+        $Folderpolicyuser = MidasLoader::loadModel('Folderpolicyuser');
 
         /** @var UserModel $User */
-        $User = MidasLoader::loadModel("User");
+        $User = MidasLoader::loadModel('User');
 
         // Create the collections attached to this community
         $this->_createFolderForCollection($communityidMIDAS2, $parentFolderid);
 
         // Find the subcommunities
         $comquery = pg_query(
-            "SELECT community_id, name, short_description, introductory_text FROM community WHERE owning_community=".$communityidMIDAS2
+            'SELECT community_id, name, short_description, introductory_text FROM community WHERE owning_community='.$communityidMIDAS2
         );
         while ($comquery_array = pg_fetch_array($comquery)) {
             $community_id = $comquery_array['community_id'];
@@ -487,10 +487,10 @@ class MIDAS2MigrationComponent extends AppComponent
 
                 // Add specific policies for users (not dealing with groups)
                 $policyquery = pg_query(
-                    "SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
+                    'SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
                                 FROM resourcepolicy
                                 LEFT JOIN eperson ON (eperson.eperson_id=resourcepolicy.eperson_id)
-                                 WHERE epersongroup_id IS NULL AND resource_type_id=".MIDAS2_RESOURCE_COMMUNITY." AND resource_id=".$community_id." GROUP BY eperson.eperson_id, email"
+                                 WHERE epersongroup_id IS NULL AND resource_type_id='.MIDAS2_RESOURCE_COMMUNITY.' AND resource_id='.$community_id.' GROUP BY eperson.eperson_id, email'
                 );
 
                 while ($policyquery_array = pg_fetch_array($policyquery)) {
@@ -516,13 +516,13 @@ class MIDAS2MigrationComponent extends AppComponent
                 // Find the subcommunities
                 $this->_createFolderForCommunity($community_id, $folderDao->getFolderId());
             } else {
-                echo "Cannot create Folder for community: ".$name."<br>";
+                echo 'Cannot create Folder for community: '.$name.'<br>';
             }
         }
     }
 
     /**
-     * Migrate
+     * Migrate.
      *
      * @param int $userid
      * @throws Zend_Exception
@@ -543,7 +543,7 @@ class MIDAS2MigrationComponent extends AppComponent
         );
         ob_end_clean();
         if ($pgdb === false) {
-            throw new Zend_Exception("Cannot connect to the MIDAS2 database.");
+            throw new Zend_Exception('Cannot connect to the MIDAS2 database.');
         }
 
         // Check that the password prefix is not defined
@@ -553,11 +553,11 @@ class MIDAS2MigrationComponent extends AppComponent
 
         // STEP 1: Import the users
         /** @var UserModel $User */
-        $User = MidasLoader::loadModel("User");
+        $User = MidasLoader::loadModel('User');
 
         /** @var GroupModel $Group */
-        $Group = MidasLoader::loadModel("Group");
-        $query = pg_query("SELECT email, password, firstname, lastname FROM eperson");
+        $Group = MidasLoader::loadModel('Group');
+        $query = pg_query('SELECT email, password, firstname, lastname FROM eperson');
         while ($query_array = pg_fetch_array($query)) {
             $email = $query_array['email'];
             $password = $query_array['password'];
@@ -574,9 +574,9 @@ class MIDAS2MigrationComponent extends AppComponent
 
         // STEP 2: Import the communities. The MIDAS2 TopLevel communities are communities in MIDAS3
         /** @var CommunityModel $Community */
-        $Community = MidasLoader::loadModel("Community");
+        $Community = MidasLoader::loadModel('Community');
         $query = pg_query(
-            "SELECT community_id, name, short_description, introductory_text FROM community WHERE owning_community = 0"
+            'SELECT community_id, name, short_description, introductory_text FROM community WHERE owning_community = 0'
         );
         while ($query_array = pg_fetch_array($query)) {
             $community_id = $query_array['community_id'];
@@ -587,7 +587,7 @@ class MIDAS2MigrationComponent extends AppComponent
                 // Check the policies for the community
                 // If anonymous can access then we set it public
                 $policyquery = pg_query(
-                    "SELECT policy_id FROM resourcepolicy WHERE resource_type_id=".MIDAS2_RESOURCE_COMMUNITY." AND resource_id=".$community_id." AND epersongroup_id=0"
+                    'SELECT policy_id FROM resourcepolicy WHERE resource_type_id='.MIDAS2_RESOURCE_COMMUNITY.' AND resource_id='.$community_id.' AND epersongroup_id=0'
                 );
                 $privacy = MIDAS_COMMUNITY_PRIVATE;
                 if (pg_num_rows($policyquery) > 0) {
@@ -598,10 +598,10 @@ class MIDAS2MigrationComponent extends AppComponent
                 // Add the users to the community
                 // MIDAS2 was not using the group heavily so we ignore them. This would have to be a manual step
                 $policyquery = pg_query(
-                    "SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
+                    'SELECT max(action_id) AS actionid, eperson.eperson_id, eperson.email
                                 FROM resourcepolicy
                                 LEFT JOIN eperson ON (eperson.eperson_id=resourcepolicy.eperson_id)
-                                 WHERE epersongroup_id IS NULL AND resource_type_id=".MIDAS2_RESOURCE_COMMUNITY." AND resource_id=".$community_id." GROUP BY eperson.eperson_id, email"
+                                 WHERE epersongroup_id IS NULL AND resource_type_id='.MIDAS2_RESOURCE_COMMUNITY.' AND resource_id='.$community_id.' GROUP BY eperson.eperson_id, email'
                 );
 
                 while ($policyquery_array = pg_fetch_array($policyquery)) {
@@ -630,7 +630,7 @@ class MIDAS2MigrationComponent extends AppComponent
                 $folderId = $communityDao->getFolderId();
                 $this->_createFolderForCommunity($community_id, $folderId);
             } else {
-                echo "Cannot create community: ".$name."<br>";
+                echo 'Cannot create community: '.$name.'<br>';
             }
         }
 

@@ -31,7 +31,6 @@
  * @method void setCreditCardCount(int $creditCardCount)
  * @method UserDao getUser()
  * @method void setUser(UserDao $user)
- * @package Modules\Example\DAO
  */
 class Example_WalletDao extends AppDao
 {

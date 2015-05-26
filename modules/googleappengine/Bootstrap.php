@@ -27,7 +27,7 @@ class Googleappengine_Bootstrap extends Zend_Application_Module_Bootstrap
     /** Initialize a stream context for the gs stream wrapper. */
     protected function _initStreamContext()
     {
-    	$options = array('gs' => array('connection_timeout_seconds' => 60));
-    	stream_context_set_default($options);
+        $options = array('gs' => array('connection_timeout_seconds' => 60));
+        stream_context_set_default($options);
     }
 }

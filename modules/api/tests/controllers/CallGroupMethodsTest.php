@@ -26,8 +26,8 @@ class Api_CallGroupMethodsTest extends Api_CallMethodsTestCase
     /** Test adding and removing a user from a group */
     public function testGroupUserAddRemove()
     {
-        $addMethod = "midas.group.add.user";
-        $removeMethod = "midas.group.remove.user";
+        $addMethod = 'midas.group.add.user';
+        $removeMethod = 'midas.group.remove.user';
         $methods = array($addMethod, $removeMethod);
 
         /** @var UserModel $userModel */
@@ -61,7 +61,7 @@ class Api_CallGroupMethodsTest extends Api_CallMethodsTestCase
         $group = $groupModel->load($validGroupId);
         $this->assertFalse(
             $groupModel->userInGroup($changedUser, $group),
-            "This user is not expected to be in the group"
+            'This user is not expected to be in the group'
         );
 
         // add the user to the group
@@ -74,7 +74,7 @@ class Api_CallGroupMethodsTest extends Api_CallMethodsTestCase
         $this->_assertStatusOk($resp);
 
         // ensure the user is now in the group
-        $this->assertTrue($groupModel->userInGroup($changedUser, $group), "This user is expected to be in the group");
+        $this->assertTrue($groupModel->userInGroup($changedUser, $group), 'This user is expected to be in the group');
 
         // remove the user from the group
         $this->resetAll();
@@ -87,7 +87,7 @@ class Api_CallGroupMethodsTest extends Api_CallMethodsTestCase
 
         $this->assertFalse(
             $groupModel->userInGroup($changedUser, $group),
-            "This user is not expected to be in the group"
+            'This user is not expected to be in the group'
         );
     }
 
@@ -112,7 +112,7 @@ class Api_CallGroupMethodsTest extends Api_CallMethodsTestCase
 
         // group add
 
-        $addMethod = "midas.group.add";
+        $addMethod = 'midas.group.add';
         $newGroupName = 'new group';
         $addMethodRequiredParams = array(
             array('name' => 'community_id', 'valid' => $validCommunityId, 'invalid' => $invalidCommunityId),
@@ -153,7 +153,7 @@ class Api_CallGroupMethodsTest extends Api_CallMethodsTestCase
         // group remove
 
         $invalidGroupId = -10;
-        $removeMethod = "midas.group.remove";
+        $removeMethod = 'midas.group.remove';
         $removeMethodRequiredParams = array(
             array(
                 'name' => 'group_id',
@@ -177,7 +177,7 @@ class Api_CallGroupMethodsTest extends Api_CallMethodsTestCase
 
         // ensure that the group doesn't exist
         $addedGroup = $groupModel->load($addedGroupId);
-        $this->assertFalse($addedGroup, "group should have been removed but remains");
+        $this->assertFalse($addedGroup, 'group should have been removed but remains');
     }
 
     /** Test listing the users in a group */
@@ -205,7 +205,7 @@ class Api_CallGroupMethodsTest extends Api_CallMethodsTestCase
 
         // group list users
 
-        $groupListMethod = "midas.group.list.users";
+        $groupListMethod = 'midas.group.list.users';
         $requiredParams = array(
             array(
                 'name' => 'group_id',

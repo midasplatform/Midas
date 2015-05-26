@@ -102,7 +102,7 @@ class Remoteprocessing_ApiComponentControllerTest extends ControllerTestCase
         $scriptParams['os'] = MIDAS_REMOTEPROCESSING_OS_WINDOWS;
         $scriptParams['condition'] = '';
         $scriptParams['params'] = array();
-        Zend_Registry::get('notifier')->callback("CALLBACK_REMOTEPROCESSING_ADD_JOB", $scriptParams);
+        Zend_Registry::get('notifier')->callback('CALLBACK_REMOTEPROCESSING_ADD_JOB', $scriptParams);
 
         $this->params = array();
         $this->params['token'] = $token;

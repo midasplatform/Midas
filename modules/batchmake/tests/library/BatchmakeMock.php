@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Mock object used to simulate BatchMake executable for testing.
- */
+/** Mock object used to simulate BatchMake executable for testing. */
 class Batchmake_BatchmakeMock
 {
     protected $compileFlag = "'-c'";
@@ -40,14 +38,14 @@ class Batchmake_BatchmakeMock
      * @param null|mixed $return_val
      * @throws Zend_Exception
      */
-    public function exec($command, &$output = null, $chdir = "", &$return_val = null)
+    public function exec($command, &$output = null, $chdir = '', &$return_val = null)
     {
         // just doing the same things as the actual KWUtils exec to check
         // that this function will work the same as the exec function other
         // than the actual exec system call
         if (!empty($chdir) && is_dir($chdir)) {
             if (!chdir($chdir)) {
-                throw new Zend_Exception("Failed to change directory: [".$chdir."]");
+                throw new Zend_Exception('Failed to change directory: ['.$chdir.']');
             }
         }
         $command = KWUtils::escapeCommand($command);
@@ -58,13 +56,13 @@ class Batchmake_BatchmakeMock
         } elseif (preg_match('/'.$this->generateDagFlag.'/', $command)) {
             $this->execGenerateCondorDag($command, $output, $chdir, $return_val);
         } else {
-            throw new Zend_Exception("unexepected BatchMake command flag:".$command);
+            throw new Zend_Exception('unexepected BatchMake command flag:'.$command);
         }
     }
 
     /**
      * handler function with same interface as KWUtils.exec to simulate the
-     * -c functionality of the BatchMake executable
+     * -c functionality of the BatchMake executable.
      *
      * @param  type $command
      * @param  type $output
@@ -72,7 +70,7 @@ class Batchmake_BatchmakeMock
      * @param  type $return_val
      * @return type
      */
-    public function execCompile($command, &$output = null, $chdir = "", &$return_val = null)
+    public function execCompile($command, &$output = null, $chdir = '', &$return_val = null)
     {
         // all test cases should have the proper syntax, verify this
         if (!preg_match('/(.*)BatchMake(.*)\-ap(.*)\-p(.*)\-c(.*)/', $command, $matches)
@@ -103,7 +101,7 @@ class Batchmake_BatchmakeMock
 
     /**
      * handler function with same interface as KWUtils.exec to simulate the
-     * --condor functionality of the BatchMake executable
+     * --condor functionality of the BatchMake executable.
      *
      * @param string $command
      * @param null|mixed $output
@@ -111,7 +109,7 @@ class Batchmake_BatchmakeMock
      * @param null|mixed $return_val
      * @throws Zend_Exception
      */
-    public function execGenerateCondorDag($command, &$output = null, $chdir = "", &$return_val = null)
+    public function execGenerateCondorDag($command, &$output = null, $chdir = '', &$return_val = null)
     {
         // all test cases should have the proper syntax, verify this
         if (!preg_match('/(.*)BatchMake(.*)\-ap.*\'(\S*)\'.*\-p.*\'(\S*)\'.*\--condor(.*)/', $command, $matches)

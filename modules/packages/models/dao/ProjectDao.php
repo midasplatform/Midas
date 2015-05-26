@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Project DAO
- */
+/** Project DAO. */
 class Packages_ProjectDao extends AppDao
 {
     public $_model = 'Project';

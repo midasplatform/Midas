@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- *  InstallController
- */
+/** InstallController. */
 class InstallController extends AppController
 {
     public $_models = array('User', 'Assetstore', 'Setting');

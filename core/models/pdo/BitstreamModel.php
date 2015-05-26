@@ -20,9 +20,7 @@
 
 require_once BASE_PATH.'/core/models/base/BitstreamModelBase.php';
 
-/**
- * Pdo Model
- */
+/** Pdo Model. */
 class BitstreamModel extends BitstreamModelBase
 {
     /**

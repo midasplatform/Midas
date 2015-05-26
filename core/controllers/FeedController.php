@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- *  AJAX request for the admin Controller
- */
+/** AJAX request for the admin Controller. */
 class FeedController extends AppController
 {
     public $_models = array('Feed', 'Item', 'User', 'Community');
@@ -88,7 +86,7 @@ class FeedController extends AppController
 
         $feedId = $this->getParam('feed');
         if (!isset($feedId) || !is_numeric($feedId)) {
-            throw new Zend_Exception("Please set the feed Id");
+            throw new Zend_Exception('Please set the feed Id');
         }
         $feed = $this->Feed->load($feedId);
 

@@ -22,7 +22,7 @@ require_once BASE_PATH.'/core/models/base/GroupModelBase.php';
 
 /**
  *  UserModel
- *  Pdo Model
+ *  Pdo Model.
  */
 class GroupModel extends GroupModelBase
 {
@@ -40,18 +40,14 @@ class GroupModel extends GroupModelBase
         return $result;
     }
 
-    /**
-     * Add an user to a group
-     *
-     * @return void
-     */
+    /** Add an user to a group */
     public function addUser($group, $user)
     {
         if (!$group instanceof GroupDao) {
-            throw new Zend_Exception("Should be a group.");
+            throw new Zend_Exception('Should be a group.');
         }
         if (!$user instanceof UserDao) {
-            throw new Zend_Exception("Should be an user.");
+            throw new Zend_Exception('Should be an user.');
         }
 
         if ($group->getKey() != MIDAS_GROUP_SERVER_KEY) {
@@ -72,10 +68,10 @@ class GroupModel extends GroupModelBase
     public function removeUser($group, $user)
     {
         if (!$group instanceof GroupDao) {
-            throw new Zend_Exception("Should be a group.");
+            throw new Zend_Exception('Should be a group.');
         }
         if (!$user instanceof UserDao) {
-            throw new Zend_Exception("Should be an user.");
+            throw new Zend_Exception('Should be an user.');
         }
 
         $community = $group->getCommunity();

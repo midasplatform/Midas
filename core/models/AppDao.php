@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic DAO class.
- *
- * @package Core\DAO
- */
+/** Generic DAO class. */
 class AppDao extends MIDAS_GlobalDao
 {
 }

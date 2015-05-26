@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * API producer controller for the tracker module.
- *
- * @package Modules\Tracker\Controller
- */
+/** API producer controller for the tracker module. */
 class Apitracker_ProducerController extends ApiController
 {
     /** @var string */

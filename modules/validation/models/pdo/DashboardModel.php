@@ -20,9 +20,7 @@
 
 require_once BASE_PATH.'/modules/validation/models/base/DashboardModelBase.php';
 
-/**
- * Dashboard PDO Model
- */
+/** Dashboard PDO Model. */
 class Validation_DashboardModel extends Validation_DashboardModelBase
 {
     /**
@@ -54,10 +52,10 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
     public function addResult($dashboard, $folder)
     {
         if (!$dashboard instanceof Validation_DashboardDao) {
-            throw new Zend_Exception("Should be a dashboard.");
+            throw new Zend_Exception('Should be a dashboard.');
         }
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
         $this->database->link('results', $dashboard, $folder);
     }
@@ -72,10 +70,10 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
     public function removeResult($dashboard, $folder)
     {
         if (!$dashboard instanceof Validation_DashboardDao) {
-            throw new Zend_Exception("Should be a dashboard.");
+            throw new Zend_Exception('Should be a dashboard.');
         }
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
         $sql = $this->database->select()->setIntegrityCheck(false)->from(array('d' => 'validation_dashboard'))->join(
             array('j' => 'validation_dashboard2scalarresult'),
@@ -103,10 +101,10 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
     public function setScores($dashboard, $folder, $values)
     {
         if (!$dashboard instanceof Validation_DashboardDao) {
-            throw new Zend_Exception("Should be a dashboard.");
+            throw new Zend_Exception('Should be a dashboard.');
         }
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
 
         /** @var Validation_ScalarResultModel $scalarResultModel */
@@ -140,13 +138,13 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
     public function setScore($dashboard, $folder, $item, $value)
     {
         if (!$dashboard instanceof Validation_DashboardDao) {
-            throw new Zend_Exception("Should be a dashboard.");
+            throw new Zend_Exception('Should be a dashboard.');
         }
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
         if (!$item instanceof ItemDao) {
-            throw new Zend_Exception("Should be an item.");
+            throw new Zend_Exception('Should be an item.');
         }
 
         /** @var Validation_ScalarResultModel $scalarResultModel */
@@ -192,10 +190,10 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
     public function getScores($dashboard, $folder)
     {
         if (!$dashboard instanceof Validation_DashboardDao) {
-            throw new Zend_Exception("Should be a dashboard.");
+            throw new Zend_Exception('Should be a dashboard.');
         }
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
         $sql = $this->database->select()->setIntegrityCheck(false)->from(array('d' => 'validation_dashboard'))->join(
             array('j' => 'validation_dashboard2scalarresult'),
@@ -207,14 +205,14 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
         $rowset = $this->database->fetchAll($sql);
         $results = array();
         foreach ($rowset as $row) {
-            $results[$row["item_id"]] = $row["value"];
+            $results[$row['item_id']] = $row['value'];
         }
 
         return $results;
     }
 
     /**
-     * Get all sets of scores for a dashboard
+     * Get all sets of scores for a dashboard.
      *
      * @param Validation_DashboardDao $dashboard target dashboard
      * @return array array of arrays where the keys are folder ids and the values are arrays where the keys are
@@ -224,7 +222,7 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
     public function getAllScores($dashboard)
     {
         if (!$dashboard instanceof Validation_DashboardDao) {
-            throw new Zend_Exception("Should be a dashboard.");
+            throw new Zend_Exception('Should be a dashboard.');
         }
 
         $sql = $this->database->select()->setIntegrityCheck(false)->from(array('d' => 'validation_dashboard'))->join(
@@ -237,11 +235,11 @@ class Validation_DashboardModel extends Validation_DashboardModelBase
         $rowset = $this->database->fetchAll($sql);
         $results = array();
         foreach ($rowset as $row) {
-            if (isset($results[$row["folder_id"]])) {
-                $results[$row["folder_id"]][$row["item_id"]] = $row["value"];
+            if (isset($results[$row['folder_id']])) {
+                $results[$row['folder_id']][$row['item_id']] = $row['value'];
             } else {
-                $results[$row["folder_id"]] = array();
-                $results[$row["folder_id"]][$row["item_id"]] = $row["value"];
+                $results[$row['folder_id']] = array();
+                $results[$row['folder_id']][$row['item_id']] = $row['value'];
             }
         }
 

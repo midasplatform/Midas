@@ -28,7 +28,7 @@ class Batchmake_ExecutorMock
     protected $mockExes;
 
     /**
-     * constructor
+     * constructor.
      */
     public function __construct()
     {
@@ -56,7 +56,7 @@ class Batchmake_ExecutorMock
      * @param type $chdir
      * @param type $return_val
      */
-    public function exec($command, &$output = null, $chdir = "", &$return_val = null)
+    public function exec($command, &$output = null, $chdir = '', &$return_val = null)
     {
         $matched = false;
         foreach ($this->mockExes as $exeName => $mockExe) {

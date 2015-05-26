@@ -25,7 +25,7 @@
 class Pvw_ParaviewComponent extends AppComponent
 {
     /** @var string */
-	public $moduleName = 'pvw';
+    public $moduleName = 'pvw';
 
     /**
      * Creates a new pvpython instance and a corresponding database record for it.
@@ -108,7 +108,7 @@ class Pvw_ParaviewComponent extends AppComponent
             putenv('DISPLAY='.$displayEnv);
         }
         $cmd = implode(' ', $cmdArray);
-        exec(sprintf("%s > %s 2>&1 & echo $!", $cmd, $dataPath.'/pvw.log'), $output);
+        exec(sprintf('%s > %s 2>&1 & echo $!', $cmd, $dataPath.'/pvw.log'), $output);
         $pid = trim(implode('', $output));
         if (!is_numeric($pid) || $pid == 0) {
             throw new Zend_Exception('Expected pid output, got: '.$pid, 500);
@@ -145,7 +145,7 @@ class Pvw_ParaviewComponent extends AppComponent
     }
 
     /**
-     * Kills the pvpython process and deletes the instance record from the database
+     * Kills the pvpython process and deletes the instance record from the database.
      *
      * @param Pvw_InstanceDao $instance instance DAO to kill
      * @throws Zend_Exception
@@ -242,14 +242,26 @@ class Pvw_ParaviewComponent extends AppComponent
         /** @var ItemRevisionModel $revisionModel */
         $revisionModel = MidasLoader::loadModel('ItemRevision');
         $rev = $itemModel->getLastRevision($itemDao);
+        if ($rev === false) {
+            throw new Zend_Exception('The item has no revisions', MIDAS_INVALID_POLICY);
+        }
         $bitstreams = $rev->getBitstreams();
+        if (count($bitstreams) === 0) {
+            throw new Zend_Exception('The item has no bitstreams', MIDAS_INVALID_POLICY);
+        }
         $src = $bitstreams[0]->getFullpath();
         symlink($src, $path.'/main/'.$bitstreams[0]->getName());
 
         // Symlink all the surfaces into the surfaces subdir
         foreach ($meshItems as $meshItem) {
             $rev = $itemModel->getLastRevision($meshItem);
+            if ($rev === false) {
+                continue;
+            }
             $bitstreams = $rev->getBitstreams();
+            if (count($bitstreams) === 0) {
+                continue;
+            }
             $src = $bitstreams[0]->getFullpath();
             $linkPath = $path.'/surfaces/'.$meshItem->getKey().'_'.$bitstreams[0]->getName();
             symlink($src, $linkPath);

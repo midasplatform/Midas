@@ -39,7 +39,7 @@ class Sizequota_ApiComponent extends AppComponent
             return $rtn;
         }
 
-        return null;
+        return;
     }
 
     /**

@@ -25,7 +25,7 @@ class Landingpage_IndexCoreController extends Landingpage_AppController
     public $_components = array('Utility');
 
     /**
-     * Index Action (first action when we access the application)
+     * Index Action (first action when we access the application).
      */
     public function init()
     {

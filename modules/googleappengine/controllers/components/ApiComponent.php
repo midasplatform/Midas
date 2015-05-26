@@ -34,6 +34,7 @@ class Googleappengine_ApiComponent extends AppComponent
     {
         /** @var Googleappengine_ApiuploadComponent $apiuploadComponent */
         $apiuploadComponent = MidasLoader::loadComponent('Apiupload', $this->moduleName);
+
         return $apiuploadComponent->uploadToken($args);
     }
 }

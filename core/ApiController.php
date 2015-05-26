@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * API controller base class.
- *
- * @package Core\Controller
- */
+/** API controller base class. */
 class ApiController extends REST_Controller
 {
     /** @var array */
@@ -143,7 +139,7 @@ class ApiController extends REST_Controller
                 if (isset($resultsArray)) {
                     $apiResults['data'] = $resultsArray;
                 } else { // if the api function doesn't provide an return value
-                    $apiResults['msg'] = "succeed!"; // there is no exception if code reaches here
+                    $apiResults['msg'] = 'succeed!'; // there is no exception if code reaches here
                 }
             } else {
                 $apiResults = $resultsArray;

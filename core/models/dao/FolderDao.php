@@ -55,7 +55,6 @@
  * @method void setFolders(array $folders)
  * @method FolderDao getParent()
  * @method void setParent(FolderDao $parent)
- * @package Core\DAO
  */
 class FolderDao extends AppDao
 {

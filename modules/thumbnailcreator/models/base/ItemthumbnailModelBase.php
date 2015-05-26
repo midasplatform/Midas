@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Item thumbnail model base
- */
+/** Item thumbnail model base. */
 abstract class Thumbnailcreator_ItemthumbnailModelBase extends Thumbnailcreator_AppModel
 {
     /** Constructor. */
@@ -47,7 +45,7 @@ abstract class Thumbnailcreator_ItemthumbnailModelBase extends Thumbnailcreator_
     }
 
     /**
-     * Get by item id
+     * Get by item id.
      *
      * @param ItemDao $itemId
      * @return false|Thumbnailcreator_ItemthumbnailDao
@@ -55,7 +53,7 @@ abstract class Thumbnailcreator_ItemthumbnailModelBase extends Thumbnailcreator_
     abstract public function getByItemId($itemId);
 
     /**
-     * Delete by item
+     * Delete by item.
      *
      * @param ItemDao $item
      */

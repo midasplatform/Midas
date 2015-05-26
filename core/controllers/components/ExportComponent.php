@@ -21,17 +21,14 @@
 require_once BASE_PATH.'/library/KWUtils.php';
 
 /**
- * ExportComponent
+ * ExportComponent.
  *
- *This class handles exporting bitstreams out of assetstores via creating symbolic links
- *
- * @category   Midas Core
- * @package    components
+ * This class handles exporting bitstreams out of assetstores via creating symbolic links
  */
 class ExportComponent extends AppComponent
 {
     /**
-     * Helper function to create a directory for an item
+     * Helper function to create a directory for an item.
      *
      * @param string $directorypath Directory to be created
      * @throws Zend_Exception
@@ -41,17 +38,17 @@ class ExportComponent extends AppComponent
         // if the directory exists, try to delete it first
         if (file_exists($directorypath)) {
             if (!KWUtils::recursiveRemoveDirectory($directorypath)) {
-                throw new Zend_Exception($directorypath." has already existed and we cannot delete it.");
+                throw new Zend_Exception($directorypath.' has already existed and we cannot delete it.');
             }
         }
         if (!mkdir($directorypath)) {
-            throw new Zend_Exception("Cannot create directory: ".$directorypath);
+            throw new Zend_Exception('Cannot create directory: '.$directorypath);
         }
         chmod($directorypath, 0777);
     }
 
     /**
-     * Export bitstreams to target directory
+     * Export bitstreams to target directory.
      *
      * Given itemIds, do policy check on these itemIds,
      * then create symbolic links to bitstreams (or copy the bitstreams)
@@ -97,30 +94,32 @@ class ExportComponent extends AppComponent
                 $item_export_dir = $targetDir.'/'.$itemId;
                 if (file_exists($item_export_dir)) {
                     if (!KWUtils::recursiveRemoveDirectory($item_export_dir)) {
-                        throw new Zend_Exception($item_export_dir." has already existed and we cannot delete it.");
+                        throw new Zend_Exception($item_export_dir.' has already existed and we cannot delete it.');
                     }
                 }
                 $item = $itemModel->load($tmpId[0]);
                 if ($item == false) {
-                    throw new Zend_Exception("Item ".$tmpId[0]." does not exist. Please check your input.");
+                    throw new Zend_Exception('Item '.$tmpId[0].' does not exist. Please check your input.');
                 } elseif (!$itemModel->policyCheck($item, $userDao)) {
                     // Do policy check in the ITEM level, ignore items which cannot be exported by the user.
                     continue;
                 }
                 // Use the given revision_number if it is not empty
                 if (isset($tmpId[1])) {
-                    $revisionNum = $itemModel->getRevision($item, $tmpId[1]);
-                    if ($revisionNum !== false) {
-                        $revisions[] = $revisionNum;
+                    $revision = $itemModel->getRevision($item, $tmpId[1]);
+                    if ($revision !== false) {
+                        $revisions[] = $revision;
                     } else {
                         throw new Zend_Exception(
-                            "Revision number ".$tmpId[1]." for item ".$tmpId[0]." does not exist. Please check your input."
+                            'Revision number '.$tmpId[1].' for item '.$tmpId[0].' does not exist. Please check your input.'
                         );
                     }
                 } else {
                     // Otherwise use the latest revision
-                    $revisionNum = $itemModel->getLastRevision($item);
-                    $revisions[] = $revisionNum;
+                    $revision = $itemModel->getLastRevision($item);
+                    if ($revision !== false) {
+                        $revisions[] = $revision;
+                    }
                 }
             }
         }
@@ -151,14 +150,14 @@ class ExportComponent extends AppComponent
                                 $dest .= '.'.$randomComponent->generateInt().'.new';
                             }
                             if (!symlink($source, $dest)) {
-                                throw new Zend_Exception("Cannot create symlink: ".$dest."linked to".$source);
+                                throw new Zend_Exception('Cannot create symlink: '.$dest.'linked to'.$source);
                             }
                         } else {
                             // OR copy bitstreams to target directory
                             // for copy option, if multiple bitstreams (in a single item revision)
                             // have the same file name, new file(s) wil overwrite the existing file(s)
                             if (!copy($source, $dest)) {
-                                throw new Zend_Exception("Cannot copy bitstream from: ".$source."to: ".$dest);
+                                throw new Zend_Exception('Cannot copy bitstream from: '.$source.'to: '.$dest);
                             }
                         }
                     }

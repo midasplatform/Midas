@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Database upgrade base class.
- *
- * @package Core\Database
- */
+/** Database upgrade base class. */
 class MIDASUpgrade
 {
     /** @var Zend_Db_Adapter_Abstract */
@@ -97,32 +93,32 @@ class MIDASUpgrade
 
         if (isset($this->_moduleDaos)) {
             foreach ($this->_moduleDaos as $dao) {
-                if (file_exists(BASE_PATH."/modules/".$this->moduleName."/models/dao/".$dao."Dao.php")) {
-                    include_once BASE_PATH."/modules/".$this->moduleName."/models/dao/".$dao."Dao.php";
+                if (file_exists(BASE_PATH.'/modules/'.$this->moduleName.'/models/dao/'.$dao.'Dao.php')) {
+                    include_once BASE_PATH.'/modules/'.$this->moduleName.'/models/dao/'.$dao.'Dao.php';
                 } elseif (file_exists(
-                    BASE_PATH."/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php"
+                    BASE_PATH.'/privateModules/'.$this->moduleName.'/models/dao/'.$dao.'Dao.php'
                 )) {
-                    include_once BASE_PATH."/privateModules/".$this->moduleName."/models/dao/".$dao."Dao.php";
+                    include_once BASE_PATH.'/privateModules/'.$this->moduleName.'/models/dao/'.$dao.'Dao.php';
                 } else {
-                    throw new Zend_Exception("Unable to find dao file ".$dao);
+                    throw new Zend_Exception('Unable to find dao file '.$dao);
                 }
             }
         }
 
         if (isset($this->_moduleComponents)) {
             foreach ($this->_moduleComponents as $component) {
-                $nameComponent = ucfirst($this->moduleName).'_'.$component."Component";
+                $nameComponent = ucfirst($this->moduleName).'_'.$component.'Component';
 
                 if (file_exists(
-                    BASE_PATH."/modules/".$this->moduleName."/controllers/components/".$component."Component.php"
+                    BASE_PATH.'/modules/'.$this->moduleName.'/controllers/components/'.$component.'Component.php'
                 )) {
-                    include_once BASE_PATH."/modules/".$this->moduleName."/controllers/components/".$component."Component.php";
+                    include_once BASE_PATH.'/modules/'.$this->moduleName.'/controllers/components/'.$component.'Component.php';
                 } elseif (file_exists(
-                    BASE_PATH."/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php"
+                    BASE_PATH.'/privateModules/'.$this->moduleName.'/controllers/components/'.$component.'Component.php'
                 )) {
-                    include_once BASE_PATH."/privateModules/".$this->moduleName."/controllers/components/".$component."Component.php";
+                    include_once BASE_PATH.'/privateModules/'.$this->moduleName.'/controllers/components/'.$component.'Component.php';
                 } else {
-                    throw new Zend_Exception("Unable to find component file ".$component);
+                    throw new Zend_Exception('Unable to find component file '.$component);
                 }
 
                 if (!isset($this->ModuleComponent)) {
@@ -135,18 +131,18 @@ class MIDASUpgrade
 
         if (isset($this->_moduleForms)) {
             foreach ($this->_moduleForms as $forms) {
-                $nameForm = ucfirst($this->moduleName).'_'.$forms."Form";
+                $nameForm = ucfirst($this->moduleName).'_'.$forms.'Form';
 
                 if (file_exists(
-                    BASE_PATH."/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php"
+                    BASE_PATH.'/modules/'.$this->moduleName.'/controllers/forms/'.$forms.'Form.php'
                 )) {
-                    include_once BASE_PATH."/modules/".$this->moduleName."/controllers/forms/".$forms."Form.php";
+                    include_once BASE_PATH.'/modules/'.$this->moduleName.'/controllers/forms/'.$forms.'Form.php';
                 } elseif (file_exists(
-                    BASE_PATH."/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php"
+                    BASE_PATH.'/privateModules/'.$this->moduleName.'/controllers/forms/'.$forms.'Form.php'
                 )) {
-                    include_once BASE_PATH."/privateModules/".$this->moduleName."/controllers/forms/".$forms."Form.php";
+                    include_once BASE_PATH.'/privateModules/'.$this->moduleName.'/controllers/forms/'.$forms.'Form.php';
                 } else {
-                    throw new Zend_Exception("Unable to find form file ".$forms);
+                    throw new Zend_Exception('Unable to find form file '.$forms);
                 }
 
                 if (!isset($this->ModuleForm)) {
@@ -175,7 +171,7 @@ class MIDASUpgrade
 
         if (isset($this->_daos)) {
             foreach ($this->_daos as $dao) {
-                Zend_Loader::loadClass($dao."Dao", BASE_PATH.'/core/models/dao');
+                Zend_Loader::loadClass($dao.'Dao', BASE_PATH.'/core/models/dao');
             }
         }
 
@@ -183,7 +179,7 @@ class MIDASUpgrade
 
         if (isset($this->_components)) {
             foreach ($this->_components as $component) {
-                $nameComponent = $component."Component";
+                $nameComponent = $component.'Component';
                 Zend_Loader::loadClass($nameComponent, BASE_PATH.'/core/controllers/components');
 
                 if (!isset($this->Component)) {
@@ -198,7 +194,7 @@ class MIDASUpgrade
 
         if (isset($this->_forms)) {
             foreach ($this->_forms as $forms) {
-                $nameForm = $forms."Form";
+                $nameForm = $forms.'Form';
 
                 Zend_Loader::loadClass($nameForm, BASE_PATH.'/core/controllers/forms');
 
@@ -229,9 +225,9 @@ class MIDASUpgrade
         }
 
         if ($this->dbtype === 'PDO_MYSQL') {
-            $this->db->query("ALTER TABLE ".$table." ADD ".$field." ".$mySqlType.$sql.";");
+            $this->db->query('ALTER TABLE '.$table.' ADD '.$field.' '.$mySqlType.$sql.';');
         } elseif ($this->dbtype === 'PDO_PGSQL') {
-            $this->db->query("ALTER TABLE \"".$table."\" ADD \"".$field."\" ".$pgSqlType.$sql.";");
+            $this->db->query('ALTER TABLE "'.$table.'" ADD "'.$field.'" '.$pgSqlType.$sql.';');
         } else {
             throw new Zend_Exception('Database does not support adding table fields');
         }
@@ -247,9 +243,9 @@ class MIDASUpgrade
     public function removeTableField($table, $field)
     {
         if ($this->dbtype === 'PDO_MYSQL') {
-            $this->db->query("ALTER TABLE ".$table." DROP ".$field.";");
+            $this->db->query('ALTER TABLE '.$table.' DROP '.$field.';');
         } elseif ($this->dbtype === 'PDO_PGSQL') {
-            $this->db->query("ALTER TABLE \"".$table."\" DROP COLUMN \"".$field."\";");
+            $this->db->query('ALTER TABLE "'.$table.'" DROP COLUMN "'.$field.'";');
         } else {
             throw new Zend_Exception('Database does not support removing table fields');
         }
@@ -271,17 +267,17 @@ class MIDASUpgrade
         if ($this->dbtype === 'PDO_MYSQL') {
             if ($default !== false) {
                 $this->db->query(
-                    "ALTER TABLE ".$table." CHANGE ".$field." ".$newField." ".$mySqlType." DEFAULT '".$default."';"
+                    'ALTER TABLE '.$table.' CHANGE '.$field.' '.$newField.' '.$mySqlType." DEFAULT '".$default."';"
                 );
             } else {
-                $this->db->query("ALTER TABLE ".$table." CHANGE ".$field." ".$newField." ".$mySqlType.";");
+                $this->db->query('ALTER TABLE '.$table.' CHANGE '.$field.' '.$newField.' '.$mySqlType.';');
             }
         } elseif ($this->dbtype === 'PDO_PGSQL') {
-            $this->db->query("ALTER TABLE \"".$table."\" RENAME \"".$field."\" TO \"".$newField."\";");
-            $this->db->query("ALTER TABLE \"".$table."\" ALTER COLUMN \"".$newField."\" TYPE ".$pgSqlType.";");
+            $this->db->query('ALTER TABLE "'.$table.'" RENAME "'.$field.'" TO "'.$newField.'";');
+            $this->db->query('ALTER TABLE "'.$table.'" ALTER COLUMN "'.$newField.'" TYPE '.$pgSqlType.';');
             if ($default !== false) {
                 $this->db->query(
-                    "ALTER TABLE \"".$table."\" ALTER COLUMN \"".$newField."\" SET DEFAULT ".$default.";"
+                    'ALTER TABLE "'.$table.'" ALTER COLUMN "'.$newField.'" SET DEFAULT '.$default.';'
                 );
             }
         } else {
@@ -299,7 +295,7 @@ class MIDASUpgrade
     public function checkIndexExists($table, $field)
     {
         if ($this->dbtype === 'PDO_MYSQL') {
-            $rowset = $this->db->fetchAll("SHOW INDEX FROM ".$table.";");
+            $rowset = $this->db->fetchAll('SHOW INDEX FROM '.$table.';');
             foreach ($rowset as $index_array) {
                 if ($index_array['Column_name'] === $field) {
                     return true;
@@ -321,10 +317,10 @@ class MIDASUpgrade
     {
         if (!$this->checkIndexExists($table, $field)) {
             if ($this->dbtype === 'PDO_MYSQL') {
-                $this->db->query("ALTER TABLE ".$table." ADD INDEX ( ".$field." );");
+                $this->db->query('ALTER TABLE '.$table.' ADD INDEX ( '.$field.' );');
             } elseif ($this->dbtype === 'PDO_PGSQL') {
                 @$this->db->query(
-                    "CREATE INDEX ".$table."_".$field."_idx ON \"".$table."\" (\"".$field."\");"
+                    'CREATE INDEX '.$table.'_'.$field.'_idx ON "'.$table.'" ("'.$field.'");'
                 );
             } else {
                 throw new Zend_Exception('Database does not support adding table indexes');
@@ -343,9 +339,9 @@ class MIDASUpgrade
     {
         if ($this->checkIndexExists($table, $field)) {
             if ($this->dbtype === 'PDO_MYSQL') {
-                $this->db->query("ALTER TABLE ".$table." DROP INDEX ".$field.";");
+                $this->db->query('ALTER TABLE '.$table.' DROP INDEX '.$field.';');
             } elseif ($this->dbtype === 'PDO_PGSQL') {
-                $this->db->query("DROP INDEX ".$table."_".$field."_idx;");
+                $this->db->query('DROP INDEX '.$table.'_'.$field.'_idx;');
             } else {
                 throw new Zend_Exception('Database does not support renaming table indexes');
             }
@@ -362,9 +358,9 @@ class MIDASUpgrade
     public function addTablePrimaryKey($table, $field)
     {
         if ($this->dbtype === 'PDO_MYSQL') {
-            $this->db->query("ALTER TABLE ".$table." ADD PRIMARY KEY ( ".$field." );");
+            $this->db->query('ALTER TABLE '.$table.' ADD PRIMARY KEY ( '.$field.' );');
         } elseif ($this->dbtype === 'PDO_PGSQL') {
-            $this->db->query("ALTER TABLE \"".$table."\" ADD PRIMARY KEY (\"".$field."\");");
+            $this->db->query('ALTER TABLE "'.$table.'" ADD PRIMARY KEY ("'.$field.'");');
         } else {
             throw new Zend_Exception('Database does not support adding table primary keys');
         }
@@ -379,10 +375,10 @@ class MIDASUpgrade
     public function removeTablePrimaryKey($table)
     {
         if ($this->dbtype === 'PDO_MYSQL') {
-            $this->db->query("ALTER TABLE ".$table." DROP PRIMARY KEY;");
+            $this->db->query('ALTER TABLE '.$table.' DROP PRIMARY KEY;');
         } elseif ($this->dbtype === 'PDO_PGSQL') {
-            $this->db->query("ALTER TABLE \"".$table."\" DROP CONSTRAINT \"value_pkey\";");
-            $this->db->query("ALTER TABLE \"".$table."\" DROP CONSTRAINT \"".$table."_pkey\";");
+            $this->db->query('ALTER TABLE "'.$table.'" DROP CONSTRAINT "value_pkey";');
+            $this->db->query('ALTER TABLE "'.$table.'" DROP CONSTRAINT "'.$table.'_pkey";');
         } else {
             throw new Zend_Exception('Database does not support removing table primary keys');
         }

@@ -81,7 +81,7 @@ class Core_AdminControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test removal of orphans in the tree
+     * Test removal of orphans in the tree.
      */
     public function testRemoveOrphans()
     {
@@ -104,7 +104,7 @@ class Core_AdminControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test the upgrade action
+     * Test the upgrade action.
      */
     public function testUpgradeAction()
     {
@@ -122,7 +122,7 @@ class Core_AdminControllerTest extends ControllerTestCase
     }
 
     /**
-     * Stub test for midas2 migration action
+     * Stub test for midas2 migration action.
      */
     public function testMidas2MigrationAction()
     {

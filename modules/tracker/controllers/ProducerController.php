@@ -23,7 +23,6 @@
  *
  * @property Tracker_ProducerModel $Tracker_Producer
  * @property Tracker_TrendModel $Tracker_Trend
- * @package Modules\Tracker\Controller
  */
 class Tracker_ProducerController extends Tracker_AppController
 {

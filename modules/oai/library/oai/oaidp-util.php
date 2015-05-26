@@ -20,7 +20,7 @@
 
 function get_token()
 {
-    list($usec, $sec) = explode(" ", microtime());
+    list($usec, $sec) = explode(' ', microtime());
 
     return ((int) ($usec * 1000) + (int) ($sec * 1000));
 }
@@ -126,7 +126,7 @@ function xmlstr($string, $charset = 'iso8859-1', $xmlescaped = 'false')
         $xmlstr = htmlspecialchars($xmlstr, ENT_QUOTES);
     }
 
-    if ($charset != "utf-8") {
+    if ($charset != 'utf-8') {
         $xmlstr = utf8_encode($xmlstr);
     }
 
@@ -273,7 +273,7 @@ function date2UTCdatestamp($date)
                 $val = preg_match($checkstr, $date, $matches);
                 if (!$val) {
                     // show that we have an error
-                    return "0000-00-00T00:00:00Z";
+                    return '0000-00-00T00:00:00Z';
                 }
                 // date is datetime format
                 /*
@@ -312,7 +312,7 @@ function date2UTCdatestamp($date)
                             $timestamp -= (int) $tz * 3600;
                         }
 
-                        return strftime("%Y-%m-%dT%H:%M:%SZ", $timestamp);
+                        return strftime('%Y-%m-%dT%H:%M:%SZ', $timestamp);
                     }
                 } elseif ($matches[14] == 'Z') {
                     return str_replace(' ', 'T', $date);
@@ -329,7 +329,7 @@ function date2UTCdatestamp($date)
         case 'YYYY-MM-DD':
             if (strstr($date, ' ')) {
                 // date is datetime format
-                list($date, $time) = explode(" ", $date);
+                list($date, $time) = explode(' ', $date);
 
                 return $date;
             } else {
@@ -338,7 +338,7 @@ function date2UTCdatestamp($date)
             break;
 
         default:
-            exit("Unknown granularity!");
+            exit('Unknown granularity!');
     }
 }
 

@@ -27,7 +27,6 @@
  * @method void setMetricName(string $metricName)
  * @method int getBmsName()
  * @method void setBmsName(string $bmsName)
- * @package Modules\Batchmake\DAO
  */
 class Batchmake_ItemmetricDao extends AppDao
 {

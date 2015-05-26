@@ -42,7 +42,7 @@ class Oai_IndexController extends Oai_AppController
     }
 
     /**
-     * Index function
+     * Index function.
      *
      * @noinspection PhpUnusedLocalVariableInspection
      */
@@ -89,8 +89,8 @@ class Oai_IndexController extends Oai_AppController
         $repositoryIdentifier = $this->Setting->getValueByName(OAI_REPOSITORY_IDENTIFIER_KEY, $this->moduleName);
         $delimiter = ':';
         $idPrefix = '';
-        $oaiprefix = "oai".$delimiter.$repositoryIdentifier.$delimiter.$idPrefix;
-        $setspecprefix = "hdl_";
+        $oaiprefix = 'oai'.$delimiter.$repositoryIdentifier.$delimiter.$idPrefix;
+        $setspecprefix = 'hdl_';
 
         $METADATAFORMATS = array(
             'oai_dc' => array(

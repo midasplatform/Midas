@@ -24,16 +24,16 @@ class Upgrade_3_0_5 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query("ALTER TABLE community MODIFY folder_id bigint(20) NULL DEFAULT NULL;");
-        $this->db->query("ALTER TABLE community MODIFY publicfolder_id bigint(20) NULL DEFAULT NULL;");
-        $this->db->query("ALTER TABLE community MODIFY privatefolder_id bigint(20) NULL DEFAULT NULL;");
+        $this->db->query('ALTER TABLE community MODIFY folder_id bigint(20) NULL DEFAULT NULL;');
+        $this->db->query('ALTER TABLE community MODIFY publicfolder_id bigint(20) NULL DEFAULT NULL;');
+        $this->db->query('ALTER TABLE community MODIFY privatefolder_id bigint(20) NULL DEFAULT NULL;');
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $this->db->query("ALTER TABLE community ALTER COLUMN folder_id DROP NOT NULL;");
-        $this->db->query("ALTER TABLE community ALTER COLUMN publicfolder_id DROP NOT NULL;");
-        $this->db->query("ALTER TABLE community ALTER COLUMN privatefolder_id DROP NOT NULL;");
+        $this->db->query('ALTER TABLE community ALTER COLUMN folder_id DROP NOT NULL;');
+        $this->db->query('ALTER TABLE community ALTER COLUMN publicfolder_id DROP NOT NULL;');
+        $this->db->query('ALTER TABLE community ALTER COLUMN privatefolder_id DROP NOT NULL;');
     }
 }

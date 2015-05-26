@@ -53,7 +53,6 @@
  * @method void setItempolicygroup(array $itemPolicyGroup)
  * @method array getItempolicyuser()
  * @method void setItempolicyuser(array $itemPolicyUser)
- * @package Core\DAO
  */
 class ItemDao extends AppDao
 {

@@ -67,8 +67,8 @@ class KWUtils
         }
         $relpath = '';
         foreach ($subDirectories as $directory) {
-            $relpath .= $directory."/";
-            if (!is_dir($baseDirectory.$relpath) && !KwUtils::mkDir($baseDirectory.$relpath, $mode)
+            $relpath .= $directory.'/';
+            if (!is_dir($baseDirectory.$relpath) && !self::mkDir($baseDirectory.$relpath, $mode)
             ) {
                 throw new Zend_Exception($baseDirectory.$relpath.' could not be created');
             }
@@ -84,7 +84,7 @@ class KWUtils
      */
     public static function isWindows()
     {
-        return (strtolower(substr(PHP_OS, 0, 3)) == "win");
+        return (strtolower(substr(PHP_OS, 0, 3)) == 'win');
     }
 
     /**
@@ -101,7 +101,7 @@ class KWUtils
 
     /**
      * will append the extension to the
-     * subject if it is not already a suffix of subject
+     * subject if it is not already a suffix of subject.
      *
      * @param string $subject the string to be appended to
      * @param string $ext the extension to check for and append
@@ -136,22 +136,22 @@ class KWUtils
                 $currCwd = getcwd();
 
                 if (!chdir($chdir)) {
-                    throw new Zend_Exception("Failed to change directory: [".$chdir."]");
+                    throw new Zend_Exception('Failed to change directory: ['.$chdir.']');
                 }
                 $changed = true;
             } else {
-                throw new Zend_Exception("passed in chdir is not a directory: [".$chdir."]");
+                throw new Zend_Exception('passed in chdir is not a directory: ['.$chdir.']');
             }
         }
 
         // on Linux need to add redirection to handle stderr
-        $redirect_error = KWUtils::isLinux() ? ' 2>&1' : '';
-        $escaped = KWUtils::escapeCommand($command);
+        $redirect_error = self::isLinux() ? ' 2>&1' : '';
+        $escaped = self::escapeCommand($command);
         exec($escaped.$redirect_error, $output, $return_val);
 
         // change back to original directory if necessary
         if ($changed && !chdir($currCwd)) {
-            throw new Zend_Exception("Failed to change back to original directory: [".$currCwd."]");
+            throw new Zend_Exception('Failed to change back to original directory: ['.$currCwd.']');
         }
     }
 
@@ -162,7 +162,7 @@ class KWUtils
      */
     public static function isLinux()
     {
-        return (strtolower(substr(PHP_OS, 0, 5)) == "linux");
+        return (strtolower(substr(PHP_OS, 0, 5)) == 'linux');
     }
 
     /**
@@ -178,8 +178,8 @@ class KWUtils
     {
         // Check if application is executable, if not, see if you can find it
         // in the path
-        if (!KWUtils::isExecutable($app_name, false)) {
-            $app_name = KWUtils::findApp($app_name, true);
+        if (!self::isExecutable($app_name, false)) {
+            $app_name = self::findApp($app_name, true);
         }
 
         // escape parameters
@@ -205,7 +205,7 @@ class KWUtils
         if (!is_executable($app_name)) {
             if ($check_in_path) {
                 try {
-                    if (KWUtils::findApp($app_name, true)) {
+                    if (self::findApp($app_name, true)) {
                         return true;
                     }
                 } catch (Zend_Exception $ze) {
@@ -220,7 +220,7 @@ class KWUtils
     }
 
     /**
-     * will return the absolute path of an application
+     * will return the absolute path of an application.
      *
      * @param string $app_name the name of the application
      * @param bool $check_execution_flag whether to include in the check that the
@@ -232,14 +232,14 @@ class KWUtils
      */
     public static function findApp($app_name, $check_execution_flag)
     {
-        $PHP_PATH_SEPARATOR = ":";
+        $PHP_PATH_SEPARATOR = ':';
         // split path
-        $path_list = explode($PHP_PATH_SEPARATOR, getenv("PATH"));
+        $path_list = explode($PHP_PATH_SEPARATOR, getenv('PATH'));
 
         // loop through paths
         foreach ($path_list as $path) {
             $status = false;
-            $path_to_app = KWUtils::appendStringIfNot($path, DIRECTORY_SEPARATOR).$app_name;
+            $path_to_app = self::appendStringIfNot($path, DIRECTORY_SEPARATOR).$app_name;
             if ($check_execution_flag) {
                 if (is_executable($path_to_app)) {
                     $status = true;
@@ -254,7 +254,7 @@ class KWUtils
         }
         if (!$status) {
             throw new Zend_Exception(
-                "Failed to locate the application: [".$app_name."] [check_execution_flag:".$check_execution_flag."]"
+                'Failed to locate the application: ['.$app_name.'] [check_execution_flag:'.$check_execution_flag.']'
             );
         }
 
@@ -269,15 +269,15 @@ class KWUtils
      */
     public static function formatAppName($app_name)
     {
-        if (substr(PHP_OS, 0, 3) == "WIN") {
-            $app_name = KWUtils::appendStringIfNot($app_name, ".exe");
+        if (substr(PHP_OS, 0, 3) == 'WIN') {
+            $app_name = self::appendStringIfNot($app_name, '.exe');
         }
 
         return $app_name;
     }
 
     /**
-     * Helper function to recursively delete a directory
+     * Helper function to recursively delete a directory.
      *
      * @param string $directorypath Directory to be deleted
      * @return bool Success or not
@@ -305,7 +305,7 @@ class KWUtils
                 // if the new path is a directory
                 if (is_dir($path)) {
                     // call itself with the new path
-                    KWUtils::recursiveRemoveDirectory($path);
+                    self::recursiveRemoveDirectory($path);
                     // if the new path is a file
                 } else {
                     // remove the file

@@ -24,7 +24,7 @@ require_once BASE_PATH.'/modules/comments/models/base/ItemcommentModelBase.php';
 class Comments_ItemcommentModel extends Comments_ItemcommentModelBase
 {
     /**
-     * Get (paginated) comments on an item
+     * Get (paginated) comments on an item.
      */
     public function getComments($item, $limit = 10, $offset = 0)
     {
@@ -58,7 +58,7 @@ class Comments_ItemcommentModel extends Comments_ItemcommentModelBase
     }
 
     /**
-     * Get the total number of comments on the item
+     * Get the total number of comments on the item.
      */
     public function getTotal($item)
     {

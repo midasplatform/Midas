@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- *  Web API controller for the Bitstream resource
- */
+/** Web API controller for the Bitstream resource. */
 class Rest_BitstreamController extends ApiController
 {
     /**

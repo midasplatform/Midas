@@ -18,13 +18,11 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Use this component to generate consistent breadcrumb bars for Midas
- */
+/** Use this component to generate consistent breadcrumb bars for Midas. */
 class BreadcrumbComponent extends AppComponent
 {
     /**
-     * Build a breadcrumb bar for the header and set it on the view provided
+     * Build a breadcrumb bar for the header and set it on the view provided.
      *
      * @param array $nodes ordered list of nodes. Each node must have a 'type' key whose value is
      * in the set {'community', 'folder', 'item', 'user', 'custom'}.
@@ -76,7 +74,7 @@ class BreadcrumbComponent extends AppComponent
      * Create a community breadcrumb from the node. Node should have the following keys:
      * -object The community dao from which to create the breadcrumb
      * -[link] (bool, default = true) Whether to render as a link or just text
-     * -[tab] Which tab anchor to go to if this is a link
+     * -[tab] Which tab anchor to go to if this is a link.
      *
      * @param array $node
      * @param Zend_View $view
@@ -105,7 +103,7 @@ class BreadcrumbComponent extends AppComponent
      * Create a folder breadcrumb from the node. Node should have the following keys:
      * -object The folder dao from which to create the breadcrumb
      * -[link] (bool, default = true) Whether to render as a link or just text
-     * -[open] (bool, default = false) Whether the folder icon should be shown as open or closed
+     * -[open] (bool, default = false) Whether the folder icon should be shown as open or closed.
      *
      * @param array $node
      * @param Zend_View $view
@@ -134,7 +132,7 @@ class BreadcrumbComponent extends AppComponent
     /**
      * Create a user breadcrumb from the node. Node should have the following keys:
      * -object The user dao from which to create the breadcrumb
-     * -[link] (bool, default = true) Whether to render as a link or just text
+     * -[link] (bool, default = true) Whether to render as a link or just text.
      *
      * @param array $node
      * @param Zend_View $view
@@ -161,7 +159,7 @@ class BreadcrumbComponent extends AppComponent
     /**
      * Create an item breadcrumb from the node. Node should have the following keys:
      * -object The item dao from which to create the breadcrumb
-     * -[link] (bool, default = true) Whether to render as a link or just text
+     * -[link] (bool, default = true) Whether to render as a link or just text.
      *
      * @param array $node
      * @param Zend_View $view
@@ -188,7 +186,7 @@ class BreadcrumbComponent extends AppComponent
     /**
      * Create an item breadcrumb from the node. Node should have the following keys:
      * -object The item dao from which to create the breadcrumb
-     * -[link] (bool, default = true) Whether to render as a link or just text
+     * -[link] (bool, default = true) Whether to render as a link or just text.
      *
      * @param array $node
      * @param Zend_View $view
@@ -208,7 +206,7 @@ class BreadcrumbComponent extends AppComponent
      * -text The text of the breadcrumb
      * -icon The icon of the breadcrumb
      * -[href] The URL to link to.  If not set, will just render text instead of a link.
-     * -[maxLength] Number of characters to limit the text to
+     * -[maxLength] Number of characters to limit the text to.
      *
      * @param array $node
      * @param Zend_View $view

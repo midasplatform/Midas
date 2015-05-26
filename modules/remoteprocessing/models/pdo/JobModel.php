@@ -52,7 +52,7 @@ class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
     public function getRelatedItems($job)
     {
         if (!$job instanceof Remoteprocessing_JobDao) {
-            throw new Zend_Exception("Should be an item.");
+            throw new Zend_Exception('Should be an item.');
         }
 
         $sql = $this->database->select()->from('remoteprocessing_job2item')->setIntegrityCheck(false)->where(
@@ -80,13 +80,13 @@ class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
     public function addItemRelation($job, $item, $type = MIDAS_REMOTEPROCESSING_RELATION_TYPE_EXECUTABLE)
     {
         if (!$job instanceof Remoteprocessing_JobDao) {
-            throw new Zend_Exception("Should be a job.");
+            throw new Zend_Exception('Should be a job.');
         }
         if (!$item instanceof ItemDao) {
-            throw new Zend_Exception("Should be an item.");
+            throw new Zend_Exception('Should be an item.');
         }
         if (!is_numeric($type)) {
-            throw new Zend_Exception("Should be a number.");
+            throw new Zend_Exception('Should be a number.');
         }
         $this->database->link('items', $job, $item);
 
@@ -103,7 +103,7 @@ class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
     public function getRelatedJob($item)
     {
         if (!$item instanceof ItemDao) {
-            throw new Zend_Exception("Should be an item.");
+            throw new Zend_Exception('Should be an item.');
         }
 
         $sql = $this->database->select()->from('remoteprocessing_job2item')->setIntegrityCheck(false)->where(
@@ -128,7 +128,7 @@ class Remoteprocessing_JobModel extends Remoteprocessing_JobModelBase
     public function getByUser($user, $limit = 10)
     {
         if (!$user instanceof UserDao) {
-            throw new Zend_Exception("Should be an user.");
+            throw new Zend_Exception('Should be an user.');
         }
 
         $sql = $this->database->select()->from('remoteprocessing_job')->setIntegrityCheck(false)->where(

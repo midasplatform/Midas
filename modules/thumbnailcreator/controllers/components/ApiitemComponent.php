@@ -144,10 +144,15 @@ class Thumbnailcreator_ApiitemComponent extends AppComponent
             );
         }
         $revision = $itemModel->getLastRevision($item);
+        if ($revision === false) {
+            throw new Exception(
+                'The head revision of the item does not contain any revisions', MIDAS_INVALID_POLICY
+            );
+        }
         $bitstreams = $revision->getBitstreams();
         if (count($bitstreams) < 1) {
             throw new Exception(
-                'The head revision of the item does not contain any bitstream', MIDAS_INVALID_PARAMETER
+                'The head revision of the item does not contain any bitstreams', MIDAS_INVALID_POLICY
             );
         }
         $bitstream = $bitstreams[0];

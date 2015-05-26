@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic DAO for the communityagreement module.
- *
- * @package Modules\Communityagreement\DAO
- */
+/** Generic DAO for the communityagreement module. */
 class Communityagreement_AppDao extends MIDAS_GlobalDao
 {
     /** @var string */

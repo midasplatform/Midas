@@ -136,7 +136,7 @@ class UTF8Tools
         foreach ($allFiles as $file) {
             $filecontents = file_get_contents($file);
             if (!$this->isUTF8($filecontents)) {
-                echo "ERROR: non-UTF-8 characters found in ".$file."\n";
+                echo 'ERROR: non-UTF-8 characters found in '.$file."\n";
                 if ($createUtf8Version) {
                     $utf8Version = mb_convert_encoding($filecontents, 'UTF-8');
                     $outfilepath = $file.'.utf8';

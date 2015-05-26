@@ -69,7 +69,7 @@ class Statistics_Notification extends MIDAS_Notification
 
             return array($this->t('Statistics') => $moduleWebroot);
         } else {
-            return null;
+            return;
         }
     }
 
@@ -101,18 +101,18 @@ class Statistics_Notification extends MIDAS_Notification
       document.write(unescape(\"%3Cscript src='\" + pkBaseURL + \"piwik.js' type='text/javascript'%3E%3C/script%3E\"));
       </script><script type=\"text/javascript\">
       try {
-      var piwikTracker = Piwik.getTracker(pkBaseURL + \"piwik.php\", ".htmlspecialchars($id, ENT_QUOTES, 'UTF-8').");
+      var piwikTracker = Piwik.getTracker(pkBaseURL + \"piwik.php\", ".htmlspecialchars($id, ENT_QUOTES, 'UTF-8').');
       piwikTracker.trackPageView();
       piwikTracker.enableLinkTracking();
     } catch ( err ) {}
-      </script><noscript><p><img src=\"".htmlspecialchars($url, ENT_QUOTES, 'UTF-8')."/piwik.php?idsite=".htmlspecialchars($id, ENT_QUOTES, 'UTF-8')."\" style=\"border:0\" alt=\"\" /></p></noscript>
+      </script><noscript><p><img src="'.htmlspecialchars($url, ENT_QUOTES, 'UTF-8').'/piwik.php?idsite='.htmlspecialchars($id, ENT_QUOTES, 'UTF-8').'" style="border:0" alt="" /></p></noscript>
       <!-- End Piwik Tracking Code -->
-      ".$html;
+      '.$html;
     }
 
     /**
      * If a user is deleted, we should remove references to them in the
-     * statistics_download table
+     * statistics_download table.
      *
      * @param userDao the user dao that is about to be deleted
      */

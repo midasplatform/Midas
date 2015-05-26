@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic DAO class for the thumbnailcreator module.
- *
- * @package Modules\Thumbnailcreator\DAO
- */
+/** Generic DAO class for the thumbnailcreator module. */
 class Thumbnailcreator_AppDao extends MIDAS_GlobalDao
 {
     /** @var string */

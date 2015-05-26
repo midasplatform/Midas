@@ -22,7 +22,7 @@
 class UploadComponent extends AppComponent
 {
     /**
-     * Helper function to create the two-level hierarchy
+     * Helper function to create the two-level hierarchy.
      *
      * @param string $directorypath
      * @throws Zend_Exception
@@ -31,14 +31,14 @@ class UploadComponent extends AppComponent
     {
         if (!file_exists($directorypath)) {
             if (!mkdir($directorypath)) {
-                throw new Zend_Exception("Cannot create directory: ".$directorypath);
+                throw new Zend_Exception('Cannot create directory: '.$directorypath);
             }
             chmod($directorypath, 0777);
         }
     }
 
     /**
-     * Upload local bitstream
+     * Upload local bitstream.
      *
      * @param BitstreamDao $bitstreamdao
      * @param AssetstoreDao $assetstoredao
@@ -49,7 +49,7 @@ class UploadComponent extends AppComponent
     {
         // Check if the type of the assetstore is suitable
         if ($assetstoredao->getType() != MIDAS_ASSETSTORE_LOCAL) {
-            throw new Zend_Exception("The assetstore type should be local to upload.");
+            throw new Zend_Exception('The assetstore type should be local to upload.');
         }
 
         // Check if the path of the assetstore exists on the server
@@ -60,7 +60,7 @@ class UploadComponent extends AppComponent
         // Check if the MD5 exists for the bitstream
         $checksum = $bitstreamdao->getChecksum();
         if (empty($checksum)) {
-            throw new Zend_Exception("Checksum is not set.");
+            throw new Zend_Exception('Checksum is not set.');
         }
 
         // If we already have a file of this checksum in any assetstore, we point to it
@@ -98,7 +98,7 @@ class UploadComponent extends AppComponent
     }
 
     /**
-     * Upload a bitstream
+     * Upload a bitstream.
      *
      * @param BitstreamDao $bitstreamdao
      * @param AssetstoreDao $assetstoredao
@@ -124,7 +124,7 @@ class UploadComponent extends AppComponent
     }
 
     /**
-     * Save upload item in the database
+     * Save upload item in the database.
      *
      * @param UserDao $userDao
      * @param string $name
@@ -202,7 +202,7 @@ class UploadComponent extends AppComponent
     }
 
     /**
-     * Save an uploaded file in the database as an item with a new revision
+     * Save an uploaded file in the database as an item with a new revision.
      *
      * @param UserDao $userDao The user who is uploading the item
      * @param string $name The name of the item
@@ -344,7 +344,7 @@ class UploadComponent extends AppComponent
     }
 
     /**
-     * Save new revision in the database
+     * Save new revision in the database.
      *
      * @param UserDao $userDao The user who is creating the revision
      * @param string $name The name of the file being used to create the revision

@@ -78,7 +78,7 @@ class Comments_Notification extends MIDAS_Notification
     }
 
     /**
-     * When a user is getting deleted, we should delete their comments
+     * When a user is getting deleted, we should delete their comments.
      */
     public function handleUserDeleted($params)
     {
@@ -88,7 +88,7 @@ class Comments_Notification extends MIDAS_Notification
     }
 
     /**
-     * When an item is getting deleted, we should delete associated comments
+     * When an item is getting deleted, we should delete associated comments.
      */
     public function handleItemDeleted($params)
     {

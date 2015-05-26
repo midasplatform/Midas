@@ -56,23 +56,24 @@ abstract class FolderpolicyuserModelBase extends AppModel
         parent::delete($dao);
     }
 
-    /** create a policy
+    /**
+     * Create a policy.
      *
      * @return FolderpolicyuserDao
      */
     public function createPolicy($user, $folder, $policy)
     {
         if (!$user instanceof UserDao) {
-            throw new Zend_Exception("Should be a user.");
+            throw new Zend_Exception('Should be a user.');
         }
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder.");
+            throw new Zend_Exception('Should be a folder.');
         }
         if (!is_numeric($policy)) {
-            throw new Zend_Exception("Should be a number.");
+            throw new Zend_Exception('Should be a number.');
         }
         if (!$user->saved && !$folder->saved) {
-            throw new Zend_Exception("Save the daos first.");
+            throw new Zend_Exception('Save the daos first.');
         }
         $policyUser = $this->getPolicy($user, $folder);
         if ($policyUser !== false) {

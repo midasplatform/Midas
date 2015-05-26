@@ -24,6 +24,6 @@ class Communityagreement_Upgrade_1_0_1 extends MIDASUpgrade
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $this->db->query("CREATE INDEX communityagreement_agreement_community_id_idx ON communityagreement_agreement (community_id);");
+        $this->db->query('CREATE INDEX communityagreement_agreement_community_id_idx ON communityagreement_agreement (community_id);');
     }
 }

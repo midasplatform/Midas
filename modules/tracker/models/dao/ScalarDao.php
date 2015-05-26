@@ -47,7 +47,6 @@
  * @method void setTrend(Tracker_TrendDao $trendDao)
  * @method UserDao getUser()
  * @method void setUser(UserDao $userDao)
- * @package Modules\Tracker\DAO
  */
 class Tracker_ScalarDao extends Tracker_AppDao
 {

@@ -68,11 +68,11 @@ class Batchmake_ApiComponent extends AppComponent
     public function testconfig($params)
     {
         // any values that aren't filled in, fill them in with a blank
-        $expectedKeys = array("tmp_dir", "bin_dir", "script_dir", "app_dir", "data_dir", "condor_bin_dir");
+        $expectedKeys = array('tmp_dir', 'bin_dir', 'script_dir', 'app_dir', 'data_dir', 'condor_bin_dir');
         $configParams = array();
         foreach ($expectedKeys as $propKey) {
             if (!isset($params[$propKey])) {
-                $configParams[$propKey] = "";
+                $configParams[$propKey] = '';
             } else {
                 $configParams[$propKey] = $params[$propKey];
             }
@@ -85,7 +85,7 @@ class Batchmake_ApiComponent extends AppComponent
     }
 
     /**
-     * Add a condorDag entry to the specified batchmake task
+     * Add a condorDag entry to the specified batchmake task.
      *
      * @param token Authentication token
      * @param batchmaketaskid The id of the batchmake task for this dag
@@ -97,9 +97,9 @@ class Batchmake_ApiComponent extends AppComponent
     public function addCondorDag($params)
     {
         $keys = array(
-            "batchmaketaskid" => "batchmaketaskid",
-            "dagfilename" => "dagfilename",
-            "outfilename" => "outfilename",
+            'batchmaketaskid' => 'batchmaketaskid',
+            'dagfilename' => 'dagfilename',
+            'outfilename' => 'outfilename',
         );
         $this->_checkKeys($keys, $params);
 
@@ -114,9 +114,9 @@ class Batchmake_ApiComponent extends AppComponent
         /** @var Batchmake_CondorDagModel $condorDagModel */
         $condorDagModel = MidasLoader::loadModel('CondorDag', 'batchmake');
 
-        $batchmakeTaskId = $params["batchmaketaskid"];
-        $dagFilename = $params["dagfilename"];
-        $outFilename = $params["outfilename"];
+        $batchmakeTaskId = $params['batchmaketaskid'];
+        $dagFilename = $params['dagfilename'];
+        $outFilename = $params['outfilename'];
 
         $taskDao = $taskModel->load($batchmakeTaskId);
         if (empty($taskDao)) {
@@ -127,19 +127,19 @@ class Batchmake_ApiComponent extends AppComponent
         }
 
         $data = array(
-            "batchmake_task_id" => $batchmakeTaskId,
-            "dag_filename" => $dagFilename,
-            "out_filename" => $outFilename,
+            'batchmake_task_id' => $batchmakeTaskId,
+            'dag_filename' => $dagFilename,
+            'out_filename' => $outFilename,
         );
 
-        $condorDagDao = $condorDagModel->initDao("CondorDag", $data, 'batchmake');
+        $condorDagDao = $condorDagModel->initDao('CondorDag', $data, 'batchmake');
         $condorDagModel->save($condorDagDao);
 
         return $condorDagDao;
     }
 
     /**
-     * Add a condorJob entry to the specified batchmake task
+     * Add a condorJob entry to the specified batchmake task.
      *
      * @param token Authentication token
      * @param batchmaketaskid The id of the batchmake task for this dag
@@ -153,12 +153,12 @@ class Batchmake_ApiComponent extends AppComponent
     public function addCondorJob($params)
     {
         $keys = array(
-            "batchmaketaskid" => "batchmaketaskid",
-            "jobdefinitionfilename" => "jobdefinitionfilename",
-            "outputfilename" => "outputfilename",
-            "errorfilename" => "errorfilename",
-            "logfilename" => "logfilename",
-            "postfilename" => "postfilename",
+            'batchmaketaskid' => 'batchmaketaskid',
+            'jobdefinitionfilename' => 'jobdefinitionfilename',
+            'outputfilename' => 'outputfilename',
+            'errorfilename' => 'errorfilename',
+            'logfilename' => 'logfilename',
+            'postfilename' => 'postfilename',
         );
         $this->_checkKeys($keys, $params);
 
@@ -176,12 +176,12 @@ class Batchmake_ApiComponent extends AppComponent
         /** @var Batchmake_CondorJobModel $condorJobModel */
         $condorJobModel = MidasLoader::loadModel('CondorJob', 'batchmake');
 
-        $batchmakeTaskId = $params["batchmaketaskid"];
-        $jobdefinitionFilename = $params["jobdefinitionfilename"];
-        $outputFilename = $params["outputfilename"];
-        $errorFilename = $params["errorfilename"];
-        $logFilename = $params["logfilename"];
-        $postFilename = $params["postfilename"];
+        $batchmakeTaskId = $params['batchmaketaskid'];
+        $jobdefinitionFilename = $params['jobdefinitionfilename'];
+        $outputFilename = $params['outputfilename'];
+        $errorFilename = $params['errorfilename'];
+        $logFilename = $params['logfilename'];
+        $postFilename = $params['postfilename'];
 
         $taskDao = $taskModel->load($batchmakeTaskId);
         if (empty($taskDao)) {
@@ -192,7 +192,7 @@ class Batchmake_ApiComponent extends AppComponent
         }
 
         // get the dag via the batchmaketask
-        $condorDags = $condorDagModel->findBy("batchmake_task_id", $batchmakeTaskId);
+        $condorDags = $condorDagModel->findBy('batchmake_task_id', $batchmakeTaskId);
         if (empty($condorDags) || count($condorDags) === 0) {
             throw new Exception('There is no condor dag for this batchmaketaskid', MIDAS_BATCHMAKE_INVALID_PARAMETER);
         }
@@ -201,15 +201,15 @@ class Batchmake_ApiComponent extends AppComponent
         $condorDagId = $condorDagDao->getCondorDagId();
 
         $data = array(
-            "condor_dag_id" => $condorDagId,
-            "jobdefinition_filename" => $jobdefinitionFilename,
-            "output_filename" => $outputFilename,
-            "error_filename" => $errorFilename,
-            "log_filename" => $logFilename,
-            "post_filename" => $postFilename,
+            'condor_dag_id' => $condorDagId,
+            'jobdefinition_filename' => $jobdefinitionFilename,
+            'output_filename' => $outputFilename,
+            'error_filename' => $errorFilename,
+            'log_filename' => $logFilename,
+            'post_filename' => $postFilename,
         );
 
-        $condorJobDao = $condorJobModel->initDao("CondorJob", $data, 'batchmake');
+        $condorJobDao = $condorJobModel->initDao('CondorJob', $data, 'batchmake');
         $condorJobModel->save($condorJobDao);
 
         return $condorJobDao;

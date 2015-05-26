@@ -35,11 +35,11 @@ class Remoteprocessing_JobComponent extends AppComponent
     ) {
         $notifications = Zend_Registry::get('notifier')->getNotifications();
         if (!isset($notifications[$resultCallback])) {
-            throw new Zend_Exception("Unable to find callback ".$resultCallback);
+            throw new Zend_Exception('Unable to find callback '.$resultCallback);
         }
         if (!is_array($inputArray) || !is_array($ouputArray) || !is_array($additionalParams)
         ) {
-            throw new Zend_Exception("Error params");
+            throw new Zend_Exception('Error params');
         }
 
         $return = $additionalParams;
@@ -49,14 +49,14 @@ class Remoteprocessing_JobComponent extends AppComponent
 
         foreach ($inputArray as $input) {
             if (!$input instanceof ItemDao) {
-                throw new Zend_Exception("Error params. Shoud be an itemdao");
+                throw new Zend_Exception('Error params. Shoud be an itemdao');
             }
             $return['input'][] = $input->getKey();
         }
 
         foreach ($ouputArray as $output) {
             if (!is_string($output)) {
-                throw new Zend_Exception("Error params. Shoud be a string");
+                throw new Zend_Exception('Error params. Shoud be a string');
             }
             $return['output'][] = $output;
         }
@@ -91,9 +91,9 @@ class Remoteprocessing_JobComponent extends AppComponent
         }
 
         if (isset($scheduleParams['fire_time'])) {
-            Zend_Registry::get('notifier')->callback("CALLBACK_SCHEDULER_SCHEDULE_TASK", $scheduleParams);
+            Zend_Registry::get('notifier')->callback('CALLBACK_SCHEDULER_SCHEDULE_TASK', $scheduleParams);
         } else {
-            Zend_Registry::get('notifier')->callback("CALLBACK_REMOTEPROCESSING_ADD_JOB", $scriptParams);
+            Zend_Registry::get('notifier')->callback('CALLBACK_REMOTEPROCESSING_ADD_JOB', $scriptParams);
         }
     }
 
@@ -101,16 +101,16 @@ class Remoteprocessing_JobComponent extends AppComponent
     public function computeLogs($job, $logs, $params)
     {
         unset($params['log']);
-        $logs = str_replace("\r\n", "", $logs);
+        $logs = str_replace("\r\n", '', $logs);
         $logs = str_replace("\r\r", "\r", $logs);
         $xml = "<?xml version='1.0'?>\n";
         $xml .= "<Job id='".$job->getKey()."' name='".$job->getName()."'>\n";
         $xml .= "<JobParameters>\n";
-        $xml .= "<![CDATA[".JsonComponent::encode($params)."]]>";
+        $xml .= '<![CDATA['.JsonComponent::encode($params).']]>';
         $xml .= "</JobParameters>\n";
         $logs = explode("-COMMAND\r", $logs);
         if (count($logs) < 2) {
-            return "";
+            return '';
         }
         unset($logs[0]);
         foreach ($logs as $log) {
@@ -129,11 +129,11 @@ class Remoteprocessing_JobComponent extends AppComponent
                 $failed = true;
             }
             $lowerout = strtolower($stdout);
-            if (strpos($lowerout, "error") !== false) {
+            if (strpos($lowerout, 'error') !== false) {
                 $failed = true;
             }
 
-            $xml .= "<Process status=";
+            $xml .= '<Process status=';
             if ($failed) {
                 $xml .= "'failed'";
             } else {
@@ -141,18 +141,18 @@ class Remoteprocessing_JobComponent extends AppComponent
             }
             $xml .= ">\n";
             $xml .= "<Command>\n";
-            $xml .= "<![CDATA[".$command."]]>";
+            $xml .= '<![CDATA['.$command.']]>';
             $xml .= "</Command>\n";
             $xml .= "<ExecutionTime>\n";
-            $xml .= "<![CDATA[".$executionTime."]]>";
+            $xml .= '<![CDATA['.$executionTime.']]>';
             $xml .= "</ExecutionTime>\n";
             $xml .= "<Output>\n";
-            $xml .= "<![CDATA[".$stdout."]]>";
+            $xml .= '<![CDATA['.$stdout.']]>';
             $xml .= "</Output>\n";
             $xml .= "<Error>\n";
-            $xml .= "<![CDATA[".$stderr."]]>";
+            $xml .= '<![CDATA['.$stderr.']]>';
             $xml .= "</Error>\n";
-            $xml .= "</Process>";
+            $xml .= '</Process>';
         }
         $xml .= "</Job>\n";
 
@@ -185,7 +185,7 @@ class Remoteprocessing_JobComponent extends AppComponent
             $tmp['stdout'] = trim((string) $process->Output);
             $tmp['xmlStdout'] = simplexml_load_string($tmp['stdout'], 'SimpleXMLElement', LIBXML_NOCDATA);
             $tmp['time'] = (float) trim(
-                str_replace("s", "", (string) $process->ExecutionTime)
+                str_replace('s', '', (string) $process->ExecutionTime)
             ); // convert in milliseconds
             $tmp['output'] = array();
             $tmp['parameters'] = array();

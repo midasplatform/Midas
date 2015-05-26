@@ -22,7 +22,7 @@ require_once BASE_PATH.'/core/models/base/CommunityModelBase.php';
 
 /**
  *  UserModel
- *  Pdo Model
+ *  Pdo Model.
  */
 class CommunityModel extends CommunityModelBase
 {
@@ -64,7 +64,7 @@ class CommunityModel extends CommunityModelBase
     public function getByFolder($folder)
     {
         if (!$folder instanceof FolderDao) {
-            throw new Zend_Exception("Should be a folder");
+            throw new Zend_Exception('Should be a folder');
         }
 
         $row = $this->database->fetchRow(
@@ -105,7 +105,7 @@ class CommunityModel extends CommunityModelBase
     public function getPublicCommunities($limit = 20)
     {
         if (!is_numeric($limit)) {
-            throw new Zend_Exception("limit should be numeric when getting public communities.");
+            throw new Zend_Exception('limit should be numeric when getting public communities.');
         }
         $sql = $this->database->select()->from($this->_name)->where('privacy != ?', MIDAS_COMMUNITY_PRIVATE)->limit(
             $limit
@@ -141,7 +141,7 @@ class CommunityModel extends CommunityModelBase
         if ($userDao == null) {
             $userId = -1;
         } elseif (!$userDao instanceof UserDao) {
-            throw new Zend_Exception("Should be an user.");
+            throw new Zend_Exception('Should be an user.');
         } else {
             $userId = $userDao->getUserId();
             $userGroups = $userDao->getGroups();

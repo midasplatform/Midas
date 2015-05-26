@@ -54,16 +54,16 @@ abstract class ItempolicyuserModelBase extends AppModel
     public function createPolicy($user, $item, $policy)
     {
         if (!$user instanceof UserDao) {
-            throw new Zend_Exception("Should be a user.");
+            throw new Zend_Exception('Should be a user.');
         }
         if (!$item instanceof ItemDao) {
-            throw new Zend_Exception("Should be an item.");
+            throw new Zend_Exception('Should be an item.');
         }
         if (!is_numeric($policy)) {
-            throw new Zend_Exception("Should be a number.");
+            throw new Zend_Exception('Should be a number.');
         }
         if (!$user->saved && !$item->saved) {
-            throw new Zend_Exception("Save the daos first.");
+            throw new Zend_Exception('Save the daos first.');
         }
         $policyUser = $this->getPolicy($user, $item);
         if ($policyUser !== false) {

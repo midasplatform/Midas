@@ -32,11 +32,11 @@ class Dicomserver_ApiComponent extends AppComponent
             return $rtn;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Start DICOM server
+     * Start DICOM server.
      *
      * @param email (Optional) The user email to login
      * @param apikey (Optional) The user apikey to login
@@ -56,7 +56,7 @@ class Dicomserver_ApiComponent extends AppComponent
     }
 
     /**
-     * Check DICOM server status
+     * Check DICOM server status.
      *
      * @param storescp_cmd (Optional) The command to run storescp
      * @param dcmqrscp_cmd (Optional) The command to run dcmqrscp
@@ -68,7 +68,7 @@ class Dicomserver_ApiComponent extends AppComponent
     }
 
     /**
-     * Stop DICOM server
+     * Stop DICOM server.
      *
      * @param storescp_cmd (Optional) The command to run storescp
      * @param dcmqrscp_cmd (Optional) The command to run dcmqrscp

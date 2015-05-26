@@ -102,7 +102,7 @@ class Api_CallFolderMethodsTest extends Api_CallMethodsTestCase
         $this->params['token'] = $this->_loginAsNormalUser();
         $this->params['method'] = 'midas.folder.create';
         $this->params['name'] = 'testFolderCreate';
-        $this->params['parentid'] = "1012";
+        $this->params['parentid'] = '1012';
         $resp = $this->_callJsonApi();
         $this->_assertStatusFail($resp, MIDAS_INVALID_POLICY);
 
@@ -111,7 +111,7 @@ class Api_CallFolderMethodsTest extends Api_CallMethodsTestCase
         $this->params['token'] = $this->_loginAsNormalUser();
         $this->params['method'] = 'midas.folder.create';
         $this->params['name'] = 'testFolderCreate';
-        $this->params['parentid'] = "1013";
+        $this->params['parentid'] = '1013';
         $resp = $this->_callJsonApi();
         $this->_assertStatusOk($resp);
 
@@ -138,7 +138,7 @@ class Api_CallFolderMethodsTest extends Api_CallMethodsTestCase
             // get the current folder name
             $freshfolder = $folderModel->load($folder->getFolderId());
             $folderName = $freshfolder->getName();
-            $newfolderName = $folderName."suffix";
+            $newfolderName = $folderName.'suffix';
             $this->resetAll();
             $this->params['token'] = $this->_loginAsUser($userDao);
             $this->params['method'] = 'midas.folder.create';
@@ -178,7 +178,7 @@ class Api_CallFolderMethodsTest extends Api_CallMethodsTestCase
         //              Private -> Private
         //              Private -> Public
         $privacyStatuses = array(MIDAS_PRIVACY_PUBLIC, MIDAS_PRIVACY_PRIVATE);
-        $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
+        $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => 'Public', MIDAS_PRIVACY_PRIVATE => 'Private');
         foreach ($privacyStatuses as $initialStatus) {
             foreach ($privacyStatuses as $finalStatus) {
                 $this->initializePrivacyStatus(array($adminFolder), array(), $initialStatus);
@@ -349,9 +349,9 @@ class Api_CallFolderMethodsTest extends Api_CallMethodsTestCase
 
         // ensure user perms are correct from the most recent call
         $privilegeCodes = array(
-            "Admin" => MIDAS_POLICY_ADMIN,
-            "Write" => MIDAS_POLICY_WRITE,
-            "Read" => MIDAS_POLICY_READ,
+            'Admin' => MIDAS_POLICY_ADMIN,
+            'Write' => MIDAS_POLICY_WRITE,
+            'Read' => MIDAS_POLICY_READ,
         );
         $userPolicies = $adminFolder->getFolderpolicyuser();
         $apiUserPolicies = $resp->data->user;
@@ -396,10 +396,10 @@ class Api_CallFolderMethodsTest extends Api_CallMethodsTestCase
         $itemModel = MidasLoader::loadModel('Item');
 
         /** @var FolderpolicyuserModel $folderpolicyuserModel */
-        $folderpolicyuserModel = MidasLoader::loadModel("Folderpolicyuser");
+        $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
 
         /** @var ItempolicyuserModel $itempolicyuserModel */
-        $itempolicyuserModel = MidasLoader::loadModel("Itempolicyuser");
+        $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
 
         $userDao = $userModel->load('1');
 
@@ -457,7 +457,7 @@ class Api_CallFolderMethodsTest extends Api_CallMethodsTestCase
         //              Private -> Private
         //              Private -> Public
         $privacyStatuses = array(MIDAS_PRIVACY_PUBLIC, MIDAS_PRIVACY_PRIVATE);
-        $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => "Public", MIDAS_PRIVACY_PRIVATE => "Private");
+        $privacyStrings = array(MIDAS_PRIVACY_PUBLIC => 'Public', MIDAS_PRIVACY_PRIVATE => 'Private');
         foreach ($privacyStatuses as $initialStatus) {
             foreach ($privacyStatuses as $finalStatus) {
                 $this->initializePrivacyStatus($testFolders, $testItems, $initialStatus);
@@ -493,10 +493,10 @@ class Api_CallFolderMethodsTest extends Api_CallMethodsTestCase
         $groupModel = MidasLoader::loadModel('Group');
 
         /** @var FolderpolicyuserModel $folderpolicyuserModel */
-        $folderpolicyuserModel = MidasLoader::loadModel("Folderpolicyuser");
+        $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
 
         /** @var ItempolicyuserModel $itempolicyuserModel */
-        $itempolicyuserModel = MidasLoader::loadModel("Itempolicyuser");
+        $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
 
         $userDao = $userModel->load('1');
 
@@ -721,10 +721,10 @@ class Api_CallFolderMethodsTest extends Api_CallMethodsTestCase
         $itemModel = MidasLoader::loadModel('Item');
 
         /** @var FolderpolicyuserModel $folderpolicyuserModel */
-        $folderpolicyuserModel = MidasLoader::loadModel("Folderpolicyuser");
+        $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
 
         /** @var ItempolicyuserModel $itempolicyuserModel */
-        $itempolicyuserModel = MidasLoader::loadModel("Itempolicyuser");
+        $itempolicyuserModel = MidasLoader::loadModel('Itempolicyuser');
 
         $userDao = $userModel->load('1');
         $folderModel = MidasLoader::loadModel('Folder');

@@ -22,7 +22,7 @@
 class Example_WalletModelBase extends Example_AppModel
 {
     /**
-     * constructor
+     * constructor.
      */
     public function __construct()
     {
@@ -46,7 +46,6 @@ class Example_WalletModelBase extends Example_AppModel
     }
 
     /** Create a wallet
-     *
      * @return WalletDao
      */
     public function createWallet($userDao, $dollars)

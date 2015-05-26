@@ -26,7 +26,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
     public $moduleName = 'remoteprocessing';
 
     /**
-     * Register a server
+     * Register a server.
      *
      * @param email (Optional)
      * @param apikey (Optional)
@@ -111,7 +111,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
     }
 
     /**
-     * The client ping Midas Server and the server tells it what it should do
+     * The client ping Midas Server and the server tells it what it should do.
      *
      * @param token
      * @return Array
@@ -203,7 +203,7 @@ class Remoteprocessing_ApiComponent extends AppComponent
     }
 
     /**
-     * The client sends the results to Midas Server (put request)
+     * The client sends the results to Midas Server (put request).
      *
      * @param token
      *
@@ -260,20 +260,20 @@ class Remoteprocessing_ApiComponent extends AppComponent
         mkdir($destination);
 
         if (!$testingmode) {
-            move_uploaded_file($_FILES['file']['tmp_name'], $destination."/results.zip");
+            move_uploaded_file($_FILES['file']['tmp_name'], $destination.'/results.zip');
         }
 
         if ($testingmode) {
             return array();
         }
 
-        if (file_exists($destination."/results.zip")) {
+        if (file_exists($destination.'/results.zip')) {
             mkdir($destination.'/content');
             $target_directory = $destination.'/content';
             $filter = new Zend_Filter_Decompress(
                 array('adapter' => 'Zip', 'options' => array('target' => $target_directory))
             );
-            $compressed = $filter->filter($destination."/results.zip");
+            $compressed = $filter->filter($destination.'/results.zip');
             if ($compressed && file_exists($target_directory.'/parameters.txt')
             ) {
                 $info = file_get_contents($target_directory.'/parameters.txt');
@@ -312,11 +312,11 @@ class Remoteprocessing_ApiComponent extends AppComponent
         }
 
         foreach ($objects as $object) {
-            if ($object != "." && $object != "..") {
-                if (filetype($dir."/".$object) == "dir") {
-                    $this->_rrmdir($dir."/".$object);
+            if ($object != '.' && $object != '..') {
+                if (filetype($dir.'/'.$object) == 'dir') {
+                    $this->_rrmdir($dir.'/'.$object);
                 } else {
-                    unlink($dir."/".$object);
+                    unlink($dir.'/'.$object);
                 }
             }
         }

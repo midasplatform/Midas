@@ -32,6 +32,9 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
+        if ($revision === false) {
+            return false;
+        }
         $bitstreams = $revision->getBitstreams();
         $metaFile = false;
         foreach ($bitstreams as $b) {
@@ -52,6 +55,9 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $revision = $itemModel->getLastRevision($itemDao);
+        if ($revision === false) {
+            return false;
+        }
         $bitstreams = $revision->getBitstreams();
         foreach ($bitstreams as $b) {
             if (is_executable($b->getFullPath())) {
@@ -203,13 +209,13 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
     /** generate suffix output name */
     private function _generateSuffixOutputName($commandList, $parametersList)
     {
-        $return = "";
+        $return = '';
         foreach ($commandList as $key => $command) {
             if (isset($parametersList[$key]) && !empty($parametersList[$key])) {
-                $return = $return.substr($parametersList[$key], 0, 6)."-";
+                $return = $return.substr($parametersList[$key], 0, 6).'-';
                 $command = str_replace('"', '', $command);
                 $command = (string) str_replace(' ', '', $command);
-                $return = $return.$command."_";
+                $return = $return.$command.'_';
             }
         }
 

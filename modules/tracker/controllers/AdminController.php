@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Admin controller for the tracker module.
- *
- * @package Modules\Tracker\Controller
- */
+/** Admin controller for the tracker module. */
 class Tracker_AdminController extends Tracker_AppController
 {
     /** @var array */

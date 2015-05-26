@@ -24,14 +24,14 @@ class Upgrade_3_2_16 extends MIDASUpgrade
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query("ALTER TABLE `metadata` DROP COLUMN `description`;");
-        $this->db->query("DROP TABLE IF EXISTS `metadatadocumentvalue`;");
+        $this->db->query('ALTER TABLE `metadata` DROP COLUMN `description`;');
+        $this->db->query('DROP TABLE IF EXISTS `metadatadocumentvalue`;');
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
-        $this->db->query("ALTER TABLE metadata DROP COLUMN description;");
-        $this->db->query("DROP TABLE IF EXISTS metadatadocumentvalue;");
+        $this->db->query('ALTER TABLE metadata DROP COLUMN description;');
+        $this->db->query('DROP TABLE IF EXISTS metadatadocumentvalue;');
     }
 }

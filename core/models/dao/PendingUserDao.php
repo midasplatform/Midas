@@ -35,7 +35,6 @@
  * @method void setSalt(string $salt)
  * @method string getDateCreation()
  * @method void setDateCreation(string $dateCreation)
- * @package Core\DAO
  */
 class PendingUserDao extends AppDao
 {

@@ -128,7 +128,7 @@ abstract class ItemModelBase extends AppModel
     public function copyItemPolicies($itemdao, $referenceItemdao, $feeddao = null)
     {
         if (!$itemdao instanceof ItemDao || !$referenceItemdao instanceof ItemDao) {
-            throw new Zend_Exception("Error in param itemdao or referenceItemdao when copying parent policies.");
+            throw new Zend_Exception('Error in param itemdao or referenceItemdao when copying parent policies.');
         }
         $groupPolicies = $referenceItemdao->getItempolicygroup();
         $userPolicies = $referenceItemdao->getItempolicyuser();
@@ -206,7 +206,7 @@ abstract class ItemModelBase extends AppModel
     public function copyParentPolicies($itemdao, $folderdao, $feeddao = null)
     {
         if (!$itemdao instanceof ItemDao || !$folderdao instanceof FolderDao) {
-            throw new Zend_Exception("Error in param itemdao or folderdao when copying parent policies.");
+            throw new Zend_Exception('Error in param itemdao or folderdao when copying parent policies.');
         }
         $groupPolicies = $folderdao->getFolderpolicygroup();
         $userPolicies = $folderdao->getFolderpolicyuser();
@@ -239,9 +239,8 @@ abstract class ItemModelBase extends AppModel
     }
 
     /** Grant read only permission for an item in the target folder
-     *
      * share an item to destination folder (grant read-only permission to users/groups who can
-     * access the destination folder )
+     * access the destination folder ).
      *
      * @param  ItemDao $itemDao the item to be shared
      * @param  FolderDao $folderDao destination folder
@@ -250,7 +249,7 @@ abstract class ItemModelBase extends AppModel
     public function addReadonlyPolicy($itemdao, $folderdao)
     {
         if (!$itemdao instanceof ItemDao || !$folderdao instanceof FolderDao) {
-            throw new Zend_Exception("Error in itemdao or folderdao when adding read only policy.");
+            throw new Zend_Exception('Error in itemdao or folderdao when adding read only policy.');
         }
         $groupPolicies = $folderdao->getFolderpolicygroup();
         $existingGroupPolicies = $itemdao->getItempolicygroup();
@@ -273,7 +272,7 @@ abstract class ItemModelBase extends AppModel
     }
 
     /**
-     * Duplicate an item in destination folder/community
+     * Duplicate an item in destination folder/community.
      *
      * Create a new item (same as old one) in destination folder/community. The new item
      * have the same metadata and revisions with the old one, but its owner is set as the
@@ -289,10 +288,10 @@ abstract class ItemModelBase extends AppModel
     public function duplicateItem($itemDao, $userDao, $folderDao)
     {
         if (!$itemDao instanceof ItemDao || !$folderDao instanceof FolderDao) {
-            throw new Zend_Exception("Error in ItemDao or FolderDao when duplicating item");
+            throw new Zend_Exception('Error in ItemDao or FolderDao when duplicating item');
         }
         if (!$userDao instanceof UserDao) {
-            throw new Zend_Exception("Should be an user.");
+            throw new Zend_Exception('Should be an user.');
         }
 
         /** @var BitstreamModel $BitstreamModel */
@@ -379,7 +378,7 @@ abstract class ItemModelBase extends AppModel
     public function incrementViewCount($itemdao)
     {
         if (!$itemdao instanceof ItemDao) {
-            throw new Zend_Exception("Error in param itemdao when incrementing view count.");
+            throw new Zend_Exception('Error in param itemdao when incrementing view count.');
         }
         $user = Zend_Registry::get('userSession');
         if (isset($user)) {
@@ -397,11 +396,11 @@ abstract class ItemModelBase extends AppModel
     public function incrementDownloadCount($itemdao)
     {
         if (!$itemdao instanceof ItemDao) {
-            throw new Zend_Exception("Error in param itemdao when incrementing download count.");
+            throw new Zend_Exception('Error in param itemdao when incrementing download count.');
         }
         $itemdao->download++;
         parent::save($itemdao);
-        Zend_Registry::get('notifier')->callback("CALLBACK_CORE_PLUS_ONE_DOWNLOAD", array('item' => $itemdao));
+        Zend_Registry::get('notifier')->callback('CALLBACK_CORE_PLUS_ONE_DOWNLOAD', array('item' => $itemdao));
     }
 
     /**
@@ -414,10 +413,10 @@ abstract class ItemModelBase extends AppModel
     public function addRevision($itemdao, $revisiondao)
     {
         if (!$itemdao instanceof ItemDao) {
-            throw new Zend_Exception("First argument should be an item");
+            throw new Zend_Exception('First argument should be an item');
         }
         if (!$revisiondao instanceof ItemRevisionDao) {
-            throw new Zend_Exception("Second argument should be an item revision");
+            throw new Zend_Exception('Second argument should be an item revision');
         }
 
         /** @var ItemRevisionModel $ItemRevisionModel */
@@ -446,13 +445,13 @@ abstract class ItemModelBase extends AppModel
     public function removeRevision($itemdao, $revisiondao)
     {
         if (!$itemdao instanceof ItemDao) {
-            throw new Zend_Exception("First argument should be an item");
+            throw new Zend_Exception('First argument should be an item');
         }
         if (!$revisiondao instanceof ItemRevisionDao) {
-            throw new Zend_Exception("Second argument should be an item revision");
+            throw new Zend_Exception('Second argument should be an item revision');
         }
         if ($revisiondao->getItemId() != $itemdao->getItemId()) {
-            throw new Zend_Exception("Revision needs to be associated with Item");
+            throw new Zend_Exception('Revision needs to be associated with Item');
         }
 
         /** @var ItemRevisionModel $itemRevisionModel */
@@ -527,7 +526,7 @@ abstract class ItemModelBase extends AppModel
 
     /**
      * Count the bitstreams under this item's head revision.
-     * Returns array('size'=>size_in_bytes, 'count'=>total_number_of_bitstreams)
+     * Returns array('size'=>size_in_bytes, 'count'=>total_number_of_bitstreams).
      */
     public function countBitstreams($itemDao)
     {
@@ -567,8 +566,8 @@ abstract class ItemModelBase extends AppModel
                     $items[] = $itemDao;
                 } else {
                     $this->getLogger()->info(
-                        __METHOD__." User unable to merge item ".$itemDao->getKey(
-                        )." due to insufficient "."permissions."
+                        __METHOD__.' User unable to merge item '.$itemDao->getKey(
+                        ).' due to insufficient '.'permissions.'
                     );
                     if ($progress) {
                         $current++;
@@ -578,7 +577,7 @@ abstract class ItemModelBase extends AppModel
                 }
             } else {
                 $this->getLogger()->info(
-                    __METHOD__." User unable to merge item ".$item." because it does not exist."
+                    __METHOD__.' User unable to merge item '.$item.' because it does not exist.'
                 );
                 if ($progress) {
                     $current++;

@@ -37,7 +37,7 @@ class Thumbnailcreator_Notification extends ApiEnabled_Notification
         $this->addTask(
             'TASK_THUMBNAILCREATOR_CREATE',
             'createThumbnail',
-            "Create Thumbnail. Parameters: Item, Revision"
+            'Create Thumbnail. Parameters: Item, Revision'
         );
         $this->addEvent('EVENT_CORE_CREATE_THUMBNAIL', 'TASK_THUMBNAILCREATOR_CREATE');
 
@@ -82,7 +82,7 @@ class Thumbnailcreator_Notification extends ApiEnabled_Notification
     }
 
     /**
-     * When an item is being deleted, we should remove corresponding thumbnails
+     * When an item is being deleted, we should remove corresponding thumbnails.
      */
     public function handleItemDeleted($params)
     {

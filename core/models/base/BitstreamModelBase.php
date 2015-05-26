@@ -143,7 +143,7 @@ abstract class BitstreamModelBase extends AppModel
     {
         if (!file_exists($directorypath)) {
             if (!mkdir($directorypath)) {
-                throw new Zend_Exception("Cannot create directory: ".$directorypath);
+                throw new Zend_Exception('Cannot create directory: '.$directorypath);
             }
             chmod($directorypath, 0777);
         }

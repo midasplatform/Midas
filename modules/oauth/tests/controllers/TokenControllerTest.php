@@ -34,7 +34,7 @@ class Oauth_TokenControllerTest extends ControllerTestCase
     }
 
     /**
-     * Helper function for asserting error responses from the token endpoint
+     * Helper function for asserting error responses from the token endpoint.
      *
      * @param string $errorName The error name as specified in the IETF spec draft
      */
@@ -47,7 +47,7 @@ class Oauth_TokenControllerTest extends ControllerTestCase
     /**
      * This tests the token endpoint, used by clients for
      * 1. Exchanging an authorization code for access/refresh tokens
-     * 2. Using a refresh token to get a new access token
+     * 2. Using a refresh token to get a new access token.
      */
     public function testIndexAction()
     {
@@ -197,7 +197,7 @@ class Oauth_TokenControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test actually using access tokens to authenticate when calling API methods
+     * Test actually using access tokens to authenticate when calling API methods.
      */
     public function testApiAccess()
     {
@@ -249,7 +249,7 @@ class Oauth_TokenControllerTest extends ControllerTestCase
     }
 
     /**
-     * Helper method to make sure that a web api call failed
+     * Helper method to make sure that a web api call failed.
      */
     private function _assertApiFailure()
     {
@@ -259,7 +259,7 @@ class Oauth_TokenControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test deletion of tokens (done via the OAuth user settings tab)
+     * Test deletion of tokens (done via the OAuth user settings tab).
      */
     public function testDeauthorize()
     {

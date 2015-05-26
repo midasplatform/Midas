@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic DAO class for the dicomserver module.
- *
- * @package Modules\Dicomserver\DAO
- */
+/** Generic DAO class for the dicomserver module. */
 class Dicomserver_AppDao extends MIDAS_GlobalDao
 {
     /** @var string */

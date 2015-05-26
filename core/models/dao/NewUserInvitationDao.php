@@ -41,7 +41,6 @@
  * @method void setGroup(GroupDao $group)
  * @method UserDao getInviter()
  * @method void setInviter(UserDao $inviter)
- * @package Core\DAO
  */
 class NewUserInvitationDao extends AppDao
 {

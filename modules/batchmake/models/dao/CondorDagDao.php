@@ -29,7 +29,6 @@
  * @method void setOutFilename(string $outFilename)
  * @method string getDagFilename()
  * @method void setDagFilename(string $dagFilename)
- * @package Modules\Batchmake\DAO
  */
 class Batchmake_CondorDagDao extends AppDao
 {

@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Base model class for the module
- */
+/** Base model class for the module. */
 class Packages_AppModel extends MIDASModel
 {
     public $moduleName = 'packages';

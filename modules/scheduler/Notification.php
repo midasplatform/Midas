@@ -32,7 +32,7 @@ class Scheduler_Notification extends MIDAS_Notification
         $this->addTask(
             'TASK_SCHEDULER_SCHEDULE_TASK',
             'scheduleTask',
-            "Schedule a task. Parameters: task, priority, params"
+            'Schedule a task. Parameters: task, priority, params'
         );
 
         $this->addCallBack('CALLBACK_SCHEDULER_SCHEDULE_TASK', 'scheduleTask');

@@ -28,7 +28,6 @@
  * @method void setCommunityId(int $communityId)
  * @method string getAgreement()
  * @method void setAgreement(string $agreement)
- * @package Modules\Communityagreement\DAO
  */
 class Communityagreement_AgreementDao extends Communityagreement_AppDao
 {

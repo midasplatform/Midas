@@ -98,7 +98,7 @@ class Oauth_ClientController extends Oauth_AppController
     }
 
     /**
-     * Delete an oauth client
+     * Delete an oauth client.
      *
      * @param clientId The id of the client to delete
      * @throws Zend_Exception

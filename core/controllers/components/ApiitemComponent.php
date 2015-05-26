@@ -22,7 +22,7 @@
 class ApiitemComponent extends AppComponent
 {
     /**
-     * Get the item's metadata
+     * Get the item's metadata.
      *
      * @path /item/metadata/{id}
      * @http GET
@@ -67,7 +67,7 @@ class ApiitemComponent extends AppComponent
     }
 
     /**
-     * Set a metadata field on an item
+     * Set a metadata field on an item.
      *
      * @path /item/setmetadata/{id}
      * @http PUT
@@ -265,7 +265,7 @@ class ApiitemComponent extends AppComponent
         ) {
             $revisions = $item->getRevisions();
             if (count($revisions) === 0) {
-                throw new Exception("The item must have at least one revision to have metadata.", MIDAS_INVALID_POLICY);
+                throw new Exception('The item must have at least one revision to have metadata', MIDAS_INVALID_POLICY);
             }
             foreach ($revisions as $revisionDao) {
                 $itemRevisionModel->deleteMetadata($revisionDao);
@@ -284,7 +284,7 @@ class ApiitemComponent extends AppComponent
     }
 
     /**
-     * Check whether an item with the given name exists in the given folder
+     * Check whether an item with the given name exists in the given folder.
      *
      * @path /item/exists
      * @http GET
@@ -325,7 +325,7 @@ class ApiitemComponent extends AppComponent
     }
 
     /**
-     * Return all items given a name and (optionally) a parent folder name
+     * Return all items given a name and (optionally) a parent folder name.
      *
      * @path /item/search
      * @http GET
@@ -386,7 +386,7 @@ class ApiitemComponent extends AppComponent
     }
 
     /**
-     * Get an item's information
+     * Get an item's information.
      *
      * @path /item/{id}
      * @http GET
@@ -450,7 +450,7 @@ class ApiitemComponent extends AppComponent
     }
 
     /**
-     * Function for grabbing revision id (used in itemGetWrapper)
+     * Function for grabbing revision id (used in itemGetWrapper).
      *
      * @param array $revision
      * @return int
@@ -461,7 +461,7 @@ class ApiitemComponent extends AppComponent
     }
 
     /**
-     * Function for grabbing bitstream id (used in itemGetWrapper)
+     * Function for grabbing bitstream id (used in itemGetWrapper).
      *
      * @param array $bitstream
      * @return int
@@ -533,7 +533,7 @@ class ApiitemComponent extends AppComponent
             throw new Exception("This item doesn't exist.", MIDAS_INVALID_PARAMETER);
         }
         if (!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN)) {
-            throw new Exception("Admin privileges required on the item to list permissions.", MIDAS_INVALID_POLICY);
+            throw new Exception('Admin privileges required on the item to list permissions.', MIDAS_INVALID_POLICY);
         }
 
         return $apihelperComponent->listResourcePermissions(
@@ -661,7 +661,7 @@ class ApiitemComponent extends AppComponent
     }
 
     /**
-     * Move an item from the source folder to the destination folder
+     * Move an item from the source folder to the destination folder.
      *
      * @path /item/move/{id}
      * @http PUT
@@ -710,7 +710,7 @@ class ApiitemComponent extends AppComponent
         }
 
         if ($srcFolder == false || $dstFolder == false) {
-            throw new Exception("Unable to load source or destination folder.", MIDAS_INVALID_POLICY);
+            throw new Exception('Unable to load source or destination folder.', MIDAS_INVALID_POLICY);
         }
         if ($dstFolder->getKey() != $srcFolder->getKey()) {
             $folderModel->addItem($dstFolder, $item);
@@ -729,7 +729,7 @@ class ApiitemComponent extends AppComponent
     }
 
     /**
-     * Share an item to the destination folder
+     * Share an item to the destination folder.
      *
      * @path /item/share/{id}
      * @http PUT
@@ -794,7 +794,7 @@ class ApiitemComponent extends AppComponent
     }
 
     /**
-     * Duplicate an item to the destination folder
+     * Duplicate an item to the destination folder.
      *
      * @path /item/duplicate/{id}
      * @http PUT
@@ -875,7 +875,7 @@ class ApiitemComponent extends AppComponent
             throw new Exception("This item doesn't exist.", MIDAS_INVALID_PARAMETER);
         }
         if (!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN)) {
-            throw new Exception("Admin privileges required on the item.", MIDAS_INVALID_POLICY);
+            throw new Exception('Admin privileges required on the item.', MIDAS_INVALID_POLICY);
         }
 
         /** @var GroupModel $groupModel */
@@ -923,7 +923,7 @@ class ApiitemComponent extends AppComponent
             throw new Exception("This item doesn't exist.", MIDAS_INVALID_PARAMETER);
         }
         if (!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN)) {
-            throw new Exception("Admin privileges required on the item.", MIDAS_INVALID_POLICY);
+            throw new Exception('Admin privileges required on the item.', MIDAS_INVALID_POLICY);
         }
 
         /** @var GroupModel $groupModel */
@@ -974,7 +974,7 @@ class ApiitemComponent extends AppComponent
             throw new Exception("This item doesn't exist.", MIDAS_INVALID_PARAMETER);
         }
         if (!$itemModel->policyCheck($item, $adminUser, MIDAS_POLICY_ADMIN)) {
-            throw new Exception("Admin privileges required on the item.", MIDAS_INVALID_POLICY);
+            throw new Exception('Admin privileges required on the item.', MIDAS_INVALID_POLICY);
         }
 
         /** @var UserModel $userModel */
@@ -1023,7 +1023,7 @@ class ApiitemComponent extends AppComponent
             throw new Exception("This item doesn't exist.", MIDAS_INVALID_PARAMETER);
         }
         if (!$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_ADMIN)) {
-            throw new Exception("Admin privileges required on the item.", MIDAS_INVALID_POLICY);
+            throw new Exception('Admin privileges required on the item.', MIDAS_INVALID_POLICY);
         }
 
         /** @var UserModel $userModel */
@@ -1044,7 +1044,7 @@ class ApiitemComponent extends AppComponent
     }
 
     /**
-     * Delete an item
+     * Delete an item.
      *
      * @path /item/{id}
      * @http DELETE
@@ -1079,7 +1079,7 @@ class ApiitemComponent extends AppComponent
     }
 
     /**
-     * Download an item
+     * Download an item.
      *
      * @path /item/download/{id}
      * @http GET

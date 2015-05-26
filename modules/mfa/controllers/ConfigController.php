@@ -28,7 +28,7 @@ class Mfa_ConfigController extends Mfa_AppController
     public $_components = array();
 
     /**
-     * Admin config page
+     * Admin config page.
      */
     public function indexAction()
     {
@@ -42,7 +42,7 @@ class Mfa_ConfigController extends Mfa_AppController
     }
 
     /**
-     * Form submission handler for admin config page
+     * Form submission handler for admin config page.
      *
      * @param userOtpControl (checkbox value) non empty string will make this
      *                       true
@@ -79,7 +79,7 @@ class Mfa_ConfigController extends Mfa_AppController
     }
 
     /**
-     * User configuration tab for OTP parameters
+     * User configuration tab for OTP parameters.
      *
      * @param userId The id of the user to edit
      */

@@ -20,9 +20,7 @@
 
 require_once BASE_PATH.'/modules/mfa/models/base/OtpdeviceModelBase.php';
 
-/**
- * PDO-level implementation of the OTP device model.
- */
+/** PDO-level implementation of the OTP device model. */
 class Mfa_OtpdeviceModel extends Mfa_OtpdeviceModelBase
 {
     /**
@@ -34,7 +32,7 @@ class Mfa_OtpdeviceModel extends Mfa_OtpdeviceModelBase
     public function getByUser($userDao)
     {
         if ($userDao == null) {
-            return null;
+            return;
         }
 
         $row = $this->database->fetchRow($this->database->select()->where('user_id = ?', $userDao->getKey()));

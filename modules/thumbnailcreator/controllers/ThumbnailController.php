@@ -18,9 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * This class is used to create thumbnails
- */
+/** This class is used to create thumbnails. */
 class Thumbnailcreator_ThumbnailController extends Thumbnailcreator_AppController
 {
     public $_models = array('Assetstore', 'Bitstream', 'Item');
@@ -28,7 +26,7 @@ class Thumbnailcreator_ThumbnailController extends Thumbnailcreator_AppControlle
     public $_moduleDaos = array('Itemthumbnail');
 
     /**
-     * Creates a thumbnail
+     * Creates a thumbnail.
      *
      * @param bitstreamId The bitstream to create the thumbnail from
      * @param itemId The item to set the thumbnail on

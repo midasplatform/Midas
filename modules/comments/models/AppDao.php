@@ -18,11 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Generic DAO class for the comments module.
- *
- * @package Modules\Comments\DAO
- */
+/** Generic DAO class for the comments module. */
 class Comments_AppDao extends MIDAS_GlobalDao
 {
     /** @var string */
