@@ -54,10 +54,10 @@ CREATE TABLE IF NOT EXISTS "tracker_submission" (
     "uuid" character varying(255) NOT NULL DEFAULT ''::character varying,
     "submit_time" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-CREATE INDEX "tracker_submission_uuid" ON "tracker_submission" ("uuid");
-CREATE INDEX "tracker_submission_submit_time" ON "tracker_submission" ("submit_time");
 EOD
         );
+        $this->db->query('CREATE INDEX "tracker_submission_uuid" ON "tracker_submission" ("uuid");');
+        $this->db->query('CREATE INDEX "tracker_submission_submit_time" ON "tracker_submission" ("submit_time");');
     }
 
 }
