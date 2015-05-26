@@ -42,6 +42,9 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
         $this->initialize();
     }
 
+    /** Create a submssions given a uuid, userId, and a name. */
     public abstract function createSubmission($uuid, $userId, $name = '');
+
+    /** Get the scalars associated with a submission. */
     public abstract function getScalars($submissionDao, $userId);
 }
