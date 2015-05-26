@@ -27,10 +27,10 @@ define('MIDAS_DEMO_USER_EMAIL', 'user@kitware.com');
 define('MIDAS_DEMO_USER_PASSWORD', 'user');
 
 define('MIDAS_DEMO_DYNAMIC_HELP', '
-  <b>To authenticate:</b><br /><br />
-  Demo Administrator<br />
-  - Login: '.MIDAS_DEMO_ADMIN_EMAIL.'<br />
-  - Password: '.MIDAS_DEMO_ADMIN_PASSWORD.'<br /><br />
-  Demo User<br />
-  - Login: '.MIDAS_DEMO_USER_EMAIL.'<br />
-  - Password: '.MIDAS_DEMO_USER_PASSWORD);
+    <b>To authenticate:</b><br /><br />
+    Demo Administrator<br />
+    - Login: '.MIDAS_DEMO_ADMIN_EMAIL.'<br />
+    - Password: '.MIDAS_DEMO_ADMIN_PASSWORD.'<br /><br />
+    Demo User<br />
+    - Login: '.MIDAS_DEMO_USER_EMAIL.'<br />
+    - Password: '.MIDAS_DEMO_USER_PASSWORD);
