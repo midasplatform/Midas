@@ -4,13 +4,13 @@
 
 _Server component of the Midas Platform_
 
-[![Build Status](https://img.shields.io/travis/midasplatform/Midas.svg)](https://travis-ci.org/midasplatform/Midas)
+[![Build Status](https://img.shields.io/travis/midasplatform/Midas/master.svg)](https://travis-ci.org/midasplatform/Midas)
 [![Coverage Status](https://img.shields.io/coveralls/midasplatform/Midas.svg)](https://coveralls.io/r/midasplatform/Midas)
 [![Documentation Status](https://readthedocs.org/projects/midas-server/badge/?version=latest)](https://readthedocs.org/projects/midas-server/?badge=latest)
 [![Code Climate](https://img.shields.io/codeclimate/github/midasplatform/Midas.svg)](https://codeclimate.com/github/midasplatform/Midas)
 [![Packagist Version](https://img.shields.io/packagist/v/midas-platform/midas-server.svg)](https://packagist.org/packages/midas-platform/midas-server)
 [![Packagist License](https://img.shields.io/packagist/l/midas-platform/midas-server.svg)](https://packagist.org/packages/midas-platform/midas-server)
-[![PHP Dependencies](https://img.shields.io/versioneye/d/midas-platform/midas-server.svg)](https://www.versioneye.com/user/projects/54fdf4ad4a10649b1b000002)
+[![PHP Dependencies](https://img.shields.io/versioneye/d/midas-platform/midas-server.svg)](https://www.versioneye.com/php/midas-platform:midas-server)
 [![StyleCI](https://styleci.io/repos/18849230/shield)](https://styleci.io/repos/18849230)
 
 ## Overview ##
