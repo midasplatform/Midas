@@ -37,11 +37,12 @@ CREATE TABLE IF NOT EXISTS `tracker_scalar` (
 
 CREATE TABLE IF NOT EXISTS `tracker_submission` (
     `submission_id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `producer_id` bigint(20) NOT NULL,
     `name` varchar(255) NOT NULL DEFAULT '',
     `uuid` varchar(255) NOT NULL DEFAULT '',
     `submit_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`submission_id`),
-    KEY (`uuid`)
+    UNIQUE KEY (`uuid`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `tracker_scalar2item` (

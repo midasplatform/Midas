@@ -116,6 +116,8 @@ class Tracker_ApiComponent extends AppComponent
      * @param producerRevision The repository revision of the producer that produced this value
      * @param submitTime The submit timestamp. Must be parseable with PHP strtotime().
      * @param value The value of the scalar
+     * @param submissionId (Optional) the id of the submission
+     * @param submissionUuid (Optional) the uuid of the submission
      * @param buildResultsUrl (Optional) The URL where build results can be viewed
      * @param extraUrls (Optional) JSON list of additional links
      * @param params (Optional) JSON object of arbitrary key/value pairs to display
@@ -261,11 +263,22 @@ class Tracker_ApiComponent extends AppComponent
 
         $producerRevision = trim($args['producerRevision']);
 
+        $submissionId = -1;
+        if (isset($args['submissionId'])) {
+            $submissionId = $args['submissionId'];
+        } else if (isset($args['submissionUuid'])) {
+            $uuid = $args['submissionUuid'];
+            $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
+            $submissionDao = $submissionModel->getOrCreateSubmission($producer, $uuid);
+            $submissionId = $submissionDao->getKey();
+        }
+
         /** @var Tracker_ScalarModel $scalarModel */
         $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
         $scalar = $scalarModel->addToTrend(
             $trend,
             $submitTime,
+            $submissionId,
             $producerRevision,
             $value,
             $user,
@@ -336,6 +349,9 @@ class Tracker_ApiComponent extends AppComponent
      */
     public function resultsUploadJson($args)
     {
+        /** Change this to add a submission Id or UUID */
+
+        $submissionId = -1;
         /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
 
@@ -509,6 +525,7 @@ class Tracker_ApiComponent extends AppComponent
                     $scalar = $scalarModel->addToTrend(
                         $trend,
                         $submitTime,
+                        $submissionId,
                         $producerRevision,
                         $value,
                         $user,
@@ -571,6 +588,7 @@ class Tracker_ApiComponent extends AppComponent
                 $scalar = $scalarModel->addToTrend(
                     $trend,
                     $submitTime,
+                    $submissionId,
                     $producerRevision,
                     $value,
                     $user,
@@ -625,5 +643,20 @@ class Tracker_ApiComponent extends AppComponent
         }
 
         return $items[0];
+    }
+
+    /**
+     * Create a new submission
+     *
+     * @param uuid (Optional) A unique identifier for the submission
+     * @param name (Optional) A name for the submission
+     * @return The submission DAO that was created
+     * @throws Exception
+     */
+    public function submissionAdd($args)
+    {
+        $newApi = MidasLoader::loadComponent('Apisubmission',
+                                             'tracker');
+        return $newApi->post($args);
     }
 }

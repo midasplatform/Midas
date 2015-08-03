@@ -23,6 +23,8 @@
  *
  * @method int getScalarId()
  * @method void setScalarId(int $scalarId)
+ * @method int getSubmissionId()
+ * @method void setSubmissionId(int $submissionId)
  * @method int getTrendId()
  * @method void setTrendId(int $trendId)
  * @method int getUserId()

@@ -29,18 +29,19 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
 {
 
     /**
-     * Create a submission based on a uuid
-     *
-     * @param string $uuid
-     * @param null|int $userId user id
-     * @param string $name defaults to empty
-     * @return submission DAO
+     * Create a submission.
+     * @param $producerDao the producer to which the submission was submitted
+     * @param $uuid the uuid of the submission
+     * @param string $name the name of the submission (defaults to '')
+     * @return Tracker_SubmissionDao
      */
-    public function createSubmission($uuid, $userId, $name = '')
+    public function createSubmission($producerDao, $uuid, $name = '')
     {
-        $data = array('uuid' => $uuid,
-                      'name' => $name,
-                      'user_id' => $userId);
+        $data = array(
+            'producer_id' => $producerDao->getKey(),
+            'uuid' => $uuid,
+            'name' => $name
+        );
         $this->database->getDB()->insert('tracker_submission', $data);
     }
 
@@ -48,10 +49,9 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
      * Return the scalars for a given submission
      *
      * @param Tracker_SubmissionDao $submissionDao submission DAO
-     * @param null|int $userId user id
      * @return array scalar DAOs
      */
-    public function getScalars($submissionDao, $userId)
+    public function getScalars($submissionDao)
     {
         $sql = $this->database->select()->setIntegrityCheck(false)
              ->from('tracker_scalar')
@@ -66,6 +66,76 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
         }
 
         return $scalarDaos;
+    }
+
+    /**
+     * Get submissions associated with a given producer.
+     * @param Tracker_ProducerDao $producerDao the producer
+     * @return array(Tracker_SubmissionDao)
+     */
+    public function getSubmissionsByProducer($producerDao)
+    {
+        $sql = $this->database->select()->setIntegrityCheck(false)
+            ->from('tracker_submission')
+            ->where('producer_id = ?', $producerDao->getKey());
+        $submissionDaos = array();
+
+        $rows = $this->database->fetchAll($sql);
+        foreach ($rows as $row) {
+            $submissionDaos[] = $this->initDao('Submission', $row, $this->moduleName);
+        }
+
+        return $submissionDaos;
+    }
+
+    /**
+     * Return the submission with the given UUID.
+     *
+     * @param string $uuid the uuid of the submission
+     * @return submission dao
+     */
+    public function getSubmission($uuid)
+    {
+        $sql = $this->database->select()->setIntegrityCheck(false)
+            ->from('tracker_submission')
+            ->where('uuid = ?', $uuid);
+        $res = $this->database->fetchAll($sql);
+        if ($res->count() == 0) {
+            return null;
+        } else {
+            $submissionDao = $this->initDao('Submission', $res[0], $this->moduleName);
+            return $submissionDao;
+        }
+    }
+
+    /**
+     * Return the submission with the given UUID (creating one if necessary).
+     *
+     * @param Tracker_ProducerDao $producerDao the producer
+     * @param string $uuid the uuid of the submission
+     * @return Tracker_SubmissionDao
+     */
+    public function getOrCreateSubmission($producerDao, $uuid)
+    {
+        $sql = $this->database->select()->setIntegrityCheck(false)
+            ->from('tracker_submission')
+            ->where('uuid = ?', $uuid)
+            ->where('producer_id = ?', $producerDao->getKey());
+        $res = $this->database->fetchAll($sql);
+        if (count($res) == 1) {
+            $submissionDao = $this->initDao('Submission', $res[0],
+                                            $this->moduleName);
+        } else {
+            $doc = array();
+            $doc['uuid'] = $uuid;
+            $doc['producer_id'] = $producerDao->getKey();
+            $submissionDao = $this->initDao('Submission', $doc,
+                                            $this->moduleName);
+            $this->save($submissionDao);
+            $submissionId = $submissionDao->getSubmissionId();
+            $submissionDao = $this->load($submissionId);
+        }
+        return $submissionDao;
     }
 
 }

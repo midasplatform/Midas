@@ -34,17 +34,58 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
         $this->_key = 'submission_id';
         $this->_mainData = array(
             'submission_id' => array('type' => MIDAS_DATA),
+            'producer_id' => array('type' => MIDAS_DATA),
             'name' => array('type' => MIDAS_DATA),
             'uuid' => array('type' => MIDAS_DATA),
             'submit_time' => array('type' => MIDAS_DATA),
+            'producer' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'Producer',
+                'module' => $this->moduleName,
+                'parent_column' => 'producer_id',
+                'child_column' => 'producer_id',
+            ),
         );
 
         $this->initialize();
     }
 
-    /** Create a submssions given a uuid, userId, and a name. */
-    public abstract function createSubmission($uuid, $userId, $name = '');
+    /**
+     * Create a submission.
+     * @param $producerDao the producer to which the submission was submitted
+     * @param $uuid the uuid of the submission
+     * @param string $name the name of the submission (defaults to '')
+     * @return Tracker_SubmissionDao
+     */
+    public abstract function createSubmission($producerDao, $uuid, $name = '');
 
-    /** Get the scalars associated with a submission. */
-    public abstract function getScalars($submissionDao, $userId);
+    /**
+     * Get a submission from its uuid.
+     * @param $uuid the uuid of the submission
+     * @return Tracker_SubmissionDao
+     */
+    public abstract function getSubmission($uuid);
+
+    /**
+     * Return the submission with the given UUID (creating one if necessary).
+     *
+     * @param Tracker_ProducerDao $producerDao the producer
+     * @param string $uuid the uuid of the submission
+     * @return Tracker_SubmissionDao
+     */
+    public abstract function getOrCreateSubmission($producerDao, $uuid);
+
+    /**
+     * Get submissions associated with a given producer.
+     * @param Tracker_ProducerDao $producerDao the producer
+     * @return array(Tracker_SubmissionDao)
+     */
+    public abstract function getSubmissionsByProducer($producerDao);
+
+    /**
+     * Get the scalars associated with a submission.
+     * @param $submissionDao the submission
+     * @return array(Tracker_SubmissionDao)
+     */
+    public abstract function getScalars($submissionDao);
 }

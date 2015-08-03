@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS "tracker_scalar" (
     "producer_revision" TEXT,
     "submit_time" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" INTEGER NOT NULL DEFAULT -1,
+    "submission_id" INTEGER NOT NULL DEFAULT -1,
     "official" INTEGER NOT NULL DEFAULT 1,
     "build_results_url" TEXT NOT NULL,
     "branch" TEXT NOT NULL DEFAULT '',
@@ -36,12 +37,13 @@ CREATE INDEX IF NOT EXISTS "tracker_scalar_user_id_idx" ON "tracker_scalar" ("us
 
 CREATE TABLE IF NOT EXISTS "tracker_submission" (
     "submission_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    "producer_id" INTEGER NOT NULL,
     "name" TEXT NOT NULL DEFAULT '',
     "uuid" TEXT NOT NULL DEFAULT '',
-    "submit_time" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "submit_time" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-CREATE INDEX "tracker_submission_uuid_idx" ON "tracker_submission" ("uuid");
-CREATE INDEX "tracker_submission_submit_time_idx" ON "tracker_submission" ("submit_time");
+CREATE UNIQUE INDEX IF NOT EXISTS "tracker_submission_uuid_idx" ON "tracker_submission" ("uuid");
+CREATE INDEX IF NOT EXISTS "tracker_submission_submit_time_idx" ON "tracker_submission" ("submit_time");
 
 
 CREATE TABLE IF NOT EXISTS "tracker_scalar2item" (

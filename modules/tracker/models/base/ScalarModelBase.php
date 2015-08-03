@@ -32,6 +32,7 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
             'scalar_id' => array('type' => MIDAS_DATA),
             'trend_id' => array('type' => MIDAS_DATA),
             'user_id' => array('type' => MIDAS_DATA),
+            'submission_id' => array('type' => MIDAS_DATA),
             'official' => array('type' => MIDAS_DATA),
             'build_results_url' => array('type' => MIDAS_DATA),
             'params' => array('type' => MIDAS_DATA),
@@ -135,6 +136,7 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
     public function addToTrend(
         $trendDao,
         $submitTime,
+        $submissionId,
         $producerRevision,
         $value,
         $userDao,
@@ -169,6 +171,7 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
 
         /** @var Tracker_ScalarDao $scalarDao */
         $scalarDao = MidasLoader::newDao('ScalarDao', $this->moduleName);
+        $scalarDao->setSubmissionId($submissionId);
         $scalarDao->setTrendId($trendDao->getKey());
         $scalarDao->setSubmitTime($submitTime);
         $scalarDao->setProducerRevision($producerRevision);
