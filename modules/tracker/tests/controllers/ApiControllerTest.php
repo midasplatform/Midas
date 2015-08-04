@@ -32,7 +32,6 @@ class Tracker_ApiControllerTest extends Api_CallMethodsTestCase
         $this->_models = array('Assetstore', 'Community', 'Setting', 'User');
 
         $this->setupDatabase(array('default'));
-        $this->setupDatabase(array('default'), $this->moduleName);
 
         ControllerTestCase::setUp();
     }
@@ -91,6 +90,7 @@ class Tracker_ApiControllerTest extends Api_CallMethodsTestCase
         $this->params['submitTime'] = 'now';
         $this->params['submissionUuid'] = $uuid;
 
-        return $this->_callJsonApi()->data;
+        $res = $this->_callJsonApi();
+        return $res->data;
     }
 }

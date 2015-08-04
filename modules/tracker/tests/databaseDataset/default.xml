@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-    <tracker_producer producer_id="1" community_id="1" display_name="Test Producer" repository="https://example.com"
+    <tracker_producer producer_id="100" community_id="1" display_name="Test Producer" repository="https://example.com"
                       executable_name="test.exe" description="" revision_url="https:/example.net" />
-    <tracker_trend trend_id="1" producer_id="1" metric_name="metric_0" display_name="Metric #0" config_item_id="1000"
+    <tracker_trend trend_id="1" producer_id="100" metric_name="metric_0" display_name="Metric #0" config_item_id="1000"
                    test_dataset_id="1001" truth_dataset_id="1002" unit="mm" />
-    <tracker_trend trend_id="2" producer_id="1" metric_name="metric_1" display_name="Metric #1" config_item_id="1000"
+    <tracker_trend trend_id="2" producer_id="100" metric_name="metric_1" display_name="Metric #1" config_item_id="1000"
                    test_dataset_id="1001" truth_dataset_id="1002" unit="mm" />
-    <tracker_trend trend_id="3" producer_id="1" metric_name="metric_2" display_name="Metric #2" config_item_id="1000"
+    <tracker_trend trend_id="3" producer_id="100" metric_name="metric_2" display_name="Metric #2" config_item_id="1000"
                    test_dataset_id="1001" truth_dataset_id="1002" unit="mm" />
 </dataset>
