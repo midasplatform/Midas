@@ -266,7 +266,7 @@ class Tracker_ApiComponent extends AppComponent
         $submissionId = -1;
         if (isset($args['submissionId'])) {
             $submissionId = $args['submissionId'];
-        } else if (isset($args['submissionUuid'])) {
+        } elseif (isset($args['submissionUuid'])) {
             $uuid = $args['submissionUuid'];
             $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
             $submissionDao = $submissionModel->getOrCreateSubmission($producer, $uuid);
@@ -646,7 +646,7 @@ class Tracker_ApiComponent extends AppComponent
     }
 
     /**
-     * Create a new submission
+     * Create a new submission.
      *
      * @param uuid (Optional) A unique identifier for the submission
      * @param name (Optional) A name for the submission
@@ -655,6 +655,7 @@ class Tracker_ApiComponent extends AppComponent
      */
     public function submissionAdd($args)
     {
+        /** @var Tracker_ApisubmissionComponent $newApi */
         $newApi = MidasLoader::loadComponent('Apisubmission',
                                              'tracker');
         return $newApi->post($args);

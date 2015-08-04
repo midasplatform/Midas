@@ -58,7 +58,7 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
      * @param string $name the name of the submission (defaults to '')
      * @return Tracker_SubmissionDao
      */
-    public abstract function createSubmission($producerDao, $uuid, $name = '');
+    abstract public function createSubmission($producerDao, $uuid, $name = '');
 
     /**
      * Get a submission from its uuid.
@@ -66,7 +66,7 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
      * @param string $uuid the uuid of the submission
      * @return Tracker_SubmissionDao submission DAO
      */
-    public abstract function getSubmission($uuid);
+    abstract public function getSubmission($uuid);
 
     /**
      * Return the submission with the given uuid (creating one if necessary).
@@ -75,7 +75,7 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
      * @param string $uuid the uuid of the submission
      * @return Tracker_SubmissionDao submission DAO
      */
-    public abstract function getOrCreateSubmission($producerDao, $uuid);
+    abstract public function getOrCreateSubmission($producerDao, $uuid);
 
     /**
      * Get submissions associated with a given producer.
@@ -83,12 +83,12 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
      * @param Tracker_ProducerDao $producerDao producer DAO
      * @return array submission DAOs
      */
-    public abstract function getSubmissionsByProducer($producerDao);
+    abstract public function getSubmissionsByProducer($producerDao);
 
     /**
      * Get the scalars associated with a submission.
      * @param Tracker_SubmissionDao $submissionDao submission DAO
      * @return array submission DAOs
      */
-    public abstract function getScalars($submissionDao);
+    abstract public function getScalars($submissionDao);
 }

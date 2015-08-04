@@ -59,7 +59,7 @@ class Tracker_ApisubmissionComponent extends AppComponent
         $submissionDao = $submissionModel->load($submissionId);
 
         if (is_null($submissionDao) || $submissionDao === false) {
-            throw new Exception('A submission with id '. $submissionId.
+            throw new Exception('A submission with id '.$submissionId.
                                 ' does not exist.', MIDAS_NOT_FOUND);
         }
 
@@ -96,7 +96,7 @@ class Tracker_ApisubmissionComponent extends AppComponent
         $submissionDao = $submissionModel->load($submissionId);
 
         if (is_null($submissionDao) || $submissionDao === false) {
-            throw new Exception('A submission with id '. $submissionId.
+            throw new Exception('A submission with id '.$submissionId.
                                 ' does not exist.', MIDAS_NOT_FOUND);
         }
 
@@ -216,7 +216,7 @@ class Tracker_ApisubmissionComponent extends AppComponent
         $submissionDao = $submissionModel->load($submissionId);
 
         if (is_null($submissionDao) || $submissionDao === false) {
-            throw new Exception('A submission with id '. $submissionId.
+            throw new Exception('A submission with id '.$submissionId.
                                 ' does not exist.', MIDAS_NOT_FOUND);
         }
 

@@ -40,7 +40,7 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
         $data = array(
             'producer_id' => $producerDao->getKey(),
             'uuid' => $uuid,
-            'name' => $name
+            'name' => $name,
         );
         $this->database->getDB()->insert('tracker_submission', $data);
     }
@@ -143,5 +143,4 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
 
         return $submissionDao;
     }
-
 }
