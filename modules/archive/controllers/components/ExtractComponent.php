@@ -160,7 +160,7 @@ class Archive_ExtractComponent extends AppComponent
         $objects = scandir($dir);
         foreach ($objects as $object) {
             if ($object != '.' && $object != '..') {
-                $count++;
+                ++$count;
                 if (filetype($dir.'/'.$object) == 'dir') {
                     $count += $this->_countDir($dir.'/'.$object);
                 }
@@ -182,7 +182,7 @@ class Archive_ExtractComponent extends AppComponent
             $entryCount = 0;
             $zip = $this->_safeOpenZip($bitstreamDao->getFullPath());
             while ($zip_entry = zip_read($zip)) {
-                $entryCount++;
+                ++$entryCount;
             }
             zip_close($zip);
             if ($entryCount === 0) {
@@ -196,7 +196,7 @@ class Archive_ExtractComponent extends AppComponent
         $entryCount = 0;
         $zip = $this->_safeOpenZip($bitstreamDao->getFullPath());
         while ($zipEntry = zip_read($zip)) {
-            $entryCount++;
+            ++$entryCount;
             $entryName = zip_entry_name($zipEntry);
             if ($progressDao) {
                 $message = 'Extracting '.$progressDao->getCurrent().'/'.$progressDao->getMaximum().': '.$entryName;

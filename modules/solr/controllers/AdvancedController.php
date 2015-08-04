@@ -82,12 +82,12 @@ class Solr_AdvancedController extends Solr_AppController
         $items = array();
         $count = 0;
         foreach ($itemIds as $itemId) {
-            $solrOffset++;
+            ++$solrOffset;
             $item = $this->Item->load($itemId);
             if ($item && $this->Item->policyCheck($item, $this->userSession->Dao)
             ) {
                 $items[] = array('name' => $item->getName(), 'id' => $item->getKey());
-                $count++;
+                ++$count;
                 if ($count >= $limit) {
                     break;
                 }

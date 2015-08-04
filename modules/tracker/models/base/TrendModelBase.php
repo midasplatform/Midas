@@ -202,7 +202,7 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
         /** @var Tracker_ScalarDao $scalarDao */
         foreach ($scalarDaos as $scalarDao) {
             if (!is_null($progressDao)) {
-                $scalarIndex++;
+                ++$scalarIndex;
                 $message = 'Deleting scalars: '.$scalarIndex.' of '.$progressDao->getMaximum();
 
                 /** @noinspection PhpUndefinedVariableInspection */

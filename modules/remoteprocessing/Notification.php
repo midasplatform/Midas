@@ -169,7 +169,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
                     $html .= '<li>...</li>';
                     break;
                 }
-                $i++;
+                ++$i;
             }
             if ($i == 0) {
                 return '';
@@ -195,7 +195,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
                     $html .= '<li>...</li>';
                     break;
                 }
-                $i++;
+                ++$i;
             }
             $html .= '</ul>';
             $html .= '</div>';

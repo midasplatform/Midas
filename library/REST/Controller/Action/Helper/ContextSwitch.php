@@ -225,13 +225,13 @@ class REST_Controller_Action_Helper_ContextSwitch extends Zend_Controller_Action
 
             $prefix = str_repeat($ind, $indent);
             if (!$inLiteral && ($token == '{' || $token == '[')) {
-                $indent++;
+                ++$indent;
                 if (($result != '') && ($result[(strlen($result) - 1)] == $lineBreak)) {
                     $result .= $prefix;
                 }
                 $result .= $token.$lineBreak;
             } elseif (!$inLiteral && ($token == '}' || $token == ']')) {
-                $indent--;
+                --$indent;
                 $prefix = str_repeat($ind, $indent);
                 $result .= $lineBreak.$prefix.$token;
             } elseif (!$inLiteral && $token == ',') {

@@ -51,7 +51,7 @@ class Statistics_ItemController extends Statistics_AppController
                 ) {
                     throw new Zend_Exception('You do not have read permission on item '.$id);
                 }
-                $count++;
+                ++$count;
                 $totalview += $item->getView();
                 $totaldownload += $item->getDownload();
                 $idArray[] = $item->getKey();
@@ -72,7 +72,7 @@ class Statistics_ItemController extends Statistics_AppController
             date('Y-m-d H:i:s', strtotime('-20 day'.date('Y-m-d H:i:s'))),
             date('Y-m-d H:i:s')
         );
-        for ($i = 20; $i >= 0; $i--) {
+        for ($i = 20; $i >= 0; --$i) {
             $dateKey = date('Y-m-d', strtotime('-'.$i.' day'));
             if (!array_key_exists($dateKey, $arrayDownload)) {
                 $arrayDownload[$dateKey] = 0;

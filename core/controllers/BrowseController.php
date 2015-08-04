@@ -343,7 +343,7 @@ class BrowseController extends AppController
             $itemCount = count($items);
             if ($limit > 0 && $itemCount > $itemLimit) {
                 array_pop($items);
-                $itemCount--;
+                --$itemCount;
                 $showMoreLink = true;
             }
             $itemOffset += min($limit, $itemCount);

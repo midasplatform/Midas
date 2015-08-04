@@ -28,7 +28,7 @@ class Apigoogleappengine_UploadController extends ApiController
     public function postAction()
     {
         $apiFunctions = array('callback' => 'callback', 'uploadtoken' => 'uploadToken');
-        $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(),  'post',  $apiFunctions, $this->moduleName);
+        $this->_genericAction($this->_request->getParams(), $this->_request->getControllerName(), 'post', $apiFunctions, $this->moduleName);
     }
 
     /** Handle HTTP OPTIONS requests. */

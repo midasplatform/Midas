@@ -27,3 +27,13 @@ disabled:
   - phpdoc_separation
   - phpdoc_to_comment
   - phpdoc_var_without_name
+  - pre_increment
+
+finder:
+  exclude:
+    - data
+    - docs
+    - log
+    - provisioning
+    - tmp
+    - utils

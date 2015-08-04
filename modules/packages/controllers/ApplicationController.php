@@ -253,7 +253,7 @@ class Packages_ApplicationController extends Packages_AppController
 
         $a_count = count($a_tok);
         $b_count = count($b_tok);
-        for ($i = 0; $i < $a_count && $i < $b_count; $i++) {
+        for ($i = 0; $i < $a_count && $i < $b_count; ++$i) {
             $a_v = (int) $a_tok[$i];
             $b_v = (int) $b_tok[$i];
             if ($a_v > $b_v) {

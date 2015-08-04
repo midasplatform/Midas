@@ -281,7 +281,7 @@ class Ldap_Notification extends MIDAS_Notification
                             if ($namesCount > 1) {
                                 $firstName = $names[0];
                                 $lastName = $names[1];
-                                for ($i = 2; $i < $namesCount; $i++) {
+                                for ($i = 2; $i < $namesCount; ++$i) {
                                     $lastName .= ' '.$names[$i];
                                 }
                             } else {

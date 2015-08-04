@@ -102,8 +102,7 @@ class ApiController extends REST_Controller
      * @param null|string $moduleName module from which to get the ApiComponent
      * @param bool $rpcStyle wrap data in RPC-style "data" and "msg" fields
      *
-     * {@example
-     * _genericAction(array('id' => 2), 'get', $apiFunctionArray) is called and
+     * {@example * _genericAction(array('id' => 2), 'get', $apiFunctionArray) is called and
      * $apiFunctionArray is $apiFunctions = array('default' => 'itemMove',
      *                                            'move' => 'itemMove',
      *                                            'duplicate' => 'itemDuplicate');

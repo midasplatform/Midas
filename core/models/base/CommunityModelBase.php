@@ -133,7 +133,7 @@ abstract class CommunityModelBase extends AppModel
                 $user->viewedCommunities[$communityDao->getKey()] = true;
             }
         }
-        $communityDao->view++;
+        ++$communityDao->view;
         $this->save($communityDao);
     }
 

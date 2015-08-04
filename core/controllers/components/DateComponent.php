@@ -61,7 +61,7 @@ class DateComponent extends AppComponent
         $periods = array('second', 'minute', 'hour', 'day', 'week', 'month', 'year', 'decade');
         $periodsFr = array('seconde', 'minute', 'heure', 'jour', 'semaine', 'mois', 'annee', 'decades');
         $lengths = array('60', '60', '24', '7', '4.35', '12', '10');
-        for ($j = 0; $difference >= $lengths[$j]; $j++) {
+        for ($j = 0; $difference >= $lengths[$j]; ++$j) {
             $difference /= $lengths[$j];
         }
         $difference = round($difference);
@@ -106,7 +106,7 @@ class DateComponent extends AppComponent
         $periods = array('second', 'minute', 'hour', 'day', 'week', 'month', 'year', 'decade');
         $periodsFr = array('seconde', 'minute', 'heure', 'jour', 'semaine', 'mois', 'annee', 'decades');
         $lengths = array('60', '60', '24', '7', '4.35', '12', '10');
-        for ($j = 0; $difference >= $lengths[$j]; $j++) {
+        for ($j = 0; $difference >= $lengths[$j]; ++$j) {
             $difference /= $lengths[$j];
         }
         $difference = round($difference);

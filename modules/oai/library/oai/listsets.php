@@ -65,7 +65,7 @@ function xmlset($setSpecs, $name, $desc)
 
     $output .= "   <set>\n";
 
-    for ($i = 0; $i < count($setSpecs); $i++) {
+    for ($i = 0; $i < count($setSpecs); ++$i) {
         $output .= xmlformat($setSpecs[$i], 'setSpec', '', 4);
     }
 

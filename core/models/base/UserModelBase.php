@@ -244,7 +244,7 @@ abstract class UserModelBase extends AppModel
                 $user->viewedUsers[$userDao->getKey()] = true;
             }
         }
-        $userDao->view++;
+        ++$userDao->view;
         $this->save($userDao);
     }
 
