@@ -40,7 +40,7 @@ class Statistics_DownloadModelTest extends DatabaseTestCase
         $downloadModel = MidasLoader::loadModel('Download', 'statistics');
 
         // Add 50 downloads 3 days ago
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 50; ++$i) {
             /** @var Statistics_DownloadDao $dao */
             $dao = MidasLoader::newDao('DownloadDao', 'statistics');
             $dao->setItemId(7);
@@ -49,7 +49,7 @@ class Statistics_DownloadModelTest extends DatabaseTestCase
             $downloadModel->save($dao);
         }
         // Add 20 downloads 2 days ago
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 20; ++$i) {
             /** @var Statistics_DownloadDao $dao */
             $dao = MidasLoader::newDao('DownloadDao', 'statistics');
             $dao->setItemId(7);

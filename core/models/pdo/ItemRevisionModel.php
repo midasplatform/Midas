@@ -264,7 +264,7 @@ class ItemRevisionModel extends ItemRevisionModelBase
         $itr = 0;
         foreach ($ids as $id) {
             if ($progressDao) {
-                $itr++;
+                ++$itr;
                 $message = 'Removing orphaned revisions ('.$itr.'/'.$max.')';
                 $this->Progress->updateProgress($progressDao, $itr, $message);
             }

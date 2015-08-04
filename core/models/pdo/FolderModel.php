@@ -1286,7 +1286,7 @@ class FolderModel extends FolderModelBase
                 $folder->score = $result['score'];
                 $results[] = $folder;
                 unset($folder);
-                $i++;
+                ++$i;
                 if ($i >= $limit) {
                     break;
                 }
@@ -1490,7 +1490,7 @@ class FolderModel extends FolderModelBase
         $itr = 0;
         foreach ($ids as $id) {
             if ($progressDao) {
-                $itr++;
+                ++$itr;
                 $message = 'Removing orphaned folders ('.$itr.'/'.$max.')';
                 $this->Progress->updateProgress($progressDao, $itr, $message);
             }
@@ -1531,7 +1531,7 @@ class FolderModel extends FolderModelBase
      */
     protected function _recomputeSubtree($folder, &$count, $max, $progressDao = null)
     {
-        $count++;
+        ++$count;
         if ($progressDao && $count % 10 == 0) { // only update progress every 10 folders
             $message = 'Rebuilding entire folder tree index ('.$count.'/'.$max.')';
             $this->Progress->updateProgress($progressDao, $count, $message);

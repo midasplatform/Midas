@@ -79,7 +79,7 @@ class ExportComponent extends AppComponent
         // Get items
         $revisions = array();
         if (!is_array($itemIds)) {
-            throw new Zend_Exception("Input parameter \$itemIds should be an array.");
+            throw new Zend_Exception('Input parameter $itemIds should be an array.');
         }
         if (!empty($itemIds)) {
             foreach ($itemIds as $itemId) {

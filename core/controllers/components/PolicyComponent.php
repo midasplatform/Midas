@@ -58,7 +58,7 @@ class PolicyComponent extends AppComponent
             }
             if (!$this->Folder->policyCheck($subfolder, $user, MIDAS_POLICY_ADMIN)
             ) {
-                $results['failure']++;
+                ++$results['failure'];
                 continue;
             }
             // delete all existing policies on the subfolder
@@ -84,7 +84,7 @@ class PolicyComponent extends AppComponent
                     $folderPolicyUser->getPolicy()
                 );
             }
-            $results['success']++;
+            ++$results['success'];
             $results = $this->applyPoliciesRecursive($subfolder, $user, $progress, $results);
         }
 
@@ -95,7 +95,7 @@ class PolicyComponent extends AppComponent
                 $this->Progress->updateProgress($progress, $current, $message);
             }
             if (!$this->Item->policyCheck($item, $user, MIDAS_POLICY_ADMIN)) {
-                $results['failure']++;
+                ++$results['failure'];
                 continue;
             }
             // delete all existing policies on the item
@@ -121,7 +121,7 @@ class PolicyComponent extends AppComponent
                     $folderPolicyUser->getPolicy()
                 );
             }
-            $results['success']++;
+            ++$results['success'];
         }
 
         return $results;

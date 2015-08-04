@@ -111,7 +111,7 @@ class Solr_ApisearchComponent extends AppComponent
                 $itemInfo['bitstreams'] = $bitstreamArray;
 
                 $items[] = $itemInfo;
-                $count++;
+                ++$count;
                 if ($count >= $limit) {
                     break;
                 }

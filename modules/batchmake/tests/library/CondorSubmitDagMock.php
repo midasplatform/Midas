@@ -25,7 +25,6 @@ class Batchmake_CondorSubmitDagMock
     // The way around this is to have application code throw exceptions with
     // a known tag string, and have test cases look for that tag
 
-
     /**
      * exec method with the same interface as that in KWUtils, will simulate
      * an execution of the condor_submit_dag executable for a few select test cases.

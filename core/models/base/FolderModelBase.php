@@ -208,7 +208,7 @@ abstract class FolderModelBase extends AppModel
                 $user->viewedFolder[$folder->getKey()] = true;
             }
         }
-        $folder->view++;
+        ++$folder->view;
         parent::save($folder);
     }
 

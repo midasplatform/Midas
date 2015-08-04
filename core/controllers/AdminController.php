@@ -249,9 +249,9 @@ class AdminController extends AppController
             }
             $modulesList[$category][$k] = $module;
             if ($module->dbOk && $module->dependenciesExist) {
-                $countModules[$category]['visible']++;
+                ++$countModules[$category]['visible'];
             } else {
-                $countModules[$category]['hidden']++;
+                ++$countModules[$category]['hidden'];
             }
         }
 
@@ -396,7 +396,7 @@ class AdminController extends AppController
         $files = array();
         if (strpos(strtolower(PHP_OS), 'win') === 0) {
             $files = array();
-            for ($c = 'A'; $c <= 'Z'; $c++) {
+            for ($c = 'A'; $c <= 'Z'; ++$c) {
                 if (is_dir($c.':')) {
                     $files[] = $c.':';
                 }

@@ -56,7 +56,7 @@ class Pvw_ParaviewComponent extends AppComponent
             throw new Zend_Exception('No such application: '.$appname, 400);
         }
         if ($progressDao) {
-            $step++;
+            ++$step;
             $progressModel->updateProgress($progressDao, $step, 'Checking available ports...');
         }
 
@@ -67,7 +67,7 @@ class Pvw_ParaviewComponent extends AppComponent
             throw new Zend_Exception('Maximum number of running instances reached, try again soon', 503);
         }
         if ($progressDao) {
-            $step++;
+            ++$step;
             $progressModel->updateProgress($progressDao, $step, 'Starting ParaView instance...');
         }
 
@@ -117,13 +117,13 @@ class Pvw_ParaviewComponent extends AppComponent
         $instanceModel->save($instance);
 
         if ($progressDao) {
-            $step++;
+            ++$step;
             $progressModel->updateProgress($progressDao, $step, 'Waiting for binding on port '.$port.'...');
         }
         // After we start the process, wait some number of seconds for the port to open up.
         // If it doesn't, something went wrong.
         $portOpen = false;
-        for ($i = 0; $i < 4 * MIDAS_PVW_STARTUP_TIMEOUT; $i++) {
+        for ($i = 0; $i < 4 * MIDAS_PVW_STARTUP_TIMEOUT; ++$i) {
             usleep(250000); // sleep for 1/4 sec
             if (UtilityComponent::isPortListening($port)) {
                 $portOpen = true;
@@ -201,7 +201,7 @@ class Pvw_ParaviewComponent extends AppComponent
                 if ($start <= 0 || $end <= 0 || $start >= $end) {
                     throw new Zend_Exception('Port range invalid: '.$portEntry, 500);
                 }
-                for ($port = $start; $port <= $end; $port++) {
+                for ($port = $start; $port <= $end; ++$port) {
                     if (!UtilityComponent::isPortListening($port)) {
                         return $port;
                     }

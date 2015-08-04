@@ -63,7 +63,7 @@ class AssetstoreModel extends AssetstoreModelBase
         foreach ($rows as $row) {
             $bitstream = $this->initDao('Bitstream', $row);
             if ($progressDao) {
-                $current++;
+                ++$current;
                 $message = $current.' / '.$progressDao->getMaximum().': Moving '.$bitstream->getName(
                     ).' ('.UtilityComponent::formatSize($bitstream->getSizebytes()).')';
                 $progressModel->updateProgress($progressDao, $current, $message);

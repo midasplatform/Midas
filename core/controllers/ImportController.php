@@ -93,7 +93,7 @@ class ImportController extends AppController
             if ($fileInfo->isDir()) {
                 $initialcount += $this->_recursiveCountFiles($fileInfo->getPathName());
             } else {
-                $initialcount++;
+                ++$initialcount;
             }
         }
 
@@ -114,7 +114,7 @@ class ImportController extends AppController
     /** Increment the number of files processed and write the progress if needed */
     private function _incrementFileProcessed()
     {
-        $this->nfilesprocessed++;
+        ++$this->nfilesprocessed;
         $percent = ($this->nfilesprocessed / $this->ntotalfiles) * 100;
         $count = 2; // every 2%
         if ($percent % $count == 0) {
