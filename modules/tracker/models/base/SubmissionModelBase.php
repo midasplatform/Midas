@@ -52,8 +52,9 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
 
     /**
      * Create a submission.
-     * @param $producerDao the producer to which the submission was submitted
-     * @param $uuid the uuid of the submission
+     *
+     * @param Tracker_ProducerDao $producerDao the producer to which the submission was submitted
+     * @param string $uuid the uuid of the submission
      * @param string $name the name of the submission (defaults to '')
      * @return Tracker_SubmissionDao
      */
@@ -61,31 +62,33 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
 
     /**
      * Get a submission from its uuid.
-     * @param $uuid the uuid of the submission
-     * @return Tracker_SubmissionDao
+     *
+     * @param string $uuid the uuid of the submission
+     * @return Tracker_SubmissionDao submission DAO
      */
     public abstract function getSubmission($uuid);
 
     /**
-     * Return the submission with the given UUID (creating one if necessary).
+     * Return the submission with the given uuid (creating one if necessary).
      *
-     * @param Tracker_ProducerDao $producerDao the producer
+     * @param Tracker_ProducerDao $producerDao producer DAO
      * @param string $uuid the uuid of the submission
-     * @return Tracker_SubmissionDao
+     * @return Tracker_SubmissionDao submission DAO
      */
     public abstract function getOrCreateSubmission($producerDao, $uuid);
 
     /**
      * Get submissions associated with a given producer.
-     * @param Tracker_ProducerDao $producerDao the producer
-     * @return array(Tracker_SubmissionDao)
+     *
+     * @param Tracker_ProducerDao $producerDao producer DAO
+     * @return array submission DAOs
      */
     public abstract function getSubmissionsByProducer($producerDao);
 
     /**
      * Get the scalars associated with a submission.
-     * @param $submissionDao the submission
-     * @return array(Tracker_SubmissionDao)
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @return array submission DAOs
      */
     public abstract function getScalars($submissionDao);
 }

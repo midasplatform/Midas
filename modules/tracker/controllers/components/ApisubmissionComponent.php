@@ -104,7 +104,7 @@ class Tracker_ApisubmissionComponent extends AppComponent
     }
 
     /**
-     * TODO.
+     * @todo
      *
      * @path /tracker/submission
      * @http GET
@@ -155,7 +155,9 @@ class Tracker_ApisubmissionComponent extends AppComponent
                                                   $this->moduleName);
 
         if (!isset($args['uuid'])) {
-            $args['uuid'] = uniqid();
+            /** @var UuidComponent $uuidComponent */
+            $uuidComponent = MidasLoader::loadComponent('UuidComponent');
+            $args['uuid'] = $uuidComponent->generate();
         }
 
         /** @var Tracker_SubmissionDao $submissionDao */
@@ -163,7 +165,7 @@ class Tracker_ApisubmissionComponent extends AppComponent
                                                    $args,
                                                    $this->moduleName);
 
-        // Catch violation of the unique constraint
+        // Catch violation of the unique constraint.
         try {
             $submissionModel->save($submissionDao);
         } catch (Zend_Db_Statement_Exception $e) {
@@ -259,7 +261,7 @@ class Tracker_ApisubmissionComponent extends AppComponent
         /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
 
-        if (!$apihelperComponent->getUser($args)) {
+        if ($apihelperComponent->getUser($args) === false) {
             throw new Exception($msg, MIDAS_INVALID_POLICY);
         }
     }

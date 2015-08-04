@@ -20,7 +20,7 @@
 
 require_once BASE_PATH.'/modules/api/tests/controllers/CallMethodsTestCase.php';
 
-/** Api Test for tracker module */
+/** API test for tracker module. */
 class Tracker_ApiControllerTest extends Api_CallMethodsTestCase
 {
     public $moduleName = 'tracker';
@@ -37,10 +37,15 @@ class Tracker_ApiControllerTest extends Api_CallMethodsTestCase
         ControllerTestCase::setUp();
     }
 
-    /** Test the AJAX get free space call. */
+    /**
+     * Test uploading a scalar with a submission attached via uuid.
+     *
+     * @throws Zend_Exception
+     */
     public function testUploadScalarWithSubmission()
     {
-        $uuid = uniqid();
+        $uuidComponent = MidasLoader::loadComponent('Uuid');
+        $uuid = $uuidComponent->generate();
 
         $token = $this->_loginAsAdministrator();
 
@@ -62,27 +67,16 @@ class Tracker_ApiControllerTest extends Api_CallMethodsTestCase
             $this->assertEquals($curOutput->value, $scalarDao->getValue());
             $this->assertEquals($submissionDao->getKey(), $scalarDao->getSubmissionId());
         }
-
-    }
-
-    /**
-     * Verify the scalar value is as expected
-     * @param $testDao the dao returned from the submission uuid query
-     * @param $truthDao the dao returned from the api call
-     */
-    protected function _verifyScalar($testDao, $truthDao)
-    {
-        $this->assertEquals($testDao->getMetricName(), $truthDao->metric_name);
     }
 
     /**
      * Helper function to submit scalars.
      *
-     * @param $token the api token
-     * @param $uuid the uuid of the submission
-     * @param $metric the metric name of the trend
-     * @param $value the scalar value
-     * @return response object from the API
+     * @param string $token the api token
+     * @param string $uuid the uuid of the submission
+     * @param string $metric the metric name of the trend
+     * @param float $value the scalar value
+     * @return mixed response object from the API
      */
     protected function _submitScalar($token, $uuid, $metric, $value)
     {
@@ -96,6 +90,7 @@ class Tracker_ApiControllerTest extends Api_CallMethodsTestCase
         $this->params['producerRevision'] = 'deadbeef';
         $this->params['submitTime'] = 'now';
         $this->params['submissionUuid'] = $uuid;
+
         return $this->_callJsonApi()->data;
     }
 }

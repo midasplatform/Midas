@@ -349,7 +349,7 @@ class Tracker_ApiComponent extends AppComponent
      */
     public function resultsUploadJson($args)
     {
-        /** Change this to add a submission Id or UUID */
+        /** Change this to add a submission id or uuid. */
 
         $submissionId = -1;
         /** @var CommunityModel $communityModel */

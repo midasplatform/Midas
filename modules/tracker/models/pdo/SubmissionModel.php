@@ -27,13 +27,13 @@ require_once BASE_PATH.'/modules/tracker/models/base/SubmissionModelBase.php';
  */
 class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
 {
-
     /**
      * Create a submission.
-     * @param $producerDao the producer to which the submission was submitted
-     * @param $uuid the uuid of the submission
+     *
+     * @param Tracker_ProducerDao $producerDao the producer to which the submission was submitted
+     * @param string $uuid the uuid of the submission
      * @param string $name the name of the submission (defaults to '')
-     * @return Tracker_SubmissionDao
+     * @return void
      */
     public function createSubmission($producerDao, $uuid, $name = '')
     {
@@ -46,7 +46,7 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
     }
 
     /**
-     * Return the scalars for a given submission
+     * Return the scalars for a given submission.
      *
      * @param Tracker_SubmissionDao $submissionDao submission DAO
      * @return array scalar DAOs
@@ -70,8 +70,9 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
 
     /**
      * Get submissions associated with a given producer.
-     * @param Tracker_ProducerDao $producerDao the producer
-     * @return array(Tracker_SubmissionDao)
+     *
+     * @param Tracker_ProducerDao $producerDao producer DAO
+     * @return array submission DAOs
      */
     public function getSubmissionsByProducer($producerDao)
     {
@@ -81,6 +82,7 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
         $submissionDaos = array();
 
         $rows = $this->database->fetchAll($sql);
+        /** @var Zend_Db_Table_Row_Abstract $row */
         foreach ($rows as $row) {
             $submissionDaos[] = $this->initDao('Submission', $row, $this->moduleName);
         }
@@ -92,7 +94,7 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
      * Return the submission with the given UUID.
      *
      * @param string $uuid the uuid of the submission
-     * @return submission dao
+     * @return false|Tracker_SubmissionDao submission Dao
      */
     public function getSubmission($uuid)
     {
@@ -100,10 +102,11 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
             ->from('tracker_submission')
             ->where('uuid = ?', $uuid);
         $res = $this->database->fetchAll($sql);
-        if ($res->count() == 0) {
-            return null;
+        if ($res->count() === 0) {
+            return false;
         } else {
             $submissionDao = $this->initDao('Submission', $res[0], $this->moduleName);
+
             return $submissionDao;
         }
     }
@@ -122,19 +125,22 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
             ->where('uuid = ?', $uuid)
             ->where('producer_id = ?', $producerDao->getKey());
         $res = $this->database->fetchAll($sql);
-        if (count($res) == 1) {
+        if (count($res) === 1) {
             $submissionDao = $this->initDao('Submission', $res[0],
                                             $this->moduleName);
         } else {
             $doc = array();
             $doc['uuid'] = $uuid;
             $doc['producer_id'] = $producerDao->getKey();
+
+            /** @var Tracker_SubmissionDao $submissionDao */
             $submissionDao = $this->initDao('Submission', $doc,
                                             $this->moduleName);
             $this->save($submissionDao);
             $submissionId = $submissionDao->getSubmissionId();
             $submissionDao = $this->load($submissionId);
         }
+
         return $submissionDao;
     }
 

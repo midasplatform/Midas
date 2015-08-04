@@ -29,7 +29,7 @@ class Tracker_ApiscalarComponent extends AppComponent
      *
      * @path /tracker/scalar/{id}
      * @http DELETE
-     * @param id
+     * @param int id the id of the scalar to delete
      *
      * @param array $args parameters
      * @throws Exception

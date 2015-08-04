@@ -28,7 +28,8 @@
  * @method string getName()
  * @method void setName(string $name)
  * @method string getUuid()
- * @method array getScalarss()
+ * @method string setUuid(string $uuid)
+ * @method array getScalars()
  * @method void setScalars(array $scalarDaos)
  * @package Modules\Tracker\DAO
  */
