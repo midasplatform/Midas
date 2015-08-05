@@ -31,7 +31,6 @@
  * @method string setUuid(string $uuid)
  * @method array getScalars()
  * @method void setScalars(array $scalarDaos)
- * @package Modules\Tracker\DAO
  */
 class Tracker_SubmissionDao extends Tracker_AppDao
 {

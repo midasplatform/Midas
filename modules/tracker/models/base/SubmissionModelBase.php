@@ -20,8 +20,6 @@
 
 /**
  * Submission base model class for the tracker module.
- *
- * @package Modules\Tracker\Model
  */
 abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
 {

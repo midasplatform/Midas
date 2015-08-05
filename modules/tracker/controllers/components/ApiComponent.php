@@ -350,7 +350,6 @@ class Tracker_ApiComponent extends AppComponent
     public function resultsUploadJson($args)
     {
         /** Change this to add a submission id or uuid. */
-
         $submissionId = -1;
         /** @var CommunityModel $communityModel */
         $communityModel = MidasLoader::loadModel('Community');
@@ -658,6 +657,7 @@ class Tracker_ApiComponent extends AppComponent
         /** @var Tracker_ApisubmissionComponent $newApi */
         $newApi = MidasLoader::loadComponent('Apisubmission',
                                              'tracker');
+
         return $newApi->post($args);
     }
 }

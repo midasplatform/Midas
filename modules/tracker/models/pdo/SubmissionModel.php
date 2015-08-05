@@ -22,8 +22,6 @@ require_once BASE_PATH.'/modules/tracker/models/base/SubmissionModelBase.php';
 
 /**
  * Submission model for the tracker module.
- *
- * @package Modules\Tracker\Model
  */
 class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
 {

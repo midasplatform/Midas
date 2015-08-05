@@ -91,6 +91,7 @@ class Tracker_ApiControllerTest extends Api_CallMethodsTestCase
         $this->params['submissionUuid'] = $uuid;
 
         $res = $this->_callJsonApi();
+
         return $res->data;
     }
 }
