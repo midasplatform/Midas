@@ -20,8 +20,6 @@
 
 /**
  * API submission component for the tracker module.
- *
- * @package Modules\Tracker\Component
  */
 class Tracker_ApisubmissionComponent extends AppComponent
 {

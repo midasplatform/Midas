@@ -20,8 +20,6 @@
 
 /**
  * API submission controller for the tracker module.
- *
- * @package Modules\Tracker\Controller
  */
 class Apitracker_SubmissionController extends ApiController
 {
