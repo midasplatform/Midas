@@ -215,7 +215,7 @@ class Core_ItemModelTest extends DatabaseTestCase
         $this->assertTrue($rcount > 0);
         $this->assertEquals($rcount, count($newRevs));
 
-        for ($i = 0; $i < $rcount; $i++) {
+        for ($i = 0; $i < $rcount; ++$i) {
             $this->assertNotEquals($oldRevs[$i]->getKey(), $newRevs[$i]->getKey());
             $this->assertNotEquals($oldRevs[$i]->getUuid(), $newRevs[$i]->getUuid());
             $this->assertEquals($oldRevs[$i]->getDate(), $newRevs[$i]->getDate());
@@ -229,7 +229,7 @@ class Core_ItemModelTest extends DatabaseTestCase
             $newBitstreams = $newRevs[$i]->getBitstreams();
             $bcount = count($oldBitstreams);
             $this->assertEquals($bcount, count($newBitstreams));
-            for ($b = 0; $b < $bcount; $b++) {
+            for ($b = 0; $b < $bcount; ++$b) {
                 $this->assertNotEquals($oldBitstreams[$b]->getKey(), $newBitstreams[$b]->getKey());
                 $this->assertNotEquals(
                     $oldBitstreams[$b]->getItemrevisionId(),

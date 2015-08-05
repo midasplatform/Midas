@@ -39,7 +39,7 @@ class UTF8Tools
     protected function isUTF8($str)
     {
         $len = strlen($str);
-        for ($i = 0; $i < $len; $i++) {
+        for ($i = 0; $i < $len; ++$i) {
             $c = ord($str[$i]);
             if ($c > 128) {
                 if (($c > 247)) {
@@ -57,12 +57,12 @@ class UTF8Tools
                     return false;
                 }
                 while ($bytes > 1) {
-                    $i++;
+                    ++$i;
                     $b = ord($str[$i]);
                     if ($b < 128 || $b > 191) {
                         return false;
                     }
-                    $bytes--;
+                    --$bytes;
                 }
             }
         }

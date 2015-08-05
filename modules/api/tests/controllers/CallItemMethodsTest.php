@@ -244,7 +244,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         // generate the test file
         $string = '';
         $length = 100;
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; ++$i) {
             $string .= 'a';
         }
         $fh = fopen($this->getTempDirectory().'/test.txt', 'w');

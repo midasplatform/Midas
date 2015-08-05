@@ -246,10 +246,10 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
             if ($cmdOption['type'] == 'input') {
                 $values = $cmdOption['item'];
                 $j = 0;
-                for ($i = 1; $i <= $totalLine; $i++) {
+                for ($i = 1; $i <= $totalLine; ++$i) {
                     $tmpvalue = $value.$values[$j]->getName().' ';
                     if ($i % $multipleElement == 0) {
-                        $j++;
+                        ++$j;
                     }
                     if (!isset($values[$j])) {
                         $j = 0;
@@ -262,19 +262,19 @@ class Remoteprocessing_ExecutableComponent extends AppComponent
             } elseif ($cmdOption['type'] == 'output') {
                 $ext = end(explode('.', $cmdOption['fileName']));
                 $value .= '"'.str_replace('.'.$ext, '{{key}}.'.$ext, $cmdOption['fileName']).'" ';
-                for ($i = 1; $i <= $totalLine; $i++) {
+                for ($i = 1; $i <= $totalLine; ++$i) {
                     $matrix[$i][$key] = $value;
                 }
             } elseif ($cmdOption['type'] == 'param') {
                 $values = $cmdOption['values'];
                 $j = 0;
-                for ($i = 1; $i <= $totalLine; $i++) {
+                for ($i = 1; $i <= $totalLine; ++$i) {
                     if (!isset($values[$j])) {
                         $j = 0;
                     }
                     $tmpvalue = $value.$values[$j].' ';
                     if ($i % $multipleElement == 0) {
-                        $j++;
+                        ++$j;
                     }
                     $matrix[$i][$key] = $tmpvalue;
                 }

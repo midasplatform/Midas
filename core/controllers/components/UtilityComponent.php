@@ -106,16 +106,16 @@ class UtilityComponent extends AppComponent
         $tokens = array();
         $i = 0;
         if ($request->getModuleName() != 'default') {
-            $i++;
+            ++$i;
         }
         if ($request->getControllerName() != 'index') {
-            $i++;
+            ++$i;
         }
         if ($request->getActionName() != 'index') {
-            $i++;
+            ++$i;
         }
         $max = count($allTokens);
-        for (; $i < $max; $i++) {
+        for (; $i < $max; ++$i) {
             $tokens[] = $allTokens[$i];
         }
 

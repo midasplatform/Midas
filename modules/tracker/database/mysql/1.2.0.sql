@@ -1,6 +1,6 @@
 -- Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- MySQL database for the tracker module, version 1.1.0
+-- MySQL database for the tracker module, version 1.2.0
 
 CREATE TABLE IF NOT EXISTS `tracker_producer` (
     `producer_id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS `tracker_scalar` (
     `producer_revision` varchar(255),
     `submit_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `user_id` bigint(20) NOT NULL DEFAULT '-1',
+    `submission_id` bigint(20) NOT NULL DEFAULT '-1',
     `official` tinyint(4) NOT NULL DEFAULT '1',
     `build_results_url` text NOT NULL,
     `branch` varchar(255) NOT NULL DEFAULT '',
@@ -30,7 +31,18 @@ CREATE TABLE IF NOT EXISTS `tracker_scalar` (
     KEY (`trend_id`),
     KEY (`submit_time`),
     KEY (`user_id`),
+    KEY (`submission_id`),
     KEY (`branch`)
+) DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `tracker_submission` (
+    `submission_id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `producer_id` bigint(20) NOT NULL,
+    `name` varchar(255) NOT NULL DEFAULT '',
+    `uuid` varchar(255) NOT NULL DEFAULT '',
+    `submit_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`submission_id`),
+    UNIQUE KEY (`uuid`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `tracker_scalar2item` (

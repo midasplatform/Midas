@@ -388,7 +388,7 @@ abstract class ItemModelBase extends AppModel
                 $user->viewedItems[$itemdao->getKey()] = true;
             }
         }
-        $itemdao->view++;
+        ++$itemdao->view;
         parent::save($itemdao);
     }
 
@@ -398,7 +398,7 @@ abstract class ItemModelBase extends AppModel
         if (!$itemdao instanceof ItemDao) {
             throw new Zend_Exception('Error in param itemdao when incrementing download count.');
         }
-        $itemdao->download++;
+        ++$itemdao->download;
         parent::save($itemdao);
         Zend_Registry::get('notifier')->callback('CALLBACK_CORE_PLUS_ONE_DOWNLOAD', array('item' => $itemdao));
     }
@@ -537,7 +537,7 @@ abstract class ItemModelBase extends AppModel
         if ($rev) {
             $bitstreams = $rev->getBitstreams();
             foreach ($bitstreams as $bitstream) {
-                $totalCount++;
+                ++$totalCount;
                 $totalSize += $bitstream->getSizebytes();
             }
         }
@@ -570,7 +570,7 @@ abstract class ItemModelBase extends AppModel
                         ).' due to insufficient '.'permissions.'
                     );
                     if ($progress) {
-                        $current++;
+                        ++$current;
                         $message = 'Merging items: '.$current.' of '.$progress->getMaximum();
                         $progressModel->updateProgress($progress, $current, $message);
                     }
@@ -580,7 +580,7 @@ abstract class ItemModelBase extends AppModel
                     __METHOD__.' User unable to merge item '.$item.' because it does not exist.'
                 );
                 if ($progress) {
-                    $current++;
+                    ++$current;
                     $message = 'Merging items: '.$current.' of '.$progress->getMaximum();
                     $progressModel->updateProgress($progress, $current, $message);
                 }
@@ -610,7 +610,7 @@ abstract class ItemModelBase extends AppModel
                 $this->delete($item);
             }
             if ($progress) {
-                $current++;
+                ++$current;
                 $message = 'Merging items: '.$current.' of '.$progress->getMaximum();
                 $progressModel->updateProgress($progress, $current, $message);
             }

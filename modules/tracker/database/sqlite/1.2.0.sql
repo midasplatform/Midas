@@ -1,6 +1,6 @@
 -- Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- SQLite database for the tracker module, version 1.1.0
+-- SQLite database for the tracker module, version 1.2.0
 
 CREATE TABLE IF NOT EXISTS "tracker_producer" (
     "producer_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS "tracker_scalar" (
     "producer_revision" TEXT,
     "submit_time" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" INTEGER NOT NULL DEFAULT -1,
+    "submission_id" INTEGER NOT NULL DEFAULT -1,
     "official" INTEGER NOT NULL DEFAULT 1,
     "build_results_url" TEXT NOT NULL,
     "branch" TEXT NOT NULL DEFAULT '',
@@ -32,6 +33,18 @@ CREATE INDEX IF NOT EXISTS "tracker_scalar_trend_id_idx" ON "tracker_scalar" ("t
 CREATE INDEX IF NOT EXISTS "tracker_scalar_submit_time_idx" ON "tracker_scalar" ("submit_time");
 CREATE INDEX IF NOT EXISTS "tracker_scalar_branch_idx" ON "tracker_scalar" ("branch");
 CREATE INDEX IF NOT EXISTS "tracker_scalar_user_id_idx" ON "tracker_scalar" ("user_id");
+
+
+CREATE TABLE IF NOT EXISTS "tracker_submission" (
+    "submission_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    "producer_id" INTEGER NOT NULL,
+    "name" TEXT NOT NULL DEFAULT '',
+    "uuid" TEXT NOT NULL DEFAULT '',
+    "submit_time" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE UNIQUE INDEX IF NOT EXISTS "tracker_submission_uuid_idx" ON "tracker_submission" ("uuid");
+CREATE INDEX IF NOT EXISTS "tracker_submission_submit_time_idx" ON "tracker_submission" ("submit_time");
+
 
 CREATE TABLE IF NOT EXISTS "tracker_scalar2item" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,

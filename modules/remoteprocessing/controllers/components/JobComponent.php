@@ -198,7 +198,7 @@ class Remoteprocessing_JobComponent extends AppComponent
                 }
             }
             $return['process'][] = $tmp;
-            $i++;
+            ++$i;
         }
 
         return $return;

@@ -166,7 +166,7 @@ class Remoteprocessing_JobController extends Remoteprocessing_AppController
                         $cmdOptions[$i]['tag'] = (string) $option->tag;
                     }
                 }
-                $i++;
+                ++$i;
             }
 
             $fire_time = false;

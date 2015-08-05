@@ -1,6 +1,6 @@
 -- Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- PostgreSQL database for the tracker module, version 1.1.0
+-- PostgreSQL database for the tracker module, version 1.2.0
 
 SET client_encoding = 'UTF8';
 SET default_with_oids = FALSE;
@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS "tracker_scalar" (
     "producer_revision" character varying(255),
     "submit_time" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" bigint NOT NULL DEFAULT -1::bigint,
+    "submission_id" bigint NOT NULL DEFAULT -1::bigint,
     "official" smallint NOT NULL DEFAULT 1::smallint,
     "build_results_url" text NOT NULL,
     "branch" character varying(255) NOT NULL DEFAULT ''::character varying,
@@ -35,6 +36,16 @@ CREATE INDEX "tracker_scalar_trend_id" ON "tracker_scalar" ("trend_id");
 CREATE INDEX "tracker_scalar_submit_time" ON "tracker_scalar" ("submit_time");
 CREATE INDEX "tracker_scalar_idx_branch" ON "tracker_scalar" ("branch");
 CREATE INDEX "tracker_scalar_idx_user_id" ON "tracker_scalar" ("user_id");
+
+CREATE TABLE IF NOT EXISTS "tracker_submission" (
+    "submission_id" serial PRIMARY KEY,
+    "producer_id" bigint,
+    "name" character varying(255) NOT NULL DEFAULT ''::character varying,
+    "uuid" character varying(255) NOT NULL DEFAULT ''::character varying,
+    "submit_time" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE UNIQUE INDEX "tracker_submission_uuid" ON "tracker_submission" ("uuid");
+CREATE INDEX "tracker_submission_submit_time" ON "tracker_submission" ("submit_time");
 
 CREATE TABLE IF NOT EXISTS "tracker_scalar2item" (
     "id" serial PRIMARY KEY,

@@ -131,7 +131,7 @@ class BitstreamModel extends BitstreamModelBase
         $itr = 0;
         foreach ($ids as $id) {
             if ($progressDao) {
-                $itr++;
+                ++$itr;
                 $message = 'Removing orphaned bitstreams ('.$itr.'/'.$max.')';
                 $this->Progress->updateProgress($progressDao, $itr, $message);
             }

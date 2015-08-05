@@ -181,7 +181,7 @@ class ItemController extends AppController
                     unset($tmp[$key]);
                     continue;
                 }
-                $i++;
+                ++$i;
                 if ($i > 4) {
                     unset($tmp[$key]);
                 }

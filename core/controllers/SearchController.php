@@ -199,8 +199,8 @@ class SearchController extends AppController
             if (!isset($folderDao->count) || $folderDao->count == 1) {
                 $result['folderid'] = $folderDao->getFolderId();
             }
-            $id++;
-            $n++;
+            ++$id;
+            ++$n;
             $results[] = $result;
         }
 
@@ -224,8 +224,8 @@ class SearchController extends AppController
             if (!isset($itemDao->count) || $itemDao->count == 1) {
                 $result['itemid'] = $itemDao->getItemId();
             }
-            $id++;
-            $n++;
+            ++$id;
+            ++$n;
             $results[] = $result;
         }
         // Groups
@@ -242,8 +242,8 @@ class SearchController extends AppController
                 'groupid' => $groupDao->getKey(),
                 'category' => $this->t('Groups'),
             );
-            $id++;
-            $n++;
+            ++$id;
+            ++$n;
         }
 
         // Community
@@ -266,8 +266,8 @@ class SearchController extends AppController
             if (!isset($communityDao->count) || $communityDao->count == 1) {
                 $result['communityid'] = $communityDao->getKey();
             }
-            $id++;
-            $n++;
+            ++$id;
+            ++$n;
             $results[] = $result;
         }
 
@@ -287,8 +287,8 @@ class SearchController extends AppController
             if (!isset($userDao->count) || $userDao->count == 1) {
                 $result['userid'] = $userDao->getKey();
             }
-            $id++;
-            $n++;
+            ++$id;
+            ++$n;
             $results[] = $result;
         }
         // Other live search options

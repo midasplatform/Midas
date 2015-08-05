@@ -130,7 +130,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         $data = $this->getDataSet($file, $module);
         $dataUsers = $data->getTable($model->getName());
         $key = array();
-        for ($i = 0; $i < $dataUsers->getRowCount(); $i++) {
+        for ($i = 0; $i < $dataUsers->getRowCount(); ++$i) {
             $key[] = $dataUsers->getValue($i, $model->getKey());
         }
 

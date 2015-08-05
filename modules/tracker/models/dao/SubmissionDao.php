@@ -19,41 +19,23 @@
 =========================================================================*/
 
 /**
- * Scalar DAO for the tracker module.
+ * Submission DAO for the tracker module.
  *
- * @method int getScalarId()
- * @method void setScalarId(int $scalarId)
  * @method int getSubmissionId()
  * @method void setSubmissionId(int $submissionId)
- * @method int getTrendId()
- * @method void setTrendId(int $trendId)
  * @method int getUserId()
  * @method void setUserId(int $userId)
- * @method int getOfficial()
- * @method void setOfficial(int $official)
- * @method string getBuildResultsUrl()
- * @method void setBuildResultsUrl(string $buildResultsUrl)
- * @method string getParams()
- * @method void setParams(string $params)
- * @method string getExtraUrls()
- * @method void setExtraUrls(string $extraUrls)
- * @method string getBranch()
- * @method void setBranch(string $branch)
- * @method string getSubmitTime()
- * @method void setSubmitTime(string $submitTime)
- * @method float getValue()
- * @method void setValue(float $value)
- * @method string getProducerRevision()
- * @method void setProducerRevision(string $producerRevision)
- * @method Tracker_TrendDao getTrend()
- * @method void setTrend(Tracker_TrendDao $trendDao)
- * @method UserDao getUser()
- * @method void setUser(UserDao $userDao)
+ * @method string getName()
+ * @method void setName(string $name)
+ * @method string getUuid()
+ * @method string setUuid(string $uuid)
+ * @method array getScalars()
+ * @method void setScalars(array $scalarDaos)
  */
-class Tracker_ScalarDao extends Tracker_AppDao
+class Tracker_SubmissionDao extends Tracker_AppDao
 {
     /** @var string */
-    public $_model = 'Scalar';
+    public $_model = 'Submission';
 
     /** @var string */
     public $_module = 'tracker';

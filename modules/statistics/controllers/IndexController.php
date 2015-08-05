@@ -83,13 +83,13 @@ class Statistics_IndexController extends Statistics_AppController
         $arrayErrors = array();
 
         $format = 'Y-m-d';
-        for ($i = 0; $i < 21; $i++) {
+        for ($i = 0; $i < 21; ++$i) {
             $key = date($format, strtotime(date('Y-m-d H:i:s', strtotime('-'.$i.' day'.date('Y-m-d H:i:s')))));
             $arrayErrors[$key] = 0;
         }
         foreach ($errors as $error) {
             $key = date($format, strtotime($error->getDatetime()));
-            $arrayErrors[$key]++;
+            ++$arrayErrors[$key];
         }
 
         $jqplotArray = array();

@@ -87,7 +87,7 @@ class ItemModel extends ItemModelBase
                 $item->score = $result['score'];
                 $results[] = $item;
                 unset($item);
-                $i++;
+                ++$i;
                 if ($i >= $limit) {
                     break;
                 }
@@ -761,7 +761,7 @@ class ItemModel extends ItemModelBase
         $itr = 0;
         foreach ($ids as $id) {
             if ($progressDao) {
-                $itr++;
+                ++$itr;
                 $message = 'Removing orphaned items ('.$itr.'/'.$max.')';
                 $this->Progress->updateProgress($progressDao, $itr, $message);
             }
@@ -823,7 +823,7 @@ class ItemModel extends ItemModelBase
             if ($curRow == null) {
                 break;
             } else {
-                $count++;
+                ++$count;
                 $curName = $name.' ('.$count.')';
             }
         }
