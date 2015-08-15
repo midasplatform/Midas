@@ -82,9 +82,10 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
      * @param null|int $configItemId configuration item id
      * @param null|int $testDatasetId test dataset item id
      * @param null|int $truthDatasetId truth dataset item id
+     * @param null|string $unit scalar value unit
      * @return false|Tracker_TrendDao trend DAO or false if none exists
      */
-    abstract public function getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId);
+    abstract public function getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId, $unit);
 
     /**
      * Return the trend DAOs that match the given associative array of database columns and values.
@@ -136,11 +137,12 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
      * @param null|int $configItemId configuration item id
      * @param null|int $testDatasetId test dataset item id
      * @param null|int $truthDatasetId truth dataset item id
+     * @param null|string $unit scalar value unit
      * @return Tracker_TrendDao trend DAO
      */
-    public function createIfNeeded($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId)
+    public function createIfNeeded($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId, $unit)
     {
-        $trendDao = $this->getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId);
+        $trendDao = $this->getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId, $unit);
 
         if ($trendDao === false) {
             /** @var Tracker_TrendDao $trendDao */
@@ -148,7 +150,10 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
             $trendDao->setProducerId($producerId);
             $trendDao->setMetricName($metricName);
             $trendDao->setDisplayName($metricName);
-            $trendDao->setUnit('');
+            if (is_null($unit)) {
+                $unit = '';
+            }
+            $trendDao->setUnit($unit);
 
             if (!is_null($configItemId)) {
                 $trendDao->setConfigItemId($configItemId);

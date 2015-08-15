@@ -31,9 +31,10 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
      * @param null|int $configItemId configuration item id
      * @param null|int $testDatasetId test dataset item id
      * @param null|int $truthDatasetId truth dataset item id
+     * @param null|string $unit scalar value unit
      * @return false|Tracker_TrendDao trend DAO or false if none exists
      */
-    public function getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId)
+    public function getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId, $unit)
     {
         $sql = $this->database->select()->setIntegrityCheck(false)->where('producer_id = ?', $producerId)->where(
             'metric_name = ?',
@@ -56,6 +57,10 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
             $sql->where('test_dataset_id IS NULL');
         } else {
             $sql->where('test_dataset_id = ?', $testDatasetId);
+        }
+
+        if (!is_null($unit) && ($unit !== '')) {
+            $sql->where('unit = ?', $unit);
         }
 
         return $this->initDao('Trend', $this->database->fetchRow($sql), $this->moduleName);

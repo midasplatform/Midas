@@ -127,6 +127,7 @@ class Tracker_ApiComponent extends AppComponent
      * @param truthDatasetId (Optional) If this value pertains to a specific ground truth dataset, pass its id here
      * @param silent (Optional) If set, do not perform threshold-based email notifications for this scalar
      * @param unofficial (Optional) If passed, creates an unofficial scalar visible only to the user performing the submission
+     * @param unit (Optional) If passed, the unit of the scalar value that identifies which trend this point belongs to.
      * @return The scalar DAO that was created
      * @throws Exception
      */
@@ -243,6 +244,11 @@ class Tracker_ApiComponent extends AppComponent
         $buildResultsUrl = isset($args['buildResultsUrl']) ? $args['buildResultsUrl'] : '';
         $branch = isset($args['branch']) ? $args['branch'] : '';
 
+        if (isset($args['unit'])) {
+            $unit = $args['unit'];
+        } else {
+            $unit = null;
+        }
         /** @var Tracker_TrendModel $trendModel */
         $trendModel = MidasLoader::loadModel('Trend', 'tracker');
         $trend = $trendModel->createIfNeeded(
@@ -250,7 +256,8 @@ class Tracker_ApiComponent extends AppComponent
             $metricName,
             $configItemId,
             $testDatasetId,
-            $truthDatasetId
+            $truthDatasetId,
+            $unit
         );
 
         $submitTime = strtotime($args['submitTime']);
