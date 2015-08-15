@@ -50,8 +50,8 @@ class Tracker_ApiControllerTest extends Api_CallMethodsTestCase
 
         $outputs = array();
         $outputs['metric_0'] = $this->_submitScalar($token, $uuid, 'metric_0', '18');
-        $outputs['metric_1'] = $this->_submitScalar($token, $uuid, 'metric_1', '19');
-        $outputs['metric_2'] = $this->_submitScalar($token, $uuid, 'metric_2', '20');
+        $outputs['metric_1'] = $this->_submitScalar($token, $uuid, 'metric_1', '19', 'meters');
+        $outputs['metric_2'] = $this->_submitScalar($token, $uuid, 'metric_2', '20', 'mm');
 
         /** @var Tracker_SubmissionModel $submissionModel */
         $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
@@ -75,9 +75,10 @@ class Tracker_ApiControllerTest extends Api_CallMethodsTestCase
      * @param string $uuid the uuid of the submission
      * @param string $metric the metric name of the trend
      * @param float $value the scalar value
+     * @param string $unit the unit of the trend, defaults to false
      * @return mixed response object from the API
      */
-    protected function _submitScalar($token, $uuid, $metric, $value)
+    protected function _submitScalar($token, $uuid, $metric, $value, $unit = false)
     {
         $this->resetAll();
         $this->params['method'] = 'midas.tracker.scalar.add';
@@ -89,6 +90,9 @@ class Tracker_ApiControllerTest extends Api_CallMethodsTestCase
         $this->params['producerRevision'] = 'deadbeef';
         $this->params['submitTime'] = 'now';
         $this->params['submissionUuid'] = $uuid;
+        if ($unit !== false) {
+            $this->params['unit'] = $unit;
+        }
 
         $res = $this->_callJsonApi();
 
