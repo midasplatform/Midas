@@ -24,16 +24,17 @@ require_once BASE_PATH.'/modules/tracker/models/base/TrendModelBase.php';
 class Tracker_TrendModel extends Tracker_TrendModelBase
 {
     /**
-     * Return the trend DAO that matches the given the producer id, metric name, and associated items.
+     * Return the trend DAO that matches the given the producer id, metric name, associated items, and unit.
      *
      * @param int $producerId producer id
      * @param string $metricName metric name
      * @param null|int $configItemId configuration item id
      * @param null|int $testDatasetId test dataset item id
      * @param null|int $truthDatasetId truth dataset item id
+     * @param false|string $unit (Optional) scalar value unit, defaults to false
      * @return false|Tracker_TrendDao trend DAO or false if none exists
      */
-    public function getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId)
+    public function getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId, $unit = false)
     {
         $sql = $this->database->select()->setIntegrityCheck(false)->where('producer_id = ?', $producerId)->where(
             'metric_name = ?',
@@ -56,6 +57,10 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
             $sql->where('test_dataset_id IS NULL');
         } else {
             $sql->where('test_dataset_id = ?', $testDatasetId);
+        }
+
+        if ($unit !== false) {
+            $sql->where('unit = ?', $unit);
         }
 
         return $this->initDao('Trend', $this->database->fetchRow($sql), $this->moduleName);
