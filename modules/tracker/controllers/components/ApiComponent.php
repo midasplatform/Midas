@@ -247,7 +247,7 @@ class Tracker_ApiComponent extends AppComponent
         if (isset($args['unit'])) {
             $unit = $args['unit'];
         } else {
-            $unit = null;
+            $unit = false;
         }
         /** @var Tracker_TrendModel $trendModel */
         $trendModel = MidasLoader::loadModel('Trend', 'tracker');

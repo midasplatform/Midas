@@ -75,10 +75,10 @@ class Tracker_ApiControllerTest extends Api_CallMethodsTestCase
      * @param string $uuid the uuid of the submission
      * @param string $metric the metric name of the trend
      * @param float $value the scalar value
-     * @param string $unit the unit of the trend, defaults to false
+     * @param false|string $unit (Optional) the unit of the trend, defaults to false
      * @return mixed response object from the API
      */
-    protected function _submitScalar($token, $uuid, $metric, $value, $unit = false)
+    private function _submitScalar($token, $uuid, $metric, $value, $unit = false)
     {
         $this->resetAll();
         $this->params['method'] = 'midas.tracker.scalar.add';

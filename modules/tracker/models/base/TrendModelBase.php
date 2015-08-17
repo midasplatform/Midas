@@ -75,17 +75,17 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
     }
 
     /**
-     * Return the trend DAO that matches the given the producer id, metric name, and associated items.
+     * Return the trend DAO that matches the given the producer id, metric name, associated items, and unit.
      *
      * @param int $producerId producer id
      * @param string $metricName metric name
      * @param null|int $configItemId configuration item id
      * @param null|int $testDatasetId test dataset item id
      * @param null|int $truthDatasetId truth dataset item id
-     * @param null|string $unit scalar value unit
+     * @param false|string $unit (Optional) scalar value unit, defaults to false
      * @return false|Tracker_TrendDao trend DAO or false if none exists
      */
-    abstract public function getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId, $unit);
+    abstract public function getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId, $unit = false);
 
     /**
      * Return the trend DAOs that match the given associative array of database columns and values.
@@ -129,7 +129,7 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
     }
 
     /**
-     * Return the trend DAO that matches the given producer id, metric name, and associated items if it exists.
+     * Return the trend DAO that matches the given producer id, metric name, associated items, and unit, if the trend exists.
      * Otherwise, create the trend DAO.
      *
      * @param int $producerId producer id
@@ -137,10 +137,10 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
      * @param null|int $configItemId configuration item id
      * @param null|int $testDatasetId test dataset item id
      * @param null|int $truthDatasetId truth dataset item id
-     * @param null|string $unit scalar value unit
+     * @param false|string $unit (Optional) scalar value unit, defaults to false
      * @return Tracker_TrendDao trend DAO
      */
-    public function createIfNeeded($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId, $unit)
+    public function createIfNeeded($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId, $unit = false)
     {
         $trendDao = $this->getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId, $unit);
 
@@ -150,7 +150,7 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
             $trendDao->setProducerId($producerId);
             $trendDao->setMetricName($metricName);
             $trendDao->setDisplayName($metricName);
-            if (is_null($unit)) {
+            if ($unit === false) {
                 $unit = '';
             }
             $trendDao->setUnit($unit);
