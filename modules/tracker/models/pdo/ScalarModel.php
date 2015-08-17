@@ -116,7 +116,7 @@ class Tracker_ScalarModel extends Tracker_ScalarModelBase
 
         /** @var Zend_Db_Table_Row_Abstract $row */
         foreach ($rows as $row) {
-            $scalarDaos[$row['metric_name']] = $row['value'].' '.$row['unit'];
+            $scalarDaos[$row['metric_name']] = array('value' => number_format((float)$row['value'], 4, '.', ''), 'unit' => $row['unit']);
         }
 
         return $scalarDaos;

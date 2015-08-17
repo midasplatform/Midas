@@ -38,6 +38,9 @@ table {
         font-weight: bold;
         padding-right: 6px;
     }
+    &.otherScalarTable td {
+        text-align: right;
+    }
 }
 
 div {
