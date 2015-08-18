@@ -137,8 +137,10 @@ if (count($this->extraParams)) {
          * @var string $metricName
          * @var float $value
          */
-        foreach ($this->otherValues as $metricName => $value) {
-            echo '<tr><th>'.$this->escape($metricName).':</th><td>'.$this->escape($value).'</td></tr>';
+        foreach ($this->otherValues as $metricName => $metricProperties) {
+            $metricValue = $metricProperties['value'];
+            $metricUnit = $metricProperties['unit'];
+            echo '<tr><th>'.$this->escape($metricName).':</th><td>'.$this->escape($metricValue).'</td><td>'.$this->escape($metricUnit).'</td></tr>';
         }
         ?>
         </tbody>
