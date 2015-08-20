@@ -20,10 +20,10 @@
 
 require_once BASE_PATH.'/core/models/dao/SettingDao.php';
 
-/** Setting Model Base */
+/** Configuration setting base model class. */
 abstract class SettingModelBase extends AppModel
 {
-    /** Constructor */
+    /** Constructor. */
     public function __construct()
     {
         parent::__construct();
@@ -39,50 +39,74 @@ abstract class SettingModelBase extends AppModel
         $this->initialize(); // required
     }
 
-    /** Get DAO by name */
+    /**
+     * Return a configuration setting given its name and module name.
+     *
+     * @param string $name configuration setting name
+     * @param string $module module name
+     * @return false|SettingDao configuration setting DAO or false on failure
+     * @throws Zend_Exception
+     */
     abstract public function getDaoByName($name, $module = 'core');
 
-    /** get value by name */
+    /**
+     * Return the value of a configuration setting given its name and module
+     * name.
+     *
+     * @param string $name configuration setting name
+     * @param string $module module name
+     * @return bool|int|float|string|void configuration setting value or void on failure
+     * @throws Zend_Exception
+     */
     public function getValueByName($name, $module = 'core')
     {
-        $dao = $this->getDaoByName($name, $module);
-        if ($dao === false) {
+        $settingDao = $this->getDaoByName($name, $module);
+        if ($settingDao === false) {
             return;
         }
-
-        return $dao->getValue();
+        return $settingDao->getValue();
     }
 
-    /** Set Configuration value. Set value as null to delete */
+    /** Set Configuration value.  */
+
+    /**
+     * Set the value of a configuration setting given its name and module name.
+     * Set value to null to delete the configuration setting.
+     *
+     * @param string $name configuration setting name
+     * @param bool|int|float|string|void $value configuration setting value or
+     *     null to delete the configuration setting
+     * @param string $module module name
+     * @return false|SettingDao configuration setting DAO or false if the
+     *     configuration setting was deleted
+     * @throws Zend_Exception
+     */
     public function setConfig($name, $value, $module = 'core')
     {
         if (!is_string($name)) {
-            throw new Zend_Exception('Setting name is not a string.');
+            throw new Zend_Exception('Configuration setting name is not a string.');
         }
         if (!is_bool($value) && !is_numeric($value) && !is_string($value)) {
-            throw new Zend_Exception('Setting value is not a boolean, number, or string.');
+            throw new Zend_Exception('Configuration setting value is not a boolean, number, or string.');
         }
         if (!is_string($module)) {
-            throw new Zend_Exception('Module name is not a string.');
+            throw new Zend_Exception('Configuration setting module name is not a string.');
         }
-        $dao = $this->getDaoByName($name, $module);
-        if ($dao !== false && $dao->getValue() === $value) {
-            return;
-        }
-        if ($dao !== false && $value === null) {
-            $this->delete($dao);
-        } elseif ($dao !== false) {
-            $dao->setValue($value);
-            $this->save($dao);
-        } else {
-            $dao = $this->initDao('Setting', array(
+        $settingDao = $this->getDaoByName($name, $module);
+        if ($settingDao === false) {
+            $settingDao = $this->initDao('Setting', array(
                 'name' => $name,
                 'value' => $value,
                 'module' => $module,
             ));
-            $this->save($dao);
+            $this->save($settingDao);
+        } elseif ($value === null) {
+            $this->delete($settingDao);
+            $settingDao = false;
+        } elseif ($settingDao->getValue() !== $value) {
+            $settingDao->setValue($value);
+            $this->save($settingDao);
         }
-
-        return $dao;
+        return $settingDao;
     }
 }
