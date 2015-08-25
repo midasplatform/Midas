@@ -21,7 +21,7 @@
 /** Admin Controller. */
 class AdminController extends AppController
 {
-    public $_models = array('Assetstore', 'Bitstream', 'Item', 'ItemRevision', 'Folder', 'License', 'Setting');
+    public $_models = array('Assetstore', 'Bitstream', 'Item', 'ItemRevision', 'Folder', 'License', 'Module', 'Setting');
     public $_daos = array();
     public $_components = array('Upgrade', 'Utility', 'MIDAS2Migration');
     public $_forms = array('Admin', 'Assetstore', 'Migrate');
@@ -69,8 +69,7 @@ class AdminController extends AppController
         $this->requireAdminPrivileges();
         $this->view->header = 'Administration';
 
-        $options = array('allowModifications' => true);
-        $config = new Zend_Config_Ini(APPLICATION_CONFIG, null, $options);
+        $config = new Zend_Config_Ini(APPLICATION_CONFIG, null, true);
 
         $configForm = $this->Form->Admin->createConfigForm();
         $formArray = $this->getFormAsArray($configForm);
@@ -131,28 +130,14 @@ class AdminController extends AppController
             }
             if (isset($submitModule)) {
                 $moduleName = $this->getParam('modulename');
-                $modulevalue = $this->getParam('modulevalue');
-                $moduleConfigLocalFile = LOCAL_CONFIGS_PATH.'/'.$moduleName.'.local.ini';
-                $moduleConfigFile = BASE_PATH.'/modules/'.$moduleName.'/configs/module.ini';
-                $moduleConfigPrivateFile = BASE_PATH.'/privateModules/'.$moduleName.'/configs/module.ini';
-                if (!file_exists($moduleConfigLocalFile) && file_exists($moduleConfigFile)
-                ) {
-                    copy($moduleConfigFile, $moduleConfigLocalFile);
+                $moduleEnabled = $this->getParam('modulevalue');
+                $moduleDao = $this->Module->getByName($moduleName);
+                if ($moduleDao === false) {
                     $this->Component->Utility->installModule($moduleName);
-                } elseif (!file_exists($moduleConfigLocalFile) && file_exists($moduleConfigPrivateFile)
-                ) {
-                    copy($moduleConfigPrivateFile, $moduleConfigLocalFile);
-                    $this->Component->Utility->installModule($moduleName);
-                } elseif (!file_exists($moduleConfigLocalFile)) {
-                    throw new Zend_Exception('Unable to find config file');
+                    $moduleDao = $this->Module->getByName($moduleName);
                 }
-
-                $config->module->$moduleName = $modulevalue;
-
-                $writer = new Zend_Config_Writer_Ini();
-                $writer->setConfig($config);
-                $writer->setFilename(APPLICATION_CONFIG);
-                $writer->write();
+                $moduleDao->setEnabled($moduleEnabled);
+                $this->Module->save($moduleDao);
                 echo JsonComponent::encode(array(true, 'Changes saved'));
             }
         }
@@ -201,7 +186,7 @@ class AdminController extends AppController
         $this->view->assetstoreForm = $this->Form->Assetstore->createAssetstoreForm();
 
         // get modules
-        $enabledModules = Zend_Registry::get('modulesEnable');
+        //
         $adapter = Zend_Registry::get('configDatabase')->database->adapter;
         foreach ($allModules as $key => $module) {
             if (file_exists(BASE_PATH.'/modules/'.$key.'/controllers/ConfigController.php')) {
@@ -262,8 +247,11 @@ class AdminController extends AppController
         ksort($modulesList);
         $this->view->countModules = $countModules;
         $this->view->modulesList = $modulesList;
+
+        $enabledModules = Zend_Registry::get('modulesEnable');
         $this->view->modulesEnable = $enabledModules;
-        $this->view->databaseType = Zend_Registry::get('configDatabase')->database->adapter;
+
+        $this->view->databaseType = $adapter;
     }
 
     /** admin dashboard view */
@@ -336,6 +324,11 @@ class AdminController extends AppController
         $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
         $modulesConfig = Zend_Registry::get('configsModules');
 
+        $version = UtilityComponent::getCurrentModuleVersion('core');
+        if ($version === false) {
+            throw new Zend_Exception('Core version is undefined.');
+        }
+
         if ($this->_request->isPost()) {
             $this->disableView();
             $upgraded = false;
@@ -346,8 +339,7 @@ class AdminController extends AppController
                 }
             }
             $this->Component->Upgrade->initUpgrade('core', $db, $dbtype);
-            if ($this->Component->Upgrade->upgrade(Zend_Registry::get('configDatabase')->version)
-            ) {
+            if ($this->Component->Upgrade->upgrade($version)) {
                 $upgraded = true;
             }
 
@@ -374,10 +366,8 @@ class AdminController extends AppController
         $this->Component->Upgrade->initUpgrade('core', $db, $dbtype);
         $core['target'] = $this->Component->Upgrade->getNewestVersion();
         $core['targetText'] = $this->Component->Upgrade->getNewestVersion(true);
-        $core['currentText'] = Zend_Registry::get('configDatabase')->version;
-        $core['current'] = $this->Component->Upgrade->transformVersionToNumeric(
-            Zend_Registry::get('configDatabase')->version
-        );
+        $core['currentText'] = $version;
+        $core['current'] = $this->Component->Upgrade->transformVersionToNumeric($version);
         $this->view->core = $core;
     }
 

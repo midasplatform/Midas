@@ -567,7 +567,10 @@ class UserController extends AppController
                 }
 
                 $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
-                $currentVersion = Zend_Registry::get('configDatabase')->version;
+                $currentVersion = UtilityComponent::getCurrentModuleVersion('core');
+                if ($currentVersion === false) {
+                    throw new Zend_Exception('Core version is undefined.');
+                }
                 // We have to have this so that an admin can log in to upgrade from version < 3.2.12 to >= 3.2.12.
                 // Version 3.2.12 introduced the new password hashing and storage system.
                 if (!$authModule && version_compare($currentVersion, '3.2.12', '>=')

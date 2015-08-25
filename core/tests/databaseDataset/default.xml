@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
+    <module module_id="1" name="core" uuid="67a81613074d4c9aafb74613f3144a3d"
+        current_major_version="##CORE_MAJOR_VERSION##" current_minor_version="##CORE_MINOR_VERSION##"
+        current_patch_version="##CORE_PATCH_VERSION##" enabled="1"/>
+
     <folder folder_id="1" name="name Folder 1" description="Description Folder 1" privacy_status="0" left_index="1"
         right_index="2" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72800' parent_id="-1"/>
     <folderpolicygroup folder_id="1" group_id="0" policy='0'/>
@@ -45,7 +49,6 @@
     <group group_id="3000" community_id="2000" name="Community test User 1 Admin"/>
     <group group_id="3001" community_id="2000" name="Community test User 1 Moderator"/>
     <group group_id="3002" community_id="2000" name="Community test User 1 Member"/>
-
 
     <user user_id="1" firstname="FirstName1" lastname="LastName1" hash_alg="sha256" email="user1@user1.com"
         creation="2011-01-27 12:09:02" folder_id="1000" admin="0"/>
@@ -122,8 +125,8 @@
     <!-- MIDAS_FEED_CREATE_REVISION -->
     <feed feed_id="10" date="2011-01-27 12:09:02" user_id='1' type="40" resource="1"/>
 
-    <setting setting_id="1000" name="dummy" module="" value="dummy"/>
     <setting setting_id="1" name="adminuser" module="core" value="3"/>
+    <setting setting_id="1000" name="dummy" module="" value="dummy"/>
 
     <!-- second community, associated folders and groups -->
     <community community_id="2001" name="Community For Deletion" description="Community test User 1"

@@ -67,10 +67,8 @@ class AppController extends MIDAS_GlobalController
         $this->view->metaDescription = Zend_Registry::get('configGlobal')->application->description;
 
         // Set the version
-        $this->view->version = '3.2.8';
-        if (isset(Zend_Registry::get('configDatabase')->version)) {
-            $this->view->version = Zend_Registry::get('configDatabase')->version;
-        }
+        $version = UtilityComponent::getCurrentModuleVersion('core');
+        $this->view->version = $version !== false ? $version : '3.4.x';
 
         require_once BASE_PATH.'/core/models/dao/UserDao.php';
         require_once BASE_PATH.'/core/models/dao/ItemDao.php';
@@ -127,7 +125,10 @@ class AppController extends MIDAS_GlobalController
                             if ($userDao != false) {
                                 // authenticate valid users in the appropriate method for the
                                 // current application version
-                                if (version_compare(Zend_Registry::get('configDatabase')->version, '3.2.12', '>=')) {
+                                if ($version === false) {
+                                    throw new Zend_Exception('Core version is undefined.');
+                                }
+                                if (version_compare($version, '3.2.12', '>=')) {
                                     $auth = $userModel->hashExists($tmp[1]);
                                 } else {
                                     $auth = $userModel->legacyAuthenticate($userDao, '', '', $tmp[1]);
@@ -603,6 +604,9 @@ class AppController extends MIDAS_GlobalController
 
     /** @var MetadataModel */
     public $Metadata;
+
+    /** @var ModuleModel */
+    public $Module;
 
     /** @var NewUserInvitationModel */
     public $NewUserInvitation;

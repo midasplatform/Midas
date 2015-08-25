@@ -180,7 +180,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     /** Display the debug toolbar, if enabled. */
     protected function _initZFDebug()
     {
-        $this->bootstrap('config');
+        $this->bootstrap(array('Config', 'FrontController'));
         $zfDebugPath = BASE_PATH.'/vendor/jokkedk/zfdebug/library';
 
         if (Zend_Registry::get('configGlobal')->debug_toolbar === '1' && file_exists($zfDebugPath)) {
@@ -196,21 +196,24 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             );
 
             $debug = new ZFDebug_Controller_Plugin_Debug($options);
-
-            $this->bootstrap('frontController');
-            $frontController = $this->getResource('frontController');
+            $frontController = $this->getResource('FrontController');
             $frontController->registerPlugin($debug);
+
+            return $debug;
         }
+
+        return false;
     }
 
     /** Register the module directories. */
     protected function _initFrontModules()
     {
-        $this->bootstrap('frontController');
-        $front = $this->getResource('frontController');
-        $front->addModuleDirectory(BASE_PATH.'/modules');
+        $this->bootstrap('FrontController');
+        $frontController = $this->getResource('FrontController');
+        $frontController->addModuleDirectory(BASE_PATH.'/modules');
+
         if (file_exists(BASE_PATH.'/privateModules')) {
-            $front->addModuleDirectory(BASE_PATH.'/privateModules');
+            $frontController->addModuleDirectory(BASE_PATH.'/privateModules');
         }
     }
 
@@ -272,124 +275,94 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      * Initialize the router.
      *
      * @return Zend_Controller_Router_Interface
+     * @throws Zend_Exception
      */
     protected function _initRouter()
     {
-        $router = Zend_Controller_Front::getInstance()->getRouter();
+        $this->bootstrap(array('Config', 'FrontController'));
 
-        // Init Modules
-        $frontController = Zend_Controller_Front::getInstance();
+        $frontController = $this->getResource('FrontController');
         $frontController->addControllerDirectory(BASE_PATH.'/core/controllers');
 
-        $modules = new Zend_Config_Ini(APPLICATION_CONFIG, 'module');
-        // routes modules
-        $listeModule = array();
-        $apiModules = array();
-        foreach ($modules as $key => $module) {
-            if ($module == 1 && file_exists(BASE_PATH.'/modules/'.$key) && file_exists(
-                    BASE_PATH.'/modules/'.$key.'/AppController.php'
-                )
-            ) {
-                $listeModule[] = $key;
-                // get web API controller directories and web API module names for enabled modules
-                if (file_exists(BASE_PATH.'/modules/'.$key.'/controllers/api')) {
-                    $frontController->addControllerDirectory(
-                        BASE_PATH.'/modules/'.$key.'/controllers/api',
-                        'api'.$key
-                    );
-                    $apiModules[] = $key;
-                }
-            } elseif ($module == 1 && file_exists(BASE_PATH.'/privateModules/'.$key) && file_exists(
-                    BASE_PATH.'/privateModules/'.$key.'/AppController.php'
-                )
-            ) {
-                $listeModule[] = $key;
-                // get web API controller directories and web API module names for enabled modules
-                if (file_exists(BASE_PATH.'/privateModules/'.$key.'/controllers/api')) {
-                    $frontController->addControllerDirectory(
-                        BASE_PATH.'/privateModules/'.$key.'/controllers/api',
-                        'api'.$key
-                    );
-                    $apiModules[] = $key;
-                }
-            }
-        }
-
-        // get web API controller directory for core APIs
         require_once BASE_PATH.'/core/ApiController.php';
         $frontController->addControllerDirectory(BASE_PATH.'/core/controllers/api', 'rest');
-        // add RESTful route for web APIs
-        $restRoute = new Zend_Rest_Route($frontController, array(), array('rest'));
-        $router->addRoute('api-core', $restRoute);
-        // loading modules elements
-        foreach ($listeModule as $m) {
-            $route = $m;
-            $nameModule = $m;
-            $router->addRoute(
-                $nameModule.'-1',
-                new Zend_Controller_Router_Route(
-                    ''.$route.'/:controller/:action/*', array('module' => $nameModule)
-                )
-            );
-            $router->addRoute(
-                $nameModule.'-2',
-                new Zend_Controller_Router_Route(
-                    ''.$route.'/:controller/',
-                    array('module' => $nameModule, 'action' => 'index')
-                )
-            );
-            $router->addRoute(
-                $nameModule.'-3',
-                new Zend_Controller_Router_Route(
-                    ''.$route.'/',
-                    array('module' => $nameModule, 'controller' => 'index', 'action' => 'index')
-                )
-            );
 
-            if (file_exists(BASE_PATH.'/modules/'.$route.'/AppController.php')) {
-                require_once BASE_PATH.'/modules/'.$route.'/AppController.php';
+        $router = $frontController->getRouter();
+        $router->addRoute('api-core',  new Zend_Rest_Route($frontController, array(), array('rest')));
+
+        $enabledModules = array();
+
+        if (isset(Zend_Registry::get('configDatabase')->version) === false) {
+            Zend_Registry::set('models', array());
+
+            /** @var ModuleModel $moduleModel */
+            $moduleModel = MidasLoader::loadModel('Module');
+            $moduleDaos = $moduleModel->getEnabled();
+
+            /** @var ModuleDao $moduleDao */
+            foreach ($moduleDaos as $moduleDao) {
+                $enabledModules[] = $moduleDao->getName();
             }
-            if (file_exists(BASE_PATH.'/modules/'.$route.'/models/AppDao.php')) {
-                require_once BASE_PATH.'/modules/'.$route.'/models/AppDao.php';
-            }
-            if (file_exists(BASE_PATH.'/modules/'.$route.'/models/AppModel.php')) {
-                require_once BASE_PATH.'/modules/'.$route.'/models/AppModel.php';
-            }
-            if (file_exists(BASE_PATH.'/modules/'.$route.'/constant/module.php')) {
-                require_once BASE_PATH.'/modules/'.$route.'/constant/module.php';
+        } else {
+            $modules = new Zend_Config_Ini(APPLICATION_CONFIG, 'module');
+            $enabledModules = array_keys($modules->toArray(), 1);
+        }
+
+        $enabledApiModules = array();
+
+        /** @var string $enabledModule */
+        foreach ($enabledModules as $enabledModule) {
+            if (file_exists(BASE_PATH.'/modules/'.$enabledModule.'/AppController.php')) {
+                $moduleRoot = BASE_PATH.'/modules/'.$enabledModule;
+            } elseif (file_exists(BASE_PATH.'/privateModules/'.$enabledModule.'/AppController.php')) {
+                $moduleRoot = BASE_PATH.'/privateModules/'.$enabledModule;
+            } else {
+                throw new Zend_Exception('Module '.$enabledModule.'" does not exist.');
             }
 
-            if (file_exists(BASE_PATH.'/privateModules/'.$route.'/AppController.php')) {
-                require_once BASE_PATH.'/privateModules/'.$route.'/AppController.php';
-            }
-            if (file_exists(BASE_PATH.'/privateModules/'.$route.'/models/AppDao.php')) {
-                require_once BASE_PATH.'/privateModules/'.$route.'/models/AppDao.php';
-            }
-            if (file_exists(BASE_PATH.'/privateModules/'.$route.'/models/AppModel.php')) {
-                require_once BASE_PATH.'/privateModules/'.$route.'/models/AppModel.php';
-            }
-            if (file_exists(BASE_PATH.'/privateModules/'.$route.'/constant/module.php')) {
-                require_once BASE_PATH.'/privateModules/'.$route.'/constant/module.php';
+            $frontController->addControllerDirectory($moduleRoot.'/controllers', $enabledModule);
+
+            if (file_exists($moduleRoot.'/constant/module.php')) {
+                require_once $moduleRoot.'/constant/module.php';
             }
 
-            $dir = BASE_PATH.'/modules/'.$route.'/models/base';
-            if (!is_dir($dir)) {
-                $dir = BASE_PATH.'/privateModules/'.$route.'/models/base';
+            if (file_exists($moduleRoot.'/AppController.php')) {
+                require_once $moduleRoot.'/AppController.php';
             }
 
-            if (is_dir($dir)) {
-                $objects = scandir($dir);
-                foreach ($objects as $object) {
-                    if ($object != '.' && $object != '..') {
-                        if (filetype($dir.'/'.$object) != 'dir') {
-                            require_once $dir.'/'.$object;
-                        }
+            if (file_exists($moduleRoot.'/models/AppDao.php')) {
+                require_once $moduleRoot.'/models/AppDao.php';
+            }
+
+            if (file_exists($moduleRoot.'/models/AppModel.php')) {
+                require_once $moduleRoot.'/models/AppModel.php';
+            }
+
+            if (file_exists($moduleRoot.'/controllers/api')) {
+                $frontController->addControllerDirectory($moduleRoot.'/controllers/api', 'api'.$enabledModule);
+                $enabledApiModules[] = $enabledModule;
+            }
+
+            $router->addRoute($enabledModule.'-1', new Zend_Controller_Router_Route($enabledModule.'/:controller/:action/*', array('module' => $enabledModule)));
+            $router->addRoute($enabledModule.'-2', new Zend_Controller_Router_Route($enabledModule.'/:controller/', array('module' => $enabledModule, 'action' => 'index')));
+            $router->addRoute($enabledModule.'-3', new Zend_Controller_Router_Route($enabledModule.'/', array('module' => $enabledModule, 'controller' => 'index', 'action' => 'index')));
+
+            $baseModels = $moduleRoot.'/models/base';
+
+            if (is_dir($baseModels)) {
+                $fileNames = array_diff(scandir($baseModels), array('..', '.'));
+
+                /** @var string $fileName */
+                foreach ($fileNames as $fileName) {
+                    if (filetype($baseModels.'/'.$fileName) != 'dir') {
+                        require_once $baseModels.'/'.$fileName;
                     }
                 }
             }
         }
-        Zend_Registry::set('modulesEnable', $listeModule);
-        Zend_Registry::set('modulesHaveApi', $apiModules);
+
+        Zend_Registry::set('modulesEnable', $enabledModules);
+        Zend_Registry::set('modulesHaveApi', $enabledApiModules);
 
         return $router;
     }
@@ -397,7 +370,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     /** Register the plugins and helpers for the REST controllers. */
     protected function _initREST()
     {
-        $frontController = Zend_Controller_Front::getInstance();
+        $this->bootstrap('FrontController');
+        $frontController = $this->getResource('FrontController');
 
         // register the RestHandler plugin
         $frontController->registerPlugin(new REST_Controller_Plugin_RestHandler($frontController));

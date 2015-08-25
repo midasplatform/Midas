@@ -64,6 +64,7 @@ abstract class SettingModelBase extends AppModel
         if ($settingDao === false) {
             return;
         }
+
         return $settingDao->getValue();
     }
 
@@ -107,6 +108,7 @@ abstract class SettingModelBase extends AppModel
             $settingDao->setValue($value);
             $this->save($settingDao);
         }
+
         return $settingDao;
     }
 }

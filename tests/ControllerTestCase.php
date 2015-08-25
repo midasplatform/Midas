@@ -100,7 +100,8 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
      *
      * @param string $name
      * @param null|string $module
-     * @return PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet
+     * @return PHPUnit_Extensions_Database_DataSet_AbstractDataSet
+     * @throws Zend_Exception
      */
     protected function getDataSet($name = 'default', $module = null)
     {
@@ -108,8 +109,20 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         if (isset($module) && !empty($module)) {
             $path = BASE_PATH.'/modules/'.$module.'/tests/databaseDataset/'.$name.'.xml';
         }
+        $xmlDataSet = new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
+        $replacementDataSet = new PHPUnit_Extensions_Database_DataSet_ReplacementDataSet($xmlDataSet);
+        $configCore = new Zend_Config_Ini(CORE_CONFIG, 'global', true);
+        Zend_Registry::set('configCore', $configCore);
+        $coreVersion = UtilityComponent::getLatestModuleVersion('core');
+        $result = preg_match('/^([0-9]+)\.([0-9]+)\.([0-9]+)$/i', $coreVersion, $matches);
+        if ($result !== 1) {
+            throw new Zend_Exception('Invalid core version string.');
+        }
+        $replacementDataSet->addFullReplacement('##CORE_MAJOR_VERSION##', $matches[1]);
+        $replacementDataSet->addFullReplacement('##CORE_MINOR_VERSION##', $matches[2]);
+        $replacementDataSet->addFullReplacement('##CORE_PATCH_VERSION##', $matches[3]);
 
-        return new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
+        return $replacementDataSet;
     }
 
     /**
@@ -140,99 +153,70 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     /** Initialize modules. */
     private function _initModule()
     {
-        $router = Zend_Controller_Front::getInstance()->getRouter();
-        // Init Modules
         $frontController = Zend_Controller_Front::getInstance();
         $frontController->addControllerDirectory(BASE_PATH.'/core/controllers');
-        if (isset($this->enabledModules) || (isset($_POST['enabledModules']) || isset($_GET['enabledModules']))) {
-            if (isset($this->enabledModules)) {
-                $paramsTestingModules = $this->enabledModules;
-            } elseif (isset($_POST['enabledModules'])) {
-                $paramsTestingModules = explode(';', $_POST['enabledModules']);
-            } else {
-                $paramsTestingModules = explode(';', $_GET['enabledModules']);
-            }
-            $modules = array();
-            foreach ($paramsTestingModules as $p) {
-                $modules[$p] = 1;
-                if (file_exists(BASE_PATH.'/modules/'.$p.'/constant/module.php')) {
-                    require_once BASE_PATH.'/modules/'.$p.'/constant/module.php';
-                }
-                if (file_exists(BASE_PATH.'/privateModules/'.$p.'/constant/module.php')) {
-                    require_once BASE_PATH.'/privateModules/'.$p.'/constant/module.php';
-                }
-            }
-        } else {
-            $modules = array();
-        }
 
-        // routes modules
-        $listeModule = array();
-        $apiModules = array();
-        foreach ($modules as $key => $module) {
-            if ($module == 1 && file_exists(BASE_PATH.'/modules/'.$key)) {
-                $listeModule[] = $key;
-                // get web API controller directories and web API module names for enabled modules
-                if (file_exists(BASE_PATH.'/modules/'.$key.'/controllers/api')) {
-                    $frontController->addControllerDirectory(
-                        BASE_PATH.'/modules/'.$key.'/controllers/api',
-                        'api'.$key
-                    );
-                    $apiModules[] = $key;
-                }
-            }
+        require_once BASE_PATH.'/core/ApiController.php';
+        $frontController->addControllerDirectory(BASE_PATH.'/core/controllers/api', 'rest');
+
+        $router = $frontController->getRouter();
+        $router->addRoute('api-core',  new Zend_Rest_Route($frontController, array(), array('rest')));
+
+        $enabledModules = array();
+
+        if (isset($this->enabledModules)) {
+            $enabledModules = $this->enabledModules;
+        } elseif (isset($_POST['enabledModules'])) {
+            $enabledModules = explode(';', $_POST['enabledModules']);
+        } elseif (isset($_GET['enabledModules'])) {
+            $enabledModules = explode(';', $_GET['enabledModules']);
         }
 
         /** @var UtilityComponent $utilityComponent */
         $utilityComponent = MidasLoader::loadComponent('Utility');
 
-        require_once BASE_PATH.'/core/ApiController.php';
-        $frontController->addControllerDirectory(BASE_PATH.'/core/controllers/api', 'rest');
-        // add RESTful route for web APIs
-        $restRoute = new Zend_Rest_Route($frontController, array(), array('rest'));
-        // add regular route for apikey configuration page
-        $router->addRoute(
-            'rest-apikey',
-            new Zend_Controller_Router_Route('/apikey/:action/', array('module' => 'rest', 'controller' => 'apikey'))
-        );
-        $router->addRoute('api-core', $restRoute);
-        foreach ($listeModule as $m) {
-            $route = $m;
-            $nameModule = $m;
-            $router->addRoute(
-                $nameModule.'-1',
-                new Zend_Controller_Router_Route(
-                    ''.$route.'/:controller/:action/*', array('module' => $nameModule)
-                )
-            );
-            $router->addRoute(
-                $nameModule.'-2',
-                new Zend_Controller_Router_Route(
-                    ''.$route.'/:controller/',
-                    array('module' => $nameModule, 'action' => 'index')
-                )
-            );
-            $router->addRoute(
-                $nameModule.'-3',
-                new Zend_Controller_Router_Route(
-                    ''.$route.'/',
-                    array('module' => $nameModule, 'controller' => 'index', 'action' => 'index')
-                )
-            );
-            $frontController->addControllerDirectory(BASE_PATH.'/modules/'.$route.'/controllers', $nameModule);
-            if (file_exists(BASE_PATH.'/modules/'.$route.'/AppController.php')) {
-                require_once BASE_PATH.'/modules/'.$route.'/AppController.php';
+        /** @var ModuleModel $moduleModel */
+        $moduleModel = MidasLoader::loadModel('Module');
+
+        $enabledApiModules = array();
+
+        /** @var string $enabledModule */
+        foreach ($enabledModules as $enabledModule) {
+            $frontController->addControllerDirectory(BASE_PATH.'/modules/'.$enabledModule.'/controllers', $enabledModule);
+
+            if (file_exists(BASE_PATH.'/modules/'.$enabledModule.'/constant/module.php')) {
+                require_once BASE_PATH.'/modules/'.$enabledModule.'/constant/module.php';
             }
-            if (file_exists(BASE_PATH.'/modules/'.$route.'/models/AppDao.php')) {
-                require_once BASE_PATH.'/modules/'.$route.'/models/AppDao.php';
+
+            if (file_exists(BASE_PATH.'/modules/'.$enabledModule.'/AppController.php')) {
+                require_once BASE_PATH.'/modules/'.$enabledModule.'/AppController.php';
             }
-            if (file_exists(BASE_PATH.'/modules/'.$route.'/models/AppModel.php')) {
-                require_once BASE_PATH.'/modules/'.$route.'/models/AppModel.php';
+
+            if (file_exists(BASE_PATH.'/modules/'.$enabledModule.'/models/AppDao.php')) {
+                require_once BASE_PATH.'/modules/'.$enabledModule.'/models/AppDao.php';
             }
-            $utilityComponent->installModule($m);
+
+            if (file_exists(BASE_PATH.'/modules/'.$enabledModule.'/models/AppModel.php')) {
+                require_once BASE_PATH.'/modules/'.$enabledModule.'/models/AppModel.php';
+            }
+
+            if (file_exists(BASE_PATH.'/modules/'.$enabledModule.'/controllers/api')) {
+                $frontController->addControllerDirectory(BASE_PATH.'/modules/'.$enabledModule.'/controllers/api', 'api'.$enabledModule);
+                $enabledApiModules[] = $enabledModule;
+            }
+
+            $router->addRoute($enabledModule.'-1', new Zend_Controller_Router_Route($enabledModule.'/:controller/:action/*', array('module' => $enabledModule)));
+            $router->addRoute($enabledModule.'-2', new Zend_Controller_Router_Route($enabledModule.'/:controller/', array('module' => $enabledModule, 'action' => 'index')));
+            $router->addRoute($enabledModule.'-3', new Zend_Controller_Router_Route($enabledModule.'/', array('module' => $enabledModule, 'controller' => 'index', 'action' => 'index')));
+
+            $utilityComponent->installModule($enabledModule);
+            $moduleDao = $moduleModel->getByName($enabledModule);
+            $moduleDao->setEnabled(1);
+            $moduleModel->save($moduleDao);
         }
-        Zend_Registry::set('modulesEnable', $listeModule);
-        Zend_Registry::set('modulesHaveApi', $apiModules);
+
+        Zend_Registry::set('modulesEnable', $enabledModules);
+        Zend_Registry::set('modulesHaveApi', $enabledApiModules);
     }
 
     /** Register plugins and helpers for the REST controller. */
@@ -339,6 +323,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
      *
      * @param string|array $files
      * @param null|string $module
+     * @throws Zend_Exception
      */
     public function setupDatabase($files, $module = null)
     {
@@ -352,16 +337,34 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
                 if (isset($module)) {
                     $path = BASE_PATH.'/modules/'.$module.'/tests/databaseDataset/'.$f.'.xml';
                 }
-                $databaseFixture = new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
-                $databaseTester->setupDatabase($databaseFixture);
+                $xmlDataSet = new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
+                $replacementDataSet = new PHPUnit_Extensions_Database_DataSet_ReplacementDataSet($xmlDataSet);
+                $coreVersion = UtilityComponent::getLatestModuleVersion('core');
+                $result = preg_match('/^([0-9]+)\.([0-9]+)\.([0-9]+)$/i', $coreVersion, $matches);
+                if ($result !== 1) {
+                    throw new Zend_Exception('Invalid core version string.');
+                }
+                $replacementDataSet->addFullReplacement('##CORE_MAJOR_VERSION##', $matches[1]);
+                $replacementDataSet->addFullReplacement('##CORE_MINOR_VERSION##', $matches[2]);
+                $replacementDataSet->addFullReplacement('##CORE_PATCH_VERSION##', $matches[3]);
+                $databaseTester->setupDatabase($replacementDataSet);
             }
         } else {
             $path = BASE_PATH.'/core/tests/databaseDataset/'.$files.'.xml';
             if (isset($module)) {
                 $path = BASE_PATH.'/modules/'.$module.'/tests/databaseDataset/'.$files.'.xml';
             }
-            $databaseFixture = new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
-            $databaseTester->setupDatabase($databaseFixture);
+            $xmlDataSet = new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
+            $replacementDataSet = new PHPUnit_Extensions_Database_DataSet_ReplacementDataSet($xmlDataSet);
+            $coreVersion = UtilityComponent::getLatestModuleVersion('core');
+            $result = preg_match('/^([0-9]+)\.([0-9]+)\.([0-9]+)$/i', $coreVersion, $matches);
+            if ($result !== 1) {
+                throw new Zend_Exception('Invalid core version string.');
+            }
+            $replacementDataSet->addFullReplacement('##CORE_MAJOR_VERSION##', $matches[1]);
+            $replacementDataSet->addFullReplacement('##CORE_MINOR_VERSION##', $matches[2]);
+            $replacementDataSet->addFullReplacement('##CORE_PATCH_VERSION##', $matches[3]);
+            $databaseTester->setupDatabase($replacementDataSet);
         }
 
         if ($configDatabase->database->adapter == 'PDO_PGSQL') {

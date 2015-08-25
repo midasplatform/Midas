@@ -97,7 +97,58 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
     public function appBootstrap()
     {
         $this->application = new Zend_Application(APPLICATION_ENV, CORE_CONFIG);
+        $this->_initModule();
         $this->application->bootstrap();
+    }
+
+    /** Initialize modules. */
+    private function _initModule()
+    {
+        $frontController = Zend_Controller_Front::getInstance();
+        $frontController->addControllerDirectory(BASE_PATH.'/core/controllers');
+        $router = $frontController->getRouter();
+        $enabledModules = array();
+
+        if (isset($this->enabledModules)) {
+            $enabledModules = $this->enabledModules;
+        }
+
+        /** @var UtilityComponent $utilityComponent */
+        $utilityComponent = MidasLoader::loadComponent('Utility');
+
+        /** @var ModuleModel $moduleModel */
+        $moduleModel = MidasLoader::loadModel('Module');
+
+        foreach ($enabledModules as $enabledModule) {
+            $frontController->addControllerDirectory(BASE_PATH.'/modules/'.$enabledModule.'/controllers', $enabledModule);
+
+            if (file_exists(BASE_PATH.'/modules/'.$enabledModule.'/constant/module.php')) {
+                require_once BASE_PATH.'/modules/'.$enabledModule.'/constant/module.php';
+            }
+
+            if (file_exists(BASE_PATH.'/modules/'.$enabledModule.'/AppController.php')) {
+                require_once BASE_PATH.'/modules/'.$enabledModule.'/AppController.php';
+            }
+
+            if (file_exists(BASE_PATH.'/modules/'.$enabledModule.'/models/AppDao.php')) {
+                require_once BASE_PATH.'/modules/'.$enabledModule.'/models/AppDao.php';
+            }
+
+            if (file_exists(BASE_PATH.'/modules/'.$enabledModule.'/models/AppModel.php')) {
+                require_once BASE_PATH.'/modules/'.$enabledModule.'/models/AppModel.php';
+            }
+
+            $router->addRoute($enabledModule.'-1', new Zend_Controller_Router_Route($enabledModule.'/:controller/:action/*', array('module' => $enabledModule)));
+            $router->addRoute($enabledModule.'-2', new Zend_Controller_Router_Route($enabledModule.'/:controller/', array('module' => $enabledModule, 'action' => 'index')));
+            $router->addRoute($enabledModule.'-3', new Zend_Controller_Router_Route($enabledModule.'/', array('module' => $enabledModule, 'controller' => 'index', 'action' => 'index')));
+
+            $utilityComponent->installModule($enabledModule);
+            $moduleDao = $moduleModel->getByName($enabledModule);
+            $moduleDao->setEnabled(1);
+            $moduleModel->save($moduleDao);
+        }
+
+        Zend_Registry::set('modulesEnable', $enabledModules);
     }
 
     /**
@@ -105,6 +156,7 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
      *
      * @param string|array $files
      * @param null|string $module
+     * @throws Zend_Exception
      */
     public function setupDatabase($files, $module = null)
     {
@@ -118,16 +170,37 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
                 if (isset($module)) {
                     $path = BASE_PATH.'/modules/'.$module.'/tests/databaseDataset/'.$f.'.xml';
                 }
-                $databaseFixture = new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
-                $databaseTester->setupDatabase($databaseFixture);
+                $xmlDataSet = new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
+                $replacementDataSet = new PHPUnit_Extensions_Database_DataSet_ReplacementDataSet($xmlDataSet);
+                $configCore = new Zend_Config_Ini(CORE_CONFIG, 'global', true);
+                Zend_Registry::set('configCore', $configCore);
+                $coreVersion = UtilityComponent::getLatestModuleVersion('core');
+                $result = preg_match('/^([0-9]+)\.([0-9]+)\.([0-9]+)$/i', $coreVersion, $matches);
+                if ($result !== 1) {
+                    throw new Zend_Exception('Invalid core version string.');
+                }
+                $replacementDataSet->addFullReplacement('##CORE_MAJOR_VERSION##', $matches[1]);
+                $replacementDataSet->addFullReplacement('##CORE_MINOR_VERSION##', $matches[2]);
+                $replacementDataSet->addFullReplacement('##CORE_PATCH_VERSION##', $matches[3]);
+                $databaseTester->setupDatabase($replacementDataSet);
             }
         } else {
             $path = BASE_PATH.'/core/tests/databaseDataset/'.$files.'.xml';
             if (isset($module)) {
                 $path = BASE_PATH.'/modules/'.$module.'/tests/databaseDataset/'.$files.'.xml';
             }
-            $databaseFixture = new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
-            $databaseTester->setupDatabase($databaseFixture);
+            $xmlDataSet = new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
+            $replacementDataSet = new PHPUnit_Extensions_Database_DataSet_ReplacementDataSet($xmlDataSet);
+            $coreVersion = UtilityComponent::getLatestModuleVersion('core');
+            $result = preg_match('/^([0-9]+)\.([0-9]+)\.([0-9]+)$/i', $coreVersion, $matches);
+            if ($result !== 1) {
+                throw new Zend_Exception('Invalid core version string.');
+            }
+            $replacementDataSet->addFullReplacement('##CORE_MAJOR_VERSION##', $matches[1]);
+            $replacementDataSet->addFullReplacement('##CORE_MINOR_VERSION##', $matches[2]);
+            $replacementDataSet->addFullReplacement('##CORE_PATCH_VERSION##', $matches[3]);
+
+            $databaseTester->setupDatabase($replacementDataSet);
         }
 
         if ($configDatabase->database->adapter == 'PDO_PGSQL') {
@@ -186,7 +259,8 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
      *
      * @param string $name
      * @param null|string $module
-     * @return PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet
+     * @return PHPUnit_Extensions_Database_DataSet_AbstractDataSet
+     * @throws Zend_Exception
      */
     protected function getDataSet($name = 'default', $module = null)
     {
@@ -194,8 +268,18 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
         if (isset($module) && !empty($module)) {
             $path = BASE_PATH.'/modules/'.$module.'/tests/databaseDataset/'.$name.'.xml';
         }
+        $xmlDataSet = new PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet($path);
+        $replacementDataSet = new PHPUnit_Extensions_Database_DataSet_ReplacementDataSet($xmlDataSet);
+        $coreVersion = UtilityComponent::getLatestModuleVersion('core');
+        $result = preg_match('/^([0-9]+)\.([0-9]+)\.([0-9]+)$/i', $coreVersion, $matches);
+        if ($result !== 1) {
+            throw new Zend_Exception('Invalid core version string.');
+        }
+        $replacementDataSet->addFullReplacement('##CORE_MAJOR_VERSION##', $matches[1]);
+        $replacementDataSet->addFullReplacement('##CORE_MINOR_VERSION##', $matches[2]);
+        $replacementDataSet->addFullReplacement('##CORE_PATCH_VERSION##', $matches[3]);
 
-        return $this->createFlatXmlDataSet($path);
+        return $replacementDataSet;
     }
 
     /**

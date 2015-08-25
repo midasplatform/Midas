@@ -32,7 +32,12 @@ class ApisystemComponent extends AppComponent
      */
     public function version($args)
     {
-        return array('version' => Zend_Registry::get('configDatabase')->version);
+        $version = UtilityComponent::getCurrentModuleVersion('core');
+        if ($version === false) {
+            throw new Zend_Exception('Core version is undefined.');
+        }
+
+        return array('version' => $version);
     }
 
     /**

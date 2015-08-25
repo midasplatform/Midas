@@ -118,9 +118,7 @@ class InstallController extends AppController
                 $dbtype = 'PDO_'.strtoupper($type);
                 $version = str_replace('.sql', '', basename($sqlFile));
 
-                $options = array('allowModifications' => true);
-                $databaseConfig = new Zend_Config_Ini(CORE_CONFIGS_PATH.'/database.ini', null, $options);
-
+                $databaseConfig = new Zend_Config_Ini(CORE_CONFIGS_PATH.'/database.ini', null, true);
                 $databaseConfig->production->database->adapter = $dbtype;
                 $databaseConfig->production->database->params->host = $form->getValue('host');
                 $databaseConfig->production->database->params->port = $form->getValue('port');
@@ -128,7 +126,6 @@ class InstallController extends AppController
                 $databaseConfig->production->database->params->dbname = $form->getValue('dbname');
                 $databaseConfig->production->database->params->username = $form->getValue('username');
                 $databaseConfig->production->database->params->password = $form->getValue('password');
-                $databaseConfig->production->version = $version;
 
                 $databaseConfig->development->database->adapter = $dbtype;
                 $databaseConfig->development->database->params->host = $form->getValue('host');
@@ -137,7 +134,6 @@ class InstallController extends AppController
                 $databaseConfig->development->database->params->dbname = $form->getValue('dbname');
                 $databaseConfig->development->database->params->username = $form->getValue('username');
                 $databaseConfig->development->database->params->password = $form->getValue('password');
-                $databaseConfig->development->version = $version;
 
                 $writer = new Zend_Config_Writer_Ini();
                 $writer->setConfig($databaseConfig);
@@ -168,8 +164,7 @@ class InstallController extends AppController
                 $this->Component->Utility->run_sql_from_file($db, $sqlFile);
 
                 // Must generate and store our password salt before we create our first user
-                $options = array('allowModifications' => true);
-                $applicationConfig = new Zend_Config_Ini(CORE_CONFIGS_PATH.'/application.ini', null, $options);
+                $applicationConfig = new Zend_Config_Ini(CORE_CONFIGS_PATH.'/application.ini', null, true);
 
                 $prefix = $this->Component->Random->generateString(32);
                 $applicationConfig->global->password->prefix = $prefix;
@@ -186,11 +181,22 @@ class InstallController extends AppController
                 $configDatabase = new Zend_Config_Ini(LOCAL_CONFIGS_PATH.'/database.local.ini', 'production');
                 Zend_Registry::set('configDatabase', $configDatabase);
 
+                $configCore = new Zend_Config_Ini(CORE_CONFIGS_PATH.'/core.ini', 'global');
+
+                /** @var ModuleModel $moduleModel */
+                $moduleModel = MidasLoader::loadModel('Module');
+                /** @var ModuleDao $moduleDao */
+                $moduleDao = MidasLoader::newDao('ModuleDao');
+                $moduleDao->setName('core');
+                $moduleDao->setUuid(str_replace('-', '', $configCore->get('uuid')));
+                $moduleDao->setCurrentVersion($version);
+                $moduleDao->setEnabled(1);
+                $moduleModel->save($moduleDao);
+
                 require_once BASE_PATH.'/core/controllers/components/UpgradeComponent.php';
                 $upgradeComponent = new UpgradeComponent();
-
                 $upgradeComponent->initUpgrade('core', $db, $dbtype);
-                $upgradeComponent->upgrade(str_replace('.sql', '', basename($sqlFile)));
+                $upgradeComponent->upgrade($version);
 
                 session_start();
                 require_once BASE_PATH.'/core/models/pdo/UserModel.php';
@@ -232,8 +238,7 @@ class InstallController extends AppController
             $this->redirect('/install/index');
         }
 
-        $options = array('allowModifications' => true);
-        $config = new Zend_Config_Ini(APPLICATION_CONFIG, null, $options);
+        $config = new Zend_Config_Ini(APPLICATION_CONFIG, null, true);
 
         $form = $this->Form->Install->createConfigForm();
         $formArray = $this->getFormAsArray($form);
