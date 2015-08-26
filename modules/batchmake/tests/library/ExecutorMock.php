@@ -17,19 +17,19 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
 include_once BASE_PATH.'/library/KWUtils.php';
 
-/** Mock object class that will intercept calls to "exec" for testing purposes,
- *  as test setups may not have certain exes installed on the system that the
- *  exec will try to run.
+/**
+ * Mock object class that will intercept calls to "exec" for testing purposes,
+ * as test setups may not have certain exes installed on the system that the
+ * exec will try to run.
  */
 class Batchmake_ExecutorMock
 {
     protected $mockExes;
 
-    /**
-     * constructor.
-     */
+    /** Constructor. */
     public function __construct()
     {
         // assign exe names to mock objects
@@ -69,4 +69,4 @@ class Batchmake_ExecutorMock
             KWUtils::exec($command, $output, $chdir, $return_val);
         }
     }
-} // end class
+}
