@@ -68,6 +68,30 @@ abstract class SettingModelBase extends AppModel
         return $settingDao->getValue();
     }
 
+    /**
+     * Return the value of a configuration setting given its name and module
+     * name or the given default value if not found.
+     *
+     * @param string $name configuration setting name
+     * @param bool|int|float|string $default configuration setting default value
+     * @param string $module module name
+     * @return bool|int|float|string configuration setting value or the given default value if not found
+     * @throws Zend_Exception
+     */
+    public function getValueByNameWithDefault($name, $default, $module = 'core')
+    {
+        try {
+            $settingDao = $this->getDaoByName($name, $module);
+            if ($settingDao === false) {
+                return $default;
+            }
+
+            return $settingDao->getValue();
+        } catch (Zend_Db_Exception $exception) {
+            return $default;
+        }
+    }
+
     /** Set Configuration value.  */
 
     /**

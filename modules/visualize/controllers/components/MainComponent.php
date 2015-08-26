@@ -30,9 +30,9 @@ class Visualize_MainComponent extends AppComponent
     {
         /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
-        $useWebGL = $settingModel->getValueByName(VISUALIZE_USE_WEB_GL_KEY, $this->moduleName);
+        $useWebGL = (int) $settingModel->getValueByName(VISUALIZE_USE_WEB_GL_KEY, $this->moduleName);
 
-        if (!isset($useWebGL) || !$useWebGL) {
+        if ($useWebGL === 0) {
             return false;
         }
 
@@ -128,9 +128,9 @@ class Visualize_MainComponent extends AppComponent
     {
         /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
-        $useParaView = $settingModel->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
+        $useParaView = (int) $settingModel->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
 
-        if (!isset($useParaView) || !$useParaView) {
+        if ($useParaView === 0) {
             return false;
         }
 
@@ -157,9 +157,9 @@ class Visualize_MainComponent extends AppComponent
     {
         /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
-        $useParaView = $settingModel->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
+        $useParaView = (int) $settingModel->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
 
-        if (!isset($useParaView) || !$useParaView) {
+        if ($useParaView === 0) {
             return false;
         }
 
@@ -186,9 +186,9 @@ class Visualize_MainComponent extends AppComponent
     {
         /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
-        $useParaView = $settingModel->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
+        $useParaView = (int) $settingModel->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
 
-        if (!isset($useParaView) || !$useParaView) {
+        if ($useParaView === 0) {
             return false;
         }
 
@@ -334,7 +334,7 @@ class Visualize_MainComponent extends AppComponent
         /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
         $paraViewWorkDirectory = $settingModel->getValueByName(VISUALIZE_PARAVIEW_WEB_WORK_DIRECTORY_KEY, $this->moduleName);
-        $useSymlinks = $settingModel->getValueByName(VISUALIZE_USE_SYMLINKS_KEY, $this->moduleName);
+        $useSymlinks = (int) $settingModel->getValueByName(VISUALIZE_USE_SYMLINKS_KEY, $this->moduleName);
         $pwApp = $settingModel->getValueByName(VISUALIZE_TOMCAT_ROOT_URL_KEY, $this->moduleName);
         $pvBatch = $settingModel->getValueByName(VISUALIZE_PVBATCH_COMMAND_KEY, $this->moduleName);
 
@@ -352,7 +352,7 @@ class Visualize_MainComponent extends AppComponent
         }
         $bitstreams = $revision->getBitstreams();
         foreach ($bitstreams as $bitstream) {
-            if ($useSymlinks) {
+            if ($useSymlinks === 1) {
                 symlink($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
             } else {
                 copy($bitstream->getFullPath(), $path.'/'.$bitstream->getName());

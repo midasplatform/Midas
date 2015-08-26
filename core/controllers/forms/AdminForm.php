@@ -25,16 +25,18 @@ class AdminForm extends AppForm
     public function createConfigForm()
     {
         $form = new Zend_Form();
-
         $form->setAction($this->webroot.'/admin/index')->setMethod('post');
 
-        $lang = new Zend_Form_Element_Select('lang');
-        $lang->addMultiOptions(array('en' => 'English', 'fr' => 'French'));
+        $title = new Zend_Form_Element_Text('title');
+        $title->setRequired(true)->addValidator('NotEmpty', true);
 
         $description = new Zend_Form_Element_Textarea('description');
 
-        $timezone = new Zend_Form_Element_Select('timezone');
-        $timezone->addMultiOptions(
+        $language = new Zend_Form_Element_Select('language');
+        $language->addMultiOptions(array('en' => 'English', 'fr' => 'French'));
+
+        $timeZone = new Zend_Form_Element_Select('time_zone');
+        $timeZone->addMultiOptions(
             array(
                 'America/Anchorage' => 'America/Anchorage',
                 'America/Chicago' => 'America/Chicago',
@@ -49,31 +51,25 @@ class AdminForm extends AppForm
             )
         );
 
-        $name = new Zend_Form_Element_Text('name');
-        $name->setRequired(true)->addValidator('NotEmpty', true);
-
-        $dynamichelp = new Zend_Form_Element_Checkbox('dynamichelp');
-        $gravatar = new Zend_Form_Element_Checkbox('gravatar');
+        $dynamicHelp = new Zend_Form_Element_Checkbox('dynamic_help');
         $allowPasswordReset = new Zend_Form_Element_Checkbox('allow_password_reset');
-        $closeRegistration = new Zend_Form_Element_Checkbox('closeregistration');
-
-        $httpProxy = new Zend_Form_Element_Text('httpProxy');
+        $gravatar = new Zend_Form_Element_Checkbox('gravatar');
+        $closeRegistration = new Zend_Form_Element_Checkbox('close_registration');
 
         $submit = new Zend_Form_Element_Submit('submitConfig');
         $submit->setLabel('Save configuration');
 
         $form->addElements(
             array(
-                $dynamichelp,
+                $title,
                 $description,
-                $timezone,
-                $gravatar,
-                $lang,
-                $name,
+                $language,
+                $timeZone,
+                $dynamicHelp,
                 $allowPasswordReset,
                 $closeRegistration,
+                $gravatar,
                 $submit,
-                $httpProxy,
             )
         );
 

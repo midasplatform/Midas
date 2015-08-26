@@ -33,8 +33,11 @@ class Statistics_ReportComponent extends AppComponent
         /** @var AssetstoreModel $assetStoreModel */
         $assetStoreModel = MidasLoader::loadModel('Assetstore');
         $reportContent = '';
-        $reportContent .= '<b>Midas Report: '.Zend_Registry::get('configGlobal')->application->name.'</b>';
-        $reportContent .= '<br/>http://'.$_SERVER['SERVER_NAME'];
+
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $reportContent .= '<b>Midas Report: '.$settingModel->getValueByNameWithDefault('title', 'Midas Platform - Digital Archiving System').'</b>';
+        $reportContent .= '<br/>'.$_SERVER['SERVER_NAME'];
 
         $reportContent .= '<br/><br/><b>Status</b>';
         $errors = $errorLogModel->getLog(

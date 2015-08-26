@@ -312,7 +312,7 @@ class Tracker_ApiComponent extends AppComponent
 
             /** @var SettingModel $settingModel */
             $settingModel = MidasLoader::loadModel('Setting');
-            $nHours = $settingModel->getValueByName(MIDAS_TRACKER_TEMP_SCALAR_TTL_KEY, $this->moduleName);
+            $nHours = (int) $settingModel->getValueByName(MIDAS_TRACKER_TEMP_SCALAR_TTL_KEY, $this->moduleName);
             if (!$nHours) {
                 $nHours = 24; // default to 24 hours
             }
@@ -373,7 +373,7 @@ class Tracker_ApiComponent extends AppComponent
 
             /** @var SettingModel $settingModel */
             $settingModel = MidasLoader::loadModel('Setting');
-            $nHours = $settingModel->getValueByName(MIDAS_TRACKER_TEMP_SCALAR_TTL_KEY, $this->moduleName);
+            $nHours = (int) $settingModel->getValueByName(MIDAS_TRACKER_TEMP_SCALAR_TTL_KEY, $this->moduleName);
             if (!$nHours) {
                 $nHours = MIDAS_TRACKER_TEMP_SCALAR_TTL_DEFAULT_VALUE; // default to 24 hours
             }

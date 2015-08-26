@@ -80,7 +80,7 @@ class Mfa_LoginController extends Mfa_AppController
         if ($valid) {
             session_start();
             $authUser = new Zend_Session_Namespace('Auth_User');
-            $authUser->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
+            $authUser->setExpirationSeconds(60 * (int) Zend_Registry::get('configGlobal')->get('session_lifetime', 20));
             $authUser->Dao = $user;
             $authUser->lock();
             $this->getLogger()->debug(__METHOD__.' Log in : '.$user->getFullName());

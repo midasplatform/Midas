@@ -190,7 +190,6 @@ class InstallController extends AppController
                 $moduleDao->setName('core');
                 $moduleDao->setUuid(str_replace('-', '', $configCore->get('uuid')));
                 $moduleDao->setCurrentVersion($version);
-                $moduleDao->setEnabled(1);
                 $moduleModel->save($moduleDao);
 
                 require_once BASE_PATH.'/core/controllers/components/UpgradeComponent.php';
@@ -238,15 +237,14 @@ class InstallController extends AppController
             $this->redirect('/install/index');
         }
 
-        $config = new Zend_Config_Ini(APPLICATION_CONFIG, null, true);
-
         $form = $this->Form->Install->createConfigForm();
         $formArray = $this->getFormAsArray($form);
-        $formArray['description']->setValue($config->global->application->description);
-        $formArray['lang']->setValue($config->global->application->lang);
-        $formArray['name']->setValue($config->global->application->name);
-        $formArray['timezone']->setValue($config->global->default->timezone);
+        $formArray['description']->setValue('');
+        $formArray['lang']->setValue('en');
+        $formArray['name']->setValue('Midas Platform - Digital Archiving System');
+        $formArray['timezone']->setValue('UTC');
         $this->view->form = $formArray;
+
         $this->view->databaseType = Zend_Registry::get('configDatabase')->database->adapter;
         $assetstores = $this->Assetstore->getAll();
 
@@ -260,18 +258,19 @@ class InstallController extends AppController
                 }
             }
 
-            $config->global->application->description = $form->getValue('description');
-            $config->global->application->lang = $form->getValue('lang');
-            $config->global->application->name = $form->getValue('name');
-            $config->global->default->timezone = $form->getValue('timezone');
+            $this->Setting->setConfig('title', $form->getValue('name'));
+            $this->Setting->setConfig('description',  $form->getValue('description'));
+            $this->Setting->setConfig('language',  $form->getValue('lang'));
+            $this->Setting->setConfig('time_zone', $form->getValue('timezone'));
+            $this->Setting->setConfig('default_assetstore', $assetstores[0]->getKey());
+
+            $config = new Zend_Config_Ini(APPLICATION_CONFIG, null, true);
             $config->global->environment = 'production';
 
             $writer = new Zend_Config_Writer_Ini();
             $writer->setConfig($config);
             $writer->setFilename(APPLICATION_CONFIG);
             $writer->write();
-
-            $this->Setting->setConfig('default_assetstore', $assetstores[0]->getKey());
 
             $this->redirect('/admin#tabs-modules');
         }

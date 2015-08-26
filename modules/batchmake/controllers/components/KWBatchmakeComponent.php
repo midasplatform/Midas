@@ -156,7 +156,7 @@ class Batchmake_KWBatchmakeComponent extends AppComponent
             if (isset($alternateConfig)) {
                 $rawConfig = array();
                 $globalProps = array();
-            } elseif (Zend_Registry::get('configGlobal')->environment == 'testing'
+            } elseif (Zend_Registry::get('configGlobal')->get('environment', 'production') === 'testing'
             ) {
                 // it is acceptable not to be able to load a config if we are in
                 // testing mode, can get the config from the Zend_Registry set

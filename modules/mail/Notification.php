@@ -53,8 +53,8 @@ class Mail_Notification extends MIDAS_Notification
             $transport = new Midas_Mail_Transport_Service($service);
         } elseif ($provider === MAIL_PROVIDER_SMTP) {
             $host = $this->Setting->getValueByName(MAIL_SMTP_HOST_KEY, $this->moduleName);
-            $port = $this->Setting->getValueByName(MAIL_SMTP_PORT_KEY, $this->moduleName);
-            $ssl = $this->Setting->getValueByName(MAIL_SMTP_USE_SSL_KEY, $this->moduleName);
+            $port = (int) $this->Setting->getValueByName(MAIL_SMTP_PORT_KEY, $this->moduleName);
+            $ssl = (int) $this->Setting->getValueByName(MAIL_SMTP_USE_SSL_KEY, $this->moduleName);
             $username = $this->Setting->getValueByName(MAIL_SMTP_USERNAME_KEY, $this->moduleName);
             $password = $this->Setting->getValueByName(MAIL_SMTP_PASSWORD_KEY, $this->moduleName);
             $config = array();
@@ -63,7 +63,7 @@ class Mail_Notification extends MIDAS_Notification
                 $config['port'] = $port;
             }
 
-            if ($ssl === '1') {
+            if ($ssl === 1) {
                 $config['ssl'] = 'tls';
             }
 

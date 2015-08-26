@@ -319,26 +319,35 @@ class UtilityComponent extends AppComponent
     public static function formatSize($sizeInBytes, $separator = ',')
     {
         $suffix = 'B';
-        if (Zend_Registry::get('configGlobal')->application->lang == 'fr') {
-            $suffix = 'o';
+        if ((int) Zend_Registry::get('configGlobal')->get('internationalization', 0) === 1) {
+            /** @var SettingModel $settingModel */
+            $settingModel = MidasLoader::loadModel('Setting');
+            if ($settingModel->getValueByNameWithDefault('language', 'en') === 'fr') {
+                $suffix = 'o';
+            }
         }
+
         if ($sizeInBytes >= 1073741824000) {
             $sizeInBytes = number_format($sizeInBytes / 1099511627776, 1, '.', $separator);
 
             return $sizeInBytes.' T'.$suffix;
-        } elseif ($sizeInBytes >= 1048576000) {
+        }
+
+        if ($sizeInBytes >= 1048576000) {
             $sizeInBytes = number_format($sizeInBytes / 1073741824, 1, '.', $separator);
 
             return $sizeInBytes.' G'.$suffix;
-        } elseif ($sizeInBytes >= 1024000) {
+        }
+
+        if ($sizeInBytes >= 1024000) {
             $sizeInBytes = number_format($sizeInBytes / 1048576, 1, '.', $separator);
 
             return $sizeInBytes.' M'.$suffix;
-        } else {
-            $sizeInBytes = number_format($sizeInBytes / 1024, 1, '.', $separator);
-
-            return $sizeInBytes.' K'.$suffix;
         }
+
+        $sizeInBytes = number_format($sizeInBytes / 1024, 1, '.', $separator);
+
+        return $sizeInBytes.' K'.$suffix;
     }
 
     /**
@@ -397,12 +406,16 @@ class UtilityComponent extends AppComponent
     public static function getCurrentModuleVersion($moduleName)
     {
         if (isset(Zend_Registry::get('configDatabase')->version) === false) {
-            /** @var ModuleModel $moduleModel */
-            $moduleModel = MidasLoader::loadModel('Module');
-            $moduleDao = $moduleModel->getByName($moduleName);
+            try {
+                /** @var ModuleModel $moduleModel */
+                $moduleModel = MidasLoader::loadModel('Module');
+                $moduleDao = $moduleModel->getByName($moduleName);
 
-            if ($moduleDao !== false) {
-                return $moduleDao->getCurrentVersion();
+                if ($moduleDao !== false) {
+                    return $moduleDao->getCurrentVersion();
+                }
+            } catch (Zend_Db_Exception $exception) {
+                return false;
             }
         }
 
@@ -641,7 +654,7 @@ class UtilityComponent extends AppComponent
                 $path = false;
             }
             if ($path !== false && file_exists($path)) {
-                copy($path, LOCAL_CONFIGS_PATH.'/'.$moduleName.'local.ini');
+                copy($path, LOCAL_CONFIGS_PATH.'/'.$moduleName.'.local.ini');
             }
         }
 
@@ -795,7 +808,7 @@ class UtilityComponent extends AppComponent
      */
     public static function getServerURL()
     {
-        if (Zend_Registry::get('configGlobal')->environment == 'testing') {
+        if (Zend_Registry::get('configGlobal')->get('environment', 'production') === 'testing') {
             return 'http://localhost';
         }
         $currentPort = '';

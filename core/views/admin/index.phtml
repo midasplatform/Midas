@@ -52,50 +52,43 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.clu
     echo "
       <form class='genericForm' id='configForm' method='{$this->configForm['method']}'  action='{$this->configForm['action']}'>
       <h3>Configuration:</h3>
-              <div class='installName'>
-                <label for='name'>Application name</label>
-                {$this->configForm['name']}
+              <div>
+                <label for='title'>Title</label>
+                {$this->configForm['title']}
               </div>
-              <div qtip='Provide a description for search engines.' class='description'>
+              <div qtip='Provide a description for search engines.'>
                 <label for='description'>Description</label>
                 {$this->configForm['description']}
               </div>
-              <div class='httpProxy'>
-                <label for='httpProxy'>Outbound HTTP proxy</label>
-                ".$this->configForm['httpProxy']."
-              </div>
-              <div class='installLang'";
-    if (isset(Zend_Registry::get('configCore')->internationalization) && Zend_Registry::get(
-            'configCore'
-        )->internationalization == "0"
-    ) {
+              <div";
+    if ((int) Zend_Registry::get('configCore')->get('internationalization', 0) === 0) {
         echo " style='display:none;' ";
     }
     echo ">
-                <label for='lang'>Language</label>
-                {$this->configForm['lang']}
+                <label for='language'>Language</label>
+                {$this->configForm['language']}
               </div>
-              <div class='installTimezone'>
-                <label for='timezone'>Time zone</label>
-                {$this->configForm['timezone']}
+              <div>
+                <label for='time_zone'>Time zone</label>
+                {$this->configForm['time_zone']}
               </div>
-              <div qtip='If you enable this feature, Midas will show the users how to use the system.' class='installDynamichelp'>
-                <label for='dynamichelp'>Dynamic help</label>
-                {$this->configForm['dynamichelp']}
+              <div qtip='If you enable this feature, Midas will show the users how to use the system.'>
+                <label for='dynamic_help'>Dynamic help</label>
+                {$this->configForm['dynamic_help']}
               </div>
-              <div qtip='If you enable this feature, password reset will not be allowed.' class='allowPasswordReset'>
+              <div qtip='If you enable this feature, password reset will not be allowed.'>
                 <label for='allow_password_reset'>Allow password reset</label>
                 {$this->configForm['allow_password_reset']}
               </div>
-              <div qtip='If you enable this feature, user registration will not be allowed.' class='closeRegistration'>
-                <label for='closeregistration'>Close registration</label>
-                {$this->configForm['closeregistration']}
+              <div qtip='If you enable this feature, user registration will not be allowed.'>
+                <label for='close_registration'>Close registration</label>
+                {$this->configForm['close_registration']}
               </div>
-              <div qtip='If enabled, users will automatically have an icon if they have created one on gravatar.com'>
+              <div qtip='If enabled, users will automatically have an icon if they have created one on gravatar.com.'>
                 <label for='gravatar'>Gravatar user icons</label>
                 {$this->configForm['gravatar']}
               </div>
-              <div class='defaultLicense'>
+              <div>
                 <label for='licenseSelect'>Default license</label>
                 ".$this->element('license')."
               </div>

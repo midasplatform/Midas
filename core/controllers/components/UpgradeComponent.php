@@ -202,7 +202,6 @@ class UpgradeComponent extends AppComponent
             if ($migration['version'] > $currentVersion) {
                 $this->_processFile($migration);
                 $versionText = $migration['versionText'];
-                Zend_Registry::get('logger')->info($versionText);
             }
         }
 

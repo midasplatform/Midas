@@ -121,7 +121,7 @@ class Upgrade_3_4_1 extends MIDASUpgrade
                 $moduleDao->setCurrentVersion($moduleConfig->get('version', '0.0.0'));
             }
 
-            $moduleDao->setEnabled($value == 1 ? 1 : 0);
+            $moduleDao->setEnabled((int) $value === 1 ? 1 : 0);
             $moduleModel->save($moduleDao);
 
             if ($uuid && $localConfig) {
@@ -129,8 +129,41 @@ class Upgrade_3_4_1 extends MIDASUpgrade
             }
         }
 
+        /** @var Zend_Config_Ini $applicationConfigGlobal */
+        $applicationConfigGlobal = Zend_Registry::get('configGlobal');
+
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $settingModel->setConfig('allow_password_reset', (int) $applicationConfigGlobal->allow_password_reset);
+        $settingModel->setConfig('description', $applicationConfigGlobal->application->description);
+        $settingModel->setConfig('language', $applicationConfigGlobal->application->lang);
+        $settingModel->setConfig('title', $applicationConfigGlobal->application->name);
+        $settingModel->setConfig('close_registration', (int) $applicationConfigGlobal->closeregistration);
+        $settingModel->setConfig('time_zone', $applicationConfigGlobal->default->timezone);
+        $settingModel->setConfig('default_license', (int) $applicationConfigGlobal->defaultlicense);
+        $settingModel->setConfig('dynamic_help', (int) $applicationConfigGlobal->dynamichelp);
+        $settingModel->setConfig('gravatar', (int) $applicationConfigGlobal->gravatar);
+
         $applicationConfig = new Zend_Config_Ini(APPLICATION_CONFIG, null, true);
+        $applicationConfig->global->http_proxy = $applicationConfig->global->httpproxy;
+        $applicationConfig->global->password_prefix = $applicationConfig->global->password->prefix;
+        $applicationConfig->global->session_lifetime = $applicationConfig->global->session->lifetime;
+
+        unset($applicationConfig->global->allow_password_reset);
+        unset($applicationConfig->global->application->description);
+        unset($applicationConfig->global->application->lang);
+        unset($applicationConfig->global->application->name);
+        unset($applicationConfig->global->closeregistration);
+        unset($applicationConfig->global->default->timezone);
+        unset($applicationConfig->global->defaultlicense);
+        unset($applicationConfig->global->dynamichelp);
+        unset($applicationConfig->global->gravatar);
+        unset($applicationConfig->global->httpproxy);
+        unset($applicationConfig->global->password->prefix);
+        unset($applicationConfig->global->session->lifetime);
         unset($applicationConfig->module);
+
+        copy(APPLICATION_CONFIG, str_replace('.local.ini', '.old.local.ini', APPLICATION_CONFIG));
 
         $applicationWriter = new Zend_Config_Writer_Ini();
         $applicationWriter->setConfig($applicationConfig);

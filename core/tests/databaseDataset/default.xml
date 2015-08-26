@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
+    <setting setting_id="1" name="adminuser" module="core" value="3"/>
+    <setting setting_id="2" name="allow_password_reset" module="core" value="0"/>
+    <setting setting_id="3" name="close_registration" module="core" value="1"/>
+    <setting setting_id="4" name="default_license" module="core" value="1"/>
+    <setting setting_id="5" name="dynamic_help" module="core" value="0"/>
+    <setting setting_id="6" name="description" module="core"
+        value="Midas Server is an open-source application that enables the rapid creation of tailored, web-enabled data storage"/>
+    <setting setting_id="7" name="language" module="core" value="en"/>
+    <setting setting_id="8" name="time_zone" module="core" value="UTC"/>
+    <setting setting_id="9" name="title" module="core" value="Midas Platform - Digital Archiving System"/>
+
     <module module_id="1" name="core" uuid="67a81613074d4c9aafb74613f3144a3d"
         current_major_version="##CORE_MAJOR_VERSION##" current_minor_version="##CORE_MINOR_VERSION##"
         current_patch_version="##CORE_PATCH_VERSION##" enabled="1"/>
@@ -124,9 +135,6 @@
     <feed feed_id="9" date="2011-01-27 12:09:02" user_id='1' type="32" resource="1000"/>
     <!-- MIDAS_FEED_CREATE_REVISION -->
     <feed feed_id="10" date="2011-01-27 12:09:02" user_id='1' type="40" resource="1"/>
-
-    <setting setting_id="1" name="adminuser" module="core" value="3"/>
-    <setting setting_id="1000" name="dummy" module="" value="dummy"/>
 
     <!-- second community, associated folders and groups -->
     <community community_id="2001" name="Community For Deletion" description="Community test User 1"

@@ -61,6 +61,10 @@ class Core_RestKeyControllerTest extends ControllerTestCase
     /** Make sure adding a new user adds a default api key */
     public function testNewUserGetsDefaultApiKey()
     {
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $settingModel->setConfig('close_registration', 0);
+
         // Register a new user
         $this->params['email'] = 'some.user@example.org';
         $this->params['password1'] = 'midas';

@@ -169,8 +169,8 @@ class Googleauth_CallbackController extends Googleauth_AppController
             $user = $this->User->getByEmail($info['email']);
             if (!$user) {
                 // Only create new user this way if registration is not closed.
-                $closeRegistration = Zend_Registry::get('configGlobal')->closeregistration;
-                if ($closeRegistration == '1') {
+                $closeRegistration = (int) $this->Setting->getValueByNameWithDefault('close_registration', 1);
+                if ($closeRegistration === 1) {
                     throw new Zend_Exception(
                         'Access to this instance is by invitation '.'only, please contact an administrator.'
                     );

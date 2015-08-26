@@ -29,7 +29,7 @@ class Solr_SolrComponent extends AppComponent
         /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
         $solrHost = $settingModel->getValueByName(SOLR_HOST_KEY, 'solr');
-        $solrPort = $settingModel->getValueByName(SOLR_PORT_KEY, 'solr');
+        $solrPort = (int) $settingModel->getValueByName(SOLR_PORT_KEY, 'solr');
         $solrWebroot = $settingModel->getValueByName(SOLR_WEBROOT_KEY, 'solr');
 
         if ($solrHost === null) {

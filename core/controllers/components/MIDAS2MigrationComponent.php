@@ -532,7 +532,7 @@ class MIDAS2MigrationComponent extends AppComponent
         $this->userId = $userid;
 
         // Check that we are in development mode
-        if (Zend_Registry::get('configGlobal')->environment != 'development') {
+        if (Zend_Registry::get('configGlobal')->get('environment', 'production') !== 'development') {
             throw new Zend_Exception("Please set your environment config variable to be 'development'.");
         }
 
@@ -547,7 +547,7 @@ class MIDAS2MigrationComponent extends AppComponent
         }
 
         // Check that the password prefix is not defined
-        if (Zend_Registry::get('configGlobal')->password->prefix != '') {
+        if (Zend_Registry::get('configGlobal')->get('password_prefix', '') !== '') {
             throw new Zend_Exception("Password prefix cannot be set because MIDAS2 doesn't use salt.");
         }
 

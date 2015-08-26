@@ -78,9 +78,9 @@ class Visualize_Notification extends MIDAS_Notification
     /** generate dashboard information */
     public function getDashboard()
     {
-        $useParaView = $this->Setting->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
+        $useParaView = (int) $this->Setting->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
 
-        if (!isset($useParaView) || !$useParaView) {
+        if ($useParaView === 0) {
             return false;
         }
 

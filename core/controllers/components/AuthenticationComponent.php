@@ -74,7 +74,7 @@ class AuthenticationComponent extends AppComponent
                 session_start();
             }
             $userSession = new Zend_Session_Namespace('Auth_User');
-            $userSession->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
+            $userSession->setExpirationSeconds(60 * (int) Zend_Registry::get('configGlobal')->get('session_lifetime', 20));
             $userSession->Dao = $userDao;
             Zend_Registry::set('notifier', new MIDAS_Notifier(true, $userSession));
             session_write_close();

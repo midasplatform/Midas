@@ -38,9 +38,8 @@ class ErrorController extends AppController
             return;
         }
         $session = new Zend_Session_Namespace('Auth_User');
-        $db = Zend_Registry::get('dbAdapter');
 
-        $environment = Zend_Registry::get('configGlobal')->environment;
+        $environment = Zend_Registry::get('configGlobal')->get('environment', 'production');
         $this->_environment = $environment;
         $this->Component->NotifyError->initNotifier($environment, $error, $session, $_SERVER);
 
@@ -55,7 +54,9 @@ class ErrorController extends AppController
     {
         $error = $this->getParam('error_handler');
         if (!isset($error) || empty($error)) {
-            $this->view->message = 'Page not found';
+            $this->getResponse()->setHttpResponseCode(404);
+            $this->view->header = 'Error 404 - Not Found';
+            $this->view->message = 'The requested page was not found on this server.';
 
             return;
         }
@@ -64,35 +65,37 @@ class ErrorController extends AppController
         $controller = $controller['controller'];
         if ($controller != 'install' && !file_exists(LOCAL_CONFIGS_PATH.'/database.local.ini')
         ) {
-            $this->view->message = "Midas is not installed. Please go the <a href = '".$this->view->webroot."/install'> install page</a>.";
+            $this->view->message = "Midas Server is not installed. Please go the <a href = '".$this->view->webroot."/install'> install page</a>.";
 
             return;
         }
         switch ($this->_error->type) {
-            case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_CONTROLLER:
             case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_ACTION:
+            case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_CONTROLLER:
+            case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_ROUTE:
                 $this->getResponse()->setHttpResponseCode(404);
-                $this->view->message = 'Page not found';
+                $this->view->header = 'Error 404 - Not Found';
+                $this->view->message = 'The requested page was not found on this server.';
                 break;
             default:
                 $code = $this->_error->exception->getCode();
                 $this->view->code = $code;
                 $this->view->exceptionText = $this->_error->exception->getMessage();
-                if ($code == 0) {
-                    $this->getResponse()->setHttpResponseCode(500);
-                } elseif ($code >= 400 && $code <= 417) {
+                if ($code >= 400 && $code <= 417) {
                     $this->getResponse()->setHttpResponseCode($code);
                     if ($code == 403) {
                         if ($this->logged) {
-                            $this->view->header = 'Access Denied';
+                            $this->view->header = 'Error 403 - Access Denied';
                         } else {
                             $this->haveToBeLogged();
 
                             return;
                         }
                     } elseif ($code == 404) {
-                        $this->view->header = 'Not Found';
+                        $this->view->header = 'Error 404 - Not Found';
                     }
+                } else {
+                    $this->getResponse()->setHttpResponseCode(500);
                 }
                 $this->_applicationError();
                 break;

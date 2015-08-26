@@ -47,12 +47,12 @@ class Visualize_ParaviewController extends Visualize_AppController
         $this->view->header = $header;
 
         $paraViewWorkDirectory = $this->Setting->getValueByName(VISUALIZE_PARAVIEW_WEB_WORK_DIRECTORY_KEY, $this->moduleName);
-        $useParaView = $this->Setting->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
-        $useWebGL = $this->Setting->getValueByName(VISUALIZE_USE_WEB_GL_KEY, $this->moduleName);
-        $useSymlinks = $this->Setting->getValueByName(VISUALIZE_USE_SYMLINKS_KEY, $this->moduleName);
+        $useParaView = (int) $this->Setting->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
+        $useWebGL = (int) $this->Setting->getValueByName(VISUALIZE_USE_WEB_GL_KEY, $this->moduleName);
+        $useSymlinks = (int) $this->Setting->getValueByName(VISUALIZE_USE_SYMLINKS_KEY, $this->moduleName);
         $pwApp = $this->Setting->getValueByName(VISUALIZE_TOMCAT_ROOT_URL_KEY, $this->moduleName);
 
-        if (!isset($useParaView) || !$useParaView) {
+        if ($useParaView === 0) {
             throw new Zend_Exception('Please enable the use of a ParaViewWeb server on the module configuration page');
         }
 
@@ -70,7 +70,7 @@ class Visualize_ParaviewController extends Visualize_AppController
         }
         $bitstreams = $revision->getBitstreams();
         foreach ($bitstreams as $bitstream) {
-            if ($useSymlinks) {
+            if ($useSymlinks === 1) {
                 symlink($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
             } else {
                 copy($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
@@ -82,7 +82,7 @@ class Visualize_ParaviewController extends Visualize_AppController
             }
         }
 
-        if (!$useWebGL || $item->getSizebytes() > 1 * 1024 * 1024) {
+        if ($useWebGL === 0 || $item->getSizebytes() > 1 * 1024 * 1024) {
             $this->view->renderer = 'js';
         } else {
             $this->view->renderer = 'webgl';
@@ -138,11 +138,11 @@ class Visualize_ParaviewController extends Visualize_AppController
         $this->view->header = $header;
 
         $paraViewWorkDirectory = $this->Setting->getValueByName(VISUALIZE_PARAVIEW_WEB_WORK_DIRECTORY_KEY, $this->moduleName);
-        $useParaView = $this->Setting->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
-        $useSymlinks = $this->Setting->getValueByName(VISUALIZE_USE_SYMLINKS_KEY, $this->moduleName);
+        $useParaView = (int) $this->Setting->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
+        $useSymlinks = (int) $this->Setting->getValueByName(VISUALIZE_USE_SYMLINKS_KEY, $this->moduleName);
         $pwApp = $this->Setting->getValueByName(VISUALIZE_TOMCAT_ROOT_URL_KEY, $this->moduleName);
 
-        if (!isset($useParaView) || !$useParaView) {
+        if ($useParaView === 0) {
             throw new Zend_Exception('Please enable the use of a ParaViewWeb server on the module configuration page');
         }
 
@@ -163,7 +163,7 @@ class Visualize_ParaviewController extends Visualize_AppController
             }
             $bitstreams = $revision->getBitstreams();
             foreach ($bitstreams as $bitstream) {
-                if ($useSymlinks) {
+                if ($useSymlinks === 1) {
                     symlink($bitstream->getFullPath(), $subPath.'/'.$bitstream->getName());
                 } else {
                     copy($bitstream->getFullPath(), $subPath.'/'.$bitstream->getName());
@@ -231,11 +231,11 @@ class Visualize_ParaviewController extends Visualize_AppController
         $this->view->header = $header;
 
         $paraViewWorkDirectory = $this->Setting->getValueByName(VISUALIZE_PARAVIEW_WEB_WORK_DIRECTORY_KEY, $this->moduleName);
-        $useParaView = $this->Setting->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
-        $useSymlinks = $this->Setting->getValueByName(VISUALIZE_USE_SYMLINKS_KEY, $this->moduleName);
+        $useParaView = (int) $this->Setting->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
+        $useSymlinks = (int) $this->Setting->getValueByName(VISUALIZE_USE_SYMLINKS_KEY, $this->moduleName);
         $pwApp = $this->Setting->getValueByName(VISUALIZE_TOMCAT_ROOT_URL_KEY, $this->moduleName);
 
-        if (!isset($useParaView) || !$useParaView) {
+        if ($useParaView === 0) {
             throw new Zend_Exception('Please enable the use of a ParaViewWeb server on the module configuration page');
         }
 
@@ -253,7 +253,7 @@ class Visualize_ParaviewController extends Visualize_AppController
         }
         $bitstreams = $revision->getBitstreams();
         foreach ($bitstreams as $bitstream) {
-            if ($useSymlinks) {
+            if ($useSymlinks === 1) {
                 symlink($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
             } else {
                 copy($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
@@ -386,11 +386,11 @@ class Visualize_ParaviewController extends Visualize_AppController
         $this->view->header = $header;
 
         $paraViewWorkDirectory = $this->Setting->getValueByName(VISUALIZE_PARAVIEW_WEB_WORK_DIRECTORY_KEY, $this->moduleName);
-        $useParaView = $this->Setting->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
-        $useSymlinks = $this->Setting->getValueByName(VISUALIZE_USE_SYMLINKS_KEY, $this->moduleName);
+        $useParaView = (int) $this->Setting->getValueByName(VISUALIZE_USE_PARAVIEW_WEB_KEY, $this->moduleName);
+        $useSymlinks = (int) $this->Setting->getValueByName(VISUALIZE_USE_SYMLINKS_KEY, $this->moduleName);
         $pwApp = $this->Setting->getValueByName(VISUALIZE_TOMCAT_ROOT_URL_KEY, $this->moduleName);
 
-        if (!isset($useParaView) || !$useParaView) {
+        if ($useParaView === 0) {
             throw new Zend_Exception('Please enable the use of a ParaViewWeb server on the module configuration page');
         }
 
@@ -408,7 +408,7 @@ class Visualize_ParaviewController extends Visualize_AppController
         }
         $bitstreams = $revision->getBitstreams();
         foreach ($bitstreams as $bitstream) {
-            if ($useSymlinks) {
+            if ($useSymlinks === 1) {
                 symlink($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
             } else {
                 copy($bitstream->getFullPath(), $path.'/'.$bitstream->getName());
