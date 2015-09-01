@@ -341,7 +341,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $frontController->addControllerDirectory(BASE_PATH.'/core/controllers/api', 'rest');
 
         $router = $frontController->getRouter();
-        $router->addRoute('api-core',  new Zend_Rest_Route($frontController, array(), array('rest')));
+        $router->addRoute('api-core', new Zend_Rest_Route($frontController, array(), array('rest')));
 
         $enabledModules = array();
 

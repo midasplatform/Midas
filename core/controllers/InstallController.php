@@ -259,8 +259,8 @@ class InstallController extends AppController
             }
 
             $this->Setting->setConfig('title', $form->getValue('name'));
-            $this->Setting->setConfig('description',  $form->getValue('description'));
-            $this->Setting->setConfig('language',  $form->getValue('lang'));
+            $this->Setting->setConfig('description', $form->getValue('description'));
+            $this->Setting->setConfig('language', $form->getValue('lang'));
             $this->Setting->setConfig('time_zone', $form->getValue('timezone'));
             $this->Setting->setConfig('default_assetstore', $assetstores[0]->getKey());
 

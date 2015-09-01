@@ -160,7 +160,7 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         $frontController->addControllerDirectory(BASE_PATH.'/core/controllers/api', 'rest');
 
         $router = $frontController->getRouter();
-        $router->addRoute('api-core',  new Zend_Rest_Route($frontController, array(), array('rest')));
+        $router->addRoute('api-core', new Zend_Rest_Route($frontController, array(), array('rest')));
 
         $enabledModules = array();
 
