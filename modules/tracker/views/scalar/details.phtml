@@ -34,7 +34,7 @@
         </tr>
         <tr>
             <th>Value:</th>
-            <td><span id="thisValue"><?php echo $this->escape($this->scalar->getValue()).' '.$this->escape($this->scalar->getTrend()->getUnit(
+            <td><span id="thisValue"><?php echo $this->escape(number_format((float) $this->scalar->getValue(), 4, '.', '')).' '.$this->escape($this->scalar->getTrend()->getUnit(
                         )); ?></span>
             </td>
         </tr>
