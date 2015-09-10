@@ -33,6 +33,7 @@ finder:
   exclude:
     - data
     - docs
+    - library/REST
     - log
     - provisioning
     - tmp

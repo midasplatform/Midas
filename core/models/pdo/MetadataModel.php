@@ -83,10 +83,9 @@ class MetadataModel extends MetadataModelBase
         return $qualifiers;
     }
 
-    /** Return an item by its name
-     * @return MetadataDao
-     */
     /**
+     * Return an item by its name.
+     *
      * @param int $type
      * @param string $element
      * @param string $qualifier
