@@ -1220,7 +1220,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $this->assertFalse($bitstreamDao, 'Bitstream should have been deleted, but was not.');
     }
 
-    /* helper function for item.setmetadata calls */
+    /** Helper function for item.setmetadata calls */
     private function _callSetmetadata(
         $itemId,
         $element,
@@ -1255,7 +1255,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         return $resp;
     }
 
-    /* helper function for item.setmultiplemetadata calls */
+    /** Helper function for item.setmultiplemetadata calls */
     private function _callSetmultiplemetadata($itemId, $metadata, $count = null, $revision = null, $failureCode = null)
     {
         $this->resetAll();
@@ -1291,7 +1291,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         return $resp;
     }
 
-    /* helper function for item.getmetadata calls */
+    /** Helper function for item.getmetadata calls */
     private function _callGetmetadata($itemId, $revision = null, $failureCode = null)
     {
         $this->resetAll();
@@ -1311,7 +1311,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         return $resp;
     }
 
-    /* helper function for item.deletemetadata calls */
+    /** Helper function for item.deletemetadata calls */
     private function _callDeletemetadata(
         $itemId,
         $element,
@@ -1344,7 +1344,7 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         return $resp;
     }
 
-    /* helper function for item.deletemetadata.all calls */
+    /** Helper function for item.deletemetadata.all calls */
     private function _callDeletemetadataAll($itemId, $revision = null, $failureCode = null)
     {
         $this->resetAll();

@@ -254,7 +254,7 @@ class ShareController extends AppController
         $this->view->jsonShare['type'] = $type;
         $this->view->jsonShare['element'] = $element->getKey();
         $this->view->jsonShare = JsonComponent::encode($this->view->jsonShare);
-    } //end dialogAction
+    }
 
     /** controller for applying policies recursively to a folder */
     public function applyrecursivedialogAction()
