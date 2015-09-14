@@ -560,7 +560,13 @@ class UserController extends AppController
                     }
                 }
 
-                $instanceSalt = Zend_Registry::get('configGlobal')->get('password_prefix');
+                $instanceSalt = Zend_Registry::get('configGlobal')->get('password_prefix', false);
+
+                // Necessary for upgrades to 3.4.1.
+                if ($instanceSalt === false) {
+                    $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+                }
+
                 $currentVersion = UtilityComponent::getCurrentModuleVersion('core');
                 if ($currentVersion === false) {
                     throw new Zend_Exception('Core version is undefined.');
