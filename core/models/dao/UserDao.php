@@ -84,21 +84,17 @@ class UserDao extends AppDao
     /**
      * Return true if this user is an administrator.
      *
-     * @return bool
+     * @return bool true if this user is an administrator, false otherwise.
      */
     public function isAdmin()
     {
-        if ($this->getAdmin() == 1) {
-            return true;
-        }
-
-        return false;
+        return $this->getAdmin() == 1;
     }
 
     /**
      * Return the full name of this user.
      *
-     * @return string
+     * @return string full name of this user
      */
     public function getFullName()
     {

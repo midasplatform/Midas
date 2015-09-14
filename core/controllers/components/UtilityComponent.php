@@ -319,26 +319,35 @@ class UtilityComponent extends AppComponent
     public static function formatSize($sizeInBytes, $separator = ',')
     {
         $suffix = 'B';
-        if (Zend_Registry::get('configGlobal')->application->lang == 'fr') {
-            $suffix = 'o';
+        if ((int) Zend_Registry::get('configGlobal')->get('internationalization', 0) === 1) {
+            /** @var SettingModel $settingModel */
+            $settingModel = MidasLoader::loadModel('Setting');
+            if ($settingModel->getValueByNameWithDefault('language', 'en') === 'fr') {
+                $suffix = 'o';
+            }
         }
+
         if ($sizeInBytes >= 1073741824000) {
             $sizeInBytes = number_format($sizeInBytes / 1099511627776, 1, '.', $separator);
 
             return $sizeInBytes.' T'.$suffix;
-        } elseif ($sizeInBytes >= 1048576000) {
+        }
+
+        if ($sizeInBytes >= 1048576000) {
             $sizeInBytes = number_format($sizeInBytes / 1073741824, 1, '.', $separator);
 
             return $sizeInBytes.' G'.$suffix;
-        } elseif ($sizeInBytes >= 1024000) {
+        }
+
+        if ($sizeInBytes >= 1024000) {
             $sizeInBytes = number_format($sizeInBytes / 1048576, 1, '.', $separator);
 
             return $sizeInBytes.' M'.$suffix;
-        } else {
-            $sizeInBytes = number_format($sizeInBytes / 1024, 1, '.', $separator);
-
-            return $sizeInBytes.' K'.$suffix;
         }
+
+        $sizeInBytes = number_format($sizeInBytes / 1024, 1, '.', $separator);
+
+        return $sizeInBytes.' K'.$suffix;
     }
 
     /**
@@ -386,6 +395,66 @@ class UtilityComponent extends AppComponent
         }
 
         return true;
+    }
+
+    /**
+     * Get the current module version.
+     *
+     * @param string $moduleName module name
+     * @return string current module version
+     */
+    public static function getCurrentModuleVersion($moduleName)
+    {
+        if (isset(Zend_Registry::get('configDatabase')->version) === false) {
+            try {
+                /** @var ModuleModel $moduleModel */
+                $moduleModel = MidasLoader::loadModel('Module');
+                $moduleDao = $moduleModel->getByName($moduleName);
+
+                if ($moduleDao !== false) {
+                    return $moduleDao->getCurrentVersion();
+                }
+            } catch (Zend_Db_Exception $exception) {
+                return false;
+            }
+        }
+
+        if ($moduleName === 'core') {
+            return Zend_Registry::get('configDatabase')->version;
+        }
+
+        $configPath = LOCAL_CONFIGS_PATH.'/'.$moduleName.'.local.ini';
+
+        if (file_exists($configPath)) {
+            $config = new Zend_Config_Ini($configPath, 'global');
+
+            return $config->get('version', false);
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the latest module version.
+     *
+     * @param string $moduleName module name
+     * @return string latest module version
+     */
+    public static function getLatestModuleVersion($moduleName)
+    {
+        if ($moduleName === 'core') {
+            return Zend_Registry::get('configCore')->get('version', false);
+        }
+
+        $configPath = BASE_PATH.'/modules/'.$moduleName.'/configs/module.ini';
+
+        if (file_exists($configPath)) {
+            $config = new Zend_Config_Ini($configPath, 'global');
+
+            return $config->get('version', false);
+        }
+
+        return false;
     }
 
     /**
@@ -481,27 +550,41 @@ class UtilityComponent extends AppComponent
      * install a module.
      *
      * @param string $moduleName
+     * @return bool
      * @throws Zend_Exception
      */
     public function installModule($moduleName)
     {
+        if ($moduleName === 'core') {
+            return false;
+        }
+
+        if (self::getCurrentModuleVersion($moduleName) !== false) {
+            return false;
+        }
+
         // TODO, The module installation process needs some improvement.
-        $allModules = $this->getAllModules();
-        $version = $allModules[$moduleName]->version;
+        $moduleConfigs = $this->getAllModules();
+
+        /** @var Zend_Config_Ini $moduleConfig */
+        $moduleConfig = $moduleConfigs[$moduleName];
+        $version = $moduleConfig->get('version');
 
         $installScript = BASE_PATH.'/modules/'.$moduleName.'/database/InstallScript.php';
-        $installScriptExists = file_exists($installScript);
-        if ($installScriptExists) {
+        if (file_exists($installScript)) {
             require_once BASE_PATH.'/core/models/MIDASModuleInstallScript.php';
             require_once $installScript;
 
-            $classname = ucfirst($moduleName).'_InstallScript';
-            if (!class_exists($classname, false)) {
-                throw new Zend_Exception('Could not find class "'.$classname.'" in file "'.$installScript.'"');
+            $className = ucfirst($moduleName).'_InstallScript';
+            if (!class_exists($className, false)) {
+                throw new Zend_Exception('Could not find class "'.$className.'" in file "'.$installScript.'"');
             }
 
-            $class = new $classname();
-            $class->preInstall();
+            /** @var MIDASModuleInstallScript $installScriptClass */
+            $installScriptClass = new $className();
+            $installScriptClass->preInstall();
+        } else {
+            $installScriptClass = false;
         }
 
         try {
@@ -540,16 +623,49 @@ class UtilityComponent extends AppComponent
             $this->getLogger()->warn($exc->getMessage());
         }
 
-        if ($installScriptExists) {
-            $class->postInstall();
+        if ($installScriptClass !== false) {
+            $installScriptClass->postInstall();
+        }
+
+        /** @var ModuleModel $moduleModel */
+        $moduleModel = MidasLoader::loadModel('Module');
+        /** @var ModuleDao $moduleDao */
+        $moduleDao = MidasLoader::newDao('ModuleDao');
+        $moduleDao->setName($moduleName);
+
+        $uuid = $moduleConfig->get('uuid', false);
+        if ($uuid === false) {
+            /** @var UuidComponent $uuidComponent */
+            $uuidComponent = MidasLoader::loadComponent('Uuid');
+            $moduleDao->setUuid($uuidComponent->generate());
+        } else {
+            $moduleDao->setUuid(str_replace('-', '', $uuid));
+        }
+
+        $moduleDao->setCurrentVersion($version);
+        $moduleModel->save($moduleDao);
+
+        if ($uuid === false) {
+            if (file_exists(BASE_PATH.'/modules/'.$moduleName.'/AppController.php')) {
+                $path = BASE_PATH.'/modules/'.$moduleName.'/configs/module.ini';
+            } elseif (file_exists(BASE_PATH.'/privateModules/'.$moduleName.'/AppController.php')) {
+                $path = BASE_PATH.'/privateModules/'.$moduleName.'/configs/module.ini';
+            } else {
+                $path = false;
+            }
+            if ($path !== false && file_exists($path)) {
+                copy($path, LOCAL_CONFIGS_PATH.'/'.$moduleName.'.local.ini');
+            }
         }
 
         require_once dirname(__FILE__).'/UpgradeComponent.php';
         $upgrade = new UpgradeComponent();
         $db = Zend_Registry::get('dbAdapter');
-        $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
-        $upgrade->initUpgrade($moduleName, $db, $dbtype);
+        $dbType = Zend_Registry::get('configDatabase')->database->adapter;
+        $upgrade->initUpgrade($moduleName, $db, $dbType);
         $upgrade->upgrade($version);
+
+        return true;
     }
 
     /**
@@ -605,6 +721,7 @@ class UtilityComponent extends AppComponent
      * This is used to suppress warnings from being written to the output and the
      * error log. Users should not call this function; see beginIgnoreWarnings().
      *
+     * @internal
      * @param int $errno
      * @param string $errstr
      * @param string $errfile
@@ -691,7 +808,7 @@ class UtilityComponent extends AppComponent
      */
     public static function getServerURL()
     {
-        if (Zend_Registry::get('configGlobal')->environment == 'testing') {
+        if (Zend_Registry::get('configGlobal')->get('environment', 'production') === 'testing') {
             return 'http://localhost';
         }
         $currentPort = '';

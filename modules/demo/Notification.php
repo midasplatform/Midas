@@ -29,7 +29,7 @@ class Demo_Notification extends MIDAS_Notification
     {
         $fc = Zend_Controller_Front::getInstance();
         $this->webroot = $fc->getBaseUrl();
-        if ($this->Setting->getValueByName('enabled', $this->moduleName)) {
+        if ((int) $this->Setting->getValueByName('enabled', $this->moduleName) === 1) {
             $this->addCallBack('CALLBACK_CORE_GET_FOOTER_LAYOUT', 'getFooterLayout');
         }
     }

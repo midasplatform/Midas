@@ -52,27 +52,31 @@ class MIDAS_GlobalController extends Zend_Controller_Action
         UtilityComponent::setTimeLimit(0);
         $enabledModules = Zend_Registry::get('modulesEnable');
 
-        if (Zend_Registry::get('configGlobal')->application->lang != 'en') {
-            $translate = new Zend_Translate('csv', BASE_PATH.'/core/translation/fr-main.csv', 'en');
-            Zend_Registry::set('translator', $translate);
-            $translators = array();
+        if ((int) Zend_Registry::get('configGlobal')->get('internationalization', 0) === 1) {
+            /** @var SettingModel $settingModel */
+            $settingModel = MidasLoader::loadModel('Setting');
+            if ($settingModel->getValueByNameWithDefault('language', 'en') === 'fr') {
+                $translate = new Zend_Translate('csv', BASE_PATH.'/core/translation/fr-main.csv', 'en');
+                Zend_Registry::set('translator', $translate);
+                $translators = array();
 
-            foreach ($enabledModules as $enabledModule) {
-                if (file_exists(BASE_PATH.'/modules/'.$enabledModule.'/translation/fr-main.csv')) {
-                    $translators[$enabledModule] = new Zend_Translate(
-                        'csv',
-                        BASE_PATH.'/modules/'.$enabledModule.'/translation/fr-main.csv',
-                        'en'
-                    );
-                } elseif (file_exists(BASE_PATH.'/privateModules/'.$enabledModule.'/translation/fr-main.csv')) {
-                    $translators[$enabledModule] = new Zend_Translate(
-                        'csv',
-                        BASE_PATH.'/privateModules/'.$enabledModule.'/translation/fr-main.csv',
-                        'en'
-                    );
+                foreach ($enabledModules as $enabledModule) {
+                    if (file_exists(BASE_PATH.'/modules/'.$enabledModule.'/translation/fr-main.csv')) {
+                        $translators[$enabledModule] = new Zend_Translate(
+                            'csv',
+                            BASE_PATH.'/modules/'.$enabledModule.'/translation/fr-main.csv',
+                            'en'
+                        );
+                    } elseif (file_exists(BASE_PATH.'/privateModules/'.$enabledModule.'/translation/fr-main.csv')) {
+                        $translators[$enabledModule] = new Zend_Translate(
+                            'csv',
+                            BASE_PATH.'/privateModules/'.$enabledModule.'/translation/fr-main.csv',
+                            'en'
+                        );
+                    }
+
+                    Zend_Registry::set('translatorsModules', $translators);
                 }
-
-                Zend_Registry::set('translatorsModules', $translators);
             }
         }
 
@@ -240,7 +244,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
      */
     public function isDebug()
     {
-        return Zend_Registry::get('configGlobal')->environment !== 'production';
+        return Zend_Registry::get('configGlobal')->get('environment', 'production') !== 'production';
     }
 
     /**
@@ -250,7 +254,7 @@ class MIDAS_GlobalController extends Zend_Controller_Action
      */
     public function getEnvironment()
     {
-        return Zend_Registry::get('configGlobal')->environment;
+        return Zend_Registry::get('configGlobal')->get('environment', 'production');
     }
 
     /**

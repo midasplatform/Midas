@@ -64,7 +64,10 @@ class UploadController extends AppController
         $this->disableLayout();
         $this->view->form = $this->getFormAsArray($this->Form->Upload->createUploadLinkForm());
         $this->userSession->filePosition = null;
-        $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
+
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $this->view->selectedLicense = $settingModel->getValueByNameWithDefault('default_license', 1);
         $this->view->allLicenses = $this->License->getAll();
 
         $this->view->defaultUploadLocation = '';
@@ -114,7 +117,9 @@ class UploadController extends AppController
         // Check if the revision exists and if it does, we send its license ID to
         // the view. If it does not exist we use our default license
         if ($itemRevision === false) {
-            $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
+            /** @var SettingModel $settingModel */
+            $settingModel = MidasLoader::loadModel('Setting');
+            $this->view->selectedLicense = $settingModel->getValueByNameWithDefault('default_license', 1);
         } else {
             $this->view->selectedLicense = $itemRevision->getLicenseId();
         }

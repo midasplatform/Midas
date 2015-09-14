@@ -36,6 +36,9 @@ date_default_timezone_set('UTC');
 Zend_Session::$_unitTestEnabled = true;
 Zend_Session::start();
 
+$configCore = new Zend_Config_Ini(CORE_CONFIG, 'global', true);
+Zend_Registry::set('configCore', $configCore);
+
 require_once 'ControllerTestCase.php';
 require_once 'DatabaseTestCase.php';
 
@@ -86,15 +89,17 @@ $db = Zend_Db::factory($configDatabase->database->adapter, $params);
 Zend_Db_Table::setDefaultAdapter($db);
 Zend_Registry::set('dbAdapter', $db);
 Zend_Registry::set('configDatabase', $configDatabase);
+Zend_Registry::set('models', array());
 
 require_once BASE_PATH.'/core/controllers/components/UpgradeComponent.php';
 $upgradeComponent = new UpgradeComponent();
 $db = Zend_Registry::get('dbAdapter');
 $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
-
 $upgradeComponent->initUpgrade('core', $db, $dbtype);
-$version = Zend_Registry::get('configDatabase')->version;
-if (!isset($version)) {
+
+require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
+$version = UtilityComponent::getLatestModuleVersion('core');
+if ($version === false) {
     if (Zend_Registry::get('configDatabase')->database->adapter === 'PDO_MYSQL'
     ) {
         $type = 'mysql';

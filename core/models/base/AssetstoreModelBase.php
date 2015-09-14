@@ -157,7 +157,7 @@ abstract class AssetstoreModelBase extends AppModel
 
         /** @var AssetstoreModel $assetstoreModel */
         $assetstoreModel = MidasLoader::loadModel('Assetstore');
-        $defaultAssetstoreId = $settingModel->getValueByName('default_assetstore');
+        $defaultAssetstoreId = (int) $settingModel->getValueByName('default_assetstore');
 
         $defaultAssetstore = false;
 

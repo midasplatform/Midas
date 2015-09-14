@@ -20,18 +20,15 @@
 
 require_once BASE_PATH.'/core/models/base/SettingModelBase.php';
 
-/**
- *  SettingModel
- *  Pdo Model.
- */
+/** Configuration setting model. */
 class SettingModel extends SettingModelBase
 {
     /**
-     * Get by name.
+     * Return a configuration setting given its name and module name.
      *
-     * @param string $name
-     * @param string $module
-     * @return false|SettingDao
+     * @param string $name configuration setting name
+     * @param string $module module name
+     * @return false|SettingDao configuration setting DAO or false on failure
      * @throws Zend_Exception
      */
     public function getDaoByName($name, $module = 'core')

@@ -63,7 +63,7 @@ class Remoteprocessing_Notification extends ApiEnabled_Notification
     /** add a process button */
     public function getButton($params)
     {
-        if ($this->Setting->getValueByName(MIDAS_REMOTEPROCESSING_SHOW_BUTTON_KEY, $this->moduleName) == 1) {
+        if ((int) $this->Setting->getValueByName(MIDAS_REMOTEPROCESSING_SHOW_BUTTON_KEY, $this->moduleName) === 1) {
             $html = "<li class='processButton' style='margin-left:5px;' title='Process' rel='".Zend_Registry::get(
                     'webroot'
                 )."/remoteprocessing/index/selectaction'>

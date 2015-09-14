@@ -47,7 +47,7 @@ class DownloadController extends AppController
         $folderIds = $this->getParam('folders');
         $bitsreamid = $this->getParam('bitstream');
         $sessionUser = $this->userSession->Dao;
-        $testingMode = Zend_Registry::get('configGlobal')->environment == 'testing';
+        $testingMode = Zend_Registry::get('configGlobal')->get('environment', 'production') === 'testing';
         if ($sessionUser != null) {
             // Make sure this is a copy and not a reference
             $sessionUser = $this->User->load($sessionUser->getKey());

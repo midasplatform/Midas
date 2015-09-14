@@ -59,7 +59,7 @@ class NotifyErrorComponent extends AppComponent
     {
         if (!is_null(error_get_last())) {
             $e = error_get_last();
-            $environment = Zend_Registry::get('configGlobal')->environment;
+            $environment = Zend_Registry::get('configGlobal')->get('environment', 'production');
             switch ($environment) {
                 case 'production':
                     $message = 'The system has encountered the following error:<br/><h3>';
@@ -145,14 +145,14 @@ class NotifyErrorComponent extends AppComponent
      */
     public function warningError($errno, $errstr, $errfile, $errline)
     {
-        if ($errno == E_WARNING && Zend_Registry::get('configGlobal')->environment != 'production'
+        if ($errno == E_WARNING && Zend_Registry::get('configGlobal')->get('environment', 'production') !== 'production'
         ) {
             $message = 'Warning: '.htmlspecialchars($errstr, ENT_QUOTES, 'UTF-8')."<br/>\n on line ".htmlspecialchars($errline, ENT_QUOTES, 'UTF-8').' in file '.htmlspecialchars($errfile, ENT_QUOTES, 'UTF-8')."<br/>\n";
             $this->getLogger()->warn($message);
             echo $message;
         }
 
-        if ($errno == E_NOTICE && Zend_Registry::get('configGlobal')->environment != 'production'
+        if ($errno == E_NOTICE && Zend_Registry::get('configGlobal')->get('environment', 'production') !== 'production'
         ) {
             $message = 'Notice : '.htmlspecialchars($errstr, ENT_QUOTES, 'UTF-8')."<br/>\non line ".htmlspecialchars($errline, ENT_QUOTES, 'UTF-8').' in file '.htmlspecialchars($errfile, ENT_QUOTES, 'UTF-8')."<br/>\n";
             $this->getLogger()->warn($message);
@@ -167,7 +167,7 @@ class NotifyErrorComponent extends AppComponent
      */
     public function curPageURL()
     {
-        if (Zend_Registry::get('configGlobal')->environment == 'testing') {
+        if (Zend_Registry::get('configGlobal')->get('environment', 'production') === 'testing') {
             return 'http://localhost';
         }
         $pageURL = 'http';

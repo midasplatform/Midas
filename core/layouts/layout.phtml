@@ -157,10 +157,10 @@ echo $this->doctype().PHP_EOL;
                     if ($this->logged) {
                         echo '<a href="'.$this->baseUrl('user/logout').'"> '.$this->t('Logout').'</a>';
                     } else {
-                        if (!isset(Zend_Registry::get('configGlobal')->closeregistration) || Zend_Registry::get(
-                                'configGlobal'
-                            )->closeregistration == "0"
-                        ) {
+
+                        /** @var SettingModel $settingModel */
+                        $settingModel = MidasLoader::loadModel('Setting');
+                        if ((int) $settingModel->getValueByNameWithDefault('close_registration', 1) === 0) {
                             echo '<a class="registerLink" href="#"> '.$this->t('Register').'</a>';
                         }
                     }
@@ -171,10 +171,7 @@ echo $this->doctype().PHP_EOL;
                 </li>
 
                 <?php
-                if (!isset(Zend_Registry::get('configCore')->internationalization) || Zend_Registry::get(
-                        'configCore'
-                    )->internationalization == "1"
-                ) {
+                if ((int) Zend_Registry::get('configCore')->get('internationalization', 0) === 1) {
                     ?>
                     <li>
                         <a href="#" style="margin-right: 20px">

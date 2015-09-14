@@ -32,7 +32,12 @@ class ApisystemComponent extends AppComponent
      */
     public function version($args)
     {
-        return array('version' => Zend_Registry::get('configDatabase')->version);
+        $version = UtilityComponent::getCurrentModuleVersion('core');
+        if ($version === false) {
+            throw new Zend_Exception('Core version is undefined.');
+        }
+
+        return array('version' => $version);
     }
 
     /**
@@ -89,8 +94,12 @@ class ApisystemComponent extends AppComponent
      */
     public function info($args)
     {
-        $appFields = Zend_Registry::get('configGlobal')->application;
-        $serverFields = array('name' => $appFields->name, 'description' => $appFields->description);
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $serverFields = array(
+            'name' => $settingModel->getValueByName('title'),
+            'description' => $settingModel->getValueByName('description'),
+        );
 
         return array_merge(
             $this->version($args),
@@ -198,7 +207,7 @@ class ApisystemComponent extends AppComponent
             }
         }
 
-        $prefix = Zend_Registry::get('configGlobal')->password->prefix;
+        $prefix = Zend_Registry::get('configGlobal')->get('password_prefix');
         if ($hasAuthenticationModule || $userModel->hashExists(
                 hash($userDao->getHashAlg(), $prefix.$userDao->getSalt().$password)
             )
@@ -436,7 +445,7 @@ class ApisystemComponent extends AppComponent
         /** @var HttpuploadComponent $uploadComponent */
         $uploadComponent = MidasLoader::loadComponent('Httpupload');
         $apiSetup = $apihelperComponent->getApiSetup();
-        $uploadComponent->setTestingMode(Zend_Registry::get('configGlobal')->environment === 'testing');
+        $uploadComponent->setTestingMode(Zend_Registry::get('configGlobal')->get('environment', 'production') === 'testing');
 
         return $uploadComponent->generateToken($args, $userDao->getKey().'/'.$item->getKey());
     }
@@ -514,7 +523,7 @@ class ApisystemComponent extends AppComponent
         /** @var HttpuploadComponent $httpUploadComponent */
         $httpUploadComponent = MidasLoader::loadComponent('Httpupload');
         $apiSetup = $apihelperComponent->getApiSetup();
-        $httpUploadComponent->setTestingMode(Zend_Registry::get('configGlobal')->environment === 'testing');
+        $httpUploadComponent->setTestingMode(Zend_Registry::get('configGlobal')->get('environment', 'production') === 'testing');
 
         if (array_key_exists('testingmode', $args)) {
             $httpUploadComponent->setTestingMode(true);
@@ -618,7 +627,7 @@ class ApisystemComponent extends AppComponent
         /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apiSetup = $apihelperComponent->getApiSetup();
-        $uploadComponent->setTestingMode(Zend_Registry::get('configGlobal')->environment === 'testing');
+        $uploadComponent->setTestingMode(Zend_Registry::get('configGlobal')->get('environment', 'production') === 'testing');
 
         return $uploadComponent->getOffset($args);
     }

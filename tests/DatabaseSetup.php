@@ -132,46 +132,40 @@ function dropTables($db, $dbType)
  */
 function installCore($db, $dbType, $utilityComponent)
 {
+    if ($dbType !== 'mysql' && $dbType !== 'pgsql' && $dbType !== 'sqlite') {
+        throw new Zend_Exception('Unknown database type: '.$dbType);
+    }
+
     require_once BASE_PATH.'/core/controllers/components/UpgradeComponent.php';
     $upgradeComponent = new UpgradeComponent();
     $upgradeComponent->dir = BASE_PATH.'/core/database/'.$dbType;
     $upgradeComponent->init = true;
 
     $newestVersion = $upgradeComponent->getNewestVersion(true);
-
     $sqlFile = BASE_PATH.'/core/database/'.$dbType.'/'.$newestVersion.'.sql';
-    if (!isset($sqlFile) || !file_exists($sqlFile)) {
+
+    if (!file_exists($sqlFile)) {
         throw new Zend_Exception('Unable to find SQL file: '.$sqlFile);
     }
 
-    switch ($dbType) {
-        case 'mysql':
-            $utilityComponent->run_sql_from_file($db, $sqlFile);
-            $upgradeDbType = 'PDO_MYSQL';
-            break;
-        case 'pgsql':
-            $utilityComponent->run_sql_from_file($db, $sqlFile);
-            $upgradeDbType = 'PDO_PGSQL';
-            break;
-        case 'sqlite':
-            $utilityComponent->run_sql_from_file($db, $sqlFile);
-            $upgradeDbType = 'PDO_SQLITE';
-            break;
-        default:
-            throw new Zend_Exception('Unknown database type: '.$dbType);
-            break;
-    }
+    $utilityComponent->run_sql_from_file($db, $sqlFile);
 
-    $options = array('allowModifications' => true);
-    $databaseConfig = new Zend_Config_Ini(BASE_PATH.'/tests/configs/lock.'.$dbType.'.ini', null, $options);
-    $databaseConfig->testing->version = $newestVersion;
-    $writer = new Zend_Config_Writer_Ini();
-    $writer->setConfig($databaseConfig);
-    $writer->setFilename(BASE_PATH.'/tests/configs/lock.'.$dbType.'.ini');
-    $writer->write();
+    Zend_Registry::set('models', array());
 
-    $upgradeComponent->initUpgrade('core', $db, $upgradeDbType);
-    $upgradeComponent->upgrade(str_replace('.sql', '', basename($sqlFile)), true /* true for testing */);
+    $configCore = new Zend_Config_Ini(BASE_PATH.'/core/configs/core.ini', 'global');
+
+    /** @var ModuleModel $moduleModel */
+    $moduleModel = MidasLoader::loadModel('Module');
+    /** @var ModuleDao $moduleDao */
+    $moduleDao = MidasLoader::newDao('ModuleDao');
+    $moduleDao->setName('core');
+    $moduleDao->setUuid(str_replace('-', '', $configCore->get('uuid')));
+    $moduleDao->setCurrentVersion($newestVersion);
+    $moduleDao->setEnabled(1);
+    $moduleModel->save($moduleDao);
+
+    $upgradeComponent->initUpgrade('core', $db, 'PDO_'.strtoupper($dbType));
+    $upgradeComponent->upgrade($newestVersion, true /* true for testing */);
 }
 
 /** Create default asset store. */

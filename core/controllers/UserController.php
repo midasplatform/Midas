@@ -87,7 +87,7 @@ class UserController extends AppController
             throw new Zend_Exception('Shouldn\'t be logged in');
         }
 
-        if ((int) Zend_Registry::get('configGlobal')->get('allow_password_reset', 0) === 0) {
+        if ((int) $this->Setting->getValueByNameWithDefault('allow_password_reset', 0) === 0) {
             throw new Zend_Exception('Password reset is disabled');
         }
 
@@ -209,10 +209,7 @@ class UserController extends AppController
         }
         $this->disableView();
         $this->disableLayout();
-        if (!$adminCreate && isset(Zend_Registry::get('configGlobal')->closeregistration) && Zend_Registry::get(
-                'configGlobal'
-            )->closeregistration == '1'
-        ) {
+        if (!$adminCreate && (int) $this->Setting->getValueByNameWithDefault('close_registration', 1) === 1) {
             echo JsonComponent::encode(array('status' => 'error', 'message' => 'New user registration is disabled.'));
 
             return;
@@ -257,9 +254,9 @@ class UserController extends AppController
             }
 
             $email = strtolower(trim($form->getValue('email')));
-            $addressVerification = $this->Setting->getValueByName('address_verification', 'mail');
+            $addressVerification = (int) $this->Setting->getValueByName('address_verification', 'mail');
 
-            if ($adminCreate || $addressVerification != '1') {
+            if ($adminCreate || $addressVerification !== 1) {
                 $newUser = $this->User->createUser(
                     $email,
                     $form->getValue('password1'),
@@ -346,10 +343,7 @@ class UserController extends AppController
     /** Register a user */
     public function registerAction()
     {
-        if (isset(Zend_Registry::get('configGlobal')->closeregistration) && Zend_Registry::get(
-                'configGlobal'
-            )->closeregistration == '1'
-        ) {
+        if ((int) $this->Setting->getValueByNameWithDefault('close_registration', 1) === 1) {
             throw new Zend_Exception('New user registration is disabled.');
         }
         $form = $this->Form->User->createRegisterForm();
@@ -360,9 +354,9 @@ class UserController extends AppController
                 throw new Zend_Exception('User already exists.');
             }
 
-            $addressVerification = $this->Setting->getValueByName('address_verification', 'mail');
+            $addressVerification = (int) $this->Setting->getValueByName('address_verification', 'mail');
 
-            if ($addressVerification != '1') {
+            if ($addressVerification !== 1) {
                 if (!headers_sent()) {
                     session_start();
                 }
@@ -485,7 +479,7 @@ class UserController extends AppController
 
             return;
         }
-        $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+        $instanceSalt = Zend_Registry::get('configGlobal')->get('password_prefix');
         $passwordHash = hash($userDao->getHashAlg(), $instanceSalt.$userDao->getSalt().$form->getValue('password'));
 
         if ($this->User->hashExists($passwordHash)) {
@@ -517,7 +511,7 @@ class UserController extends AppController
             );
             Zend_Session::start();
             $user = new Zend_Session_Namespace('Auth_User');
-            $user->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
+            $user->setExpirationSeconds(60 * (int) Zend_Registry::get('configGlobal')->get('session_lifetime', 20));
             $user->Dao = $userDao;
             $user->lock();
             $this->getLogger()->debug(__METHOD__.' Log in : '.$userDao->getFullName());
@@ -566,8 +560,17 @@ class UserController extends AppController
                     }
                 }
 
-                $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
-                $currentVersion = Zend_Registry::get('configDatabase')->version;
+                $instanceSalt = Zend_Registry::get('configGlobal')->get('password_prefix', false);
+
+                // Necessary for upgrades to 3.4.1.
+                if ($instanceSalt === false) {
+                    $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+                }
+
+                $currentVersion = UtilityComponent::getCurrentModuleVersion('core');
+                if ($currentVersion === false) {
+                    throw new Zend_Exception('Core version is undefined.');
+                }
                 // We have to have this so that an admin can log in to upgrade from version < 3.2.12 to >= 3.2.12.
                 // Version 3.2.12 introduced the new password hashing and storage system.
                 if (!$authModule && version_compare($currentVersion, '3.2.12', '>=')
@@ -624,7 +627,7 @@ class UserController extends AppController
                             );
                             Zend_Session::start();
                             $user = new Zend_Session_Namespace('Auth_User');
-                            $user->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
+                            $user->setExpirationSeconds(60 * (int) Zend_Registry::get('configGlobal')->get('session_lifetime', 20));
                             $user->Dao = $userDao;
                             $user->lock();
                         }
@@ -649,8 +652,8 @@ class UserController extends AppController
             }
         }
 
-        $this->view->allowPasswordReset = (int) Zend_Registry::get('configGlobal')->get('allow_password_reset', 0) === 1;
-        $this->view->closeRegistration = (int) Zend_Registry::get('configGlobal')->get('closeregistration', 0) === 1;
+        $this->view->allowPasswordReset = (int) $this->Setting->getValueByNameWithDefault('allow_password_reset', 0) === 1;
+        $this->view->closeRegistration = (int) $this->Setting->getValueByNameWithDefault('close_registration', 1) === 1;
     }
 
     /** Term of service */
@@ -777,7 +780,7 @@ class UserController extends AppController
                     $this->User->convertLegacyPasswordHash($userDao, $oldPass);
                 }
                 $newPass = $this->getParam('newPassword');
-                $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+                $instanceSalt = Zend_Registry::get('configGlobal')->get('password_prefix');
                 $hashedPasswordOld = hash($userDao->getHashAlg(), $instanceSalt.$userDao->getSalt().$oldPass);
 
                 if ((!$userDao->isAdmin() && $this->userSession->Dao->isAdmin()) || $this->User->hashExists(
@@ -1023,7 +1026,7 @@ class UserController extends AppController
         $this->Component->Sortdao->order = 'asc';
         usort($communities, array($this->Component->Sortdao, 'sortByName'));
 
-        $this->view->useGravatar = Zend_Registry::get('configGlobal')->gravatar;
+        $this->view->useGravatar = (int) $this->Setting->getValueByNameWithDefault('gravatar', 0);
         $this->view->isGravatar = $this->User->getGravatarUrl($userDao->getEmail());
 
         $this->view->communities = $communities;

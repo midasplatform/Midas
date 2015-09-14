@@ -21,7 +21,7 @@
 /** Admin Controller. */
 class AdminController extends AppController
 {
-    public $_models = array('Assetstore', 'Bitstream', 'Item', 'ItemRevision', 'Folder', 'License', 'Setting');
+    public $_models = array('Assetstore', 'Bitstream', 'Item', 'ItemRevision', 'Folder', 'License', 'Module', 'Setting');
     public $_daos = array();
     public $_components = array('Upgrade', 'Utility', 'MIDAS2Migration');
     public $_forms = array('Admin', 'Assetstore', 'Migrate');
@@ -29,9 +29,6 @@ class AdminController extends AppController
     /** init the controller */
     public function init()
     {
-        $config = Zend_Registry::get('configGlobal'); // set admin part to english
-        $config->application->lang = 'en';
-        Zend_Registry::set('configGlobal', $config);
         if ($this->isDemoMode()) {
             $this->disableView();
 
@@ -69,34 +66,19 @@ class AdminController extends AppController
         $this->requireAdminPrivileges();
         $this->view->header = 'Administration';
 
-        $options = array('allowModifications' => true);
-        $config = new Zend_Config_Ini(APPLICATION_CONFIG, null, $options);
-
         $configForm = $this->Form->Admin->createConfigForm();
         $formArray = $this->getFormAsArray($configForm);
-        $formArray['description']->setValue($config->global->application->description);
-        $formArray['lang']->setValue($config->global->application->lang);
-        $formArray['name']->setValue($config->global->application->name);
-        $formArray['timezone']->setValue($config->global->default->timezone);
-
-        if (isset($config->global->allow_password_reset)) {
-            $formArray['allow_password_reset']->setValue($config->global->allow_password_reset);
-        }
-        if (isset($config->global->closeregistration)) {
-            $formArray['closeregistration']->setValue($config->global->closeregistration);
-        }
-        if (isset($config->global->dynamichelp)) {
-            $formArray['dynamichelp']->setValue($config->global->dynamichelp);
-        }
-        if (isset($config->global->gravatar)) {
-            $formArray['gravatar']->setValue($config->global->gravatar);
-        }
-        if (isset($config->global->httpproxy)) {
-            $formArray['httpProxy']->setValue($config->global->httpproxy);
-        }
+        $formArray['title']->setValue($this->Setting->getValueByName('title'));
+        $formArray['description']->setValue($this->Setting->getValueByName('description'));
+        $formArray['language']->setValue($this->Setting->getValueByNameWithDefault('language', 'en'));
+        $formArray['time_zone']->setValue($this->Setting->getValueByNameWithDefault('time_zone', 'UTC'));
+        $formArray['dynamic_help']->setValue((int) $this->Setting->getValueByNameWithDefault('dynamic_help', 0));
+        $formArray['allow_password_reset']->setValue((int) $this->Setting->getValueByNameWithDefault('allow_password_reset', 0));
+        $formArray['close_registration']->setValue((int) $this->Setting->getValueByNameWithDefault('close_registration', 1));
+        $formArray['gravatar']->setValue((int) $this->Setting->getValueByNameWithDefault('gravatar', 0));
         $this->view->configForm = $formArray;
 
-        $this->view->selectedLicense = $config->global->defaultlicense;
+        $this->view->selectedLicense = (int) $this->Setting->getValueByNameWithDefault('default_license', 1);
         try {
             $this->view->allLicenses = $this->License->getAll();
         } catch (Exception $e) {
@@ -112,47 +94,27 @@ class AdminController extends AppController
             $submitConfig = $this->getParam('submitConfig');
             $submitModule = $this->getParam('submitModule');
             if (isset($submitConfig)) {
-                $config->global->application->name = $this->getParam('name');
-                $config->global->application->description = $this->getParam('description');
-                $config->global->application->lang = $this->getParam('lang');
-                $config->global->default->timezone = $this->getParam('timezone');
-                $config->global->defaultlicense = $this->getParam('licenseSelect');
-                $config->global->allow_password_reset = $this->getParam('allow_password_reset');
-                $config->global->closeregistration = $this->getParam('closeregistration');
-                $config->global->dynamichelp = $this->getParam('dynamichelp');
-                $config->global->gravatar = $this->getParam('gravatar');
-                $config->global->httpproxy = $this->getParam('httpProxy');
-
-                $writer = new Zend_Config_Writer_Ini();
-                $writer->setConfig($config);
-                $writer->setFilename(APPLICATION_CONFIG);
-                $writer->write();
+                $this->Setting->setConfig('title', $this->getParam('title'));
+                $this->Setting->setConfig('description', $this->getParam('description'));
+                $this->Setting->setConfig('language', $this->getParam('language'));
+                $this->Setting->setConfig('time_zone', $this->getParam('time_zone'));
+                $this->Setting->setConfig('dynamic_help', (int) $this->getParam('dynamic_help'));
+                $this->Setting->setConfig('allow_password_reset', (int) $this->getParam('allow_password_reset'));
+                $this->Setting->setConfig('close_registration', (int) $this->getParam('close_registration'));
+                $this->Setting->setConfig('gravatar', (int) $this->getParam('gravatar'));
+                $this->Setting->setConfig('default_license', (int) $this->getParam('licenseSelect'));
                 echo JsonComponent::encode(array(true, 'Changes saved'));
             }
             if (isset($submitModule)) {
                 $moduleName = $this->getParam('modulename');
-                $modulevalue = $this->getParam('modulevalue');
-                $moduleConfigLocalFile = LOCAL_CONFIGS_PATH.'/'.$moduleName.'.local.ini';
-                $moduleConfigFile = BASE_PATH.'/modules/'.$moduleName.'/configs/module.ini';
-                $moduleConfigPrivateFile = BASE_PATH.'/privateModules/'.$moduleName.'/configs/module.ini';
-                if (!file_exists($moduleConfigLocalFile) && file_exists($moduleConfigFile)
-                ) {
-                    copy($moduleConfigFile, $moduleConfigLocalFile);
+                $moduleEnabled = $this->getParam('modulevalue');
+                $moduleDao = $this->Module->getByName($moduleName);
+                if ($moduleDao === false) {
                     $this->Component->Utility->installModule($moduleName);
-                } elseif (!file_exists($moduleConfigLocalFile) && file_exists($moduleConfigPrivateFile)
-                ) {
-                    copy($moduleConfigPrivateFile, $moduleConfigLocalFile);
-                    $this->Component->Utility->installModule($moduleName);
-                } elseif (!file_exists($moduleConfigLocalFile)) {
-                    throw new Zend_Exception('Unable to find config file');
+                    $moduleDao = $this->Module->getByName($moduleName);
                 }
-
-                $config->module->$moduleName = $modulevalue;
-
-                $writer = new Zend_Config_Writer_Ini();
-                $writer->setConfig($config);
-                $writer->setFilename(APPLICATION_CONFIG);
-                $writer->write();
+                $moduleDao->setEnabled($moduleEnabled);
+                $this->Module->save($moduleDao);
                 echo JsonComponent::encode(array(true, 'Changes saved'));
             }
         }
@@ -189,11 +151,6 @@ class AdminController extends AppController
             foreach ($assetstores as $key => $assetstore) {
                 $assetstores[$key]->default = true;
                 $this->Setting->setConfig('default_assetstore', $assetstores[$key]->getKey());
-
-                $writer = new Zend_Config_Writer_Ini();
-                $writer->setConfig($config);
-                $writer->setFilename(APPLICATION_CONFIG);
-                $writer->write();
                 break;
             }
         }
@@ -201,7 +158,7 @@ class AdminController extends AppController
         $this->view->assetstoreForm = $this->Form->Assetstore->createAssetstoreForm();
 
         // get modules
-        $enabledModules = Zend_Registry::get('modulesEnable');
+        //
         $adapter = Zend_Registry::get('configDatabase')->database->adapter;
         foreach ($allModules as $key => $module) {
             if (file_exists(BASE_PATH.'/modules/'.$key.'/controllers/ConfigController.php')) {
@@ -262,8 +219,11 @@ class AdminController extends AppController
         ksort($modulesList);
         $this->view->countModules = $countModules;
         $this->view->modulesList = $modulesList;
+
+        $enabledModules = Zend_Registry::get('modulesEnable');
         $this->view->modulesEnable = $enabledModules;
-        $this->view->databaseType = Zend_Registry::get('configDatabase')->database->adapter;
+
+        $this->view->databaseType = $adapter;
     }
 
     /** admin dashboard view */
@@ -336,6 +296,11 @@ class AdminController extends AppController
         $dbtype = Zend_Registry::get('configDatabase')->database->adapter;
         $modulesConfig = Zend_Registry::get('configsModules');
 
+        $version = UtilityComponent::getCurrentModuleVersion('core');
+        if ($version === false) {
+            throw new Zend_Exception('Core version is undefined.');
+        }
+
         if ($this->_request->isPost()) {
             $this->disableView();
             $upgraded = false;
@@ -346,8 +311,7 @@ class AdminController extends AppController
                 }
             }
             $this->Component->Upgrade->initUpgrade('core', $db, $dbtype);
-            if ($this->Component->Upgrade->upgrade(Zend_Registry::get('configDatabase')->version)
-            ) {
+            if ($this->Component->Upgrade->upgrade($version)) {
                 $upgraded = true;
             }
 
@@ -374,10 +338,8 @@ class AdminController extends AppController
         $this->Component->Upgrade->initUpgrade('core', $db, $dbtype);
         $core['target'] = $this->Component->Upgrade->getNewestVersion();
         $core['targetText'] = $this->Component->Upgrade->getNewestVersion(true);
-        $core['currentText'] = Zend_Registry::get('configDatabase')->version;
-        $core['current'] = $this->Component->Upgrade->transformVersionToNumeric(
-            Zend_Registry::get('configDatabase')->version
-        );
+        $core['currentText'] = $version;
+        $core['current'] = $this->Component->Upgrade->transformVersionToNumeric($version);
         $this->view->core = $core;
     }
 

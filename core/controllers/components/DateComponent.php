@@ -35,11 +35,17 @@ class DateComponent extends AppComponent
                 return '';
             }
         }
-        if (Zend_Registry::get('configGlobal')->application->lang == 'fr') {
-            return date('d', $timestamp).'/'.date('m', $timestamp).'/'.date('Y', $timestamp);
-        } else {
-            return date('m', $timestamp).'/'.date('d', $timestamp).'/'.date('Y', $timestamp);
+
+        if ((int) Zend_Registry::get('configGlobal')->get('internationalization', 0) === 1) {
+            /** @var SettingModel $settingModel */
+            $settingModel = MidasLoader::loadModel('Setting');
+
+            if ($settingModel->getValueByNameWithDefault('language', 'en') === 'fr') {
+                return date('d', $timestamp).'/'.date('m', $timestamp).'/'.date('Y', $timestamp);
+            }
         }
+
+        return date('m', $timestamp).'/'.date('d', $timestamp).'/'.date('Y', $timestamp);
     }
 
     /**
@@ -72,20 +78,24 @@ class DateComponent extends AppComponent
             }
         }
 
-        if ($onlyTime) {
-            if (Zend_Registry::get('configGlobal')->application->lang == 'fr') {
-                return $difference.' '.$periodsFr[$j];
-            } else {
-                return $difference.' '.$periods[$j];
+        if ((int) Zend_Registry::get('configGlobal')->get('internationalization', 0) === 1) {
+            /** @var SettingModel $settingModel */
+            $settingModel = MidasLoader::loadModel('Setting');
+
+            if ($settingModel->getValueByNameWithDefault('language', 'en') === 'fr') {
+                if ($onlyTime) {
+                    return $difference.' '.$periodsFr[$j];
+                }
+
+                return 'Il y a '.$difference.' '.$periodsFr[$j];
             }
         }
-        if (Zend_Registry::get('configGlobal')->application->lang == 'fr') {
-            $text = 'Il y a '.$difference.' '.$periodsFr[$j];
-        } else {
-            $text = $difference.' '.$periods[$j].' ago';
+
+        if ($onlyTime) {
+            return $difference.' '.$periods[$j];
         }
 
-        return $text;
+        return $difference.' '.$periods[$j].' ago';
     }
 
     /**
@@ -121,12 +131,15 @@ class DateComponent extends AppComponent
             $difference = $timestamp;
         }
 
-        if (Zend_Registry::get('configGlobal')->application->lang == 'fr') {
-            $text = $difference.' '.$periodsFr[$j];
-        } else {
-            $text = $difference.' '.$periods[$j];
+        if ((int) Zend_Registry::get('configGlobal')->get('internationalization', 0) === 1) {
+            /** @var SettingModel $settingModel */
+            $settingModel = MidasLoader::loadModel('Setting');
+
+            if ($settingModel->getValueByNameWithDefault('language', 'en') === 'fr') {
+                return $difference.' '.$periodsFr[$j];
+            }
         }
 
-        return $text;
+        return $difference.' '.$periods[$j];
     }
 }

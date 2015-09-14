@@ -148,7 +148,7 @@ class Oauth_AuthorizeController extends Oauth_AppController
 
             return;
         }
-        $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+        $instanceSalt = Zend_Registry::get('configGlobal')->get('password_prefix');
         $passwordHash = hash($userDao->getHashAlg(), $instanceSalt.$userDao->getSalt().$password);
 
         if ($this->User->hashExists($passwordHash)) {

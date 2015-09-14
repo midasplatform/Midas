@@ -56,7 +56,7 @@ abstract class PendingUserModelBase extends AppModel
     public function createPendingUser($email, $firstName, $lastName, $password)
     {
         $email = strtolower($email);
-        $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+        $instanceSalt = Zend_Registry::get('configGlobal')->get('password_prefix');
 
         /** @var RandomComponent $randomComponent */
         $randomComponent = MidasLoader::loadComponent('Random');

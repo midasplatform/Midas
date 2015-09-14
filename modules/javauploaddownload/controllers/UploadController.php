@@ -74,7 +74,7 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
             $this->view->host = 'localhost';
         }
 
-        $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
+        $this->view->selectedLicense = (int) $this->Setting->getValueByNameWithDefault('default_license', 1);
         $this->view->allLicenses = $this->License->getAll();
         $this->view->defaultUploadLocation = '';
         $this->view->defaultUploadLocationText = $this->t('You must select a folder');
@@ -140,7 +140,7 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
         if ($itemRevision) {
             $this->view->selectedLicense = $itemRevision->getLicenseId();
         } else {
-            $this->view->selectedLicense = Zend_Registry::get('configGlobal')->defaultlicense;
+            $this->view->selectedLicense = (int) $this->Setting->getValueByNameWithDefault('default_license', 1);
         }
 
         $this->view->allLicenses = $this->License->getAll();
@@ -205,10 +205,10 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
         $this->disableView();
         $this->disableLayout();
 
-        if (Zend_Registry::get('configGlobal')->environment != 'testing') {
+        if (Zend_Registry::get('configGlobal')->get('environment', 'production') !== 'testing') {
             // give a three day session cookie in case the download lasts a long time
             session_start();
-            $this->userSession->setExpirationSeconds(60 * max(60 * 24 * 3, Zend_Registry::get('configGlobal')->session->lifetime));
+            $this->userSession->setExpirationSeconds(60 * max(60 * 24 * 3, (int) Zend_Registry::get('configGlobal')->get('session_lifetime', 20)));
             session_write_close();
         }
 
@@ -332,7 +332,7 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
             throw new Zend_Exception('You are attempting to upload into the incorrect parent folder');
         }
 
-        $testingMode = Zend_Registry::get('configGlobal')->environment == 'testing';
+        $testingMode = Zend_Registry::get('configGlobal')->get('environment', 'production') === 'testing';
         $this->Component->Httpupload->setTestingMode($testingMode);
         $this->Component->Httpupload->setTokenParamName('uploadUniqueIdentifier');
         $data = $this->Component->Httpupload->process($params);
@@ -429,7 +429,7 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
             throw new Zend_Exception('You are attempting to upload into the incorrect parent item');
         }
 
-        $testingMode = Zend_Registry::get('configGlobal')->environment == 'testing';
+        $testingMode = Zend_Registry::get('configGlobal')->get('environment', 'production') === 'testing';
         $this->Component->Httpupload->setTestingMode($testingMode);
         $this->Component->Httpupload->setTokenParamName('uploadUniqueIdentifier');
         $data = $this->Component->Httpupload->process($params);

@@ -402,7 +402,7 @@ function oai_exit()
     global $request;
     global $errors;
 
-    $environment = Zend_Registry::get('configGlobal')->environment;
+    $environment = Zend_Registry::get('configGlobal')->get('environment', 'production');
     if ($environment != 'testing') {
         header('Content-Type: text/plain');
     }

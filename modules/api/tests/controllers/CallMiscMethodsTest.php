@@ -29,7 +29,7 @@ class Api_CallMiscMethodsTest extends Api_CallMethodsTestCase
         $this->params['method'] = 'midas.version';
         $resp = $this->_callJsonApi();
         $this->_assertStatusOk($resp);
-        $this->assertEquals($resp->data->version, Zend_Registry::get('configDatabase')->version);
+        $this->assertEquals($resp->data->version, UtilityComponent::getCurrentModuleVersion('core'));
     }
 
     /** Test the midas.modules.list method. */
@@ -74,7 +74,7 @@ class Api_CallMiscMethodsTest extends Api_CallMethodsTestCase
         $this->_assertStatusOk($resp);
 
         // We should get version
-        $this->assertEquals($resp->data->version, Zend_Registry::get('configDatabase')->version);
+        $this->assertEquals($resp->data->version, UtilityComponent::getCurrentModuleVersion('core'));
 
         // We should get modules list
         $this->assertNotEmpty($resp->data->modules);

@@ -63,14 +63,14 @@ class AppController extends MIDAS_GlobalController
         Zend_Registry::set('webroot', $this->view->webroot);
         Zend_Registry::set('coreWebroot', $this->view->coreWebroot);
 
-        $this->view->title = Zend_Registry::get('configGlobal')->application->name;
-        $this->view->metaDescription = Zend_Registry::get('configGlobal')->application->description;
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $this->view->title = $settingModel->getValueByNameWithDefault('title', 'Midas Platform - Digital Archiving System');
+        $this->view->metaDescription = $settingModel->getValueByNameWithDefault('description', '');
 
         // Set the version
-        $this->view->version = '3.2.8';
-        if (isset(Zend_Registry::get('configDatabase')->version)) {
-            $this->view->version = Zend_Registry::get('configDatabase')->version;
-        }
+        $version = UtilityComponent::getCurrentModuleVersion('core');
+        $this->view->version = $version !== false ? $version : '3.4.x';
 
         require_once BASE_PATH.'/core/models/dao/UserDao.php';
         require_once BASE_PATH.'/core/models/dao/ItemDao.php';
@@ -84,7 +84,7 @@ class AppController extends MIDAS_GlobalController
 
             // log in when testing
             $testingUserId = $this->getParam('testingUserId');
-            if (Zend_Registry::get('configGlobal')->environment == 'testing' && isset($testingUserId)
+            if (Zend_Registry::get('configGlobal')->get('environment', 'production') === 'testing' && isset($testingUserId)
             ) {
                 $user = new Zend_Session_Namespace('Auth_User_Testing');
 
@@ -96,7 +96,7 @@ class AppController extends MIDAS_GlobalController
                 }
             } else {
                 $user = new Zend_Session_Namespace('Auth_User');
-                $user->setExpirationSeconds(60 * Zend_Registry::get('configGlobal')->session->lifetime);
+                $user->setExpirationSeconds(60 * (int) Zend_Registry::get('configGlobal')->get('session_lifetime', 20));
             }
 
             /** @var Zend_Controller_Request_Http $request */
@@ -127,7 +127,10 @@ class AppController extends MIDAS_GlobalController
                             if ($userDao != false) {
                                 // authenticate valid users in the appropriate method for the
                                 // current application version
-                                if (version_compare(Zend_Registry::get('configDatabase')->version, '3.2.12', '>=')) {
+                                if ($version === false) {
+                                    throw new Zend_Exception('Core version is undefined.');
+                                }
+                                if (version_compare($version, '3.2.12', '>=')) {
                                     $auth = $userModel->hashExists($tmp[1]);
                                 } else {
                                     $auth = $userModel->legacyAuthenticate($userDao, '', '', $tmp[1]);
@@ -192,7 +195,11 @@ class AppController extends MIDAS_GlobalController
         // init notifier
         Zend_Registry::set('notifier', new MIDAS_Notifier($this->logged, $this->userSession));
 
-        $this->view->lang = Zend_Registry::get('configGlobal')->application->lang;
+        if ((int) Zend_Registry::get('configGlobal')->get('internationalization', 0) === 1) {
+            $this->view->lang = $settingModel->getValueByNameWithDefault('language', 'en');
+        } else {
+            $this->view->lang = 'en';
+        }
 
         $this->view->isStartingGuide = $this->isStartingGuide();
         $this->view->isDynamicHelp = $this->isDynamicHelp();
@@ -204,7 +211,7 @@ class AppController extends MIDAS_GlobalController
             'logged' => $this->logged,
             'needToLog' => false,
             'currentUri' => $this->getRequest()->REQUEST_URI,
-            'lang' => Zend_Registry::get('configGlobal')->application->lang,
+            'lang' => $this->view->lang,
             'dynamichelp' => $this->isDynamicHelp(),
             'dynamichelpAnimate' => $this->isDynamicHelp() && isset($_GET['first']),
             'startingGuide' => $this->isStartingGuide(),
@@ -335,7 +342,7 @@ class AppController extends MIDAS_GlobalController
         }
 
         // If there is an outbound HTTP proxy configured on this server, set it up here
-        $httpProxy = Zend_Registry::get('configGlobal')->httpproxy;
+        $httpProxy = Zend_Registry::get('configGlobal')->get('http_proxy', false);
         if ($httpProxy) {
             $opts = array('http' => array('proxy' => $httpProxy));
             stream_context_set_default($opts);
@@ -350,15 +357,18 @@ class AppController extends MIDAS_GlobalController
     public function isDynamicHelp()
     {
         try {
-            $dynamichelp = Zend_Registry::get('configGlobal')->dynamichelp;
-            if ($dynamichelp && $this->userSession != null) {
+            /** @var SettingModel $settingModel */
+            $settingModel = MidasLoader::loadModel('Setting');
+            $dynamicHelp = $settingModel->getValueByNameWithDefault('dynamic_help', 0);
+
+            if ($dynamicHelp && $this->userSession != null) {
                 $userDao = $this->userSession->Dao;
                 if ($userDao != null && $userDao instanceof UserDao) {
                     return $userDao->getDynamichelp() == 1;
                 }
             }
 
-            return $dynamichelp == 1;
+            return $dynamicHelp == 1;
         } catch (Zend_Exception $exc) {
             $this->getLogger()->warn($exc->getMessage());
 
@@ -403,7 +413,7 @@ class AppController extends MIDAS_GlobalController
      */
     public function isTestingEnv()
     {
-        return Zend_Registry::get('configGlobal')->environment == 'testing';
+        return Zend_Registry::get('configGlobal')->get('environment', 'production') === 'testing';
     }
 
     /**
@@ -473,7 +483,7 @@ class AppController extends MIDAS_GlobalController
     {
         parent::postDispatch();
         $this->view->json = JsonComponent::encode($this->view->json);
-        if (Zend_Registry::get('configGlobal')->environment != 'testing') {
+        if (Zend_Registry::get('configGlobal')->get('environment', 'production') !== 'testing') {
             header('Content-Type: text/html; charset=UTF-8');
         }
         if ($this->progressDao != null) {
@@ -603,6 +613,9 @@ class AppController extends MIDAS_GlobalController
 
     /** @var MetadataModel */
     public $Metadata;
+
+    /** @var ModuleModel */
+    public $Module;
 
     /** @var NewUserInvitationModel */
     public $NewUserInvitation;

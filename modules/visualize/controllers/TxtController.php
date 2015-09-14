@@ -45,7 +45,7 @@ class Visualize_TxtController extends Visualize_AppController
             throw new Zend_Exception('The item has no bitstreams', MIDAS_INVALID_POLICY);
         }
         $this->bistream = $bitstreams[0];
-        if (Zend_Registry::get('configGlobal')->environment != 'testing') {
+        if (Zend_Registry::get('configGlobal')->get('environment', 'production') !== 'testing') {
             header('content-type: text/plain');
         }
         echo '<pre>';

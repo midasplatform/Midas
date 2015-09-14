@@ -46,20 +46,25 @@ class InternationalizationComponent extends AppComponent
      */
     public static function translate($text)
     {
-        if (Zend_Registry::get('configGlobal')->application->lang != 'en') {
-            $translate = Zend_Registry::get('translator');
-            $new_text = $translate->_($text);
-            if ($new_text == $text) {
-                $translators = Zend_Registry::get('translatorsModules');
-                foreach ($translators as $t) {
-                    $new_text = $t->_($text);
-                    if ($new_text != $text) {
-                        break;
+        if ((int) Zend_Registry::get('configGlobal')->get('internationalization', 0) === 1) {
+            /** @var SettingModel $settingModel */
+            $settingModel = MidasLoader::loadModel('Setting');
+
+            if ($settingModel->getValueByNameWithDefault('language', 'en') === 'fr') {
+                $translate = Zend_Registry::get('translator');
+                $new_text = $translate->_($text);
+                if ($new_text == $text) {
+                    $translators = Zend_Registry::get('translatorsModules');
+                    foreach ($translators as $t) {
+                        $new_text = $t->_($text);
+                        if ($new_text != $text) {
+                            break;
+                        }
                     }
                 }
-            }
 
-            return $new_text;
+                return $new_text;
+            }
         }
 
         return $text;
@@ -72,6 +77,6 @@ class InternationalizationComponent extends AppComponent
      */
     public static function isDebug()
     {
-        return Zend_Registry::get('configGlobal')->environment !== 'production';
+        return Zend_Registry::get('configGlobal')->get('environment', 'production') !== 'production';
     }
 }

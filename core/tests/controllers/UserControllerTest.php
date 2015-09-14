@@ -42,6 +42,10 @@ class Core_UserControllerTest extends ControllerTestCase
     /** test register */
     public function testRegisterAction()
     {
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $settingModel->setConfig('close_registration', 0);
+
         $this->dispatchUrl('/user/register');
         $this->assertController('user');
         $this->assertAction('register');
@@ -122,6 +126,11 @@ class Core_UserControllerTest extends ControllerTestCase
     public function testRecoverpasswordAction()
     {
         $this->resetAll();
+
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $settingModel->setConfig('allow_password_reset', 1);
+
         $this->dispatchUrl('/user/recoverpassword', null, false);
 
         $this->assertQuery('form#recoverPasswordForm');
@@ -233,7 +242,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $this->assertQuery('div#tabsSettings');
         $this->assertQuery('li.settingsCommunityList');
 
-        $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+        $instanceSalt = Zend_Registry::get('configGlobal')->get('password_prefix');
         // By changing password we will update the salt and hash
         $this->resetAll();
         $this->params = array();
@@ -439,7 +448,7 @@ class Core_UserControllerTest extends ControllerTestCase
 
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
-        $adminuserSetting = $settingModel->getValueByName('adminuser');
+        $adminuserSetting = (int) $settingModel->getValueByName('adminuser');
         $usersFile = $this->loadData('User', 'default');
         $commFile = $this->loadData('Community', 'default');
         $itemFile = $this->loadData('Item', 'default');
@@ -509,7 +518,7 @@ class Core_UserControllerTest extends ControllerTestCase
         $communityModel = MidasLoader::loadModel('Community');
         $folderModel = MidasLoader::loadModel('Folder');
         $itemModel = MidasLoader::loadModel('Item');
-        $adminuserSetting = $settingModel->getValueByName('adminuser');
+        $adminuserSetting = (int) $settingModel->getValueByName('adminuser');
         $usersFile = $this->loadData('User', 'default');
         $commFile = $this->loadData('Community', 'default');
         $itemFile = $this->loadData('Item', 'default');

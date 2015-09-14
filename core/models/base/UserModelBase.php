@@ -216,7 +216,7 @@ abstract class UserModelBase extends AppModel
         // Remove references to this user as the uploader of item revisions (replace with superadmin)
         /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
-        $adminId = $settingModel->getValueByName('adminuser');
+        $adminId = (int) $settingModel->getValueByName('adminuser');
 
         /** @var ItemRevisionModel $itemRevisionModel */
         $itemRevisionModel = MidasLoader::loadModel('ItemRevision');
@@ -257,7 +257,7 @@ abstract class UserModelBase extends AppModel
         /** @var RandomComponent $randomComponent */
         $randomComponent = MidasLoader::loadComponent('Random');
         $userSalt = $randomComponent->generateString(32);
-        $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+        $instanceSalt = Zend_Registry::get('configGlobal')->get('password_prefix');
         $hashedPassword = hash('sha256', $instanceSalt.$userSalt.$password);
         $this->storePasswordHash($hashedPassword);
         $userDao->setHashAlg('sha256');
@@ -272,7 +272,7 @@ abstract class UserModelBase extends AppModel
      */
     public function changePassword($userDao, $password)
     {
-        $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+        $instanceSalt = Zend_Registry::get('configGlobal')->get('password_prefix');
 
         /** @var RandomComponent $randomComponent */
         $randomComponent = MidasLoader::loadComponent('Random');
@@ -313,7 +313,7 @@ abstract class UserModelBase extends AppModel
                 throw new Zend_Exception('You must not pass a salt if you pass a plaintext password');
             }
             // Generate a random salt for this new user
-            $instanceSalt = Zend_Registry::get('configGlobal')->password->prefix;
+            $instanceSalt = Zend_Registry::get('configGlobal')->get('password_prefix');
 
             /** @var RandomComponent $randomComponent */
             $randomComponent = MidasLoader::loadComponent('Random');
@@ -330,8 +330,11 @@ abstract class UserModelBase extends AppModel
         $this->save($userDao); // save the record before Gravatar lookup to shorten critical section
 
         // check Gravatar
-        $useGravatar = Zend_Registry::get('configGlobal')->gravatar;
-        if ($useGravatar) {
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+
+        $useGravatar = (int) $settingModel->getValueByNameWithDefault('gravatar', 0);
+        if ($useGravatar === 1) {
             $gravatarUrl = $this->getGravatarUrl($email);
             if ($gravatarUrl != false) {
                 $userDao->setThumbnail($gravatarUrl);

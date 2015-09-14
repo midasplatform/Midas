@@ -271,7 +271,9 @@ class UploadComponent extends AppComponent
             $changes = 'Initial revision';
 
             if ($license === null) {
-                $license = Zend_Registry::get('configGlobal')->defaultlicense;
+                /** @var SettingModel $settingModel */
+                $settingModel = MidasLoader::loadModel('Setting');
+                $license = (int) $settingModel->getValueByNameWithDefault('default_license', 1);
             }
 
             $folderModel->addItem($parent, $itemDao);
@@ -286,7 +288,7 @@ class UploadComponent extends AppComponent
         /** @var ItemRevisionDao $itemRevisionDao */
         $itemRevisionDao = MidasLoader::newDao('ItemRevisionDao');
         $itemRevisionDao->setChanges($changes);
-        $itemRevisionDao->setUser_id($userDao->getKey());
+        $itemRevisionDao->setUserId($userDao->getKey());
         $itemRevisionDao->setDate(date('Y-m-d H:i:s'));
         $itemRevisionDao->setLicenseId($license);
         $itemModel->addRevision($itemDao, $itemRevisionDao);

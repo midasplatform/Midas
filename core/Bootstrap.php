@@ -40,85 +40,153 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      */
     protected function _initConfig()
     {
-        // init language
         $configGlobal = new Zend_Config_Ini(APPLICATION_CONFIG, 'global', true);
-        if (isset($_COOKIE[MIDAS_LANGUAGE_COOKIE_NAME])) {
-            $configGlobal->application->lang = $_COOKIE[MIDAS_LANGUAGE_COOKIE_NAME];
-        }
-
-        if (isset($_GET['lang'])) {
-            $language = $_GET['lang'];
-            if ($language !== 'en' && $language !== 'fr') {
-                $language = 'en';
-            }
-            $configGlobal->application->lang = $language;
-            $date = new DateTime();
-            $interval = new DateInterval('P1M');
-            setcookie(
-                MIDAS_LANGUAGE_COOKIE_NAME,
-                $language,
-                $date->add($interval)->getTimestamp(),
-                '/',
-                !empty($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'],
-                (int) $configGlobal->get('cookie_secure', 1) === 1,
-                true
-            );
-        }
-
         Zend_Registry::set('configGlobal', $configGlobal);
 
         $configCore = new Zend_Config_Ini(CORE_CONFIG, 'global', true);
         Zend_Registry::set('configCore', $configCore);
 
-        // check if internationalization enabled
-        if (isset($configCore->internationalization) && $configCore->internationalization == '0') {
-            $configGlobal->application->lang = 'en';
-        }
-
-        $config = new Zend_Config_Ini(APPLICATION_CONFIG, $configGlobal->environment, true);
+        $config = new Zend_Config_Ini(APPLICATION_CONFIG, $configGlobal->get('environment', 'production'), true);
         Zend_Registry::set('config', $config);
-        date_default_timezone_set($configGlobal->default->timezone);
 
-        // InitDatabase
-        $configDatabase = new Zend_Config_Ini(DATABASE_CONFIG, $configGlobal->environment, true);
-        if (empty($configDatabase->database->params->driver_options)) {
+        return $config;
+    }
+
+    /**
+     * Initialize the database.
+     *
+     * @return false|Zend_Db_Adapter_Abstract
+     * @throws Zend_Exception
+     */
+    protected function _initDatabase()
+    {
+        $this->bootstrap('Config');
+        $config = new Zend_Config_Ini(DATABASE_CONFIG, Zend_Registry::get('configGlobal')->get('environment', 'production'), true);
+        Zend_Registry::set('configDatabase', $config);
+
+        if (empty($config->database->params->driver_options)) {
             $driverOptions = array();
         } else {
-            $driverOptions = $configDatabase->database->params->driver_options->toArray();
+            $driverOptions = $config->database->params->driver_options->toArray();
         }
 
-        if ($configDatabase->database->adapter == 'PDO_SQLITE') {
+        if ($config->database->adapter === 'PDO_SQLITE') {
             $params = array(
-                'dbname' => $configDatabase->database->params->dbname,
+                'dbname' => $config->database->params->dbname,
                 'driver_options' => $driverOptions,
             );
         } else {
-            if ($configDatabase->database->adapter == 'PDO_MYSQL') {
+            if ($config->database->adapter === 'PDO_MYSQL') {
                 $driverOptions[PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = true;
             }
 
             $params = array(
-                'dbname' => $configDatabase->database->params->dbname,
-                'username' => $configDatabase->database->params->username,
-                'password' => $configDatabase->database->params->password,
+                'dbname' => $config->database->params->dbname,
+                'username' => $config->database->params->username,
+                'password' => $config->database->params->password,
                 'driver_options' => $driverOptions,
             );
 
-            if (empty($configDatabase->database->params->unix_socket)) {
-                $params['host'] = $configDatabase->database->params->host;
-                $params['port'] = $configDatabase->database->params->port;
+            if (empty($config->database->params->unix_socket)) {
+                $params['host'] = $config->database->params->host;
+                $params['port'] = $config->database->params->port;
             } else {
-                $params['unix_socket'] = $configDatabase->database->params->unix_socket;
+                $params['unix_socket'] = $config->database->params->unix_socket;
             }
         }
 
-        $db = Zend_Db::factory($configDatabase->database->adapter, $params);
-        Zend_Db_Table::setDefaultAdapter($db);
-        Zend_Registry::set('dbAdapter', $db);
-        Zend_Registry::set('configDatabase', $configDatabase);
+        $database = Zend_Db::factory($config->database->adapter, $params);
+        Zend_Db_Table::setDefaultAdapter($database);
+        Zend_Registry::set('dbAdapter', $database);
+        Zend_Registry::set('models', array());
 
-        // Init log
-        if ($configGlobal->environment == 'production') {
+        if (file_exists(LOCAL_CONFIGS_PATH.'/database.local.ini')) {
+            return $database;
+        }
+
+        return false;
+    }
+
+    /** Initialize the error handler. */
+    protected function _initErrorHandle()
+    {
+        $this->bootstrap(array('Config', 'Logger'));
+        $logger = $this->getResource('Logger');
+
+        Zend_Registry::set('components', array());
+        $notifyErrorComponent = MidasLoader::loadComponent('NotifyError');
+
+        //ini_set('display_errors', 0);
+        register_shutdown_function(array($notifyErrorComponent, 'fatalError'), $logger);
+        set_error_handler(array($notifyErrorComponent, 'warningError'), E_NOTICE | E_WARNING);
+    }
+
+    /**
+     * Initialize internationalization.
+     *
+     * @throws Zend_Exception
+     */
+    protected function _initInternationalization()
+    {
+        $this->bootstrap(array('Config', 'Database'));
+        $database = $this->getResource('Database');
+
+        if ((int) Zend_Registry::get('configGlobal')->get('internationalization', 0) === 1) {
+            $language = 'en';
+
+            if (isset($_COOKIE[MIDAS_LANGUAGE_COOKIE_NAME])) {
+                $language = $_COOKIE[MIDAS_LANGUAGE_COOKIE_NAME];
+            }
+
+            if (isset($_GET['lang'])) {
+                $language = $_GET['lang'];
+                if ($language !== 'en' && $language !== 'fr') {
+                    $language = 'en';
+                }
+
+                $date = new DateTime();
+                $interval = new DateInterval('P1M');
+                setcookie(
+                    MIDAS_LANGUAGE_COOKIE_NAME,
+                    $language,
+                    $date->add($interval)->getTimestamp(),
+                    '/',
+                    !empty($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'],
+                    (int) Zend_Registry::get('configGlobal')->get('cookie_secure',
+                        1) === 1,
+                    true
+                );
+            }
+
+            if ($database !== false) {
+                /** @var SettingModel $settingModel */
+                $settingModel = MidasLoader::loadModel('Setting');
+                $settingModel->setConfig('language', $language);
+            }
+        }
+
+        if ($database !== false) {
+            /** @var SettingModel $settingModel */
+            $settingModel = MidasLoader::loadModel('Setting');
+            $timeZone = $settingModel->getValueByNameWithDefault('time_zone', 'UTC');
+        } else {
+            $timeZone = 'UTC';
+        }
+
+        date_default_timezone_set($timeZone);
+    }
+
+    /**
+     * Initialize the logger.
+     *
+     * @return Zend_Log
+     * @throws Zend_Log_Exception
+     */
+    protected function _initLogger()
+    {
+        $this->bootstrap('Config');
+
+        if (Zend_Registry::get('configGlobal')->get('environment', 'production') === 'production') {
             Zend_Loader_Autoloader::getInstance()->suppressNotFoundWarnings(true);
             $priority = Zend_Log::WARN;
         } else {
@@ -127,7 +195,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
 
         if (is_writable(LOGS_PATH)) {
-            $stream = LOGS_PATH.'/'.$configGlobal->environment.'.log';
+            $stream = LOGS_PATH.'/'.Zend_Registry::get('configGlobal')->get('environment', 'production').'.log';
             $logger = Zend_Log::factory(
                 array(
                     array(
@@ -151,39 +219,24 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                 )
             );
         }
-        if (file_exists(LOCAL_CONFIGS_PATH.'/database.local.ini')) {
-            $columnMapping = array('priority' => 'priority', 'message' => 'message', 'module' => 'module');
-            $writer = new Zend_Log_Writer_Db($db, 'errorlog', $columnMapping);
-            if ($configGlobal->environment == 'production') {
-                $priority = Zend_Log::INFO;
-            } else {
-                $priority = Zend_Log::DEBUG;
-            }
-            $filter = new Zend_Log_Filter_Priority($priority);
-            $writer->addFilter($filter);
-            $logger->addWriter($writer);
-        }
         $logger->setEventItem('module', 'core');
         $logger->registerErrorHandler();
         Zend_Registry::set('logger', $logger);
 
-        // Init error handler
-        require_once BASE_PATH.'/core/controllers/components/NotifyErrorComponent.php';
-        $notifyErrorComponent = new NotifyErrorComponent();
-        ini_set('display_errors', 0);
-        register_shutdown_function(array($notifyErrorComponent, 'fatalError'), $logger);
-        set_error_handler(array($notifyErrorComponent, 'warningError'), E_NOTICE | E_WARNING);
-
-        return $config;
+        return $logger;
     }
 
-    /** Display the debug toolbar, if enabled. */
+    /**
+     * Display the debug toolbar, if enabled.
+     *
+     * @throws Zend_Exception
+     */
     protected function _initZFDebug()
     {
-        $this->bootstrap('config');
+        $this->bootstrap(array('Config', 'FrontController'));
         $zfDebugPath = BASE_PATH.'/vendor/jokkedk/zfdebug/library';
 
-        if (Zend_Registry::get('configGlobal')->debug_toolbar === '1' && file_exists($zfDebugPath)) {
+        if ((int) Zend_Registry::get('configGlobal')->get('debug_toolbar', 0) === 1 && file_exists($zfDebugPath)) {
             set_include_path(get_include_path().PATH_SEPARATOR.$zfDebugPath);
 
             $options = array(
@@ -196,9 +249,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             );
 
             $debug = new ZFDebug_Controller_Plugin_Debug($options);
-
-            $this->bootstrap('frontController');
-            $frontController = $this->getResource('frontController');
+            $frontController = $this->getResource('FrontController');
             $frontController->registerPlugin($debug);
         }
     }
@@ -206,20 +257,25 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     /** Register the module directories. */
     protected function _initFrontModules()
     {
-        $this->bootstrap('frontController');
-        $front = $this->getResource('frontController');
-        $front->addModuleDirectory(BASE_PATH.'/modules');
+        $this->bootstrap('FrontController');
+        $frontController = $this->getResource('FrontController');
+        $frontController->addModuleDirectory(BASE_PATH.'/modules');
+
         if (file_exists(BASE_PATH.'/privateModules')) {
-            $front->addModuleDirectory(BASE_PATH.'/privateModules');
+            $frontController->addModuleDirectory(BASE_PATH.'/privateModules');
         }
     }
 
-    /** Initialize the SASS compiler. */
+    /**
+     * Initialize the SASS compiler.
+     *
+     * @throws Zend_Exception
+     */
     protected function _initSass()
     {
-        $this->bootstrap('Config');
+        $this->bootstrap(array('Config', 'Logger'));
         $config = Zend_Registry::get('configGlobal');
-        $logger = Zend_Registry::get('logger');
+        $logger = $this->getResource('Logger');
         if ($config->environment == 'development') {
             $directory = new RecursiveDirectoryIterator(BASE_PATH);
             $iterator = new RecursiveIteratorIterator(
@@ -272,124 +328,98 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      * Initialize the router.
      *
      * @return Zend_Controller_Router_Interface
+     * @throws Zend_Exception
      */
     protected function _initRouter()
     {
-        $router = Zend_Controller_Front::getInstance()->getRouter();
+        $this->bootstrap(array('Config', 'Database', 'FrontController'));
 
-        // Init Modules
-        $frontController = Zend_Controller_Front::getInstance();
+        $frontController = $this->getResource('FrontController');
         $frontController->addControllerDirectory(BASE_PATH.'/core/controllers');
 
-        $modules = new Zend_Config_Ini(APPLICATION_CONFIG, 'module');
-        // routes modules
-        $listeModule = array();
-        $apiModules = array();
-        foreach ($modules as $key => $module) {
-            if ($module == 1 && file_exists(BASE_PATH.'/modules/'.$key) && file_exists(
-                    BASE_PATH.'/modules/'.$key.'/AppController.php'
-                )
-            ) {
-                $listeModule[] = $key;
-                // get web API controller directories and web API module names for enabled modules
-                if (file_exists(BASE_PATH.'/modules/'.$key.'/controllers/api')) {
-                    $frontController->addControllerDirectory(
-                        BASE_PATH.'/modules/'.$key.'/controllers/api',
-                        'api'.$key
-                    );
-                    $apiModules[] = $key;
-                }
-            } elseif ($module == 1 && file_exists(BASE_PATH.'/privateModules/'.$key) && file_exists(
-                    BASE_PATH.'/privateModules/'.$key.'/AppController.php'
-                )
-            ) {
-                $listeModule[] = $key;
-                // get web API controller directories and web API module names for enabled modules
-                if (file_exists(BASE_PATH.'/privateModules/'.$key.'/controllers/api')) {
-                    $frontController->addControllerDirectory(
-                        BASE_PATH.'/privateModules/'.$key.'/controllers/api',
-                        'api'.$key
-                    );
-                    $apiModules[] = $key;
-                }
-            }
-        }
-
-        // get web API controller directory for core APIs
         require_once BASE_PATH.'/core/ApiController.php';
         $frontController->addControllerDirectory(BASE_PATH.'/core/controllers/api', 'rest');
-        // add RESTful route for web APIs
-        $restRoute = new Zend_Rest_Route($frontController, array(), array('rest'));
-        $router->addRoute('api-core', $restRoute);
-        // loading modules elements
-        foreach ($listeModule as $m) {
-            $route = $m;
-            $nameModule = $m;
-            $router->addRoute(
-                $nameModule.'-1',
-                new Zend_Controller_Router_Route(
-                    ''.$route.'/:controller/:action/*', array('module' => $nameModule)
-                )
-            );
-            $router->addRoute(
-                $nameModule.'-2',
-                new Zend_Controller_Router_Route(
-                    ''.$route.'/:controller/',
-                    array('module' => $nameModule, 'action' => 'index')
-                )
-            );
-            $router->addRoute(
-                $nameModule.'-3',
-                new Zend_Controller_Router_Route(
-                    ''.$route.'/',
-                    array('module' => $nameModule, 'controller' => 'index', 'action' => 'index')
-                )
-            );
 
-            if (file_exists(BASE_PATH.'/modules/'.$route.'/AppController.php')) {
-                require_once BASE_PATH.'/modules/'.$route.'/AppController.php';
-            }
-            if (file_exists(BASE_PATH.'/modules/'.$route.'/models/AppDao.php')) {
-                require_once BASE_PATH.'/modules/'.$route.'/models/AppDao.php';
-            }
-            if (file_exists(BASE_PATH.'/modules/'.$route.'/models/AppModel.php')) {
-                require_once BASE_PATH.'/modules/'.$route.'/models/AppModel.php';
-            }
-            if (file_exists(BASE_PATH.'/modules/'.$route.'/constant/module.php')) {
-                require_once BASE_PATH.'/modules/'.$route.'/constant/module.php';
+        $router = $frontController->getRouter();
+        $router->addRoute('api-core', new Zend_Rest_Route($frontController, array(), array('rest')));
+
+        $enabledModules = array();
+
+        if (isset(Zend_Registry::get('configDatabase')->version) === false) {
+            Zend_Registry::set('models', array());
+
+            try {
+                /** @var ModuleModel $moduleModel */
+                $moduleModel = MidasLoader::loadModel('Module');
+                $moduleDaos = $moduleModel->getEnabled();
+            } catch (Zend_Db_Exception $exception) {
+                $moduleDaos = array();
             }
 
-            if (file_exists(BASE_PATH.'/privateModules/'.$route.'/AppController.php')) {
-                require_once BASE_PATH.'/privateModules/'.$route.'/AppController.php';
+            /** @var ModuleDao $moduleDao */
+            foreach ($moduleDaos as $moduleDao) {
+                $enabledModules[] = $moduleDao->getName();
             }
-            if (file_exists(BASE_PATH.'/privateModules/'.$route.'/models/AppDao.php')) {
-                require_once BASE_PATH.'/privateModules/'.$route.'/models/AppDao.php';
-            }
-            if (file_exists(BASE_PATH.'/privateModules/'.$route.'/models/AppModel.php')) {
-                require_once BASE_PATH.'/privateModules/'.$route.'/models/AppModel.php';
-            }
-            if (file_exists(BASE_PATH.'/privateModules/'.$route.'/constant/module.php')) {
-                require_once BASE_PATH.'/privateModules/'.$route.'/constant/module.php';
+        } else {
+            $modules = new Zend_Config_Ini(APPLICATION_CONFIG, 'module');
+            $enabledModules = array_keys($modules->toArray(), 1);
+        }
+
+        $enabledApiModules = array();
+
+        /** @var string $enabledModule */
+        foreach ($enabledModules as $enabledModule) {
+            if (file_exists(BASE_PATH.'/modules/'.$enabledModule.'/AppController.php')) {
+                $moduleRoot = BASE_PATH.'/modules/'.$enabledModule;
+            } elseif (file_exists(BASE_PATH.'/privateModules/'.$enabledModule.'/AppController.php')) {
+                $moduleRoot = BASE_PATH.'/privateModules/'.$enabledModule;
+            } else {
+                throw new Zend_Exception('Module '.$enabledModule.'" does not exist.');
             }
 
-            $dir = BASE_PATH.'/modules/'.$route.'/models/base';
-            if (!is_dir($dir)) {
-                $dir = BASE_PATH.'/privateModules/'.$route.'/models/base';
+            $frontController->addControllerDirectory($moduleRoot.'/controllers', $enabledModule);
+
+            if (file_exists($moduleRoot.'/constant/module.php')) {
+                require_once $moduleRoot.'/constant/module.php';
             }
 
-            if (is_dir($dir)) {
-                $objects = scandir($dir);
-                foreach ($objects as $object) {
-                    if ($object != '.' && $object != '..') {
-                        if (filetype($dir.'/'.$object) != 'dir') {
-                            require_once $dir.'/'.$object;
-                        }
+            if (file_exists($moduleRoot.'/AppController.php')) {
+                require_once $moduleRoot.'/AppController.php';
+            }
+
+            if (file_exists($moduleRoot.'/models/AppDao.php')) {
+                require_once $moduleRoot.'/models/AppDao.php';
+            }
+
+            if (file_exists($moduleRoot.'/models/AppModel.php')) {
+                require_once $moduleRoot.'/models/AppModel.php';
+            }
+
+            if (file_exists($moduleRoot.'/controllers/api')) {
+                $frontController->addControllerDirectory($moduleRoot.'/controllers/api', 'api'.$enabledModule);
+                $enabledApiModules[] = $enabledModule;
+            }
+
+            $router->addRoute($enabledModule.'-1', new Zend_Controller_Router_Route($enabledModule.'/:controller/:action/*', array('module' => $enabledModule)));
+            $router->addRoute($enabledModule.'-2', new Zend_Controller_Router_Route($enabledModule.'/:controller/', array('module' => $enabledModule, 'action' => 'index')));
+            $router->addRoute($enabledModule.'-3', new Zend_Controller_Router_Route($enabledModule.'/', array('module' => $enabledModule, 'controller' => 'index', 'action' => 'index')));
+
+            $baseModels = $moduleRoot.'/models/base';
+
+            if (is_dir($baseModels)) {
+                $fileNames = array_diff(scandir($baseModels), array('..', '.'));
+
+                /** @var string $fileName */
+                foreach ($fileNames as $fileName) {
+                    if (filetype($baseModels.'/'.$fileName) != 'dir') {
+                        require_once $baseModels.'/'.$fileName;
                     }
                 }
             }
         }
-        Zend_Registry::set('modulesEnable', $listeModule);
-        Zend_Registry::set('modulesHaveApi', $apiModules);
+
+        Zend_Registry::set('modulesEnable', $enabledModules);
+        Zend_Registry::set('modulesHaveApi', $enabledApiModules);
 
         return $router;
     }
@@ -397,7 +427,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     /** Register the plugins and helpers for the REST controllers. */
     protected function _initREST()
     {
-        $frontController = Zend_Controller_Front::getInstance();
+        $this->bootstrap('FrontController');
+        $frontController = $this->getResource('FrontController');
 
         // register the RestHandler plugin
         $frontController->registerPlugin(new REST_Controller_Plugin_RestHandler($frontController));

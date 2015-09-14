@@ -263,7 +263,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
         /** @var SettingModel $settingModel */
         $settingModel = MidasLoader::loadModel('Setting');
         $provider = $settingModel->getValueByName(MIDAS_THUMBNAILCREATOR_PROVIDER_KEY, $this->moduleName);
-        $useThumbnailer = $settingModel->getValueByName(MIDAS_THUMBNAILCREATOR_USE_THUMBNAILER_KEY, $this->moduleName);
+        $useThumbnailer = (int) $settingModel->getValueByName(MIDAS_THUMBNAILCREATOR_USE_THUMBNAILER_KEY, $this->moduleName);
         $preprocessedFormats = array('mha', 'nrrd');
         $ext = strtolower(substr(strrchr($name, '.'), 1));
 
