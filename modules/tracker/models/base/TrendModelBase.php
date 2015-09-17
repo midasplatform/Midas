@@ -37,6 +37,7 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
             'config_item_id' => array('type' => MIDAS_DATA),
             'test_dataset_id' => array('type' => MIDAS_DATA),
             'truth_dataset_id' => array('type' => MIDAS_DATA),
+            'is_key_metric' => array('type' => MIDAS_DATA),
             'producer' => array(
                 'type' => MIDAS_MANY_TO_ONE,
                 'model' => 'Producer',

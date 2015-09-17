@@ -59,5 +59,23 @@ $(document).ready(function () {
         else {
             $('a.visualizeSelected').unbind('click').hide();
         }
+
+        if (checked.length == 1) {
+            var isKey = $(checked[0]).attr('iskey') === '1';
+            var verb = isKey ? 'Unset' : 'Set';
+            $('span.keyMetricToggleVerb').html(verb);
+            $('a.toggleKeyMetric').show().unbind('click').click(function () {
+                
+            });
+        } else {
+            $('a.toggleKeyMetric').unbind('click').hide();
+        }
+    });
+
+    /**
+     * Set tooltip for key metric icon
+     */
+    $('.keyMetric').qtip({
+        'content': 'This is a key metric'
     });
 });

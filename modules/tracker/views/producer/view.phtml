@@ -76,10 +76,13 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/produc
         /** @var Tracker_TrendDao $trendDao */
         foreach ($trendGroup['trends'] as $trendDao) {
             echo '<div class="trendContainer">';
-            echo '<input type="checkbox" class="selectTrend" element="'.$this->escape($trendDao->getKey()).'" />';
+            echo '<input type="checkbox" class="selectTrend" iskey="'.$trendDao->getIsKeyMetric().'" element="'.$this->escape($trendDao->getKey()).'" />';
             echo '<a class="trendLink" href="'.$this->webroot.'/tracker/trend/view?trendId='.$this->escape($trendDao->getKey()).'">';
-            echo $this->escape($trendDao->getDisplayName()).'</a>';
-            echo '</div>';
+            echo $this->escape($trendDao->getDisplayName());
+            if($trendDao->getIsKeyMetric()) {
+                echo '<span class="keyMetric"><img src="'.$this->coreWebroot.'/public/images/icons/key.png" alt="Key metric"></span>';
+            }
+            echo '<a/></div>';
         }
         ?>
     </div>
@@ -115,6 +118,10 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/produc
             <li>
                 <a style="display: none;" class="visualizeDualAxis"><img alt="" src="<?php echo $this->moduleWebroot; ?>/public/images/chart_line.png"/>
                     Dual axis plot</a>
+            </li>
+            <li>
+                <a style="display: none;" class="toggleKeyMetric"><img alt="" src="<?php echo $this->coreWebroot; ?>/public/images/icons/key.png"/>
+                    <span class="keyMetricToggleVerb"></span> metric as key</a>
             </li>
         </ul>
     </div>
