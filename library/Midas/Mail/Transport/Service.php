@@ -34,7 +34,7 @@ class Midas_Mail_Transport_Service extends Zend_Mail_Transport_Abstract
      */
     public function __construct(Midas_Service_Mail $service)
     {
-        $this->$_service = $service;
+        $this->_service = $service;
     }
 
     /**
