@@ -79,9 +79,11 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/produc
             echo '<input type="checkbox" class="selectTrend" iskey="'.$trendDao->getIsKeyMetric().'" element="'.$this->escape($trendDao->getKey()).'" />';
             echo '<a class="trendLink" href="'.$this->webroot.'/tracker/trend/view?trendId='.$this->escape($trendDao->getKey()).'">';
             echo $this->escape($trendDao->getDisplayName());
-            if($trendDao->getIsKeyMetric()) {
-                echo '<span class="keyMetric"><img src="'.$this->coreWebroot.'/public/images/icons/key.png" alt="Key metric"></span>';
+            echo '<span ';
+            if(!$trendDao->getIsKeyMetric()) {
+                echo 'style="display: none;" ';
             }
+            echo 'class="keyMetric"><img src="'.$this->coreWebroot.'/public/images/icons/key.png" alt="Key metric"></span>';
             echo '<a/></div>';
         }
         ?>
@@ -108,6 +110,12 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/produc
                                                    src="<?php echo $this->coreWebroot; ?>/public/images/icons/close.png"/>
                         Delete</a>
                 </li>
+                <li>
+                    <a style="display: none;" class="toggleKeyMetric">
+                        <img alt="" src="<?php echo $this->coreWebroot; ?>/public/images/icons/key.png"/>
+                        <span class="keyMetricToggleVerb"></span> metric<span class="keyMetricTogglePlural"></span> as key
+                    </a>
+                </li>
             <?php
             }
             ?>
@@ -118,10 +126,6 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/produc
             <li>
                 <a style="display: none;" class="visualizeDualAxis"><img alt="" src="<?php echo $this->moduleWebroot; ?>/public/images/chart_line.png"/>
                     Dual axis plot</a>
-            </li>
-            <li>
-                <a style="display: none;" class="toggleKeyMetric"><img alt="" src="<?php echo $this->coreWebroot; ?>/public/images/icons/key.png"/>
-                    <span class="keyMetricToggleVerb"></span> metric as key</a>
             </li>
         </ul>
     </div>

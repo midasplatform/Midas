@@ -60,12 +60,33 @@ $(document).ready(function () {
             $('a.visualizeSelected').unbind('click').hide();
         }
 
-        if (checked.length == 1) {
+        /**
+         * Toggle key metric state
+         */
+        if (checked.length >= 1) {
+            $('span.keyMetricTogglePlural').html(checked.length > 1 ? 's' : '');
             var isKey = $(checked[0]).attr('iskey') === '1';
             var verb = isKey ? 'Unset' : 'Set';
             $('span.keyMetricToggleVerb').html(verb);
             $('a.toggleKeyMetric').show().unbind('click').click(function () {
-                
+                $.each(checked, function (idx, checkbox) {
+                    var keySpan = $(checkbox).parent().parent().find('.keyMetric');
+                    if (isKey) {
+                        keySpan.hide();
+                        $(checked[0]).attr('iskey', '0');
+                    } else {
+                        $(checked[0]).attr('iskey', '1');
+                        keySpan.show();
+                    }
+                    $.post(json.global.webroot + '/tracker/trend/setkeymetric', {
+                        trendId: $(checkbox).attr('element'),
+                        state: !isKey
+                    }, function () {
+                        verb = isKey ? 'Unset' : 'Set';
+                        $('span.keyMetricToggleVerb').html(verb);
+                    });
+                });
+                isKey = !isKey;
             });
         } else {
             $('a.toggleKeyMetric').unbind('click').hide();
