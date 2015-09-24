@@ -92,7 +92,7 @@ class FeedDao extends AppDao
             case MIDAS_FEED_DELETE_ITEM:
                 return $this->resource;
             default:
-                throw new Zend_Exception('Unable to define the type of feed.');
+                return false;
         }
     }
 
