@@ -305,7 +305,7 @@ class UserModel extends UserModelBase
      * NOTE: This may ONLY be used to authenticate site admins. This is meant to be
      * used during the upgrade process only, not for general authentication.
      *
-     * @return True or false: whether the authentication succeeded
+     * @return bool True if the authentication succeeded
      */
     public function legacyAuthenticate($userDao, $instanceSalt, $password, $hash = false)
     {
