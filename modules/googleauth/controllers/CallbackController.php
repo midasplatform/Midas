@@ -90,58 +90,28 @@ class Googleauth_CallbackController extends Googleauth_AppController
             )
         );
 
-        // Make the request for the access token
-        if (extension_loaded('curl')) {
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, GOOGLE_AUTH_OAUTH2_URL);
-            curl_setopt($curl, CURLOPT_POST, 1);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $content);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_PORT, 443);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-            $response = curl_exec($curl);
-            $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        // Make the request for the access token.
+        $context = array('http' => array('method' => 'POST', 'header' => $headers, 'content' => $content));
+        $context = stream_context_create($context);
+        $response = file_get_contents(GOOGLE_AUTH_OAUTH2_URL, false, $context);
 
-            if ($status != 200) {
-                throw new Zend_Exception('Access token request failed: '.$response);
-            }
-        } else {
-            $context = array('http' => array('method' => 'POST', 'header' => $headers, 'content' => $content));
-            $context = stream_context_create($context);
-            $response = file_get_contents(GOOGLE_AUTH_OAUTH2_URL, false, $context);
-
-            if ($response === false) {
-                throw new Zend_Exception('Access token request failed.');
-            }
+        if ($response === false) {
+            throw new Zend_Exception('Access token request failed.');
         }
 
         $response = json_decode($response);
         $accessToken = $response->access_token;
         $tokenType = $response->token_type;
 
-        // Use the access token to request info about the user
+        // Use the access token to request info about the user.
         $headers = 'Authorization: '.$tokenType.' '.$accessToken;
+        $context = array('http' => array('header' => $headers));
+        $context = stream_context_create($context);
+        $params = 'fields=emails/value,id,name(familyName,givenName)';
+        $response = file_get_contents(GOOGLE_AUTH_PLUS_URL.'?'.urlencode($params), false, $context);
 
-        if (extension_loaded('curl')) {
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, GOOGLE_AUTH_PLUS_URL);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_PORT, 443);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-            $response = curl_exec($curl);
-            $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-
-            if ($status != 200) {
-                throw new Zend_Exception('Get Google user info request failed: '.$response);
-            }
-        } else {
-            $context = array('http' => array('header' => $headers));
-            $context = stream_context_create($context);
-            $response = file_get_contents(GOOGLE_AUTH_PLUS_URL, false, $context);
-
-            if ($response === false) {
-                throw new Zend_Exception('Get Google user info request failed.');
-            }
+        if ($response === false) {
+            throw new Zend_Exception('Get Google user info request failed.');
         }
 
         $response = json_decode($response);
@@ -172,7 +142,7 @@ class Googleauth_CallbackController extends Googleauth_AppController
                 $closeRegistration = (int) $this->Setting->getValueByNameWithDefault('close_registration', 1);
                 if ($closeRegistration === 1) {
                     throw new Zend_Exception(
-                        'Access to this instance is by invitation '.'only, please contact an administrator.'
+                        'Access to this instance is by invitation only, please contact an administrator.'
                     );
                 }
                 $user = $this->User->createUser($info['email'], null, $info['firstName'], $info['lastName'], 0, '');

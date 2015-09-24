@@ -21,7 +21,7 @@
 /** Feed Model Base */
 abstract class FeedModelBase extends AppModel
 {
-    /** Constructor */
+    /** Constructor. */
     public function __construct()
     {
         parent::__construct();
@@ -72,37 +72,45 @@ abstract class FeedModelBase extends AppModel
         $limit = 20
     );
 
-    /** add a community */
+    /** Add a community. */
     abstract protected function addCommunity($feed, $community);
 
-    /** Check policy */
+    /** Check policy. */
     abstract public function policyCheck($feedDao, $userDao = null, $policy = 0);
 
-    /** get feeds (filtered by policies)
-     * @return Array of FeedDao
+    /**
+     * Get feeds (filtered by policies).
+     *
+     * @return array feed DAOs
      */
     public function getGlobalFeeds($loggedUserDao, $policy = 0, $limit = 20)
     {
         return $this->getFeeds($loggedUserDao, null, null, $policy, $limit);
     }
 
-    /** get feeds by user (filtered by policies)
-     * @return Array of FeedDao
+    /**
+     * Get feeds by user (filtered by policies).
+     *
+     * @return array feed DAOs
      */
     public function getFeedsByUser($loggedUserDao, $userDao, $policy = 0, $limit = 20)
     {
         return $this->getFeeds($loggedUserDao, $userDao, null, $policy, $limit);
     }
 
-    /** get feeds by community (filtered by policies)
-     * @return Array of FeedDao
+    /**
+     * Get feeds by community (filtered by policies).
+     *
+     * @return array feed DAOs
      */
     public function getFeedsByCommunity($loggedUserDao, $communityDao, $policy = 0, $limit = 20)
     {
         return $this->getFeeds($loggedUserDao, null, $communityDao, $policy, $limit);
     }
 
-    /** Create a feed
+    /**
+     * Create a feed.
+     *
      * @return FeedDao
      */
     public function createFeed($userDao, $type, $resource, $communityDao = null)

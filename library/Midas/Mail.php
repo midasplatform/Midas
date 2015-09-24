@@ -62,11 +62,12 @@ class Midas_Mail extends Zend_Mail
      * Add one or more "CC" email addresses.
      *
      * @param array|string $emails "CC" email address or addresses
+     * @param string $name provided for compatibility with Zend Mail
      * @return $this this mail instance
      */
-    public function addCc($emails)
+    public function addCc($emails, $name = '')
     {
-        parent::addCc($emails);
+        parent::addCc($emails, $name);
 
         if (!is_array($emails)) {
             $emails = array($emails);

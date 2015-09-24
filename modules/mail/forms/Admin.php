@@ -59,6 +59,7 @@ class Mail_Form_Admin extends Zend_Form
 
         $sendGridPassword = new Zend_Form_Element_Password(MAIL_SEND_GRID_PASSWORD_KEY);
         $sendGridPassword->setLabel('SendGrid Password');
+        $sendGridPassword->setRenderPassword(true);
         $sendGridPassword->addValidator('NotEmpty', true);
 
         $this->addDisplayGroup(array($sendGridUsername, $sendGridPassword), 'send_grid');
@@ -84,6 +85,7 @@ class Mail_Form_Admin extends Zend_Form
 
         $smtpPassword = new Zend_Form_Element_Password(MAIL_SMTP_PASSWORD_KEY);
         $smtpPassword->setLabel('Password');
+        $smtpPassword->setRenderPassword(true);
         $smtpPassword->addValidator('NotEmpty', true);
 
         $this->addDisplayGroup(array($smtpHost, $smtpPort, $smtpUseSsl, $smtpUsername, $smtpPassword), 'smtp');

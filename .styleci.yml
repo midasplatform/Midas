@@ -26,8 +26,9 @@ disabled:
   - phpdoc_params
   - phpdoc_separation
   - phpdoc_to_comment
+  - phpdoc_types
   - phpdoc_var_without_name
-  - pre_increment
+
 
 finder:
   exclude:

@@ -118,12 +118,14 @@ if (!isset($feeds) || empty($feeds)) {
 
 echo "<div class='feedContainer'>";
 foreach ($feeds as $key => $feed) {
-    echo "<div class='feedElement'  element='{$feed->getKey()}'>";
-    if (isset($this->lastFeedVisit) && $this->lastFeedVisit < strtotime($feed->getDate())
-    ) {
-        echo "<img class='newFeedElement'  src='{$this->coreWebroot}/public/images/icons/new.png' alt=''/>";
+    if ($feed->getResource() !== false) {
+        echo "<div class='feedElement'  element='{$feed->getKey()}'>";
+        if (isset($this->lastFeedVisit) && $this->lastFeedVisit < strtotime($feed->getDate())
+        ) {
+            echo "<img class='newFeedElement'  src='{$this->coreWebroot}/public/images/icons/new.png' alt=''/>";
+        }
+        createFeedElement($this, $feed);
+        echo "</div>";
     }
-    createFeedElement($this, $feed);
-    echo "</div>";
 }
 echo "</div>";

@@ -27,7 +27,7 @@ class Packages_PackageModel extends Packages_PackageModelBase
      * Return all the record in the table.
      *
      * @param params Optional associative array specifying an 'os', 'arch', 'submissiontype' and 'packagetype'.
-     * @return Array of package Daos
+     * @return array Package DAOs
      */
     public function get(
         $params = array(
