@@ -20,7 +20,6 @@
 preset: symfony
 
 disabled:
-  - psr0
   - blankline_after_open_tag
   - phpdoc_no_empty_return
   - phpdoc_params
