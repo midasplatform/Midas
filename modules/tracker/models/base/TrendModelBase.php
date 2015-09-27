@@ -113,9 +113,10 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
      * config/test/truth dataset combinations.
      *
      * @param Tracker_ProducerDao $producerDao producer DAO
+     * @param bool $onlyKey whether to return only key trends
      * @return array
      */
-    abstract public function getTrendsGroupByDatasets($producerDao);
+    abstract public function getTrendsGroupByDatasets($producerDao, $onlyKey = false);
 
     /**
      * Save the given trend. Ensure that null values are explicitly set in the database.
@@ -167,6 +168,8 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
             if (!is_null($truthDatasetId)) {
                 $trendDao->setTruthDatasetId($truthDatasetId);
             }
+
+            $trendDao->setIsKeyMetric(false);
 
             $this->save($trendDao);
         }

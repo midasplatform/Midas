@@ -115,9 +115,10 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
      * config/test/truth dataset combinations.
      *
      * @param Tracker_ProducerDao $producerDao producer DAO
+     * @param bool $onlyKey whether to return only key trends
      * @return array array of associative arrays with keys "configItem", "testDataset", "truthDataset", and "trends"
      */
-    public function getTrendsGroupByDatasets($producerDao)
+    public function getTrendsGroupByDatasets($producerDao, $onlyKey = false)
     {
         $sql = $this->database->select()->setIntegrityCheck(false)->from(
             $this->_name,
@@ -139,17 +140,18 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
                 'testDataset' => $testDatasetItemDao,
                 'truthDataset' => $truthDatasetItemDao,
             );
-            $result['trends'] = $this->getAllByParams(
-                array(
-                    'producer_id' => $producerDao->getKey(),
-                    'config_item_id' => $row['config_item_id'],
-                    'test_dataset_id' => $row['test_dataset_id'],
-                    'truth_dataset_id' => $row['truth_dataset_id'],
-                )
+            $queryParams = array(
+                'producer_id' => $producerDao->getKey(),
+                'config_item_id' => $row['config_item_id'],
+                'test_dataset_id' => $row['test_dataset_id'],
+                'truth_dataset_id' => $row['truth_dataset_id'],
             );
+            if ($onlyKey) {
+                $queryParams['is_key_metric'] = true;
+            }
+            $result['trends'] = $this->getAllByParams($queryParams);
             $results[] = $result;
         }
-
         return $results;
     }
 
