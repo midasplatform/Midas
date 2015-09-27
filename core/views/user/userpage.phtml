@@ -188,7 +188,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
 
         if ($this->isAdmin && !$this->user->isAdmin()) {
             echo '
-      <li><a onclick="midas.user.showDeleteDialog('.$this->escape($this->user->getKey(
+      <li id="userDeleteActionAdmin"><a onclick="midas.user.showDeleteDialog('.$this->escape($this->user->getKey(
                 )).');"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png"/> '.$this->t(
                     'Delete user'
                 ).'</a></li>';
@@ -196,7 +196,7 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/common/common.bro
             if (!$this->user->isAdmin() && $this->user->getKey() == $this->currentUser->getKey()
             ) {
                 echo '
-      <li><a onclick="midas.user.showDeleteDialog('.$this->escape($this->user->getKey(
+      <li id="userDeleteActionNonAdmin"><a onclick="midas.user.showDeleteDialog('.$this->escape($this->user->getKey(
                     )).');"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png"/> '.$this->t(
                         'Delete my account'
                     ).'</a></li>';
