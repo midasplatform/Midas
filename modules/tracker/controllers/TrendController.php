@@ -526,7 +526,7 @@ class Tracker_TrendController extends Tracker_AppController
     }
 
     /**
-     * Change key metric status of a trend
+     * Change key metric status of a trend.
      *
      * Request parameters:
      *     trendId - The id of the producer to delete

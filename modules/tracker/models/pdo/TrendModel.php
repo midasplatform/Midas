@@ -152,6 +152,7 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
             $result['trends'] = $this->getAllByParams($queryParams);
             $results[] = $result;
         }
+
         return $results;
     }
 
