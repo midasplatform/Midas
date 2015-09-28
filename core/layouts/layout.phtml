@@ -267,14 +267,14 @@ echo $this->doctype().PHP_EOL;
                                 'core/public/images/icons/user.png'
                             ); ?>"/><span> <?php echo $this->t('My folders'); ?></span></a>
                     </li>
-                    <li <?php if ($this->activemenu == 'user') {
+                    <li id="menuUsers" <?php if ($this->activemenu == 'user') {
                         echo 'class="active"';
                     } ?> onclick="window.location = '<?php echo $this->baseUrl('user'); ?>'">
                         <a href="<?php echo $this->baseUrl('user'); ?>"><img alt="" src="<?php echo $this->baseUrl(
                                 'core/public/images/icons/users.png'
                             ); ?>"/><span> <?php echo $this->t('Users'); ?></span></a>
                     </li>
-                    <li <?php if ($this->activemenu == 'feed') {
+                    <li id="menuFeed" <?php if ($this->activemenu == 'feed') {
                         echo 'class="active"';
                     } ?> onclick="window.location = '<?php echo $this->baseUrl('feed'); ?>'">
                         <a href="<?php echo $this->baseUrl('feed'); ?>"><img alt="" src="<?php echo $this->baseUrl(
