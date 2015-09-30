@@ -18,6 +18,7 @@
 #=============================================================================
 
 ---
+# Update with the project id.
 application: your-appengine-project-id
 version: 1
 runtime: php55
@@ -25,11 +26,17 @@ api_version: 1
 threadsafe: yes
 
 handlers:
-- url: /(.*\.(css|gif|ico|jpeg|jpg|js|map|png))$
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+  secure: always
+
+- url: /(.*/(public|SwaggerUI)/.*\.(css|gif|ico|jpeg|jpg|js|map|png))$
   static_files: \1
   upload: .*\.(css|gif|ico|jpeg|jpg|js|map|png)$
   secure: always
 
+# Must enable the task scheduler module. The cron job is defined in cron.yaml.
 - url: /scheduler/run
   script: index.php
   login: admin
@@ -39,6 +46,7 @@ handlers:
   script: index.php
   secure: always
 
+# Update with the bucket name and the project id. Also update php.ini with the bucket name.
 env_variables:
   midas_data_path: gs://your-cloudstorage-bucket/data
   midas_email_sender: no-reply@your-appengine-project-id.appspotmail.com
@@ -48,8 +56,8 @@ env_variables:
 skip_files:
 - ^(.*/)?.*/(\.DS_Store|\.htaccess|\.gitignore|CMakeLists\.txt|.*\.java)$
 - ^(.*/)?.*/\.sass-cache/.*
-- ^(.*/)?(\.coveralls\.yml|\.editorconfig|\.travis\.yml|AUTHORS|bower\.json|composer\.json|composer\.lock|composer\.phar|COPYRIGHT|CTestConfig\.cmake|cron-sample\.yaml|LICENSE|mkdocs\.yml|phpunit\.xml\.dist|README\.md|requirements\.txt|Vagrantfile)$
+- ^(.*/)?(\.codeclimate\.yml|\.coveralls\.yml|\.editorconfig|\.styleci\.yml|\.travis\.yml|AUTHORS|bower\.json|composer\.json|composer\.lock|composer\.phar|COPYRIGHT|CTestConfig\.cmake|LICENSE|mkdocs\.yml|phpunit\.xml\.dist|README\.md|requirements\.txt|Vagrantfile)$
 - ^(.*/)?core/configs/.*\.local\.ini$
 - ^(.*/)?(\.git|\.idea|\.vagrant|data|docs|env|log|provisioning|site|tests|tmp|utils)/.*
 - ^(.*/)?(core|modules/.*)/(database/(pgsql|sqlite)|tests)/.*
-- ^(.*/)?modules/(archive|batchmake|dicom.*|example|javauploaddownload|metadataextractor|pvw|remoteprocessing|solr|statistics|visualize)/.*
+- ^(.*/)?modules/(archive|batchmake|dicom.*|javauploaddownload|metadataextractor|pvw|remoteprocessing|solr|statistics|visualize)/.*

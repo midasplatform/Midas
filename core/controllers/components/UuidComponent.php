@@ -28,7 +28,7 @@ class UuidComponent extends AppComponent
      */
     public function generate()
     {
-        return str_replace('-', '', \Rhumsaa\Uuid\Uuid::uuid4()->toString());
+        return str_replace('-', '', \Ramsey\Uuid\Uuid::uuid4()->toString());
     }
 
     /**
