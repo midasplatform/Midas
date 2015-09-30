@@ -8,7 +8,6 @@
 bower_components/
 composer.lock
 composer.phar
-cron.yaml
 env/
 node_modules/
 site/
