@@ -646,7 +646,7 @@ class UtilityComponent extends AppComponent
         try {
             $moduleModel->save($moduleDao);
         } catch (Zend_Db_Statement_Exception $e) {
-            if ($e->getCode() === 23000) {
+            if ($e->getCode() === 23000 || $e->getCode() === 23505) {
                 $this->getLogger()->debug('Failed to install '.$moduleName.' due to integrity constraint violation.');
             } else {
                 throw $e;

@@ -169,7 +169,8 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
                 $trendDao->setTruthDatasetId($truthDatasetId);
             }
 
-            $trendDao->setIsKeyMetric(false);
+            // Our pgsql code can't handle ACTUAL booleans :deep_sigh:
+            $trendDao->setIsKeyMetric('false');
 
             $this->save($trendDao);
         }
