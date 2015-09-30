@@ -1,6 +1,6 @@
 -- Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- PostgreSQL database for the tracker module, version 1.2.0
+-- PostgreSQL database for the tracker module, version 1.2.1
 
 SET client_encoding = 'UTF8';
 SET default_with_oids = FALSE;

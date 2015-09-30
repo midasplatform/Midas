@@ -1,6 +1,6 @@
 -- Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- SQLite database for the tracker module, version 1.2.0
+-- SQLite database for the tracker module, version 1.2.1
 
 CREATE TABLE IF NOT EXISTS "tracker_producer" (
     "producer_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,

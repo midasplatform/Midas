@@ -60,9 +60,8 @@ $(document).ready(function () {
             $('a.visualizeSelected').unbind('click').hide();
         }
 
-        /**
-         * Toggle key metric state
-         */
+
+        // Toggle key metric state.
         if (checked.length >= 1) {
             $('span.keyMetricTogglePlural').html(checked.length > 1 ? 's' : '');
             var isKey = $(checked[0]).attr('iskey') === '1';
@@ -93,9 +92,7 @@ $(document).ready(function () {
         }
     });
 
-    /**
-     * Set tooltip for key metric icon
-     */
+    // Set tooltip for key metric icon.
     $('.keyMetric').qtip({
         'content': 'This is a key metric'
     });
