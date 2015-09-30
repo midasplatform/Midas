@@ -56,7 +56,7 @@ env_variables:
 skip_files:
 - ^(.*/)?.*/(\.DS_Store|\.htaccess|\.gitignore|CMakeLists\.txt|.*\.java)$
 - ^(.*/)?.*/\.sass-cache/.*
-- ^(.*/)?(\.codeclimate\.yml|\.coveralls\.yml|\.editorconfig|\.styleci\.yml|\.travis\.yml|AUTHORS|bower\.json|composer\.json|composer\.lock|composer\.phar|COPYRIGHT|CTestConfig\.cmake|LICENSE|mkdocs\.yml|phpunit\.xml\.dist|README\.md|requirements\.txt|Vagrantfile)$
+- ^(.*/)?(\.codeclimate\.yml|\.coveralls\.yml|\.editorconfig|\.php_cs|\.php_cs\.cache|\.styleci\.yml|\.travis\.yml|AUTHORS|bower\.json|composer\.json|composer\.lock|composer\.phar|COPYRIGHT|CTestConfig\.cmake|LICENSE|mkdocs\.yml|phpunit\.xml\.dist|README\.md|requirements\.txt|Vagrantfile)$
 - ^(.*/)?core/configs/.*\.local\.ini$
 - ^(.*/)?(\.git|\.idea|\.vagrant|data|docs|env|log|provisioning|site|tests|tmp|utils)/.*
 - ^(.*/)?(core|modules/.*)/(database/(pgsql|sqlite)|tests)/.*
