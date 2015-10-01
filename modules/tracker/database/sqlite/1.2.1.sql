@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS "tracker_trend" (
     "config_item_id" INTEGER,
     "test_dataset_id" INTEGER,
     "truth_dataset_id" INTEGER,
-    "is_key_metric" BOOLEAN NOT NULL DEFAULT FALSE
+    "key_metric" INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE INDEX IF NOT EXISTS "tracker_trend_producer_id_idx" ON "tracker_trend" ("producer_id");

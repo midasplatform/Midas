@@ -25,13 +25,13 @@ class Tracker_Upgrade_1_2_1 extends MIDASUpgrade
     public function mysql()
     {
         $this->db->query(
-            'ALTER TABLE `tracker_trend` ADD COLUMN `is_key_metric` boolean NOT NULL DEFAULT FALSE');
+            'ALTER TABLE `tracker_trend` ADD COLUMN `key_metric` tinyint(4) NOT NULL DEFAULT \'0\'');
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $this->db->query(
-            'ALTER TABLE tracker_trend ADD COLUMN is_key_metric boolean NOT NULL DEFAULT FALSE');
+            'ALTER TABLE tracker_trend ADD COLUMN key_metric smallint NOT NULL DEFAULT 0::smallint');
     }
 }

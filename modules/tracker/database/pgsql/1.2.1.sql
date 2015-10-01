@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS "tracker_trend" (
     "config_item_id" bigint,
     "test_dataset_id" bigint,
     "truth_dataset_id" bigint,
-    is_key_metric boolean NOT NULL DEFAULT FALSE
+    "key_metric" smallint NOT NULL DEFAULT 0::smallint
 );
 
 CREATE INDEX "tracker_trend_producer_id" ON "tracker_trend" ("producer_id");

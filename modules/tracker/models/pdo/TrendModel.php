@@ -147,7 +147,7 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
                 'truth_dataset_id' => $row['truth_dataset_id'],
             );
             if ($onlyKey !== false) {
-                $queryParams['is_key_metric'] = true;
+                $queryParams['key_metric'] = '1';
             }
             $result['trends'] = $this->getAllByParams($queryParams);
             $results[] = $result;

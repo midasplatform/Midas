@@ -76,11 +76,11 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/produc
         /** @var Tracker_TrendDao $trendDao */
         foreach ($trendGroup['trends'] as $trendDao) {
             echo '<div class="trendContainer">';
-            echo '<input type="checkbox" class="selectTrend" iskey="'.$trendDao->getIsKeyMetric().'" element="'.$this->escape($trendDao->getKey()).'" />';
+            echo '<input type="checkbox" class="selectTrend" iskey="'.$trendDao->isKeyMetric().'" element="'.$this->escape($trendDao->getKey()).'" />';
             echo '<a class="trendLink" href="'.$this->webroot.'/tracker/trend/view?trendId='.$this->escape($trendDao->getKey()).'">';
             echo $this->escape($trendDao->getDisplayName());
             echo '<span ';
-            if(!$trendDao->getIsKeyMetric()) {
+            if (!$trendDao->isKeyMetric()) {
                 echo 'style="display: none;" ';
             }
             echo 'class="keyMetric"><img src="'.$this->coreWebroot.'/public/images/icons/key.png" alt="Key metric"></span>';
@@ -113,7 +113,7 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/produc
                 <li>
                     <a style="display: none;" class="toggleKeyMetric">
                         <img alt="" src="<?php echo $this->coreWebroot; ?>/public/images/icons/key.png"/>
-                        <span class="keyMetricToggleVerb"></span> metric<span class="keyMetricTogglePlural"></span> as key
+                        <span class="keyMetricToggleVerb">Set</span> as key metric<span class="keyMetricTogglePlural"></span>
                     </a>
                 </li>
             <?php

@@ -529,7 +529,7 @@ class Tracker_TrendController extends Tracker_AppController
      * Change key metric status of a trend.
      *
      * Request parameters:
-     *     trendId - The id of the producer to delete
+     *     trendId - The id of the trend to set as a key metric
      *     state   - The state of is_key_metric on the trend
      *
      * @throws Zend_Exception
@@ -563,7 +563,7 @@ class Tracker_TrendController extends Tracker_AppController
             throw new Zend_Exception('The producer does not exist or you do not have the necessary permission on its community', 403);
         }
 
-        $trendDao->setIsKeyMetric($state === 'true');
+        $trendDao->setKeyMetric($state === '1' || $state === 'true');
         $this->Tracker_Trend->save($trendDao);
     }
 }

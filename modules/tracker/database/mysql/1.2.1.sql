@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `tracker_trend` (
     `config_item_id` bigint(20),
     `test_dataset_id` bigint(20),
     `truth_dataset_id` bigint(20),
-    `is_key_metric` boolean NOT NULL DEFAULT FALSE,
+    `key_metric` tinyint(4) NOT NULL DEFAULT '0',
     PRIMARY KEY (`trend_id`),
     KEY (`producer_id`)
 ) DEFAULT CHARSET=utf8;
