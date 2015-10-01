@@ -57,7 +57,7 @@ class Tracker_ScalarController extends Tracker_AppController
 
         $this->view->isAdmin = $this->Tracker_Scalar->policyCheck($scalarDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
         $this->view->scalar = $scalarDao;
-        $this->view->extraParams = json_decode($scalarDao->getParams(), true);
+        $this->view->extraParams = $scalarDao->getParams();
         $this->view->extraUrls = json_decode($scalarDao->getExtraUrls(), true);
 
         $revisionUrl = $scalarDao->getTrend()->getProducer()->getRevisionUrl();

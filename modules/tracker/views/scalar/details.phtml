@@ -113,8 +113,8 @@ if (count($this->extraParams)) {
             <tbody>
             <?php
             /** @var Tracker_ParamDao $param */
-            foreach ($this->extraParams as $key => $value) {
-                echo '<tr><th>'.$this->escape($key).':</th><td>'.$this->escape($value).'</td></tr>';
+            foreach ($this->extraParams as $param) {
+                echo '<tr><th>'.$this->escape($param->getParamName()).':</th><td>'.$this->escape($param->getParamValue()).'</td></tr>';
             }
             ?>
             </tbody>
