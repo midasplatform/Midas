@@ -48,6 +48,7 @@
  * @method array getScalars()
  * @method void setScalars(array $scalarDaos)
  * @method void setKeyMetric(int $keyMetric)
+ * @method int getKeyMetric()
  */
 class Tracker_TrendDao extends Tracker_AppDao
 {
@@ -59,10 +60,10 @@ class Tracker_TrendDao extends Tracker_AppDao
 
     /**
      * Alias for getKeyMetric.
-     * @return mixed
+     * @return bool
      */
     public function isKeyMetric()
     {
-        return $this->getKeyMetric();
+        return (int) $this->getKeyMetric() === 1;
     }
 }
