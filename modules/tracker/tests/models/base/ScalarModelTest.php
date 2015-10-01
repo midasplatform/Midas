@@ -151,7 +151,6 @@ class Tracker_ScalarModelTest extends DatabaseTestCase
 
         $this->assertEquals($scalarDao1->getValue(), $scalarValue1);
 
-
         // Delete scalars and ensure params are deleted.
 
         $scalarModel->delete($scalarDao0);
