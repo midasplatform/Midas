@@ -31,7 +31,7 @@ class Tracker_TrendController extends Tracker_AppController
     public $_components = array('Breadcrumb');
 
     /** @var array */
-    public $_moduleModels = array('Scalar', 'ThresholdNotification', 'Trend');
+    public $_moduleModels = array('Producer', 'Scalar', 'ThresholdNotification', 'Trend');
 
     /**
      * View a given trend.
@@ -523,5 +523,47 @@ class Tracker_TrendController extends Tracker_AppController
         }
 
         echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Changes saved'));
+    }
+
+    /**
+     * Change key metric status of a trend.
+     *
+     * Request parameters:
+     *     trendId - The id of the trend to set as a key metric
+     *     state   - The state of is_key_metric on the trend
+     *
+     * @throws Zend_Exception
+     */
+    public function setkeymetricAction()
+    {
+        $this->disableLayout();
+        $this->disableView();
+
+        /** @var int $trendId */
+        $trendId = $this->getParam('trendId');
+
+        /** @var int $state */
+        $state = $this->getParam('state');
+
+        if (!isset($trendId)) {
+            throw new Zend_Exception('The required trendId parameter is missing.');
+        }
+        if (!isset($state)) {
+            throw new Zend_Exception('The required state parameter is missing.');
+        }
+
+        /** @var Tracker_TrendDao $trendDao */
+        $trendDao = $this->Tracker_Trend->load($trendId);
+
+        /** @var Tracker_ProducerDao $producerDao */
+        $producerDao = $trendDao->getProducer();
+
+        if ($this->Tracker_Producer->policyCheck($producerDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN) === false
+        ) {
+            throw new Zend_Exception('The producer does not exist or you do not have the necessary permission on its community', 403);
+        }
+
+        $trendDao->setKeyMetric($state === '1' || $state === 'true');
+        $this->Tracker_Trend->save($trendDao);
     }
 }

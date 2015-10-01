@@ -37,6 +37,7 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
             'config_item_id' => array('type' => MIDAS_DATA),
             'test_dataset_id' => array('type' => MIDAS_DATA),
             'truth_dataset_id' => array('type' => MIDAS_DATA),
+            'key_metric' => array('type' => MIDAS_DATA),
             'producer' => array(
                 'type' => MIDAS_MANY_TO_ONE,
                 'model' => 'Producer',
@@ -112,9 +113,10 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
      * config/test/truth dataset combinations.
      *
      * @param Tracker_ProducerDao $producerDao producer DAO
+     * @param bool $onlyKey whether to return only key trends
      * @return array
      */
-    abstract public function getTrendsGroupByDatasets($producerDao);
+    abstract public function getTrendsGroupByDatasets($producerDao, $onlyKey = false);
 
     /**
      * Save the given trend. Ensure that null values are explicitly set in the database.
@@ -166,6 +168,9 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
             if (!is_null($truthDatasetId)) {
                 $trendDao->setTruthDatasetId($truthDatasetId);
             }
+
+            // Our pgsql code can't handle ACTUAL booleans :deep_sigh:
+            $trendDao->setKeyMetric('0');
 
             $this->save($trendDao);
         }
