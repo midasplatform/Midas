@@ -5,6 +5,7 @@
     "homepage": "http://www.midasplatform.org",
     "license": "Apache-2.0",
     "support": {
+        "docs": "https://midas-server.readthedocs.org",
         "email": "kitware@kitware.com",
         "issues": "https://github.com/midasplatform/Midas/issues",
         "source": "https://github.com/midasplatform/Midas"

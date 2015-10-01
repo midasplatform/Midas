@@ -47,6 +47,8 @@
  * @method void setTruthDatasetItem(ItemDao $truthDatasetItemDao)
  * @method array getScalars()
  * @method void setScalars(array $scalarDaos)
+ * @method void setKeyMetric(int $keyMetric)
+ * @method int getKeyMetric()
  */
 class Tracker_TrendDao extends Tracker_AppDao
 {
@@ -55,4 +57,13 @@ class Tracker_TrendDao extends Tracker_AppDao
 
     /** @var string */
     public $_module = 'tracker';
+
+    /**
+     * Alias for getKeyMetric.
+     * @return bool
+     */
+    public function isKeyMetric()
+    {
+        return (int) $this->getKeyMetric() === 1;
+    }
 }
