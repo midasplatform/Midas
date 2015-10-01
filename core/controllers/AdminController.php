@@ -306,7 +306,8 @@ class AdminController extends AppController
             $upgraded = false;
             foreach ($modulesConfig as $key => $module) {
                 $this->Component->Upgrade->initUpgrade($key, $db, $dbtype);
-                if ($this->Component->Upgrade->upgrade($module->version)) {
+                $currentModuleVersion = UtilityComponent::getCurrentModuleVersion($key);
+                if ($this->Component->Upgrade->upgrade($currentModuleVersion)) {
                     $upgraded = true;
                 }
             }
@@ -326,20 +327,15 @@ class AdminController extends AppController
 
         $modules = array();
         foreach ($modulesConfig as $key => $module) {
-            $this->Component->Upgrade->initUpgrade($key, $db, $dbtype);
-            $modules[$key]['target'] = $this->Component->Upgrade->getNewestVersion();
-            $modules[$key]['targetText'] = $this->Component->Upgrade->getNewestVersion(true);
-            $modules[$key]['currentText'] = $module->version;
-            $modules[$key]['current'] = $this->Component->Upgrade->transformVersionToNumeric($module->version);
+            $modules[$key]['target'] = UtilityComponent::getLatestModuleVersion($key);
+            $modules[$key]['current'] = UtilityComponent::getCurrentModuleVersion($key);
         }
 
         $this->view->modules = $modules;
 
         $this->Component->Upgrade->initUpgrade('core', $db, $dbtype);
-        $core['target'] = $this->Component->Upgrade->getNewestVersion();
-        $core['targetText'] = $this->Component->Upgrade->getNewestVersion(true);
-        $core['currentText'] = $version;
-        $core['current'] = $this->Component->Upgrade->transformVersionToNumeric($version);
+        $core['target'] = UtilityComponent::getLatestModuleVersion('core');
+        $core['current'] = UtilityComponent::getCurrentModuleVersion('core');
         $this->view->core = $core;
     }
 

@@ -153,6 +153,7 @@ function installCore($db, $dbType, $utilityComponent)
     Zend_Registry::set('models', array());
 
     $configCore = new Zend_Config_Ini(BASE_PATH.'/core/configs/core.ini', 'global');
+    Zend_Registry::set('configCore', $configCore);
 
     /** @var ModuleModel $moduleModel */
     $moduleModel = MidasLoader::loadModel('Module');
