@@ -221,8 +221,9 @@ class Tracker_ApiscalarComponent extends AppComponent
             throw new Exception('The scalar does not exist or you do not have the necessary permission', MIDAS_INVALID_POLICY);
         }
 
-        if (isset($args['params']) && !is_null($args['params']) && !is_string($args['params'])) {
-            $args['params'] = json_encode($args['params']);
+        if (isset($args['params']) && !is_null($args['params'])) {
+            $params = $args['params'];
+            unset($args['params']);
         }
 
         if (isset($args['extra_urls']) && !is_null($args['extra_urls']) && !is_string($args['extra_urls'])) {
@@ -233,6 +234,19 @@ class Tracker_ApiscalarComponent extends AppComponent
         $scalarDao = $scalarModel->initDao('Scalar', $args, $this->moduleName);
         $scalarDao->setScalarId($scalarId);
         $scalarModel->save($scalarDao);
+
+        if (isset($params) && is_string($params)) {
+            $params = json_decode($params);
+            $paramModel = MidasLoader::loadModel('Param', $this->moduleName);
+            foreach ($params as $paramName => $paramValue) {
+                //* @var Tracker_ParamDao $paramDao * /
+                $paramDao = MidasLoader::newDao('ParamDao', $this->moduleName);
+                $paramDao->setScalarId($scalarDao->getScalarId());
+                $paramDao->setParamName($paramName);
+                $paramDao->setParamValue($paramValue);
+                $paramModel->save($paramDao);
+            }
+        }
 
         /** @var Tracker_ScalarDao $scalarDao */
         $scalarDao = $scalarModel->load($scalarId);
