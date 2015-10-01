@@ -188,7 +188,11 @@ class UpgradeComponent extends AppComponent
             $currentVersion = $this->transformVersionToNumeric($currentVersion);
         }
 
-        $version = $this->getNewestVersion($text = false);
+        $version = UtilityComponent::getLatestModuleVersion($this->module);
+        if ($version === false) {
+            return false;
+        }
+        $version = $this->transformVersionToNumeric($version);
 
         if ($currentVersion >= $version || $version === 0) {
             return false;
