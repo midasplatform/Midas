@@ -306,7 +306,8 @@ class AdminController extends AppController
             $upgraded = false;
             foreach ($modulesConfig as $key => $module) {
                 $this->Component->Upgrade->initUpgrade($key, $db, $dbtype);
-                if ($this->Component->Upgrade->upgrade($module->version)) {
+                $currentModuleVersion = UtilityComponent::getCurrentModuleVersion($key);
+                if ($this->Component->Upgrade->upgrade($currentModuleVersion)) {
                     $upgraded = true;
                 }
             }
