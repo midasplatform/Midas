@@ -61,7 +61,8 @@ class Tracker_TrendDao extends Tracker_AppDao
      * Alias for getKeyMetric.
      * @return mixed
      */
-    public function isKeyMetric() {
-       return $this->getKeyMetric();
+    public function isKeyMetric()
+    {
+        return $this->getKeyMetric();
     }
 }
