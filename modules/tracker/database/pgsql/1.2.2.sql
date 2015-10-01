@@ -28,7 +28,6 @@ CREATE TABLE IF NOT EXISTS "tracker_scalar" (
     "official" smallint NOT NULL DEFAULT 1::smallint,
     "build_results_url" text NOT NULL,
     "branch" character varying(255) NOT NULL DEFAULT ''::character varying,
-    "params" text,
     "extra_urls" text
 );
 
