@@ -71,7 +71,8 @@ class Tracker_ScalarModelTest extends DatabaseTestCase
         $params0 = array(
             'num_param' => 90,
             'text_param' => 'master',
-            'null_param' => '',
+            'emptystring_param' => '',
+            'null_param' => null,
         );
         /** @var Tracker_ScalarDao $scalarDao0 */
         $scalarDao0 = $scalarModel->addToTrend(
@@ -91,6 +92,7 @@ class Tracker_ScalarModelTest extends DatabaseTestCase
         $paramChecks = array(
             'num_param' => array('found' => false, 'type' => 'numeric', 'val' => 90),
             'text_param' => array('found' => false, 'type' => 'text', 'val' => 'master'),
+            'emptystring_param' => array('found' => false, 'type' => 'text', 'val' => ''),
             'null_param' => array('found' => false, 'type' => 'text', 'val' => ''),
         );
 
@@ -119,7 +121,8 @@ class Tracker_ScalarModelTest extends DatabaseTestCase
         $params1 = array(
             'num_param' => 92,
             'text_param' => 'dev',
-            'null_param' => '',
+            'null_param' => null,
+            'emptystring_param' => '',
         );
         /** @var Tracker_ScalarDao $scalarDao1 */
         $scalarDao1 = $scalarModel->addToTrend(
@@ -139,6 +142,7 @@ class Tracker_ScalarModelTest extends DatabaseTestCase
         $paramChecks = array(
             'num_param' => array('found' => false, 'type' => 'numeric', 'val' => 92),
             'text_param' => array('found' => false, 'type' => 'text', 'val' => 'dev'),
+            'emptystring_param' => array('found' => false, 'type' => 'text', 'val' => ''),
             'null_param' => array('found' => false, 'type' => 'text', 'val' => ''),
         );
 
