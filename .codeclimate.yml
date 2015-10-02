@@ -28,6 +28,8 @@ engines:
     enabled: true
   phpmd:
     enabled: true
+  scss-lint:
+    enabled: true
 
 exclude_paths:
 - "core/public/js/jquery/*"
