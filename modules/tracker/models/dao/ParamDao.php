@@ -63,14 +63,14 @@ class Tracker_ParamDao extends Tracker_AppDao
      * Get the value of the param, regardless of its type, returning either a
      * numeric or a string.
      *
-     * @return mixed value of the param
+     * @return float|int|string.
      */
     public function getParamValue()
     {
         if ($this->getParamType() === 'numeric') {
             return $this->getNumericValue();
-        } else {
-            return $this->getTextValue();
         }
+
+        return $this->getTextValue();
     }
 }

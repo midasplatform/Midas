@@ -239,7 +239,7 @@ class Tracker_ApiscalarComponent extends AppComponent
             $params = json_decode($params);
             $paramModel = MidasLoader::loadModel('Param', $this->moduleName);
             foreach ($params as $paramName => $paramValue) {
-                //* @var Tracker_ParamDao $paramDao * /
+                /** @var Tracker_ParamDao $paramDao */
                 $paramDao = MidasLoader::newDao('ParamDao', $this->moduleName);
                 $paramDao->setScalarId($scalarDao->getScalarId());
                 $paramDao->setParamName($paramName);

@@ -76,51 +76,51 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         // Params should be a zero element array here.
         $this->assertTrue(!($metricToScalar['metric_0']->getParams()));
 
-        $metric_1_params = $metricToScalar['metric_1']->getParams();
-        $metric_1_paramChecks = array(
+        $metric1Params = $metricToScalar['metric_1']->getParams();
+        $metric1ParamChecks = array(
             'num_param' => array('found' => false, 'type' => 'numeric', 'val' => 19.0),
             'text_param' => array('found' => false, 'type' => 'text', 'val' => 'metric1 text'),
             'null_param' => array('found' => false, 'type' => 'text', 'val' => ''),
         );
 
         // Test that the params are saved as the correct type and value.
-        foreach ($metric_1_params as $param) {
-            $checks = $metric_1_paramChecks[$param->getParamName()];
+        foreach ($metric1Params as $param) {
+            $checks = $metric1ParamChecks[$param->getParamName()];
             $this->assertEquals($checks['type'], $param->getParamType());
             if ($checks['type'] === 'numeric') {
                 $this->assertEquals($checks['val'], $param->getNumericValue());
             } else {
                 $this->assertEquals($checks['val'], $param->getTextValue());
             }
-            $metric_1_paramChecks[$param->getParamName()]['found'] = true;
+            $metric1ParamChecks[$param->getParamName()]['found'] = true;
         }
 
         // Test that all params are tested.
-        foreach ($metric_1_paramChecks as $checks) {
+        foreach ($metric1ParamChecks as $checks) {
             $this->assertTrue($checks['found']);
         }
 
-        $metric_2_params = $metricToScalar['metric_2']->getParams();
-        $metric_2_paramChecks = array(
+        $metric2Params = $metricToScalar['metric_2']->getParams();
+        $metric2ParamChecks = array(
             'num_param' => array('found' => false, 'type' => 'numeric', 'val' => 20.0),
             'text_param' => array('found' => false, 'type' => 'text', 'val' => 'metric2 text'),
             'null_param' => array('found' => false, 'type' => 'text', 'val' => ''),
         );
 
         // Test that the params are saved as the correct type and value.
-        foreach ($metric_2_params as $param) {
-            $checks = $metric_2_paramChecks[$param->getParamName()];
+        foreach ($metric2Params as $param) {
+            $checks = $metric2ParamChecks[$param->getParamName()];
             $this->assertEquals($checks['type'], $param->getParamType());
             if ($checks['type'] === 'numeric') {
                 $this->assertEquals($checks['val'], $param->getNumericValue());
             } else {
                 $this->assertEquals($checks['val'], $param->getTextValue());
             }
-            $metric_2_paramChecks[$param->getParamName()]['found'] = true;
+            $metric2ParamChecks[$param->getParamName()]['found'] = true;
         }
 
         // Test that all params are tested.
-        foreach ($metric_2_paramChecks as $checks) {
+        foreach ($metric2ParamChecks as $checks) {
             $this->assertTrue($checks['found']);
         }
     }

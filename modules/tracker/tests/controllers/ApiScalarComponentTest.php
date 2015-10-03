@@ -45,19 +45,23 @@ class Tracker_ApiScalarComponentTest extends RestCallMethodsTestCase
     public function testPUT()
     {
         $usersFile = $this->loadData('User', 'default');
+        /** @var UserDao $userDao */
         $userDao = $this->User->load($usersFile[0]->getKey());
 
         // Create a scalar attached to a trend.
-
+        /** @var Tracker_TrendModel $trendModel */
         $trendModel = MidasLoader::loadModel('Trend', 'tracker');
+        /** @var Tracker_TrendDao $trend */
         $trend = $trendModel->load(1);
 
+        /** @var Tracker_ScalarModel $scalarModel */
         $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
         $scalarArgs = array(
             'trend_id' => $trend->getTrendId(),
             'value' => 42,
             'build_results_url' => 'http://localhost',
         );
+        /** @var Tracker_ScalarDao $scalar */
         $scalar = $scalarModel->initDao('Scalar', $scalarArgs, $this->moduleName);
         $scalarModel->save($scalar);
 
@@ -79,13 +83,13 @@ class Tracker_ApiScalarComponentTest extends RestCallMethodsTestCase
         $resp = $this->_callRestApi('PUT', '/tracker/scalar/'.$scalar->getScalarId());
 
         // Ensure params are properly set on scalar.
-
         $paramChecks = array(
             'num_param' => array('found' => false, 'type' => 'numeric', 'val' => 90),
             'text_param' => array('found' => false, 'type' => 'text', 'val' => 'master'),
             'null_param' => array('found' => false, 'type' => 'text', 'val' => ''),
         );
 
+        /** @var Tracker_ParamModel $param */
         foreach ($scalar->getParams() as $param) {
             $checks = $paramChecks[$param->getParamName()];
             $this->assertEquals($checks['type'], $param->getParamType());

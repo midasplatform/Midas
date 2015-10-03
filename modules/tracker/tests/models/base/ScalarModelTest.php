@@ -18,10 +18,10 @@
  limitations under the License.
 =========================================================================*/
 
-/** test ScalarModel */
+/** Test the scalar model. */
 class Tracker_ScalarModelTest extends DatabaseTestCase
 {
-    /** set up tests */
+    /** Set up tests. */
     public function setUp()
     {
         $this->setupDatabase(array('default')); // core dataset
@@ -33,6 +33,7 @@ class Tracker_ScalarModelTest extends DatabaseTestCase
     /** testScalarModel */
     public function testScalarModel()
     {
+        /** @var UuidComponent $uuidComponent */
         $uuidComponent = MidasLoader::loadComponent('Uuid');
 
         $communityId = '2000';
@@ -41,31 +42,40 @@ class Tracker_ScalarModelTest extends DatabaseTestCase
         $submitTime = 'now';
         $submissionUuid = $uuidComponent->generate();
 
+        /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
         $usersFile = $this->loadData('User', 'default');
+        /** @var UserDao $userDao */
         $userDao = $userModel->load($usersFile[0]->getKey());
 
+        /** @var Tracker_ProducerModel $producerModel */
         $producerModel = MidasLoader::loadModel('Producer', 'tracker');
+        /** @var Tracker_ProducerDao $producerDao */
         $producerDao = $producerModel->load(100);
 
+        /** @var Tracker_SubmissionModel $submissionModel */
         $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
+        /** @var Tracker_SubmissionDao $submissionDao */
         $submissionDao = $submissionModel->getOrCreateSubmission($producerDao, $submissionUuid);
         $submissionId = $submissionDao->getKey();
 
         // Create two scalars, each tied to a separate trend.
-
+        /** @var Tracker_TrendModel $trendModel */
         $trendModel = MidasLoader::loadModel('Trend', 'tracker');
+        /** @var Tracker_ScalarModel $scalarModel */
         $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
 
-        $metric0trend = $trendModel->load(1);
-        $scalarValue0 = '0';
+        /** @var Tracker_TrendDao $metricTrend0 */
+        $metricTrend0 = $trendModel->load(1);
+        $scalarValue0 = 0;
         $params0 = array(
             'num_param' => 90,
             'text_param' => 'master',
             'null_param' => '',
         );
+        /** @var Tracker_ScalarDao $scalarDao0 */
         $scalarDao0 = $scalarModel->addToTrend(
-            $metric0trend,
+            $metricTrend0,
             $submitTime,
             $submissionId,
             $producerRevision,
@@ -78,7 +88,6 @@ class Tracker_ScalarModelTest extends DatabaseTestCase
             $params0);
 
         // Ensure value and params are properly set on scalar.
-
         $paramChecks = array(
             'num_param' => array('found' => false, 'type' => 'numeric', 'val' => 90),
             'text_param' => array('found' => false, 'type' => 'text', 'val' => 'master'),
@@ -104,16 +113,17 @@ class Tracker_ScalarModelTest extends DatabaseTestCase
         $this->assertEquals($scalarDao0->getValue(), $scalarValue0);
 
         // Scalar the second.
-
-        $metric1trend = $trendModel->load(2);
-        $scalarValue1 = '1';
+        /** @var Tracker_TrendDao $metricTrend1 */
+        $metricTrend1 = $trendModel->load(2);
+        $scalarValue1 = 1;
         $params1 = array(
             'num_param' => 92,
             'text_param' => 'dev',
             'null_param' => '',
         );
+        /** @var Tracker_ScalarDao $scalarDao1 */
         $scalarDao1 = $scalarModel->addToTrend(
-            $metric1trend,
+            $metricTrend1,
             $submitTime,
             $submissionId,
             $producerRevision,
@@ -126,7 +136,6 @@ class Tracker_ScalarModelTest extends DatabaseTestCase
             $params1);
 
         // Ensure value and params are properly set on scalar.
-
         $paramChecks = array(
             'num_param' => array('found' => false, 'type' => 'numeric', 'val' => 92),
             'text_param' => array('found' => false, 'type' => 'text', 'val' => 'dev'),
@@ -134,6 +143,7 @@ class Tracker_ScalarModelTest extends DatabaseTestCase
         );
 
         $scalarDao1Params = $scalarDao1->getParams();
+        /** @var Tracker_ParamModel $param */
         foreach ($scalarDao1Params as $param) {
             $checks = $paramChecks[$param->getParamName()];
             $this->assertEquals($checks['type'], $param->getParamType());
@@ -152,15 +162,17 @@ class Tracker_ScalarModelTest extends DatabaseTestCase
         $this->assertEquals($scalarDao1->getValue(), $scalarValue1);
 
         // Delete scalars and ensure params are deleted.
-
         $scalarModel->delete($scalarDao0);
         $scalarModel->delete($scalarDao1);
 
+        /** @var Tracker_ParamModel $paramModel */
         $paramModel = MidasLoader::loadModel('Param', 'tracker');
+        /** @var Tracker_ParamModel $scalarParam */
         foreach ($scalarDao0Params as $scalarParam) {
             $scalarParamReloaded = $paramModel->load($scalarParam->getParamId());
             $this->assertFalse($scalarParamReloaded, 'Scalar param should have been deleted');
         }
+        /** @var Tracker_ParamModel $scalarParam */
         foreach ($scalarDao1Params as $scalarParam) {
             $scalarParamReloaded = $paramModel->load($scalarParam->getParamId());
             $this->assertFalse($scalarParamReloaded, 'Scalar param should have been deleted');
