@@ -112,10 +112,7 @@ if (count($this->extraParams)) {
         <table class="scalarInfoTable">
             <tbody>
             <?php
-            /**
-             * @var string $key
-             * @var mixed $value
-             */
+            /** @var Tracker_ParamDao $param */
             foreach ($this->extraParams as $key => $value) {
                 echo '<tr><th>'.$this->escape($key).':</th><td>'.$this->escape($value).'</td></tr>';
             }
