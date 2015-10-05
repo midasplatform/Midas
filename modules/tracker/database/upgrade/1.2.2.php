@@ -36,7 +36,7 @@ class Tracker_Upgrade_1_2_2 extends MIDASUpgrade
                 KEY (`param_name`)
             ) DEFAULT CHARSET=utf8;");
         $this->migrateScalarParams();
-        $this->db->query('ALTER TABLE `tracker_scalar` DROP `params`');
+        $this->db->query('ALTER TABLE `tracker_scalar` DROP `params`;');
     }
 
     /** Upgrade a PostgreSQL database. */
@@ -64,10 +64,10 @@ class Tracker_Upgrade_1_2_2 extends MIDASUpgrade
         $logger->debug('migrateScalarParams');
         /** @var Tracker_ParamModel $paramModel */
         $paramModel = MidasLoader::loadModel('Param', $this->moduleName);
-        $uresult = $this->db->query('SELECT scalar_id, params from tracker_scalar where params is not null');
-        if ($uresult) {
+        $uresult = $this->db->query('SELECT scalar_id, params FROM tracker_scalar WHERE params IS NOT NULL;');
+        if ($uresult !== false) {
             while ($row = $uresult->fetch(PDO::FETCH_ASSOC)) {
-                if ($count % 1000 == 0) {
+                if ($count % 1000 === 0) {
                     $logger->debug('Count '.$count);
                 }
                 ++$count;
