@@ -25,7 +25,6 @@ CREATE TABLE IF NOT EXISTS "tracker_scalar" (
     "official" INTEGER NOT NULL DEFAULT 1,
     "build_results_url" TEXT NOT NULL,
     "branch" TEXT NOT NULL DEFAULT '',
-    "params" TEXT,
     "extra_urls" TEXT
 );
 

@@ -25,7 +25,6 @@ CREATE TABLE IF NOT EXISTS `tracker_scalar` (
     `official` tinyint(4) NOT NULL DEFAULT '1',
     `build_results_url` text NOT NULL,
     `branch` varchar(255) NOT NULL DEFAULT '',
-    `params` text,
     `extra_urls` text,
     PRIMARY KEY (`scalar_id`),
     KEY (`trend_id`),

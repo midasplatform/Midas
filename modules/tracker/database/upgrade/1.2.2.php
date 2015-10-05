@@ -35,6 +35,8 @@ class Tracker_Upgrade_1_2_2 extends MIDASUpgrade
                 PRIMARY KEY (`param_id`),
                 KEY (`param_name`)
             ) DEFAULT CHARSET=utf8;");
+        $this->migrateScalarParams();
+        $this->db->query('ALTER TABLE `tracker_scalar` DROP `params`;');
     }
 
     /** Upgrade a PostgreSQL database. */
@@ -50,5 +52,37 @@ class Tracker_Upgrade_1_2_2 extends MIDASUpgrade
                 numeric_value double precision);"
         );
         $this->db->query('CREATE INDEX tracker_param_param_name_idx ON tracker_param (param_name);');
+        $this->migrateScalarParams();
+        $this->db->query('ALTER TABLE tracker_scalar DROP COLUMN params;');
+    }
+
+    /** Migrate tracker_scalar params to tracker_param. */
+    private function migrateScalarParams()
+    {
+        $count = 0;
+        $logger = Zend_Registry::get('logger');
+        $logger->debug('migrateScalarParams');
+        /** @var Tracker_ParamModel $paramModel */
+        $paramModel = MidasLoader::loadModel('Param', $this->moduleName);
+        $uresult = $this->db->query('SELECT scalar_id, params FROM tracker_scalar WHERE params IS NOT NULL;');
+        if ($uresult !== false) {
+            while ($row = $uresult->fetch(PDO::FETCH_ASSOC)) {
+                if ($count % 1000 === 0) {
+                    $logger->debug('Count '.$count);
+                }
+                ++$count;
+                $scalarId = $row['scalar_id'];
+                $params = $row['params'];
+                $params = json_decode($params, true);
+                foreach ($params as $paramName => $paramValue) {
+                    /** @var Tracker_ParamDao $paramDao */
+                    $paramDao = MidasLoader::newDao('ParamDao', $this->moduleName);
+                    $paramDao->setScalarId($scalarId);
+                    $paramDao->setParamName($paramName);
+                    $paramDao->setParamValue($paramValue);
+                    $paramModel->save($paramDao);
+                }
+            }
+        }
     }
 }
