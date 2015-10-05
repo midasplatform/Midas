@@ -25,29 +25,29 @@ class Tracker_Upgrade_1_2_2 extends MIDASUpgrade
     public function mysql()
     {
         $this->db->query(
-            'CREATE TABLE IF NOT EXISTS `tracker_param` ('.
-            '    `param_id` bigint(20) NOT NULL AUTO_INCREMENT,'.
-            '    `scalar_id` bigint(20) NOT NULL,'.
-            '    `param_name` varchar(255) NOT NULL,'.
-            '    `param_type` enum("text", "numeric") NOT NULL,'.
-            '    `text_value` text,'.
-            '    `numeric_value` double,'.
-            '    PRIMARY KEY (`param_id`),'.
-            '    KEY (`param_name`)'.
-            ') DEFAULT CHARSET=utf8;');
+            "CREATE TABLE IF NOT EXISTS `tracker_param` (
+                `param_id` bigint(20) NOT NULL AUTO_INCREMENT,
+                `scalar_id` bigint(20) NOT NULL,
+                `param_name` varchar(255) NOT NULL,
+                `param_type` enum('text', 'numeric') NOT NULL,
+                `text_value` text,
+                `numeric_value` double,
+                PRIMARY KEY (`param_id`),
+                KEY (`param_name`)
+            ) DEFAULT CHARSET=utf8;");
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $this->db->query(
-            'CREATE TABLE IF NOT EXISTS tracker_param ('.
-            '    param_id serial PRIMARY KEY,'.
-            '    scalar_id bigint NOT NULL,'.
-            '    param_name character varying(255) NOT NULL,'.
-            '    param_type text CHECK (param_type in ("text", "numeric")),'.
-            '    text_value text,'.
-            '    numeric_value double precision);'
+            "CREATE TABLE IF NOT EXISTS tracker_param (
+                param_id serial PRIMARY KEY,
+                scalar_id bigint NOT NULL,
+                param_name character varying(255) NOT NULL,
+                param_type text CHECK (param_type in ('text', 'numeric')),
+                text_value text,
+                numeric_value double precision);"
         );
         $this->db->query('CREATE INDEX tracker_param_param_name_idx ON tracker_param (param_name);');
     }
