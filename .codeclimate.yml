@@ -20,7 +20,7 @@
 ---
 engines:
   csslint:
-    enabled: true
+    enabled: false
   eslint:
     enabled: true
   fixme:
