@@ -23,3 +23,4 @@ to_titlecase(${module_name} module_name_titlecase)
 add_midas_style_test(Style${module_name_titlecase} ${CMAKE_SOURCE_DIR}/modules/${module_name})
 
 add_subdirectory(controllers)
+add_subdirectory(models)

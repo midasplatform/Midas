@@ -35,7 +35,6 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
             'submission_id' => array('type' => MIDAS_DATA),
             'official' => array('type' => MIDAS_DATA),
             'build_results_url' => array('type' => MIDAS_DATA),
-            'params' => array('type' => MIDAS_DATA),
             'extra_urls' => array('type' => MIDAS_DATA),
             'branch' => array('type' => MIDAS_DATA),
             'submit_time' => array('type' => MIDAS_DATA),
@@ -60,6 +59,13 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
                 'model' => 'User',
                 'parent_column' => 'user_id',
                 'child_column' => 'user_id',
+            ),
+            'params' => array(
+                'type' => MIDAS_ONE_TO_MANY,
+                'model' => 'Param',
+                'module' => $this->moduleName,
+                'parent_column' => 'scalar_id',
+                'child_column' => 'scalar_id',
             ),
         );
 
@@ -155,12 +161,6 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
             }
         }
 
-        if (empty($params)) {
-            $params = null;
-        } elseif (is_array($params)) {
-            $params = json_encode($params);
-        }
-
         if (empty($extraUrls)) {
             $extraUrls = null;
         } elseif (is_array($extraUrls)) {
@@ -180,9 +180,20 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
         $scalarDao->setOfficial((int) $official);
         $scalarDao->setBuildResultsUrl($buildResultsUrl);
         $scalarDao->setBranch(trim($branch));
-        $scalarDao->setParams($params);
         $scalarDao->setExtraUrls($extraUrls);
         $this->save($scalarDao);
+
+        if (!empty($params) && is_array($params)) {
+            $paramModel = MidasLoader::loadModel('Param', $this->moduleName);
+            foreach ($params as $paramName => $paramValue) {
+                /** @var Tracker_ParamDao $paramDao */
+                $paramDao = MidasLoader::newDao('ParamDao', $this->moduleName);
+                $paramDao->setScalarId($scalarDao->getScalarId());
+                $paramDao->setParamName($paramName);
+                $paramDao->setParamValue($paramValue);
+                $paramModel->save($paramDao);
+            }
+        }
 
         return $scalarDao;
     }

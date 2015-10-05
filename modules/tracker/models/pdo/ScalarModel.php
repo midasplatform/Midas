@@ -130,6 +130,7 @@ class Tracker_ScalarModel extends Tracker_ScalarModelBase
     public function delete($scalarDao)
     {
         $this->database->getDB()->delete('tracker_scalar2item', 'scalar_id = '.$scalarDao->getKey());
+        $this->database->getDB()->delete('tracker_param', 'scalar_id = '.$scalarDao->getKey());
 
         parent::delete($scalarDao);
     }

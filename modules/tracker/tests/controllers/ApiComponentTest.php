@@ -21,7 +21,7 @@
 require_once BASE_PATH.'/modules/api/tests/controllers/CallMethodsTestCase.php';
 
 /** API test for tracker module. */
-class Tracker_ApiControllerTest extends Api_CallMethodsTestCase
+class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
 {
     public $moduleName = 'tracker';
 
@@ -50,8 +50,10 @@ class Tracker_ApiControllerTest extends Api_CallMethodsTestCase
 
         $outputs = array();
         $outputs['metric_0'] = $this->_submitScalar($token, $uuid, 'metric_0', '18');
-        $outputs['metric_1'] = $this->_submitScalar($token, $uuid, 'metric_1', '19', 'meters');
-        $outputs['metric_2'] = $this->_submitScalar($token, $uuid, 'metric_2', '20', 'mm');
+        $metric1Params = array('num_param' => 19.0, 'text_param' => 'metric1 text', 'null_param' => null);
+        $outputs['metric_1'] = $this->_submitScalar($token, $uuid, 'metric_1', '19', 'meters', $metric1Params);
+        $metric2Params = array('num_param' => 20.0, 'text_param' => 'metric2 text', 'null_param' => null);
+        $outputs['metric_2'] = $this->_submitScalar($token, $uuid, 'metric_2', '20', 'mm', $metric2Params);
 
         /** @var Tracker_SubmissionModel $submissionModel */
         $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
@@ -60,11 +62,66 @@ class Tracker_ApiControllerTest extends Api_CallMethodsTestCase
         $submissionDao = $submissionModel->getSubmission($uuid);
         $scalarDaos = $submissionModel->getScalars($submissionDao);
 
+        // Maps the scalars for each metric.
+        $metricToScalar = array();
+
         /** @var Tracker_ScalarDao $scalarDao */
         foreach ($scalarDaos as $scalarDao) {
             $curOutput = $outputs[$scalarDao->getTrend()->getMetricName()];
+            $metricToScalar[$scalarDao->getTrend()->getMetricName()] = $scalarDao;
             $this->assertEquals($curOutput->value, $scalarDao->getValue());
             $this->assertEquals($submissionDao->getKey(), $scalarDao->getSubmissionId());
+        }
+
+        // Params should be a zero element array here.
+        $this->assertTrue(!($metricToScalar['metric_0']->getParams()));
+
+        $metric1Params = $metricToScalar['metric_1']->getParams();
+        $metric1ParamChecks = array(
+            'num_param' => array('found' => false, 'type' => 'numeric', 'val' => 19.0),
+            'text_param' => array('found' => false, 'type' => 'text', 'val' => 'metric1 text'),
+            'null_param' => array('found' => false, 'type' => 'text', 'val' => ''),
+        );
+
+        // Test that the params are saved as the correct type and value.
+        foreach ($metric1Params as $param) {
+            $checks = $metric1ParamChecks[$param->getParamName()];
+            $this->assertEquals($checks['type'], $param->getParamType());
+            if ($checks['type'] === 'numeric') {
+                $this->assertEquals($checks['val'], $param->getNumericValue());
+            } else {
+                $this->assertEquals($checks['val'], $param->getTextValue());
+            }
+            $metric1ParamChecks[$param->getParamName()]['found'] = true;
+        }
+
+        // Test that all params are tested.
+        foreach ($metric1ParamChecks as $checks) {
+            $this->assertTrue($checks['found']);
+        }
+
+        $metric2Params = $metricToScalar['metric_2']->getParams();
+        $metric2ParamChecks = array(
+            'num_param' => array('found' => false, 'type' => 'numeric', 'val' => 20.0),
+            'text_param' => array('found' => false, 'type' => 'text', 'val' => 'metric2 text'),
+            'null_param' => array('found' => false, 'type' => 'text', 'val' => ''),
+        );
+
+        // Test that the params are saved as the correct type and value.
+        foreach ($metric2Params as $param) {
+            $checks = $metric2ParamChecks[$param->getParamName()];
+            $this->assertEquals($checks['type'], $param->getParamType());
+            if ($checks['type'] === 'numeric') {
+                $this->assertEquals($checks['val'], $param->getNumericValue());
+            } else {
+                $this->assertEquals($checks['val'], $param->getTextValue());
+            }
+            $metric2ParamChecks[$param->getParamName()]['found'] = true;
+        }
+
+        // Test that all params are tested.
+        foreach ($metric2ParamChecks as $checks) {
+            $this->assertTrue($checks['found']);
         }
     }
 
@@ -76,9 +133,10 @@ class Tracker_ApiControllerTest extends Api_CallMethodsTestCase
      * @param string $metric the metric name of the trend
      * @param float $value the scalar value
      * @param false|string $unit (Optional) the unit of the trend, defaults to false
+     * @param false|array $scalarParams (Optional) the params of the scalar, defaults to false
      * @return mixed response object from the API
      */
-    private function _submitScalar($token, $uuid, $metric, $value, $unit = false)
+    private function _submitScalar($token, $uuid, $metric, $value, $unit = false, $scalarParams = false)
     {
         $this->resetAll();
         $this->params['method'] = 'midas.tracker.scalar.add';
@@ -93,7 +151,9 @@ class Tracker_ApiControllerTest extends Api_CallMethodsTestCase
         if ($unit !== false) {
             $this->params['unit'] = $unit;
         }
-
+        if ($scalarParams !== false) {
+            $this->params['params'] = json_encode($scalarParams);
+        }
         $res = $this->_callJsonApi();
 
         return $res->data;
