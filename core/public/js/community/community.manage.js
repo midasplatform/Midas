@@ -25,7 +25,7 @@ midas.community.manage.init = function () {
     });
 
     $('a#addUserToGroupLink').click(function () {
-        midas.loadDialog("invitationCommunity", "/community/invitation?directadd=true&communityId=" + encodeURIComponent(json.community.community_id));
+        midas.loadDialog('invitationCommunity', '/community/invitation?directadd=true&communityId=' + encodeURIComponent(json.community.community_id));
         midas.showDialog(json.community.sendInvitation, false);
     });
 
@@ -51,8 +51,8 @@ midas.community.manage.init = function () {
         disableElementSize: true
     });
 
-    $("img.tableLoading").hide();
-    $("table#browseTable").show();
+    $('img.tableLoading').hide();
+    $('table#browseTable').show();
 
     $('div.userPersonalData').hide();
 
@@ -100,10 +100,10 @@ $('a.deleteGroupLink').click(function () {
     $('input.deleteGroupYes').unbind('click').click(function () {
         var groupid = $(this).attr('element');
         $.post(json.global.webroot + '/community/manage', {
-                communityId: json.community.community_id,
-                deleteGroup: 'true',
-                groupId: groupid
-            },
+            communityId: json.community.community_id,
+            deleteGroup: 'true',
+            groupId: groupid
+        },
             function (data) {
                 var jsonResponse = $.parseJSON(data);
                 if (jsonResponse === null) {
@@ -111,7 +111,7 @@ $('a.deleteGroupLink').click(function () {
                     return;
                 }
                 if (jsonResponse[0]) {
-                    $("div.MainDialog").dialog("close");
+                    $('div.MainDialog').dialog('close');
                     $('a.groupLink[groupid=' + groupid + ']').parent('li').remove();
                     midas.createNotice(jsonResponse[1], 4000);
                     midas.community.manage.init();
@@ -125,44 +125,44 @@ $('a.deleteGroupLink').click(function () {
         );
     });
     $('input.deleteGroupNo').unbind('click').click(function () {
-        $("div.MainDialog").dialog('close');
+        $('div.MainDialog').dialog('close');
     });
 });
 
 midas.community.manage.initDragAndDrop = function () {
     'use strict';
-    $("#browseTable .file, #browseTable .filePublic, #browseTable .filePrivate," +
-        "#browseTable .folderPublic:not(.notdraggable), #browseTable .folderPrivate:not(.notdraggable)").draggable({
-        helper: "clone",
-        cursor: "move",
-        opacity: 0.75,
-        refreshPositions: true, // Performance?
-        revert: "invalid",
-        revertDuration: 300,
-        scroll: true,
-        start: function () {
-            $('div.userPersonalData').show();
-        }
-    });
+    $('#browseTable .file, #browseTable .filePublic, #browseTable .filePrivate,' +
+        '#browseTable .folderPublic:not(.notdraggable), #browseTable .folderPrivate:not(.notdraggable)').draggable({
+            helper: 'clone',
+            cursor: 'move',
+            opacity: 0.75,
+            refreshPositions: true, // Performance?
+            revert: 'invalid',
+            revertDuration: 300,
+            scroll: true,
+            start: function () {
+                $('div.userPersonalData').show();
+            }
+        });
 
     // Configure droppable rows
-    $("#browseTable .folder, #browseTable .folderPublic, #browseTable .folderPrivate").each(function () {
-        $(this).parents("tr").droppable({
-            accept: ".file, .filePublic, .filePrivate, .folder, .folderPublic, .folderPrivate",
+    $('#browseTable .folder, #browseTable .folderPublic, #browseTable .folderPrivate').each(function () {
+        $(this).parents('tr').droppable({
+            accept: '.file, .filePublic, .filePrivate, .folder, .folderPublic, .folderPrivate',
             drop: function (e, ui) {
                 // Call jQuery treeTable plugin to move the branch
                 var elements = '';
-                if ($(ui.draggable).parents("tr").attr('type') == 'folder') {
-                    elements = $(ui.draggable).parents("tr").attr('element') + ';';
+                if ($(ui.draggable).parents('tr').attr('type') == 'folder') {
+                    elements = $(ui.draggable).parents('tr').attr('element') + ';';
                 }
                 else {
-                    elements = ';' + $(ui.draggable).parents("tr").attr('element');
+                    elements = ';' + $(ui.draggable).parents('tr').attr('element');
                 }
                 var from_obj;
-                var classNames = $(ui.draggable).parents("tr").attr('class').split(' ');
+                var classNames = $(ui.draggable).parents('tr').attr('class').split(' ');
                 for (var key in classNames) {
                     if (classNames[key].match('child-of-')) {
-                        from_obj = "#" + classNames[key].substring(9);
+                        from_obj = '#' + classNames[key].substring(9);
                     }
                 }
                 var destination_obj = this;
@@ -170,12 +170,12 @@ midas.community.manage.initDragAndDrop = function () {
                 // do nothing if drop item(s) to its current folder
                 if ($(this).attr('id') != $(from_obj).attr('id')) {
                     $.post(json.global.webroot + '/browse/movecopy', {
-                            moveElement: true,
-                            elements: elements,
-                            destination: $(this).attr('element'),
-                            from: $(from_obj).attr('element'),
-                            ajax: true
-                        },
+                        moveElement: true,
+                        elements: elements,
+                        destination: $(this).attr('element'),
+                        from: $(from_obj).attr('element'),
+                        ajax: true
+                    },
                         function (data) {
                             var jsonResponse = $.parseJSON(data);
                             if (jsonResponse === null) {
@@ -184,7 +184,7 @@ midas.community.manage.initDragAndDrop = function () {
                             }
                             if (jsonResponse[0]) {
                                 midas.createNotice(jsonResponse[1], 1500);
-                                $($(ui.draggable).parents("tr")).appendBranchTo(destination_obj);
+                                $($(ui.draggable).parents('tr')).appendBranchTo(destination_obj);
                             }
                             else {
                                 midas.createNotice(jsonResponse[1], 4000, 'error');
@@ -193,10 +193,10 @@ midas.community.manage.initDragAndDrop = function () {
                     );
                 }
             },
-            hoverClass: "accept",
+            hoverClass: 'accept',
             over: function (e, ui) {
                 // Make the droppable branch expand when a draggable node is moved over it.
-                if (this.id != $(ui.draggable.parents("tr")[0]).id && !$(this).is(".expanded")) {
+                if (this.id != $(ui.draggable.parents('tr')[0]).id && !$(this).is('.expanded')) {
                     $(this).expand();
                 }
             }
@@ -215,7 +215,7 @@ midas.community.manage.validateGroupChange = function (formData, jqForm, options
 
 midas.community.manage.successGroupChange = function (responseText, statusText, xhr, form) {
     'use strict';
-    $("div.MainDialog").dialog("close");
+    $('div.MainDialog').dialog('close');
     var jsonResponse = $.parseJSON(responseText);
     if (jsonResponse === null) {
         midas.createNotice('Error', 4000, 'error');
@@ -289,9 +289,9 @@ midas.community.manage.promoteMember = function (userId) {
 midas.community.manage.removeFromGroup = function (userId, groupId) {
     'use strict';
     $.post(json.global.webroot + '/community/removeuserfromgroup', {
-            groupId: groupId,
-            userId: userId
-        },
+        groupId: groupId,
+        userId: userId
+    },
         function (data) {
             var jsonResponse = $.parseJSON(data);
             if (jsonResponse === null) {
@@ -355,7 +355,7 @@ $(document).ready(function () {
     'use strict';
     midas.community.manage.initCommunityPrivacy();
 
-    $("#tabsGeneric").tabs({
+    $('#tabsGeneric').tabs({
         select: function (event, ui) {
             $('div.genericAction').show();
             $('div.genericCommunities').show();
@@ -367,7 +367,7 @@ $(document).ready(function () {
             $('td.tdUser input').removeAttr('checked');
         }
     });
-    $("#tabsGeneric").show();
+    $('#tabsGeneric').show();
     $('img.tabsLoading').hide();
 
     $('a#communityDeleteLink').click(function () {
@@ -385,7 +385,7 @@ $(document).ready(function () {
             location.replace(json.global.webroot + '/community/delete?communityId=' + encodeURIComponent(json.community.community_id));
         });
         $('input.deleteCommunityNo').unbind('click').click(function () {
-            $("div.MainDialog").dialog('close');
+            $('div.MainDialog').dialog('close');
         });
     });
 
@@ -415,8 +415,8 @@ $(document).ready(function () {
     $('table').filter(function () {
         return this.id.match(/browseTable*/);
     }).treeTable();
-    $("img.tableLoading").hide();
-    $("table#browseTable").show();
+    $('img.tableLoading').hide();
+    $('table#browseTable').show();
     $('div.userPersonalData').hide();
 
     midas.community.manage.initDragAndDrop();

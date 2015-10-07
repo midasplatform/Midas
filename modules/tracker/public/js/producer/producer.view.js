@@ -29,7 +29,7 @@ $(document).ready(function () {
             $('img.deletingProducer').show();
             $.post(json.global.webroot + '/tracker/producer/delete', {
                 producerId: json.tracker.producer.producer_id
-            }, function (retVal) {
+            }, function (_) {
                 // Use location.replace so we remove this page from back button history
                 window.location.replace(json.global.webroot + '/community/' + encodeURIComponent(json.tracker.producer.community_id) + '#Trackers');
             });

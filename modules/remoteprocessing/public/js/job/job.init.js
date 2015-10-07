@@ -66,8 +66,8 @@ function onFinishCallback() {
         $(this).after('<img  src="' + json.global.webroot + '/core/public/images/icons/loading.gif" alt="Saving..." />');
         $(this).remove();
         $.ajax({
-            type: "POST",
-            url: json.global.webroot + "/remoteprocessing/job/init?itemId=" + encodeURIComponent($('#selectedExecutableId').val()),
+            type: 'POST',
+            url: json.global.webroot + '/remoteprocessing/job/init?itemId=' + encodeURIComponent($('#selectedExecutableId').val()),
             data: req,
             success: function (x) {
                 window.location.replace($('.webroot').val() + '/remoteprocessing/job/manage');
@@ -75,7 +75,7 @@ function onFinishCallback() {
         });
     }
     else {
-        midas.createNotice("There are some errors.", 4000);
+        midas.createNotice('There are some errors.', 4000);
     }
 }
 
@@ -85,7 +85,7 @@ function validateSteps(stepnumber) {
     // validate step 1
     if (stepnumber == 2) {
         if ($('#selectedExecutableId').val() == '' || executableValid === false || isExecutableMeta === false) {
-            midas.createNotice("Please select an Executable and set its Option information", 4000);
+            midas.createNotice('Please select an Executable and set its Option information', 4000);
             isStepValid = false;
         }
     }
@@ -94,7 +94,7 @@ function validateSteps(stepnumber) {
         var i = 0;
         results = [];
         if ($('#jobName').val() == '') {
-            midas.createNotice('Please set the job\'s name.', 4000);
+            midas.createNotice('Please set the job name.', 4000);
             isStepValid = false;
         }
         $('.optionWrapper').each(function () {
@@ -112,7 +112,7 @@ function validateSteps(stepnumber) {
                         isStepValid = false;
                     }
                 }
-                else if ($(this).find('.nameOutputOption').val().indexOf(".") == -1) {
+                else if ($(this).find('.nameOutputOption').val().indexOf('.') == -1) {
                     if (required) {
                         midas.createNotice('Please set an extension in the option ' + $(this).attr('name'), 4000);
                     }
@@ -186,7 +186,7 @@ function onShowStepCallback(obj) {
     var step_num = obj.attr('rel'); // get the current step number
     if (step_num == 2) {
         $('#browseExecutableFile').click(function () {
-            midas.loadDialog("selectitem_executable", "/browse/selectitem");
+            midas.loadDialog('selectitem_executable', '/browse/selectitem');
             midas.showDialog('Browse');
             currentBrowser = 'executable';
         });
@@ -210,19 +210,19 @@ function loadRecentUpload() {
             $('#recentuploadContentBlock').html('');
             return;
         }
-        var html = "<br/><br/><b>Or select a Recently Uploaded File:</b><ul>";
+        var html = '<br/><br/><b>Or select a Recently Uploaded File:</b><ul>';
 
         $('#recentuploadContentBlock').html('<ul>');
         $.each(data, function (key, val) {
             html += '<li class="recentUploadItemLi" element="' + val.item_id + '"><a>' + val.name + '</a></li>';
         });
-        html += "</ul>";
+        html += '</ul>';
         $('#recentuploadContentBlock').html(html);
 
         $('.recentUploadItemLi').click(function () {
             $('#selectedExecutable').html($(this).find('a').html());
             $('#selectedExecutableId').val($(this).attr('element'));
-            midas.createNotice("Please set the executable meta informaiton.", 4000);
+            midas.createNotice('Please set the executable meta informaiton.', 4000);
             $('#metaPageBlock').load(json.global.webroot + '/remoteprocessing/executable/define?itemId=' + encodeURIComponent($(this).attr('element')));
             $('#metaWrapper').show();
             isExecutableMeta = false;
@@ -234,7 +234,7 @@ function loadRecentUpload() {
 function initExecutableForm() {
     'use strict';
     inittializedExecutableForm = true;
-    $("#datepicker").datetimepicker();
+    $('#datepicker').datetimepicker();
     $('#ui-datepicker-div').hide();
     $('#checkboxSchedule').change(function () {
         if (!$(this).is(':checked')) {
@@ -246,19 +246,19 @@ function initExecutableForm() {
     });
 
     $('.selectInputFileLink').click(function () {
-        midas.loadDialog("selectitem_" + $(this).attr('order'), "/browse/selectitem");
+        midas.loadDialog('selectitem_' + $(this).attr('order'), '/browse/selectitem');
         midas.showDialog('Browse');
         currentBrowser = $(this).attr('order');
     });
 
     $('.selectOutputFolderLink').click(function () {
-        midas.loadDialog("selectfolder_" + $(this).attr('order'), "/browse/selectfolder?policy=write");
+        midas.loadDialog('selectfolder_' + $(this).attr('order'), '/browse/selectfolder?policy=write');
         midas.showDialog('Browse');
         currentBrowser = $(this).attr('order');
     });
 
     $('.selectInputFolderLink').click(function () {
-        midas.loadDialog("selectfolder_" + $(this).attr('order'), "/browse/selectfolder?policy=read");
+        midas.loadDialog('selectfolder_' + $(this).attr('order'), '/browse/selectfolder?policy=read');
         midas.showDialog('Browse');
         currentBrowser = $(this).attr('order');
     });
@@ -274,32 +274,32 @@ function itemSelectionCallback(name, id) {
     if (currentBrowser == 'executable') {
         $('#selectedExecutable').html(name);
         $('#selectedExecutableId').val(id);
-        $.post(json.global.webroot + "/remoteprocessing/job/validentry", {
-                entry: id,
-                type: "isexecutable"
-            },
+        $.post(json.global.webroot + '/remoteprocessing/job/validentry', {
+            entry: id,
+            type: 'isexecutable'
+        },
             function (data) {
                 if (data.search('true') != -1) {
                     executableValid = true;
-                    $.post(json.global.webroot + "/remoteprocessing/job/validentry", {
-                            entry: id,
-                            type: "ismeta"
-                        },
+                    $.post(json.global.webroot + '/remoteprocessing/job/validentry', {
+                        entry: id,
+                        type: 'ismeta'
+                    },
                         function (data) {
                             if (data.search('true') != -1) {
                                 isExecutableMeta = true;
                             }
                             else {
                                 isExecutableMeta = false;
-                                midas.createNotice("Please set the executable meta informaiton.", 4000);
-                                midas.loadDialog("meta_" + id, '/remoteprocessing/executable/define?itemId=' + encodeURIComponent(id));
-                                midas.showBigDialog("MetaInformation", false);
+                                midas.createNotice('Please set the executable meta informaiton.', 4000);
+                                midas.loadDialog('meta_' + id, '/remoteprocessing/executable/define?itemId=' + encodeURIComponent(id));
+                                midas.showBigDialog('MetaInformation', false);
                             }
                         });
                 }
                 else {
                     executableValid = false;
-                    midas.createNotice("The selected item is not a valid executable", 4000);
+                    midas.createNotice('The selected item is not a valid executable', 4000);
                 }
             });
 

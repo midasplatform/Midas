@@ -72,13 +72,13 @@ midas.solr.fetchTypes = function () {
     ajaxWebApi.ajax({
         method: 'midas.metadata.types.list',
         success: function (retVal) {
-            var typeCombo = $("#typeCombo");
+            var typeCombo = $('#typeCombo');
             var typeArray = retVal.data;
             var curType;
             var i;
             for (i = 0; i < typeArray.length; ++i) {
                 curType = typeArray[i];
-                typeCombo.append($('<option></option>').attr("value", curType).text(curType));
+                typeCombo.append($('<option></option>').attr('value', curType).text(curType));
             }
             typeCombo.change(function () {
                 midas.solr.fetchElements($(this).val());
@@ -96,24 +96,24 @@ midas.solr.fetchElements = function (type) {
     'use strict';
     if (type === 'type') {
         $('#elementCombo').empty()
-            .append($('<option></option>').attr("value", "element").text("Element"));
+            .append($('<option></option>').attr('value', 'element').text('Element'));
         $('#qualifierCombo').empty()
-            .append($('<option></option>').attr("value", "qualifier").text("Qualifier"));
+            .append($('<option></option>').attr('value', 'qualifier').text('Qualifier'));
         return;
     }
     ajaxWebApi.ajax({
         method: 'midas.metadata.elements.list',
         args: 'typename=' + type,
         success: function (retVal) {
-            var elementCombo = $("#elementCombo");
+            var elementCombo = $('#elementCombo');
             var elementArray = retVal.data;
             var curElement;
             var i;
             elementCombo.empty();
-            elementCombo.append($('<option></option>').attr("value", "element").text("Element"));
+            elementCombo.append($('<option></option>').attr('value', 'element').text('Element'));
             for (i = 0; i < elementArray.length; ++i) {
                 curElement = elementArray[i];
-                elementCombo.append($('<option></option>').attr("value", curElement).text(curElement));
+                elementCombo.append($('<option></option>').attr('value', curElement).text(curElement));
             }
             elementCombo.change(function () {
                 midas.solr.fetchQualifiers(type, $(this).val());
@@ -131,24 +131,24 @@ midas.solr.fetchQualifiers = function (type, element) {
     'use strict';
     if (type === 'type' || element === 'element') {
         $('#elementCombo').empty()
-            .append($('<option></option>').attr("value", "element").text("Element"));
+            .append($('<option></option>').attr('value', 'element').text('Element'));
         $('#qualifierCombo').empty()
-            .append($('<option></option>').attr("value", "qualifier").text("Qualifier"));
+            .append($('<option></option>').attr('value', 'qualifier').text('Qualifier'));
         return;
     }
     ajaxWebApi.ajax({
         method: 'midas.metadata.qualifiers.list',
         args: 'typename=' + type + '&element=' + element,
         success: function (retVal) {
-            var qualifierCombo = $("#qualifierCombo");
+            var qualifierCombo = $('#qualifierCombo');
             var qualifierArray = retVal.data;
             var curQualifier;
             var i;
             qualifierCombo.empty();
-            qualifierCombo.append($('<option></option>').attr("value", "qualifier").text("Qualifier"));
+            qualifierCombo.append($('<option></option>').attr('value', 'qualifier').text('Qualifier'));
             for (i = 0; i < qualifierArray.length; ++i) {
                 curQualifier = qualifierArray[i];
-                qualifierCombo.append($('<option></option>').attr("value", curQualifier).text(curQualifier));
+                qualifierCombo.append($('<option></option>').attr('value', curQualifier).text(curQualifier));
             }
         },
         error: function (retVal) {

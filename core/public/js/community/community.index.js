@@ -8,12 +8,12 @@ $(document).ready(function () {
     'use strict';
     $('a.createCommunity').click(function () {
         if (json.global.logged) {
-            midas.loadDialog("createCommunity", "/community/create");
+            midas.loadDialog('createCommunity', '/community/create');
             midas.showDialog(json.community.createCommunity, false);
         }
         else {
             midas.createNotice(json.community.contentCreateLogin, 4000);
-            $("div.TopDynamicBar").show('blind');
+            $('div.TopDynamicBar').show('blind');
             midas.loadAjaxDynamicBar('login', '/user/login');
         }
     });

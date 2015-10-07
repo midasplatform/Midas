@@ -10,7 +10,7 @@ midas.item.initElementMetaData = function () {
     $.each(midas.item.jsonMetadata[value], function (i, l) {
         availableTags.push(i);
     });
-    $("input[name=element]").autocomplete({
+    $('input[name=element]').autocomplete({
         source: availableTags,
         change: function () {
             midas.item.initElementMetaData();
@@ -28,7 +28,7 @@ midas.item.initQualifierMetaData = function () {
         availableTags.push(l.qualifier);
     });
 
-    $("input[name=qualifier]").autocomplete({
+    $('input[name=qualifier]').autocomplete({
         source: availableTags,
         change: function () {
             midas.item.initElementMetaData();

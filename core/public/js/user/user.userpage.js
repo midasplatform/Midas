@@ -5,7 +5,7 @@ midas.user = midas.user || {};
 
 $(document).ready(function () {
     'use strict';
-    $("#tabsGeneric").tabs({
+    $('#tabsGeneric').tabs({
         select: function (event, ui) {
             $('div.genericAction').show();
             $('div.genericCommunities').show();
@@ -16,10 +16,10 @@ $(document).ready(function () {
             $('div.viewAction').hide();
         }
     });
-    $("#tabsGeneric").show();
+    $('#tabsGeneric').show();
     $('img.tabsLoading').hide();
 
-    $("#browseTable").treeTable({
+    $('#browseTable').treeTable({
         onFirstInit: midas.enableRangeSelect,
         onNodeShow: midas.enableRangeSelect,
         onNodeHide: midas.enableRangeSelect
@@ -27,8 +27,8 @@ $(document).ready(function () {
 
     midas.browser.enableSelectAll();
 
-    $("img.tableLoading").hide();
-    $("table#browseTable").show();
+    $('img.tableLoading').hide();
+    $('table#browseTable').show();
 });
 
 // dependence: common/browser.js

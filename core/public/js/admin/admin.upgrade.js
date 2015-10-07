@@ -9,9 +9,7 @@ $('#upgradeMIDAS').ajaxForm({
     success: successUpgrade
 });
 
-function validateUpgrade(formData, jqForm, options) {
-
-}
+function validateUpgrade(formData, jqForm, options) {}
 
 function successUpgrade(responseText, statusText, xhr, form) {
     'use strict';
@@ -19,7 +17,7 @@ function successUpgrade(responseText, statusText, xhr, form) {
     try {
         jsonResponse = $.parseJSON(responseText);
     } catch (e) {
-        alert("An error occured. Please check the logs.");
+        alert('An error occured. Please check the logs.');
         return false;
     }
     if (jsonResponse === null) {

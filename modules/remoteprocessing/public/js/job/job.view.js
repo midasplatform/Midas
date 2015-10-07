@@ -16,7 +16,7 @@ $(document).ready(function () {
         $('#tableXml').dataTable();
 
         $('.showInDialog').click(function () {
-            midas.showBigDialogWithContent('Output', '<pre>' + $(this).attr('output').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") + '</pre>', true);
+            midas.showBigDialogWithContent('Output', '<pre>' + $(this).attr('output').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</pre>', true);
         });
 
         initMetrics();
@@ -35,7 +35,7 @@ $(document).ready(function () {
         });
         qtip.qtip('toggle', true);
         $.ajax({
-            type: "POST",
+            type: 'POST',
             url: json.global.webroot + '/browse/getelementinfo',
             data: {
                 type: 'item',
@@ -74,11 +74,11 @@ function initMetrics() {
             max: max.toFixed(2),
             values: [0.00, max.toFixed(2)],
             slide: function (event, ui) {
-                $('#' + thisObj.attr('name') + '').html("<span class='spanmin'>" + (Math.round(ui.values[0] * 100) / 100) + "</span> - <span class='spanmax'>" + (Math.round(ui.values[1] * 100) / 100) + "</span>");
+                $('#' + thisObj.attr('name') + '').html('<span class="spanmin">' + (Math.round(ui.values[0] * 100) / 100) + '</span> - <span class="spanmax">' + (Math.round(ui.values[1] * 100) / 100) + '</span>');
                 processXmlTableColors();
             }
         });
-        $('#' + $(this).attr('name') + '').html("<span class='spanmin'>0.00</span> - <span class='spanmax'>" + max.toFixed(2) + "</span>");
+        $('#' + $(this).attr('name') + '').html('<span class="spanmin">0.00</span> - <span class="spanmax">' + max.toFixed(2) + '</span>');
     });
 }
 

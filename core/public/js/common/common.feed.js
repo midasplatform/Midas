@@ -25,14 +25,14 @@ $(document).ready(function () {
         $('input.deleteFeedYes').unbind('click').click(function () {
             var elementId = $(this).attr('element');
             $.post(json.global.webroot + '/feed/deleteajax', {
-                    feed: $(this).attr('element')
-                },
+                feed: $(this).attr('element')
+            },
                 function (data) {});
             $('div.feedElement[element=' + elementId + ']').remove();
-            $("div.MainDialog").dialog('close');
+            $('div.MainDialog').dialog('close');
         });
         $('input.deleteFeedNo').unbind('click').click(function () {
-            $("div.MainDialog").dialog('close');
+            $('div.MainDialog').dialog('close');
         });
     });
 });

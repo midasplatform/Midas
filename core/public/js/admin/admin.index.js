@@ -20,9 +20,9 @@ midas.admin.initModulesConfigLinks = function () {
 /** On assetstore add response */
 midas.admin.assetstoreAddCallback = function (responseText, statusText, xhr, $form) {
     'use strict';
-    $(".assetstoreLoading").hide();
+    $('.assetstoreLoading').hide();
     if (responseText.error) {
-        $(".addAssetstoreFormError").html('Error: ' + responseText.error).show();
+        $('.addAssetstoreFormError').html('Error: ' + responseText.error).show();
     }
     else if (responseText.msg) {
         $(document).trigger('hideCluetip');
@@ -41,25 +41,25 @@ midas.admin.assetstoreSubmit = function (formData, jqForm, options) {
     // Add the type is the one in the main page (because it's hidden in the assetstore add page)
     var assetstoretype = {};
     assetstoretype.name = 'type';
-    assetstoretype.value = $("#importassetstoretype").val();
+    assetstoretype.value = $('#importassetstoretype').val();
     formData.push(assetstoretype);
-    $(".assetstoreLoading").show();
-    $(".addAssetstoreFormError").html('').hide();
+    $('.assetstoreLoading').show();
+    $('.addAssetstoreFormError').html('').hide();
 }; // end assetstoreBeforeSubmit
 
 /** When the cancel is clicked in the new assetstore window */
 midas.admin.newAssetstoreShow = function () {
     'use strict';
     var assetstoretype = $('select#importassetstoretype option:selected').val();
-    $('#assetstoretype').find('option:selected').removeAttr("selected");
-    $('#assetstoretype').find('option[value=' + assetstoretype + ']').attr("selected", "selected");
+    $('#assetstoretype').find('option:selected').removeAttr('selected');
+    $('#assetstoretype').find('option[value=' + assetstoretype + ']').attr('selected', 'selected');
 }; // end function newAssetstoreShow
 
 /** When the cancel is clicked in the new assetstore window */
 midas.admin.newAssetstoreHide = function () {
     'use strict';
     $(document).trigger('hideCluetip');
-}; // end function newAssetstoreHide
+};
 
 midas.admin.validateConfig = function (formData, jqForm, options) {};
 
@@ -70,7 +70,7 @@ midas.admin.successConfig = function (responseText, statusText, xhr, form) {
         jsonResponse = $.parseJSON(responseText);
     }
     catch (e) {
-        midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
+        midas.createNotice('An error occured. Please check the logs.', 4000, 'error');
         return false;
     }
     if (jsonResponse === null) {
@@ -87,15 +87,15 @@ midas.admin.successConfig = function (responseText, statusText, xhr, form) {
 
 $(document).ready(function () {
     'use strict';
-    midas.admin.tabs = $("#tabsGeneric").tabs({});
-    $("#tabsGeneric").show();
+    midas.admin.tabs = $('#tabsGeneric').tabs({});
+    $('#tabsGeneric').show();
     $('img.tabsLoading').hide();
 
     $('.defaultAssetstoreLink').click(function () {
         $.post(json.global.webroot + '/assetstore/defaultassetstore', {
-                submitDefaultAssetstore: true,
-                element: $(this).attr('element')
-            },
+            submitDefaultAssetstore: true,
+            element: $(this).attr('element')
+        },
             function (data) {
                 var jsonResponse = $.parseJSON(data);
                 if (jsonResponse === null) {
@@ -126,9 +126,9 @@ $(document).ready(function () {
         midas.showDialogWithContent('Remove Assetstore', html, false);
 
         $('input.deleteAssetstoreYes').unbind('click').click(function () {
-            $("div.MainDialog").dialog('close');
+            $('div.MainDialog').dialog('close');
             midas.ajaxSelectRequest = $.ajax({
-                type: "POST",
+                type: 'POST',
                 url: json.global.webroot + '/assetstore/delete',
                 data: {
                     assetstoreId: element
@@ -144,7 +144,7 @@ $(document).ready(function () {
             });
         });
         $('input.deleteAssetstoreNo').unbind('click').click(function () {
-            $("div.MainDialog").dialog('close');
+            $('div.MainDialog').dialog('close');
         });
     });
 
@@ -163,7 +163,7 @@ $(document).ready(function () {
 
         $('input#assetstoreSubmit').unbind('click').click(function () {
             midas.ajaxSelectRequest = $.ajax({
-                type: "POST",
+                type: 'POST',
                 url: json.global.webroot + '/assetstore/edit',
                 data: {
                     assetstoreId: element,
@@ -184,7 +184,7 @@ $(document).ready(function () {
             });
         });
         $('input.deleteAssetstoreNo').unbind('click').click(function () {
-            $("div.MainDialog").dialog('close');
+            $('div.MainDialog').dialog('close');
         });
     });
 
@@ -224,7 +224,7 @@ $(document).ready(function () {
                             modulename: l,
                             modulevalue: modulevalue
                         });
-                        midas.createNotice("Dependancy: Enabling module " + l, 1500);
+                        midas.createNotice('Dependancy: Enabling module ' + l, 1500);
                     }
                     $('input[module=' + l + ']').attr('checked', true);
                 }
@@ -248,7 +248,7 @@ $(document).ready(function () {
             $.each(moduleDependencies, function (i, l) {
                 if (l != '') {
                     found = true;
-                    midas.createNotice("Dependency: The module " + l + " requires " + mainModule + ". You must disable it first.", 4000, 'warning');
+                    midas.createNotice('Dependency: The module ' + l + ' requires ' + mainModule + '. You must disable it first.', 4000, 'warning');
                 }
             });
             if (found) {
@@ -258,10 +258,10 @@ $(document).ready(function () {
         }
 
         $.post(json.global.webroot + '/admin/index', {
-                submitModule: true,
-                modulename: $(this).attr('module'),
-                modulevalue: modulevalue
-            },
+            submitModule: true,
+            modulename: $(this).attr('module'),
+            modulevalue: modulevalue
+        },
             function (data) {
                 var jsonResponse = $.parseJSON(data);
                 if (jsonResponse === null) {

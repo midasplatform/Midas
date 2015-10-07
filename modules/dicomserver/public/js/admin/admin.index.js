@@ -33,7 +33,7 @@ midas.dicomserver.start = function (email, apikey) {
             midas.createNotice(retVal.data.message, 4000);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            midas.createNotice("Failed to start storescp or dcmqrscp!", 3000, 'error');
+            midas.createNotice('Failed to start storescp or dcmqrscp!', 3000, 'error');
             $('textarea#apicall_failure_reason').html(XMLHttpRequest.message);
             $('div#apicall_failure').show();
             $('div#hideError').show();
@@ -89,7 +89,7 @@ midas.dicomserver.stop = function () {
             midas.createNotice(retVal.data.message, 4000);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            midas.createNotice("Execution of storescp stop script failed!", 3000, 'error');
+            midas.createNotice('Execution of storescp stop script failed!', 3000, 'error');
             $('textarea#apicall_failure_reason').html(XMLHttpRequest.message);
             $('div#apicall_failure').show();
             $('div#hideError').show();
@@ -128,7 +128,7 @@ midas.dicomserver.checkStatus = function () {
             '&dcmqrscp_cmd=' + dcmqrscp_val,
         log: $('<p></p>'),
         success: function (retVal) {
-            if (retVal.data.status === 3 || retVal.data.status === "3") {
+            if (retVal.data.status === 3 || retVal.data.status === '3') {
                 $('span#not_running_status').hide();
                 $('span#only_storescp_running_status').hide();
                 $('span#only_dcmqrscp_running_status').hide();
@@ -136,21 +136,21 @@ midas.dicomserver.checkStatus = function () {
                 $('span#span_start_server_user').html(retVal.data.user_email);
                 $('div#start_server_user').show();
             }
-            else if (retVal.data.status === 2 || retVal.data.status === "2") {
+            else if (retVal.data.status === 2 || retVal.data.status === '2') {
                 $('span#not_running_status').hide();
                 $('span#only_storescp_running_status').hide();
                 $('span#only_dcmqrscp_running_status').show();
                 $('span#running_status').hide();
                 $('div#start_server_user').hide();
             }
-            else if (retVal.data.status === 1 || retVal.data.status === "1") {
+            else if (retVal.data.status === 1 || retVal.data.status === '1') {
                 $('span#not_running_status').hide();
                 $('span#only_storescp_running_status').show();
                 $('span#only_dcmqrscp_running_status').hide();
                 $('span#span_start_server_user').html(retVal.data.user_email);
                 $('div#start_server_user').show();
             }
-            else if (retVal.data.status === 0 || retVal.data.status === "0") {
+            else if (retVal.data.status === 0 || retVal.data.status === '0') {
                 $('span#not_running_status').show();
                 $('span#only_storescp_running_status').hide();
                 $('span#only_dcmqrscp_running_status').hide();
@@ -188,11 +188,11 @@ $(document).ready(function () {
         midas.showDialogWithContent('Start DICOM server', html, false);
 
         $('input.startServerYes').unbind('click').click(function () {
-            $("div.MainDialog").dialog('close');
+            $('div.MainDialog').dialog('close');
             midas.dicomserver.start();
         });
         $('input.startServerNo').unbind('click').click(function () {
-            $("div.MainDialog").dialog('close');
+            $('div.MainDialog').dialog('close');
         });
     });
 
@@ -206,11 +206,11 @@ $(document).ready(function () {
         midas.showDialogWithContent('Stop DICOM server', html, false);
 
         $('input.stopServerYes').unbind('click').click(function () {
-            $("div.MainDialog").dialog('close');
+            $('div.MainDialog').dialog('close');
             midas.dicomserver.stop();
         });
         $('input.stopServerNo').unbind('click').click(function () {
-            $("div.MainDialog").dialog('close');
+            $('div.MainDialog').dialog('close');
         });
     });
 

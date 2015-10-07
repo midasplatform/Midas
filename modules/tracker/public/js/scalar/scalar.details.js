@@ -6,7 +6,7 @@ var midas = midas || {};
 
 $('#deleteScalar').click(function () {
     'use strict';
-    var html = "Are you sure you want to delete this scalar value?";
+    var html = 'Are you sure you want to delete this scalar value?';
     html += '<div style="float: right; margin-top: 15px;">';
     html += '<input type="button" style="margin-left: 0;" class="globalButton" id="deleteScalarYes" value="Yes" />';
     html += '<input type="button" style="margin-left: 10px;" class="globalButton" id="deleteScalarNo" value="Cancel" />';
@@ -15,8 +15,8 @@ $('#deleteScalar').click(function () {
     midas.showDialogWithContent('Confirm delete scalar', html, false);
     $('#deleteScalarYes').click(function () {
         $.post(json.global.webroot + '/tracker/scalar/delete', {
-                scalarId: $('input.scalarIdChild').val()
-            },
+            scalarId: $('input.scalarIdChild').val()
+        },
             function (data) {
                 var jsonResponse = $.parseJSON(data);
                 if (jsonResponse === null) {

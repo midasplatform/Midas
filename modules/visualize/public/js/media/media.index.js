@@ -4,42 +4,41 @@
 
 $(document).ready(function () {
     'use strict';
-    json = $.parseJSON($('div.jsonContent').html());
     if (json.type == 'mp3') {
-        $("#jquery_jplayer_1").jPlayer({
+        $('#jquery_jplayer_1').jPlayer({
             ready: function () {
-                $(this).jPlayer("setMedia", {
-                    mp3: json.global.webroot + "/download?items=" + encodeURIComponent(json.itemId)
+                $(this).jPlayer('setMedia', {
+                    mp3: json.global.webroot + '/download?items=' + encodeURIComponent(json.itemId)
                 });
             }
         });
     }
     if (json.type == 'm4a') {
-        $("#jquery_jplayer_1").jPlayer({
+        $('#jquery_jplayer_1').jPlayer({
             ready: function () {
-                $(this).jPlayer("setMedia", {
-                    m4a: json.global.webroot + "/download?items=" + encodeURIComponent(json.itemId)
+                $(this).jPlayer('setMedia', {
+                    m4a: json.global.webroot + '/download?items=' + encodeURIComponent(json.itemId)
                 });
             },
-            ended: function (event) {
+            ended: function (_) {
             },
-            swfPath: json.global.moduleWebroot + "/public/js/jquery",
-            supplied: "m4a, oga"
+            swfPath: json.global.moduleWebroot + '/public/js/jquery',
+            supplied: 'm4a, oga'
         });
     }
     if (json.type == 'm4v') {
-        $("#jquery_jplayer_1").jPlayer({
+        $('#jquery_jplayer_1').jPlayer({
             ready: function () {
-                $(this).jPlayer("setMedia", {
-                    m4v: json.global.webroot + "/download?items=" + encodeURIComponent(json.itemId)
+                $(this).jPlayer('setMedia', {
+                    m4v: json.global.webroot + '/download?items=' + encodeURIComponent(json.itemId)
                 });
             },
-            ended: function (event) {
-                $(this).jPlayer("play");
+            ended: function (_) {
+                $(this).jPlayer('play');
             },
-            swfPath: json.global.webroot + "/modules/visualize/public/js/jquery",
-            solution: "flash, html",
-            supplied: "m4v, ogv"
+            swfPath: json.global.webroot + '/modules/visualize/public/js/jquery',
+            solution: 'flash, html',
+            supplied: 'm4v, ogv'
         });
     }
 });

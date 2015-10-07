@@ -4,8 +4,8 @@ var midas = midas || {};
 midas.sizequota = midas.sizequota || {};
 midas.sizequota.folder = midas.sizequota.folder || {};
 midas.sizequota.constant = {
-    MIDAS_SIZEQUOTA_USE_DEFAULT_QUOTA: "0",
-    MIDAS_SIZEQUOTA_USE_SPECIFIC_QUOTA: "1"
+    MIDAS_SIZEQUOTA_USE_DEFAULT_QUOTA: '0',
+    MIDAS_SIZEQUOTA_USE_SPECIFIC_QUOTA: '1'
 };
 
 midas.sizequota.folder.validateConfig = function (formData, jqForm, options) {};
@@ -17,7 +17,7 @@ midas.sizequota.folder.successConfig = function (responseText, statusText, xhr, 
         jsonResponse = $.parseJSON(responseText);
     }
     catch (e) {
-        midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
+        midas.createNotice('An error occured. Please check the logs.', 4000, 'error');
         return false;
     }
     if (jsonResponse === null) {

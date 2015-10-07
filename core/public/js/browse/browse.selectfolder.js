@@ -26,7 +26,7 @@ midas.browse.selectFolderToggleButton = function (on) {
     }
 };
 
-$("#moveTable").treeTable({
+$('#moveTable').treeTable({
     callbackSelect: selectFolderCallbackSelect,
     callbackDblClick: selectFolderCallbackDblClick,
     callbackReloadNode: selectFolderCallbackReloadNode,
@@ -34,8 +34,8 @@ $("#moveTable").treeTable({
     callbackCustomElements: selectFolderCallbackCustomElements,
     pageLength: 99999 // do not page this table (preserves old functionality)
 });
-$("div.MainDialogContent img.tableLoading").hide();
-$("table#moveTable").show();
+$('div.MainDialogContent img.tableLoading').hide();
+$('table#moveTable').show();
 
 if ($('div.MainDialogContent #selectElements') !== undefined) {
     $('div.MainDialogContent #selectElements').click(function () {
@@ -51,7 +51,7 @@ if ($('div.MainDialogContent #selectElements') !== undefined) {
         $('#destinationId').val(folderId);
         $('.destinationUpload').html(folderName);
         $('.destinationId').val(folderId);
-        $("div.MainDialog").dialog('close');
+        $('div.MainDialog').dialog('close');
 
         if (typeof folderSelectionCallback == 'function') {
             folderSelectionCallback(folderName, folderId);
@@ -73,8 +73,8 @@ function selectFolderCallbackSelect(node) {
         parent = null;
         var classNames = current[0].className.split(' ');
         for (var key in classNames) {
-            if (classNames[key].match("child-of-")) {
-                parent = $("div.MainDialogContent #" + classNames[key].substring(9));
+            if (classNames[key].match('child-of-')) {
+                parent = $('div.MainDialogContent #' + classNames[key].substring(9));
             }
         }
         if (parent !== null) {
@@ -170,9 +170,9 @@ function selectFolderCallbackCustomElements(node, elements) {
     var padding = parseInt(node.find('td:first').css('padding-left').slice(0, -2));
     var html = '';
     $.each(elements.folders, function (index, value) {
-        html += "<tr id='" + id + "-" + i + "' class='parent child-of-" + id + "' ajax='" + value.folder_id + "'type='folder' element='" + value.folder_id + "'>";
-        html += "  <td><span class='folder'>" + trimName(value.name, padding) + "</span></td>";
-        html += "</tr>";
+        html += '<tr id="' + id + '-' + i + '" class="parent child-of-' + id + '" ajax="' + value.folder_id + '"type="folder" element="' + value.folder_id + '">';
+        html += '  <td><span class="folder">' + trimName(value.name, padding) + '</span></td>';
+        html += '</tr>';
         i++;
     });
     return html;

@@ -15,7 +15,7 @@ midas.dcma.sendParentToJavaSession = function () {
 
 $('.browseMIDASLink').click(function () {
     'use strict';
-    midas.loadDialog("select", "/browse/selectfolder?policy=write");
+    midas.loadDialog('select', '/browse/selectfolder?policy=write');
     midas.showDialog('Browse', null, {
         close: function () {
             $('.uploadApplet').show();

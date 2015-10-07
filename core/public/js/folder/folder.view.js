@@ -6,7 +6,7 @@ var midas = midas || {};
 
 $(document).ready(function () {
     'use strict';
-    $("#browseTable").treeTable({
+    $('#browseTable').treeTable({
         onFirstInit: midas.enableRangeSelect,
         onNodeShow: midas.enableRangeSelect,
         onNodeHide: midas.enableRangeSelect
@@ -23,11 +23,11 @@ $(document).ready(function () {
     });
 
     $('a.sharingLink').click(function () {
-        midas.loadDialog("sharing" + $(this).attr('type') + $(this).attr('element'), "/share/dialog?type=" + encodeURIComponent($(this).attr('type')) + '&element=' + encodeURIComponent($(this).attr('element')));
+        midas.loadDialog('sharing' + $(this).attr('type') + $(this).attr('element'), '/share/dialog?type=' + encodeURIComponent($(this).attr('type')) + '&element=' + encodeURIComponent($(this).attr('element')));
         midas.showDialog(json.browse.share);
     });
     $('a.getResourceLinks').click(function () {
-        midas.loadDialog("links" + $(this).attr('type') + $(this).attr('element'), '/share/links?type=' + encodeURIComponent($(this).attr('type')) + '&id=' + encodeURIComponent($(this).attr('element')));
+        midas.loadDialog('links' + $(this).attr('type') + $(this).attr('element'), '/share/links?type=' + encodeURIComponent($(this).attr('type')) + '&id=' + encodeURIComponent($(this).attr('element')));
         midas.showDialog('Link to this item');
     });
     $('a.uploadInFolder').click(function () {
@@ -61,11 +61,11 @@ $(document).ready(function () {
      */
     midas.browser.enableSelectAll();
 
-    $("img.tableLoading").hide();
-    $("table#browseTable").show();
+    $('img.tableLoading').hide();
+    $('table#browseTable').show();
 
-    $("#tabsGeneric").tabs();
-    $("#tabsGeneric").show();
+    $('#tabsGeneric').tabs();
+    $('#tabsGeneric').show();
 
     if ($('.pathBrowser li').length > 5) {
         while ($('.pathBrowser li').length > 5) {

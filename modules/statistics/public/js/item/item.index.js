@@ -1,6 +1,8 @@
 // Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global google */
 /* global json */
+/* global MarkerClusterer */
 
 var midas = midas || {};
 midas.statistics = midas.statistics || {};
@@ -52,7 +54,7 @@ midas.statistics.populateMap = function (responseText, statusText, xhr, form) {
         $('#filteredCount').html(html);
     }
     catch (e) {
-        alert("An error occured. Please check the logs.");
+        alert('An error occured. Please check the logs.');
         return false;
     } finally {
         $('input.filterButton').removeAttr('disabled');
@@ -62,7 +64,7 @@ midas.statistics.populateMap = function (responseText, statusText, xhr, form) {
 
 $(document).ready(function () {
     'use strict';
-    var tabs = $("#tabsGeneric").tabs({
+    var tabs = $('#tabsGeneric').tabs({
         select: function (event, ui) {}
     });
     $('#tabsGeneric').show();
@@ -109,19 +111,19 @@ $(document).ready(function () {
     midas.statistics.clusterer = new MarkerClusterer(midas.statistics.map, midas.statistics.mapMarkers);
 
     // Set up smart date picker widget logic
-    var dates = $("#startdate, #enddate").datepicker({
-        defaultDate: "today",
+    var dates = $('#startdate, #enddate').datepicker({
+        defaultDate: 'today',
         changeMonth: true,
         numberOfMonths: 1,
         onSelect: function (selectedDate) {
-            var option = this.id == "startdate" ? "minDate" : "maxDate";
-            var instance = $(this).data("datepicker");
+            var option = this.id == 'startdate' ? 'minDate' : 'maxDate';
+            var instance = $(this).data('datepicker');
             var date = $.datepicker.parseDate(
                 instance.settings.dateFormat || $.datepicker._defaults.dateFormat,
                 selectedDate, instance.settings);
-            dates.not(this).datepicker("option", option, date);
+            dates.not(this).datepicker('option', option, date);
         },
-        dayNamesMin: ["S", "M", "T", "W", "T", "F", "S"]
+        dayNamesMin: ['S', 'M', 'T', 'W', 'T', 'F', 'S']
     });
 
     $('#downloadResultLimit').spinbox({

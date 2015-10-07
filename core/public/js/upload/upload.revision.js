@@ -114,10 +114,9 @@ midas.upload.revision.initHtml5FileUpload = function () {
         var url = json.global.webroot + '/api/json?method=midas.upload.perform&uploadtoken=' +
             encodeURIComponent(uploadToken) + '&length=' + encodeURIComponent(file.size) + '&filename=' + encodeURIComponent(file.name);
         var changes = $('#revisionChanges').val();
-        if(changes) {
+        if (changes) {
             url += '&changes=' + encodeURIComponent(changes);
         }
-        console.log(url);
 
         resumeUploadId = uploadToken;
 
@@ -238,7 +237,6 @@ midas.upload.revision.initHtml5FileUpload = function () {
             $('div.uploadValidationError b').text('Could not connect to the server to resume upload.');
             $('div.uploadValidationError').show();
             $('#startUploadLink').removeClass('disabled');
-            console.log(resp);
         });
     };
 };
@@ -252,11 +250,11 @@ $('.uploadTabs').tabs({
         success: function () {
             'use strict';
             $('div.MainDialogLoading').hide();
-            $(".uploadTabs").show();
+            $('.uploadTabs').show();
         },
         error: function (xhr, status, index, anchor) {
             'use strict';
-            $(anchor.hash).html("Couldn't load this tab. ");
+            $(anchor.hash).html('Could not load this tab. ');
         }
     }
 });

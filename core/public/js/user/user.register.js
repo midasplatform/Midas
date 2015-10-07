@@ -8,8 +8,8 @@ var jsonRegister = $.parseJSON($('div.jsonRegister').html());
 $('label.termLabel').after($('div.termDiv').html());
 $('a.termOfService').click(function () {
     'use strict';
-    midas.loadDialog("terms", "/user/termofservice");
-    midas.showBigDialog("Terms of Service");
+    midas.loadDialog('terms', '/user/termofservice');
+    midas.showBigDialog('Terms of Service');
 });
 
 $('#registerForm').find('input').each(function () {
@@ -36,7 +36,7 @@ function checkAll(obj) {
             email = false;
         }
         else {
-            $.post(json.global.webroot + "/user/userexists", {
+            $.post(json.global.webroot + '/user/userexists', {
                 entry: obj.val()
             }, function (data) {
                 if (data.search('true') != -1) {

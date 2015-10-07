@@ -5,7 +5,7 @@
 var midas = midas || {};
 midas.invite = midas.invite || {};
 
-midas.invite.directAdd = $("#directAdd").val();
+midas.invite.directAdd = $('#directAdd').val();
 
 /**
  * Render group selection dialog for the community
@@ -34,14 +34,14 @@ midas.invite.showGroupSelect = function (item) {
 };
 
 // Live search
-$.widget("custom.catcomplete", $.ui.autocomplete, {
+$.widget('custom.catcomplete', $.ui.autocomplete, {
     _renderMenu: function (ul, items) {
         'use strict';
         var self = this,
-            currentCategory = "";
+            currentCategory = '';
         $.each(items, function (index, item) {
             if (item.category != currentCategory) {
-                ul.append('<li class="search-category">' + item.category + "</li>");
+                ul.append('<li class="search-category">' + item.category + '</li>');
                 currentCategory = item.category;
             }
             self._renderItemData(ul, item);
@@ -52,7 +52,7 @@ $.widget("custom.catcomplete", $.ui.autocomplete, {
 var invitationSearchcache = {},
     lastShareXhr;
 
-$("#live_invitation_search").catcomplete({
+$('#live_invitation_search').catcomplete({
     minLength: 2,
     delay: 10,
     source: function (request, response) {
@@ -62,11 +62,11 @@ $("#live_invitation_search").catcomplete({
             response(invitationSearchcache[term]);
             return;
         }
-        $("#searchInvitationLoading").show();
+        $('#searchInvitationLoading').show();
 
-        lastShareXhr = $.getJSON($('.webroot').val() + "/search/live?userSearch=true&allowEmail",
+        lastShareXhr = $.getJSON($('.webroot').val() + '/search/live?userSearch=true&allowEmail',
             request, function (data, status, xhr) {
-                $("#searchInvitationLoading").hide();
+                $('#searchInvitationLoading').hide();
                 invitationSearchcache[term] = data;
                 if (xhr === lastShareXhr) {
                     response(data);

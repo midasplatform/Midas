@@ -208,7 +208,7 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
         }
 
         if ($('#destinationId').val() === undefined || $('#destinationId').val().length === 0) {
-            midas.createNotice("Please select where you want to upload your files.", 4000, 'warning');
+            midas.createNotice('Please select where you want to upload your files.', 4000, 'warning');
             return false;
         }
 
@@ -244,7 +244,6 @@ midas.upload.simpleupload.initHtml5FileUpload = function () {
             $('div.uploadValidationError b').text('Could not connect to the server to resume upload.');
             $('div.uploadValidationError').show();
             $('#startUploadLink').removeClass('disabled');
-            console.log(resp);
         });
     };
 };
@@ -258,11 +257,11 @@ $('.uploadTabs').tabs({
         success: function () {
             'use strict';
             $('div.MainDialogLoading').hide();
-            $(".uploadTabs").show();
+            $('.uploadTabs').show();
         },
         error: function (xhr, status, index, anchor) {
             'use strict';
-            $(anchor.hash).html("Couldn't load this tab. ");
+            $(anchor.hash).html('Could not load this tab. ');
         }
     }
 });
@@ -278,7 +277,7 @@ midas.upload.simpleupload.initHtml5FileUpload();
 
 $('.browseMIDASLink').click(function () {
     'use strict';
-    midas.loadDialog("select", "/browse/selectfolder/?policy=write");
+    midas.loadDialog('select', '/browse/selectfolder/?policy=write');
     midas.showDialog('Select upload destination');
 });
 

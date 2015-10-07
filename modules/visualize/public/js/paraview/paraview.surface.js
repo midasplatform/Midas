@@ -24,8 +24,7 @@ midas.visualize.start = function () {
     paraview.errorListener = {
         manageError: function (error) {
             if (error) {
-                midas.createNotice('A ParaViewWeb error occurred; check the console for information', 4000, 'error');
-                console.log(error);
+                midas.createNotice('A ParaViewWeb error occurred.', 4000, 'error');
                 return false;
             }
         }

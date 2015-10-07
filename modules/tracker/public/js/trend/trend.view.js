@@ -147,7 +147,7 @@ midas.tracker.renderChartArea = function (curveData, first) {
                     renderer: $.jqplot.DateAxisRenderer,
                     tickRenderer: $.jqplot.CanvasAxisTickRenderer,
                     tickOptions: {
-                        formatString: "%Y-%m-%d",
+                        formatString: '%Y-%m-%d',
                         angle: 270,
                         fontSize: '11px',
                         labelPosition: 'middle',
@@ -285,19 +285,19 @@ $(window).load(function () {
         }
     }
 
-    var dates = $("#startdate, #enddate").datepicker({
-        defaultDate: "today",
+    var dates = $('#startdate, #enddate').datepicker({
+        defaultDate: 'today',
         changeMonth: true,
         numberOfMonths: 1,
         onSelect: function (selectedDate) {
-            var option = this.id == "startdate" ? "minDate" : "maxDate";
-            var instance = $(this).data("datepicker");
+            var option = this.id == 'startdate' ? 'minDate' : 'maxDate';
+            var instance = $(this).data('datepicker');
             var date = $.datepicker.parseDate(
                 instance.settings.dateFormat || $.datepicker._defaults.dateFormat,
                 selectedDate, instance.settings);
-            dates.not(this).datepicker("option", option, date);
+            dates.not(this).datepicker('option', option, date);
         },
-        dayNamesMin: ["S", "M", "T", "W", "T", "F", "S"]
+        dayNamesMin: ['S', 'M', 'T', 'W', 'T', 'F', 'S']
     });
     $('#startdate').val(json.tracker.initialStartDate);
     $('#enddate').val(json.tracker.initialEndDate);

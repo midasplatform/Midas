@@ -46,11 +46,11 @@ midas.import.importCallback = function (responseText, statusText, xhr, form) {
     'use strict';
     if (responseText.stage === 'validate') {
         midas.import.stage = 'initialize';
-        $("#progress_status").html('Counting files (this could take some time)');
+        $('#progress_status').html('Counting files (this could take some time)');
         midas.import.formSubmitOptions.data = {
             initialize: '1'
         };
-        $("#importsubmit").html($("#importstop").val());
+        $('#importsubmit').html($('#importstop').val());
         $('#importForm').ajaxSubmit(midas.import.formSubmitOptions);
     }
     else if (responseText.stage === 'initialize') {
@@ -62,16 +62,16 @@ midas.import.importCallback = function (responseText, statusText, xhr, form) {
     }
     else if (responseText.error) {
         midas.import.stage = 'validate'; // goes back to the validate stage
-        $("#importsubmit").html(midas.import.importSubmitButtonValue);
-        $(".viewNotice").html(responseText.error);
-        $(".viewNotice").fadeIn(100).delay(2000).fadeOut(300);
+        $('#importsubmit').html(midas.import.importSubmitButtonValue);
+        $('.viewNotice').html(responseText.error);
+        $('.viewNotice').fadeIn(100).delay(2000).fadeOut(300);
     }
     else if (responseText.message) {
         midas.import.stage = 'validate'; // goes back to the validate stage
-        $("#progress_status").html('Import done');
-        $("#progress").progressbar("value", 100);
-        $(".viewNotice").html(responseText.message);
-        $(".viewNotice").fadeIn(100).delay(2000).fadeOut(300);
+        $('#progress_status').html('Import done');
+        $('#progress').progressbar('value', 100);
+        $('.viewNotice').html(responseText.message);
+        $('.viewNotice').fadeIn(100).delay(2000).fadeOut(300);
         $('#importsubmit').html(midas.import.importSubmitButtonValue);
     }
 };
@@ -81,8 +81,8 @@ midas.import.importCallback = function (responseText, statusText, xhr, form) {
  */
 midas.import.displayStopMessage = function (data) {
     'use strict';
-    $(".viewNotice").html('Import has been stopped.');
-    $(".viewNotice").fadeIn(100).delay(2000).fadeOut(300);
+    $('.viewNotice').html('Import has been stopped.');
+    $('.viewNotice').fadeIn(100).delay(2000).fadeOut(300);
 };
 
 /** If the button to start/stop the import has been clicked */
@@ -110,9 +110,9 @@ midas.import.assetstoreSubmit = function (formData, jqForm, options) {
     // Add the type is the one in the main page (because it's hidden in the assetstore add page)
     var assetstoretype = {};
     assetstoretype.name = 'assetstoretype';
-    assetstoretype.value = $("#importassetstoretype").val();
+    assetstoretype.value = $('#importassetstoretype').val();
     formData.push(assetstoretype);
-    $(".assetstoreLoading").show();
+    $('.assetstoreLoading').show();
 };
 
 /** On assetstore add success */
@@ -120,18 +120,18 @@ midas.import.assetstoreAddCallback = function (responseText, statusText, xhr, fo
     'use strict';
     var newassetstore = {};
 
-    $(".assetstoreLoading").hide();
+    $('.assetstoreLoading').hide();
     if (responseText.error) {
-        $(".viewNotice").html(responseText.error);
-        $(".viewNotice").fadeIn(100).delay(2000).fadeOut(100);
+        $('.viewNotice').html(responseText.error);
+        $('.viewNotice').fadeIn(100).delay(2000).fadeOut(100);
     }
     else if (responseText.msg) {
         $(document).trigger('hideCluetip');
         if (responseText.assetstore_id) {
-            $("#assetstore").append($("<option></option>")
-                .attr("value", responseText.assetstore_id)
+            $('#assetstore').append($('<option></option>')
+                .attr('value', responseText.assetstore_id)
                 .text(responseText.assetstore_name)
-                .attr("selected", "selected"));
+                .attr('selected', 'selected'));
 
             // Add to JSON
             newassetstore.assetstore_id = responseText.assetstore_id;
@@ -140,8 +140,8 @@ midas.import.assetstoreAddCallback = function (responseText, statusText, xhr, fo
             midas.import.assetstores.push(newassetstore);
         }
 
-        $(".viewNotice").html(responseText.msg);
-        $(".viewNotice").fadeIn(100).delay(2000).fadeOut(100);
+        $('.viewNotice').html(responseText.msg);
+        $('.viewNotice').fadeIn(100).delay(2000).fadeOut(100);
     }
 };
 
@@ -149,8 +149,8 @@ midas.import.assetstoreAddCallback = function (responseText, statusText, xhr, fo
 midas.import.newAssetstoreShow = function () {
     'use strict';
     var assetstoretype = $('select#importassetstoretype option:selected').val();
-    $('#assetstoretype').find('option:selected').removeAttr("selected");
-    $('#assetstoretype').find('option[value=' + assetstoretype + ']').attr("selected", "selected");
+    $('#assetstoretype').find('option:selected').removeAttr('selected');
+    $('#assetstoretype').find('option[value=' + assetstoretype + ']').attr('selected', 'selected');
 };
 
 /** When the cancel is clicked in the new assetstore window */
@@ -169,10 +169,10 @@ midas.import.inputDirectoryChanged = function () {
             .substr(0, $('#inputdirectory').val().length - 1)
             .replace(/^.*[\/\\]/g, '');
     }
-    $("#assetstorename").val(basename);
+    $('#assetstorename').val(basename);
 
     // set the input directory as the same
-    $("#assetstoreinputdirectory").val($('#inputdirectory').val());
+    $('#assetstoreinputdirectory').val($('#inputdirectory').val());
 };
 
 /** When the assetstore type list is changed */
@@ -182,16 +182,16 @@ midas.import.assetstoretypeChanged = function () {
         assetstoretype = $('select#importassetstoretype option:selected').val();
 
     // Set the same assetstore type for the new assetstore
-    $('#assetstoretype').find('option:selected').removeAttr("selected");
-    $('#assetstoretype').find('option[value=' + assetstoretype + ']').attr("selected", "selected");
+    $('#assetstoretype').find('option:selected').removeAttr('selected');
+    $('#assetstoretype').find('option[value=' + assetstoretype + ']').attr('selected', 'selected');
 
     // Clean the assetstore list
-    $("select#assetstore").find('option:not(:first)').remove();
+    $('select#assetstore').find('option:not(:first)').remove();
 
     for (i = 0; i < midas.import.assetstores.length; i += 1) {
         if (midas.import.assetstores[i].type === assetstoretype) {
-            $("select#assetstore").append($("<option></option>")
-                .attr("value", midas.import.assetstores[i].assetstore_id).text(midas.import.assetstores[i].name));
+            $('select#assetstore').append($('<option></option>')
+                .attr('value', midas.import.assetstores[i].assetstore_id).text(midas.import.assetstores[i].name));
         }
     }
 };
@@ -205,15 +205,15 @@ midas.import.makeProgressSuccessCallback = function (id) {
 
         if (html) {
             if (html.percent !== 'NA') {
-                $("#progress").show();
-                $("#progress_status").show();
+                $('#progress').show();
+                $('#progress_status').show();
 
-                $("#progress_status").html('Importing files ' + html.current +
+                $('#progress_status').html('Importing files ' + html.current +
                     '/' + html.max + ' (' + html.percent + '%)');
-                $("#progress").progressbar("value", html.percent);
+                $('#progress').progressbar('value', html.percent);
             }
         }
-        window.setTimeout("midas.import.checkProgress(" + id + ")", 3000);
+        window.setTimeout('midas.import.checkProgress(' + id + ')', 3000);
     };
 };
 
@@ -231,7 +231,7 @@ midas.import.checkProgress = function (id) {
     }
 
     $.ajax({
-        type: "GET",
+        type: 'GET',
         url: $('.webroot').val() + '/import/getprogress?id=' + encodeURIComponent(id),
         dataType: 'json',
         timeout: 10000000000,
@@ -272,13 +272,13 @@ $(document).ready(function () {
         onShow: midas.import.newAssetstoreShow
     });
 
-    $("#progress").progressbar();
+    $('#progress').progressbar();
 
     // Not possible to change the type of an assetstore. This is based on a
     // previous choice by the user
-    $("#assetstoretype").attr('disabled', 'disabled');
+    $('#assetstoretype').attr('disabled', 'disabled');
 
-    midas.import.importSubmitButtonValue = $("#importsubmit").html();
+    midas.import.importSubmitButtonValue = $('#importsubmit').html();
 
     // Init Browser
     $('input[name=importFolder]').val('');
@@ -287,7 +287,7 @@ $(document).ready(function () {
     $('input[name=importFolder]').before('<input style="margin-left:0;" id="browseMIDASLink" class="globalButton" type="button" value="Select location" />');
     $('input[name=importFolder]').before('<span style="margin-left:5px;" id="destinationUpload"/>');
     $('#browseMIDASLink').click(function () {
-        midas.loadDialog("select", "/browse/movecopy/?selectElement=true");
+        midas.loadDialog('select', '/browse/movecopy/?selectElement=true');
         midas.showDialog('Browse');
     });
 });

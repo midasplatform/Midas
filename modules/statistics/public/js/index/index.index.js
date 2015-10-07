@@ -6,10 +6,10 @@ var tabs;
 
 $(document).ready(function () {
     'use strict';
-    tabs = $("#tabsGeneric").tabs({
+    tabs = $('#tabsGeneric').tabs({
         select: function (event, ui) {}
     });
-    $("#tabsGeneric").show();
+    $('#tabsGeneric').show();
     $('img.tabsLoading').hide();
     var errors = json.stats.errors;
     $.each(errors, function (i, val) {
@@ -65,7 +65,7 @@ $(document).ready(function () {
         plotAssetStores.push(plot);
     });
 
-    $("#tabsGeneric").bind('tabsshow', function (event, ui) {
+    $('#tabsGeneric').bind('tabsshow', function (event, ui) {
         if (plotErrors._drawCount === 0) {
             plotErrors.replot();
         }

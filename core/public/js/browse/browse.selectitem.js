@@ -4,11 +4,11 @@
 /* global sliceFileName */
 /* global trimName */
 
-$("#moveTable").treeTable({
+$('#moveTable').treeTable({
     pageLength: 99999
 });
-$("img.tableLoading").hide();
-$("table#moveTable").show();
+$('img.tableLoading').hide();
+$('table#moveTable').show();
 
 $('.uploadApplet').hide();
 
@@ -19,7 +19,7 @@ if ($('#selectElements') !== undefined) {
         $('#destinationId').val($('#selectedDestinationHidden').val());
         $('.destinationUpload').html($('#selectedDestination').html());
         $('.destinationId').val($('#selectedDestinationHidden').val());
-        $("div.MainDialog").dialog('close');
+        $('div.MainDialog').dialog('close');
         $('.uploadApplet').show();
 
         if (typeof itemSelectionCallback == 'function') {
@@ -66,17 +66,17 @@ function callbackCustomElements(node, elements, first) {
     var html = '';
 
     $.each(elements['folders'], function (index, value) {
-        html += "<tr id='" + id + "-" + i + "' class='parent child-of-" + id + "' ajax='" + value['folder_id'] + "'type='folder'  policy='" + value['policy'] + "' element='" + value['folder_id'] + "'>";
-        html += "  <td><span class='folder'>" + trimName(value['name'], padding) + "</span></td>";
-        html += "</tr>";
+        html += '<tr id="' + id + '-' + i + '" class="parent child-of-' + id + '" ajax="' + value['folder_id'] + '"type="folder"  policy="' + value['policy'] + '" element="' + value['folder_id'] + '">';
+        html += '  <td><span class="folder">' + trimName(value['name'], padding) + '</span></td>';
+        html += '</tr>';
         i++;
     });
 
     $.each(elements['items'], function (index, value) {
 
-        html += "<tr id='" + id + "-" + i + "' class='child-of-" + id + "' privacy='" + value['privacy_status'] + "'  type='item' policy='" + value['policy'] + "' element='" + value['item_id'] + "'>";
-        html += "  <td><span class='file'>" + trimName(value['name'], padding) + "</span></td>";
-        html += "</tr>";
+        html += '<tr id="' + id + '-' + i + '" class="child-of-' + id + '" privacy="' + value['privacy_status'] + '"  type="item" policy="' + value['policy'] + '" element="' + value['item_id'] + '">';
+        html += '  <td><span class="file">' + trimName(value['name'], padding) + '</span></td>';
+        html += '</tr>';
         i++;
     });
     return html;
@@ -84,14 +84,14 @@ function callbackCustomElements(node, elements, first) {
 }
 
 // Live search
-$.widget("custom.catcomplete", $.ui.autocomplete, {
+$.widget('custom.catcomplete', $.ui.autocomplete, {
     _renderMenu: function (ul, items) {
         'use strict';
         var self = this,
-            currentCategory = "";
+            currentCategory = '';
         $.each(items, function (index, item) {
             if (item.category != currentCategory) {
-                ul.append('<li class="search-category">' + item.category + "</li>");
+                ul.append('<li class="search-category">' + item.category + '</li>');
                 currentCategory = item.category;
             }
             self._renderItemData(ul, item);
@@ -101,7 +101,7 @@ $.widget("custom.catcomplete", $.ui.autocomplete, {
 
 var cacheSearchSelectItem = {},
     lastXhr;
-$("#live_search_item").catcomplete({
+$('#live_search_item').catcomplete({
     minLength: 2,
     delay: 10,
     source: function (request, response) {
@@ -112,10 +112,10 @@ $("#live_search_item").catcomplete({
             return;
         }
 
-        $("#searchloadingSelectItem").show();
+        $('#searchloadingSelectItem').show();
 
-        lastXhr = $.getJSON($('.webroot').val() + "/search/live?itemSearch=true", request, function (data, status, xhr) {
-            $("#searchloadingSelectItem").hide();
+        lastXhr = $.getJSON($('.webroot').val() + '/search/live?itemSearch=true', request, function (data, status, xhr) {
+            $('#searchloadingSelectItem').hide();
             cacheSearchSelectItem[term] = data;
             if (xhr === lastXhr) {
                 itemselected = false;

@@ -1,5 +1,6 @@
 // Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
+/* global isExecutableMeta */
 /* global isDefineAjax */
 /* global json */
 
@@ -51,14 +52,14 @@ $(document).ready(function () {
         $(this).after('<img  src="' + json.global.webroot + '/core/public/images/icons/loading.gif" alt="Saving..." />');
         $(this).remove();
         $.ajax({
-            type: "POST",
-            url: json.global.webroot + "/remoteprocessing/executable/define?itemId=" + encodeURIComponent($('#itemIdExecutable').val()),
+            type: 'POST',
+            url: json.global.webroot + '/remoteprocessing/executable/define?itemId=' + encodeURIComponent($('#itemIdExecutable').val()),
             data: req,
             success: function (x) {
                 if (typeof(isDefineAjax) == 'undefined' || !isDefineAjax) {
                     window.location.replace($('.webroot').val() + '/item/' + encodeURIComponent(json.item.item_id));
                 } else {
-                    $("div.MainDialog").dialog("close");
+                    $('div.MainDialog').dialog('close');
                     $('#metaWrapper').hide();
                     $('#metaPageBlock').html('');
                     isExecutableMeta = true;
@@ -160,24 +161,24 @@ function addElement(paramaters) {
 
 function updateSortableElement() {
     'use strict';
-    $(".column").sortable({
-        connectWith: ".column",
+    $('.column').sortable({
+        connectWith: '.column',
         handle: '.portlet-header'
     });
 
-    $(".portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
-        .find(".portlet-header")
-        .addClass("ui-widget-header ui-corner-all")
+    $('.portlet').addClass('ui-widget ui-widget-content ui-helper-clearfix ui-corner-all')
+        .find('.portlet-header')
+        .addClass('ui-widget-header ui-corner-all')
 
     .end()
-        .find(".portlet-content");
+        .find('.portlet-content');
 
-    $(".portlet-header .ui-icon").click(function () {
-        $(this).toggleClass("ui-icon-minusthick").toggleClass("ui-icon-plusthick");
-        $(this).parents(".portlet:first").find(".portlet-content").toggle();
+    $('.portlet-header .ui-icon').click(function () {
+        $(this).toggleClass('ui-icon-minusthick').toggleClass('ui-icon-plusthick');
+        $(this).parents('.portlet:first').find('.portlet-content').toggle();
     });
 
-    $(".column").disableSelection();
+    $('.column').disableSelection();
 
     $('[qtip]').qtip({
         content: {

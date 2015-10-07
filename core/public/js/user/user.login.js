@@ -51,12 +51,12 @@ $(document).ready(function () {
     // Deal with password recovery
     if ($('a#forgotPasswordLink').length) {
         $('a#forgotPasswordLink').click(function () {
-            midas.loadDialog("forgotpassword", "/user/recoverpassword");
-            midas.showDialog("Recover Password");
+            midas.loadDialog('forgotpassword', '/user/recoverpassword');
+            midas.showDialog('Recover Password');
         });
     }
 
-    $("a.registerLink").unbind('click').click(function () {
+    $('a.registerLink').unbind('click').click(function () {
         midas.showOrHideDynamicBar('register');
         midas.loadAjaxDynamicBar('register', '/user/register');
     });
