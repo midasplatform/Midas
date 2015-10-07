@@ -1,4 +1,4 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 @import 'bourbon';
 
@@ -10,9 +10,11 @@ form.genericForm {
         text-align: right;
         width: 200px;
     }
+
     input {
-        &[type=submit], &[type=button] {
-            background: #F6F9FE url(images/ui-bg_glass_85_f6f9fe_1x400.png) repeat-x 50% 50%;
+        &[type=submit],
+        &[type=button] {
+            background: #F6F9FE url('images/ui-bg_glass_85_f6f9fe_1x400.png') repeat-x 50% 50%;
             border: 1px solid #808080;
             -moz-box-align: center;
             -webkit-box-align: center;
@@ -23,19 +25,23 @@ form.genericForm {
             font-weight: bold;
             line-height: 1.4;
             margin-left: 116px;
-            margin-right: 0.1em;
+            margin-right: .1em;
             overflow: visible;
             position: relative;
             text-align: center;
             text-decoration: none !important;
             zoom: 1;
         }
-        &[type=submit]:hover, &[type=button]:hover {
+
+        &[type=submit]:hover,
+        &[type=button]:hover {
             background: #CBD9E3 none;
             color: #1D5987;
             text-decoration: none;
         }
-        &[type=submit][disabled], &[type=button][disabled] {
+
+        &[type=submit][disabled],
+        &[type=button][disabled] {
             background: #DBDBDB none;
             color: #808080;
             cursor: default;
@@ -52,9 +58,10 @@ form.genericForm {
 }
 
 form.genericForm input {
-    &[type=submit][disabled]:hover, &[type=button][disabled]:hover {
-        background-image: none;
+    &[type=submit][disabled]:hover,
+    &[type=button][disabled]:hover {
         background: #DBDBDB !important;
+        background-image: none;
         color: #808080 !important;
         cursor: default;
         text-decoration: none;
@@ -62,8 +69,8 @@ form.genericForm input {
 }
 
 .globalButton[disabled]:hover {
-    background-image: none;
     background: #DBDBDB !important;
+    background-image: none;
     color: #808080 !important;
     cursor: default;
     text-decoration: none;
@@ -77,8 +84,10 @@ form.genericForm {
         text-align: left;
         width: 200px;
     }
+
     input {
-        &[type=text], &[type=password] {
+        &[type=text],
+        &[type=password] {
             background: #F3F1EC;
             border: 1px solid #808080;
             color: #000;
@@ -86,6 +95,7 @@ form.genericForm {
             margin-right: 10px;
         }
     }
+
     textarea {
         background: #F3F1EC;
         border: 1px solid #808080;
@@ -93,25 +103,32 @@ form.genericForm {
         height: 18px;
         margin-right: 10px;
     }
+
     input {
-        &[type=text], &[type=password] {
+        &[type=text],
+        &[type=password] {
             width: 250px;
         }
     }
+
     textarea {
-        width: 247px;
         height: 35px;
+        width: 247px;
     }
+
     input {
-        &[type=text]:hover, &[type=password]:hover {
+        &[type=text]:hover,
+        &[type=password]:hover {
             background: #FFF;
         }
     }
+
     textarea:hover {
         background: #FFF;
     }
+
     div input[type=submit] {
-        background: #F6F9FE url(images/ui-bg_glass_85_f6f9fe_1x400.png) repeat-x 50% 50%;
+        background: #F6F9FE url('images/ui-bg_glass_85_f6f9fe_1x400.png') repeat-x 50% 50%;
         border: 1px solid #808080;
         -moz-box-align: center;
         -webkit-box-align: center;
@@ -123,7 +140,7 @@ form.genericForm {
         font-weight: bold;
         line-height: 1.4;
         margin-left: 208px;
-        margin-right: 0.1em;
+        margin-right: .1em;
         overflow: visible;
         position: relative;
         text-align: center;
@@ -133,7 +150,7 @@ form.genericForm {
 }
 
 input.globalButton {
-    background: #F6F9FE url(images/ui-bg_glass_85_f6f9fe_1x400.png) repeat-x 50% 50%;
+    background: #F6F9FE url('images/ui-bg_glass_85_f6f9fe_1x400.png') repeat-x 50% 50%;
     border: 1px solid #808080;
     -moz-box-align: center;
     -webkit-box-align: center;
@@ -145,7 +162,7 @@ input.globalButton {
     font-weight: bold;
     line-height: 1.4;
     margin-left: 208px;
-    margin-right: 0.1em;
+    margin-right: .1em;
     overflow: visible;
     position: relative;
     text-align: center;
@@ -155,7 +172,7 @@ input.globalButton {
 
 form.genericForm input {
     &[type=button] {
-        background: #F6F9FE url(images/ui-bg_glass_85_f6f9fe_1x400.png) repeat-x 50% 50%;
+        background: #F6F9FE url('images/ui-bg_glass_85_f6f9fe_1x400.png') repeat-x 50% 50%;
         border: 1px solid #808080;
         -moz-box-align: center;
         -webkit-box-align: center;
@@ -167,13 +184,14 @@ form.genericForm input {
         font-weight: bold;
         line-height: 1.4;
         margin-left: 208px;
-        margin-right: 0.1em;
+        margin-right: .1em;
         overflow: visible;
         position: relative;
         text-align: center;
         text-decoration: none !important;
         zoom: 1;
     }
+
     &[type=submit]:hover {
         background: #CBD9E3 none;
         color: #1D5987;

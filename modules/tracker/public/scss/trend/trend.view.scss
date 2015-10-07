@@ -1,10 +1,11 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 div {
     &.itemsContainer {
         margin-bottom: 10px;
         margin-top: 6px;
     }
+
     &.dateControlContainer {
         border-bottom: 1px solid #D7D7D7;
         margin-bottom: 8px;
@@ -13,7 +14,7 @@ div {
 }
 
 input.dateSelect {
-    background: #FFF url(../../images/calendar.png) no-repeat scroll 2px 1px;
+    background: #FFF url('../../images/calendar.png') no-repeat scroll 2px 1px;
     border: 1px solid #808080;
     box-sizing: border-box;
     height: 20px;
@@ -27,7 +28,8 @@ input.dateSelect {
     height: 20px;
 }
 
-#filterButton, #branchFilterButton {
+#filterButton,
+#branchFilterButton {
     margin-left: 2px !important;
 }
 
@@ -40,10 +42,12 @@ span {
     &.infoItem {
         color: #979797;
     }
+
     &.itemLinkNone {
         color: #A5A5A5;
         font-style: italic;
     }
+
     &.noPoints {
         color: #909090;
         display: inline-block;
@@ -51,7 +55,10 @@ span {
     }
 }
 
-.yMin, .yMax, .y2Min, .y2Max {
+.yMin,
+.yMax,
+.y2Min,
+.y2Max {
     margin-left: 10px;
     margin-right: 10px;
     width: 70px;
@@ -62,10 +69,12 @@ div {
         float: right;
         margin-top: 15px;
     }
+
     &.deleteProgressBar {
         margin-bottom: 6px;
         margin-top: 10px;
     }
+
     &.bottomButtonsDelete {
         float: right;
         margin-top: 20px;
@@ -73,7 +82,8 @@ div {
 }
 
 input {
-    &.deleteYes, &.deleteNo {
+    &.deleteYes,
+    &.deleteNo {
         margin-left: 10px !important;
     }
 }
@@ -97,23 +107,26 @@ div.toggleUnofficialIcon {
     position: relative;
     top: 2px;
     width: 16px;
+
     &.toHide {
         border: 1px dashed #F22;
     }
+
     &.toShow {
         background-color: #F22;
     }
 }
 
 button.add-branchfilter {
-    margin-left: 15px;
     background-color: #6263AA;
-    color: #FFF;
-    font-weight: bold;
-    border: none;
+    border: 0;
     border-radius: 2px;
-    padding: 4px 11px;
+    color: #FFF;
     cursor: pointer;
+    font-weight: bold;
+    margin-left: 15px;
+    padding: 4px 11px;
+
     &:hover {
         background-color: #525399;
     }

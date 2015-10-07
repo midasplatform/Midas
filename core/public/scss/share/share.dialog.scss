@@ -1,9 +1,10 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 input {
     &#urlInput {
         width: 300px;
     }
+
     &#live_share_search {
         width: 350px;
     }
@@ -12,18 +13,22 @@ input {
 div {
     &#permissionEntity table {
         width: 330px;
+
         td {
             &.changePermissionSelect {
                 width: 150px;
             }
+
             &.changePermissionDelete {
                 width: 30px;
             }
+
             &.changePermissionSelectBox {
                 width: 100px;
             }
         }
     }
+
     &#permissionsContent {
         a {
             color: #56758B;
@@ -31,23 +36,28 @@ div {
             font-weight: 500;
             text-decoration: none;
         }
+
         h4 {
             margin-top: 10px;
         }
+
         a:hover {
             text-decoration: underline;
         }
     }
+
     &#applyPoliciesRecursiveProgressBar {
         height: 20px;
     }
+
     &#applyPoliciesRecursiveMessage {
         padding-bottom: 5px;
         padding-top: 5px;
     }
 }
 
-#permissionPublic, #permissionPrivate {
+#permissionPublic,
+#permissionPrivate {
     border-bottom: 1px solid #D7D7D7;
     padding-bottom: 10px;
 }

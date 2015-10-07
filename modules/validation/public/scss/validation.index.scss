@@ -1,4 +1,4 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 @import 'bourbon';
 
@@ -7,12 +7,14 @@ div {
         margin-top: 2px;
         padding-top: 0;
     }
+
     &.dashEntry {
         border-top: 1px solid #DAD8D4;
         cursor: pointer;
         padding-bottom: 10px;
         padding-top: 10px;
     }
+
     &.grayEntry {
         background-color: #EEE;
     }
@@ -28,8 +30,8 @@ div {
 
 .dashTitle {
     font-size: 13px;
-    margin-bottom: 0.67em;
-    margin-top: 0.67em;
+    margin-bottom: .67em;
+    margin-top: .67em;
     padding-left: 2ex;
     text-shadow: #FFF 0 1px 1px;
     vertical-align: middle;
@@ -48,21 +50,23 @@ div.dashPanel {
     border: 1px dotted #999;
     margin-right: 2px;
     padding: 6px 1px 2px;
+
     &:hover {
+        @include user-select(none);
         background-color: #EEE;
         border: 1px dotted #999;
         cursor: pointer;
         margin-right: 2px;
         padding: 6px 1px 2px;
-        @include user-select(none);
     }
+
     &:active {
+        @include user-select(none);
         background-color: #AAA;
         border: 1px dotted #999;
         cursor: pointer;
         margin-right: 2px;
         padding: 6px 1px 2px;
-        @include user-select(none);
     }
 }
 

@@ -1,4 +1,4 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 @import 'bourbon';
 
@@ -13,6 +13,7 @@ form#loginForm {
         border-collapse: separate !important;
         border-color: #808080 !important;
         border-spacing: 2px !important;
+
         tbody tr td {
             border-bottom: none !important;
             border-collapse: separate !important;
@@ -22,6 +23,7 @@ form#loginForm {
             padding: 0 !important;
         }
     }
+
     td {
         display: table-cell !important;
         vertical-align: inherit !important;
@@ -33,7 +35,8 @@ th {
     vertical-align: inherit !important;
 }
 
-strong, b {
+strong,
+b {
     font-weight: bold;
 }
 
@@ -44,9 +47,11 @@ div {
         cursor: pointer !important;
         padding-top: 3px !important;
     }
+
     &.viewMain {
         width: 820px !important;
     }
+
     &.footer {
         display: none !important;
     }

@@ -1,76 +1,84 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 @import 'bourbon';
 
 body {
-    @include linear-gradient(to bottom, #336699, #72B9FF);
+    @include linear-gradient(to bottom, #369, #72B9FF);
     color: #EEE;
-    padding: 0;
-    margin: 0;
-    font-weight: bold;
-    overflow: hidden;
     font-family: $monospace;
     font-size: 13px;
+    font-weight: bold;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
     text-align: center;
 }
 
 #info {
-    position: absolute;
     bottom: 0;
-    width: 100%;
     padding: 5px;
+    position: absolute;
+    width: 100%;
     z-index: 100;
 }
 
 #onliver {
+    color: #FFF;
+    padding: 5px;
     position: absolute;
     top: 70px;
     width: 100%;
-    padding: 5px;
     z-index: 100;
-    color: #FFF;
 }
 
 #helpDialog1 {
     text-align: left;
 }
 
-a, b {
+a,
+b {
     color: #008000;
 }
 
 button {
     &.buttonNav {
-        height: 20px !important;
-        width: 20px !important;
-        position: absolute !important;
-        box-shadow: 0 0 15px #666;
         border-image: initial;
+        box-shadow: 0 0 15px #666;
+        height: 20px !important;
+        position: absolute !important;
+        width: 20px !important;
     }
+
     &#buttonUp {
         left: 50px;
         top: 100px;
     }
+
     &#buttonDown {
         left: 50px;
         top: 150px;
     }
+
     &#buttonLeft {
         left: 25px;
         top: 125px;
     }
+
     &#buttonRight {
         left: 75px;
         top: 125px;
     }
+
     &#buttonReset {
         left: 50px;
         top: 125px;
     }
+
     &#buttonPlus {
         left: 50px;
         top: 180px;
     }
+
     &#buttonMinus {
         left: 50px;
         top: 205px;
@@ -78,6 +86,6 @@ button {
 }
 
 div#axesContainer {
-    position: absolute;
     bottom: 0;
+    position: absolute;
 }

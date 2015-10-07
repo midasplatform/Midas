@@ -1,14 +1,16 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 div {
     &.viewMain {
+        width: 805px;
+
         h2 {
             color: #545454;
             margin-bottom: 3px;
             margin-top: 3px;
         }
-        width: 805px;
     }
+
     &.headerSection {
         border-bottom: 1px solid #D7D7D7;
         margin-bottom: 10px;

@@ -1,4 +1,4 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 @import 'normalize';
 @import 'bourbon';
@@ -20,16 +20,20 @@ img {
 
 a {
     cursor: pointer;
+
     &:visited {
-        border: none;
+        border: 0;
         text-decoration: none;
     }
+
     &:active {
         outline: none;
     }
 }
 
-a:focus, li:active, li:focus {
+a:focus,
+li:active,
+li:focus {
     outline: none;
 }
 
@@ -48,10 +52,11 @@ div {
     &#guideRobot {
         display: none;
     }
+
     &.genericBigButton {
         @include linear-gradient(to bottom, #FFF, #C4C4C4);
-        border-radius: 3px;
         border: #354856 1px solid;
+        border-radius: 3px;
         box-shadow: 0 0 2px #666;
         color: #000;
         cursor: pointer;
@@ -60,30 +65,42 @@ div {
         font-size: 12px;
         font-weight: normal;
         list-style-type: none;
-        padding: 1px 3px 2px 3px;
+        padding: 1px 3px 2px;
+
         a {
             color: #000 !important;
             font-size: 12px !important;
             font-weight: normal !important;
+
             &:hover {
                 text-decoration: none !important;
             }
         }
+
         &:hover {
             @include linear-gradient(to bottom, #BDDCC9, #8AB79B);
         }
     }
+
     &.genericWrapperTopRight {
         float: right;
     }
-    &.viewAction li a:hover, &.genericAction li a:hover, &.viewSelected li a:hover {
+
+    &.viewAction li a:hover,
+    &.genericAction li a:hover,
+    &.viewSelected li a:hover {
         text-decoration: none;
     }
-    &.viewAction li img, &.genericAction li img, &.viewSelected li img {
+
+    &.viewAction li img,
+    &.genericAction li img,
+    &.viewSelected li img {
         position: relative;
         top: 3px;
     }
-    &.viewAction hr, &.genericAction hr {
+
+    &.viewAction hr,
+    &.genericAction hr {
         background-color: #D7D7D7;
         border: 0;
         color: #D7D7D7;
@@ -93,11 +110,12 @@ div {
         margin-top: 3px;
         width: 130px;
     }
+
     &.viewSideBar h1 {
         color: #999;
         font-size: 11px;
-        margin-bottom: 0.67em;
-        margin-top: 0.67em;
+        margin-bottom: .67em;
+        margin-top: .67em;
         text-shadow: #FFF 0 1px 1px;
         text-transform: uppercase;
     }
@@ -123,17 +141,17 @@ div {
 }
 
 .growlError {
-    background: url(../../images/icons/nok.png) no-repeat;
+    background: url('../../images/icons/nok.png') no-repeat;
     padding-left: 18px;
 }
 
 .growlWarning {
-    background: url(../../images/icons/warning.png) no-repeat;
+    background: url('../../images/icons/warning.png') no-repeat;
     padding-left: 18px;
 }
 
 .growlOk {
-    background: url(../../images/icons/ok.png) no-repeat;
+    background: url('../../images/icons/ok.png') no-repeat;
     padding-left: 18px;
 }
 
@@ -149,10 +167,12 @@ div {
         cursor: pointer;
         font-weight: 500;
         text-decoration: none;
+
         &:hover {
             text-decoration: underline;
         }
     }
+
     &.errorText {
         color: #F00;
     }

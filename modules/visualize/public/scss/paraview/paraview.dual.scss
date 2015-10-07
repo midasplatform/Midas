@@ -1,4 +1,4 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 div.rendererWrapper {
     position: relative;
@@ -22,14 +22,16 @@ div.rendererWrapper {
 }
 
 img {
-    &.leftLoading, &.rightLoading {
+    &.leftLoading,
+    &.rightLoading {
         margin-left: 10px;
         margin-top: 10px;
         z-index: 100;
     }
 }
 
-#leftRendererOverlay, #rightRendererOverlay {
+#leftRendererOverlay,
+#rightRendererOverlay {
     position: absolute;
     right: 3px;
     top: 3px;
@@ -41,10 +43,12 @@ div {
         position: relative;
         top: 426px;
     }
+
     &.sliceControlContainer {
         position: absolute;
         width: 424px;
     }
+
     &.windowControlContainer {
         left: 425px;
         position: absolute;
@@ -52,11 +56,13 @@ div {
     }
 }
 
-#windowSlider, #sliceSlider {
+#windowSlider,
+#sliceSlider {
     margin: 8px 14px 8px 15px;
 }
 
-#windowInfo, #sliceInfo {
+#windowInfo,
+#sliceInfo {
     margin-left: 15px;
 }
 
@@ -68,24 +74,30 @@ button {
         margin-top: 10px;
         width: 25px;
     }
+
     &.actionActive {
         background-color: #9C9;
     }
+
     &.actionInactive {
         background-color: #CCC;
     }
+
     &.pointSelectButton {
-        background-image: url(../../images/pointSelect.png);
+        background-image: url('../../images/pointSelect.png');
     }
+
     &.pointMapListButton {
-        background-image: url(../../images/pqNodeSetData16.png);
+        background-image: url('../../images/pqNodeSetData16.png');
     }
+
     &.cameraLinkButton {
-        background-image: url(../../images/camera_link.png);
+        background-image: url('../../images/camera_link.png');
     }
 }
 
-#leftLoadingStatus, #rightLoadingStatus {
+#leftLoadingStatus,
+#rightLoadingStatus {
     margin-left: 10px;
 }
 
@@ -96,18 +108,21 @@ span.infoValue {
 .pointListTable {
     border-collapse: collapse;
     width: 100%;
+
     th {
         background-color: #CDD;
         border: 1px solid #A0A0A0;
         padding: 5px 3px 5px 5px;
     }
+
     tbody tr {
         border-bottom: 1px dotted #A0A0A0;
     }
 }
 
 div {
-    &.colorSwatchL, &.colorSwatchR {
+    &.colorSwatchL,
+    &.colorSwatchR {
         border: 1px solid #707070;
         display: inline-block;
         height: 14px;
@@ -119,20 +134,28 @@ div {
 }
 
 button {
-    &.highlightPoints, &.deletePoints, &.processButton, &.closeButton {
+    &.highlightPoints,
+    &.deletePoints,
+    &.processButton,
+    &.closeButton {
         background-color: #F0F0F0;
-        border-radius: 1px;
         border: 1px solid #B0B0B0;
-        padding: 3px 6px 3px 6px;
+        border-radius: 1px;
+        padding: 3px 6px;
     }
-    &.highlightPoints:hover, &.deletePoints:hover, &.processButton:hover, &.closeButton:hover {
+
+    &.highlightPoints:hover,
+    &.deletePoints:hover,
+    &.processButton:hover,
+    &.closeButton:hover {
         background-color: #DADADA;
         border: 1px solid #808080;
     }
+
     &.highlightOn {
         background-color: #CDF9CD !important;
-        border-radius: 2px;
         border: 1px solid #B0B0B0;
+        border-radius: 2px;
     }
 }
 

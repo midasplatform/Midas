@@ -1,4 +1,4 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 div {
     &.rebuildIndexContainer {
@@ -7,7 +7,7 @@ div {
 }
 
 #rebuildIndexButton {
-    margin: 10px 0 10px 0 !important;
+    margin: 10px 0 !important;
 }
 
 #rebuildProgressMessage {

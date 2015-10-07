@@ -1,4 +1,4 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 @import 'bourbon';
 
@@ -15,10 +15,12 @@ div {
     &.genericInfo .genericSubtitle {
         font-weight: normal;
     }
+
     &.genericBigButton input {
         @include linear-gradient(to bottom, #FFF, #C4C4C4);
-        border: none;
+        border: 0;
         cursor: pointer;
+
         &:hover {
             @include linear-gradient(to bottom, #BDDCC9, #8AB79B);
         }

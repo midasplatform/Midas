@@ -1,4 +1,4 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 @import 'bourbon';
 
@@ -6,12 +6,14 @@ div {
     &.titleWrapper {
         border-bottom: 1px solid #D7D7D7;
     }
+
     &.applicationName {
         color: #525252;
         font-size: 20px;
         font-weight: bold;
         margin-bottom: 5px;
     }
+
     &.applicationDescription {
         color: #6D6D6D;
         margin-bottom: 8px;
@@ -20,6 +22,7 @@ div {
 
 #packageList {
     margin-top: 15px;
+
     h3 a {
         text-decoration: none;
     }
@@ -32,9 +35,10 @@ div.releaseEntry {
 }
 
 table.packagesTable {
-    border-collapse: collapse;
     @include user-select(none);
+    border-collapse: collapse;
     width: 550px;
+
     th {
         background-color: #CCD7E0;
         border: 1px #888 solid;
@@ -49,7 +53,9 @@ th {
     &.actions {
         width: 40%;
     }
-    &.platform, &.type {
+
+    &.platform,
+    &.type {
         width: 30%;
     }
 }
@@ -60,6 +66,7 @@ table.packagesTable tbody td {
     padding-bottom: 3px;
     padding-left: 3px;
     padding-top: 3px;
+
     img {
         position: relative;
         top: 2px;
@@ -70,6 +77,7 @@ form.editApplication {
     input[type=text] {
         width: 300px;
     }
+
     textarea {
         resize: none;
         width: 298px;

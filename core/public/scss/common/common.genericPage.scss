@@ -1,45 +1,56 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 div {
     &.tabs {
         display: none;
     }
+
     &.genericThumbnail {
         float: left;
     }
+
     &.genericInfo {
         height: 40px;
     }
+
     &.genericAction {
         border-bottom: 1px solid #FFF;
         padding-bottom: 10px;
+
         ul {
             list-style: none;
             margin: 0;
             padding: 0;
         }
     }
+
     &.genericCommunities {
-        ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
         border-bottom: 1px solid #FFF;
         border-top: 1px solid #DAD8D4;
         padding-bottom: 10px;
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
     }
+
     &.genericStats {
         border-top: 1px solid #DAD8D4;
     }
-    &.viewAction, &.viewInfo {
+
+    &.viewAction,
+    &.viewInfo {
         display: none;
     }
+
     &.genericInfo {
         .genericName {
             font-size: 16px;
             font-weight: bold;
         }
+
         .genericSubtitle {
             font-weight: bold;
         }

@@ -23,6 +23,7 @@ scss_files: '**/public/scss/*.scss'
 exclude:
   - '**/public/**/*.css'
   - 'core/public/scss/mixins/**'
+  - 'library/SwaggerUI/**'
   - 'vendor/**'
 
 linters:

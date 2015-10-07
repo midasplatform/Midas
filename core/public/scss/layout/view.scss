@@ -1,4 +1,4 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 div.viewHeader {
     background-color: #F6F9FE;
@@ -24,6 +24,7 @@ div {
         padding-right: 275px;
         position: relative;
     }
+
     &.viewMain {
         float: left;
         margin: 0;
@@ -31,16 +32,16 @@ div {
         position: relative;
         width: 100%;
     }
+
     &.viewSideBar {
         background-color: transparent;
-        border-bottom: none;
+        border-bottom: 0;
         border-left: 1px solid #EFEFEF;
-        border-radius: 0 0;
-        border-right: none;
-        border-top: none;
+        border-radius: 0;
+        border-right: 0;
+        border-top: 0;
         float: left;
         height: auto !important;
-        height: 100%;
         margin-right: -300px;
         min-height: 500px;
         padding-left: 10px;
@@ -49,9 +50,11 @@ div {
         width: 215px;
         z-index: 2;
     }
+
     &.viewSelected {
         display: none;
     }
+
     &.viewNotice {
         background-color: #45B775;
         border: 1px solid #168846;
@@ -60,39 +63,51 @@ div {
         padding: 2px 10px;
         position: absolute;
     }
+
     &.viewNoticeWrapper {
         left: 145px;
         position: relative;
         top: 4px;
     }
+
     &.viewSideBar div {
         &.sideElement {
             border-bottom: 1px solid #FFF;
             border-top: 1px solid #DAD8D4;
             padding-bottom: 10px;
         }
+
         &.sideElementFirst {
             border-top: none !important;
             padding-bottom: 5px;
         }
+
         &.sideElementActions {
             border-bottom: 1px solid #FFF;
             border-top: 1px solid #DAD8D4;
             padding-top: 5px;
         }
-        &.sideElement, &.sideElementActions, &.sideElementFirst {
+
+        &.sideElement,
+        &.sideElementActions,
+        &.sideElementFirst {
             border-bottom: 1px solid #DAD8D4;
             border-top: none !important;
             padding-bottom: 10px;
             padding-top: 3px;
         }
+
         &.sideElementLast {
             border-bottom: none !important;
             border-top: none !important;
             padding-bottom: 10px;
             padding-top: 5px;
         }
-        &.sideElement ul, &.sideElementFirst ul, &.sideElementActions ul, &.sideElementLast ul {
+
+        &.sideElement ul,
+        &.sideElementFirst ul,
+        &.sideElementActions ul,
+        &.sideElementLast ul {
             list-style: none;
             margin: 0;
             padding: 0;
@@ -105,27 +120,32 @@ ul.pathBrowser {
     list-style-type: disc;
     margin: 0;
     padding-left: 0;
+
     li {
-        background: url("../../images/icons/path-divider.png") no-repeat right;
+        background: url('../../images/icons/path-divider.png') no-repeat right;
         display: list-item;
         float: left;
         list-style: none;
         margin: 0;
         min-height: 19px;
         padding: 5px 16px 0 3px;
+
         img {
             margin-right: 2px;
             position: relative;
             top: -2px;
         }
+
         span {
             position: relative;
             top: -4px;
         }
+
         a {
             color: #333B80;
             font-size: 14px;
             font-weight: bold;
+
             &:hover {
                 color: #375;
                 text-decoration: none;
@@ -137,23 +157,27 @@ ul.pathBrowser {
 div {
     &.ui-tabs {
         border: 0;
-        padding: 0 0 0 0 !important;
+        padding: 0 !important;
     }
+
     &.tabs {
         .ui-tabs-nav {
             background: none !important;
             border: 0 !important;
             border-bottom: 1px dotted #808080;
         }
-        .ui-state-default {}
     }
 }
 
-.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active {
     border: 1px solid #C5DBEC !important;
 }
 
-.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default {
     border: 1px solid #F3F1EC;
 }
 
@@ -161,7 +185,8 @@ div {
     background: #FFF !important;
 }
 
-div.tabs .ui-tabs .ui-tabs-nav li a, .ui-tabs .ui-tabs-nav li a {
+div.tabs .ui-tabs .ui-tabs-nav li a,
+.ui-tabs .ui-tabs-nav li a {
     padding: 3px 10px !important;
 }
 
@@ -170,28 +195,32 @@ div.tabs {
         color: #1D5987 !important;
         font-weight: bold;
         height: 19px !important;
+
         a {
             color: #1D5987 !important;
             font-weight: bold;
             height: 19px !important;
         }
     }
+
     .ui-state-default {
         height: 20px;
     }
+
     .ui-tabs-panel {
         border-top: 1px solid #F3F1EC;
         left: -15px !important;
         position: relative !important;
         width: 99%;
     }
+
     display: none;
 }
 
 img.progressIndeterminate {
     display: block;
-    margin-top: 13px;
     margin-bottom: 13px;
+    margin-top: 13px;
 }
 
 div.MainDialog h4 {

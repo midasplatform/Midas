@@ -1,4 +1,4 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 span.infoValue {
     color: #7A7A7A;
@@ -8,13 +8,16 @@ table.extractSubgridTable {
     td {
         padding-bottom: 20px;
     }
+
     input.sb {
         border: 1px solid #808080;
         width: 55px;
     }
 }
 
-.sliderX, .sliderY, .sliderZ {
+.sliderX,
+.sliderY,
+.sliderZ {
     margin-left: 11px;
     margin-right: 11px;
     width: 370px;
@@ -28,24 +31,31 @@ button {
         margin-right: 10px;
         width: 32px;
     }
+
     &.plusX {
-        background-image: url(../../images/pqXPlus24.png);
+        background-image: url('../../images/pqXPlus24.png');
     }
+
     &.minusX {
-        background-image: url(../../images/pqXMinus24.png);
+        background-image: url('../../images/pqXMinus24.png');
     }
+
     &.plusY {
-        background-image: url(../../images/pqYPlus24.png);
+        background-image: url('../../images/pqYPlus24.png');
     }
+
     &.minusY {
-        background-image: url(../../images/pqYMinus24.png);
+        background-image: url('../../images/pqYMinus24.png');
     }
+
     &.plusZ {
-        background-image: url(../../images/pqZPlus24.png);
+        background-image: url('../../images/pqZPlus24.png');
     }
+
     &.minusZ {
-        background-image: url(../../images/pqZMinus24.png);
+        background-image: url('../../images/pqZMinus24.png');
     }
+
     &.cameraPreset:hover {
         background-color: #ADA;
     }
@@ -56,15 +66,17 @@ div {
         float: right;
         margin-top: 15px;
     }
+
     &.sofPointEdit {
         display: none;
-        margin-top: 10px;
         float: right;
+        margin-top: 10px;
     }
 }
 
 input {
-    &.scalarValueEdit, &.opacityValueEdit {
+    &.scalarValueEdit,
+    &.opacityValueEdit {
         border: 1px solid #808080;
         margin-left: 5px;
         margin-right: 10px;
@@ -73,7 +85,7 @@ input {
 }
 
 .scmColorPicker {
-    background: url(../../images/select2.png) -3px -3px;
+    background: url('../../images/select2.png') -3px -3px;
     cursor: pointer;
     display: inline-block;
     height: 30px;
@@ -95,9 +107,11 @@ div {
         margin-bottom: 10px;
         margin-top: 10px;
     }
+
     &.scmDivider {
         border-top: 1px solid #D7D7D7;
     }
+
     &.scmBottomButtons {
         float: right;
         padding-top: 10px;
@@ -112,14 +126,17 @@ button.scmDeletePoint {
 table.objectList {
     border-collapse: collapse;
     width: 100%;
+
     th {
-        &.visibility {
-            width: 20px;
-        }
         background-color: #D0D0F6;
         border: 1px solid #808080;
         padding-left: 4px;
+
+        &.visibility {
+            width: 20px;
+        }
     }
+
     td {
         border: 1px solid #808080;
         padding-left: 2px;

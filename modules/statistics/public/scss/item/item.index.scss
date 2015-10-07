@@ -1,16 +1,17 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 div {
     &.viewSideBar input.globalButton {
         margin-left: 0 !important;
     }
+
     &.viewWrapper {
         padding-right: 40px !important;
     }
 }
 
 input.dateSelect {
-    background: #FFF url(../../images/calendar.png) no-repeat scroll 2px 0;
+    background: #FFF url('../../images/calendar.png') no-repeat scroll 2px 0;
     border: 1px solid #808080;
     padding-left: 20px;
 }
@@ -28,25 +29,27 @@ input.dateSelect {
 
 input.filterButton {
     background: #F6F9FE;
+    border: 1px solid #808080;
     -moz-box-align: center;
     -webkit-box-align: center;
-    border: 1px solid #808080;
     box-sizing: border-box;
     color: #2E6E9E;
     cursor: pointer;
     font-weight: bold;
     line-height: 1.4;
-    margin-right: 0.1em;
+    margin-right: .1em;
     overflow: visible;
     position: relative;
     text-align: center;
     text-decoration: none !important;
     zoom: 1;
+
     &:hover {
         background: #CBD9E3 none;
         color: #1D5987;
         text-decoration: none;
     }
+
     &[disabled] {
         background: #DBDBDB none;
         color: #808080;
@@ -65,6 +68,7 @@ span {
         color: #959595;
         font-weight: lighter;
     }
+
     &#filteredCount {
         display: inline-block;
         padding-top: 5px;

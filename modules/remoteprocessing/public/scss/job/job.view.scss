@@ -1,11 +1,12 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 div.viewWrapper {
     padding-right: 40px !important;
 }
 
 table {
-    &#tableResults, &#tableXml {
+    &#tableResults,
+    &#tableXml {
         width: 100%;
     }
 }
@@ -14,7 +15,7 @@ table {
     border: #354856 1px solid;
     border-radius: 6px;
     box-shadow: 0 0 5px #666;
-    padding: 5px 10px 25px 10px;
+    padding: 5px 10px 25px;
 }
 
 table#tableResults td {
@@ -22,21 +23,21 @@ table#tableResults td {
 }
 
 #hiddenLog {
-    border-radius: 6px;
     border: #354856 1px solid;
+    border-radius: 6px;
     box-shadow: 0 0 5px #666;
     display: none;
     height: 400px;
     margin-bottom: 2px;
     overflow: scroll;
-    padding: 0 5px 6px 5px;
+    padding: 0 5px 6px;
 }
 
 #metricsWrapper {
-    border-radius: 6px;
     border: #354856 1px solid;
+    border-radius: 6px;
     box-shadow: 0 0 5px #666;
     display: none;
     margin-bottom: 2px;
-    padding: 0 5px 6px 5px;
+    padding: 0 5px 6px;
 }

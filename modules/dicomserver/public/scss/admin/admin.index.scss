@@ -1,11 +1,15 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 span {
     &.running_status {
         color: #090;
         font-weight: bold;
     }
-    &.not_running_status, &.only_storescp_running_status, &.only_dcmqrscp_running_status, &.not_supported_status {
+
+    &.not_running_status,
+    &.only_storescp_running_status,
+    &.only_dcmqrscp_running_status,
+    &.not_supported_status {
         color: #C80000;
         font-weight: bold;
     }

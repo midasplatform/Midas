@@ -1,4 +1,4 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 @import 'bourbon';
 
@@ -11,33 +11,42 @@
             padding: 0;
             zoom: 1;
         }
+
         &.collapsed td .expander {
-            background-image: url(../../images/TreeTable/toggle-expand-dark.png);
+            background-image: url('../../images/TreeTable/toggle-expand-dark.png');
         }
+
         &.expanded td .expander {
-            background-image: url(../../images/TreeTable/toggle-collapse-dark.png);
+            background-image: url('../../images/TreeTable/toggle-collapse-dark.png');
         }
     }
+
     span.elementSize {
-        padding: 0px !important;
+        padding: 0 !important;
     }
+
     tr {
-        &.selected, &.accept {
+        &.selected,
+        &.accept {
             background-color: #C0D1FE !important;
             border: 1px solid #808080;
         }
-        &.selected td {}
+
         &.collapsed {
-            &.selected td .expander, &.accept td .expander {
-                background-image: url(../../images/TreeTable/toggle-expand-dark.png);
+            &.selected td .expander,
+            &.accept td .expander {
+                background-image: url('../../images/TreeTable/toggle-expand-dark.png');
             }
         }
+
         &.expanded {
-            &.selected td .expander, &.accept td .expander {
-                background-image: url(../../images/TreeTable/toggle-collapse-dark.png);
+            &.selected td .expander,
+            &.accept td .expander {
+                background-image: url('../../images/TreeTable/toggle-collapse-dark.png');
             }
         }
     }
+
     .ui-draggable-dragging {
         color: #000;
         z-index: 1;
@@ -45,50 +54,61 @@
 }
 
 table.midasTree {
-    width: 580px;
-    display: none;
     @include user-select(none);
     border-collapse: collapse;
+    display: none;
+    width: 580px;
+
     thead th {
+        background-color: #E6EEEE;
+        background-position: center right;
+        background-repeat: no-repeat;
+        border: 1px solid #AAA;
+        color: #000;
         font-family: $lucida-grande;
         font-size: 8pt;
-        color: #000;
-        background-color: #E6EEEE;
-        border: 1px solid #AAA;
         padding: 3px;
-        background-repeat: no-repeat;
-        background-position: center right;
+
         &.thData {
-            padding-left: 10px;
+            background-image: url('images/asc.gif');
             cursor: pointer;
-            background-image: url(images/asc.gif);
+            padding-left: 10px;
         }
+
         &.thDate {
+            background-image: url('images/bg.gif');
+            cursor: pointer;
+            padding-left: 10px;
             width: 15%;
-            padding-left: 10px;
-            cursor: pointer;
-            background-image: url(images/bg.gif);
         }
+
         &.thSize {
-            width: 14%;
-            padding-left: 10px;
+            background-image: url('images/bg.gif');
             cursor: pointer;
-            background-image: url(images/bg.gif);
+            padding-left: 10px;
+            width: 14%;
         }
     }
+
     th {
         &.sortasc {
-            background-image: url(images/asc.gif) !important;
+            background-image: url('images/asc.gif') !important;
         }
+
         &.sortdesc {
-            background-image: url(images/desc.gif) !important;
+            background-image: url('images/desc.gif') !important;
         }
+
         &.sortnone {
-            background-image: url(images/bg.gif) !important;
+            background-image: url('images/bg.gif') !important;
         }
-        &.thSize:hover, &.thData:hover, &.thDate:hover {
-            background-color: #CCDDDD;
+
+        &.thSize:hover,
+        &.thData:hover,
+        &.thDate:hover {
+            background-color: #CDD;
         }
+
         &.thCheckbox {
             width: 20px;
         }
@@ -96,10 +116,10 @@ table.midasTree {
 }
 
 #browseTableHeaderCheckbox {
-    margin-top: 2px;
     margin-bottom: 2px;
     margin-left: 3px;
     margin-right: 3px;
+    margin-top: 2px;
 }
 
 table.midasTree {
@@ -108,51 +128,65 @@ table.midasTree {
         cursor: default;
         padding-left: 3px;
     }
+
     tr {
         border-bottom: 1px #CCD7E0 dotted;
+
         &:hover {
             background-color: #F3F1EC;
         }
     }
+
     tbody tr {
         td.treeBrowseElement {
-            padding-left: 1.5em !important;
             cursor: pointer;
+            padding-left: 1.5em !important;
         }
+
         &.even {
             background: #F3F3F3;
         }
+
         &.odd {
             background: #FFF;
         }
     }
+
     span {
         background-position: center left;
         background-repeat: no-repeat;
         padding: .2em 0 .2em 1.5em;
+
         &.file {
-            background-image: url(../../images/TreeTable/page_white_text.png);
+            background-image: url('../../images/TreeTable/page_white_text.png');
         }
+
         &.filePrivate {
-            background-image: url(../../images/TreeTable/page_white_text_private.png);
+            background-image: url('../../images/TreeTable/page_white_text_private.png');
         }
+
         &.filePublic {
-            background-image: url(../../images/TreeTable/page_white_text_world.png);
+            background-image: url('../../images/TreeTable/page_white_text_world.png');
         }
+
         &.folder {
-            background-image: url(../../images/TreeTable/folder.png);
+            background-image: url('../../images/TreeTable/folder.png');
         }
+
         &.folderPrivate {
-            background-image: url(../../images/TreeTable/folder_private.png);
+            background-image: url('../../images/TreeTable/folder_private.png');
         }
+
         &.folderPublic {
-            background-image: url(../../images/TreeTable/folder_world.png);
+            background-image: url('../../images/TreeTable/folder_world.png');
         }
+
         &.loading {
-            background-image: url(../../images/icons/loading.gif);
+            background-image: url('../../images/icons/loading.gif');
         }
+
         &.community {
-            background-image: url(../../images/icons/community.png);
+            background-image: url('../../images/icons/community.png');
         }
     }
 }

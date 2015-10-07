@@ -1,4 +1,4 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 form#loginForm {
     color: #FFF;
@@ -7,23 +7,29 @@ form#loginForm {
     position: relative;
     top: 13px;
     width: 600px;
+
     div {
         &.loginError {
             color: #57BB7D;
             position: absolute;
             top: -15px;
-            span, img {
+
+            span,
+            img {
                 display: none;
                 position: relative;
             }
         }
+
         display: inline;
+
         &.rememberMe {
             float: right;
             left: -453px;
             position: relative;
             top: 20px;
         }
+
         &.links {
             float: right;
             left: -100px;
@@ -31,15 +37,19 @@ form#loginForm {
             top: 1px;
         }
     }
+
     a {
         color: #FFF;
         text-decoration: none;
     }
+
     div.links a:hover {
         color: #808080;
     }
+
     input {
-        &[type=text], &[type=password] {
+        &[type=text],
+        &[type=password] {
             background: #F3F1EC !important;
             border: 1px solid #808080;
             color: #000;
@@ -47,12 +57,17 @@ form#loginForm {
             margin-right: 10px;
             width: 150px;
         }
-        &[type=text], &[type=password] {
+
+        &[type=text],
+        &[type=password] {
             width: 200px;
         }
-        &[type=text]:hover, &[type=password]:hover {
+
+        &[type=text]:hover,
+        &[type=password]:hover {
             background: #FFF !important;
         }
+
         &[type=submit] {
             left: 0;
             margin-left: 0;
@@ -60,9 +75,11 @@ form#loginForm {
             top: 0;
         }
     }
+
     table {
         border-spacing: 0;
     }
+
     #rememberMeText {
         cursor: pointer;
     }
