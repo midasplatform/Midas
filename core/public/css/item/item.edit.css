@@ -1,1 +1,1 @@
-form#editItemForm input[type="text"],form#editItemForm input[type="password"]{width:350px !important;}form#editItemForm textarea{width:350px !important;}div.updateBitstreamNameNotice{background-color:#cdd;border-radius:4px;border:2px solid #acc;margin-bottom:5px;padding:8px;}
+form#editItemForm input[type='text'],form#editItemForm input[type='password']{width:350px !important}form#editItemForm textarea{width:350px !important}div.updateBitstreamNameNotice{background-color:#cdd;border:2px solid #acc;border-radius:4px;margin-bottom:5px;padding:8px}
