@@ -114,11 +114,17 @@ class Midas_Service_SendGrid_Mail implements Midas_Service_Mail
         $email = new \SendGrid\Email();
         $email->setBccs($mail->getBcc());
         $email->setCcs($mail->getCc());
-        $email->setHtml($mail->getBodyHtml(true));
+        $html = $mail->getUnencodedBodyHtml();
+        if ($html !== false) {
+            $email->setHtml($html);
+        }
         $email->setFrom($mail->getFrom());
         $email->setReplyTo($mail->getReplyTo());
         $email->setSubject($mail->getSubject());
-        $email->setText($mail->getBodyText(true));
+        $text = $mail->getUnencodedBodyText();
+        if ($text !== false) {
+            $email->setText($text);
+        }
         $email->setTos($mail->getTo());
 
         try {
