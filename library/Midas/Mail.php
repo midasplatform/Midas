@@ -27,6 +27,12 @@ class Midas_Mail extends Zend_Mail
     /** @var array */
     protected $_cc = array();
 
+    /** @var false|string */
+    protected $_unencodedBodyText = false;
+
+    /** @var false|string */
+    protected $_unencodedBodyHtml = false;
+
     /**
      * Add one or more "BCC" email addresses.
      *
@@ -98,5 +104,59 @@ class Midas_Mail extends Zend_Mail
     public function getTo()
     {
         return $this->_to;
+    }
+
+    /**
+     * Return the unencoded HTML message body.
+     *
+     * @return string unencoded HTML message body
+     */
+    public function getUnencodedBodyHtml()
+    {
+        return $this->_unencodedBodyHtml;
+    }
+
+    /**
+     * Return the unencoded plain text message body.
+     *
+     * @return string unencoded plain text message body
+     */
+    public function getUnencodedBodyText()
+    {
+        return $this->_unencodedBodyText;
+    }
+
+    /**
+     * Set the HTML message body.
+     *
+     * @param string $html HTML message body
+     * @param string $charset message character set
+     * @param string $encoding message encoding
+     * @return $this this mail instance
+     */
+    public function setBodyHtml($html, $charset = null, $encoding = Zend_Mime::ENCODING_QUOTEDPRINTABLE)
+    {
+        parent::setBodyHtml($html, $charset, $encoding);
+
+        $this->_unencodedBodyHtml = $html;
+
+        return $this;
+    }
+
+    /**
+     * Set the plain text message body.
+     *
+     * @param string $text plain text message body
+     * @param string $charset charset
+     * @param string $encoding encoding
+     * @return $this this mail instance
+     */
+    public function setBodyText($text, $charset = null, $encoding = Zend_Mime::ENCODING_QUOTEDPRINTABLE)
+    {
+        parent::setBodyText($text, $charset, $encoding);
+
+        $this->_unencodedBodyText = $text;
+
+        return $this;
     }
 }

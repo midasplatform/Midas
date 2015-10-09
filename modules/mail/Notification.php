@@ -79,7 +79,9 @@ class Mail_Notification extends MIDAS_Notification
         }
 
         $mail = new Midas_Mail();
-        $mail->setFrom(htmlspecialchars($this->Setting->getValueByName(MAIL_FROM_ADDRESS_KEY, $this->moduleName), ENT_QUOTES, 'UTF-8'));
+        $from = htmlspecialchars($this->Setting->getValueByName(MAIL_FROM_ADDRESS_KEY, $this->moduleName), ENT_QUOTES, 'UTF-8');
+        $mail->setFrom($from);
+        $mail->setReplyTo($from);
 
         if (isset($params['bcc'])) {
             $mail->addBcc(htmlspecialchars($params['bcc'], ENT_QUOTES, 'UTF-8'));

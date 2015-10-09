@@ -82,11 +82,17 @@ class Midas_Service_AppEngine_Mail implements Midas_Service_Mail
         $this->_client->addBcc($mail->getBcc());
         $this->_client->addCc($mail->getCc());
         $this->_client->addTo($mail->getTo());
-        $this->_client->setHtmlBody($mail->getBodyHtml(true));
+        $htmlBody = $mail->getUnencodedBodyHtml();
+        if ($htmlBody !== false) {
+            $this->_client->setHtmlBody($htmlBody);
+        }
         $this->_client->setReplyTo($mail->getReplyTo());
         $this->_client->setSender($mail->getFrom());
         $this->_client->setSubject($mail->getSubject());
-        $this->_client->setTextBody($mail->getBodyText(true));
+        $textBody = $mail->getUnencodedBodyText();
+        if ($textBody !== false) {
+            $this->_client->setTextBody($textBody);
+        }
 
         try {
             $this->_client->send();
