@@ -17,25 +17,34 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
+
+echo $this->doctype().PHP_EOL;
 ?>
-<html>
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>Midas Login</title>
-    <link rel="shortcut icon" href="<?php echo $this->coreWebroot ?>/public/images/icons/favicon.ico"/>
+    <?php
+    $this->headMeta()->appendHttpEquiv('Content-Type', 'text/html; charset=UTF-8');
+    echo $this->headMeta().PHP_EOL;
 
-    <link type="text/css" rel="stylesheet"
-          href="<?php echo $this->moduleWebroot ?>/public/css/authorize/authorize.index.css"/>
-    <link type="text/css" rel="stylesheet"
-          href="<?php echo $this->moduleWebroot ?>/public/css/bootstrap/bootstrap.min.css"/>
+    $this->headTitle('Login');
+    $this->headTitle()->setSeparator(' - ');
+    echo $this->headTitle().PHP_EOL;
 
-    <script type="text/javascript" src="<?php echo $this->coreWebroot ?>/public/js/layout/jquery.js"></script>
-    <script type="text/javascript" src="<?php echo $this->coreWebroot ?>/public/js/jquery/jquery.form.js"></script>
-    <script type="text/javascript"
-            src="<?php echo $this->moduleWebroot ?>/public/js/authorize/authorize.index.js"></script>
+    $this->headLink()->appendStylesheet($this->baseUrl('core/public/css/layout/jquery-ui.min.css'));
+    $this->headLink()->appendStylesheet($this->baseUrl('modules/oauth/public/css/authorize/authorize.index.css'));
+    $this->headLink()->appendStylesheet($this->baseUrl('modules/oauth/public/css/bootstrap/bootstrap.min.css'));
+    $this->headLink()->headLink(array('rel' => 'apple-touch-icon', 'href' => $this->baseUrl('apple-touch-icon-120x120.png'), 'sizes' => '60x60 120x120', 'APPEND'));
+    $this->headLink()->headLink(array('rel' => 'apple-touch-icon', 'href' => $this->baseUrl('apple-touch-icon-152x152.png'), 'sizes' => '76x76 152x152', 'APPEND'));
+    $this->headLink()->headLink(array('rel' => 'icon', 'href' => $this->baseUrl('favicon.ico'), 'APPEND'));
+    echo $this->headLink().PHP_EOL;
+
+    $this->headScript()->prependFile($this->baseUrl('modules/oauth/public/js/authorize//authorize.index.js'));
+    $this->headScript()->prependFile($this->baseUrl('core/public/js/jquery/jquery.form.js'));
+    $this->headScript()->prependFile($this->baseUrl('core/public/js/layout/jquery.js'));
+    echo $this->headScript().PHP_EOL;
+
+    echo $this->headStyle().PHP_EOL;
+    ?>
 </head>
 <body>
 <div class="loginFormContainer">
@@ -60,7 +69,6 @@
         </div>
         <input type="text" class="input-block-level" name="login" placeholder="Login"/>
         <input type="password" class="input-block-level" name="password" placeholder="Password"/>
-
         <div class="buttonBar">
             <input class="btn btn-primary loginSubmit" type="submit" name="allowOrDeny" value="Allow"/>
             <input class="btn loginDeny" type="submit" name="allowOrDeny" value="Deny"/>

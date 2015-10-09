@@ -26,9 +26,14 @@ api_version: 1
 threadsafe: yes
 
 handlers:
-- url: /favicon\.ico
+- url: /(apple-touch-icon-.*\.png)$
+  static_files: \1
+  upload: apple-touch-icon-.*\.png$
+  secure: always
+
+- url: /favicon\.ico$
   static_files: favicon.ico
-  upload: favicon\.ico
+  upload: favicon\.ico$
   secure: always
 
 - url: /(.*/(public|SwaggerUI)/.*\.(css|gif|ico|jpeg|jpg|js|map|png))$

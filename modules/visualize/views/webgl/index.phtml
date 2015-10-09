@@ -17,50 +17,54 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 =========================================================================*/
-?>
-<html>
-<title>Midas Platform Visualization</title>
 
-<script type="text/javascript" src="<?php echo $this->moduleWebroot ?>/public/js/webgl/Three.js"></script>
-<script type="text/javascript" src="<?php echo $this->moduleWebroot ?>/public/js/webgl/Detector.js"></script>
-<script type="text/javascript"
-        src="<?php echo $this->moduleWebroot ?>/public/js/webgl/RequestAnimationFrame.js"></script>
-<script type="text/javascript" src="<?php echo $this->moduleWebroot ?>/public/js/webgl/utils.js"></script>
-<script type="text/javascript"
-        src="<?php echo $this->moduleWebroot ?>/public/js/webgl/TrackballControlsMidas.js"></script>
-
-<?php
-echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery.js"></script>';
-echo '<script type="text/javascript" src="'.$this->coreWebroot.'/public/js/layout/jquery-ui.js"></script>';
+echo $this->doctype().PHP_EOL;
 ?>
-<script type="text/javascript" src="<?php echo $this->moduleWebroot ?>/public/js/webgl/webgl.index.js"></script>
-<link type="text/css" href="<?php echo $this->coreWebroot ?>/public/css/layout/jquery-ui.min.css" rel="stylesheet"/>
-<link type="text/css" href="<?php echo $this->moduleWebroot ?>/public/css/webgl/webgl.index.css" rel="stylesheet"/>
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <?php
+    $this->headMeta()->appendHttpEquiv('Content-Type', 'text/html; charset=UTF-8');
+    echo $this->headMeta().PHP_EOL;
+
+    $this->headTitle('Visualization');
+    $this->headTitle()->setSeparator(' - ');
+    echo $this->headTitle().PHP_EOL;
+
+    $this->headLink()->appendStylesheet($this->baseUrl('core/public/css/layout/jquery-ui.min.css'));
+    $this->headLink()->appendStylesheet($this->baseUrl('modules/visualize/public/css/webgl/webgl.index.css'));
+    $this->headLink()->headLink(array('rel' => 'apple-touch-icon', 'href' => $this->baseUrl('apple-touch-icon-120x120.png'), 'sizes' => '60x60 120x120', 'APPEND'));
+    $this->headLink()->headLink(array('rel' => 'apple-touch-icon', 'href' => $this->baseUrl('apple-touch-icon-152x152.png'), 'sizes' => '76x76 152x152', 'APPEND'));
+    $this->headLink()->headLink(array('rel' => 'icon', 'href' => $this->baseUrl('favicon.ico'), 'APPEND'));
+    echo $this->headLink().PHP_EOL;
+
+    $this->headScript()->prependFile($this->baseUrl('modules/visualize/public/js/webgl/webgl.index.js'));
+    $this->headScript()->prependFile($this->baseUrl('modules/visualize/public/js/webgl/TrackballControlsMidas.js'));
+    $this->headScript()->prependFile($this->baseUrl('modules/visualize/public/js/webgl/utils.js'));
+    $this->headScript()->prependFile($this->baseUrl('modules/visualize/public/js/webgl/RequestAnimationFrame.js'));
+    $this->headScript()->prependFile($this->baseUrl('modules/visualize/public/js/webgl/Detector.js'));
+    $this->headScript()->prependFile($this->baseUrl('modules/visualize/public/js/webgl/Three.js'));
+    $this->headScript()->prependFile($this->baseUrl('core/public/js/layout/jquery-ui.js'));
+    $this->headScript()->prependFile($this->baseUrl('core/public/js/layout/jquery.js'));
+    echo $this->headScript().PHP_EOL;
+
+    echo $this->headStyle().PHP_EOL;
+    ?>
 </head>
-
 <body>
-
-<button onclick="cameraUp();" id="buttonUp" class="buttonNav"></button>
-<button onclick="cameraDown();" id="buttonDown" class="buttonNav"></button>
-<button onclick="cameraLeft();" id="buttonLeft" class="buttonNav"></button>
-<button onclick="cameraRight();" id="buttonRight" class="buttonNav"></button>
-<button onclick="resetCameraPosition(objects3D);" id="buttonReset" class="buttonNav"></button>
-<button onclick="zoomIn();" id="buttonPlus" class="buttonNav"></button>
-<button onclick="zoomOut();" id="buttonMinus" class="buttonNav"></button>
-<div id="info">
-    <b>MOVE</b> mouse & press <b>LEFT button:</b> rotate,
-    <b>MIDDLE button:</b> pan , <b>RIGHT button:</b> zoom
-</div>
-
-<div id="onliver" style="display:none">
-    Over tooltip
-</div>
-
-<div id="axesContainer">
-</div>
-
-<div id="container"></div>
-
-<div id="datacontent" style="display:none"><?php echo $this->data ?></div>
+    <button onclick="cameraUp();" id="buttonUp" class="buttonNav"></button>
+    <button onclick="cameraDown();" id="buttonDown" class="buttonNav"></button>
+    <button onclick="cameraLeft();" id="buttonLeft" class="buttonNav"></button>
+    <button onclick="cameraRight();" id="buttonRight" class="buttonNav"></button>
+    <button onclick="resetCameraPosition(objects3D);" id="buttonReset" class="buttonNav"></button>
+    <button onclick="zoomIn();" id="buttonPlus" class="buttonNav"></button>
+    <button onclick="zoomOut();" id="buttonMinus" class="buttonNav"></button>
+    <div id="info">
+        <b>MOVE</b> mouse and press <b>LEFT button:</b> rotate,
+        <b>MIDDLE button:</b> pan, <b>RIGHT button:</b> zoom.
+    </div>
+    <div id="onliver" style="display:none">Over tooltip</div>
+    <div id="axesContainer"></div>
+    <div id="container"></div>
+    <div id="datacontent" style="display:none"><?php echo $this->data ?></div>
 </body>
 </html>
