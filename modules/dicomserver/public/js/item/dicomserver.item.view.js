@@ -26,7 +26,7 @@ midas.dicomserver.registerAction = function () {
         args: 'item=' + json.item.item_id,
         success: function (retVal) {
             midas.createNotice('Dicom images registered successfully', 3000);
-            $("div#sideElementDicomRegistration").show();
+            $('div#sideElementDicomRegistration').show();
         },
         error: function (retVal) {
             midas.createNotice(retVal.message, 3000, 'error');
@@ -45,10 +45,10 @@ midas.dicomserver.registrationStatus = function () {
         args: 'item=' + json.item.item_id,
         success: function (retVal) {
             if (retVal.data.status) {
-                $("div#sideElementDicomRegistration").show();
+                $('div#sideElementDicomRegistration').show();
             }
             else {
-                $("div#sideElementDicomRegistration").hide();
+                $('div#sideElementDicomRegistration').hide();
             }
         },
         log: $('<p></p>')

@@ -28,7 +28,6 @@ midas.createNotice = function (text, delay, state) {
  */
 function createNotice(text, delay, state) {
     'use strict';
-    console.log('WARNING: createNotice is deprecated, use midas.createNotice instead');
     midas.createNotice(text, delay, state);
 }
 

@@ -21,7 +21,7 @@ midas.user.successRecoverPassword = function (responseText, statusText, xhr, for
     }
     if (jsonResponse[0]) {
         midas.createNotice(jsonResponse[1], 4000);
-        $("div.MainDialog").dialog("close");
+        $('div.MainDialog').dialog('close');
     }
     else {
         midas.createNotice(jsonResponse[1], 4000, 'error');

@@ -1,4 +1,4 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 @import 'bourbon';
 
@@ -7,27 +7,30 @@ div {
         border-bottom: 1px dashed #C0C0C0;
         padding-bottom: 5px;
     }
+
     &.loginToComment {
         border-bottom: 1px dashed #C0C0C0;
         padding-bottom: 8px;
     }
 }
 
-#registerToComment, #loginToComment {
+#registerToComment,
+#loginToComment {
     color: #56758B;
     font-weight: bold;
     text-decoration: none;
 }
 
-#registerToComment:hover, #loginToComment:hover {
+#registerToComment:hover,
+#loginToComment:hover {
     cursor: pointer;
     text-decoration: underline;
 }
 
 #addCommentDiv {
+    border: 1px solid #BDC7D8;
     border-collapse: separate;
     border-spacing: 0;
-    border: 1px solid #BDC7D8;
     width: 100%;
 }
 
@@ -43,7 +46,8 @@ div {
     width: 99%;
 }
 
-.commentLimit, .commentAs {
+.commentLimit,
+.commentAs {
     border-right: 1px solid #E2E2E2;
     color: #777;
     float: left;
@@ -53,7 +57,8 @@ div {
     padding-right: 5px;
 }
 
-.commentLimitString, .postingAsString {
+.commentLimitString,
+.postingAsString {
     margin-top: 5px;
 }
 
@@ -90,12 +95,14 @@ a.commentUserName {
     font-weight: bold !important;
     margin-left: 8px;
     text-decoration: none;
+
     &:visited {
         color: #56758B;
         font-weight: bold !important;
         margin-left: 8px;
         text-decoration: none;
     }
+
     &:hover {
         text-decoration: underline;
     }
@@ -105,8 +112,6 @@ a.commentUserName {
     margin-left: 40px;
     margin-top: 8px;
 }
-
-.commentText {}
 
 .commentDate {
     color: #969696;
@@ -144,6 +149,7 @@ a.commentItrLink {
     font-size: 13px;
     font-weight: bold;
     text-decoration: none;
+
     &:visited {
         color: #56758B;
         font-family: $lucida-grande;
@@ -151,6 +157,7 @@ a.commentItrLink {
         font-weight: bold;
         text-decoration: none;
     }
+
     &:hover {
         color: #B85541;
         text-decoration: underline;

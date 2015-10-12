@@ -1,4 +1,4 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 div {
     &.sectionHeader {
@@ -9,24 +9,28 @@ div {
         margin-bottom: 5px;
         padding-top: 3px;
     }
+
     &.sectionContainer {
         margin-bottom: 30px;
         padding-top: 6px;
     }
 }
 
-.myClientsTable th, .myAuthorizationsTable th {
+.myClientsTable th,
+.myAuthorizationsTable th {
     background-color: #DDE4E4;
     font-weight: normal;
     padding: 3px 10px 3px 5px;
 }
 
-.myClientsTable td, .myAuthorizationsTable td {
+.myClientsTable td,
+.myAuthorizationsTable td {
     background-color: #FBFBFB;
     padding: 3px;
 }
 
-.myClientsTable, .myAuthorizationsTable {
+.myClientsTable,
+.myAuthorizationsTable {
     width: 100%;
 }
 
@@ -45,6 +49,7 @@ div {
 div.bottomButtons {
     float: right;
     margin-top: 25px;
+
     input {
         margin-left: 10px;
     }

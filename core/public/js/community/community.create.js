@@ -10,10 +10,10 @@ $('form.createCommunityForm').submit(function () {
 
 $('div.createNameElement input').focusout(function () {
     'use strict';
-    $.post($('.webroot').val() + "/community/validentry", {
-            entry: $('input[name=name]').val(),
-            type: "dbcommunityname"
-        },
+    $.post($('.webroot').val() + '/community/validentry', {
+        entry: $('input[name=name]').val(),
+        type: 'dbcommunityname'
+    },
         function (data) {
             if (data.search('true') != -1) {
                 midas.createNotice('Name already exists', 4000);

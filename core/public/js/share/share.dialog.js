@@ -8,10 +8,10 @@ var jsonShare = $.parseJSON($('div.jsonShareContent').html());
 $('a#setElementPublicLink').click(function () {
     'use strict';
     $.post(json.global.webroot + '/share/dialog', {
-            setPublic: true,
-            type: jsonShare.type,
-            element: jsonShare.element
-        },
+        setPublic: true,
+        type: jsonShare.type,
+        element: jsonShare.element
+    },
         function (data) {
             var jsonResponse = $.parseJSON(data);
             if (jsonResponse[0]) {
@@ -33,12 +33,12 @@ $('a.removeShareLink').click(function () {
     var removeId = $(this).parents('tr').attr('element');
     var obj = $(this).parents('tr');
     $.post(json.global.webroot + '/share/dialog', {
-            removePolicy: true,
-            removeType: removeType,
-            removeId: removeId,
-            type: jsonShare.type,
-            element: jsonShare.element
-        },
+        removePolicy: true,
+        removeType: removeType,
+        removeId: removeId,
+        type: jsonShare.type,
+        element: jsonShare.element
+    },
         function (data) {
             var jsonResponse = $.parseJSON(data);
             if (jsonResponse[0]) {
@@ -59,13 +59,13 @@ $('select.changePermissionSelect').change(function () {
     var changeVal = $(this).val();
     var obj = $(this).parents('tr');
     $.post(json.global.webroot + '/share/dialog', {
-            changePolicy: true,
-            changeVal: changeVal,
-            changeType: changeType,
-            changeId: changeId,
-            type: jsonShare.type,
-            element: jsonShare.element
-        },
+        changePolicy: true,
+        changeVal: changeVal,
+        changeType: changeType,
+        changeId: changeId,
+        type: jsonShare.type,
+        element: jsonShare.element
+    },
         function (data) {
             var jsonResponse = $.parseJSON(data);
             if (jsonResponse[0]) {
@@ -81,10 +81,10 @@ $('select.changePermissionSelect').change(function () {
 $('a#setElementPrivateLink').click(function () {
     'use strict';
     $.post(json.global.webroot + '/share/dialog', {
-            setPrivate: true,
-            type: jsonShare.type,
-            element: jsonShare.element
-        },
+        setPrivate: true,
+        type: jsonShare.type,
+        element: jsonShare.element
+    },
         function (data) {
             var jsonResponse = $.parseJSON(data);
             if (jsonResponse[0]) {
@@ -101,14 +101,14 @@ $('a#setElementPrivateLink').click(function () {
 });
 
 // Live search
-$.widget("custom.catcomplete", $.ui.autocomplete, {
+$.widget('custom.catcomplete', $.ui.autocomplete, {
     _renderMenu: function (ul, items) {
         'use strict';
         var self = this,
-            currentCategory = "";
+            currentCategory = '';
         $.each(items, function (index, item) {
             if (item.category != currentCategory) {
-                ul.append('<li class="search-category">' + item.category + "</li>");
+                ul.append('<li class="search-category">' + item.category + '</li>');
                 currentCategory = item.category;
             }
             self._renderItemData(ul, item);
@@ -119,7 +119,7 @@ $.widget("custom.catcomplete", $.ui.autocomplete, {
 var shareSearchcache = {},
     lastShareXhr;
 var itemShareSelected;
-$("#live_share_search").catcomplete({
+$('#live_share_search').catcomplete({
     minLength: 2,
     delay: 10,
     source: function (request, response) {
@@ -130,11 +130,11 @@ $("#live_share_search").catcomplete({
             return;
         }
 
-        $("#searchShareLoading").show();
+        $('#searchShareLoading').show();
 
-        lastShareXhr = $.getJSON($('.webroot').val() + "/search/live?shareSearch=true", request,
+        lastShareXhr = $.getJSON($('.webroot').val() + '/search/live?shareSearch=true', request,
             function (data, status, xhr) {
-                $("#searchShareLoading").hide();
+                $('#searchShareLoading').hide();
                 shareSearchcache[term] = data;
                 if (xhr === lastShareXhr) {
                     itemShareSelected = false;
@@ -162,17 +162,17 @@ $("#live_share_search").catcomplete({
             return;
         }
         $.post(json.global.webroot + '/share/dialog', {
-                createPolicy: true,
-                newPolicyType: newPolicyType,
-                newPolicyId: newPolicyId,
-                type: jsonShare.type,
-                element: jsonShare.element
-            },
+            createPolicy: true,
+            newPolicyType: newPolicyType,
+            newPolicyId: newPolicyId,
+            type: jsonShare.type,
+            element: jsonShare.element
+        },
             function (data) {
                 var jsonResponse = $.parseJSON(data);
                 if (jsonResponse[0]) {
                     midas.createNotice(jsonResponse[1], 1500);
-                    midas.loadDialog("sharing" + $(this).attr('type') + $(this).attr('element') + newPolicyId, "/share/dialog?type=" + encodeURIComponent(jsonShare.type) + '&element=' + encodeURIComponent(jsonShare.element));
+                    midas.loadDialog('sharing' + $(this).attr('type') + $(this).attr('element') + newPolicyId, '/share/dialog?type=' + encodeURIComponent(jsonShare.type) + '&element=' + encodeURIComponent(jsonShare.element));
                     midas.showDialog(json.browse.share);
                 }
                 else {
@@ -204,8 +204,8 @@ $('#live_share_search').focusout(function () {
 $('input.permissionsDone').click(function () {
     'use strict';
     $('div.MainDialog').dialog('close');
-    if (jsonShare.type == "folder") {
-        midas.loadDialog("applyRecursive" + jsonShare.element, "/share/applyrecursivedialog?folderId=" + encodeURIComponent(jsonShare.element));
+    if (jsonShare.type == 'folder') {
+        midas.loadDialog('applyRecursive' + jsonShare.element, '/share/applyrecursivedialog?folderId=' + encodeURIComponent(jsonShare.element));
         midas.showDialog(json.browse.share);
     }
 });

@@ -23,8 +23,7 @@ midas.visualize.start = function () {
     paraview.errorListener = {
         manageError: function (error) {
             if (error) {
-                midas.createNotice('A ParaViewWeb error occurred; check the console for information', 4000, 'error');
-                console.log(error);
+                midas.createNotice('A ParaViewWeb error occurred.', 4000, 'error');
                 return false;
             }
         }
@@ -59,8 +58,6 @@ midas.visualize._dataOpened = function (view, retVal) {
     midas.visualize.midK = Math.floor((midas.visualize.bounds[4] + midas.visualize.bounds[5]) / 2.0);
 
     if (midas.visualize.bounds.length != 6) {
-        console.log('Invalid image bounds:');
-        console.log(midas.visualize.bounds);
         return;
     }
 

@@ -14,7 +14,7 @@ midas.apikey.successApiConfig = function (responseText, statusText, xhr, form) {
         jsonResponse = $.parseJSON(responseText);
     }
     catch (e) {
-        midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
+        midas.createNotice('An error occured. Please check the logs.', 4000, 'error');
         return false;
     }
     if (jsonResponse === null) {
@@ -40,10 +40,10 @@ $(document).ready(function () {
     $('a.deleteApiKeyLink').click(function () {
         var obj = $(this);
         $.post(json.global.webroot + '/apikey/usertab', {
-                deleteAPIKey: true,
-                element: $(this).attr('element'),
-                userId: $('#apiUserId').val()
-            },
+            deleteAPIKey: true,
+            element: $(this).attr('element'),
+            userId: $('#apiUserId').val()
+        },
             function (data) {
                 var jsonResponse = $.parseJSON(data);
                 if (jsonResponse === null) {

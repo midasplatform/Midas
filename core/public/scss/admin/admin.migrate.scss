@@ -1,4 +1,4 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 h2 {
     margin-left: 10px;
@@ -8,6 +8,7 @@ form.migrateForm dl {
     border: 0;
     margin-top: 25px;
     width: 800px;
+
     dt {
         border-bottom: 1px solid #EEE;
         float: left;
@@ -18,6 +19,7 @@ form.migrateForm dl {
         text-align: right;
         width: 200px;
     }
+
     dd {
         border-bottom: 1px solid #EEE;
         display: inline;
@@ -32,7 +34,8 @@ form.migrateForm dl {
     }
 }
 
-#submit-label, #submit-element {
+#submit-label,
+#submit-element {
     border-bottom: 0;
 }
 

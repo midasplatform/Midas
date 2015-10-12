@@ -1,7 +1,8 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 div.viewMain {
     width: 805px;
+
     h2 {
         color: #545454;
         font-size: 15px;
@@ -11,6 +12,7 @@ div.viewMain {
 
 #platformList {
     margin-top: 15px;
+
     h3 a {
         text-decoration: none;
     }
@@ -24,23 +26,27 @@ div.platformContainer {
 }
 
 table.packagesTable {
-    border-collapse: collapse;
     border: 0;
+    border-collapse: collapse;
     width: 100%;
+
     a img {
         position: relative;
         top: 2px;
     }
+
     td {
         border: 1px solid #D7D7D7;
         padding-bottom: 3px;
         padding-left: 4px;
         padding-top: 2px;
     }
+
     tr {
         &.odd {
             background-color: #F4F4F4;
         }
+
         &.even {
             background-color: #FFF;
         }

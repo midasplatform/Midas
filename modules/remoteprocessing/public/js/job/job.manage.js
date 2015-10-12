@@ -26,13 +26,13 @@ function colorLines(checkHidden) {
     'use strict';
     var grey = false;
     $('.midasTree tr').each(function (index) {
-        $(this).css("border", "none");
+        $(this).css('border', 'none');
         if (index === 0) {
             return;
         }
         if (selectedJob == $(this).attr('element')) {
-            $(this).css("background-color", "#C0D1FE");
-            $(this).css("border", "1px solid grey");
+            $(this).css('background-color', '#C0D1FE');
+            $(this).css('border', '1px solid grey');
             grey = !grey;
             $(this).unbind('mouseenter mouseleave');
         }

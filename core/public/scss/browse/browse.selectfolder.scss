@@ -1,12 +1,13 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 table#moveTable {
+    display: none;
     width: 420px !important;
+
     th.thData {
         border-right: none !important;
         width: auto !important;
     }
-    display: none;
 }
 
 #moveTable .browserPrivacyInformation {
@@ -14,21 +15,20 @@ table#moveTable {
 }
 
 #createFolderButton {
-    border: none;
+    border: 0;
     display: none;
     float: none !important;
     width: 200px;
 }
 
 #createFolderContent {
-    border-radius: 6px;
     border: 1px #CCD7E0 dotted !important;
-    border: 1px #354856 solid;
+    border-radius: 6px;
     box-shadow: 0 0 2px #666;
     display: none;
     margin-bottom: 2px;
     margin-top: 5px;
-    padding: 0 5px 6px 5px;
+    padding: 0 5px 6px;
     width: 300px;
 }
 

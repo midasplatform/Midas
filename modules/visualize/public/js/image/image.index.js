@@ -2,7 +2,7 @@
 
 $(document).ready(function () {
     'use strict';
-    $("#viewer").iviewer({
+    $('#viewer').iviewer({
         src: $('div#urlImage').html(),
         update_on_resize: false
     });

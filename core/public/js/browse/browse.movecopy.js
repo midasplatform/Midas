@@ -19,8 +19,8 @@ midas.browse.moveCopyCallbackSelect = function (node) {
         parent = null;
         var classNames = current[0].className.split(' ');
         for (var key in classNames) {
-            if (classNames[key].match("child-of-")) {
-                parent = $("#moveCopyTable #" + classNames[key].substring(9));
+            if (classNames[key].match('child-of-')) {
+                parent = $('#moveCopyTable #' + classNames[key].substring(9));
             }
         }
         if (parent !== null) {
@@ -39,6 +39,7 @@ midas.browse.moveCopyCallbackSelect = function (node) {
                 id: node.attr('element')
             };
             $.post(json.global.webroot + '/browse/getmaxpolicy', params, function (retVal) {
+                'use strict';
                 var resp = $.parseJSON(retVal);
                 node.attr('policy', resp.policy);
                 midas.browse.checkMoveDestinationValid(node, resp.policy);
@@ -85,9 +86,9 @@ midas.browse.moveCopyCallbackCustomElements = function (node, elements, first) {
     var padding = parseInt(node.find('td:first').css('padding-left').slice(0, -2));
     var html = '';
     $.each(elements.folders, function (index, value) {
-        html += "<tr id='" + id + "-" + i + "' class='parent child-of-" + id + "' ajax='" + value.folder_id + "'type='folder' element='" + value.folder_id + "'>";
-        html += "  <td><span class='folder'>" + trimName(value.name, padding) + "</span></td>";
-        html += "</tr>";
+        html += '<tr id="' + id + '-' + i + '" class="parent child-of-' + id + '" ajax="' + value.folder_id + '"type="folder" element="' + value.folder_id + '">';
+        html += '  <td><span class="folder">' + trimName(value.name, padding) + '</span></td>';
+        html += '</tr>';
         i++;
     });
     return html;
@@ -100,15 +101,15 @@ $(document).ready(function () {
         return true;
     });
 
-    $("#moveCopyTable").treeTable({
+    $('#moveCopyTable').treeTable({
         callbackSelect: midas.browse.moveCopyCallbackSelect,
         callbackCheckboxes: midas.browse.moveCopyCallbackCheckboxes,
         callbackDblClick: midas.browse.moveCopyCallbackDblClick,
         callbackCustomElements: midas.browse.moveCopyCallbackCustomElements,
         pageLength: 99999 // do not page this table (preserves old functionality)
     });
-    $("img.tableLoading").hide();
-    $("table#moveCopyTable").show();
+    $('img.tableLoading').hide();
+    $('table#moveCopyTable').show();
 
     $('.uploadApplet').hide();
 
@@ -120,7 +121,7 @@ $(document).ready(function () {
             $('#destinationId').val(destValue);
             $('.destinationUpload').html(destHtml);
             $('.destinationId').val(destValue);
-            $("div.MainDialog").dialog('close');
+            $('div.MainDialog').dialog('close');
             $('.uploadApplet').show();
             return false;
         });

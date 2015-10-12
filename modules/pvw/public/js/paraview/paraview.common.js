@@ -166,8 +166,8 @@ midas.pvw.hideStatus = function () {
 midas.pvw.rpcFailure = function (err) {
     'use strict';
     $('div.MainDialog').dialog('close');
-    console.log(err);
-    midas.createNotice('A ParaViewWeb exception occurred, check your browser console', 4000, 'error');
+
+    midas.createNotice('A ParaViewWeb exception occurred.', 4000, 'error');
 };
 
 /** Show an indeterminate loading dialog with a message */

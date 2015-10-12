@@ -6,30 +6,30 @@ var midas = midas || {};
 $(document).ready(
     function () {
         'use strict';
-        $("#browseTable").treeTable();
-        $("img.tableLoading").hide();
-        $("table#browseTable").show();
+        $('#browseTable').treeTable();
+        $('img.tableLoading').hide();
+        $('table#browseTable').show();
 
-        $('div.feedThumbnail img').fadeTo("slow", 0.4);
+        $('div.feedThumbnail img').fadeTo('slow', 0.4);
         $('div.feedThumbnail img').mouseover(
             function () {
-                $(this).fadeTo("fast", 1);
+                $(this).fadeTo('fast', 1);
             });
 
         $('div.feedThumbnail img').mouseout(
             function () {
-                $(this).fadeTo("fast", 0.4);
+                $(this).fadeTo('fast', 0.4);
             });
 
         $('a.createCommunity').click(
             function () {
                 if (json.global.logged) {
-                    midas.loadDialog("createCommunity", "/community/create");
+                    midas.loadDialog('createCommunity', '/community/create');
                     midas.showDialog(json.community.createCommunity, false);
                 }
                 else {
                     midas.createNotice(json.community.contentCreateLogin, 4000);
-                    $("div.TopDynamicBar").show('blind');
+                    $('div.TopDynamicBar').show('blind');
                     midas.loadAjaxDynamicBar('login', '/user/login');
                 }
             });

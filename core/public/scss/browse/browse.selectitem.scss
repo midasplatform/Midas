@@ -1,12 +1,13 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 table#moveTable {
+    display: none;
     width: 420px !important;
+
     th.thData {
         border-right: none !important;
         width: auto !important;
     }
-    display: none;
 }
 
 .treeTable .browserPrivacyInformation {
@@ -17,6 +18,7 @@ div {
     &.selectedItemContainer {
         margin-bottom: 5px;
     }
+
     &.bottomButtons {
         float: right;
         margin-top: 10px;
@@ -24,18 +26,18 @@ div {
 }
 
 input#live_search_item {
-    background: #FFF url(../../images/icons/search.png) no-repeat scroll 2px 1px;
-    border-radius: 4px;
+    background: #FFF url('../../images/icons/search.png') no-repeat scroll 2px 1px;
     border: 1px solid #FFF;
+    border-radius: 4px;
     box-shadow: 0 0 3px #666;
     font-size: 12px;
-    opacity: 0.9;
+    opacity: .9;
     padding: 2px 10px 2px 22px;
     width: 260px;
 }
 
 #searchloadingSelectItem {
-    background: url("../../images/icons/loading-small.gif") bottom center no-repeat;
+    background: url('../../images/icons/loading-small.gif') bottom center no-repeat;
     color: #FFF;
     display: inline-block;
     height: 16px;

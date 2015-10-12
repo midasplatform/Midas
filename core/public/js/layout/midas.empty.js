@@ -7,13 +7,6 @@
 var json = json || {};
 var midas = midas || {};
 
-// Prevent error if console.log is called
-if (typeof console != "object") {
-    var console = {
-        'log': function () {}
-    };
-}
-
 $(function () {
     'use strict';
     // Parse json content

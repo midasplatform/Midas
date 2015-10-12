@@ -1,10 +1,11 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 form#editBitstreamForm input {
-    &[type="text"] {
+    &[type='text'] {
         width: 350px !important;
     }
-    &[type="submit"] {
+
+    &[type='submit'] {
         margin: 0 150px !important;
     }
 }

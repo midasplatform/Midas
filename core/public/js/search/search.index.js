@@ -5,7 +5,7 @@
 
 $(document).ready(function () {
     'use strict';
-    json.search.keyword = $("<div/>").html(json.search.keyword).text(); // remove html entity encoding
+    json.search.keyword = $('<div/>').html(json.search.keyword).text(); // remove html entity encoding
     $('#live_search_value').val($('#live_search').val());
     $('#live_search').val(json.search.keyword);
 
@@ -78,10 +78,10 @@ function changeSorting(order) {
     $('img.searchLoading').show();
     $('ul#searchResults').hide();
     $.post(json.global.webroot + '/search', {
-            q: json.search.keyword,
-            ajax: true,
-            order: order
-        },
+        q: json.search.keyword,
+        ajax: true,
+        order: order
+    },
         function (data) {
             var tmp = $.parseJSON(data);
             json.search.results = tmp.results;
@@ -130,28 +130,28 @@ function createSearchResults(element) {
     'use strict';
     var html = '';
     if (element.resultType == 'user') {
-        html = "<img class='imageSearchResult' alt='' src='" + json.global.coreWebroot + "/public/images/icons/unknownUser-small.png'/>";
-        html += "<a class='nameSearchResult' href='" + json.global.webroot + "/user/" + encodeURIComponent(element.user_id) + "'>" + sliceFileName(element.firstname + ' ' + element.lastname, 45) + "</a><br/>";
-        html += "<span class='descriptionSearchResult' >" + element.company + "</span>";
-        html += "<span class='dateSearchResult' >" + element.formattedDate + "</span>";
+        html = '<img class="imageSearchResult" alt="" src="' + json.global.coreWebroot + '/public/images/icons/unknownUser-small.png"/>';
+        html += '<a class="nameSearchResult" href="' + json.global.webroot + '/user/' + encodeURIComponent(element.user_id) + '">' + sliceFileName(element.firstname + ' ' + element.lastname, 45) + '</a><br/>';
+        html += '<span class="descriptionSearchResult" >' + element.company + '</span>';
+        html += '<span class="dateSearchResult" >' + element.formattedDate + '</span>';
     }
     if (element.resultType == 'item') {
-        html = "<img class='imageSearchResult' alt='' src='" + json.global.coreWebroot + "/public/images/FileTree/txt.png'/>";
-        html += "<a class='nameSearchResult' href='" + json.global.webroot + "/item/" + encodeURIComponent(element.item_id) + "'>" + sliceFileName(element.name, 45) + "</a><br/>";
-        html += "<span class='descriptionSearchResult' >" + element.description + "</span>";
-        html += "<span class='dateSearchResult' >" + element.formattedDate + "</span>";
+        html = '<img class="imageSearchResult" alt="" src="' + json.global.coreWebroot + '/public/images/FileTree/txt.png"/>';
+        html += '<a class="nameSearchResult" href="' + json.global.webroot + '/item/' + encodeURIComponent(element.item_id) + '">' + sliceFileName(element.name, 45) + '</a><br/>';
+        html += '<span class="descriptionSearchResult" >' + element.description + '</span>';
+        html += '<span class="dateSearchResult" >' + element.formattedDate + '</span>';
     }
     if (element.resultType == 'folder') {
-        html = "<img class='imageSearchResult' alt='' src='" + json.global.coreWebroot + "/public/images/FileTree/directory.png'/>";
-        html += "<a class='nameSearchResult' href='" + json.global.webroot + "/folder/" + encodeURIComponent(element.folder_id) + "'>" + sliceFileName(element.name, 45) + "</a><br/>";
-        html += "<span class='descriptionSearchResult' >" + element.description + "</span>";
-        html += "<span class='dateSearchResult' >" + element.formattedDate + "</span>";
+        html = '<img class="imageSearchResult" alt="" src="' + json.global.coreWebroot + '/public/images/FileTree/directory.png"/>';
+        html += '<a class="nameSearchResult" href="' + json.global.webroot + '/folder/' + encodeURIComponent(element.folder_id) + '">' + sliceFileName(element.name, 45) + '</a><br/>';
+        html += '<span class="descriptionSearchResult" >' + element.description + '</span>';
+        html += '<span class="dateSearchResult" >' + element.formattedDate + '</span>';
     }
     if (element.resultType == 'community') {
-        html = "<img class='imageSearchResult' alt='' src='" + json.global.coreWebroot + "/public/images/icons/community.png'/>";
-        html += "<a class='nameSearchResult' href='" + json.global.webroot + "/community/" + encodeURIComponent(element.community_id) + "'>" + sliceFileName(element.name, 45) + "</a><br/>";
-        html += "<span class='descriptionSearchResult' >" + element.description + "</span>";
-        html += "<span class='dateSearchResult' >" + element.formattedDate + "</span>";
+        html = '<img class="imageSearchResult" alt="" src="' + json.global.coreWebroot + '/public/images/icons/community.png"/>';
+        html += '<a class="nameSearchResult" href="' + json.global.webroot + '/community/' + encodeURIComponent(element.community_id) + '">' + sliceFileName(element.name, 45) + '</a><br/>';
+        html += '<span class="descriptionSearchResult" >' + element.description + '</span>';
+        html += '<span class="dateSearchResult" >' + element.formattedDate + '</span>';
     }
 
     return '<li class="searchElement">' + html + '</li>';

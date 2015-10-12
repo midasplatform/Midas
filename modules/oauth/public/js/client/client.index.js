@@ -13,9 +13,9 @@ midas.oauth.newClientDialog = function () {
         var name = container.find('input.newClientName').attr('disabled', 'disabled').val();
         $(this).attr('disabled', 'disabled');
         $.post(json.global.webroot + '/oauth/client/create', {
-                name: name,
-                userId: $('.userIdValue').html()
-            },
+            name: name,
+            userId: $('.userIdValue').html()
+        },
             function (text) {
                 var resp = $.parseJSON(text);
                 $('div.MainDialog').dialog('close');
@@ -41,8 +41,8 @@ midas.oauth.confirmDeleteClient = function () {
         container.find('input').attr('disabled', 'disabled');
 
         $.post(json.global.webroot + '/oauth/client/delete', {
-                clientId: clientId
-            },
+            clientId: clientId
+        },
             function (text) {
                 var resp = $.parseJSON(text);
                 $('div.MainDialog').dialog('close');
@@ -71,8 +71,8 @@ midas.oauth.confirmDeleteToken = function () {
         container.find('input').attr('disabled', 'disabled');
 
         $.post(json.global.webroot + '/oauth/token/delete', {
-                tokenId: tokenId
-            },
+            tokenId: tokenId
+        },
             function (text) {
                 var resp = $.parseJSON(text);
                 $('div.MainDialog').dialog('close');

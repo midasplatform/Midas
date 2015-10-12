@@ -20,8 +20,8 @@ $(document).ready(function () {
             disableElementSize: true
         });
 
-    $("img.tableLoading").hide();
-    $("table#browseTable").show();
+    $('img.tableLoading').hide();
+    $('table#browseTable').show();
 
     $('div.communityList').hide();
 
@@ -62,39 +62,39 @@ function callbackCreateElement(node) {
 
 function initDragAndDrop() {
     'use strict';
-    $("#browseTable .file, #browseTable .filePublic, #browseTable .filePrivate," +
-        "#browseTable .folderPublic:not(.notdraggable), #browseTable .folderPrivate:not(.notdraggable)").draggable({
-        helper: "clone",
-        cursor: "move",
-        opacity: 0.75,
-        refreshPositions: true, // Performance?
-        revert: "invalid",
-        revertDuration: 300,
-        scroll: true,
+    $('#browseTable .file, #browseTable .filePublic, #browseTable .filePrivate,' +
+        '#browseTable .folderPublic:not(.notdraggable), #browseTable .folderPrivate:not(.notdraggable)').draggable({
+            helper: 'clone',
+            cursor: 'move',
+            opacity: 0.75,
+            refreshPositions: true, // Performance?
+            revert: 'invalid',
+            revertDuration: 300,
+            scroll: true,
         // Show communities when user starts to drag items
-        start: function () {
-            $('div.communityList').show();
-        }
-    });
+            start: function () {
+                $('div.communityList').show();
+            }
+        });
 
-    $("#browseTable .folder, #browseTable .folderPrivate, #browseTable .folderPublic").each(function () {
+    $('#browseTable .folder, #browseTable .folderPrivate, #browseTable .folderPublic').each(function () {
         // Configure droppable folders/items
-        $(this).parents("tr:[policy!=0]").droppable({
-            accept: ".file, .filePublic, .filePrivate, .folder, .folderPublic, .folderPrivate",
+        $(this).parents('tr:[policy!=0]').droppable({
+            accept: '.file, .filePublic, .filePrivate, .folder, .folderPublic, .folderPrivate',
             drop: function (e, ui) {
                 // Call jQuery treeTable plugin to move the branch
                 var elements = '';
-                if ($(ui.draggable).parents("tr").attr('type') == 'folder') {
-                    elements = $(ui.draggable).parents("tr").attr('element') + ';';
+                if ($(ui.draggable).parents('tr').attr('type') == 'folder') {
+                    elements = $(ui.draggable).parents('tr').attr('element') + ';';
                 }
                 else {
-                    elements = ';' + $(ui.draggable).parents("tr").attr('element');
+                    elements = ';' + $(ui.draggable).parents('tr').attr('element');
                 }
                 var from_obj;
-                var classNames = $(ui.draggable).parents("tr").attr('class').split(' ');
+                var classNames = $(ui.draggable).parents('tr').attr('class').split(' ');
                 for (var key in classNames) {
                     if (classNames[key].match('child-of-')) {
-                        from_obj = "#" + classNames[key].substring(9);
+                        from_obj = '#' + classNames[key].substring(9);
                     }
                 }
                 var destination_obj = this;
@@ -102,12 +102,12 @@ function initDragAndDrop() {
                 // do nothing if drop item(s) to its current folder, otherwise move item(s)
                 if ($(this).attr('id') != $(from_obj).attr('id')) {
                     $.post(json.global.webroot + '/browse/movecopy', {
-                            moveElement: true,
-                            elements: elements,
-                            destination: $(destination_obj).attr('element'),
-                            from: $(from_obj).attr('element'),
-                            ajax: true
-                        },
+                        moveElement: true,
+                        elements: elements,
+                        destination: $(destination_obj).attr('element'),
+                        from: $(from_obj).attr('element'),
+                        ajax: true
+                    },
                         function (data) {
                             var jsonResponse = $.parseJSON(data);
                             if (jsonResponse === null) {
@@ -116,7 +116,7 @@ function initDragAndDrop() {
                             }
                             if (jsonResponse[0]) {
                                 midas.createNotice(jsonResponse[1], 1500);
-                                $($(ui.draggable).parents("tr")[0]).appendBranchTo(destination_obj);
+                                $($(ui.draggable).parents('tr')[0]).appendBranchTo(destination_obj);
                             }
                             else {
                                 midas.createNotice(jsonResponse[1], 4000);
@@ -125,28 +125,28 @@ function initDragAndDrop() {
                 }
 
             },
-            hoverClass: "accept",
+            hoverClass: 'accept',
             over: function (e, ui) {
                 // Make the droppable branch expand when a draggable node is moved over it.
-                if (this.id != $(ui.draggable.parents("tr")[0]).id && !$(this).is(".expanded")) {
+                if (this.id != $(ui.draggable.parents('tr')[0]).id && !$(this).is('.expanded')) {
                     $(this).expand();
                 }
             }
         });
 
         // Configure non-drappable folders/items
-        $(this).parents("tr:[policy=0]").droppable({
+        $(this).parents('tr:[policy=0]').droppable({
             revert: true,
             // Make the droppable branch expand when a draggable node is moved over it.
             over: function (e, ui) {
-                if (!$(this).is(".expanded")) {
+                if (!$(this).is('.expanded')) {
                     $(this).expand();
                 }
             }
         });
 
         // qtip pop-up for folders with only read permission
-        $(this).parents("tr:[policy=0]").qtip({
+        $(this).parents('tr:[policy=0]').qtip({
             content: 'You do not have write permission on this folder and cannot drop item(s) to it !',
             show: 'mouseover',
             hide: 'mouseout',

@@ -1,12 +1,14 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 div {
     &.viewWrapper {
         padding-right: 30px !important;
     }
+
     &.queryArea {
         margin-top: 10px;
     }
+
     &.topText {
         margin-top: 8px;
     }
@@ -20,7 +22,7 @@ div {
 
 #advancedSearchButton {
     margin-left: 0 !important;
-    padding: 4px 13px 4px 13px;
+    padding: 4px 13px;
 }
 
 #resultsArea {
@@ -39,6 +41,7 @@ div {
         padding-bottom: 10px;
         padding-top: 10px;
     }
+
     &.pageItrButtons {
         float: right;
         margin-top: 15px;

@@ -4,13 +4,6 @@ var json = json || {};
 var midas = midas || {};
 var itemselected = false;
 
-// Prevent error if console.log is called
-if (typeof console != "object") {
-    var console = {
-        'log': function () {}
-    };
-}
-
 // Main calls
 $(function () {
     'use strict';
@@ -49,9 +42,9 @@ $(function () {
     }
 
     function showStartingGuide() {
-        $("#dialogStartingGuide").dialog({
+        $('#dialogStartingGuide').dialog({
             width: 580,
-            title: $("#dialogStartingGuide").attr('title'),
+            title: $('#dialogStartingGuide').attr('title'),
             modal: true
         });
     }
@@ -61,7 +54,7 @@ $(function () {
         if ($(this).is(':checked')) {
             value = 0;
         }
-        $.post(json.global.webroot + "/user/startingguide", {
+        $.post(json.global.webroot + '/user/startingguide', {
             value: value
         });
     });
@@ -77,51 +70,51 @@ $(function () {
     });
     $('#blockSettingsLink').click(function () {
         midas.loadAjaxDynamicBar('settings', '/user/settings');
-        if ($("div.TopDynamicBar").is(':hidden')) {
-            $("div.TopDynamicBar").show('blind', function () {
+        if ($('div.TopDynamicBar').is(':hidden')) {
+            $('div.TopDynamicBar').show('blind', function () {
 
             });
         }
-        $('#dialogStartingGuide').dialog("close");
+        $('#dialogStartingGuide').dialog('close');
     });
 
     // Login
-    $("a.loginLink").click(function () {
+    $('a.loginLink').click(function () {
         midas.showOrHideDynamicBar('login');
         midas.loadAjaxDynamicBar('login', '/user/login');
     });
 
     // Setting link
-    $("li.settingsLink").click(function () {
-        if ($("div.TopDynamicBar").is(':hidden')) {
-            $("div.TopDynamicBar").show('blind', function () {});
+    $('li.settingsLink').click(function () {
+        if ($('div.TopDynamicBar').is(':hidden')) {
+            $('div.TopDynamicBar').show('blind', function () {});
         }
         midas.loadAjaxDynamicBar('settings', '/user/settings');
     });
 
     // Module link
-    $("li.modulesLink").click(function () {
-        if ($("div.TopDynamicBar").is(':hidden')) {
-            $("div.TopDynamicBar").show('blind', function () {});
+    $('li.modulesLink').click(function () {
+        if ($('div.TopDynamicBar').is(':hidden')) {
+            $('div.TopDynamicBar').show('blind', function () {});
         }
         midas.loadAjaxDynamicBar('settings', '/user/settings');
     });
 
     // Register link
-    $("a.registerLink").click(function () {
+    $('a.registerLink').click(function () {
         midas.showOrHideDynamicBar('register');
         midas.loadAjaxDynamicBar('register', '/user/register');
     });
 
     // Search Bar -----------------------
     // Live search
-    $.widget("custom.catcomplete", $.ui.autocomplete, {
+    $.widget('custom.catcomplete', $.ui.autocomplete, {
         _renderMenu: function (ul, items) {
             var self = this,
-                currentCategory = "";
+                currentCategory = '';
             $.each(items, function (index, item) {
                 if (item.category != currentCategory) {
-                    ul.append('<li class="search-category">' + item.category + "</li>");
+                    ul.append('<li class="search-category">' + item.category + '</li>');
                     currentCategory = item.category;
                 }
                 self._renderItemData(ul, item);
@@ -131,7 +124,7 @@ $(function () {
 
     var cache = {},
         lastXhr;
-    $("#live_search").catcomplete({
+    $('#live_search').catcomplete({
         minLength: 2,
         delay: 10,
         source: function (request, response) {
@@ -141,10 +134,10 @@ $(function () {
                 return;
             }
 
-            $("#searchloading").show();
+            $('#searchloading').show();
 
-            lastXhr = $.getJSON($('.webroot').val() + "/search/live", request, function (data, status, xhr) {
-                $("#searchloading").hide();
+            lastXhr = $.getJSON($('.webroot').val() + '/search/live', request, function (data, status, xhr) {
+                $('#searchloading').hide();
                 cache[term] = data;
                 if (xhr === lastXhr) {
                     itemselected = false;
@@ -254,7 +247,7 @@ $(function () {
         }
         else {
             midas.createNotice(json.login.contentUploadLogin, 4000);
-            $("div.TopDynamicBar").show('blind');
+            $('div.TopDynamicBar').show('blind');
             midas.loadAjaxDynamicBar('login', '/user/login');
         }
     });
@@ -264,9 +257,9 @@ $(function () {
     $('#menuUserInfo').click(function () {
         globalAuthAsk(json.global.webroot + '/user/userpage');
     });
-    $("div.TopDynamicBar .closeButton").click(function () {
-        if (!$("div.TopDynamicBar").is(':hidden')) {
-            $("div.TopDynamicBar").hide('blind');
+    $('div.TopDynamicBar .closeButton').click(function () {
+        if (!$('div.TopDynamicBar').is(':hidden')) {
+            $('div.TopDynamicBar').hide('blind');
         }
     });
 
@@ -289,7 +282,7 @@ function globalAuthAsk(url) {
     }
     else {
         midas.createNotice(json.login.titleUploadLogin, 4000);
-        $("div.TopDynamicBar").show('blind');
+        $('div.TopDynamicBar').show('blind');
         midas.loadAjaxDynamicBar('login', '/user/login');
     }
 }
@@ -336,16 +329,16 @@ function TimerQtip() {
 
     if (!$('#dialogStartingGuide').is(':hidden')) {
         iQtips = 0;
-        setTimeout("TimerQtip()", 1000);
+        setTimeout('TimerQtip()', 1000);
         return;
     }
 
     qtipsHelp[iQtips].qtip('show');
     if (qtipsHelp.length > iQtips + 1) {
-        setTimeout("TimerQtip()", 5000);
+        setTimeout('TimerQtip()', 5000);
     }
     else {
-        setTimeout("StopTimerQtip()", 5000);
+        setTimeout('StopTimerQtip()', 5000);
     }
     iQtips++;
 }

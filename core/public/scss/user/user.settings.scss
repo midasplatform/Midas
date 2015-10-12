@@ -1,4 +1,4 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 div#tabsSettings {
     display: none;
@@ -11,13 +11,16 @@ form {
             float: left;
             width: 80px;
         }
+
         input {
-            &[type="text"], &[type="password"] {
+            &[type='text'],
+            &[type='password'] {
                 width: 200px !important;
             }
         }
     }
-    &#modifyPassword input[type="password"] {
+
+    &#modifyPassword input[type='password'] {
         width: 200px !important;
     }
 }
@@ -25,14 +28,17 @@ form {
 div {
     &#accountPrivacy {
         margin-left: 100px;
+
         label {
             float: none !important;
             width: auto !important;
         }
+
         br {
             display: none;
         }
     }
+
     &#imageActual {
         float: right;
     }
@@ -43,6 +49,8 @@ div {
 }
 
 div#tabsSettings {
+    background: none !important;
+
     .ui-tabs-nav {
         background: none !important;
         border-bottom: 1px solid #D7D7D7 !important;
@@ -53,10 +61,11 @@ div#tabsSettings {
         height: 22px !important;
         padding-left: 10px;
     }
+
     .ui-widget-content {
         background: none !important;
     }
-    background: none !important;
+
     .ui-tabs .ui-tabs-nav li a {
         padding: 3px 10px !important;
     }
@@ -71,15 +80,18 @@ div#tabsSettings {
         color: #1D5987 !important;
         font-weight: bold;
         height: 19px !important;
+
         a {
             color: #1D5987 !important;
             font-weight: bold;
             height: 19px !important;
         }
     }
+
     .ui-state-default {
         height: 20px;
     }
+
     .ui-tabs-panel {
         width: 99%;
     }

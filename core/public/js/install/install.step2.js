@@ -53,15 +53,15 @@ function checkDB(obj) {
     obj.find('.testOk').hide();
     obj.find('.testNok').hide();
     obj.find('.testError').html('');
-    if (obj.find('[name=type]').val() != 'sqlite' && (obj.find('[name=host]').val() == '' || obj.find('[name=port]').val() == "") && obj.find('[name=unix_socket]').val() == '') {
+    if (obj.find('[name=type]').val() != 'sqlite' && (obj.find('[name=host]').val() == '' || obj.find('[name=port]').val() == '') && obj.find('[name=unix_socket]').val() == '') {
         obj.find('.testNok').show();
-        obj.find('.testError').html("Please set the host and port or the socket.");
+        obj.find('.testError').html('Please set the host and port or the socket.');
         obj.find('.testLoading').hide();
         return;
     }
 
     $.ajax({
-        type: "POST",
+        type: 'POST',
         url: json.global.webroot + '/install/testconnection',
         data: {
             type: obj.find('[name=type]').val(),
@@ -75,7 +75,6 @@ function checkDB(obj) {
         cache: false,
         success: function (jsonContent) {
             var testConnexion = $.parseJSON(jsonContent);
-            console.log(jsonContent);
             obj.find('.testLoading').hide();
             if (testConnexion[0] == true) {
                 obj.find('.testOk').show();
@@ -91,9 +90,9 @@ function checkDB(obj) {
 
 function checkEmail(mailteste) {
     'use strict';
-     var local = 'a-zA-Z0-9\x21\x23\x24\x25\x26\x27\x2a\x2b\x2d\x2f\x3d\x3f\x5e\x5f\x60\x7b\x7c\x7d\x7e';
-     var host = 'a-z0-9\x2d\x2e';
-     var reg = new RegExp('^['+local+']+(\x2e+['+local+']+)*@['+host+']{1,63}$', 'i');
+    var local = 'a-zA-Z0-9\x21\x23\x24\x25\x26\x27\x2a\x2b\x2d\x2f\x3d\x3f\x5e\x5f\x60\x7b\x7c\x7d\x7e';
+    var host = 'a-z0-9\x2d\x2e';
+    var reg = new RegExp('^[' + local + ']+(\x2e+[' + local + ']+)*@[' + host + ']{1,63}$', 'i');
 
     if (reg.test(mailteste)) {
         return (true);

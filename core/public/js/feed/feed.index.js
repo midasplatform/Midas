@@ -2,13 +2,13 @@
 
 $(document).ready(function () {
     'use strict';
-    $('div.feedThumbnail img').fadeTo("slow", 0.4);
+    $('div.feedThumbnail img').fadeTo('slow', 0.4);
     $('div.feedThumbnail img').mouseover(function () {
-        $(this).fadeTo("fast", 1);
+        $(this).fadeTo('fast', 1);
     });
 
     $('div.feedThumbnail img').mouseout(function () {
-        $(this).fadeTo("fast", 0.4);
+        $(this).fadeTo('fast', 0.4);
     });
 
 });

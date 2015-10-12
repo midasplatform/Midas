@@ -1,1 +1,1 @@
-form#editItemForm input[type="text"],form#editItemForm input[type="password"]{width:350px !important;}form#editItemForm textarea{width:350px !important;}
+form#editItemForm input[type='text'],form#editItemForm input[type='password']{width:350px !important}form#editItemForm textarea{width:350px !important}

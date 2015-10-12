@@ -12,7 +12,7 @@ midas.mfa.successSubmit = function (responseText, statusText, xhr, form) {
         jsonResponse = $.parseJSON(responseText);
     }
     catch (e) {
-        midas.createNotice("An error occured. Please check the logs.", 4000, 'error');
+        midas.createNotice('An error occured. Please check the logs.', 4000, 'error');
         return false;
     }
     if (jsonResponse.status == 'ok') {

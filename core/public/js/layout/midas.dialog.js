@@ -7,8 +7,8 @@ midas.loadDialog = function (name, url) {
     'use strict';
     if ($('.DialogContentPage').val() != name) {
         $('.DialogContentPage').val(name);
-        $('div.MainDialogContent').html("");
-        $("div.MainDialogLoading").show();
+        $('div.MainDialogContent').html('');
+        $('div.MainDialogLoading').show();
         $.ajax({
             url: $('.webroot').val() + url,
             // contentType: "application/x-www-form-urlencoded;charset=UTF-8",
@@ -41,8 +41,8 @@ midas.showDialog = function (title, button, opts) {
     };
     if (button) {
         options.buttons = {
-            "Ok": function () {
-                $(this).dialog("close");
+            'Ok': function () {
+                $(this).dialog('close');
             }
         };
     }
@@ -80,7 +80,7 @@ midas.showBigDialogWithContent = function (title, content, button) {
     'use strict';
     $('.DialogContentPage').val('');
     $('div.MainDialogContent').html(content);
-    $("div.MainDialogLoading").hide();
+    $('div.MainDialogLoading').hide();
     midas.showBigDialog(title, button);
 };
 
@@ -96,17 +96,17 @@ midas.loadAjaxDynamicBar = function (name, url) {
     if ($('.DynamicContentPage').val() != name) {
         $('.DynamicContentPage').val(name);
         $('div.TopDynamicContent').fadeOut('slow', function () {
-            $('div.TopDynamicContent').html("");
-            $("div.TopDynamicLoading").show();
+            $('div.TopDynamicContent').html('');
+            $('div.TopDynamicLoading').show();
 
             $.ajax({
                 url: $('.webroot').val() + url,
-                contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+                contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
                 success: function (data) {
-                    $("div.TopDynamicLoading").hide();
+                    $('div.TopDynamicLoading').hide();
                     $('div.TopDynamicContent').hide();
                     $('div.TopDynamicContent').html(data);
-                    $('div.TopDynamicContent').fadeIn("slow");
+                    $('div.TopDynamicContent').fadeIn('slow');
                 }
             });
         });
@@ -121,12 +121,12 @@ midas.showOrHideDynamicBar = function (name) {
         midas.showDialog(name);
         return;
     }
-    if ($("div.TopDynamicBar").is(':hidden')) {
-        $("div.TopDynamicBar").show('blind', function () {
+    if ($('div.TopDynamicBar').is(':hidden')) {
+        $('div.TopDynamicBar').show('blind', function () {
             $('#email').focus();
         });
     }
     else if ($('.DynamicContentPage').val() == name) {
-        $("div.TopDynamicBar").hide('blind');
+        $('div.TopDynamicBar').hide('blind');
     }
 };

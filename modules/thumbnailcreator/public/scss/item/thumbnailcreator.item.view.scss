@@ -1,4 +1,4 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 img {
     &.makeThumbnailIcon {
@@ -7,6 +7,7 @@ img {
         padding-left: 2px;
         padding-right: 2px;
     }
+
     &.largeImage {
         padding-top: 10px;
     }

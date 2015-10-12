@@ -1,19 +1,22 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 div.radioElement {
     label {
         float: inherit !important;
         width: 600px !important;
     }
+
     ul {
         list-style: none;
         margin: 0 0 0 100px;
-        padding: 0 0 0 0;
+        padding: 0;
         width: 600px !important;
     }
+
     h4 {
         margin-bottom: 4px;
     }
+
     br {
         display: none;
     }
@@ -24,8 +27,8 @@ img.folderLoading {
 }
 
 h1 {
-    padding: .2em;
     margin: 0;
+    padding: .2em;
 }
 
 #products {
@@ -37,6 +40,7 @@ h1 {
 #cart {
     float: left;
     width: 200px;
+
     ol {
         margin: 0;
         padding: 1em 0 1em 3em;

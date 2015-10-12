@@ -1,4 +1,4 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 div.listFilesContainer div {
     &.fileElement {
@@ -6,6 +6,7 @@ div.listFilesContainer div {
         min-height: 30px;
         position: relative;
     }
+
     &.fileDate {
         bottom: 0;
         color: #808080;
@@ -13,6 +14,7 @@ div.listFilesContainer div {
         position: absolute;
         right: 0;
     }
+
     &.feedUserImage {
         float: left;
     }

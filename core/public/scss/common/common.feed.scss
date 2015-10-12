@@ -1,4 +1,4 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 div.feedContainer div {
     &.feedElement {
@@ -6,9 +6,11 @@ div.feedContainer div {
         min-height: 30px;
         position: relative;
     }
+
     &.feedUserImage {
         float: left;
     }
+
     &.feedDate {
         bottom: 0;
         color: #808080;
@@ -37,7 +39,7 @@ div.feedDelete {
 
 img.newFeedElement {
     float: right;
-    position: relative;
     left: -13px;
+    position: relative;
     top: 2px;
 }

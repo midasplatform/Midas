@@ -1,11 +1,13 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
-#sliceSlider, #windowLevelSlider {
+#sliceSlider,
+#windowLevelSlider {
     margin: 8px 14px 8px 10px;
     width: 551px;
 }
 
-#sliceInfo, #windowLevelInfo {
+#sliceInfo,
+#windowLevelInfo {
     color: #FFF;
     margin-left: 10px;
     z-index: 3;
@@ -51,14 +53,17 @@ button {
         height: 25px;
         width: 25px;
     }
+
     &.actionActive {
         background-color: #9C9;
     }
+
     &.actionInactive {
         background-color: #CCC;
     }
+
     &.pointSelectButton {
-        background-image: url(../../images/pointSelect.png);
+        background-image: url('../../images/pointSelect.png');
     }
 }
 

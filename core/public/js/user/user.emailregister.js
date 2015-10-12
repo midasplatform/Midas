@@ -12,8 +12,8 @@ $(document).ready(function () {
     'use strict';
     $('label.termLabel').after($('div.termDiv').html());
     $('a.termOfService').click(function () {
-        midas.loadDialog("terms", "/user/termofservice");
-        midas.showBigDialog("Terms of Service");
+        midas.loadDialog('terms', '/user/termofservice');
+        midas.showBigDialog('Terms of Service');
     });
 
     $('#registerForm').find('input').each(function () {

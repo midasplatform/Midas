@@ -17,7 +17,7 @@ $(document).ready(function () {
             }
         } else {
             midas.createNotice(json.login.contentUploadLogin, 4000);
-            $("div.TopDynamicBar").show('blind');
+            $('div.TopDynamicBar').show('blind');
             midas.loadAjaxDynamicBar('login', '/user/login');
         }
     });

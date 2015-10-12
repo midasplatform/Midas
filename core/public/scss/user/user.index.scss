@@ -1,15 +1,16 @@
-/* Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0. */
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
 div {
-    &.userList {}
     &.userBlock {
         border-bottom: 1px dotted #808080;
         padding-bottom: 5px;
         padding-top: 5px;
     }
+
     &.userList span {
         padding-left: 15px;
     }
+
     &.userBlock:hover {
         background-color: #F6F9FE;
         cursor: pointer;
@@ -23,18 +24,22 @@ div {
 
 div {
     &.userStats {
-        border: none;
+        border: 0;
         color: #777;
         float: right;
         font-size: 10px;
     }
+
     &.adminCreateUser {
         margin-top: 20px;
     }
-    &.loginError, &.registerError {
+
+    &.loginError,
+    &.registerError {
         color: #F00;
         font-weight: bold;
     }
+
     &.loginError {
         padding-bottom: 8px;
     }
@@ -44,6 +49,7 @@ input {
     &.invalidField {
         background-color: #FF9191;
     }
+
     &.validField {
         background-color: #91FF91;
     }
@@ -51,18 +57,24 @@ input {
 
 .dialogForm {
     margin-bottom: 0;
+
     td {
         font-size: 14px;
     }
+
     input {
         font-size: 14px;
-        &[type=text], &[type=password] {
+
+        &[type=text],
+        &[type=password] {
             width: 200px;
         }
-        &[type=button], &[type=submit] {
+
+        &[type=button],
+        &[type=submit] {
             background: #8689DE;
-            border-radius: 3px;
             border: 0;
+            border-radius: 3px;
             color: #FFF;
             cursor: pointer;
             float: right;
@@ -70,9 +82,11 @@ input {
             font-weight: bold;
             margin-right: 0;
             margin-top: 5px;
-            padding: 6px 8px 6px 8px;
+            padding: 6px 8px;
         }
-        &[type=button]:hover, &[type=submit]:hover {
+
+        &[type=button]:hover,
+        &[type=submit]:hover {
             background: #CBD9E3;
             color: #1D5987;
             text-decoration: none;

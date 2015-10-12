@@ -25,8 +25,8 @@ $(document).ready(function () {
     });
     $('a.metadataDeleteLink img').fadeTo('fast', 0.4);
     $('a.metadataDeleteLink img').hover(function () {
-            $(this).fadeTo('fast', 1.0);
-        },
+        $(this).fadeTo('fast', 1.0);
+    },
         function () {
             $(this).fadeTo('fast', 0.4);
         });
@@ -50,48 +50,48 @@ $(document).ready(function () {
                 deleteMetadata: true
             });
             metadataCell.remove();
-            $("div.MainDialog").dialog('close');
+            $('div.MainDialog').dialog('close');
         });
         $('input.deleteMetaDataNo').unbind('click').click(function () {
-            $("div.MainDialog").dialog('close');
+            $('div.MainDialog').dialog('close');
         });
     });
     $('a.metadataEditLink img').fadeTo('fast', 0.4);
     $('a.metadataEditLink img').hover(function () {
-            $(this).fadeTo('fast', 1.0);
-        },
+        $(this).fadeTo('fast', 1.0);
+    },
         function () {
             $(this).fadeTo('fast', 0.4);
         });
     $('a.metadataEditLink').click(function () {
         var metadataId = $(this).attr('element');
         var itemrevision = $(this).attr('itemrevision');
-        midas.loadDialog("editmetadata" + metadataId, "/item/editmetadata/?metadataId=" + encodeURIComponent(metadataId) + "&itemId=" + encodeURIComponent(json.item.item_id) + "&itemrevision=" + encodeURIComponent(itemrevision));
+        midas.loadDialog('editmetadata' + metadataId, '/item/editmetadata/?metadataId=' + encodeURIComponent(metadataId) + '&itemId=' + encodeURIComponent(json.item.item_id) + '&itemrevision=' + encodeURIComponent(itemrevision));
         midas.showDialog('MetaData');
     });
 
     $('a.addMetadataLink').click(function () {
         var metadataId = $(this).attr('element');
-        midas.loadDialog("editmetadata" + metadataId, "/item/editmetadata/?itemId=" + encodeURIComponent(json.item.item_id));
+        midas.loadDialog('editmetadata' + metadataId, '/item/editmetadata/?itemId=' + encodeURIComponent(json.item.item_id));
         var options = {
             buttons: {
-                "Add": function () {
-                    $(this).dialog("close");
+                'Add': function () {
+                    $(this).dialog('close');
                     // since we are adding, be sure that the metadata doesn't already exist
                     // if it does, give the user an error message and don't add the new metadata
                     var requestData = {};
-                    requestData["element"] = $('#midas_item_metadata_element').val();
-                    requestData["qualifier"] = $('#midas_item_metadata_qualifier').val();
-                    requestData["metadatatype"] = $('#midas_item_metadata_metadatatype').val();
-                    requestData["itemId"] = json.item.item_id;
+                    requestData['element'] = $('#midas_item_metadata_element').val();
+                    requestData['qualifier'] = $('#midas_item_metadata_qualifier').val();
+                    requestData['metadatatype'] = $('#midas_item_metadata_metadatatype').val();
+                    requestData['itemId'] = json.item.item_id;
                     $.ajax({
-                        type: "POST",
-                        url: json.global.webroot + "/item/getmetadatavalueexists",
+                        type: 'POST',
+                        url: json.global.webroot + '/item/getmetadatavalueexists',
                         data: requestData,
                         success: function (jsonContent) {
                             var data = $.parseJSON(jsonContent);
-                            if (data.exists === "1") {
-                                midas.createNotice("Metadata already exists for that metadatatype, element and qualifier", 4000, 'error');
+                            if (data.exists === '1') {
+                                midas.createNotice('Metadata already exists for that metadatatype, element and qualifier', 4000, 'error');
                                 // clear the form values
                                 $('#midas_item_metadata_element').val('');
                                 $('#midas_item_metadata_qualifier').val('');
@@ -110,8 +110,8 @@ $(document).ready(function () {
 
     $('a.deleteItemRevision img').fadeTo('fast', 0.4);
     $('a.deleteItemRevision img').hover(function () {
-            $(this).fadeTo('fast', 1.0);
-        },
+        $(this).fadeTo('fast', 1.0);
+    },
         function () {
             $(this).fadeTo('fast', 0.4);
         });
@@ -131,21 +131,21 @@ $(document).ready(function () {
         midas.showDialogWithContent(json.item.message['delete'], html, false);
 
         $('input.deleteItemRevisionYes').unbind('click').click(function () {
-            $("div.MainDialog").dialog('close');
+            $('div.MainDialog').dialog('close');
             $('#deleteItemrevisionForm' + itemrevisionId).submit();
         });
         $('input.deleteItemRevisionNo').unbind('click').click(function () {
-            $("div.MainDialog").dialog('close');
+            $('div.MainDialog').dialog('close');
         });
     });
 
     $('a.duplicateItemLink').click(function () {
-        midas.loadDialog("duplicateItem", "/browse/movecopy/?duplicate=true&items=" + encodeURIComponent(json.item.item_id));
+        midas.loadDialog('duplicateItem', '/browse/movecopy/?duplicate=true&items=' + encodeURIComponent(json.item.item_id));
         midas.showDialog('Copy item');
     });
 
     $('a.linkItemLink').click(function () {
-        midas.loadDialog("linkToItem", "/share/links?type=item&id=" + encodeURIComponent(json.item.item_id));
+        midas.loadDialog('linkToItem', '/share/links?type=item&id=' + encodeURIComponent(json.item.item_id));
         midas.showDialog('Link to this item');
     });
 
@@ -181,7 +181,7 @@ $(document).ready(function () {
         content: 'Edit bitstream'
     }).click(function () {
         var bitstreamId = $(this).attr('element');
-        midas.loadDialog("editBitstream" + bitstreamId, "/item/editbitstream?bitstreamId=" + encodeURIComponent(bitstreamId));
+        midas.loadDialog('editBitstream' + bitstreamId, '/item/editbitstream?bitstreamId=' + encodeURIComponent(bitstreamId));
         midas.showDialog(json.browse.editBitstream, false, {
             width: 380
         });
@@ -204,9 +204,9 @@ $(document).ready(function () {
         html += '</div>';
         midas.showDialogWithContent(json.item.message['delete'], html, false);
         $('input.deleteBitstreamYes').unbind('click').click(function () {
-            $("div.MainDialog").dialog('close');
+            $('div.MainDialog').dialog('close');
             $.ajax({
-                type: "POST",
+                type: 'POST',
                 url: json.global.webroot + '/item/deletebitstream',
                 data: {
                     bitstreamId: bitstreamId
@@ -221,13 +221,13 @@ $(document).ready(function () {
             });
         });
         $('input.deleteBitstreamNo').unbind('click').click(function () {
-            $("div.MainDialog").dialog('close');
+            $('div.MainDialog').dialog('close');
         });
     });
 
     $('a#itemDeleteLink').click(function () {
         $.ajax({
-            type: "GET",
+            type: 'GET',
             url: json.global.webroot + '/item/checkshared',
             data: {
                 itemId: json.item.item_id
@@ -253,14 +253,14 @@ $(document).ready(function () {
                     location.replace(json.global.webroot + '/item/delete?itemId=' + encodeURIComponent(json.item.item_id));
                 });
                 $('input.deleteItemNo').unbind('click').click(function () {
-                    $("div.MainDialog").dialog('close');
+                    $('div.MainDialog').dialog('close');
                 });
             }
         });
     });
 
     $('a.sharingLink').click(function () {
-        midas.loadDialog("sharing" + $(this).attr('type') + $(this).attr('element'), "/share/dialog?type=" + encodeURIComponent($(this).attr('type')) + '&element=' + encodeURIComponent($(this).attr('element')));
+        midas.loadDialog('sharing' + $(this).attr('type') + $(this).attr('element'), '/share/dialog?type=' + encodeURIComponent($(this).attr('type')) + '&element=' + encodeURIComponent($(this).attr('element')));
         midas.showDialog(json.browse.share);
     });
 
@@ -270,7 +270,7 @@ $(document).ready(function () {
             // Set the text to an image HTML string with the correct src URL to the loading image you want to use
             text: '<img  src="' + json.global.webroot + '/core/public/images/icons/loading.gif" alt="Loading..." />',
             ajax: {
-                url: json.global.webroot + "/upload/revision?itemId=" + encodeURIComponent(itemId) // Use the rel attribute of each element for the url to load
+                url: json.global.webroot + '/upload/revision?itemId=' + encodeURIComponent(itemId) // Use the rel attribute of each element for the url to load
             },
             title: {
                 text: $('a.uploadRevisionLink').html(), // Give the tooltip a title using each elements text
@@ -301,7 +301,7 @@ $(document).ready(function () {
     });
 
     $('a.editItemLink').click(function () {
-        midas.loadDialog("editItem" + json.item.item_id, "/item/edit?itemId=" + encodeURIComponent(json.item.item_id));
+        midas.loadDialog('editItem' + json.item.item_id, '/item/edit?itemId=' + encodeURIComponent(json.item.item_id));
         midas.showDialog(json.browse.editItem, false, {
             width: 545
         });

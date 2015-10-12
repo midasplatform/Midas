@@ -81,10 +81,10 @@ midas.user.successPictureChange = function (responseText, statusText, xhr, form)
 
 $(window).load(function () {
     'use strict';
-    $("#tabsSettings").tabs();
+    $('#tabsSettings').tabs();
 
-    $("#tabsSettings").css('display', 'block');
-    $("#tabsSettings").show();
+    $('#tabsSettings').css('display', 'block');
+    $('#tabsSettings').show();
 
     $('#modifyPassword').ajaxForm({
         beforeSubmit: midas.user.validatePasswordChange,

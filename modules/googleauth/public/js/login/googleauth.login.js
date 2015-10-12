@@ -4,4 +4,4 @@
         var link = $(this);
         link.attr('href', link.attr('href') + window.encodeURIComponent(' ' + window.location.href));
     });
-}) ();
+})();
