@@ -38,6 +38,8 @@ echo $this->doctype().PHP_EOL;
     $this->headLink()->appendStylesheet($this->baseUrl('core/public/css/layout/loginForm.css'));
     $this->headLink()->appendStylesheet($this->baseUrl('core/public/css/layout/jquery.treeTable.css'));
     $this->headLink()->appendStylesheet($this->baseUrl('core/public/css/layout/jquery.qtip.min.css'));
+    $this->headLink()->headLink(array('rel' => 'apple-touch-icon', 'href' => $this->baseUrl('apple-touch-icon-120x120.png'), 'sizes' => '60x60 120x120', 'APPEND'));
+    $this->headLink()->headLink(array('rel' => 'apple-touch-icon', 'href' => $this->baseUrl('apple-touch-icon-152x152.png'), 'sizes' => '76x76 152x152', 'APPEND'));
     $this->headLink()->headLink(array('rel' => 'icon', 'href' => $this->baseUrl('favicon.ico'), 'APPEND'));
     echo $this->headLink().PHP_EOL;
 
