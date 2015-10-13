@@ -364,6 +364,7 @@ $(window).load(function () {
                 json.tracker.y2Min = container.find('input.y2Min').val();
                 json.tracker.y2Max = container.find('input.y2Max').val();
             }
+            var curveData = midas.tracker.extractCurveData(inputCurves);
             midas.tracker.renderChartArea(curveData, false);
             midas.tracker.updateUrlBar();
             container.dialog('close');
