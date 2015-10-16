@@ -154,6 +154,8 @@ class UserController extends AppController
     public function logoutAction()
     {
         session_start(); // we closed session before, must restart it to logout
+        $notifier = new MIDAS_Notifier(false, null);
+        $notifier->callback('CALLBACK_CORE_USER_LOGOUT');
         $this->userSession->Dao = null;
         Zend_Session::ForgetMe();
         $request = $this->getRequest();
@@ -1322,6 +1324,8 @@ class UserController extends AppController
             $this->requireAdminPrivileges();
         } else {
             // log out if user is deleting his or her own account
+            $notifier = new MIDAS_Notifier(false, null);
+            $notifier->callback('CALLBACK_CORE_USER_LOGOUT');
             if (!$this->isTestingEnv()) {
                 session_start();
                 $this->userSession->Dao = null;

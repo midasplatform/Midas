@@ -33,5 +33,6 @@ class Googleauth_InstallScript extends MIDASModuleInstallScript
         $settingModel = MidasLoader::loadModel('Setting');
         $settingModel->setConfig(GOOGLE_AUTH_CLIENT_ID_KEY, GOOGLE_AUTH_CLIENT_ID_DEFAULT_VALUE, $this->moduleName);
         $settingModel->setConfig(GOOGLE_AUTH_CLIENT_SECRET_KEY, GOOGLE_AUTH_CLIENT_SECRET_DEFAULT_VALUE, $this->moduleName);
+        $settingModel->setConfig(GOOGLE_AUTH_CLIENT_ADDITIONAL_SCOPES_KEY, GOOGLE_AUTH_CLIENT_ADDITIONAL_SCOPES_DEFAULT_VALUE, $this->moduleName);
     }
 }

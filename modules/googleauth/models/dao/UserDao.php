@@ -18,9 +18,23 @@
  limitations under the License.
 =========================================================================*/
 
-/** DAO for the googleauth_user model */
+/**
+ * Google user DAO for the googleauth module.
+ *
+ * @method int getGoogleauthUserId()
+ * @method void setGoogleauthUserId(int $googleauthUserId)
+ * @method int getUserId()
+ * @method void setUserId(int $userId)
+ * @method int getGooglePersonId()
+ * @method void setGooglePersonId(int $googlePersonId)
+ * @method UserDao getUser()
+ * @method void setUser(UserDao $user)
+ */
 class Googleauth_UserDao extends AppDao
 {
+    /** @var string */
     public $_model = 'User';
+
+    /** @var string */
     public $_module = 'googleauth';
 }
