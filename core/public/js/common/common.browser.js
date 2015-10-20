@@ -78,16 +78,16 @@ midas.genericCallbackCheckboxes = function (node) {
         if (json.global.logged) {
             links += '<li style="background-color: white;">';
             links += '  <img alt="" src="' + json.global.coreWebroot + '/public/images/icons/close.png"/> ';
-            links += '  <a onclick="midas.deleteSelected("' + folders + '","' + items + '")">' + json.browse.deleteSelected + '</a></li>';
+            links += '  <a onclick="midas.deleteSelected(\'' + folders + '\',\'' + items + '\')">' + json.browse.deleteSelected + '</a></li>';
             links += '</li>';
             links += '<li>';
             links += '<img alt="" src="' + json.global.coreWebroot + '/public/images/icons/move.png"/> ';
-            links += '<a onclick="midas.moveSelected("' + folders + '","' + items + '")" element="' + items + '">Move all selected</a>';
+            links += '<a onclick="midas.moveSelected(\'' + folders + '\',\'' + items + '\')" element="' + items + '">Move all selected</a>';
             links += '</li>';
             if (arraySelected['items'].length > 0) {
                 links += '<li style="background-color: white;">';
                 links += '  <img alt="" src="' + json.global.coreWebroot + '/public/images/icons/copy.png"/> ';
-                links += '  <a onclick="midas.duplicateSelected("' + folders + '","' + items + '")">' + json.browse.duplicateSelected + '</a></li>';
+                links += '  <a onclick="midas.duplicateSelected(\'' + folders + '\',\'' + items + '\')">' + json.browse.duplicateSelected + '</a></li>';
                 links += '</li>';
             }
             if (arraySelected['items'].length > 1 && arraySelected['folders'].length === 0) {
