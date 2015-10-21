@@ -660,7 +660,7 @@ class CommunityController extends AppController
     {
         $this->requireAdminPrivileges();
         $form = $this->Form->Community->createCreateForm();
-        if ($this->_request->isPost() && $form->isValid($this->getRequest()->getPost())
+        if ($this->getRequest()->isPost() && $form->isValid($this->getRequest()->getPost())
         ) {
             $name = $form->getValue('name');
             $description = $form->getValue('description');

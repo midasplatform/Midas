@@ -53,17 +53,12 @@ class FeedController extends AppController
             if (isset($cookieData) && is_numeric($cookieData)) {
                 $this->view->lastFeedVisit = $cookieData;
             }
+
             $date = new DateTime();
             $interval = new DateInterval('P1M');
-            setcookie(
-                $cookieName,
-                $date->getTimestamp(),
-                $date->add($interval)->getTimestamp(),
-                '/',
-                $request->getHttpHost(),
-                (int) Zend_Registry::get('configGlobal')->get('cookie_secure', 1) === 1,
-                true
-            );
+            $expires = $date->add($interval);
+
+            UtilityComponent::setCookie($request, $cookieName, $date->getTimestamp(), $expires);
         }
 
         $this->addDynamicHelp(

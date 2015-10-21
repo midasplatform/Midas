@@ -32,6 +32,9 @@ class Googleauth_Notification extends MIDAS_Notification
     public $_models = array('Setting', 'User', 'Userapi');
 
     /** @var array */
+    public $_moduleComponents = array('Cookie');
+
+    /** @var array */
     public $_moduleModels = array('User');
 
     /** init notification process */
@@ -133,15 +136,9 @@ class Googleauth_Notification extends MIDAS_Notification
 
                     $date = new DateTime();
                     $interval = new DateInterval('P1M');
-                    setcookie(
-                        GOOGLE_AUTH_ACCESS_TOKEN_COOKIE_NAME,
-                        $client->getAccessToken(),
-                        $date->add($interval)->getTimestamp(),
-                        '/',
-                        $request->getHttpHost(),
-                        (int) Zend_Registry::get('configGlobal')->get('cookie_secure', 1) === 1,
-                        true
-                    );
+                    $expires = $date->add($interval);
+
+                    $this->ModuleComponent->Cookie->setAccessTokenCookie($request, $client, $expires);
                 }
             }
 
@@ -160,16 +157,11 @@ class Googleauth_Notification extends MIDAS_Notification
     {
         /** @var Zend_Controller_Request_Http $request */
         $request = Zend_Controller_Front::getInstance()->getRequest();
+
         $date = new DateTime();
         $interval = new DateInterval('P1M');
-        setcookie(
-            GOOGLE_AUTH_ACCESS_TOKEN_COOKIE_NAME,
-            null,
-            $date->sub($interval)->getTimestamp(),
-            '/',
-            $request->getHttpHost(),
-            (int) Zend_Registry::get('configGlobal')->get('cookie_secure', 1) === 1,
-            true
-        );
+        $expires = $date->sub($interval);
+
+        $this->ModuleComponent->Cookie->setAccessTokenCookie($request, false, $expires);
     }
 }

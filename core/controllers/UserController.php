@@ -158,18 +158,16 @@ class UserController extends AppController
         $notifier->callback('CALLBACK_CORE_USER_LOGOUT');
         $this->userSession->Dao = null;
         Zend_Session::ForgetMe();
+
+        /** @var Zend_Controller_Request_Http $request */
         $request = $this->getRequest();
+
         $date = new DateTime();
         $interval = new DateInterval('P1M');
-        setcookie(
-            MIDAS_USER_COOKIE_NAME,
-            null,
-            $date->sub($interval)->getTimestamp(),
-            '/',
-            $request->getHttpHost(),
-            (int) Zend_Registry::get('configGlobal')->get('cookie_secure', 1) === 1,
-            true
-        );
+        $expires = $date->sub($interval);
+
+        UtilityComponent::setCookie($request, MIDAS_USER_COOKIE_NAME, false, $expires);
+
         $noRedirect = $this->getParam('noRedirect');
         if (isset($noRedirect)) {
             $this->disableView();
@@ -499,18 +497,17 @@ class UserController extends AppController
             if ($userDao->getSalt() == '') {
                 $passwordHash = $this->User->convertLegacyPasswordHash($userDao, $form->getValue('password'));
             }
+
+            /** @var Zend_Controller_Request_Http $request */
             $request = $this->getRequest();
             $date = new DateTime();
             $interval = new DateInterval('P1M');
-            setcookie(
-                MIDAS_USER_COOKIE_NAME,
-                $userDao->getKey().'-'.$passwordHash,
-                $date->add($interval)->getTimestamp(),
-                '/',
-                $request->getHttpHost(),
-                (int) Zend_Registry::get('configGlobal')->get('cookie_secure', 1) === 1,
-                true
-            );
+            $expires = $date->add($interval);
+
+            $value = $userDao->getKey().'-'.$passwordHash;
+
+            UtilityComponent::setCookie($request, MIDAS_USER_COOKIE_NAME, $value, $expires);
+
             Zend_Session::start();
             $user = new Zend_Session_Namespace('Auth_User');
             $user->setExpirationSeconds(60 * (int) Zend_Registry::get('configGlobal')->get('session_lifetime', 20));
@@ -526,8 +523,11 @@ class UserController extends AppController
     /** Login action */
     public function loginAction()
     {
+        /** @var Zend_Controller_Request_Http $request */
         $request = $this->getRequest();
         $this->Form->User->uri = $request->getRequestUri();
+
+        /** @var Zend_Form $form */
         $form = $this->Form->User->createLoginForm();
         $this->view->form = $this->getFormAsArray($form);
         $this->disableLayout();
@@ -535,8 +535,8 @@ class UserController extends AppController
             $this->disableView();
             $previousUri = $this->getParam('previousuri');
             if ($form->isValid($request->getPost())) {
+                $notifications = array();
                 try {
-                    $notifications = array(); // initialize first in case of exception
                     $notifications = Zend_Registry::get('notifier')->callback(
                         'CALLBACK_CORE_AUTHENTICATION',
                         array('email' => $form->getValue('email'), 'password' => $form->getValue('password'))
@@ -545,6 +545,7 @@ class UserController extends AppController
                     $this->getLogger()->crit($exc->getMessage());
                 }
                 $authModule = false;
+                $userDao = false;
                 foreach ($notifications as $user) {
                     if ($user) {
                         $userDao = $user;
@@ -585,6 +586,9 @@ class UserController extends AppController
                 } elseif (!$authModule) {
                     $passwordHash = md5($instanceSalt.$form->getValue('password'));
                     $coreAuth = $this->User->legacyAuthenticate($userDao, $instanceSalt, $form->getValue('password'));
+                } else {
+                    $passwordHash = false;
+                    $coreAuth = false;
                 }
 
                 if ($authModule || $coreAuth) {
@@ -603,30 +607,19 @@ class UserController extends AppController
                     ) {
                         $passwordHash = $this->User->convertLegacyPasswordHash($userDao, $form->getValue('password'));
                     }
-                    $remember = $form->getValue('remerberMe');
+
+                    $remember = (int) $form->getValue('remerberMe');
                     if (!$this->isTestingEnv()) {
                         $date = new DateTime();
                         $interval = new DateInterval('P1M');
-                        if (!$authModule && isset($remember) && $remember == 1) {
-                            setcookie(
-                                MIDAS_USER_COOKIE_NAME,
-                                $userDao->getKey().'-'.$passwordHash,
-                                $date->add($interval)->getTimestamp(),
-                                '/',
-                                $request->getHttpHost(),
-                                (int) Zend_Registry::get('configGlobal')->get('cookie_secure', 1) === 1,
-                                true
-                            );
+
+                        if (!$authModule && $remember === 1) {
+                            $expires = $date->add($interval);
+                            $value = $userDao->getKey().'-'.$passwordHash;
+                            UtilityComponent::setCookie($request, MIDAS_USER_COOKIE_NAME, $value, $expires);
                         } else {
-                            setcookie(
-                                MIDAS_USER_COOKIE_NAME,
-                                null,
-                                $date->sub($interval)->getTimestamp(),
-                                '/',
-                                $request->getHttpHost(),
-                                (int) Zend_Registry::get('configGlobal')->get('cookie_secure', 1) === 1,
-                                true
-                            );
+                            $expires = $date->sub($interval);
+                            UtilityComponent::setCookie($request, MIDAS_USER_COOKIE_NAME, false, $expires);
                             Zend_Session::start();
                             $user = new Zend_Session_Namespace('Auth_User');
                             $user->setExpirationSeconds(60 * (int) Zend_Registry::get('configGlobal')->get('session_lifetime', 20));
@@ -1330,18 +1323,15 @@ class UserController extends AppController
                 session_start();
                 $this->userSession->Dao = null;
                 Zend_Session::ForgetMe();
+
+                /** @var Zend_Controller_Request_Http $request */
                 $request = $this->getRequest();
+
                 $date = new DateTime();
                 $interval = new DateInterval('P1M');
-                setcookie(
-                    MIDAS_USER_COOKIE_NAME,
-                    null,
-                    $date->sub($interval)->getTimestamp(),
-                    '/',
-                    $request->getHttpHost(),
-                    (int) Zend_Registry::get('configGlobal')->get('cookie_secure', 1) === 1,
-                    true
-                );
+                $expires = $date->sub($interval);
+
+                UtilityComponent::setCookie($request, MIDAS_USER_COOKIE_NAME, false, $expires);
             }
         }
         $this->_helper->viewRenderer->setNoRender();

@@ -29,6 +29,9 @@ class Googleauth_CallbackController extends Googleauth_AppController
     public $_models = array('Setting', 'User', 'Userapi');
 
     /** @var array */
+    public $_moduleComponents = array('Cookie');
+
+    /** @var array */
     public $_moduleModels = array('User');
 
     /**
@@ -122,32 +125,16 @@ class Googleauth_CallbackController extends Googleauth_AppController
             $userDao->setLastname($familyName);
             $this->User->save($userDao);
         }
-        $userApi = $this->Userapi->getByAppAndUser('Default', $userDao);
 
         /** @var Zend_Controller_Request_Http $request */
         $request = $this->getRequest();
 
         $date = new DateTime();
         $interval = new DateInterval('P1M');
-        $expires = $date->add($interval)->getTimestamp();
-        setcookie(
-            MIDAS_USER_COOKIE_NAME,
-            'googleauth:'.$userDao->getUserId().':'.md5($userApi->getApikey().':'),
-            $expires,
-            '/',
-            $request->getHttpHost(),
-            (int) Zend_Registry::get('configGlobal')->get('cookie_secure', 1) === 1,
-            true
-        );
-        setcookie(
-            GOOGLE_AUTH_ACCESS_TOKEN_COOKIE_NAME,
-            $client->getAccessToken(),
-            $expires,
-            '/',
-            $request->getHttpHost(),
-            (int) Zend_Registry::get('configGlobal')->get('cookie_secure', 1) === 1,
-            true
-        );
+        $expires = $date->add($interval);
+
+        $this->ModuleComponent->Cookie->setUserCookie($request, $userDao, $expires);
+        $this->ModuleComponent->Cookie->setAccessTokenCookie($request, $client, $expires);
 
         return $userDao;
     }
