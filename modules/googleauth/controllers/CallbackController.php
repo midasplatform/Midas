@@ -18,10 +18,20 @@
  limitations under the License.
 =========================================================================*/
 
-/** Callback controller for the googleauth module */
+/**
+ * Callback controller for the googleauth module.
+ *
+ * @property Googleauth_UserModel $Googleauth_User
+ */
 class Googleauth_CallbackController extends Googleauth_AppController
 {
+    /** @var array */
     public $_models = array('Setting', 'User', 'Userapi');
+
+    /** @var array */
+    public $_moduleComponents = array('Cookie');
+
+    /** @var array */
     public $_moduleModels = array('User');
 
     /**
@@ -31,113 +41,70 @@ class Googleauth_CallbackController extends Googleauth_AppController
      */
     public function indexAction()
     {
-        $this->disableLayout();
-        $this->disableView();
-
-        $code = $this->getParam('code');
+        /** @var string $state */
         $state = $this->getParam('state');
 
         if (strpos($state, ' ') !== false) {
-            list($csrfToken, $redirect) = preg_split('/ /', $state);
+            list($csrf, $url) = preg_split('/ /', $state);
         } else {
-            $redirect = null;
+            $csrf = false;
+            $url = false;
         }
 
-        if (!$code) {
-            $error = $this->getParam('error');
-            throw new Zend_Exception('Failed to log in with Google OAuth: '.$error);
-        }
+        $clientId = $this->Setting->getValueByName(GOOGLE_AUTH_CLIENT_ID_KEY, $this->moduleName);
+        $clientSecret = $this->Setting->getValueByName(GOOGLE_AUTH_CLIENT_SECRET_KEY, $this->moduleName);
+        $redirectUri = UtilityComponent::getServerURL().$this->getFrontController()->getBaseUrl().'/'.$this->moduleName.'/callback';
 
-        $info = $this->_getUserInfo($code);
+        $client = new Google_Client();
+        $client->setAccessType('offline');
+        $client->setClientId($clientId);
+        $client->setClientSecret($clientSecret);
+        $client->setRedirectUri($redirectUri);
 
-        $user = $this->_createOrGetUser($info);
+        /** @var string $code */
+        $code = $this->getParam('code');
+        $client->authenticate($code);
+        $userDao = $this->_createOrGetUser($client);
 
         session_start();
-        $this->userSession->Dao = $user;
+        $this->userSession->Dao = $userDao;
 
-        $userNs = new Zend_Session_Namespace('Auth_User');
-        $sessionToken = $userNs->oauthToken;
+        $namespace = new Zend_Session_Namespace('Auth_User');
+        $token = $namespace->oauthToken;
         session_write_close();
 
-        if ($redirect && $csrfToken === $sessionToken) {
-            $this->redirect($redirect);
+        $this->disableLayout();
+        $this->disableView();
+
+        if ($url !== false && $csrf === $token) {
+            $this->redirect($url);
         } else {
             $this->redirect('/');
         }
     }
 
     /**
-     * Use the authorization code to get an access token, then use that access
-     * token to request the user's email and profile info. Returns the necessary
-     * user info in an array.
+     * Create or return a user.
+     *
+     * @param Google_Client $client
+     * @return false|UserDao
+     * @throws Zend_Exception
      */
-    protected function _getUserInfo($code)
+    protected function _createOrGetUser($client)
     {
-        $clientId = $this->Setting->getValueByName(GOOGLE_AUTH_CLIENT_ID_KEY, $this->moduleName);
-        $clientSecret = $this->Setting->getValueByName(GOOGLE_AUTH_CLIENT_SECRET_KEY, $this->moduleName);
-        $scheme = (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS']) ? 'https://' : 'http://';
-        $redirectUri = $scheme.$_SERVER['HTTP_HOST'].Zend_Controller_Front::getInstance()->getBaseUrl(
-            ).'/'.$this->moduleName.'/callback';
-        $headers = "Content-Type: application/x-www-form-urlencoded;charset=UTF-8\r\nConnection: Keep-Alive";
-        $content = implode(
-            '&',
-            array(
-                'grant_type=authorization_code',
-                'code='.$code,
-                'client_id='.$clientId,
-                'client_secret='.$clientSecret,
-                'redirect_uri='.$redirectUri,
-            )
-        );
+        $plus = new Google_Service_Plus($client);
 
-        // Make the request for the access token.
-        $context = array('http' => array('method' => 'POST', 'header' => $headers, 'content' => $content));
-        $context = stream_context_create($context);
-        $response = file_get_contents(GOOGLE_AUTH_OAUTH2_URL, false, $context);
+        /** @var Google_Service_Plus_Person $person */
+        $me = $plus->people->get('me');
+        $personId = $me['id'];
+        $googleAuthUserDao = $this->Googleauth_User->getByGooglePersonId($personId);
+        $givenName = $me['name']['givenName'];
+        $familyName = $me['name']['familyName'];
+        $email = strtolower($me['emails'][0]['value']);
 
-        if ($response === false) {
-            throw new Zend_Exception('Access token request failed.');
-        }
-
-        $response = json_decode($response);
-        $accessToken = $response->access_token;
-        $tokenType = $response->token_type;
-
-        // Use the access token to request info about the user.
-        $headers = 'Authorization: '.$tokenType.' '.$accessToken;
-        $context = array('http' => array('header' => $headers));
-        $context = stream_context_create($context);
-        $params = 'fields=emails/value,id,name(familyName,givenName)';
-        $response = file_get_contents(GOOGLE_AUTH_PLUS_URL.'?'.urlencode($params), false, $context);
-
-        if ($response === false) {
-            throw new Zend_Exception('Get Google user info request failed.');
-        }
-
-        $response = json_decode($response);
-
-        if (isset($response->error)) {
-            throw new Zend_Exception('Get Google user info request failed.');
-        }
-
-        // Extract the relevant user information from the response.
-        return array(
-            'googlePersonId' => $response->id,
-            'firstName' => $response->name->givenName,
-            'lastName' => $response->name->familyName,
-            'email' => strtolower($response->emails[0]->value),
-        );
-    }
-
-    /** Create or return a user */
-    protected function _createOrGetUser($info)
-    {
-        $personId = $info['googlePersonId'];
-        $existing = $this->Googleauth_User->getByGooglePersonId($personId);
-
-        if (!$existing) {
-            $user = $this->User->getByEmail($info['email']);
-            if (!$user) {
+        if ($googleAuthUserDao === false) {
+            $userDao = $this->User->getByEmail($email);
+            if ($userDao === false) {
                 // Only create new user this way if registration is not closed.
                 $closeRegistration = (int) $this->Setting->getValueByNameWithDefault('close_registration', 1);
                 if ($closeRegistration === 1) {
@@ -145,35 +112,30 @@ class Googleauth_CallbackController extends Googleauth_AppController
                         'Access to this instance is by invitation only, please contact an administrator.'
                     );
                 }
-                $user = $this->User->createUser($info['email'], null, $info['firstName'], $info['lastName'], 0, '');
+                $userDao = $this->User->createUser($email, null, $givenName, $familyName, 0, '');
             } else {
-                $user->setFirstname($info['firstName']);
-                $user->setLastname($info['lastName']);
-                $this->User->save($user);
+                $userDao->setFirstname($givenName);
+                $userDao->setLastname($familyName);
+                $this->User->save($userDao);
             }
-
-            $this->Googleauth_User->createGoogleUser($user, $personId);
+            $this->Googleauth_User->createGoogleUser($userDao, $personId);
         } else {
-            $user = $this->User->load($existing->getUserId());
-            $user->setFirstname($info['firstName']);
-            $user->setLastname($info['lastName']);
-            $this->User->save($user);
+            $userDao = $this->User->load($googleAuthUserDao->getUserId());
+            $userDao->setFirstname($givenName);
+            $userDao->setLastname($familyName);
+            $this->User->save($userDao);
         }
 
-        $userapi = $this->Userapi->getByAppAndUser('Default', $user);
+        /** @var Zend_Controller_Request_Http $request */
         $request = $this->getRequest();
+
         $date = new DateTime();
         $interval = new DateInterval('P1M');
-        setcookie(
-            MIDAS_USER_COOKIE_NAME,
-            'googleauth:'.$user->getKey().':'.md5($userapi->getApikey()),
-            $date->add($interval)->getTimestamp(),
-            '/',
-            $request->getHttpHost(),
-            (int) Zend_Registry::get('configGlobal')->get('cookie_secure', 1) === 1,
-            true
-        );
+        $expires = $date->add($interval);
 
-        return $user;
+        $this->ModuleComponent->Cookie->setUserCookie($request, $userDao, $expires);
+        $this->ModuleComponent->Cookie->setAccessTokenCookie($request, $client, $expires);
+
+        return $userDao;
     }
 }

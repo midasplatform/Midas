@@ -20,33 +20,32 @@
 
 require_once BASE_PATH.'/modules/googleauth/models/base/UserModelBase.php';
 
-/** pdo model implementation */
+/** Google user model for the googleauth module. */
 class Googleauth_UserModel extends Googleauth_UserModelBase
 {
     /**
-     * Retrieve a DAO with the given google person ID, or false if no such user
-     * exists.
+     * Retrieve a Google user DAO with the given Google person id, or false if
+     * no such user exists.
      *
-     * @param string $pid The google person ID to check.
-     * @return false|Googleauth_UserDao
-     * @throws Zend_Exception
+     * @param string $googlePersonId Google person id to check
+     * @return false|Googleauth_UserDao Google user DAO
      */
-    public function getByGooglePersonId($pid)
+    public function getByGooglePersonId($googlePersonId)
     {
-        $sql = $this->database->select()->where('google_person_id = ?', $pid);
+        $sql = $this->database->select()->where('google_person_id = ?', $googlePersonId);
         $row = $this->database->fetchRow($sql);
 
         return $this->initDao('User', $row, 'googleauth');
     }
 
     /**
-     * Delete this to wipe the link between a google OAuth user and a core user
+     * Delete this to wipe the link between a Google user and a core user
      * record. Must call when a core user record is being deleted.
      *
-     * @param UserDao $userDao The core user dao.
+     * @param UserDao $userDao User DAO
      */
     public function deleteByUser($userDao)
     {
-        $this->database->getDB()->delete('googleauth_user', 'user_id = '.$userDao->getKey());
+        $this->database->getDB()->delete('googleauth_user', 'user_id = '.$userDao->getUserId());
     }
 }

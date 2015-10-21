@@ -188,17 +188,12 @@ class ItemController extends AppController
             }
             $recentItems = array_reverse($tmp);
             $recentItems[] = $itemDao->getKey();
+
             $date = new DateTime();
             $interval = new DateInterval('P1M');
-            setcookie(
-                $cookieName,
-                serialize($recentItems),
-                $date->add($interval)->getTimestamp(),
-                '/',
-                $request->getHttpHost(),
-                (int) Zend_Registry::get('configGlobal')->get('cookie_secure', 1) === 1,
-                true
-            );
+            $expires = $date->add($interval);
+
+            UtilityComponent::setCookie($request, $cookieName, serialize($recentItems), $expires);
         }
 
         $this->Item->incrementViewCount($itemDao);

@@ -100,6 +100,7 @@ class UtilityComponent extends AppComponent
      */
     public static function extractPathParams()
     {
+        /** @var Zend_Controller_Request_Http $request */
         $request = Zend_Controller_Front::getInstance()->getRequest();
         $allTokens = preg_split('@/@', $request->getPathInfo(), null, PREG_SPLIT_NO_EMPTY);
 
@@ -938,5 +939,19 @@ class UtilityComponent extends AppComponent
         }
 
         return $realpath;
+    }
+
+    /**
+     * Send a cookie with the rest of the HTTP headers.
+     *
+     * @param Zend_Controller_Request_Http $request HTTP request
+     * @param string $name name of the cookie
+     * @param false|string $value value of the cookie
+     * @param DateTime $expires time the cookie expires
+     */
+    public static function setCookie($request, $name, $value, $expires)
+    {
+        $secure = (int) Zend_Registry::get('configGlobal')->get('cookie_secure', 1) === 1;
+        setcookie($name, $value, $expires->getTimestamp(), '/', $request->getHttpHost(), $secure, true);
     }
 }

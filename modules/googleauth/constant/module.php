@@ -18,11 +18,13 @@
  limitations under the License.
 =========================================================================*/
 
+define('GOOGLE_AUTH_ACCESS_TOKEN_COOKIE_NAME', 'wnka5bnrkmvhzybg9w8ezckrjn6hnk6awpwxtkxb');
+
 define('GOOGLE_AUTH_CLIENT_ID_KEY', 'client_id');
 define('GOOGLE_AUTH_CLIENT_ID_DEFAULT_VALUE', '');
 
 define('GOOGLE_AUTH_CLIENT_SECRET_KEY', 'client_secret');
 define('GOOGLE_AUTH_CLIENT_SECRET_DEFAULT_VALUE', '');
 
-define('GOOGLE_AUTH_OAUTH2_URL', 'https://accounts.google.com/o/oauth2/token');
-define('GOOGLE_AUTH_PLUS_URL', 'https://www.googleapis.com/plus/v1/people/me');
+define('GOOGLE_AUTH_CLIENT_ADDITIONAL_SCOPES_KEY', 'additional_scopes');
+define('GOOGLE_AUTH_CLIENT_ADDITIONAL_SCOPES_DEFAULT_VALUE', '');

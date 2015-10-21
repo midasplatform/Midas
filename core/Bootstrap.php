@@ -28,6 +28,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     protected function _initDoctype()
     {
         $this->bootstrap('view');
+
+        /** @var Zend_View $view */
         $view = $this->getResource('view');
         $view->doctype('XHTML1_STRICT');
     }
@@ -111,6 +113,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     protected function _initErrorHandle()
     {
         $this->bootstrap(array('Config', 'Logger'));
+
+        /** @var Zend_Log $logger */
         $logger = $this->getResource('Logger');
 
         Zend_Registry::set('components', array());
@@ -128,7 +132,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      */
     protected function _initInternationalization()
     {
-        $this->bootstrap(array('Config', 'Database'));
+        $this->bootstrap(array('Config', 'Database', 'FrontController'));
+
+        /** @var false|Zend_Db_Adapter_Abstract $database */
         $database = $this->getResource('Database');
 
         if ((int) Zend_Registry::get('configGlobal')->get('internationalization', 0) === 1) {
@@ -144,18 +150,17 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                     $language = 'en';
                 }
 
+                /** @var Zend_Controller_Front $frontController */
+                $frontController = $this->getResource('FrontController');
+
+                /** @var Zend_Controller_Request_Http $request */
+                $request = $frontController->getRequest();
+
                 $date = new DateTime();
                 $interval = new DateInterval('P1M');
-                setcookie(
-                    MIDAS_LANGUAGE_COOKIE_NAME,
-                    $language,
-                    $date->add($interval)->getTimestamp(),
-                    '/',
-                    !empty($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'],
-                    (int) Zend_Registry::get('configGlobal')->get('cookie_secure',
-                        1) === 1,
-                    true
-                );
+                $expires = $date->add($interval);
+
+                UtilityComponent::setCookie($request, MIDAS_LANGUAGE_COOKIE_NAME, $language, $expires);
             }
 
             if ($database !== false) {
@@ -249,6 +254,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             );
 
             $debug = new ZFDebug_Controller_Plugin_Debug($options);
+
+            /** @var Zend_Controller_Front $frontController */
             $frontController = $this->getResource('FrontController');
             $frontController->registerPlugin($debug);
         }
@@ -258,6 +265,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     protected function _initFrontModules()
     {
         $this->bootstrap('FrontController');
+
+        /** @var Zend_Controller_Front $frontController */
         $frontController = $this->getResource('FrontController');
         $frontController->addModuleDirectory(BASE_PATH.'/modules');
 
@@ -275,6 +284,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     {
         $this->bootstrap(array('Config', 'Logger'));
         $config = Zend_Registry::get('configGlobal');
+
+        /** @var Zend_Log $logger */
         $logger = $this->getResource('Logger');
         if ($config->environment == 'development') {
             $directory = new RecursiveDirectoryIterator(BASE_PATH);
@@ -334,6 +345,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     {
         $this->bootstrap(array('Config', 'Database', 'FrontController'));
 
+        /** @var Zend_Controller_Front $frontController */
         $frontController = $this->getResource('FrontController');
         $frontController->addControllerDirectory(BASE_PATH.'/core/controllers');
 
@@ -428,6 +440,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     protected function _initREST()
     {
         $this->bootstrap('FrontController');
+
+        /** @var Zend_Controller_Front $frontController */
         $frontController = $this->getResource('FrontController');
 
         // register the RestHandler plugin

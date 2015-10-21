@@ -18,16 +18,14 @@
  limitations under the License.
 =========================================================================*/
 
-/** Upgrade the googleauth module to version 1.1.0. */
-class Googleauth_Upgrade_1_1_0 extends MIDASUpgrade
+/** Upgrade the googleauth module to version 1.1.1. */
+class Googleauth_Upgrade_1_1_1 extends MIDASUpgrade
 {
-    /** Pre database upgrade. */
-    public function preUpgrade()
-    {
-    }
-
     /** Post database upgrade. */
     public function postUpgrade()
     {
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $settingModel->setConfig(GOOGLE_AUTH_CLIENT_ADDITIONAL_SCOPES_KEY, GOOGLE_AUTH_CLIENT_ADDITIONAL_SCOPES_DEFAULT_VALUE, $this->moduleName);
     }
 }

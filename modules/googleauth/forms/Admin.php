@@ -41,11 +41,17 @@ class Googleauth_Form_Admin extends Zend_Form
         $clientSecret->setRequired(true);
         $clientSecret->addValidator('NotEmpty', true);
 
-        $this->addDisplayGroup(array($clientId, $clientSecret), 'global');
+        $additionalScopes = new Zend_Form_Element_Textarea(GOOGLE_AUTH_CLIENT_ADDITIONAL_SCOPES_KEY);
+        $additionalScopes->setLabel('Additional Scopes (One per Line)');
+        $additionalScopes->addValidator('NotEmpty', true);
+        $additionalScopes->setAttrib('cols', '80');
+        $additionalScopes->setAttrib('rows', '4');
+
+        $this->addDisplayGroup(array($clientId, $clientSecret, $additionalScopes), 'global');
 
         $submit = new Zend_Form_Element_Submit('submit');
         $submit->setLabel('Save');
 
-        $this->addElements(array($csrf, $clientId, $clientSecret, $submit));
+        $this->addElements(array($csrf, $clientId, $clientSecret, $additionalScopes, $submit));
     }
 }
