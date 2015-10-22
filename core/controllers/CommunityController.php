@@ -523,9 +523,28 @@ class CommunityController extends AppController
             $member_group = $community->getMemberGroup();
             $this->Group->addUser($member_group, $user);
             $this->Group->addUser($group, $user);
-            echo JsonComponent::encode(array(true, 'User added.'));
+
+            $email = $user->getEmail();
+            $url = $this->getServerURL().$this->view->webroot;
+            $subject = 'Joined New Community';
+            $body = $this->userSession->Dao->getFullName().' has added you to the <b>'.$community->getName().'</b> community on Midas Platform.<br/><br/><a href="'.$url.'/community/'.$community->getKey().'">Click here</a> to see the community.';
+            $result = Zend_Registry::get('notifier')->callback(
+                'CALLBACK_CORE_SEND_MAIL_MESSAGE',
+                array(
+                    'to' => $email,
+                    'subject' => $subject,
+                    'html' => $body,
+                    'event' => 'community_add_user',
+                )
+            );
+
+            if ($result) {
+                echo JsonComponent::encode(array(true, 'User added and notification sent to '.$email));
+            } else {
+                echo JsonComponent::encode(array(true, 'User added but notification not sent'));
+            }
         } else {
-            echo JsonComponent::encode(array(false, 'Unable to add user.'));
+            echo JsonComponent::encode(array(false, 'Unable to add user'));
         }
     }
 
@@ -604,7 +623,7 @@ class CommunityController extends AppController
                 if ($result) {
                     echo JsonComponent::encode(array(true, 'Invitation sent to '.$email));
                 } else {
-                    echo JsonComponent::encode(array(true, 'Invitation not sent'));
+                    echo JsonComponent::encode(array(true, 'Invitation created but not sent'));
                 }
             }
         } else {
