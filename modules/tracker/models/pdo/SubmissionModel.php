@@ -47,13 +47,22 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
      * Return the scalars for a given submission.
      *
      * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @param bool $key whether to only retrieve scalars of key trends
      * @return array scalar DAOs
      */
-    public function getScalars($submissionDao)
+    public function getScalars($submissionDao, $key = false)
     {
-        $sql = $this->database->select()->setIntegrityCheck(false)
-             ->from('tracker_scalar')
-             ->where('submission_id = ?', $submissionDao->getKey());
+        if ($key) {
+            $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_scalar')->join(
+                'tracker_trend',
+                'tracker_scalar.trend_id = tracker_trend.trend_id',
+                array()
+            )->where('submission_id = ?', $submissionDao->getKey()
+            )->where('key_metric = ?', 1);
+        } else {
+            $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_scalar')
+                ->where('submission_id = ?', $submissionDao->getKey());
+        }
 
         $scalarDaos = array();
         $rows = $this->database->fetchAll($sql);
