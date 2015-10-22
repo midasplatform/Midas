@@ -50,7 +50,7 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
      * @param bool $key whether to only retrieve scalars of key trends
      * @return array scalar DAOs
      */
-    public function getScalars($submissionDao, $key=false)
+    public function getScalars($submissionDao, $key = false)
     {
         if ($key) {
             $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_scalar')->join(
