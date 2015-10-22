@@ -6,6 +6,9 @@ var midas = midas || {};
 
 $(document).ready(function () {
     'use strict';
+    if (typeof midas.invite.directAdd !== 'undefined' && midas.invite.directAdd == 1) {
+        $('#inviteOrAdd').html('add');
+    }
     $('#groupSelectOk').click(function () {
         var url = json.global.webroot + '/community/sendinvitation';
         var params = {
@@ -21,7 +24,7 @@ $(document).ready(function () {
         if (typeof midas.invite.directAdd !== 'undefined' && midas.invite.directAdd == 1) {
             url = json.global.webroot + '/community/addusertogroup';
         }
-        $.post(json.global.webroot + '/community/sendinvitation', params, function (data) {
+        $.post(url, params, function (data) {
             var jsonResponse = $.parseJSON(data);
             if (jsonResponse[0]) {
                 midas.createNotice(jsonResponse[1], 3000);

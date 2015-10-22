@@ -30,6 +30,11 @@ $(document).ready(function () {
     $('img.tableLoading').hide();
     $('table#browseTable').show();
 
+    $('a#addUserLink').click(function () {
+        midas.loadDialog('invitationCommunity', '/community/invitation?directadd=true&communityId=' + encodeURIComponent(json.community.community_id));
+        midas.showDialog('Add user', false);
+    });
+
     $('a#sendInvitationLink').click(function () {
         midas.loadDialog('invitationCommunity', '/community/invitation?communityId=' + encodeURIComponent(json.community.community_id));
         midas.showDialog(json.community.sendInvitation, false);

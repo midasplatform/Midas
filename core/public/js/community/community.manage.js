@@ -26,6 +26,11 @@ midas.community.manage.init = function () {
 
     $('a#addUserToGroupLink').click(function () {
         midas.loadDialog('invitationCommunity', '/community/invitation?directadd=true&communityId=' + encodeURIComponent(json.community.community_id));
+        midas.showDialog('Add user', false);
+    });
+
+    $('a#inviteUserToGroupLink').click(function () {
+        midas.loadDialog('invitationCommunity', '/community/invitation?communityId=' + encodeURIComponent(json.community.community_id));
         midas.showDialog(json.community.sendInvitation, false);
     });
 
