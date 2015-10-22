@@ -30,7 +30,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('view');
 
         /** @var Zend_View $view */
-        $view = $this->getResource('view');
+        $view = $this->getResource('View');
         $view->doctype('XHTML1_STRICT');
     }
 
@@ -109,6 +109,45 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         return false;
     }
 
+    /**
+     * Initialize the cache.
+     *
+     * @return false|Zend_Cache_Core
+     */
+    protected function _initCache()
+    {
+        $this->bootstrap('Config', 'Database');
+
+        if (Zend_Registry::get('configGlobal')->get('environment', 'production') === 'production') {
+            $frontendOptions = array(
+                'automatic_serialization' => true,
+                'lifetime' => 86400,
+                'cache_id_prefix' => 'midas_',
+            );
+
+            if (extension_loaded('memcached') || session_save_path() === 'Memcache') {
+                $cache = Zend_Cache::factory('Core', 'Libmemcached', $frontendOptions, array());
+            } elseif (extension_loaded('memcache')) {
+                $cache = Zend_Cache::factory('Core', 'Memcached', $frontendOptions, array());
+            } else {
+                $cacheDir = UtilityComponent::getCacheDirectory().'/db';
+
+                if (is_dir($cacheDir) && is_writable($cacheDir)) {
+                    $backendOptions = array('cache_dir' => $cacheDir);
+                    $cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
+                }
+            }
+
+            if ($cache !== false) {
+                Zend_Db_Table_Abstract::setDefaultMetadataCache($cache);
+            }
+        }
+
+        Zend_Registry::set('cache', $cache);
+
+        return $cache;
+    }
+
     /** Initialize the error handler. */
     protected function _initErrorHandle()
     {
@@ -132,7 +171,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      */
     protected function _initInternationalization()
     {
-        $this->bootstrap(array('Config', 'Database', 'FrontController'));
+        $this->bootstrap(array('Cache', 'Config', 'Database', 'FrontController'));
 
         /** @var false|Zend_Db_Adapter_Abstract $database */
         $database = $this->getResource('Database');
@@ -343,7 +382,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      */
     protected function _initRouter()
     {
-        $this->bootstrap(array('Config', 'Database', 'FrontController'));
+        $this->bootstrap(array('Cache', 'Config', 'Database', 'FrontController'));
 
         /** @var Zend_Controller_Front $frontController */
         $frontController = $this->getResource('FrontController');
