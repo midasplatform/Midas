@@ -86,7 +86,8 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
     /**
      * Get the scalars associated with a submission.
      * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @param bool $key whether to only retrieve scalars of key trends
      * @return array submission DAOs
      */
-    abstract public function getScalars($submissionDao);
+    abstract public function getScalars($submissionDao, $key = false);
 }
