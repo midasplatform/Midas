@@ -18,26 +18,31 @@
 #=============================================================================
 
 ---
-rules:
-  indent:
-    - 2
-    - 4
-  quotes:
-    - 2
-    - single
-  linebreak-style:
-    - 2
-    - unix
-  semi:
-    - 2
-    - always
-
-  no-unused-vars:
-    - 2
-    - argsIgnorePattern: ^_
+root: true
 
 env:
   browser: true
   jquery: true
 
 extends: 'eslint:recommended'
+
+rules:
+  indent:
+    - 2
+    - 4
+
+  linebreak-style:
+    - 2
+    - unix
+
+  no-unused-vars:
+    - 2
+    - argsIgnorePattern: ^_
+
+  quotes:
+    - 2
+    - single
+
+  semi:
+    - 2
+    - always

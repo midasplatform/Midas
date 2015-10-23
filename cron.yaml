@@ -20,6 +20,6 @@
 ---
 # Must enable the task scheduler module.
 cron:
-- description: task scheduler job
-  url: /scheduler/run
-  schedule: every 12 minutes
+  - description: task scheduler job
+    url: /scheduler/run
+    schedule: every 12 minutes

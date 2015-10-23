@@ -29,7 +29,6 @@ disabled:
   - phpdoc_types
   - phpdoc_var_without_name
 
-
 finder:
   exclude:
     - data
