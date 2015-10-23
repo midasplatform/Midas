@@ -23,6 +23,7 @@ language: php
 sudo: false
 
 php:
+  - 5.3
   - 5.4
   - 5.5
   - 5.6
@@ -42,6 +43,7 @@ cache:
 before_install:
   - travis_retry composer self-update -n
   - if [[ $TRAVIS_PULL_REQUEST = false ]]; then composer config -g github-oauth.github.com $GITHUB_OAUTH_TOKEN; fi
+  - if [[ $TRAVIS_PHP_VERSION = 5.3 ]]; then sed -i '/uuid-console/d' composer.json; fi
   - if [[ $TRAVIS_PHP_VERSION = hhvm || $TRAVIS_PHP_VERSION = 7 ]]; then sed -i '/ext-xdebug/d' composer.json; fi
 
 install:

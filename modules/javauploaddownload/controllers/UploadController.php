@@ -225,7 +225,8 @@ class Javauploaddownload_UploadController extends Javauploaddownload_AppControll
         $this->disableLayout();
         $this->disableView();
         $params = $this->getAllParams();
-        $userId = explode('/', $params['uploadUniqueIdentifier'])[0];
+        $userIds = explode('/', $params['uploadUniqueIdentifier']);
+        $userId = $userIds[0];
 
         if ($userId != $this->userSession->Dao->getUserId()) {
             echo '[ERROR]User id does not match upload token user id';

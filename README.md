@@ -27,12 +27,23 @@ interface with existing workflows.
 
 ## Installation ##
 
-```
+```bash
 git clone https://github.com/midasplatform/Midas.git midas
 cd midas
 chmod a+w core/configs/ data/ log/ tmp/
 curl -sS https://getcomposer.org/installer | php
+```
+
+For development (PHP version 5.4.0 or above):
+
+```bash
 php composer.phar install
+```
+
+For production (PHP version 5.3.9 or above):
+
+```bash
+php composer.phar install --no-dev --optimize-autoloader
 ```
 
 Full installation documentation is available at

@@ -26,30 +26,30 @@ api_version: 1
 threadsafe: yes
 
 handlers:
-- url: /(apple-touch-icon-.*\.png)$
-  static_files: \1
-  upload: apple-touch-icon-.*\.png$
-  secure: always
+  - url: /(apple-touch-icon-.*\.png)$
+    static_files: \1
+    upload: apple-touch-icon-.*\.png$
+    secure: always
 
-- url: /favicon\.ico$
-  static_files: favicon.ico
-  upload: favicon\.ico$
-  secure: always
+  - url: /favicon\.ico$
+    static_files: favicon.ico
+    upload: favicon\.ico$
+    secure: always
 
-- url: /(.*/(public|SwaggerUI)/.*\.(css|gif|ico|jpeg|jpg|js|map|png))$
-  static_files: \1
-  upload: .*\.(css|gif|ico|jpeg|jpg|js|map|png)$
-  secure: always
+  - url: /(.*/(public|SwaggerUI)/.*\.(css|gif|ico|jpeg|jpg|js|map|png))$
+    static_files: \1
+    upload: .*\.(css|gif|ico|jpeg|jpg|js|map|png)$
+    secure: always
 
-# Must enable the task scheduler module. The cron job is defined in cron.yaml.
-- url: /scheduler/run
-  script: index.php
-  login: admin
-  secure: always
+  # Must enable the task scheduler module. The cron job is defined in cron.yaml.
+  - url: /scheduler/run
+    script: index.php
+    login: admin
+    secure: always
 
-- url: /.*
-  script: index.php
-  secure: always
+  - url: /.*
+    script: index.php
+    secure: always
 
 # Update with the bucket name and the project id. Also update php.ini with the bucket name.
 env_variables:
@@ -59,10 +59,10 @@ env_variables:
   midas_temp_path: gs://your-cloudstorage-bucket/tmp
 
 skip_files:
-- ^(.*/)?.*/(\.DS_Store|\.htaccess|\.gitignore|CMakeLists\.txt|.*\.java)$
-- ^(.*/)?.*/\.sass-cache/.*
-- ^(.*/)?(\.codeclimate\.yml|\.coveralls\.yml|\.editorconfig|\.php_cs|\.php_cs\.cache|\.styleci\.yml|\.travis\.yml|AUTHORS|bower\.json|composer\.json|composer\.lock|composer\.phar|COPYRIGHT|CTestConfig\.cmake|LICENSE|mkdocs\.yml|phpunit\.xml\.dist|README\.md|requirements\.txt|Vagrantfile)$
-- ^(.*/)?core/configs/.*\.local\.ini$
-- ^(.*/)?(\.git|\.idea|\.vagrant|data|docs|env|log|provisioning|site|tests|tmp|utils)/.*
-- ^(.*/)?(core|modules/.*)/(database/(pgsql|sqlite)|tests)/.*
-- ^(.*/)?modules/(archive|batchmake|dicom.*|javauploaddownload|metadataextractor|pvw|remoteprocessing|solr|statistics|visualize)/.*
+  - ^(.*/)?.*/(\.DS_Store|\.htaccess|\.gitignore|CMakeLists\.txt|.*\.java)$
+  - ^(.*/)?.*/\.sass-cache/.*
+  - ^(.*/)?(\.codeclimate\.yml|\.coveralls\.yml|\.editorconfig|\.php_cs|\.php_cs\.cache|\.styleci\.yml|\.travis\.yml|AUTHORS|bower\.json|composer\.json|composer\.lock|composer\.phar|COPYRIGHT|CTestConfig\.cmake|LICENSE|mkdocs\.yml|phpunit\.xml\.dist|README\.md|requirements\.txt|Vagrantfile)$
+  - ^(.*/)?core/configs/.*\.local\.ini$
+  - ^(.*/)?(\.git|\.idea|\.vagrant|data|docs|env|log|provisioning|site|tests|tmp|utils)/.*
+  - ^(.*/)?(core|modules/.*)/(database/(pgsql|sqlite)|tests)/.*
+  - ^(.*/)?modules/(archive|batchmake|dicom.*|javauploaddownload|metadataextractor|pvw|remoteprocessing|solr|statistics|visualize)/.*

@@ -33,18 +33,18 @@ engines:
     enabled: true
 
 exclude_paths:
-- "core/public/js/jquery/*"
-- "data/*"
-- "docs/*"
-- "library/REST/*"
-- "library/SwaggerUI/*"
-- "log/*"
-- "modules/oai/library/oai/*"
-- "modules/statistics/public/js/googlemaps/*"
-- "modules/statistics/public/js/jquery/*"
-- "modules/visualize/public/js/jquery/*"
-- "modules/visualize/public/js/webgl/*"
-- "provisioning/*"
-- "tmp/*"
-- "utils/*"
-- "vendor/*"
+  - 'core/public/js/jquery/*'
+  - 'data/*'
+  - 'docs/*'
+  - 'library/REST/*'
+  - 'library/SwaggerUI/*'
+  - 'log/*'
+  - 'modules/oai/library/oai/*'
+  - 'modules/statistics/public/js/googlemaps/*'
+  - 'modules/statistics/public/js/jquery/*'
+  - 'modules/visualize/public/js/jquery/*'
+  - 'modules/visualize/public/js/webgl/*'
+  - 'provisioning/*'
+  - 'tmp/*'
+  - 'utils/*'
+  - 'vendor/*'
