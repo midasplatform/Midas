@@ -28,7 +28,13 @@ class UuidComponent extends AppComponent
      */
     public function generate()
     {
-        return str_replace('-', '', \Ramsey\Uuid\Uuid::uuid4()->toString());
+        if (class_exists('\Ramsey\Uuid\Uuid')) {
+            $uuid = \Ramsey\Uuid\Uuid::uuid4();
+        } else {
+            $uuid = \Rhumsaa\Uuid\Uuid::uuid4();
+        }
+
+        return str_replace('-', '', $uuid->toString());
     }
 
     /**
