@@ -24,12 +24,20 @@
  */
 class ApiEnabled_Notification extends MIDAS_Notification
 {
+    /** @var string */
+    public $moduleName = 'api';
+
+    /** @var array */
+    public $_moduleComponents = array('Api');
+
     /**
      * This function is for getting the web API methods defined in the API
      * component of the implementing class. To enable this add the following
      * line to your init function.
      *
      * $this->enableWebAPI();
+     *
+     * @return array
      */
     public function getWebApiHelp()
     {
@@ -81,7 +89,11 @@ class ApiEnabled_Notification extends MIDAS_Notification
 
     /**
      * Returns the actual method in your module corresponding to the requested method,
-     * or false if the method doesn't exist.
+     * or false if the method does not exist.
+     *
+     * @param array $params parameters
+     *
+     * @return false|array
      */
     public function findWebApiMethod($params)
     {
@@ -97,6 +109,8 @@ class ApiEnabled_Notification extends MIDAS_Notification
     /**
      * Add to your init function to enable the web api for your module. This will
      * work provided you've created an ApiComponent.
+     *
+     * @param string $moduleName module name
      */
     public function enableWebAPI($moduleName)
     {
