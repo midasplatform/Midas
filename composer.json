@@ -12,6 +12,7 @@
     },
     "require": {
         "php": ">=5.3.9",
+        "ext-fileinfo": "*",
         "ext-gd": "*",
         "ext-json": "*",
         "erusev/parsedown-extra": "^0.7.0",
@@ -41,7 +42,6 @@
         "symfony/console": "^2.7.5"
     },
     "suggest": {
-        "ext-fileinfo": "*",
         "ext-imagick": "*",
         "ext-ldap": "*",
         "ext-memcached": "*",
