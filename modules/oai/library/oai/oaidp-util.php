@@ -22,7 +22,7 @@ function get_token()
 {
     list($usec, $sec) = explode(' ', microtime());
 
-    return ((int) ($usec * 1000) + (int) ($sec * 1000));
+    return (int) ($usec * 1000) + (int) ($sec * 1000);
 }
 
 function oai_error($code, $argument = '', $value = '')
@@ -429,7 +429,7 @@ function php_is_at_least($version)
 
 function is_valid_uri($url)
 {
-    return ((bool) preg_match("'^[^:]+:(?://)?(?:[a-z_0-9-]+[\.]{1})*(?:[a-z_0-9-]+\.)[a-z]{2,3}.*$'i", $url));
+    return (bool) preg_match("'^[^:]+:(?://)?(?:[a-z_0-9-]+[\.]{1})*(?:[a-z_0-9-]+\.)[a-z]{2,3}.*$'i", $url);
 }
 
 function metadataHeader($prefix)

@@ -84,7 +84,7 @@ class KWUtils
      */
     public static function isWindows()
     {
-        return (strtolower(substr(PHP_OS, 0, 3)) == 'win');
+        return strtolower(substr(PHP_OS, 0, 3)) == 'win';
     }
 
     /**
@@ -162,7 +162,7 @@ class KWUtils
      */
     public static function isLinux()
     {
-        return (strtolower(substr(PHP_OS, 0, 5)) == 'linux');
+        return strtolower(substr(PHP_OS, 0, 5)) == 'linux';
     }
 
     /**
