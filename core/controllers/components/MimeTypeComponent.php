@@ -72,7 +72,6 @@ class MimeTypeComponent extends AppComponent
         // return mime type for extension
         if (isset($mimeTypes[$filename])) {
             return $mimeTypes[$filename];
-
         }
 
         // If the extension was not found, return octet-stream.

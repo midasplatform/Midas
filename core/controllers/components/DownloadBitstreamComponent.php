@@ -165,10 +165,10 @@ function env($key)
 {
     if ($key == 'HTTPS') {
         if (isset($_SERVER['HTTPS'])) {
-            return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+            return !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
         }
 
-        return (strpos(env('SCRIPT_URI'), 'https://') === 0);
+        return strpos(env('SCRIPT_URI'), 'https://') === 0;
     }
 
     if ($key == 'SCRIPT_NAME') {
@@ -217,7 +217,7 @@ function env($key)
             return str_replace(env('DOCUMENT_ROOT'), '', env('SCRIPT_FILENAME'));
             break;
         case 'CGI_MODE':
-            return (PHP_SAPI === 'cgi');
+            return PHP_SAPI === 'cgi';
             break;
         case 'HTTP_BASE':
             $host = env('HTTP_HOST');
