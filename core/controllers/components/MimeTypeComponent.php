@@ -22,7 +22,7 @@
 class MimeTypeComponent extends AppComponent
 {
     /**
-     * Get mime type.
+     * Get MIME type.
      *
      * @param string $filename
      * @param null|string $alternateName
@@ -30,11 +30,11 @@ class MimeTypeComponent extends AppComponent
      */
     public function getType($filename, $alternateName = null)
     {
-        if (function_exists('finfo_open') && file_exists($filename)) {
+        if (file_exists($filename)) {
             $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
             $mimeType = finfo_file($fileInfo, $filename);
             finfo_close($fileInfo);
-            if ($mimeType) {
+            if ($mimeType !== false) {
                 return $mimeType;
             }
         }
@@ -55,7 +55,7 @@ class MimeTypeComponent extends AppComponent
      * @param string $filename
      * @return string
      */
-    public function privFindType($filename)
+    private function privFindType($filename)
     {
         // get base name of the filename provided by user
         $filename = basename($filename);
@@ -72,10 +72,10 @@ class MimeTypeComponent extends AppComponent
         // return mime type for extension
         if (isset($mimeTypes[$filename])) {
             return $mimeTypes[$filename];
-            // if the extension wasn't found return octet-stream
-        } else {
-            return 'application/octet-stream';
         }
+
+        // If the extension was not found, return octet-stream.
+        return 'application/octet-stream';
     }
 
     /**
@@ -83,7 +83,7 @@ class MimeTypeComponent extends AppComponent
      *
      * @return array
      */
-    public function privBuildMimeArray()
+    private function privBuildMimeArray()
     {
         return array(
             '123' => 'application/vnd.lotus-1-2-3',
