@@ -19,3 +19,4 @@
 
 add_midas_test(CoreRestCallUserMethodsTest RestCallUserMethodsTest.php)
 add_midas_test(CoreRestKeyControllerTest RestKeyControllerTest.php)
+add_midas_test(CoreRestCallItemMethodsTest RestCallItemMethodsTest.php)
