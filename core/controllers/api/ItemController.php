@@ -95,6 +95,7 @@ class Rest_ItemController extends ApiController
             'removepolicyuser' => 'itemRemovePolicyuser',
             'setmetadata' => 'itemSetmetadata',
             'setmultiplemetadata' => 'itemSetmultiplemetadata',
+            'addmetadata' => 'itemAddmetadata',
             'deletemetadata' => 'itemDeletemetadata',
             'deletemetadataall' => 'itemDeletemetadataAll',
         );

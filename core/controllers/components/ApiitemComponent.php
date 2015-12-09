@@ -171,6 +171,71 @@ class ApiitemComponent extends AppComponent
     }
 
     /**
+     * Set multiple metadata fields on an item, will overwrite any existing metadatum with
+     * the new value; requires passing the metadata in the request body as JSON
+     * with a key of 'metadata' mapping to a list; each element of the 'metadata' list is
+     * a metadatum on the item; each metadatum requires an 'element' and 'value' key, with
+     * 'qualifier' and 'type' being optional keys on the metadatum, 'type' defaults to MIDAS_METADATA_TEXT.
+     * @path /item/addmetadata/{id}
+     * @http PUT
+     * @param id The id of the item
+     * @param revision (Optional) Item Revision number to set metadata on, defaults to latest revision.
+     * @return item on success,
+     *              will fail if there are no revisions or the specified revision is not found.
+     *
+     * @param array $args parameters
+     * @throws Exception
+     */
+    public function itemAddmetadata($args)
+    {
+        /** @var ApihelperComponent $apihelperComponent */
+        $apihelperComponent = MidasLoader::loadComponent('Apihelper');
+        $apihelperComponent->validateParams($args, array('id'));
+        $userDao = $apihelperComponent->getUser($args);
+
+        $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
+
+        /** @var ItemModel $itemModel */
+        $itemModel = MidasLoader::loadModel('Item');
+        $item = $itemModel->load($args['id']);
+        if ($item === false || !$itemModel->policyCheck($item, $userDao, MIDAS_POLICY_WRITE)) {
+            throw new Exception("This item doesn't exist or you don't have write permission.", MIDAS_INVALID_POLICY);
+        }
+        $revisionNumber = array_key_exists('revision', $args) ? (int) $args['revision'] : null;
+        $revision = $apihelperComponent->getItemRevision($item, $revisionNumber);
+
+        if (!array_key_exists(0, $args)) {
+            throw new Exception('Missing request body data.', MIDAS_INVALID_PARAMETER);
+        }
+        $jsonBody = json_decode($args[0]);
+        if ($jsonBody === null) {
+            throw new Exception('Request body data must be valid JSON.', MIDAS_INVALID_PARAMETER);
+        }
+        if (!array_key_exists('metadata', $jsonBody)) {
+            throw new Exception("Request body data missing key 'metadata'.", MIDAS_INVALID_PARAMETER);
+        }
+        $metadata = $jsonBody->metadata;
+        foreach ($metadata as $metadatum) {
+            if (!isset($metadatum->element) || !isset($metadatum->value)) {
+                throw new Exception("All metadata must have 'element' and 'value' keys.", MIDAS_INVALID_PARAMETER);
+            }
+        }
+
+        foreach ($metadata as $metadatum) {
+            $apihelperComponent->setMetadata(
+                $item,
+                isset($metadatum->type) ? $metadatum->type : MIDAS_METADATA_TEXT,
+                $metadatum->element,
+                isset($metadatum->qualifier) ? $metadatum->qualifier : '',
+                $metadatum->value,
+                $revision
+            );
+        }
+
+        return $item;
+    }
+
+    /**
      * Delete a metadata tuple (element, qualifier, type) from a specific item revision,
      * defaults to the latest revision of the item.
      *

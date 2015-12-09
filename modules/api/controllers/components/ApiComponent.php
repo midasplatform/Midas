@@ -768,6 +768,28 @@ class Api_ApiComponent extends AppComponent
     }
 
     /**
+     * Set multiple metadata fields on an item, will overwrite any existing metadatum with
+     * the new value; requires passing the metadata in the request body as JSON
+     * with a key of 'metadata' mapping to a list; each element of the 'metadata' list is
+     * a metadatum on the item; each metadatum requires an 'element' and 'value' key, with
+     * 'qualifier' and 'type' being optional keys on the metadatum, 'type' defaults to MIDAS_METADATA_TEXT.
+     *
+     * @param token Authentication token
+     * @param itemid The id of the item
+     * @param revision (Optional) Item Revision number to set metadata on, defaults to latest revision.
+     * @return item on success,
+     *              will fail if there are no revisions or the specified revision is not found.
+     */
+    public function itemAddmetadata($args)
+    {
+        /** @var ApihelperComponent $ApihelperComponent */
+        $ApihelperComponent = MidasLoader::loadComponent('Apihelper');
+        $ApihelperComponent->renameParamKey($args, 'itemid', 'id');
+
+        return $this->_callCoreApiMethod($args, 'itemAddmetadata', 'item');
+    }
+
+    /**
      * Delete a metadata tuple (element, qualifier, type) from a specific item revision,
      * defaults to the latest revision of the item.
      *
