@@ -180,7 +180,7 @@ class ApiitemComponent extends AppComponent
      * @http PUT
      * @param id The id of the item
      * @param revision (Optional) Item Revision number to set metadata on, defaults to latest revision.
-     * @return true on success,
+     * @return item on success,
      *              will fail if there are no revisions or the specified revision is not found.
      *
      * @param array $args parameters
@@ -207,14 +207,14 @@ class ApiitemComponent extends AppComponent
         if (!array_key_exists(0, $args)) {
             throw new Exception('Missing request body data.', MIDAS_INVALID_PARAMETER);
         }
-        $json_body = json_decode($args[0]);
-        if (null === $json_body) {
+        $jsonBody = json_decode($args[0]);
+        if ($jsonBody === null) {
             throw new Exception('Request body data must be valid JSON.', MIDAS_INVALID_PARAMETER);
         }
-        if (!array_key_exists('metadata', $json_body)) {
+        if (!array_key_exists('metadata', $jsonBody)) {
             throw new Exception("Request body data missing key 'metadata'.", MIDAS_INVALID_PARAMETER);
         }
-        $metadata = $json_body->metadata;
+        $metadata = $jsonBody->metadata;
         foreach ($metadata as $metadatum) {
             if (!isset($metadatum->element) || !isset($metadatum->value)) {
                 throw new Exception("All metadata must have 'element' and 'value' keys.", MIDAS_INVALID_PARAMETER);
@@ -232,7 +232,7 @@ class ApiitemComponent extends AppComponent
             );
         }
 
-        return true;
+        return $item;
     }
 
     /**

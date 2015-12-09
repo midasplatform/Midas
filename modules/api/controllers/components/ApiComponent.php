@@ -777,7 +777,7 @@ class Api_ApiComponent extends AppComponent
      * @param token Authentication token
      * @param itemid The id of the item
      * @param revision (Optional) Item Revision number to set metadata on, defaults to latest revision.
-     * @return true on success,
+     * @return item on success,
      *              will fail if there are no revisions or the specified revision is not found.
      */
     public function itemAddmetadata($args)

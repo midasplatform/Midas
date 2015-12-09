@@ -20,10 +20,10 @@
 
 require_once BASE_PATH.'/core/tests/controllers/api/RestCallMethodsTestCase.php';
 
-/** Tests the functionality of the web API Rest Item methods */
+/** Tests the functionality of the web API Rest Item methods. */
 class Core_RestCallItemMethodsTest extends RestCallMethodsTestCase
 {
-    /** set up tests */
+    /** Set up tests. */
     public function setUp()
     {
         parent::setUp();
@@ -35,11 +35,11 @@ class Core_RestCallItemMethodsTest extends RestCallMethodsTestCase
         $itemsFile = $this->loadData('Item', 'default');
         $itemDao = $this->Item->load($itemsFile[1]->getKey());
 
-        $apipath = '/item/addmetadata/'.$itemDao->getItemId();
+        $apiPath = '/item/addmetadata/'.$itemDao->getItemId();
 
         // No user will fail.
         $this->resetAll();
-        $resp = $this->_callRestApi('PUT', $apipath);
+        $resp = $this->_callRestApi('PUT', $apiPath);
         $this->_assertStatusFail($resp);
 
         $usersFile = $this->loadData('User', 'default');
@@ -48,28 +48,28 @@ class Core_RestCallItemMethodsTest extends RestCallMethodsTestCase
         // Lack of request body will fail.
         $this->resetAll();
         $this->params['useSession'] = 'true';
-        $resp = $this->_callRestApi('PUT', $apipath, $userDao);
+        $resp = $this->_callRestApi('PUT', $apiPath, $userDao);
         $this->_assertStatusFail($resp);
 
         // Request body without a 'metadata' key will fail.
         $this->resetAll();
         $this->params['useSession'] = 'true';
         $this->params[0] = json_encode(array('murkydata' => array()));
-        $resp = $this->_callRestApi('PUT', $apipath, $userDao);
+        $resp = $this->_callRestApi('PUT', $apiPath, $userDao);
         $this->_assertStatusFail($resp);
 
         // Metadatum needs 'value' key.
         $this->resetAll();
         $this->params['useSession'] = 'true';
         $this->params[0] = json_encode(array('metadata' => array('element' => 'key1')));
-        $resp = $this->_callRestApi('PUT', $apipath, $userDao);
+        $resp = $this->_callRestApi('PUT', $apiPath, $userDao);
         $this->_assertStatusFail($resp);
 
         // Metadatum needs 'element' key.
         $this->resetAll();
         $this->params['useSession'] = 'true';
         $this->params[0] = json_encode(array('metadata' => array('value' => 'val1')));
-        $resp = $this->_callRestApi('PUT', $apipath, $userDao);
+        $resp = $this->_callRestApi('PUT', $apiPath, $userDao);
         $this->_assertStatusFail($resp);
 
         // Write some metadata correctly.
@@ -79,7 +79,7 @@ class Core_RestCallItemMethodsTest extends RestCallMethodsTestCase
             array('element' => 'key1', 'value' => 'val1'),
             array('element' => 'key2', 'value' => 'val2'),
         )));
-        $resp = $this->_callRestApi('PUT', $apipath, $userDao);
+        $resp = $this->_callRestApi('PUT', $apiPath, $userDao);
         $this->_assertStatusOk($resp);
 
         /** @var ItemModel $itemModel */
@@ -108,7 +108,7 @@ class Core_RestCallItemMethodsTest extends RestCallMethodsTestCase
             array('element' => 'key1', 'value' => 'newval1'),
             array('element' => 'key3', 'value' => 'val3'),
         )));
-        $resp = $this->_callRestApi('PUT', $apipath, $userDao);
+        $resp = $this->_callRestApi('PUT', $apiPath, $userDao);
         $this->_assertStatusOk($resp);
 
         $metadata = $itemRevisionModel->getMetadata($revisionDao);
