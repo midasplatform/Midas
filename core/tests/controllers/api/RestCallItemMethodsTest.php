@@ -35,7 +35,7 @@ class Core_RestCallItemMethodsTest extends RestCallMethodsTestCase
         $itemsFile = $this->loadData('Item', 'default');
         $itemDao = $this->Item->load($itemsFile[1]->getKey());
 
-        $apipath = '/item/addmetadata/' . $itemDao->getItemId();
+        $apipath = '/item/addmetadata/'.$itemDao->getItemId();
 
         // No user will fail.
         $this->resetAll();
@@ -77,7 +77,7 @@ class Core_RestCallItemMethodsTest extends RestCallMethodsTestCase
         $this->params['useSession'] = 'true';
         $this->params[0] = json_encode(array('metadata' => array(
             array('element' => 'key1', 'value' => 'val1'),
-            array('element' => 'key2', 'value' => 'val2')
+            array('element' => 'key2', 'value' => 'val2'),
         )));
         $resp = $this->_callRestApi('PUT', $apipath, $userDao);
         $this->_assertStatusOk($resp);
@@ -106,7 +106,7 @@ class Core_RestCallItemMethodsTest extends RestCallMethodsTestCase
         $this->params['useSession'] = 'true';
         $this->params[0] = json_encode(array('metadata' => array(
             array('element' => 'key1', 'value' => 'newval1'),
-            array('element' => 'key3', 'value' => 'val3')
+            array('element' => 'key3', 'value' => 'val3'),
         )));
         $resp = $this->_callRestApi('PUT', $apipath, $userDao);
         $this->_assertStatusOk($resp);

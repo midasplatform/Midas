@@ -205,11 +205,11 @@ class ApiitemComponent extends AppComponent
         $revision = $apihelperComponent->getItemRevision($item, $revisionNumber);
 
         if (!array_key_exists(0, $args)) {
-            throw new Exception("Missing request body data.", MIDAS_INVALID_PARAMETER);
+            throw new Exception('Missing request body data.', MIDAS_INVALID_PARAMETER);
         }
         $json_body = json_decode($args[0]);
-        if (NULL === $json_body) {
-            throw new Exception("Request body data must be valid JSON.", MIDAS_INVALID_PARAMETER);
+        if (null === $json_body) {
+            throw new Exception('Request body data must be valid JSON.', MIDAS_INVALID_PARAMETER);
         }
         if (!array_key_exists('metadata', $json_body)) {
             throw new Exception("Request body data missing key 'metadata'.", MIDAS_INVALID_PARAMETER);
