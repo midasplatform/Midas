@@ -117,6 +117,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     protected function _initCache()
     {
         $this->bootstrap('Config', 'Database');
+        $cache = false;
 
         if (Zend_Registry::get('configGlobal')->get('environment', 'production') === 'production') {
             $frontendOptions = array(
