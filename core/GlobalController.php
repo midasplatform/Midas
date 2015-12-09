@@ -144,24 +144,6 @@ class MIDAS_GlobalController extends Zend_Controller_Action
             }
         }
         parent::preDispatch();
-        if (!$this->isDebug()) {
-            $frontendOptions = array('automatic_serialization' => true, 'lifetime' => 86400, 'cache_id_prefix' => 'midas_');
-            if (extension_loaded('memcached') || session_save_path() === 'Memcache'
-            ) {
-                $cache = Zend_Cache::factory('Core', 'Libmemcached', $frontendOptions, array());
-            } elseif (extension_loaded('memcache')) {
-                $cache = Zend_Cache::factory('Core', 'Memcached', $frontendOptions, array());
-            } else {
-                $cacheDir = UtilityComponent::getCacheDirectory().'/db';
-                if (is_dir($cacheDir) && is_writable($cacheDir)) {
-                    $backendOptions = array('cache_dir' => $cacheDir);
-                    $cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
-                }
-            }
-            if (isset($cache)) {
-                Zend_Db_Table_Abstract::setDefaultMetadataCache($cache);
-            }
-        }
     }
 
     /**

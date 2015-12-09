@@ -4,11 +4,11 @@
 .idea/
 .php_cs.cache
 .sass-cache/
-.vagrant/
+/.vagrant/
+/composer.lock
+/composer.phar
+/env/
+/site/
+/vendor/
 bower_components/
-composer.lock
-composer.phar
-env/
 node_modules/
-site/
-vendor/
