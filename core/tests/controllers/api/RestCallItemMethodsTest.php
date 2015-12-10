@@ -75,10 +75,12 @@ class Core_RestCallItemMethodsTest extends RestCallMethodsTestCase
         // Write some metadata correctly.
         $this->resetAll();
         $this->params['useSession'] = 'true';
-        $this->params[0] = json_encode(array('metadata' => array(
+        $metadata = json_encode(array('metadata' => array(
             array('element' => 'key1', 'value' => 'val1'),
             array('element' => 'key2', 'value' => 'val2'),
         )));
+        $this->request->setHeader('Content-Type', 'application/json');
+        $this->request->setRawBody($metadata);
         $resp = $this->_callRestApi('PUT', $apiPath, $userDao);
         $this->_assertStatusOk($resp);
 
@@ -104,10 +106,12 @@ class Core_RestCallItemMethodsTest extends RestCallMethodsTestCase
         // Update key1, add key3, leave key2 alone.
         $this->resetAll();
         $this->params['useSession'] = 'true';
-        $this->params[0] = json_encode(array('metadata' => array(
+        $metadata = json_encode(array('metadata' => array(
             array('element' => 'key1', 'value' => 'newval1'),
             array('element' => 'key3', 'value' => 'val3'),
         )));
+        $this->request->setHeader('Content-Type', 'application/json');
+        $this->request->setRawBody($metadata);
         $resp = $this->_callRestApi('PUT', $apiPath, $userDao);
         $this->_assertStatusOk($resp);
 
