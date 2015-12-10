@@ -179,6 +179,8 @@ class ApiitemComponent extends AppComponent
      * @path /item/addmetadata/{id}
      * @http PUT
      * @param id The id of the item
+     * @param metadata The metadata list to add or update, must be passed in the request body
+     * as 'application/json'.
      * @param revision (Optional) Item Revision number to set metadata on, defaults to latest revision.
      * @return item on success,
      *              will fail if there are no revisions or the specified revision is not found.
@@ -190,7 +192,7 @@ class ApiitemComponent extends AppComponent
     {
         /** @var ApihelperComponent $apihelperComponent */
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
-        $apihelperComponent->validateParams($args, array('id'));
+        $apihelperComponent->validateParams($args, array('id', 'metadata'));
         $userDao = $apihelperComponent->getUser($args);
 
         $apihelperComponent->requirePolicyScopes(array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
@@ -204,17 +206,7 @@ class ApiitemComponent extends AppComponent
         $revisionNumber = array_key_exists('revision', $args) ? (int) $args['revision'] : null;
         $revision = $apihelperComponent->getItemRevision($item, $revisionNumber);
 
-        if (!array_key_exists(0, $args)) {
-            throw new Exception('Missing request body data.', MIDAS_INVALID_PARAMETER);
-        }
-        $jsonBody = json_decode($args[0]);
-        if ($jsonBody === null) {
-            throw new Exception('Request body data must be valid JSON.', MIDAS_INVALID_PARAMETER);
-        }
-        if (!array_key_exists('metadata', $jsonBody)) {
-            throw new Exception("Request body data missing key 'metadata'.", MIDAS_INVALID_PARAMETER);
-        }
-        $metadata = $jsonBody->metadata;
+        $metadata = $args['metadata'];
         foreach ($metadata as $metadatum) {
             if (!isset($metadatum->element) || !isset($metadatum->value)) {
                 throw new Exception("All metadata must have 'element' and 'value' keys.", MIDAS_INVALID_PARAMETER);
