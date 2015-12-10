@@ -776,7 +776,7 @@ class Api_ApiComponent extends AppComponent
      *
      * @param token Authentication token
      * @param itemid The id of the item
-     * @param metadata The metadata list to add or update, should be passed in the request body
+     * @param metadata The metadata list to add or update, must be passed in the request body
      * as 'application/json'.
      * @param revision (Optional) Item Revision number to set metadata on, defaults to latest revision.
      * @return item on success,
