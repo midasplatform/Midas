@@ -31,72 +31,72 @@ function oai_error($code, $argument = '', $value = '')
     global $request_err;
 
     switch ($code) {
-        case 'badArgument' :
+        case 'badArgument':
             $text = "The argument '$argument' (value='$value') included in the request is not valid.";
             break;
 
-        case 'badGranularity' :
+        case 'badGranularity':
             $text = "The value '$value' of the argument '$argument' is not valid.";
             $code = 'badArgument';
             break;
 
-        case 'badResumptionToken' :
+        case 'badResumptionToken':
             $text = "The resumptionToken '$value' does not exist or has already expired.";
             break;
 
-        case 'badRequestMethod' :
+        case 'badRequestMethod':
             $text = "The request method '$argument' is unknown.";
             $code = 'badVerb';
             break;
 
-        case 'badVerb' :
+        case 'badVerb':
             $text = "The verb '$argument' provided in the request is illegal.";
             break;
 
-        case 'cannotDisseminateFormat' :
+        case 'cannotDisseminateFormat':
             $text = "The metadata format '$value' given by $argument is not supported by this repository.";
             break;
 
-        case 'exclusiveArgument' :
+        case 'exclusiveArgument':
             $text = 'The usage of resumptionToken as an argument allows no other arguments.';
             $code = 'badArgument';
             break;
 
-        case 'idDoesNotExist' :
+        case 'idDoesNotExist':
             $text = "The value '$value' of the identifier is illegal for this repository.";
             if (!is_valid_uri($value)) {
                 $code = 'badArgument';
             }
             break;
 
-        case 'missingArgument' :
+        case 'missingArgument':
             $text = "The required argument '$argument' is missing in the request.";
             $code = 'badArgument';
             break;
 
-        case 'noRecordsMatch' :
+        case 'noRecordsMatch':
             $text = 'The combination of the given values results in an empty list.';
             break;
 
-        case 'noMetadataFormats' :
+        case 'noMetadataFormats':
             $text = 'There are no metadata formats available for the specified item.';
             break;
 
-        case 'noVerb' :
+        case 'noVerb':
             $text = 'The request does not provide any verb.';
             $code = 'badVerb';
             break;
 
-        case 'noSetHierarchy' :
+        case 'noSetHierarchy':
             $text = 'This repository does not support sets.';
             break;
 
-        case 'sameArgument' :
+        case 'sameArgument':
             $text = 'Do not use them same argument more than once.';
             $code = 'badArgument';
             break;
 
-        case 'sameVerb' :
+        case 'sameVerb':
             $text = 'Do not use verb more than once.';
             $code = 'badVerb';
             break;
@@ -164,7 +164,7 @@ function xmlrecord($sqlrecord, $element, $attr = '', $indent = 0)
     }
 }
 
-function xmlelement($element, $attr = '', &$indent, $open = true)
+function xmlelement($element, $attr, &$indent, $open = true)
 {
     global $SQL;
 
