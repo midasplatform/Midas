@@ -249,7 +249,9 @@ midas.tracker.renderChartArea = function (curveData, first) {
         midas.tracker.bindPlotEvents();
 
         $('a.resetZoomAction').unbind('click').click(function () {
-            midas.tracker.plot.resetZoom();
+            if (midas.tracker.plot.plugins.cursor._zoom.isZoomed) {
+                midas.tracker.plot.resetZoom();
+            }
         });
     }
     else {
