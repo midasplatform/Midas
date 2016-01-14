@@ -132,6 +132,7 @@ class Tracker_ApisubmissionComponent extends AppComponent
      * @param producer_id
      * @param uuid (Optional)
      * @param name (Optional)
+     * @param command (Optional)
      * @return array
      *
      * @param array $args parameters
@@ -187,6 +188,7 @@ class Tracker_ApisubmissionComponent extends AppComponent
      * @param id
      * @param uuid (Optional)
      * @param name (Optional)
+     * @param command (Optional)
      * @return array
      *
      * @param array $args parameters

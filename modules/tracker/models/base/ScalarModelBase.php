@@ -106,6 +106,22 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
     abstract public function getOtherValuesFromSubmission($scalarDao);
 
     /**
+     * Return any other scalars from the same submission as the given scalar.
+     *
+     * @param Tracker_ScalarDao $scalarDao scalar DAO
+     * @return array scalar DAOs
+     */
+    abstract public function getOtherScalarsFromSubmissionLegacy($scalarDao);
+
+    /**
+     * Return any other values from the same submission as the given scalar.
+     *
+     * @param Tracker_ScalarDao $scalarDao scalar DAO
+     * @return array associative array with keys equal to the metric names
+     */
+    abstract public function getOtherValuesFromSubmissionLegacy($scalarDao);
+
+    /**
      * Return a scalar given a trend id, submit time, and user id.
      *
      * @param int $trendId trend id

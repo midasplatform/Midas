@@ -75,7 +75,7 @@ class Tracker_ScalarModel extends Tracker_ScalarModelBase
      * @param Tracker_ScalarDao $scalarDao scalar DAO
      * @return array scalar DAOs
      */
-    public function getOtherScalarsFromSubmission($scalarDao)
+    public function getOtherScalarsFromSubmissionLegacy($scalarDao)
     {
         $sql = $this->database->select()->from('tracker_scalar')->join(
             'tracker_trend',
@@ -102,7 +102,7 @@ class Tracker_ScalarModel extends Tracker_ScalarModelBase
      * @param Tracker_ScalarDao $scalarDao scalar DAO
      * @return array associative array with keys equal to the metric names
      */
-    public function getOtherValuesFromSubmission($scalarDao)
+    public function getOtherValuesFromSubmissionLegacy($scalarDao)
     {
         $sql = $this->database->select()->setIntegrityCheck(false)->from(array('s' => 'tracker_scalar'))->join(
             array('t' => 'tracker_trend'),

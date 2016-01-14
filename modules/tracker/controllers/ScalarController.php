@@ -71,7 +71,7 @@ class Tracker_ScalarController extends Tracker_AppController
         }
 
         $this->view->resultItems = $this->Tracker_Scalar->getAssociatedItems($scalarDao);
-        $this->view->otherValues = $this->Tracker_Scalar->getOtherValuesFromSubmission($scalarDao);
+        $this->view->otherValues = $this->Tracker_Scalar->getOtherValuesFromSubmissionLegacy($scalarDao);
 
         if ($scalarDao->getUserId() !== -1) {
             $this->view->submittedBy = $scalarDao->getUser();

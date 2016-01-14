@@ -29,8 +29,22 @@
  * @method void setName(string $name)
  * @method string getUuid()
  * @method string setUuid(string $uuid)
+ * @method void setCommand(string $command)
+ * @method string getCommand()
  * @method array getScalars()
  * @method void setScalars(array $scalarDaos)
+ * @method string getBuildResultsUrl()
+ * @method void setBuildResultsUrl(string $buildResultsUrl)
+ * @method string getParams()
+ * @method void setParams(string $params)
+ * @method string getExtraUrls()
+ * @method void setExtraUrls(string $extraUrls)
+ * @method string getBranch()
+ * @method void setBranch(string $branch)
+ * @method string getSubmitTime()
+ * @method void setSubmitTime(string $submitTime)
+ * @method string getProducerRevision()
+ * @method void setProducerRevision(string $producerRevision)
  */
 class Tracker_SubmissionDao extends Tracker_AppDao
 {
