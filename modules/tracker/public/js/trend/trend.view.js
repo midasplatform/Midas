@@ -195,7 +195,8 @@ midas.tracker.renderChartArea = function (curveData, first) {
             opts.legend = {
                 show: true,
                 labels: [json.tracker.trends[0].display_name, json.tracker.rightTrend.display_name],
-                location: 'se'
+                location: 's',
+                placement: 'outsideGrid'
             };
             opts.axes.y2axis = {
                 show: true,
@@ -234,7 +235,8 @@ midas.tracker.renderChartArea = function (curveData, first) {
             });
             opts.legend = {
                 show: true,
-                location: 'se',
+                location: 's' ,
+                placement : 'outsideGrid',
                 labels: labels
             };
         }
@@ -263,13 +265,25 @@ midas.tracker.renderChartArea = function (curveData, first) {
     midas.tracker.populateInfo(curveData);
 };
 
+midas.tracker.resizePlotContainer = function () {
+    var filterHeight = $('.branchFilterContainer').height();
+    $('.SubMainContent').css('height', $(window).height()-150 + 'px');
+    $('.viewMain').css('height', $(window).height()-(filterHeight+300) + 'px');
+};
+
 $(window).load(function () {
     'use strict';
+
     var inputCurves = json.tracker.scalars;
     if (json.tracker.rightTrend) {
         inputCurves.push(json.tracker.rightScalars);
     }
     var curveData = midas.tracker.extractCurveData(inputCurves);
+    midas.tracker.resizePlotContainer();
+    $(window).resize(function () {
+        midas.tracker.resizePlotContainer();
+        midas.tracker.updateBranchFilters();
+    });
 
     if (json.tracker.trends.length == 1) {
         midas.tracker.yaxisLabel = json.tracker.trends[0].display_name;
@@ -342,6 +356,8 @@ $(window).load(function () {
         div.append($($('.branchfilter')[0]).clone()).append(removeLink);
 
         $('.branchFilterContainer').append(div);
+        midas.tracker.resizePlotContainer();
+        midas.tracker.renderChartArea(curveData, false);
     });
 
     midas.tracker.renderChartArea(curveData, true);
@@ -407,6 +423,7 @@ $(window).load(function () {
         var curveData = midas.tracker.extractCurveData(inputCurves);
         midas.tracker.renderChartArea(curveData, false);
     });
+
 });
 
 midas.tracker.trendDeleted = function (resp) {
