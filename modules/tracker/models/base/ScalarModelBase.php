@@ -40,6 +40,7 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
             'submit_time' => array('type' => MIDAS_DATA),
             'value' => array('type' => MIDAS_DATA),
             'producer_revision' => array('type' => MIDAS_DATA),
+            'reproduction_command' => array('type' => MIDAS_DATA),
             'trend' => array(
                 'type' => MIDAS_MANY_TO_ONE,
                 'model' => 'Trend',
@@ -137,6 +138,7 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
      * @param null|string $branch branch name
      * @param null|string|array $params parameters
      * @param null|string|array $extraUrls extra URLs
+     * @param null|string $reproductionCommand the command to reproduce this run
      * @return Tracker_ScalarDao scalar DAO
      */
     public function addToTrend(
@@ -151,7 +153,8 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
         $buildResultsUrl = '',
         $branch = '',
         $params = null,
-        $extraUrls = null
+        $extraUrls = null,
+        $reproductionCommand = null
     ) {
         if ($overwrite === true) {
             $scalarDao = $this->getByTrendAndTimestamp($trendDao->getKey(), $submitTime, $userDao->getKey());
@@ -181,6 +184,7 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
         $scalarDao->setBuildResultsUrl($buildResultsUrl);
         $scalarDao->setBranch(trim($branch));
         $scalarDao->setExtraUrls($extraUrls);
+        $scalarDao->setReproductionCommand($reproductionCommand);
         $this->save($scalarDao);
 
         if (!empty($params) && is_array($params)) {

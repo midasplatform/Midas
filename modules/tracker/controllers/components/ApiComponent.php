@@ -128,6 +128,7 @@ class Tracker_ApiComponent extends AppComponent
      * @param silent (Optional) If set, do not perform threshold-based email notifications for this scalar
      * @param unofficial (Optional) If passed, creates an unofficial scalar visible only to the user performing the submission
      * @param unit (Optional) If passed, the unit of the scalar value that identifies which trend this point belongs to.
+     * @param reproductionCommand (Optional) If passed, the command to produce this scalar
      * @return The scalar DAO that was created
      * @throws Exception
      */
@@ -280,6 +281,11 @@ class Tracker_ApiComponent extends AppComponent
             $submissionId = $submissionDao->getKey();
         }
 
+        $reproductionCommand = null;
+        if (isset($args['reproductionCommand'])) {
+            $reproductionCommand = $args['reproductionCommand'];
+        }
+
         /** @var Tracker_ScalarModel $scalarModel */
         $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
         $scalar = $scalarModel->addToTrend(
@@ -294,7 +300,8 @@ class Tracker_ApiComponent extends AppComponent
             $buildResultsUrl,
             $branch,
             $extraParams,
-            $extraUrls
+            $extraUrls,
+            $reproductionCommand
         );
 
         if (!isset($args['silent'])) {
