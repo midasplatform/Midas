@@ -49,6 +49,8 @@
  * @method void setTrend(Tracker_TrendDao $trendDao)
  * @method UserDao getUser()
  * @method void setUser(UserDao $userDao)
+ * @method string getReproductionCommand()
+ * @method void setReproductionCommand(string $reproductionCommand)
  */
 class Tracker_ScalarDao extends Tracker_AppDao
 {
