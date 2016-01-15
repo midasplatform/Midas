@@ -71,9 +71,6 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.for
 
     if ($this->isAdmin) {
         ?>
-        <div class="adminCreateUser">
-            <a class="createUserLink" href="javascript:;">Create new user</a>
-        </div>
         <!-- TEMPLATE: register form -->
         <div id="registerFormTemplate" style="display:none;">
             <div class="registerError">
@@ -119,6 +116,16 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.for
 </div>
 <div class="viewSideBar">
     <div class="sideElementFirst viewAction">
+        <?php if ($this->isAdmin) { ?>
+        <h1>Actions</h1>
+            <ul>
+                <li class="adminCreateUser">
+                    <a class="createUserLink" href="javascript:;">
+                        <img alt="user icon" src="<?php echo $this->coreWebroot.'/public/images/icons/add.png';?>"/> Create new user
+                    </a>
+                </li>
+            </ul>
+        <?php } ?>
         <h1>Order</h1>
         <ul>
             <?php
