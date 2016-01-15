@@ -1,6 +1,6 @@
 -- Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- MySQL database for the tracker module, version 1.2.2
+-- MySQL database for the tracker module, version 1.2.3
 
 CREATE TABLE IF NOT EXISTS `tracker_producer` (
     `producer_id` bigint(20) NOT NULL AUTO_INCREMENT,
