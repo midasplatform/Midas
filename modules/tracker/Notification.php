@@ -175,7 +175,7 @@ class Tracker_Notification extends ApiEnabled_Notification
         $body .= '<b>Producer:</b> <a href="'.$fullUrl.'/'.$this->moduleName.'/producer/view?producerId='.$producerDao->getKey(
             ).'">'.htmlspecialchars($producerDao->getDisplayName(), ENT_QUOTES, 'UTF-8').'</a><br/>';
         $body .= '<b>Trend:</b> <a href="'.$fullUrl.'/'.$this->moduleName.'/trend/view?trendId='.$trendDao->getKey(
-            ).'">'.htmlspecialchars($trendDao->getMetric()->getDisplayName(), ENT_QUOTES, 'UTF-8').'</a><br/>';
+            ).'">'.htmlspecialchars($trendDao->getDisplayName(), ENT_QUOTES, 'UTF-8').'</a><br/>';
         $body .= '<b>Value:</b> '.htmlspecialchars($scalar['value'], ENT_QUOTES, 'UTF-8');
 
         Zend_Registry::get('notifier')->callback(
