@@ -163,7 +163,8 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
      * @return Tracker_SubmissionDao submission | false
      */
     public function getLatestSubmissionByProducerDateAndBranch($producerDao, $date = false, $branch = 'master',
-                                                               $onlyOneDay = true) {
+                                                               $onlyOneDay = true)
+    {
         if ($date) {
             $queryTime = date('Y-m-d H:i:s', strtotime($date));
         } else {
@@ -182,7 +183,7 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
         }
         $sql = $sql->where('tracker_submission.producer_id = ?', $producerDao->getKey())
             ->where('branch = ?', $branch)
-            ->order('tracker_submission.submit_time','DSC')
+            ->order('tracker_submission.submit_time', 'DSC')
             ->limit(1);
         $res = $this->database->fetchAll($sql);
         if (count($res) === 1) {
@@ -190,6 +191,7 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
         } else {
             $submissionDao = false;
         }
+
         return $submissionDao;
     }
 
@@ -199,7 +201,8 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
      * @param bool $key whether to only retrieve key trends
      * @return array trend DAOs
      */
-    public function getTrends($submissionDao, $key = true) {
+    public function getTrends($submissionDao, $key = true)
+    {
         if ($key) {
             $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_trend')->join(
                 'tracker_scalar',
