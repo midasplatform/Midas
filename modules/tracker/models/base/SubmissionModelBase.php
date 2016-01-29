@@ -90,4 +90,26 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
      * @return array submission DAOs
      */
     abstract public function getScalars($submissionDao, $key = false);
+
+    /**
+     * Get submissions associated with a given producer.
+     *
+     * @param Tracker_ProducerDao $producerDao producer DAO
+     * @param false | string $date the date in which to check
+     * @param string $branch the branch of the submission for which to search
+     * @param bool $onlyOneDay whether to only get the last day.
+     * @return Tracker_SubmissionDao submission
+     */
+    abstract public function getLatestSubmissionByProducerDateAndBranch($producerDao,
+                                                                        $date = false,
+                                                                        $branch = 'master',
+                                                                        $onlyOneDay = true);
+
+    /**
+     * Get trends associated with a submission.
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @param bool $key whether to only retrieve key trends
+     * @return array trend DAOs
+     */
+    abstract public function getTrends($submissionDao, $key = true);
 }

@@ -25,6 +25,8 @@ require_once BASE_PATH.'/modules/tracker/models/base/SubmissionModelBase.php';
  */
 class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
 {
+    const SEC_IN_DAY = 86400;
+
     /**
      * Create a submission.
      *
@@ -149,5 +151,74 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
         }
 
         return $submissionDao;
+    }
+
+    /**
+     * Get submissions associated with a given producer.
+     *
+     * @param Tracker_ProducerDao $producerDao producer DAO
+     * @param false | string $date the date in which to check
+     * @param string $branch the branch of the submission for which to search
+     * @param bool $onlyOneDay whether to only get the last day.
+     * @return Tracker_SubmissionDao submission | false
+     */
+    public function getLatestSubmissionByProducerDateAndBranch($producerDao, $date = false, $branch = 'master',
+                                                               $onlyOneDay = true) {
+        if ($date) {
+            $queryTime = date('Y-m-d H:i:s', strtotime($date));
+        } else {
+            $queryTime = date('Y-m-d H:i:s', time());
+        }
+        $dayBeforeQueryTime = date('Y-m-d H:i:s', strtotime($queryTime) - self::SEC_IN_DAY);
+        $sql = $this->database->select()->setIntegrityCheck(false)
+            ->from('tracker_submission')
+            ->join(
+                'tracker_scalar',
+                'tracker_submission.submission_id = tracker_scalar.submission_id',
+                array())
+            ->where('tracker_submission.submit_time < ?', $queryTime);
+        if ($onlyOneDay) {
+            $sql = $sql->where('tracker_submission.submit_time > ?', $dayBeforeQueryTime);
+        }
+        $sql = $sql->where('tracker_submission.producer_id = ?', $producerDao->getKey())
+            ->where('branch = ?', $branch)
+            ->order('tracker_submission.submit_time','DSC')
+            ->limit(1);
+        $res = $this->database->fetchAll($sql);
+        if (count($res) === 1) {
+            $submissionDao = $this->initDao('Submission', $res[0], $this->moduleName);
+        } else {
+            $submissionDao = false;
+        }
+        return $submissionDao;
+    }
+
+    /**
+     * Get trends associated with a submission.
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @param bool $key whether to only retrieve key trends
+     * @return array trend DAOs
+     */
+    public function getTrends($submissionDao, $key = true) {
+        if ($key) {
+            $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_trend')->join(
+                'tracker_scalar',
+                'tracker_scalar.trend_id = tracker_trend.trend_id',
+                array()
+            )->where('submission_id = ?', $submissionDao->getKey()
+            )->where('key_metric = ?', 1);
+        } else {
+            $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_scalar')
+                ->where('submission_id = ?', $submissionDao->getKey());
+        }
+        $trendDaos = array();
+        $rows = $this->database->fetchAll($sql);
+
+        /** @var Zend_Db_Table_Row_Abstract $row */
+        foreach ($rows as $row) {
+            $trendDaos[] = $this->initDao('Trend', $row, $this->moduleName);
+        }
+
+        return $trendDaos;
     }
 }
