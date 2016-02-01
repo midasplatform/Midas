@@ -95,10 +95,10 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
      * Get the single latest submission associated with a given producer.
      *
      * @param Tracker_ProducerDao $producerDao producer DAO
-     * @param false | string $date the latest time end the 24-hour interval or false to use the current day.
+     * @param false | string $date the end of the interval or false to use 23:59:59 of the current day
      * @param string $branch the branch of the submission for which to search
-     * @param bool $onlyOneDay true to return submissions 24 hours back from $date, false otherwise. In the case of the
-     * of $date === false, $onlyOneDay will search only in the current day.
+     * @param bool $onlyOneDay if true return submissions 24 hours back from $date, false otherwise. In the case of
+     * $date === false, search only in the current day
      * @return false | Tracker_SubmissionDao submission
      */
     abstract public function getLatestSubmissionByProducerDateAndBranch($producerDao,
@@ -110,7 +110,7 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
      * Get trends associated with a submission.
      *
      * @param Tracker_SubmissionDao $submissionDao submission DAO
-     * @param bool $key true if only key trends should be returned, false otherwise.
+     * @param bool $key true if only key trends should be returned, false otherwise
      * @return array Tracker_TrendDaos
      */
     abstract public function getTrends($submissionDao, $key = true);
