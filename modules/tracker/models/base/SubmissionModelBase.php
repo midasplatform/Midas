@@ -97,8 +97,8 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
      * @param Tracker_ProducerDao $producerDao producer DAO
      * @param false | string $date the end of the interval or false to use 23:59:59 of the current day
      * @param string $branch the branch of the submission for which to search
-     * @param bool $onlyOneDay if true return submissions 24 hours back from $date. If false, search back as far as
-     * possible. In the case of $date === false, search only in the current day.
+     * @param bool $onlyOneDay if true return submissions 24 hours back from $date (In the case of $date === false,
+     * search only in the current day.) If false, search back as far as possible.
      * @return false | Tracker_SubmissionDao submission
      */
     abstract public function getLatestSubmissionByProducerDateAndBranch($producerDao,
