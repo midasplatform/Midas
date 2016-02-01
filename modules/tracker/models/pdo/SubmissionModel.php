@@ -154,13 +154,14 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
     }
 
     /**
-     * Get submissions associated with a given producer.
+     * Get the single latest submission associated with a given producer.
      *
      * @param Tracker_ProducerDao $producerDao producer DAO
-     * @param false | string $date the date in which to check
+     * @param false | string $date the latest time end the 24-hour interval or false to use the current day.
      * @param string $branch the branch of the submission for which to search
-     * @param bool $onlyOneDay whether to only get the last day.
-     * @return Tracker_SubmissionDao submission | false
+     * @param bool $onlyOneDay true to return submissions 24 hours back from $date, false otherwise. In the case of the
+     * of $date === false, $onlyOneDay will search only in the current day.
+     * @return false | Tracker_SubmissionDao submission
      */
     public function getLatestSubmissionByProducerDateAndBranch($producerDao, $date = false, $branch = 'master',
                                                                $onlyOneDay = true)
@@ -168,7 +169,7 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
         if ($date) {
             $queryTime = date('Y-m-d H:i:s', strtotime($date));
         } else {
-            $queryTime = date('Y-m-d H:i:s', time());
+            $queryTime = date('Y-m-d', time()) . '23:59:59';
         }
         $dayBeforeQueryTime = date('Y-m-d H:i:s', strtotime($queryTime) - self::SEC_IN_DAY);
         $sql = $this->database->select()->setIntegrityCheck(false)
@@ -197,22 +198,20 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
 
     /**
      * Get trends associated with a submission.
+     *
      * @param Tracker_SubmissionDao $submissionDao submission DAO
-     * @param bool $key whether to only retrieve key trends
-     * @return array trend DAOs
+     * @param bool $key true if only key trends should be returned, false otherwise.
+     * @return array Tracker_TrendDaos
      */
     public function getTrends($submissionDao, $key = true)
     {
+        $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_trend')->join(
+            'tracker_scalar',
+            'tracker_scalar.trend_id = tracker_trend.trend_id',
+            array()
+        )->where('submission_id = ?', $submissionDao->getKey());
         if ($key) {
-            $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_trend')->join(
-                'tracker_scalar',
-                'tracker_scalar.trend_id = tracker_trend.trend_id',
-                array()
-            )->where('submission_id = ?', $submissionDao->getKey()
-            )->where('key_metric = ?', 1);
-        } else {
-            $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_scalar')
-                ->where('submission_id = ?', $submissionDao->getKey());
+            $sql = $sql->where('key_metric = ?', 1);
         }
         $trendDaos = array();
         $rows = $this->database->fetchAll($sql);
