@@ -169,7 +169,7 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
         if ($date) {
             $queryTime = date('Y-m-d H:i:s', strtotime($date));
         } else {
-            $queryTime = date('Y-m-d', time()) . '23:59:59';
+            $queryTime = date('Y-m-d', time()).'23:59:59';
         }
         $dayBeforeQueryTime = date('Y-m-d H:i:s', strtotime($queryTime) - self::SEC_IN_DAY);
         $sql = $this->database->select()->setIntegrityCheck(false)
