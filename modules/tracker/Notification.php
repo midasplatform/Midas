@@ -174,7 +174,7 @@ class Tracker_Notification extends ApiEnabled_Notification
         $thresholdValue = $notification['value'];
         $thresholdComparison = $notification['comparison'];
         $scalarValue = $scalar['value'];
-        $subject = 'Threshold Alert: ' . $producerName . ': ' . $trendName . ' value ' . $scalarValue . ' ' . $thresholdComparison . ' ' . $thresholdValue;
+        $subject = 'Threshold Alert: '.$producerName.': '.$trendName.' value '.$scalarValue.' '.$thresholdComparison.' '.$thresholdValue;
 
         $body = 'Hello,<br/><br/>This email was sent because a submitted scalar value exceeded a threshold that you specified.<br/><br/>';
         $body .= '<b>Community:</b> <a href="'.$fullUrl.'/community/'.$producerDao->getCommunityId(
