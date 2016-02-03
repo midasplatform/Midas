@@ -121,19 +121,21 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
 
         $pathThumbnail = $destination;
 
+        /** @var MimeTypeComponent $mimeTypeComponent */
+        $mimeTypeComponent = MidasLoader::loadComponent('MimeType');
+        $mimeType = $mimeTypeComponent->getType($fullPath, $name);
+
         if ($provider === 'phmagick') {
             $imageMagickPath = $settingModel->getValueByName(MIDAS_THUMBNAILCREATOR_IMAGE_MAGICK_KEY, $this->moduleName);
 
-            switch ($ext) {
-                case 'pdf':
-                case 'mpg':
-                case 'mpeg':
-                case 'mp4':
-                case 'm4v':
-                case 'avi':
-                case 'mov':
-                case 'flv':
-                case 'rm':
+            switch ($mimeType) {
+                case 'application/pdf':
+                case 'application/vnd.rn-realmedia':
+                case 'video/mp4':
+                case 'video/mpeg':
+                case 'video/quicktime':
+                case 'video/x-flv':
+                case 'video/x-msvideo':
                     // If this is a video, we have to have the file extension, so symlink it
                     if (function_exists('symlink') && symlink($fullPath, $fullPath.'.'.$ext)
                     ) {
@@ -172,22 +174,33 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
                 unlink($preprocessedJpeg);
             }
         } elseif ($provider === MIDAS_THUMBNAILCREATOR_PROVIDER_GD || $provider === MIDAS_THUMBNAILCREATOR_PROVIDER_IMAGICK) {
-            try {
-                $manager = new \Intervention\Image\ImageManager(array('driver' => $provider));
-                $image = $manager->make($fullPath);
+            if ($mimeType === 'image/gif'
+                || $mimeType === 'image/jpeg'
+                || $mimeType === 'image/png'
+                || ($provider === MIDAS_THUMBNAILCREATOR_PROVIDER_IMAGICK
+                    && ($mimeType === 'image/bmp'
+                        || $mimeType === 'image/tiff'
+                        || $mimeType === 'image/vnd.adobe.photoshop'
+                        || $mimeType === 'image/x-icon'))) {
+                try {
+                    $manager = new \Intervention\Image\ImageManager(array('driver' => $provider));
+                    $image = $manager->make($fullPath);
 
-                if ($height === 0) {
-                    $image->widen($width);
-                } elseif ($width === 0) {
-                    $image->heighten($height);
-                } else {
-                    $image->resize($width, $height);
+                    if ($height === 0) {
+                        $image->widen($width);
+                    } elseif ($width === 0) {
+                        $image->heighten($height);
+                    } else {
+                        $image->resize($width, $height);
+                    }
+
+                    $image->save($pathThumbnail);
+                } catch (\RuntimeException $exception) {
+                    Zend_Registry::get('logger')->err($exception->getMessage());
+                    throw new Zend_Exception('Thumbnail creation failed');
                 }
-
-                $image->save($pathThumbnail);
-            } catch (\RuntimeException $exception) {
-                Zend_Registry::get('logger')->err($exception->getMessage());
-                throw new Zend_Exception('Thumbnail creation failed');
+            } else {
+                throw new Zend_Exception('Unsupported image format');
             }
         } else {
             throw new Zend_Exception('No thumbnail provider has been selected');
