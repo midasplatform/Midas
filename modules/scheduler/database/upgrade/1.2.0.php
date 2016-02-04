@@ -25,14 +25,12 @@ class Scheduler_Upgrade_1_2_0 extends MIDASUpgrade
     public function mysql()
     {
         $this->db->query('DROP TABLE IF EXISTS `scheduler_job_log`;');
-
     }
 
     /** Upgrade a PostgreSQL database. */
     public function pgsql()
     {
         $this->db->query('DROP TABLE IF EXISTS scheduler_job_log;');
-
     }
 
     /** Upgrade a SQLite database. */
