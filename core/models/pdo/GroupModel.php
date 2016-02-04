@@ -76,7 +76,7 @@ class GroupModel extends GroupModelBase
 
         $community = $group->getCommunity();
         $groupMember = $community->getMemberGroup();
-        if ($groupMember->getKey() == $group->getKey()) {
+        if ($groupMember !== false && $groupMember->getKey() == $group->getKey()) {
             $communityGroups = $community->getGroups();
             foreach ($communityGroups as $cgroup) {
                 if ($cgroup->getKey() != $groupMember->getKey()) {

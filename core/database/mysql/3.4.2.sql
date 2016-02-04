@@ -16,7 +16,8 @@ CREATE TABLE IF NOT EXISTS `assetstore` (
     `name` varchar(255) NOT NULL,
     `path` varchar(512) NOT NULL,
     `type` tinyint(4) NOT NULL,
-    PRIMARY KEY (`assetstore_id`)
+    PRIMARY KEY (`assetstore_id`),
+    KEY (`name`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `bitstream` (
@@ -31,7 +32,9 @@ CREATE TABLE IF NOT EXISTS `bitstream` (
     `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`bitstream_id`),
     KEY (`itemrevision_id`),
-    KEY (`checksum`)
+    KEY (`name`),
+    KEY (`checksum`),
+    KEY (`assetstore_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `community` (
@@ -48,7 +51,11 @@ CREATE TABLE IF NOT EXISTS `community` (
     `can_join` int(11) DEFAULT '0',
     `uuid` varchar(255) DEFAULT '',
     PRIMARY KEY (`community_id`),
-    KEY (`name`)
+    KEY (`folder_id`),
+    KEY (`name`),
+    KEY (`admingroup_id`),
+    KEY (`moderatorgroup_id`),
+    KEY (`membergroup_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `communityinvitation` (
@@ -56,7 +63,9 @@ CREATE TABLE IF NOT EXISTS `communityinvitation` (
     `community_id` bigint(20),
     `user_id` bigint(20),
     `group_id` bigint(20),
-    PRIMARY KEY (`communityinvitation_id`)
+    PRIMARY KEY (`communityinvitation_id`),
+    UNIQUE KEY `user_group_id` (`user_id`, `group_id`),
+    KEY (`community_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `feed` (
@@ -65,13 +74,14 @@ CREATE TABLE IF NOT EXISTS `feed` (
     `user_id` bigint(20) NOT NULL,
     `type` tinyint(4) NOT NULL,
     `resource` varchar(255) NOT NULL,
-    PRIMARY KEY (`feed_id`)
+    PRIMARY KEY (`feed_id`),
+    KEY (`user_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `feed2community` (
     `feed_id` bigint(20) NOT NULL,
     `community_id` bigint(20) NOT NULL,
-    UNIQUE KEY `feed_community_id` (`feed_id`,`community_id`)
+    UNIQUE KEY `community_feed_id` (`community_id`, `feed_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `feedpolicygroup` (
@@ -79,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `feedpolicygroup` (
     `group_id` bigint(20) NOT NULL,
     `policy` tinyint(4) NOT NULL,
     `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY `feed_group_id` (`feed_id`,`group_id`)
+    UNIQUE KEY `feed_group_id` (`feed_id`, `group_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `feedpolicyuser` (
@@ -87,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `feedpolicyuser` (
     `user_id` bigint(20) NOT NULL,
     `policy` tinyint(4) NOT NULL,
     `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY `feed_user_id` (`feed_id`,`user_id`)
+    UNIQUE KEY `feed_user_id` (`feed_id`, `user_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `folder` (
@@ -114,7 +124,7 @@ CREATE TABLE IF NOT EXISTS `folderpolicygroup` (
     `group_id` bigint(20) NOT NULL,
     `policy` tinyint(4) NOT NULL,
     `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY `folder_group_id` (`folder_id`,`group_id`)
+    UNIQUE KEY `folder_group_id` (`folder_id`, `group_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `folderpolicyuser` (
@@ -122,7 +132,7 @@ CREATE TABLE IF NOT EXISTS `folderpolicyuser` (
     `user_id` bigint(20) NOT NULL,
     `policy` tinyint(4) NOT NULL,
     `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY `folder_user_id` (`folder_id`,`user_id`)
+    UNIQUE KEY `folder_user_id` (`folder_id`, `user_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `group` (
@@ -146,12 +156,15 @@ CREATE TABLE IF NOT EXISTS `item` (
     `uuid` varchar(255) DEFAULT '',
     `date_creation` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
     `thumbnail_id` bigint(20),
-    PRIMARY KEY (`item_id`)
+    PRIMARY KEY (`item_id`),
+    KEY (`name`),
+    KEY (`thumbnail_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `item2folder` (
     `item_id` bigint(20) NOT NULL,
     `folder_id` bigint(20) NOT NULL,
+    KEY (`item_id`),
     KEY (`folder_id`)
 ) DEFAULT CHARSET=utf8;
 
@@ -160,7 +173,7 @@ CREATE TABLE IF NOT EXISTS `itempolicygroup` (
     `group_id` bigint(20) NOT NULL,
     `policy` tinyint(4) NOT NULL,
     `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY `item_group_id` (`item_id`,`group_id`)
+    UNIQUE KEY `item_group_id` (`item_id`, `group_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `itempolicyuser` (
@@ -168,7 +181,7 @@ CREATE TABLE IF NOT EXISTS `itempolicyuser` (
     `user_id` bigint(20) NOT NULL,
     `policy` tinyint(4) NOT NULL,
     `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY `item_user_id` (`item_id`,`user_id`)
+    UNIQUE KEY `item_user_id` (`item_id`, `user_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `itemrevision` (
@@ -181,9 +194,10 @@ CREATE TABLE IF NOT EXISTS `itemrevision` (
     `uuid` varchar(255) DEFAULT '',
     `license_id` bigint(20),
     PRIMARY KEY (`itemrevision_id`),
-    UNIQUE KEY `item_revision_id` (`item_id`,`revision`),
+    UNIQUE KEY `item_revision_id` (`item_id`, `revision`),
     KEY (`user_id`),
-    KEY (`date`)
+    KEY (`date`),
+    KEY (`license_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `license` (
@@ -236,7 +250,7 @@ CREATE TABLE IF NOT EXISTS `metadatavalue` (
     `itemrevision_id` bigint(20) NOT NULL,
     `value` varchar(1024) NOT NULL,
     PRIMARY KEY (`metadatavalue_id`),
-    KEY `metadata_itemrevision_id` (`metadata_id`,`itemrevision_id`)
+    KEY (`itemrevision_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `module` (
@@ -260,7 +274,10 @@ CREATE TABLE IF NOT EXISTS `newuserinvitation` (
     `community_id` bigint(20) NOT NULL,
     `group_id` bigint(20) NOT NULL,
     `date_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`newuserinvitation_id`)
+    PRIMARY KEY (`newuserinvitation_id`),
+    KEY (`email`),
+    KEY (`inviter_id`),
+    KEY (`group_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `password` (
@@ -276,7 +293,9 @@ CREATE TABLE IF NOT EXISTS `pendinguser` (
     `lastname` varchar(255) NOT NULL,
     `date_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `salt` varchar(64) NOT NULL DEFAULT '',
-    PRIMARY KEY (`pendinguser_id`)
+    PRIMARY KEY (`pendinguser_id`),
+    KEY `lastname_firstname` (`lastname`, `firstname`),
+    KEY (`email`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `progress` (
@@ -291,10 +310,11 @@ CREATE TABLE IF NOT EXISTS `progress` (
 
 CREATE TABLE IF NOT EXISTS `setting` (
     `setting_id` bigint(20) NOT NULL AUTO_INCREMENT,
-    `module` varchar(255) NOT NULL,
     `name` varchar(255) NOT NULL,
+    `module` varchar(255) NOT NULL,
     `value` text,
-    PRIMARY KEY (`setting_id`)
+    PRIMARY KEY (`setting_id`),
+    UNIQUE KEY `module_name` (`name`, `module`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `token` (
@@ -302,7 +322,8 @@ CREATE TABLE IF NOT EXISTS `token` (
     `userapi_id` bigint(20) NOT NULL,
     `token` varchar(64) NOT NULL,
     `expiration_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`token_id`)
+    PRIMARY KEY (`token_id`),
+    KEY (`userapi_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `user` (
@@ -326,13 +347,15 @@ CREATE TABLE IF NOT EXISTS `user` (
     `hash_alg` varchar(32) NOT NULL DEFAULT '',
     `salt` varchar(64) NOT NULL DEFAULT '',
     PRIMARY KEY (`user_id`),
-    KEY (`email`)
+    KEY `lastname_firstname` (`lastname`, `firstname`),
+    KEY (`email`),
+    KEY (`folder_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `user2group` (
     `user_id` bigint(20) NOT NULL,
     `group_id` bigint(20) NOT NULL,
-    UNIQUE KEY `user_group_id` (`user_id`,`group_id`)
+    UNIQUE KEY `group_user_id` (`group_id`, `user_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `userapi` (
@@ -342,5 +365,6 @@ CREATE TABLE IF NOT EXISTS `userapi` (
     `application_name` varchar(255) NOT NULL,
     `token_expiration_time` int(11) NOT NULL,
     `creation_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`userapi_id`)
+    PRIMARY KEY (`userapi_id`),
+    UNIQUE KEY `user_id_application_name` (`user_id`, `application_name`)
 ) DEFAULT CHARSET=utf8;

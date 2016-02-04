@@ -46,16 +46,14 @@ class Upgrade_3_4_1 extends MIDASUpgrade
         $this->db->query('
             CREATE TABLE IF NOT EXISTS "module" (
                 "module_id" serial PRIMARY KEY,
-                "name" character varying(256) NOT NULL,
-                "uuid" character varying(36) NOT NULL,
+                "name" character varying(256) UNIQUE NOT NULL,
+                "uuid" character varying(36) UNIQUE NOT NULL,
                 "current_major_version" integer NOT NULL DEFAULT 0,
                 "current_minor_version" integer NOT NULL DEFAULT 0,
                 "current_patch_version" integer NOT NULL DEFAULT 0,
                 "enabled" smallint NOT NULL DEFAULT 0
             );
         ');
-        $this->db->query('CREATE UNIQUE INDEX "module_idx_name" ON "module" ("name");');
-        $this->db->query('CREATE UNIQUE INDEX "module_idx_uuid" ON "module" ("uuid");');
     }
 
     /** Upgrade a SQLite database. */
@@ -64,16 +62,14 @@ class Upgrade_3_4_1 extends MIDASUpgrade
         $this->db->query('
             CREATE TABLE IF NOT EXISTS "module" (
                 "module_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                "name" TEXT NOT NULL,
-                "uuid" TEXT NOT NULL,
+                "name" TEXT UNIQUE NOT NULL,
+                "uuid" TEXT UNIQUE NOT NULL,
                 "current_major_version" INTEGER NOT NULL DEFAULT 0,
                 "current_minor_version" INTEGER NOT NULL DEFAULT 0,
                 "current_patch_version" INTEGER NOT NULL DEFAULT 0,
                 "enabled" INTEGER NOT NULL DEFAULT 0
             );
         ');
-        $this->db->query('CREATE UNIQUE INDEX IF NOT EXISTS "module_name_idx" ON "module" ("name");');
-        $this->db->query('CREATE UNIQUE INDEX IF NOT EXISTS "module_uuid_idx" ON "module" ("uuid");');
     }
 
     /** Post database upgrade. */
