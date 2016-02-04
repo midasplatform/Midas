@@ -83,12 +83,5 @@ class Statistics_GeolocationLookupTest extends ControllerTestCase
         $this->assertTrue($ipLocation != false);
         $this->assertEquals($ipLocation->getLatitude(), '0');
         $this->assertEquals($ipLocation->getLongitude(), '0');
-
-        // We should have a message in the log now
-        $logs = $job->getLogs();
-        $this->assertEquals(count($logs), 1);
-        $this->assertTrue(strpos($logs[0]->getLog(), 'IpInfoDb lookup failed') !== false);
-
-        echo 'Log = '.$logs[0]->getLog();
     }
 }
