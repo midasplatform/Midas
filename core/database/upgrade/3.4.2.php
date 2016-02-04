@@ -18,22 +18,24 @@
  limitations under the License.
 =========================================================================*/
 
-/**
- * Error log DAO.
- *
- * @method int getErrorlogId()
- * @method void setErrorlogId(int $errorLogId)
- * @method string getModule()
- * @method void setModule(string $module)
- * @method string getMessage()
- * @method void setMessage(string $message)
- * @method string getDatetime()
- * @method void setDatetime(string $dateTime)
- * @method int getPriority()
- * @method void setPriority(int $priority)
- */
-class ErrorlogDao extends AppDao
+/** Upgrade the core to version 3.4.2. */
+class Upgrade_3_4_2 extends MIDASUpgrade
 {
-    /** @var string */
-    public $_model = 'Errorlog';
+    /** Upgrade a MySQL database. */
+    public function mysql()
+    {
+        $this->db->query('DROP TABLE IF EXISTS `errorlog`;');
+    }
+
+    /** Upgrade a PostgreSQL database. */
+    public function pgsql()
+    {
+        $this->db->query('DROP TABLE IF EXISTS "errorlog";');
+    }
+
+    /** Upgrade a SQLite database. */
+    public function sqlite()
+    {
+        $this->db->query('DROP TABLE IF EXISTS "errorlog";');
+    }
 }

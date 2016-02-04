@@ -45,7 +45,6 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/jquery/jqplot/j
             <li><a href="#tabs-map">World Map</a></li>
             <li><a href="#tabs-configuration">Visitors Configuration</a></li>
             <li><a href="#tabs-referrers">Referrers</a></li>
-            <li><a href="#tabs-errors">Errors</a></li>
             <li><a href="#tabs-assetstores">Asset Stores</a></li>
 
         </ul>
@@ -85,9 +84,6 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/jquery/jqplot/j
                         src="<?php echo $this->escape($this->piwikUrl); ?>/index.php?module=Widgetize&action=iframe&moduleToWidgetize=Referers&actionToWidgetize=getRefererType&idSite=<?php echo $this->escape($this->piwikId); ?>&language=en&period=day&date=today&disableLink=1&widget=1&token_auth=<?php echo $this->escape($this->piwikKey); ?>"
                         scrolling="yes" frameborder="0" marginheight="0" marginwidth="0"></iframe>
             </div>
-        </div>
-        <div id="tabs-errors">
-            <div id="chartErrors" style="height:450px;width:800px; "></div>
         </div>
         <div id="tabs-assetstores">
             <div id="chartAssetstore"></div>

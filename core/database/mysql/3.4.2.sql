@@ -1,6 +1,6 @@
 -- Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- MySQL core database, version 3.4.1
+-- MySQL core database, version 3.4.2
 
 CREATE TABLE IF NOT EXISTS `activedownload` (
     `activedownload_id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -57,15 +57,6 @@ CREATE TABLE IF NOT EXISTS `communityinvitation` (
     `user_id` bigint(20),
     `group_id` bigint(20),
     PRIMARY KEY (`communityinvitation_id`)
-) DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `errorlog` (
-    `errorlog_id` bigint(20) NOT NULL AUTO_INCREMENT,
-    `priority` tinyint(4) NOT NULL,
-    `module` varchar(255) NOT NULL,
-    `message` text NOT NULL,
-    `datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`errorlog_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `feed` (

@@ -569,9 +569,6 @@ class AppController extends MIDAS_GlobalController
     /** @var object */
     public $Component;
 
-    /** @var ErrorlogModel */
-    public $Errorlog;
-
     /** @var FeedModel */
     public $Feed;
 

@@ -28,7 +28,6 @@ require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
  * @property CommunityModel $Community
  * @property CommunityInvitationModel $CommunityInvitation
  * @property object $Component
- * @property ErrorlogModel $Errorlog
  * @property FeedModel $Feed
  * @property FeedpolicygroupModel $Feedpolicygroup
  * @property FeedpolicyuserModel $Feedpolicyuser
@@ -43,6 +42,7 @@ require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
  * @property ItemRevisionModel $ItemRevision
  * @property LicenseModel $License
  * @property MetadataModel $Metadata
+ * @property ModuleModel $Module
  * @property NewUserInvitationModel $NewUserInvitation
  * @property PendingUserModel $PendingUser
  * @property ProgressModel $Progress

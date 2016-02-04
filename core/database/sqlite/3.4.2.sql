@@ -1,6 +1,6 @@
 -- Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- SQLite core database, version 3.4.0
+-- SQLite core database, version 3.4.2
 
 CREATE TABLE IF NOT EXISTS "activedownload" (
     "activedownload_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -52,14 +52,6 @@ CREATE TABLE IF NOT EXISTS "communityinvitation" (
     "community_id" INTEGER,
     "user_id" INTEGER,
     "group_id" INTEGER
-);
-
-CREATE TABLE IF NOT EXISTS "errorlog" (
-    "errorlog_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    "priority" INTEGER NOT NULL,
-    "module" TEXT NOT NULL,
-    "message" TEXT NOT NULL,
-    "datetime" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS "feed" (

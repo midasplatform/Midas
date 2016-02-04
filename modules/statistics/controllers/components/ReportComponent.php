@@ -27,9 +27,6 @@ class Statistics_ReportComponent extends AppComponent
     /** generate report */
     public function generate()
     {
-        /** @var ErrorlogModel $errorLogModel */
-        $errorLogModel = MidasLoader::loadModel('Errorlog');
-
         /** @var AssetstoreModel $assetStoreModel */
         $assetStoreModel = MidasLoader::loadModel('Assetstore');
         $reportContent = '';
@@ -40,13 +37,6 @@ class Statistics_ReportComponent extends AppComponent
         $reportContent .= '<br/>'.$_SERVER['SERVER_NAME'];
 
         $reportContent .= '<br/><br/><b>Status</b>';
-        $errors = $errorLogModel->getLog(
-            date('Y-m-d H:i:s', strtotime('-1 day'.date('Y-m-j G:i:s'))),
-            date('Y-m-d H:i:s'),
-            'all',
-            2
-        );
-        $reportContent .= '<br/>Yesterday Errors: '.count($errors);
         $assetStores = $assetStoreModel->getAll();
         foreach ($assetStores as $assetStore) {
             $totalSpace = UtilityComponent::diskTotalSpace($assetStore->getPath());

@@ -1,6 +1,6 @@
 -- Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- PostgreSQL core database, version 3.4.1
+-- PostgreSQL core database, version 3.4.2
 
 SET client_encoding = 'UTF8';
 SET default_with_oids = FALSE;
@@ -55,14 +55,6 @@ CREATE TABLE IF NOT EXISTS "communityinvitation" (
     "community_id" bigint,
     "user_id" bigint,
     "group_id" bigint
-);
-
-CREATE TABLE IF NOT EXISTS "errorlog" (
-    "errorlog_id" serial PRIMARY KEY,
-    "priority" integer NOT NULL,
-    "module" character varying(256) NOT NULL,
-    "message" text NOT NULL,
-    "datetime" timestamp without time zone
 );
 
 CREATE TABLE IF NOT EXISTS "feed" (
