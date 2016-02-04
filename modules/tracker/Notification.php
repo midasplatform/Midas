@@ -174,7 +174,7 @@ class Tracker_Notification extends ApiEnabled_Notification
         $thresholdValue = $notification['value'];
         $thresholdComparison = $notification['comparison'];
         $scalarValue = $scalar['value'];
-        $subject = 'Threshold Alert: '.$producerName.': '.$trendName.' value '.$scalarValue.' '.$thresholdComparison.' '.$thresholdValue;
+        $subject = 'Threshold Alert: '.$producerName.': '.$trendName;
 
         $body = 'Hello,<br/><br/>This email was sent because a submitted scalar value exceeded a threshold that you specified.<br/><br/>';
         $body .= '<b>Community:</b> <a href="'.$fullUrl.'/community/'.$producerDao->getCommunityId(
@@ -185,17 +185,17 @@ class Tracker_Notification extends ApiEnabled_Notification
             ).'">'.htmlspecialchars($trendDao->getDisplayName(), ENT_QUOTES, 'UTF-8').'</a><br/>';
         $body .= 'Visit the above Trend link to change or disable notifications.<br/>';
         $body .= '<b>Value:</b> '.htmlspecialchars($scalarValue, ENT_QUOTES, 'UTF-8').'<br/>';
-        $body .= '<b>Threshold:</b> '.htmlspecialchars($thresholdComparison, ENT_QUOTES, 'UTF-8').' '.htmlspecialchars($thresholdValue, ENT_QUOTES, 'UTF-8').'<br/>';
+        $body .= '<b>Threshold:</b> '.htmlspecialchars($thresholdComparison, ENT_QUOTES, 'UTF-8').' '.htmlspecialchars($thresholdValue, ENT_QUOTES, 'UTF-8').'<br/>'.PHP_EOL;
 
         // Add gmail "View Action".
         $trendTrackerUrl = $fullUrl.'/'.$this->moduleName.'/trend/view?trendId='.$trendDao->getKey();
-        $body .= '<div itemscope itemtype="http://schema.org/EmailMessage">';
-        $body .= '  <div itemprop="potentialAction" itemscope itemtype="http://schema.org/ViewAction">';
-        $body .= '    <link itemprop="target" href="'.$trendTrackerUrl.'"/>';
-        $body .= '    <meta itemprop="name" content="View trend plot"/>';
-        $body .= '  </div>';
-        $body .= '  <meta itemprop="description" content="View the trend plot"/>';
-        $body .= '</div>';
+        $body .= '<div itemscope itemtype="http://schema.org/EmailMessage">'.PHP_EOL;
+        $body .= '  <div itemprop="action" itemscope itemtype="http://schema.org/ViewAction">'.PHP_EOL;
+        $body .= '    <link itemprop="url" href="'.$trendTrackerUrl.'"/>'.PHP_EOL;
+        $body .= '    <meta itemprop="name" content="View trend"/>'.PHP_EOL;
+        $body .= '  </div>'.PHP_EOL;
+        $body .= '  <meta itemprop="description" content="View the trend plot"/>'.PHP_EOL;
+        $body .= '</div>'.PHP_EOL;
 
         Zend_Registry::get('notifier')->callback(
             'CALLBACK_CORE_SEND_MAIL_MESSAGE',
