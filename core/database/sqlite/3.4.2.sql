@@ -18,6 +18,8 @@ CREATE TABLE IF NOT EXISTS "assetstore" (
     "type" INTEGER NOT NULL
 );
 
+CREATE INDEX IF NOT EXISTS "assetstore_name_idx" ON "assetstore" ("name");
+
 CREATE TABLE IF NOT EXISTS "bitstream" (
     "bitstream_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     "itemrevision_id" INTEGER NOT NULL,
@@ -30,7 +32,10 @@ CREATE TABLE IF NOT EXISTS "bitstream" (
     "date" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE INDEX IF NOT EXISTS "bitstream_assetstore_id_idx" ON "bitstream" ("assetstore_id");
 CREATE INDEX IF NOT EXISTS "bitstream_checksum_idx" ON "bitstream" ("checksum");
+CREATE INDEX IF NOT EXISTS "bitstream_itemrevision_id_idx" ON "bitstream" ("itemrevision_id");
+CREATE INDEX IF NOT EXISTS "bitstream_name_idx" ON "bitstream" ("name");
 
 CREATE TABLE IF NOT EXISTS "community" (
     "community_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -41,18 +46,27 @@ CREATE TABLE IF NOT EXISTS "community" (
     "folder_id" INTEGER,
     "admingroup_id" INTEGER,
     "moderatorgroup_id" INTEGER,
-    "view" INTEGER NOT NULL DEFAULT 0,
     "membergroup_id" INTEGER,
+    "view" INTEGER NOT NULL DEFAULT 0,
     "can_join" INTEGER NOT NULL DEFAULT 0,
     "uuid" TEXT DEFAULT ''
 );
+
+CREATE INDEX IF NOT EXISTS "community_admingroup_id_idx" ON "community" ("admingroup_id");
+CREATE INDEX IF NOT EXISTS "community_folder_id_idx" ON "community" ("folder_id");
+CREATE INDEX IF NOT EXISTS "community_membergroup_id_idx" ON "community" ("membergroup_id");
+CREATE INDEX IF NOT EXISTS "community_moderatorgroup_id_idx" ON "community" ("moderatorgroup_id");
+CREATE INDEX IF NOT EXISTS "community_name_idx" ON "community" ("name");
 
 CREATE TABLE IF NOT EXISTS "communityinvitation" (
     "communityinvitation_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     "community_id" INTEGER,
     "user_id" INTEGER,
-    "group_id" INTEGER
+    "group_id" INTEGER,
+    UNIQUE ("user_id", "group_id")
 );
+
+CREATE INDEX IF NOT EXISTS "communityinvitation_community_id_idx" ON "communityinvitation" ("community_id");
 
 CREATE TABLE IF NOT EXISTS "feed" (
     "feed_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -62,10 +76,13 @@ CREATE TABLE IF NOT EXISTS "feed" (
     "resource" TEXT NOT NULL
 );
 
+CREATE INDEX IF NOT EXISTS "feed_user_id_idx" ON "feed" ("user_id");
+
 CREATE TABLE IF NOT EXISTS "feed2community" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     "feed_id" INTEGER NOT NULL,
-    "community_id" INTEGER NOT NULL
+    "community_id" INTEGER NOT NULL,
+    UNIQUE ("community_id", "feed_id")
 );
 
 CREATE TABLE IF NOT EXISTS "feedpolicygroup" (
@@ -73,7 +90,8 @@ CREATE TABLE IF NOT EXISTS "feedpolicygroup" (
     "feed_id" INTEGER NOT NULL,
     "group_id" INTEGER NOT NULL,
     "policy" INTEGER NOT NULL,
-    "date" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "date" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE ("feed_id", "group_id")
 );
 
 CREATE TABLE IF NOT EXISTS "feedpolicyuser" (
@@ -81,7 +99,8 @@ CREATE TABLE IF NOT EXISTS "feedpolicyuser" (
     "feed_id" INTEGER NOT NULL,
     "user_id" INTEGER NOT NULL,
     "policy" INTEGER NOT NULL,
-    "date" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "date" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE ("feed_id", "user_id")
 );
 
 CREATE TABLE IF NOT EXISTS "folder" (
@@ -127,6 +146,8 @@ CREATE TABLE IF NOT EXISTS "group" (
     "name" TEXT NOT NULL
 );
 
+CREATE INDEX IF NOT EXISTS "group_community_id_idx" ON "group" ("community_id");
+
 CREATE TABLE IF NOT EXISTS "item" (
     "item_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     "name" TEXT NOT NULL,
@@ -142,6 +163,9 @@ CREATE TABLE IF NOT EXISTS "item" (
     "thumbnail_id" INTEGER
 );
 
+CREATE INDEX IF NOT EXISTS "item_name_idx" ON "item" ("name");
+CREATE INDEX IF NOT EXISTS "item_thumbnail_id_idx" ON "item" ("thumbnail_id");
+
 CREATE TABLE IF NOT EXISTS "item2folder" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     "item_id" INTEGER NOT NULL,
@@ -149,6 +173,7 @@ CREATE TABLE IF NOT EXISTS "item2folder" (
 );
 
 CREATE INDEX IF NOT EXISTS "item2folder_folder_id_idx" ON "item2folder" ("folder_id");
+CREATE INDEX IF NOT EXISTS "item2folder_item_id_idx" ON "item2folder" ("item_id");
 
 CREATE TABLE IF NOT EXISTS "itempolicygroup" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -176,8 +201,13 @@ CREATE TABLE IF NOT EXISTS "itemrevision" (
     "changes" TEXT NOT NULL,
     "user_id" INTEGER NOT NULL,
     "uuid" TEXT DEFAULT '',
-    "license_id" INTEGER
+    "license_id" INTEGER,
+    UNIQUE ("item_id", "revision")
 );
+
+CREATE INDEX IF NOT EXISTS "itemrevision_date_idx" ON "itemrevision" ("date");
+CREATE INDEX IF NOT EXISTS "itemrevision_license_id_idx" ON "itemrevision" ("license_id");
+CREATE INDEX IF NOT EXISTS "itemrevision_user_id_idx" ON "itemrevision" ("user_id");
 
 CREATE TABLE IF NOT EXISTS "license" (
     "license_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -203,6 +233,8 @@ CREATE TABLE IF NOT EXISTS "metadata" (
     "qualifier" TEXT NOT NULL
 );
 
+CREATE INDEX IF NOT EXISTS "metadata_metadatatype_idx" ON "metadata" ("metadatatype");
+
 INSERT OR IGNORE INTO "metadata" VALUES (1, 0, 'contributor', 'author');
 INSERT OR IGNORE INTO "metadata" VALUES (2, 0, 'date', 'uploaded');
 INSERT OR IGNORE INTO "metadata" VALUES (3, 0, 'date', 'issued');
@@ -225,18 +257,17 @@ CREATE TABLE IF NOT EXISTS "metadatavalue" (
     "value" TEXT NOT NULL
 );
 
+CREATE INDEX IF NOT EXISTS "metadatavalue_itemrevision_id_idx" ON "metadatavalue" ("itemrevision_id");
+
 CREATE TABLE IF NOT EXISTS "module" (
     "module_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    "name" TEXT NOT NULL,
-    "uuid" TEXT NOT NULL,
+    "name" TEXT UNIQUE NOT NULL,
+    "uuid" TEXT UNIQUE NOT NULL,
     "current_major_version" INTEGER NOT NULL DEFAULT 0,
     "current_minor_version" INTEGER NOT NULL DEFAULT 0,
     "current_patch_version" INTEGER NOT NULL DEFAULT 0,
     "enabled" INTEGER NOT NULL DEFAULT 0
 );
-
-CREATE UNIQUE INDEX IF NOT EXISTS "module_name_idx" ON "module" ("name");
-CREATE UNIQUE INDEX IF NOT EXISTS "module_uuid_idx" ON "module" ("uuid");
 
 CREATE TABLE IF NOT EXISTS "newuserinvitation" (
     "newuserinvitation_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -247,6 +278,10 @@ CREATE TABLE IF NOT EXISTS "newuserinvitation" (
     "group_id" INTEGER NOT NULL,
     "date_creation" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE INDEX IF NOT EXISTS "newuserinvitation_email_idx" ON "newuserinvitation" ("email");
+CREATE INDEX IF NOT EXISTS "newuserinvitation_group_id_idx" ON "newuserinvitation" ("group_id");
+CREATE INDEX IF NOT EXISTS "newuserinvitation_inviter_id_idx" ON "newuserinvitation" ("inviter_id");
 
 CREATE TABLE IF NOT EXISTS "password" (
     "hash" TEXT PRIMARY KEY NOT NULL
@@ -262,6 +297,9 @@ CREATE TABLE IF NOT EXISTS "pendinguser" (
     "salt" TEXT NOT NULL DEFAULT ''
 );
 
+CREATE INDEX IF NOT EXISTS "pendinguser_email_idx" ON "pendinguser" ("email");
+CREATE INDEX IF NOT EXISTS "pendinguser_lastname_firstname_idx" ON "pendinguser" ("lastname", "firstname");
+
 CREATE TABLE IF NOT EXISTS "progress" (
     "progress_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     "message" TEXT NOT NULL,
@@ -273,9 +311,10 @@ CREATE TABLE IF NOT EXISTS "progress" (
 
 CREATE TABLE IF NOT EXISTS "setting" (
     "setting_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    "module" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "value" TEXT NOT NULL
+    "module" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+    UNIQUE ("name", "module")
 );
 
 CREATE TABLE IF NOT EXISTS "token" (
@@ -284,6 +323,8 @@ CREATE TABLE IF NOT EXISTS "token" (
     "token" TEXT NOT NULL,
     "expiration_date" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE INDEX IF NOT EXISTS "token_userapi_id_idx" ON "token" ("userapi_id");
 
 CREATE TABLE IF NOT EXISTS "user" (
     "user_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -307,10 +348,15 @@ CREATE TABLE IF NOT EXISTS "user" (
     "salt" TEXT NOT NULL DEFAULT ''
 );
 
+CREATE INDEX IF NOT EXISTS "user_email_idx" ON "user" ("email");
+CREATE INDEX IF NOT EXISTS "user_folder_id_idx" ON "user" ("folder_id");
+CREATE INDEX IF NOT EXISTS "user_lastname_firstname_idx" ON "user" ("lastname", "firstname");
+
 CREATE TABLE IF NOT EXISTS "user2group" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     "user_id" INTEGER NOT NULL,
-    "group_id" INTEGER NOT NULL
+    "group_id" INTEGER NOT NULL,
+    UNIQUE ("group_id", "user_id")
 );
 
 CREATE TABLE IF NOT EXISTS "userapi" (
@@ -319,5 +365,6 @@ CREATE TABLE IF NOT EXISTS "userapi" (
     "apikey" TEXT NOT NULL,
     "application_name" TEXT NOT NULL,
     "token_expiration_time" INTEGER NOT NULL,
-    "creation_date" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "creation_date" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE ("user_id", "application_name")
 );
