@@ -22,4 +22,4 @@
 cron:
   - description: task scheduler job
     url: /scheduler/run
-    schedule: every 12 minutes
+    schedule: every 5 minutes

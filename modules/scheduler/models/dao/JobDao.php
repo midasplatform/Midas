@@ -41,8 +41,6 @@
  * @method void setParams(string $params)
  * @method int getCreatorId()
  * @method void setCreatorId(int $creatorId)
- * @method array getLogs()
- * @method void setLogs(array $logs)
  * @method UserDao getCreator()
  * @method void setCreator(UserDao $creator)
  */

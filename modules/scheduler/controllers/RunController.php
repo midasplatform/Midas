@@ -22,7 +22,7 @@
 class Scheduler_RunController extends Scheduler_AppController
 {
     public $_models = array('Setting');
-    public $_moduleModels = array('Job', 'JobLog');
+    public $_moduleModels = array('Job');
     public $_components = array('Json');
 
     /** Index action */
@@ -33,7 +33,7 @@ class Scheduler_RunController extends Scheduler_AppController
         $this->disableView();
 
         $lastStart = $this->Setting->getValueByName('lastrun', $this->moduleName);
-        if ($lastStart !== null && $startTime < (int) $lastStart + 270) {
+        if ($lastStart !== null && $startTime < (int) $lastStart + 285) {
             throw new Zend_Exception(
                 'The scheduler is already running. Please wait for it to complete before invoking again.'
             );
@@ -55,19 +55,19 @@ class Scheduler_RunController extends Scheduler_AppController
         $modules = Zend_Registry::get('notifier')->modules;
         $tasks = Zend_Registry::get('notifier')->tasks;
         foreach ($jobs as $job) {
-            if (time() - $startTime > 270
-            ) { // After 4.5 minutes, do not start any new tasks
+            if (time() - $startTime > 285) {
+                // Do not start any new tasks.
                 break;
             }
             $job->setStatus(SCHEDULER_JOB_STATUS_STARTED);
             if ($job->getRunOnlyOnce() == 0) {
                 $interval = $job->getTimeInterval();
-                $currTime = time();
-                $firetime = strtotime($job->getFireTime()) + $interval;
-                while ($firetime < $currTime && $interval > 0) {
-                    $firetime += $interval; // only schedule jobs for the future
+                $currentTime = time();
+                $fireTime = strtotime($job->getFireTime()) + $interval;
+                while ($fireTime < $currentTime && $interval > 0) {
+                    $fireTime += $interval; // Only schedule jobs for the future.
                 }
-                $job->setFireTime(date('Y-m-d H:i:s', $firetime));
+                $job->setFireTime(date('Y-m-d H:i:s', $fireTime));
             }
             $job->setTimeLastFired(date('Y-m-d H:i:s'));
             $this->Scheduler_Job->save($job);
@@ -79,21 +79,16 @@ class Scheduler_RunController extends Scheduler_AppController
                     array($modules[$tasks[$job->getTask()]['module']], $tasks[$job->getTask()]['method']),
                     JsonComponent::decode($job->getParams())
                 );
-                if ($log && is_string($log) && $log != '') {
-                    $this->Scheduler_JobLog->saveLog($job, $log);
-                }
-            } catch (Zend_Exception $exc) {
-                $job->setStatus(SCHEDULER_JOB_STATUS_FAILED);
-                $this->Scheduler_Job->save($job);
-                $this->Scheduler_JobLog->saveLog($job, $exc->getMessage().' - '.$exc->getTraceAsString());
-                continue;
+            } catch (Zend_Exception $exception) {
+                $this->getLogger()->err($exception->getMessage());
+                $this->getLogger()->err('Scheduler job failed: '.print_r($job, true));
             }
             if ($job->getRunOnlyOnce() == 0) {
                 $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
+                $this->Scheduler_Job->save($job);
             } else {
-                $job->setStatus(SCHEDULER_JOB_STATUS_DONE);
+                $this->Scheduler_Job->delete($job);
             }
-            $this->Scheduler_Job->save($job);
         }
         $lastRunSetting = $this->Setting->getDaoByName('lastrun', $this->moduleName);
         if ($lastRunSetting) {
