@@ -18,7 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/** demo controller */
+/** Index controller for the validation module. */
 class Validation_IndexController extends Validation_AppController
 {
     public $_models = array('User', 'Item', 'Folder');

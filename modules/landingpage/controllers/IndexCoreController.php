@@ -18,7 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/** demo overwrite component */
+/** Index core controller for the landingpage module. */
 class Landingpage_IndexCoreController extends Landingpage_AppController
 {
     public $_moduleModels = array('Text');

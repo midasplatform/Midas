@@ -20,7 +20,7 @@
 
 require_once BASE_PATH.'/modules/landingpage/models/AppModel.php';
 
-/** demo base model */
+/** Text base model for the landingpage module. */
 abstract class Landingpage_TextModelBase extends Landingpage_AppModel
 {
     /** constructor */
