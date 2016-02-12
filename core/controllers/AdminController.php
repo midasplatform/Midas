@@ -26,16 +26,6 @@ class AdminController extends AppController
     public $_components = array('Upgrade', 'Utility', 'MIDAS2Migration');
     public $_forms = array('Admin', 'Assetstore', 'Migrate');
 
-    /** init the controller */
-    public function init()
-    {
-        if ($this->isDemoMode()) {
-            $this->disableView();
-
-            return false;
-        }
-    }
-
     /** run a task */
     public function taskAction()
     {

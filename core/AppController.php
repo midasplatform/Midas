@@ -267,10 +267,6 @@ class AppController extends MIDAS_GlobalController
 
         // Init Dynamic Help (the order makes sense for the animation)
         if ($this->view->isDynamicHelp) {
-            if ($this->isDemoMode()) {
-                $this->addDynamicHelp('.loginLink', MIDAS_DEMO_DYNAMIC_HELP, 'bottom left', 'top right');
-            }
-
             if ($this->logged) {
                 $this->addDynamicHelp(
                     '#startingGuideLink',
@@ -432,23 +428,6 @@ class AppController extends MIDAS_GlobalController
             'my' => $arrow,
             'at' => $location,
         );
-    }
-
-    /**
-     * Check if demo mode is set.
-     *
-     * @return bool
-     */
-    public function isDemoMode()
-    {
-        if (in_array('demo', Zend_Registry::get('modulesEnable'))) {
-            /** @var SettingModel $settingModel */
-            $settingModel = MidasLoader::loadModel('Setting');
-
-            return $settingModel->getValueByName('enabled', 'demo');
-        }
-
-        return false;
     }
 
     /** Disable the layout. */
