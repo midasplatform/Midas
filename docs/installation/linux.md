@@ -19,7 +19,7 @@ sudo apt-get dist-upgrade
 sudo apt-get install apache2 cmake curl git libapache2-mod-php5 memcached mysql-server nano php5 php5-curl php5-gd php5-json php5-memcached php5-mysqlnd php5-pgsql php5-sqlite php5-xdebug postgresql python python-jinja2 python-markdown python-pip python-yaml sqlite3 subversion
 sudo pip install mkdocs
 sudo a2enmod rewrite
-echo -e "<Directory /var/www/example.org/html>\nAllowOverride All\n</Directory>\n<VirtualHost *:80>\nServerAdmin webmaster@example.org\nServerName example.org\nServerAlias www.example.org\nDocumentRoot /var/www/example.org/html\nErrorLog \${APACHE_LOG_DIR}/error.log\nCustomLog \${APACHE_LOG_DIR}/access.log combined\n</VirtualHost>" | sudo tee -a /etc/apache2/sites-available/example.org.conf
+echo -e "<Directory /var/www/example.org/html>\nOptions FollowSymLinks\nAllowOverride All\n</Directory>\n<VirtualHost *:80>\nServerAdmin webmaster@example.org\nServerName example.org\nServerAlias www.example.org\nDocumentRoot /var/www/example.org/html\nErrorLog \${APACHE_LOG_DIR}/error.log\nCustomLog \${APACHE_LOG_DIR}/access.log combined\n</VirtualHost>" | sudo tee -a /etc/apache2/sites-available/example.org.conf
 sudo a2ensite example.org.conf
 sudo service apache2 restart
 ```
@@ -88,6 +88,7 @@ to allow apache to execute directives defined in .htaccess files:
 sudo nano /etc/apache2/sites-available/example.org.conf
 
 <Directory /var/www/example.org/html>
+     Options FollowSymLinks
      AllowOverride All
 </Directory>
 
