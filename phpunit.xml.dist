@@ -13,11 +13,6 @@
         <testsuite name="archive">
             <directory>modules/archive/tests</directory>
         </testsuite>
-<!--
-        <testsuite name="batchmake">
-            <directory>modules/batchmake/tests</directory>
-        </testsuite>
- -->
         <testsuite name="cleanup">
             <directory>modules/cleanup/tests</directory>
         </testsuite>
