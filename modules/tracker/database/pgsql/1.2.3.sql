@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS "tracker_param" (
     "param_name" character varying(255) NOT NULL,
     "param_type" text CHECK (param_type IN ('text', 'numeric')),
     "text_value" text,
-    "numeric_value" double precision);
+    "numeric_value" double precision
 );
 
 CREATE INDEX "tracker_param_param_name_idx" ON "tracker_param" ("param_name");
