@@ -48,5 +48,4 @@ abstract class Tracker_AggregateMetricSpecificationModelBase extends Tracker_App
 
         $this->initialize();
     }
-
 }
