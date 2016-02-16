@@ -160,7 +160,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         Zend_Registry::set('components', array());
         $notifyErrorComponent = MidasLoader::loadComponent('NotifyError');
 
-        //ini_set('display_errors', 0);
         register_shutdown_function(array($notifyErrorComponent, 'fatalError'), $logger);
         set_error_handler(array($notifyErrorComponent, 'warningError'), E_NOTICE | E_WARNING);
     }

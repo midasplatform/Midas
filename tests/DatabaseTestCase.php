@@ -28,7 +28,6 @@ require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
  * @property CommunityModel $Community
  * @property CommunityInvitationModel $CommunityInvitation
  * @property object $Component
- * @property ErrorlogModel $Errorlog
  * @property FeedModel $Feed
  * @property FeedpolicygroupModel $Feedpolicygroup
  * @property FeedpolicyuserModel $Feedpolicyuser
@@ -43,6 +42,7 @@ require_once BASE_PATH.'/core/controllers/components/UtilityComponent.php';
  * @property ItemRevisionModel $ItemRevision
  * @property LicenseModel $License
  * @property MetadataModel $Metadata
+ * @property ModuleModel $Module
  * @property NewUserInvitationModel $NewUserInvitation
  * @property PendingUserModel $PendingUser
  * @property ProgressModel $Progress
@@ -204,19 +204,26 @@ abstract class DatabaseTestCase extends Zend_Test_PHPUnit_DatabaseTestCase
         }
 
         if ($configDatabase->database->adapter == 'PDO_PGSQL') {
+            $db->query("SELECT setval('activedownload_activedownload_id_seq', (SELECT MAX(activedownload_id) FROM activedownload)+1);");
             $db->query("SELECT setval('assetstore_assetstore_id_seq', (SELECT MAX(assetstore_id) FROM assetstore)+1);");
             $db->query("SELECT setval('bitstream_bitstream_id_seq', (SELECT MAX(bitstream_id) FROM bitstream)+1);");
+            $db->query("SELECT setval('community_community_id_seq', (SELECT MAX(community_id) FROM community)+1);");
+            $db->query("SELECT setval('communityinvitation_communityinvitation_id_seq', (SELECT MAX(communityinvitation_id) FROM communityinvitation)+1);");
             $db->query("SELECT setval('feed_feed_id_seq', (SELECT MAX(feed_id) FROM feed)+1);");
-            $db->query("SELECT setval('user_user_id_seq', (SELECT MAX(user_id) FROM \"user\")+1);");
             $db->query("SELECT setval('folder_folder_id_seq', (SELECT MAX(folder_id) FROM folder)+1);");
+            $db->query("SELECT setval('group_group_id_seq', (SELECT MAX(group_id) FROM \"group\")+1);");
             $db->query("SELECT setval('item_item_id_seq', (SELECT MAX(item_id) FROM item)+1);");
             $db->query("SELECT setval('itemrevision_itemrevision_id_seq', (SELECT MAX(itemrevision_id) FROM itemrevision)+1);");
-            $db->query("SELECT setval('folder_folder_id_seq', (SELECT MAX(folder_id) FROM folder)+1);");
-            $db->query("SELECT setval('bitstream_bitstream_id_seq', (SELECT MAX(bitstream_id) FROM bitstream)+1);");
             $db->query("SELECT setval('license_license_id_seq', (SELECT MAX(license_id) FROM license)+1);");
             $db->query("SELECT setval('metadata_metadata_id_seq', (SELECT MAX(metadata_id) FROM metadata)+1);");
+            $db->query("SELECT setval('metadatavalue_metadatavalue_id_seq', (SELECT MAX(metadatavalue_id) FROM metadatavalue)+1);");
+            $db->query("SELECT setval('module_module_id_seq', (SELECT MAX(module_id) FROM module)+1);");
+            $db->query("SELECT setval('newuserinvitation_newuserinvitation_id_seq', (SELECT MAX(newuserinvitation_id) FROM newuserinvitation)+1);");
+            $db->query("SELECT setval('progress_progress_id_seq', (SELECT MAX(progress_id) FROM progress)+1);");
             $db->query("SELECT setval('setting_setting_id_seq', (SELECT MAX(setting_id) FROM setting)+1);");
+            $db->query("SELECT setval('token_token_id_seq', (SELECT MAX(token_id) FROM token)+1);");
             $db->query("SELECT setval('user_user_id_seq', (SELECT MAX(user_id) FROM \"user\")+1);");
+            $db->query("SELECT setval('userapi_userapi_id_seq', (SELECT MAX(userapi_id) FROM userapi)+1);");
         }
     }
 

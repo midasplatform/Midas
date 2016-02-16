@@ -25,7 +25,6 @@ class Cleanup_PerformCleanupTest extends ControllerTestCase
     public function setUp()
     {
         $this->setupDatabase(array('default')); // core dataset
-        $this->setupDatabase(array('default'), 'cleanup');
         $this->enabledModules = array('scheduler', 'cleanup');
         $this->_models = array('User');
 
@@ -110,12 +109,5 @@ class Cleanup_PerformCleanupTest extends ControllerTestCase
         $this->assertFalse(file_exists($tempDir.'/1/79'));
         $this->assertTrue(file_exists($tempDir.'/shouldNotBeRemoved'));
         rmdir($tempDir.'/shouldNotBeRemoved');
-
-        // Make sure the log entry was created for this run
-        $logs = $job->getLogs();
-        $this->assertTrue(count($logs) > 0);
-        $this->assertNotEmpty($logs[0]->getLog());
-
-        echo 'Log from task: '.$logs[0]->getLog();
     }
 }

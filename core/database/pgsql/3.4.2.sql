@@ -1,6 +1,6 @@
 -- Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- PostgreSQL core database, version 3.4.1
+-- PostgreSQL core database, version 3.4.2
 
 SET client_encoding = 'UTF8';
 SET default_with_oids = FALSE;
@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS "assetstore" (
     "type" smallint NOT NULL
 );
 
+CREATE INDEX "assetstore_idx_name" ON "assetstore" ("name");
+
 CREATE TABLE IF NOT EXISTS "bitstream" (
     "bitstream_id" serial PRIMARY KEY,
     "itemrevision_id" bigint NOT NULL,
@@ -33,7 +35,10 @@ CREATE TABLE IF NOT EXISTS "bitstream" (
     "date" timestamp without time zone NOT NULL
 );
 
+CREATE INDEX "bitstream_idx_assetstore_id" ON "bitstream" ("assetstore_id");
 CREATE INDEX "bitstream_idx_checksum" ON "bitstream" ("checksum");
+CREATE INDEX "bitstream_idx_itemrevision_id" ON "bitstream" ("itemrevision_id");
+CREATE INDEX "bitstream_idx_name" ON "bitstream" ("name");
 
 CREATE TABLE IF NOT EXISTS "community" (
     "community_id" serial PRIMARY KEY,
@@ -44,26 +49,27 @@ CREATE TABLE IF NOT EXISTS "community" (
     "folder_id" bigint,
     "admingroup_id" bigint,
     "moderatorgroup_id" bigint,
-    "view" bigint DEFAULT 0::bigint NOT NULL,
     "membergroup_id" bigint,
+    "view" bigint DEFAULT 0::bigint NOT NULL,
     "can_join" integer DEFAULT 0 NOT NULL,
     "uuid" character varying(512) DEFAULT ''::character varying
 );
+
+CREATE INDEX "community_idx_admingroup_id" ON "community" ("admingroup_id");
+CREATE INDEX "community_idx_folder_id" ON "community" ("folder_id");
+CREATE INDEX "community_idx_membergroup_id" ON "community" ("membergroup_id");
+CREATE INDEX "community_idx_moderatorgroup_id" ON "community" ("moderatorgroup_id");
+CREATE INDEX "community_idx_name" ON "community" ("name");
 
 CREATE TABLE IF NOT EXISTS "communityinvitation" (
     "communityinvitation_id" serial PRIMARY KEY,
     "community_id" bigint,
     "user_id" bigint,
-    "group_id" bigint
+    "group_id" bigint,
+    UNIQUE ("user_id", "group_id")
 );
 
-CREATE TABLE IF NOT EXISTS "errorlog" (
-    "errorlog_id" serial PRIMARY KEY,
-    "priority" integer NOT NULL,
-    "module" character varying(256) NOT NULL,
-    "message" text NOT NULL,
-    "datetime" timestamp without time zone
-);
+CREATE INDEX "communityinvitation_idx_community_id" ON "communityinvitation" ("community_id");
 
 CREATE TABLE IF NOT EXISTS "feed" (
     "feed_id" serial PRIMARY KEY,
@@ -73,10 +79,13 @@ CREATE TABLE IF NOT EXISTS "feed" (
     "resource" character varying(256) NOT NULL
 );
 
+CREATE INDEX "feed_idx_user_id" ON "feed" ("user_id");
+
 CREATE TABLE IF NOT EXISTS "feed2community" (
     "id" serial PRIMARY KEY,
     "feed_id" bigint NOT NULL,
-    "community_id" bigint NOT NULL
+    "community_id" bigint NOT NULL,
+    UNIQUE ("community_id", "feed_id")
 );
 
 CREATE TABLE IF NOT EXISTS "feedpolicygroup" (
@@ -84,7 +93,8 @@ CREATE TABLE IF NOT EXISTS "feedpolicygroup" (
     "feed_id" bigint NOT NULL,
     "group_id" bigint NOT NULL,
     "policy" smallint NOT NULL,
-    "date" timestamp without time zone NOT NULL DEFAULT now()
+    "date" timestamp without time zone NOT NULL DEFAULT now(),
+    UNIQUE ("feed_id", "group_id")
 );
 
 CREATE TABLE IF NOT EXISTS "feedpolicyuser" (
@@ -92,7 +102,8 @@ CREATE TABLE IF NOT EXISTS "feedpolicyuser" (
     "feed_id" bigint NOT NULL,
     "user_id" bigint NOT NULL,
     "policy" smallint NOT NULL,
-    "date" timestamp without time zone NOT NULL DEFAULT now()
+    "date" timestamp without time zone NOT NULL DEFAULT now(),
+    UNIQUE ("feed_id", "user_id")
 );
 
 CREATE TABLE IF NOT EXISTS "folder" (
@@ -138,6 +149,8 @@ CREATE TABLE IF NOT EXISTS "group" (
     "name" character varying(256) NOT NULL
 );
 
+CREATE INDEX "group_idx_community_id" ON "group" ("community_id");
+
 CREATE TABLE IF NOT EXISTS "item" (
     "item_id" serial PRIMARY KEY,
     "name" character varying(256) NOT NULL,
@@ -153,6 +166,9 @@ CREATE TABLE IF NOT EXISTS "item" (
     "thumbnail_id" bigint
 );
 
+CREATE INDEX "item_idx_name" ON "item" ("name");
+CREATE INDEX "item_idx_thumbnail_id" ON "item" ("thumbnail_id");
+
 CREATE TABLE IF NOT EXISTS "item2folder" (
     "id" serial PRIMARY KEY,
     "item_id" bigint NOT NULL,
@@ -160,6 +176,7 @@ CREATE TABLE IF NOT EXISTS "item2folder" (
 );
 
 CREATE INDEX "item2folder_idx_folder_id" ON "item2folder" ("folder_id");
+CREATE INDEX "item2folder_idx_item_id" ON "item2folder" ("item_id");
 
 CREATE TABLE IF NOT EXISTS "itempolicygroup" (
     "id" serial PRIMARY KEY,
@@ -187,8 +204,13 @@ CREATE TABLE IF NOT EXISTS "itemrevision" (
     "changes" text NOT NULL,
     "user_id" integer NOT NULL,
     "uuid" character varying(512) DEFAULT ''::character varying,
-    "license_id" bigint
+    "license_id" bigint,
+    UNIQUE ("item_id", "revision")
 );
+
+CREATE INDEX "itemrevision_idx_date" ON "itemrevision" ("date");
+CREATE INDEX "itemrevision_idx_license_id" ON "itemrevision" ("license_id");
+CREATE INDEX "itemrevision_idx_user_id" ON "itemrevision" ("user_id");
 
 CREATE TABLE IF NOT EXISTS "license" (
     "license_id" serial PRIMARY KEY,
@@ -215,6 +237,8 @@ CREATE TABLE IF NOT EXISTS "metadata" (
     "qualifier" character varying(256) NOT NULL
 );
 
+CREATE INDEX "metadata_idx_metadatatype" ON "metadata" ("metadatatype");
+
 INSERT INTO metadata VALUES
 (1, 0, 'contributor', 'author'),
 (2, 0, 'date', 'uploaded'),
@@ -238,18 +262,17 @@ CREATE TABLE IF NOT EXISTS "metadatavalue" (
     "value" character varying(1024) NOT NULL
 );
 
+CREATE INDEX "metadatavalue_idx_itemrevision_id" ON "metadatavalue" ("itemrevision_id");
+
 CREATE TABLE IF NOT EXISTS "module" (
     "module_id" serial PRIMARY KEY,
-    "name" character varying(256) NOT NULL,
-    "uuid" character varying(36) NOT NULL,
+    "name" character varying(256) UNIQUE NOT NULL,
+    "uuid" character varying(36) UNIQUE NOT NULL,
     "current_major_version" integer NOT NULL DEFAULT 0,
     "current_minor_version" integer NOT NULL DEFAULT 0,
     "current_patch_version" integer NOT NULL DEFAULT 0,
     "enabled" smallint NOT NULL DEFAULT 0
 );
-
-CREATE UNIQUE INDEX "module_idx_name" ON "module" ("name");
-CREATE UNIQUE INDEX "module_idx_uuid" ON "module" ("uuid");
 
 CREATE TABLE IF NOT EXISTS "newuserinvitation" (
     "newuserinvitation_id" serial PRIMARY KEY,
@@ -260,6 +283,10 @@ CREATE TABLE IF NOT EXISTS "newuserinvitation" (
     "group_id" bigint NOT NULL,
     "date_creation" timestamp without time zone NOT NULL DEFAULT now()
 );
+
+CREATE INDEX "newuserinvitation_idx_email" ON "newuserinvitation" ("email");
+CREATE INDEX "newuserinvitation_idx_group_id" ON "newuserinvitation" ("group_id");
+CREATE INDEX "newuserinvitation_idx_inviter_id" ON "newuserinvitation" ("inviter_id");
 
 CREATE TABLE IF NOT EXISTS "password" (
     "hash" character varying(128) NOT NULL,
@@ -278,6 +305,9 @@ CREATE TABLE IF NOT EXISTS "pendinguser" (
     "salt" character varying(64) DEFAULT ''::character varying NOT NULL
 );
 
+CREATE INDEX "pendinguser_idx_email" ON "pendinguser" ("email");
+CREATE INDEX "pendinguser_idx_lastname_firstname" ON "pendinguser" ("lastname", "firstname");
+
 CREATE TABLE IF NOT EXISTS "progress" (
     "progress_id" serial PRIMARY KEY,
     "message" text NOT NULL,
@@ -289,9 +319,10 @@ CREATE TABLE IF NOT EXISTS "progress" (
 
 CREATE TABLE IF NOT EXISTS "setting" (
     "setting_id" serial PRIMARY KEY,
-    "module" character varying(256) NOT NULL,
     "name" character varying(256) NOT NULL,
-    "value" text NOT NULL
+    "module" character varying(256) NOT NULL,
+    "value" text NOT NULL,
+    UNIQUE ("name", "module")
 );
 
 CREATE TABLE IF NOT EXISTS "token" (
@@ -300,6 +331,8 @@ CREATE TABLE IF NOT EXISTS "token" (
     "token" character varying(64) NOT NULL,
     "expiration_date" timestamp without time zone NOT NULL DEFAULT now()
 );
+
+CREATE INDEX "token_idx_userapi_id" ON "token" ("userapi_id");
 
 CREATE TABLE IF NOT EXISTS "user" (
     "user_id" serial PRIMARY KEY,
@@ -323,6 +356,10 @@ CREATE TABLE IF NOT EXISTS "user" (
     "salt" character varying(64) DEFAULT ''::character varying NOT NULL
 );
 
+CREATE INDEX "user_idx_email" ON "user" ("email");
+CREATE INDEX "user_idx_folder_id" ON "user" ("folder_id");
+CREATE INDEX "user_idx_lastname_firstname" ON "user" ("lastname", "firstname");
+
 CREATE TABLE IF NOT EXISTS "user2group" (
     "id" serial PRIMARY KEY,
     "user_id" bigint NOT NULL,
@@ -335,5 +372,6 @@ CREATE TABLE IF NOT EXISTS "userapi" (
     "apikey" character varying(64) NOT NULL,
     "application_name" character varying(256) NOT NULL,
     "token_expiration_time" integer NOT NULL,
-    "creation_date" timestamp without time zone
+    "creation_date" timestamp without time zone,
+    UNIQUE ("user_id", "application_name")
 );

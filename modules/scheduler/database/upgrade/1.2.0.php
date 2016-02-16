@@ -18,9 +18,24 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH.'/modules/scheduler/models/base/JobLogModelBase.php';
-
-/** job model */
-class Scheduler_JobLogModel extends Scheduler_JobLogModelBase
+/** Upgrade the scheduler module to version 1.2.0. */
+class Scheduler_Upgrade_1_2_0 extends MIDASUpgrade
 {
+    /** Upgrade a MySQL database. */
+    public function mysql()
+    {
+        $this->db->query('DROP TABLE IF EXISTS `scheduler_job_log`;');
+    }
+
+    /** Upgrade a PostgreSQL database. */
+    public function pgsql()
+    {
+        $this->db->query('DROP TABLE IF EXISTS scheduler_job_log;');
+    }
+
+    /** Upgrade a SQLite database. */
+    public function sqlite()
+    {
+        $this->db->query('DROP TABLE IF EXISTS scheduler_job_log;');
+    }
 }

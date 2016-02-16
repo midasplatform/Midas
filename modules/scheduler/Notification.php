@@ -52,13 +52,11 @@ class Scheduler_Notification extends MIDAS_Notification
         if (!isset($params['run_only_once'])) {
             $params['run_only_once'] = true;
         }
-
         if (!isset($params['fire_time'])) {
             $params['fire_time'] = date('Y-m-d H:i:s');
         } elseif (is_numeric($params['fire_time'])) {
             $params['fire_time'] = date('Y-m-d H:i:s', $params['fire_time']);
         }
-
         if (!$params['run_only_once']) {
             if (!isset($params['time_interval'])) {
                 throw new Zend_Exception('Please set time interval');
@@ -77,10 +75,7 @@ class Scheduler_Notification extends MIDAS_Notification
         }
         $job->setStatus(SCHEDULER_JOB_STATUS_TORUN);
         $job->setParams(JsonComponent::encode($params['params']));
-
         $this->Scheduler_Job->save($job);
-
-        return;
     }
 
     /**
