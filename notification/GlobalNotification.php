@@ -27,7 +27,6 @@
  * @property CommunityModel $Community
  * @property CommunityInvitationModel $CommunityInvitation
  * @property object $Component
- * @property ErrorlogModel $Errorlog
  * @property FeedModel $Feed
  * @property FeedpolicygroupModel $Feedpolicygroup
  * @property FeedpolicyuserModel $Feedpolicyuser
@@ -42,6 +41,7 @@
  * @property ItemRevisionModel $ItemRevision
  * @property LicenseModel $License
  * @property MetadataModel $Metadata
+ * @property ModuleModel $Module
  * @property object $ModuleComponent
  * @property object $ModuleForm
  * @property ModuleModel $Module

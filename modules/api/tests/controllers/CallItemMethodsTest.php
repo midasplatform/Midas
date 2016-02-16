@@ -346,10 +346,11 @@ class Api_CallItemMethodsTest extends Api_CallMethodsTestCase
         $this->assertEquals(count($revisions), 1, 'Wrong number of revisions in the item');
         $bitstreams = $revisions[0]->getBitstreams();
         $this->assertEquals(count($bitstreams), 2, 'Wrong number of bitstreams in the revision');
-        $this->assertEquals($bitstreams[0]->name, 'test.txt');
+
+        $this->assertTrue(($bitstreams[0]->name == 'test.txt' && $bitstreams[1]->name == 'test2.txt')
+            || ($bitstreams[0]->name == 'test2.txt' && $bitstreams[1]->name == 'test.txt'));
         $this->assertEquals($bitstreams[0]->sizebytes, $length);
         $this->assertEquals($bitstreams[0]->checksum, $md5);
-        $this->assertEquals($bitstreams[1]->name, 'test2.txt');
         $this->assertEquals($bitstreams[1]->sizebytes, $length);
         $this->assertEquals($bitstreams[1]->checksum, $md5);
 

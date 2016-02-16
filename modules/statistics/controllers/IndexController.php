@@ -22,7 +22,7 @@
 class Statistics_IndexController extends Statistics_AppController
 {
     public $_moduleModels = array('Download');
-    public $_models = array('Assetstore', 'Errorlog', 'Setting');
+    public $_models = array('Assetstore', 'Setting');
     public $_components = array('Utility');
 
     /** index action */
@@ -73,31 +73,6 @@ class Statistics_IndexController extends Statistics_AppController
             );
         }
 
-        $errors = $this->Errorlog->getLog(
-            date('Y-m-d H:i:s', strtotime('-20 day'.date('Y-m-d H:i:s'))),
-            date('Y-m-d H:i:s'),
-            'all',
-            2
-        );
-        $errors = $errors['logs'];
-        $arrayErrors = array();
-
-        $format = 'Y-m-d';
-        for ($i = 0; $i < 21; ++$i) {
-            $key = date($format, strtotime(date('Y-m-d H:i:s', strtotime('-'.$i.' day'.date('Y-m-d H:i:s')))));
-            $arrayErrors[$key] = 0;
-        }
-        foreach ($errors as $error) {
-            $key = date($format, strtotime($error->getDatetime()));
-            ++$arrayErrors[$key];
-        }
-
-        $jqplotArray = array();
-        foreach ($arrayErrors as $key => $value) {
-            $jqplotArray[] = array($key.' 8:00AM', $value);
-        }
-
-        $this->view->json['stats']['errors'] = $jqplotArray;
         $this->view->json['stats']['assetstores'] = $jqplotAssetstoreArray;
 
         $this->view->piwikUrl = $this->Setting->getValueByName(STATISTICS_PIWIK_URL_KEY, $this->moduleName);
