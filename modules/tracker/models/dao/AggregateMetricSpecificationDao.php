@@ -47,5 +47,4 @@ class Tracker_AggregateMetricSpecificationDao extends Tracker_AppDao
 
     /** @var string */
     public $_module = 'tracker';
-
 }

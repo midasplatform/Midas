@@ -43,7 +43,7 @@ abstract class Tracker_AggregateMetricSpecificationModelBase extends Tracker_App
                 'module' => $this->moduleName,
                 'parent_column' => 'producer_id',
                 'child_column' => 'producer_id',
-            )
+            ),
         );
 
         $this->initialize();
