@@ -21,7 +21,6 @@
 /** Upgrade the tracker module to version 1.2.4. */
 class Tracker_Upgrade_1_2_4 extends MIDASUpgrade
 {
-
     /** Upgrade a MySQL database. */
     public function mysql()
     {
