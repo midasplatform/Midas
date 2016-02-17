@@ -27,6 +27,7 @@ abstract class Tracker_AggregateMetricSpecificationModelBase extends Tracker_App
         parent::__construct();
 
         $this->_name = 'tracker_aggregate_metric_specification';
+        $this->_daoName = 'AggregateMetricSpecificationDao';
         $this->_key = 'aggregate_metric_specification_id';
         $this->_mainData = array(
             'aggregate_metric_specification_id' => array('type' => MIDAS_DATA),

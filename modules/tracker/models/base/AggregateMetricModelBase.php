@@ -27,6 +27,7 @@ abstract class Tracker_AggregateMetricModelBase extends Tracker_AppModel
         parent::__construct();
 
         $this->_name = 'tracker_aggregate_metric';
+        $this->_daoName = 'AggregateMetricDao';
         $this->_key = 'aggregate_metric_id';
         $this->_mainData = array(
             'aggregate_metric_id' => array('type' => MIDAS_DATA),
@@ -51,4 +52,13 @@ abstract class Tracker_AggregateMetricModelBase extends Tracker_AppModel
 
         $this->initialize();
     }
-}
+
+    /**
+     * Compute an aggregate metric for the submission based on the specification.
+     *
+     * @param Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao specification DAO
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @return Tracker_AggregateMetricDao metric DAO computed on the submission from the specification
+     */
+    public abstract function computeAggregateMetricForSubmission($aggregateMetricSpecificationDao, $submissionDao);
+ }

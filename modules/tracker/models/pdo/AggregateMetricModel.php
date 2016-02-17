@@ -23,4 +23,75 @@ require_once BASE_PATH.'/modules/tracker/models/base/AggregateMetricModelBase.ph
 /** AggregateMetric model for the tracker module. */
 class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
 {
+    // TODO comment and error handling
+    /**
+     * Compute a percentile value out of the passed in array.
+     *
+     * @param array  w
+     */
+    protected function percentile($values, $params)
+    {
+        // TODO empty params?
+        $percentile = $params[0];
+        asort($values);
+        // TODO ensure int
+        // TODO what if empty $values list
+        $ind = (($percentile/100.0) * count($values)) - 1;
+        return $values[$ind];
+    }
+
+    /**
+     * Compute an aggregate metric for the submission based on the specification.
+     *
+     * @param Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao specification DAO
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @return Tracker_AggregateMetricDao metric DAO computed on the submission from the specification
+     */
+    public function computeAggregateMetricForSubmission($aggregateMetricSpecificationDao, $submissionDao)
+    {
+        /** @var Tracker_AggregateMetricDao $aggregateMetricDao */
+        $aggregateMetricDao = MidasLoader::newDao('AggregateMetricDao', 'tracker');
+        $aggregateMetricDao->setAggregateMetricSpecificationId($aggregateMetricSpecificationDao->getAggregateMetricSpecificationId());
+        $aggregateMetricDao->setSubmissionId($submissionDao->getSubmissionId());
+
+        // Expect schema like "percentile('Greedy max distance', 95)"
+        preg_match("/(\w+)\((.*)\)/", $aggregateMetricSpecificationDao->getSchema(), $matches);
+        $aggregationMethod = $matches[1];
+        $params = explode(',', $matches[2]);
+        $metricName = str_replace("'", "", $params[0]);
+        $params = array_slice($params, 1);
+
+        // Get the list of relevant trend_ids.
+        $sql = $this->database->select()->setIntegrityCheck(false)
+            ->from('tracker_trend', array('trend_id'))
+            ->where('key_metric = ?', 1)
+            ->where('producer_id = ?', $aggregateMetricSpecificationDao->getProducerId())
+            ->where('metric_name = ?', $metricName);
+
+        $rows = $this->database->fetchAll($sql);
+        $trendIds = array();
+        /** @var Zend_Db_Table_Row_Abstract $row */
+        foreach ($rows as $row) {
+            $trendIds[] = $row['trend_id'];
+        }
+
+        // Get all the scalar values from these trends in the submission.
+        $sql = $this->database->select()->setIntegrityCheck(false)
+            ->from('tracker_scalar', array('value'))
+            ->where('submission_id = ?', $submissionDao->getSubmissionId())
+            ->where('branch = ?', $aggregateMetricSpecificationDao->getBranch())
+            ->where('trend_id IN (?)', $trendIds);
+        $rows = $this->database->fetchAll($sql);
+        $values = array();
+        /** @var Zend_Db_Table_Row_Abstract $row */
+        foreach ($rows as $row) {
+            $values[] = floatval($row['value']);
+        }
+
+        $computedValue = $this->$aggregationMethod($values, $params);
+        $aggregateMetricDao->setValue($computedValue);
+
+        $this->save($aggregateMetricDao);
+        return $aggregateMetricDao;
+    }
 }
