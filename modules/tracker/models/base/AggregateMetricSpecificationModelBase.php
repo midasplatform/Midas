@@ -49,4 +49,38 @@ abstract class Tracker_AggregateMetricSpecificationModelBase extends Tracker_App
 
         $this->initialize();
     }
+
+    /**
+     * Create an AggregateMetricSpecificationDao from the inputs.
+     *
+     * @param Tracker_ProducerDao $producerDao producer DAO
+     * @param string $name the name of the aggregate metric specification
+     * @param string $schema the schema for the aggregate metric specification
+     * @param string $branch the branch of the aggregate metric specification (defaults to 'master')
+     * @param false | string $description the description for the aggregate metric specification
+     * @param false | string $value the value for the aggregate metric specification threshold
+     * @param false | string $comparison the comparison for the aggregate metric specification threshold,
+     * one of ['>', '<', '>=', '<', '<=', '==', '!=']
+     * @return Tracker_AggregateMetricSpecificationDao created from inputs
+     */
+    public function createAggregateMetricSpecification($producerDao, $name, $schema, $branch = 'master', $description = false, $value = false, $comparison = false) {
+        /** @var Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao */
+        $aggregateMetricSpecificationDao = MidasLoader::newDao('AggregateMetricSpecificationDao', 'tracker');
+        $aggregateMetricSpecificationDao->setProducerId($producerDao->getProducerId());
+        $aggregateMetricSpecificationDao->setBranch($branch);
+        $aggregateMetricSpecificationDao->setName($name);
+        $aggregateMetricSpecificationDao->setSchema($schema);
+        if ($description) {
+            $aggregateMetricSpecificationDao->setDescription($description);
+        }
+        if ($value) {
+            $aggregateMetricSpecificationDao->setValue($value);
+        }
+        if ($comparison) {
+            $aggregateMetricSpecificationDao->setComparison($comparison);
+        }
+        $this->save($aggregateMetricSpecificationDao);
+        return $aggregateMetricSpecificationDao;
+    }
+
 }

@@ -38,21 +38,15 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         /** @var Tracker_ProducerDao $producerDao */
         $producerDao = $producerModel->load(100);
 
+        /** @var AggregateMetricSpecificationModel $aggregateMetricSpecificationModel */
+        $aggregateMetricSpecificationModel = MidasLoader::loadModel('AggregateMetricSpecification', 'tracker');
 
         // Create an AggregateMetricSpecification for Greedy error 95th Percentile.
 
-        /** @var Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao */
-        $aggregateMetricSpecificationDao = MidasLoader::newDao('AggregateMetricSpecificationDao', 'tracker');
-        $aggregateMetricSpecificationDao->setProducerId($producerDao->getProducerId());
-        $aggregateMetricSpecificationDao->setBranch('master');
-        $aggregateMetricSpecificationDao->setName('95th Percentile Greedy error');
+        $name = '95th Percentile Greedy error';
         $schema = "percentile('Greedy error', 95)";
-        $aggregateMetricSpecificationDao->setSchema($schema);
-        // Leave description, value and comparison as default.
-
-        /** @var AggregateMetricSpecificationModel $aggregateMetricSpecificationModel */
-        $aggregateMetricSpecificationModel = MidasLoader::loadModel('AggregateMetricSpecification', 'tracker');
-        $aggregateMetricSpecificationModel->save($aggregateMetricSpecificationDao);
+        /** @var Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao */
+        $aggregateMetricSpecificationDao = $aggregateMetricSpecificationModel->createAggregateMetricSpecification($producerDao, $name, $schema);
 
         // Create an AggregateMetric tied to this specification for submission_id 1.
 
@@ -66,17 +60,11 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($aggregateMetricSpecificationDao, $submissionDao);
         $this->assertEquals($aggregateMetricDao->getValue(), 19.0);
 
-        // Test a different percentile, 50.
-        /** @var Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao */
-        $aggregateMetricSpecificationDao = MidasLoader::newDao('AggregateMetricSpecificationDao', 'tracker');
-        $aggregateMetricSpecificationDao->setProducerId($producerDao->getProducerId());
-        $aggregateMetricSpecificationDao->setBranch('master');
-        $aggregateMetricSpecificationDao->setName('50th Percentile Greedy error');
+        // Test a different percentile, 50, for the same submission.
+        $name = '50th Percentile Greedy error';
         $schema = "percentile('Greedy error', 50)";
-        $aggregateMetricSpecificationDao->setSchema($schema);
-        // Leave description, value and comparison as default.
-        $aggregateMetricSpecificationModel->save($aggregateMetricSpecificationDao);
-
+        /** @var Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao */
+        $aggregateMetricSpecificationDao = $aggregateMetricSpecificationModel->createAggregateMetricSpecification($producerDao, $name, $schema);
         $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($aggregateMetricSpecificationDao, $submissionDao);
         $this->assertEquals($aggregateMetricDao->getValue(), 10.0);
 
@@ -88,18 +76,11 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         // 50th percentile.
         $this->assertEquals($aggregateMetricDao->getValue(), 20.0);
 
-
         // Create an AggregateMetricSpecification for MinMax error 95th Percentile.
-
-        /** @var Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao */
-        $aggregateMetricSpecificationDao = MidasLoader::newDao('AggregateMetricSpecificationDao', 'tracker');
-        $aggregateMetricSpecificationDao->setProducerId($producerDao->getProducerId());
-        $aggregateMetricSpecificationDao->setBranch('master');
-        $aggregateMetricSpecificationDao->setName('95th Percentile MinMax error');
+        $name = '95th Percentile MinMax error';
         $schema = "percentile('MinMax error', 95)";
-        $aggregateMetricSpecificationDao->setSchema($schema);
-        // Leave description, value and comparison as default.
-        $aggregateMetricSpecificationModel->save($aggregateMetricSpecificationDao);
+        /** @var Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao */
+        $aggregateMetricSpecificationDao = $aggregateMetricSpecificationModel->createAggregateMetricSpecification($producerDao, $name, $schema);
 
         // Create an AggregateMetric tied to this specification for submission_id 1.
 
