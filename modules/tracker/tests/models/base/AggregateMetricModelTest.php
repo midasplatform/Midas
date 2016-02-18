@@ -30,8 +30,8 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         parent::setUp();
     }
 
-    /** testAggregateMetricModel */
-    public function testAggregateMetricModel()
+    /** test AggregateMetricModel computeAggregateMetricForSubmission function */
+    public function testComputeAggregateMetricForSubmission()
     {
         /** @var Tracker_ProducerModel $producerModel */
         $producerModel = MidasLoader::loadModel('Producer', 'tracker');
@@ -127,5 +127,80 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         $greedyError9333PercentileAMSDao = $aggregateMetricSpecificationModel->createAggregateMetricSpecification($producer100Dao, $name, $schema);
         $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyError9333PercentileAMSDao, $submission1Dao);
         $this->assertEquals($aggregateMetricDao->getValue(), 19.0);
+    }
+
+    /** test AggregateMetricModel getSubmissionAggregateMetrics function */
+    public function testGetSubmissionAggregateMetrics()
+    {
+        /** @var Tracker_ProducerModel $producerModel */
+        $producerModel = MidasLoader::loadModel('Producer', 'tracker');
+        /** @var Tracker_SubmissionModel $submissionModel */
+        $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
+        /** @var AggregateMetricModel $aggregateMetricModel */
+        $aggregateMetricModel = MidasLoader::loadModel('AggregateMetric', 'tracker');
+        /** @var AggregateMetricSpecificationModel $aggregateMetricSpecificationModel */
+        $aggregateMetricSpecificationModel = MidasLoader::loadModel('AggregateMetricSpecification', 'tracker');
+
+        /** @var Tracker_ProducerDao $producer100Dao */
+        $producer100Dao = $producerModel->load(100);
+        /** @var Tracker_SubmissionDao $submission1Dao */
+        $submission1Dao = $submissionModel->load(1);
+        /** @var Tracker_SubmissionDao $submission2Dao */
+        $submission2Dao = $submissionModel->load(2);
+
+        /** @var Tracker_AggregateMetricSpecificationDao $greedyError95thPercentileAMSDao */
+        $greedyError95thPercentileAMSDao = $aggregateMetricSpecificationModel->load(1);
+        /** @var Tracker_AggregateMetricSpecificationDao $greedyError55thPercentileAMSDao */
+        $greedyError55thPercentileAMSDao = $aggregateMetricSpecificationModel->load(2);
+        /** @var Tracker_AggregateMetricSpecificationDao $optimalError95thPercentileAMSDao */
+        $optimalError95thPercentileAMSDao = $aggregateMetricSpecificationModel->load(3);
+        /** @var Tracker_AggregateMetricSpecificationDao $optimalError55thPercentileAMSDao */
+        $optimalError55thPercentileAMSDao = $aggregateMetricSpecificationModel->load(4);
+
+        $submission1AggregateMetricIds = array();
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyError95thPercentileAMSDao, $submission1Dao);
+        $submission1AggregateMetricIds[$aggregateMetricDao->getAggregateMetricId()] = false;
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyError55thPercentileAMSDao, $submission1Dao);
+        $submission1AggregateMetricIds[$aggregateMetricDao->getAggregateMetricId()] = false;
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($optimalError95thPercentileAMSDao, $submission1Dao);
+        $submission1AggregateMetricIds[$aggregateMetricDao->getAggregateMetricId()] = false;
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($optimalError55thPercentileAMSDao, $submission1Dao);
+        $submission1AggregateMetricIds[$aggregateMetricDao->getAggregateMetricId()] = false;
+
+        $submission1AggregateMetrics = $aggregateMetricModel->getSubmissionAggregateMetrics($submission1Dao);
+        /** @var Tracker_AggregateMetricDao $submission1AggregateMetricDao */
+        foreach ($submission1AggregateMetrics as $submission1AggregateMetricDao) {
+            if (array_key_exists($submission1AggregateMetricDao->getAggregateMetricId(), $submission1AggregateMetricIds)) {
+                $submission1AggregateMetricIds[$submission1AggregateMetricDao->getAggregateMetricId()] = true;
+            }
+        }
+        /** @var string $submission1AggregateMetricId */
+        /** @var bool $found */
+        foreach ($submission1AggregateMetricIds as $submission1AggregateMetricId => $found) {
+            $this->assertTrue($found);
+        }
+
+        $submission2AggregateMetricIds = array();
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyError95thPercentileAMSDao, $submission2Dao);
+        $submission2AggregateMetricIds[$aggregateMetricDao->getAggregateMetricId()] = false;
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyError55thPercentileAMSDao, $submission2Dao);
+        $submission2AggregateMetricIds[$aggregateMetricDao->getAggregateMetricId()] = false;
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($optimalError95thPercentileAMSDao, $submission2Dao);
+        $submission2AggregateMetricIds[$aggregateMetricDao->getAggregateMetricId()] = false;
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($optimalError55thPercentileAMSDao, $submission2Dao);
+        $submission2AggregateMetricIds[$aggregateMetricDao->getAggregateMetricId()] = false;
+
+        $submission2AggregateMetrics = $aggregateMetricModel->getSubmissionAggregateMetrics($submission2Dao);
+        /** @var Tracker_AggregateMetricDao $submission2AggregateMetricDao */
+        foreach ($submission2AggregateMetrics as $submission2AggregateMetricDao) {
+            if (array_key_exists($submission2AggregateMetricDao->getAggregateMetricId(), $submission2AggregateMetricIds)) {
+                $submission2AggregateMetricIds[$submission2AggregateMetricDao->getAggregateMetricId()] = true;
+            }
+        }
+        /** @var string $submission2AggregateMetricId */
+        /** @var bool $found */
+        foreach ($submission2AggregateMetricIds as $submission2AggregateMetricId => $found) {
+            $this->assertTrue($found);
+        }
     }
 }

@@ -61,4 +61,18 @@ abstract class Tracker_AggregateMetricModelBase extends Tracker_AppModel
      * @return Tracker_AggregateMetricDao metric DAO computed on the submission from the specification
      */
     abstract public function computeAggregateMetricForSubmission($aggregateMetricSpecificationDao, $submissionDao);
+
+    /**
+     * Return all AggregateMetricDaos tied to the submission.
+     *
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @return array AggregateMetric DOAs all AggregateMetricDaos linked to the
+     * SubmissionDao
+     */
+    public function getSubmissionAggregateMetrics($submissionDao)
+    {
+        return $this->findBy('submission_id', $submissionDao->getSubmissionId());
+    }
+
+
 }
