@@ -73,12 +73,16 @@ abstract class Tracker_AggregateMetricSpecificationModelBase extends Tracker_App
         $aggregateMetricSpecificationDao->setSchema($schema);
         if ($description) {
             $aggregateMetricSpecificationDao->setDescription($description);
+        } else {
+            $aggregateMetricSpecificationDao->setDescription('');
         }
         if ($value) {
             $aggregateMetricSpecificationDao->setValue($value);
         }
         if ($comparison) {
             $aggregateMetricSpecificationDao->setComparison($comparison);
+        } else {
+            $aggregateMetricSpecificationDao->setComparison('');
         }
         $this->save($aggregateMetricSpecificationDao);
 
