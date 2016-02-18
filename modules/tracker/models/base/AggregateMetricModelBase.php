@@ -54,6 +54,15 @@ abstract class Tracker_AggregateMetricModelBase extends Tracker_AppModel
     }
 
     /**
+     * Return an array of input scalars that would be used by an aggregate metric for the submission based on the specification.
+     *
+     * @param Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao specification DAO
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @return false | array array of scalar values that would be input to the aggregate metric
+     */
+    abstract public function getAggregateMetricInputValuesForSubmission($aggregateMetricSpecificationDao, $submissionDao);
+
+    /**
      * Compute an aggregate metric for the submission based on the specification.
      *
      * @param Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao specification DAO

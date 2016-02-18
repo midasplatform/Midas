@@ -43,13 +43,35 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
     }
 
     /**
-     * Compute an aggregate metric for the submission based on the specification.
+     * Parse a schema for computing aggregate metrics.
+     *
+     * @param string schema the schema representing how to compute the aggregate metric
+     * @return false | array the properties of the schema, parsed and separated
+     */
+     protected function parseSchema($schema)
+    {
+        // Expect schema like "percentile('Greedy max distance', 95)"
+        preg_match("/(\w+)\((.*)\)/", $schema, $matches);
+        $aggregationMethod = $matches[1];
+        $params = explode(',', $matches[2]);
+        $metricName = str_replace("'", '', $params[0]);
+        $params = array_slice($params, 1);
+
+        return array(
+            'aggregation_method' => $aggregationMethod,
+            'metric_name' => $metricName,
+            'params' => $params
+        );
+    }
+
+    /**
+     * Return an array of input scalars that would be used by an aggregate metric for the submission based on the specification.
      *
      * @param Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao specification DAO
      * @param Tracker_SubmissionDao $submissionDao submission DAO
-     * @return false | Tracker_AggregateMetricDao metric DAO computed on the submission from the specification
+     * @return false | array array of scalar values that would be input to the aggregate metric
      */
-    public function computeAggregateMetricForSubmission($aggregateMetricSpecificationDao, $submissionDao)
+    public function getAggregateMetricInputValuesForSubmission($aggregateMetricSpecificationDao, $submissionDao)
     {
         if (is_null($aggregateMetricSpecificationDao) || $aggregateMetricSpecificationDao === false) {
             return false;
@@ -58,13 +80,8 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
             return false;
         }
 
-        // Expect schema like "percentile('Greedy max distance', 95)"
-        preg_match("/(\w+)\((.*)\)/", $aggregateMetricSpecificationDao->getSchema(), $matches);
-        $aggregationMethod = $matches[1];
-        $params = explode(',', $matches[2]);
-        $metricName = str_replace("'", '', $params[0]);
-        $params = array_slice($params, 1);
-
+        $schema = $this->parseSchema($aggregateMetricSpecificationDao->getSchema());
+        $metricName = $schema['metric_name'];
         // Get the list of relevant trend_ids.
         $sql = $this->database->select()->setIntegrityCheck(false)
             ->from('tracker_trend', array('trend_id'))
@@ -97,7 +114,26 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
             $values[] = floatval($row['value']);
         }
 
-        $computedValue = $this->$aggregationMethod($values, $params);
+        return $values;
+    }
+
+    /**
+     * Compute an aggregate metric for the submission based on the specification.
+     *
+     * @param Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao specification DAO
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @return false | Tracker_AggregateMetricDao metric DAO computed on the submission from the specification
+     */
+    public function computeAggregateMetricForSubmission($aggregateMetricSpecificationDao, $submissionDao)
+    {
+        $values = $this->getAggregateMetricInputValuesForSubmission($aggregateMetricSpecificationDao, $submissionDao);
+        if ($values === false) {
+            return false;
+        }
+        $schema = $this->parseSchema($aggregateMetricSpecificationDao->getSchema());
+        $aggregationMethod = $schema['aggregation_method'];
+        $aggregationParams = $schema['params'];
+        $computedValue = $this->$aggregationMethod($values, $aggregationParams);
         if ($computedValue === false) {
             return false;
         } else {
