@@ -73,6 +73,4 @@ abstract class Tracker_AggregateMetricModelBase extends Tracker_AppModel
     {
         return $this->findBy('submission_id', $submissionDao->getSubmissionId());
     }
-
-
 }
