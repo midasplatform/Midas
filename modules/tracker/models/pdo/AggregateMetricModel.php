@@ -49,7 +49,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
      * @return false | array the properties of the schema, parsed and separated
      */
      protected function parseSchema($schema)
-    {
+     {
         // Expect schema like "percentile('Greedy max distance', 95)"
         preg_match("/(\w+)\((.*)\)/", $schema, $matches);
         $aggregationMethod = $matches[1];

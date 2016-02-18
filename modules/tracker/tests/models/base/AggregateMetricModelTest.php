@@ -30,6 +30,100 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         parent::setUp();
     }
 
+    /** test AggregateMetricModel getAggregateMetricInputValuesForSubmission function */
+    public function testGetAggregateMetricInputValuesForSubmission()
+    {
+        /** @var Tracker_ProducerModel $producerModel */
+        $producerModel = MidasLoader::loadModel('Producer', 'tracker');
+        /** @var Tracker_SubmissionModel $submissionModel */
+        $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
+        /** @var AggregateMetricSpecificationModel $aggregateMetricSpecificationModel */
+        $aggregateMetricSpecificationModel = MidasLoader::loadModel('AggregateMetricSpecification', 'tracker');
+        /** @var AggregateMetricModel $aggregateMetricModel */
+        $aggregateMetricModel = MidasLoader::loadModel('AggregateMetric', 'tracker');
+
+        /** @var Tracker_ProducerDao $producer100Dao */
+        $producer100Dao = $producerModel->load(100);
+        /** @var Tracker_SubmissionDao $submission1Dao */
+        $submission1Dao = $submissionModel->load(1);
+        /** @var Tracker_SubmissionDao $submission2Dao */
+        $submission2Dao = $submissionModel->load(2);
+
+        /** @var Tracker_AggregateMetricSpecificationDao $greedyError95thPercentileAMSDao */
+        $greedyError95thPercentileAMSDao = $aggregateMetricSpecificationModel->load(1);
+        /** @var Tracker_AggregateMetricSpecificationDao $greedyError55thPercentileAMSDao */
+        $greedyError55thPercentileAMSDao = $aggregateMetricSpecificationModel->load(2);
+
+        $values = $aggregateMetricModel->getAggregateMetricInputValuesForSubmission($greedyError95thPercentileAMSDao, $submission1Dao);
+        $testValues = range(1, 20);
+        $this->assertEquals(count($testValues), count($values));
+        foreach ($testValues as $ind => $value) {
+            $this->assertEquals($value, $values[$ind]);
+        }
+
+        $values = $aggregateMetricModel->getAggregateMetricInputValuesForSubmission($greedyError55thPercentileAMSDao, $submission1Dao);
+        // Values should be the same, only the metric is different.
+        $this->assertEquals(count($testValues), count($values));
+        foreach ($testValues as $ind => $value) {
+            $this->assertEquals($value, $values[$ind]);
+        }
+
+        $values = $aggregateMetricModel->getAggregateMetricInputValuesForSubmission($greedyError95thPercentileAMSDao, $submission2Dao);
+        $testValues = range(2, 40, 2);
+        $this->assertEquals(count($testValues), count($values));
+        foreach ($testValues as $ind => $value) {
+            $this->assertEquals($value, $values[$ind]);
+        }
+
+        $values = $aggregateMetricModel->getAggregateMetricInputValuesForSubmission($greedyError55thPercentileAMSDao, $submission2Dao);
+        // Values should be the same, only the metric is different.
+        $this->assertEquals(count($testValues), count($values));
+        foreach ($testValues as $ind => $value) {
+            $this->assertEquals($value, $values[$ind]);
+        }
+
+        /** @var Tracker_AggregateMetricSpecificationDao $optimalError95thPercentileAMSDao */
+        $optimalError95thPercentileAMSDao = $aggregateMetricSpecificationModel->load(3);
+        /** @var Tracker_AggregateMetricSpecificationDao $optimalError55thPercentileAMSDao */
+        $optimalError55thPercentileAMSDao = $aggregateMetricSpecificationModel->load(4);
+
+        $values = $aggregateMetricModel->getAggregateMetricInputValuesForSubmission($optimalError95thPercentileAMSDao, $submission1Dao);
+        $testValues = range(26, 45);
+        $this->assertEquals(count($testValues), count($values));
+        foreach ($testValues as $ind => $value) {
+            $this->assertEquals($value, $values[$ind]);
+        }
+
+        $values = $aggregateMetricModel->getAggregateMetricInputValuesForSubmission($optimalError55thPercentileAMSDao, $submission1Dao);
+        // Values should be the same, only the metric is different.
+        $this->assertEquals(count($testValues), count($values));
+        foreach ($testValues as $ind => $value) {
+            $this->assertEquals($value, $values[$ind]);
+        }
+
+        $values = $aggregateMetricModel->getAggregateMetricInputValuesForSubmission($optimalError95thPercentileAMSDao, $submission2Dao);
+        $testValues = range(36, 55);
+        $this->assertEquals(count($testValues), count($values));
+        foreach ($testValues as $ind => $value) {
+            $this->assertEquals($value, $values[$ind]);
+        }
+
+        $values = $aggregateMetricModel->getAggregateMetricInputValuesForSubmission($optimalError55thPercentileAMSDao, $submission2Dao);
+        // Values should be the same, only the metric is different.
+        $this->assertEquals(count($testValues), count($values));
+        foreach ($testValues as $ind => $value) {
+            $this->assertEquals($value, $values[$ind]);
+        }
+
+        // Test combinations of null inputs.
+        $values = $aggregateMetricModel->getAggregateMetricInputValuesForSubmission(null, $submission1Dao);
+        $this->assertFalse($values);
+        $values = $aggregateMetricModel->getAggregateMetricInputValuesForSubmission($optimalError55thPercentileAMSDao, null);
+        $this->assertFalse($values);
+        $values = $aggregateMetricModel->getAggregateMetricInputValuesForSubmission(null, null);
+        $this->assertFalse($values);
+    }
+
     /** test AggregateMetricModel computeAggregateMetricForSubmission function */
     public function testComputeAggregateMetricForSubmission()
     {
