@@ -78,7 +78,7 @@ abstract class Tracker_AggregateMetricModelBase extends Tracker_AppModel
      * @return false | array AggregateMetric DOAs all AggregateMetricDaos linked to the
      * SubmissionDao
      */
-    public function getSubmissionAggregateMetrics($submissionDao)
+    public function getAggregateMetricsForSubmission($submissionDao)
     {
         if (is_null($submissionDao) || $submissionDao === false) {
             return false;

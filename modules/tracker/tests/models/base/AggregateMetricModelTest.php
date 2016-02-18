@@ -137,8 +137,8 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         $this->assertFalse($nullBothAggregateMetricDao);
     }
 
-    /** test AggregateMetricModel getSubmissionAggregateMetrics function */
-    public function testGetSubmissionAggregateMetrics()
+    /** test AggregateMetricModel getAggregateMetricsForSubmission function */
+    public function testGetAggregateMetricsForSubmission()
     {
         /** @var Tracker_ProducerModel $producerModel */
         $producerModel = MidasLoader::loadModel('Producer', 'tracker');
@@ -175,7 +175,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($optimalError55thPercentileAMSDao, $submission1Dao);
         $submission1AggregateMetricIds[$aggregateMetricDao->getAggregateMetricId()] = false;
 
-        $submission1AggregateMetrics = $aggregateMetricModel->getSubmissionAggregateMetrics($submission1Dao);
+        $submission1AggregateMetrics = $aggregateMetricModel->getAggregateMetricsForSubmission($submission1Dao);
         /** @var Tracker_AggregateMetricDao $submission1AggregateMetricDao */
         foreach ($submission1AggregateMetrics as $submission1AggregateMetricDao) {
             if (array_key_exists($submission1AggregateMetricDao->getAggregateMetricId(), $submission1AggregateMetricIds)) {
@@ -198,7 +198,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($optimalError55thPercentileAMSDao, $submission2Dao);
         $submission2AggregateMetricIds[$aggregateMetricDao->getAggregateMetricId()] = false;
 
-        $submission2AggregateMetrics = $aggregateMetricModel->getSubmissionAggregateMetrics($submission2Dao);
+        $submission2AggregateMetrics = $aggregateMetricModel->getAggregateMetricsForSubmission($submission2Dao);
         /** @var Tracker_AggregateMetricDao $submission2AggregateMetricDao */
         foreach ($submission2AggregateMetrics as $submission2AggregateMetricDao) {
             if (array_key_exists($submission2AggregateMetricDao->getAggregateMetricId(), $submission2AggregateMetricIds)) {
@@ -212,7 +212,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         }
 
         // Test null input.
-        $nullSubmissionAggregateMetrics = $aggregateMetricModel->getSubmissionAggregateMetrics(null);
+        $nullSubmissionAggregateMetrics = $aggregateMetricModel->getAggregateMetricsForSubmission(null);
         $this->assertFalse($nullSubmissionAggregateMetrics);
     }
 }

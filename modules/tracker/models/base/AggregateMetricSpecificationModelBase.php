@@ -99,7 +99,7 @@ abstract class Tracker_AggregateMetricSpecificationModelBase extends Tracker_App
      * @param Tracker_ProducerDao $producerDao producer DAO
      * @return false | array AggregateMetricSpecification DOAs all AggregateMetricSpecificationDaos linked to the ProducerDao
      */
-    public function getProducerAggregateMetricSpecifications($producerDao)
+    public function getAggregateMetricSpecificationsForProducer($producerDao)
     {
         if (is_null($producerDao) || $producerDao === false) {
             return false;
@@ -115,12 +115,12 @@ abstract class Tracker_AggregateMetricSpecificationModelBase extends Tracker_App
      * @return false | array AggregateMetricSpecification DOAs all AggregateMetricSpecificationDaos linked to the
      * SubmissionDao via its linked producer
      */
-    public function getSubmissionAggregateMetricSpecifications($submissionDao)
+    public function getAggregateMetricSpecificationsForSubmission($submissionDao)
     {
         if (is_null($submissionDao) || $submissionDao === false) {
             return false;
         }
 
-        return $this->getProducerAggregateMetricSpecifications($submissionDao->getProducer());
+        return $this->getAggregateMetricSpecificationsForProducer($submissionDao->getProducer());
     }
 }
