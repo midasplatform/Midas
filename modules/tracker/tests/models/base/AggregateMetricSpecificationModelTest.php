@@ -37,10 +37,10 @@ class Tracker_AggregateMetricSpecificationModelTest extends DatabaseTestCase
         $producerModel = MidasLoader::loadModel('Producer', 'tracker');
         /** @var Tracker_ProducerDao $producerDao */
         $producerDao = $producerModel->load(100);
-        // From the test database, we expect ids [1, 8].
+        // From the test database, we expect ids [1, 6].
         $spec1Ids = array();
         /** @var int $id */
-        foreach (range(1, 8) as $id) {
+        foreach (range(1, 6) as $id) {
             $spec1Ids[$id] = false;
         }
 
@@ -67,10 +67,10 @@ class Tracker_AggregateMetricSpecificationModelTest extends DatabaseTestCase
         $producerModel = MidasLoader::loadModel('Producer', 'tracker');
         /** @var Tracker_ProducerDao $producerDao */
         $producerDao = $producerModel->load(100);
-        // From the test database, we expect ids [1, 8].
+        // From the test database, we expect ids [1, 6].
         $spec1Ids = array();
         /** @var int $id */
-        foreach (range(1, 8) as $id) {
+        foreach (range(1, 6) as $id) {
             $spec1Ids[$id] = false;
         }
 
@@ -101,10 +101,10 @@ class Tracker_AggregateMetricSpecificationModelTest extends DatabaseTestCase
         /** @var Tracker_SubmissionDao $submissionDao2 */
         $submissionDao2 = $submissionModel->load(2);
 
-        // From the test database, we expect ids [1, 8].
+        // From the test database, we expect ids [1, 6].
         $spec2Ids = array();
         /** @var int $id */
-        foreach (range(1, 8) as $id) {
+        foreach (range(1, 6) as $id) {
             $spec2Ids[$id] = false;
         }
 

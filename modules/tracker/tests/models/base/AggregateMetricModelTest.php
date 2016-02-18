@@ -35,65 +35,97 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
     {
         /** @var Tracker_ProducerModel $producerModel */
         $producerModel = MidasLoader::loadModel('Producer', 'tracker');
-        /** @var Tracker_ProducerDao $producerDao */
-        $producerDao = $producerModel->load(100);
-
-        /** @var AggregateMetricSpecificationModel $aggregateMetricSpecificationModel */
-        $aggregateMetricSpecificationModel = MidasLoader::loadModel('AggregateMetricSpecification', 'tracker');
-
-        // Create an AggregateMetricSpecification for Greedy error 95th Percentile.
-
-        $name = '95th Percentile Greedy error';
-        $schema = "percentile('Greedy error', 95)";
-        /** @var Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao */
-        $aggregateMetricSpecificationDao = $aggregateMetricSpecificationModel->createAggregateMetricSpecification($producerDao, $name, $schema);
-
-        // Create an AggregateMetric tied to this specification for submission_id 1.
-
         /** @var Tracker_SubmissionModel $submissionModel */
         $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
-        /** @var Tracker_SubmissionDao $submissionDao */
-        $submissionDao = $submissionModel->load(1);
-
+        /** @var AggregateMetricSpecificationModel $aggregateMetricSpecificationModel */
+        $aggregateMetricSpecificationModel = MidasLoader::loadModel('AggregateMetricSpecification', 'tracker');
         /** @var AggregateMetricModel $aggregateMetricModel */
         $aggregateMetricModel = MidasLoader::loadModel('AggregateMetric', 'tracker');
-        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($aggregateMetricSpecificationDao, $submissionDao);
+
+        /** @var Tracker_ProducerDao $producer100Dao */
+        $producer100Dao = $producerModel->load(100);
+        /** @var Tracker_SubmissionDao $submission1Dao */
+        $submission1Dao = $submissionModel->load(1);
+        /** @var Tracker_SubmissionDao $submission2Dao */
+        $submission2Dao = $submissionModel->load(2);
+
+        /** @var Tracker_AggregateMetricSpecificationDao $greedyError95thPercentileAMSDao */
+        $greedyError95thPercentileAMSDao = $aggregateMetricSpecificationModel->load(1);
+        /** @var Tracker_AggregateMetricSpecificationDao $greedyError55thPercentileAMSDao */
+        $greedyError55thPercentileAMSDao = $aggregateMetricSpecificationModel->load(2);
+
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyError95thPercentileAMSDao, $submission1Dao);
         $this->assertEquals($aggregateMetricDao->getValue(), 19.0);
 
-        // Test a different percentile, 50, for the same submission.
-        $name = '50th Percentile Greedy error';
-        $schema = "percentile('Greedy error', 50)";
-        /** @var Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao */
-        $aggregateMetricSpecificationDao = $aggregateMetricSpecificationModel->createAggregateMetricSpecification($producerDao, $name, $schema);
-        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($aggregateMetricSpecificationDao, $submissionDao);
-        $this->assertEquals($aggregateMetricDao->getValue(), 10.0);
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyError95thPercentileAMSDao, $submission2Dao);
+        $this->assertEquals($aggregateMetricDao->getValue(), 38.0);
 
-        // Create an AggregateMetric tied to this specification for submission_id 2.
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyError55thPercentileAMSDao, $submission1Dao);
+        $this->assertEquals($aggregateMetricDao->getValue(), 11.0);
 
-        /** @var Tracker_SubmissionDao $submissionDao */
-        $submissionDao = $submissionModel->load(2);
-        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($aggregateMetricSpecificationDao, $submissionDao);
-        // 50th percentile.
-        $this->assertEquals($aggregateMetricDao->getValue(), 20.0);
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyError55thPercentileAMSDao, $submission2Dao);
+        $this->assertEquals($aggregateMetricDao->getValue(), 22.0);
 
-        // Create an AggregateMetricSpecification for Optimal error 95th Percentile.
-        $name = '95th Percentile Optimal error';
-        $schema = "percentile('Optimal error', 95)";
-        /** @var Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao */
-        $aggregateMetricSpecificationDao = $aggregateMetricSpecificationModel->createAggregateMetricSpecification($producerDao, $name, $schema);
+        /** @var Tracker_AggregateMetricSpecificationDao $optimalError95thPercentileAMSDao */
+        $optimalError95thPercentileAMSDao = $aggregateMetricSpecificationModel->load(3);
+        /** @var Tracker_AggregateMetricSpecificationDao $optimalError55thPercentileAMSDao */
+        $optimalError55thPercentileAMSDao = $aggregateMetricSpecificationModel->load(4);
 
-        // Create an AggregateMetric tied to this specification for submission_id 1.
-
-        /** @var Tracker_SubmissionDao $submissionDao */
-        $submissionDao = $submissionModel->load(1);
-        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($aggregateMetricSpecificationDao, $submissionDao);
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($optimalError95thPercentileAMSDao, $submission1Dao);
         $this->assertEquals($aggregateMetricDao->getValue(), 44.0);
 
-        // Create an AggregateMetric tied to this specification for submission_id 2.
-
-        /** @var Tracker_SubmissionDao $submissionDao */
-        $submissionDao = $submissionModel->load(2);
-        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($aggregateMetricSpecificationDao, $submissionDao);
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($optimalError95thPercentileAMSDao, $submission2Dao);
         $this->assertEquals($aggregateMetricDao->getValue(), 54.0);
+
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($optimalError55thPercentileAMSDao, $submission1Dao);
+        $this->assertEquals($aggregateMetricDao->getValue(), 36.0);
+
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($optimalError55thPercentileAMSDao, $submission2Dao);
+        $this->assertEquals($aggregateMetricDao->getValue(), 46.0);
+
+        /** @var Tracker_AggregateMetricSpecificationDao $greedyDistance55thPercentileAMSDao */
+        $greedyDistance55thPercentileAMSDao = $aggregateMetricSpecificationModel->load(5);
+
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyDistance55thPercentileAMSDao, $submission1Dao);
+        // This has no trends that are key metrics.
+        $this->assertEquals($aggregateMetricDao, false);
+
+        /** @var Tracker_AggregateMetricSpecificationDao $optimalDistance55thPercentileAMSDao */
+        $optimalDistance55thPercentileAMSDao = $aggregateMetricSpecificationModel->load(6);
+
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($optimalDistance55thPercentileAMSDao, $submission1Dao);
+        // Trends have no scalars.
+        $this->assertEquals($aggregateMetricDao, false);
+
+        // AMS that doesn't match any trends.
+        $name = '95th Percentile Noop distance ';
+        $schema = "percentile('Noop distance', 95)";
+        /** @var Tracker_AggregateMetricSpecificationDao $noopDistance95thPercentileAMSDao */
+        $noopDistance95thPercentileAMSDao = $aggregateMetricSpecificationModel->createAggregateMetricSpecification($producer100Dao, $name, $schema);
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($noopDistance95thPercentileAMSDao, $submission1Dao);
+        $this->assertEquals($aggregateMetricDao, false);
+
+        // AMS that doesn't match any branches.
+        /** @var Tracker_AggregateMetricSpecificationDao $noopDistance95thPercentileTestAMSDao */
+        $branch = 'test';
+        $noopDistance95thPercentileTestAMSDao = $aggregateMetricSpecificationModel->createAggregateMetricSpecification($producer100Dao, $name, $schema, $branch);
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($noopDistance95thPercentileTestAMSDao, $submission1Dao);
+        $this->assertEquals($aggregateMetricDao, false);
+
+        // AMS with missing percentile param.
+        /** @var Tracker_AggregateMetricSpecificationDao $greedyErrorMissingPercentileAMSDao */
+        $name='Percentile Greedy error';
+        $schema = "percentile('Greedy error')";
+        $greedyErrorMissingPercentileAMSDao = $aggregateMetricSpecificationModel->createAggregateMetricSpecification($producer100Dao, $name, $schema);
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyErrorMissingPercentileAMSDao, $submission1Dao);
+        $this->assertEquals($aggregateMetricDao, false);
+
+        // AMS with percentile param that won't resolve to an int.
+        /** @var Tracker_AggregateMetricSpecificationDao $greedyError9333PercentileAMSDao */
+        $name='93.33 Percentile Greedy error';
+        $schema = "percentile('Greedy error', 93.33)";
+        $greedyError9333PercentileAMSDao = $aggregateMetricSpecificationModel->createAggregateMetricSpecification($producer100Dao, $name, $schema);
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyError9333PercentileAMSDao, $submission1Dao);
+        $this->assertEquals($aggregateMetricDao->getValue(), 19.0);
     }
 }

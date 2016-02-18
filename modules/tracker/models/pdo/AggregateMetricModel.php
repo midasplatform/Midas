@@ -23,20 +23,21 @@ require_once BASE_PATH.'/modules/tracker/models/base/AggregateMetricModelBase.ph
 /** AggregateMetric model for the tracker module. */
 class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
 {
-    // TODO comment and error handling
     /**
      * Compute a percentile value out of the passed in array.
      *
-     * @param array  w
+     * @param array values the set of values to compute percentile over
+     * @param array params an array with the first element containing the desired percentile value
+     * @return false | float the desired percentile value extracted from values
      */
     protected function percentile($values, $params)
     {
-        // TODO empty params?
+        if (!$params) {
+            return false;
+        }
         $percentile = $params[0];
         asort($values);
-        // TODO ensure int
-        // TODO what if empty $values list
-        $ind = (($percentile/100.0) * count($values)) - 1;
+        $ind = round(($percentile/100.0) * count($values)) - 1;
         return $values[$ind];
     }
 
@@ -45,15 +46,10 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
      *
      * @param Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao specification DAO
      * @param Tracker_SubmissionDao $submissionDao submission DAO
-     * @return Tracker_AggregateMetricDao metric DAO computed on the submission from the specification
+     * @return false | Tracker_AggregateMetricDao metric DAO computed on the submission from the specification
      */
     public function computeAggregateMetricForSubmission($aggregateMetricSpecificationDao, $submissionDao)
     {
-        /** @var Tracker_AggregateMetricDao $aggregateMetricDao */
-        $aggregateMetricDao = MidasLoader::newDao('AggregateMetricDao', 'tracker');
-        $aggregateMetricDao->setAggregateMetricSpecificationId($aggregateMetricSpecificationDao->getAggregateMetricSpecificationId());
-        $aggregateMetricDao->setSubmissionId($submissionDao->getSubmissionId());
-
         // Expect schema like "percentile('Greedy max distance', 95)"
         preg_match("/(\w+)\((.*)\)/", $aggregateMetricSpecificationDao->getSchema(), $matches);
         $aggregationMethod = $matches[1];
@@ -67,8 +63,10 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
             ->where('key_metric = ?', 1)
             ->where('producer_id = ?', $aggregateMetricSpecificationDao->getProducerId())
             ->where('metric_name = ?', $metricName);
-
         $rows = $this->database->fetchAll($sql);
+        if (sizeof($rows) === 0) {
+            return false;
+        };
         $trendIds = array();
         /** @var Zend_Db_Table_Row_Abstract $row */
         foreach ($rows as $row) {
@@ -82,6 +80,9 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
             ->where('branch = ?', $aggregateMetricSpecificationDao->getBranch())
             ->where('trend_id IN (?)', $trendIds);
         $rows = $this->database->fetchAll($sql);
+        if (sizeof($rows) === 0) {
+            return false;
+        };
         $values = array();
         /** @var Zend_Db_Table_Row_Abstract $row */
         foreach ($rows as $row) {
@@ -89,9 +90,18 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
         }
 
         $computedValue = $this->$aggregationMethod($values, $params);
-        $aggregateMetricDao->setValue($computedValue);
+        if ($computedValue === false) {
+            return false;
+        } else {
+            /** @var Tracker_AggregateMetricDao $aggregateMetricDao */
+            $aggregateMetricDao = MidasLoader::newDao('AggregateMetricDao', 'tracker');
+            $aggregateMetricDao->setAggregateMetricSpecificationId($aggregateMetricSpecificationDao->getAggregateMetricSpecificationId());
+            $aggregateMetricDao->setSubmissionId($submissionDao->getSubmissionId());
 
-        $this->save($aggregateMetricDao);
-        return $aggregateMetricDao;
+            $aggregateMetricDao->setValue($computedValue);
+
+            $this->save($aggregateMetricDao);
+            return $aggregateMetricDao;
+        }
     }
 }
