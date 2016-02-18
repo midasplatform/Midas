@@ -61,10 +61,14 @@ abstract class Tracker_AggregateMetricSpecificationModelBase extends Tracker_App
      * @param false | string $value the value for the aggregate metric specification threshold
      * @param false | string $comparison the comparison for the aggregate metric specification threshold,
      * one of ['>', '<', '>=', '<', '<=', '==', '!=']
-     * @return Tracker_AggregateMetricSpecificationDao created from inputs
+     * @return false | Tracker_AggregateMetricSpecificationDao created from inputs
      */
     public function createAggregateMetricSpecification($producerDao, $name, $schema, $branch = 'master', $description = false, $value = false, $comparison = false)
     {
+        if (is_null($producerDao) || $producerDao === false) {
+            return false;
+        }
+
         /** @var Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao */
         $aggregateMetricSpecificationDao = MidasLoader::newDao('AggregateMetricSpecificationDao', 'tracker');
         $aggregateMetricSpecificationDao->setProducerId($producerDao->getProducerId());
@@ -93,10 +97,14 @@ abstract class Tracker_AggregateMetricSpecificationModelBase extends Tracker_App
      * Return all AggregateMetricSpecificationDaos tied to the producer.
      *
      * @param Tracker_ProducerDao $producerDao producer DAO
-     * @return array AggregateMetricSpecification DOAs all AggregateMetricSpecificationDaos linked to the ProducerDao
+     * @return false | array AggregateMetricSpecification DOAs all AggregateMetricSpecificationDaos linked to the ProducerDao
      */
     public function getProducerAggregateMetricSpecifications($producerDao)
     {
+        if (is_null($producerDao) || $producerDao === false) {
+            return false;
+        }
+
         return $this->findBy('producer_id', $producerDao->getProducerId());
     }
 
@@ -104,11 +112,15 @@ abstract class Tracker_AggregateMetricSpecificationModelBase extends Tracker_App
      * Return all AggregateMetricSpecificationDaos tied to the submission, via the producer.
      *
      * @param Tracker_SubmissionDao $submissionDao submission DAO
-     * @return array AggregateMetricSpecification DOAs all AggregateMetricSpecificationDaos linked to the
+     * @return false | array AggregateMetricSpecification DOAs all AggregateMetricSpecificationDaos linked to the
      * SubmissionDao via its linked producer
      */
     public function getSubmissionAggregateMetricSpecifications($submissionDao)
     {
+        if (is_null($submissionDao) || $submissionDao === false) {
+            return false;
+        }
+
         return $this->getProducerAggregateMetricSpecifications($submissionDao->getProducer());
     }
 }

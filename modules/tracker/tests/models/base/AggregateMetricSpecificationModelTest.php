@@ -30,6 +30,30 @@ class Tracker_AggregateMetricSpecificationModelTest extends DatabaseTestCase
         parent::setUp();
     }
 
+    /** test AggregateMetricSpecificationModel createAggregateMetricSpecification function */
+    public function testCreateAggregateMetricSpecification()
+    {
+        /** @var AggregateMetricSpecificationModel $aggregateMetricSpecificationModel */
+        $aggregateMetricSpecificationModel = MidasLoader::loadModel('AggregateMetricSpecification', 'tracker');
+
+        $name = '95th Percentile Greedy distance ';
+        $schema = "percentile('Greedy distance', 95)";
+
+        // Pass a null producer.
+        $emptyProducerAMSDao = $aggregateMetricSpecificationModel->createAggregateMetricSpecification(null, $name, $schema);
+        $this->assertFalse($emptyProducerAMSDao);
+
+        /** @var Tracker_ProducerModel $producerModel */
+        $producerModel = MidasLoader::loadModel('Producer', 'tracker');
+        /** @var Tracker_ProducerDao $producer100Dao */
+        $producer100Dao = $producerModel->load(100);
+
+        $validAMSDao = $aggregateMetricSpecificationModel->createAggregateMetricSpecification($producer100Dao, $name, $schema);
+        $this->assertEquals($validAMSDao->getName(), $name);
+        $this->assertEquals($validAMSDao->getSchema(), $schema);
+        $this->assertEquals($validAMSDao->getProducerId(), $producer100Dao->getProducerId());
+    }
+
     /** test AggregateMetricSpecificationModel getProducerAggregateMetricSpecifications function */
     public function testGetProducerAggregateMetricSpecifications()
     {
@@ -58,6 +82,10 @@ class Tracker_AggregateMetricSpecificationModelTest extends DatabaseTestCase
         foreach ($spec1Ids as $specId => $found) {
             $this->assertTrue($found);
         }
+
+        // Test with null producerDao.
+        $producerAggregateMetricSpecificationDaos = $aggregateMetricSpecificationModel->getProducerAggregateMetricSpecifications(null);
+        $this->assertFalse($producerAggregateMetricSpecificationDaos);
     }
 
     /** test AggregateMetricSpecificationModel getSubmissionAggregateMetricSpecifications function */
@@ -122,5 +150,9 @@ class Tracker_AggregateMetricSpecificationModelTest extends DatabaseTestCase
         foreach ($spec2Ids as $specId => $found) {
             $this->assertTrue($found);
         }
+
+        // Test with null submissonDao.
+        $submissionAggregateMetricSpecificationDaos = $aggregateMetricSpecificationModel->getSubmissionAggregateMetricSpecifications(null);
+        $this->assertFalse($submissionAggregateMetricSpecificationDaos);
     }
 }

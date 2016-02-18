@@ -51,6 +51,13 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
      */
     public function computeAggregateMetricForSubmission($aggregateMetricSpecificationDao, $submissionDao)
     {
+        if (is_null($aggregateMetricSpecificationDao) || $aggregateMetricSpecificationDao === false) {
+            return false;
+        }
+        if (is_null($submissionDao) || $submissionDao === false) {
+            return false;
+        }
+
         // Expect schema like "percentile('Greedy max distance', 95)"
         preg_match("/(\w+)\((.*)\)/", $aggregateMetricSpecificationDao->getSchema(), $matches);
         $aggregationMethod = $matches[1];

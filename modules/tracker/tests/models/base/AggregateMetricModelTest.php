@@ -127,6 +127,14 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         $greedyError9333PercentileAMSDao = $aggregateMetricSpecificationModel->createAggregateMetricSpecification($producer100Dao, $name, $schema);
         $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyError9333PercentileAMSDao, $submission1Dao);
         $this->assertEquals($aggregateMetricDao->getValue(), 19.0);
+
+        // Test combinations of null inputs.
+        $nullAMSAggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission(null, $submission1Dao);
+        $this->assertFalse($nullAMSAggregateMetricDao);
+        $nullSubmissionAggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyError9333PercentileAMSDao, null);
+        $this->assertFalse($nullSubmissionAggregateMetricDao);
+        $nullBothAggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission(null, null);
+        $this->assertFalse($nullBothAggregateMetricDao);
     }
 
     /** test AggregateMetricModel getSubmissionAggregateMetrics function */
@@ -202,5 +210,9 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         foreach ($submission2AggregateMetricIds as $submission2AggregateMetricId => $found) {
             $this->assertTrue($found);
         }
+
+        // Test null input.
+        $nullSubmissionAggregateMetrics = $aggregateMetricModel->getSubmissionAggregateMetrics(null);
+        $this->assertFalse($nullSubmissionAggregateMetrics);
     }
 }
