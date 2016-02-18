@@ -60,7 +60,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
         return array(
             'aggregation_method' => $aggregationMethod,
             'metric_name' => $metricName,
-            'params' => $params
+            'params' => $params,
         );
     }
 
