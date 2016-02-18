@@ -20,5 +20,6 @@
 set(module_name tracker)
 to_titlecase(${module_name} module_name_titlecase)
 
-add_midas_test(${module_name_titlecase}ScalarModel ScalarModelTest.php)
 add_midas_test(${module_name_titlecase}AggregateMetricModel AggregateMetricModelTest.php)
+add_midas_test(${module_name_titlecase}AggregateMetricSpecificationModel AggregateMetricSpecificationModelTest.php)
+add_midas_test(${module_name_titlecase}ScalarModel ScalarModelTest.php)

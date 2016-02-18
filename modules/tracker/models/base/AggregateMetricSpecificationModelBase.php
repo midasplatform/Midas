@@ -83,4 +83,25 @@ abstract class Tracker_AggregateMetricSpecificationModelBase extends Tracker_App
         return $aggregateMetricSpecificationDao;
     }
 
+    /**
+     * Return all AggregateMetricSpecificationDaos tied to the producer.
+     *
+     * @param Tracker_ProducerDao $producerDao producer DAO
+     * @return array AggregateMetricSpecification DOAs all AggregateMetricSpecificationDaos linked to the ProducerDao
+     */
+    public function getProducerAggregateMetricSpecifications($producerDao) {
+        return $this->findBy('producer_id', $producerDao->getProducerId());
+    }
+
+    /**
+     * Return all AggregateMetricSpecificationDaos tied to the submission, via the producer.
+     *
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @return array AggregateMetricSpecification DOAs all AggregateMetricSpecificationDaos linked to the
+     * SubmissionDao via its linked producer
+     */
+    public function getSubmissionAggregateMetricSpecifications($submissionDao) {
+        return $this->getProducerAggregateMetricSpecifications($submissionDao->getProducer());
+    }
+
 }

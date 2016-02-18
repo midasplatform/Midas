@@ -43,46 +43,46 @@
                    test_dataset_id="1019" truth_dataset_id="1002" unit="mm" key_metric="1" />
     <tracker_trend trend_id="20" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
                    test_dataset_id="1020" truth_dataset_id="1002" unit="mm" key_metric="1" />
-    <!-- 20 Trends which are MinMax error each with a different test_dataset_id -->
-    <tracker_trend trend_id="21" producer_id="100" metric_name="MinMax error" display_name="MinMax error" config_item_id="1000"
+    <!-- 20 Trends which are Optimal error each with a different test_dataset_id -->
+    <tracker_trend trend_id="21" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
                    test_dataset_id="1001" truth_dataset_id="1002" unit="mm" key_metric="1" />
-    <tracker_trend trend_id="22" producer_id="100" metric_name="MinMax error" display_name="MinMax error" config_item_id="1000"
+    <tracker_trend trend_id="22" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
                    test_dataset_id="1002" truth_dataset_id="1002" unit="mm" key_metric="1" />
-    <tracker_trend trend_id="23" producer_id="100" metric_name="MinMax error" display_name="MinMax error" config_item_id="1000"
+    <tracker_trend trend_id="23" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
                    test_dataset_id="1003" truth_dataset_id="1002" unit="mm" key_metric="1" />
-    <tracker_trend trend_id="24" producer_id="100" metric_name="MinMax error" display_name="MinMax error" config_item_id="1000"
+    <tracker_trend trend_id="24" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
                    test_dataset_id="1004" truth_dataset_id="1002" unit="mm" key_metric="1" />
-    <tracker_trend trend_id="25" producer_id="100" metric_name="MinMax error" display_name="MinMax error" config_item_id="1000"
+    <tracker_trend trend_id="25" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
                    test_dataset_id="1005" truth_dataset_id="1002" unit="mm" key_metric="1" />
-    <tracker_trend trend_id="26" producer_id="100" metric_name="MinMax error" display_name="MinMax error" config_item_id="1000"
+    <tracker_trend trend_id="26" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
                    test_dataset_id="1006" truth_dataset_id="1002" unit="mm" key_metric="1" />
-    <tracker_trend trend_id="27" producer_id="100" metric_name="MinMax error" display_name="MinMax error" config_item_id="1000"
+    <tracker_trend trend_id="27" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
                    test_dataset_id="1007" truth_dataset_id="1002" unit="mm" key_metric="1" />
-    <tracker_trend trend_id="28" producer_id="100" metric_name="MinMax error" display_name="MinMax error" config_item_id="1000"
+    <tracker_trend trend_id="28" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
                    test_dataset_id="1008" truth_dataset_id="1002" unit="mm" key_metric="1" />
-    <tracker_trend trend_id="29" producer_id="100" metric_name="MinMax error" display_name="MinMax error" config_item_id="1000"
+    <tracker_trend trend_id="29" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
                    test_dataset_id="1009" truth_dataset_id="1002" unit="mm" key_metric="1" />
-    <tracker_trend trend_id="30" producer_id="100" metric_name="MinMax error" display_name="MinMax error" config_item_id="1000"
+    <tracker_trend trend_id="30" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
                    test_dataset_id="1010" truth_dataset_id="1002" unit="mm" key_metric="1" />
-    <tracker_trend trend_id="31" producer_id="100" metric_name="MinMax error" display_name="MinMax error" config_item_id="1000"
+    <tracker_trend trend_id="31" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
                    test_dataset_id="1011" truth_dataset_id="1002" unit="mm" key_metric="1" />
-    <tracker_trend trend_id="32" producer_id="100" metric_name="MinMax error" display_name="MinMax error" config_item_id="1000"
+    <tracker_trend trend_id="32" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
                    test_dataset_id="1012" truth_dataset_id="1002" unit="mm" key_metric="1" />
-    <tracker_trend trend_id="33" producer_id="100" metric_name="MinMax error" display_name="MinMax error" config_item_id="1000"
+    <tracker_trend trend_id="33" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
                    test_dataset_id="1013" truth_dataset_id="1002" unit="mm" key_metric="1" />
-    <tracker_trend trend_id="34" producer_id="100" metric_name="MinMax error" display_name="MinMax error" config_item_id="1000"
+    <tracker_trend trend_id="34" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
                    test_dataset_id="1014" truth_dataset_id="1002" unit="mm" key_metric="1" />
-    <tracker_trend trend_id="35" producer_id="100" metric_name="MinMax error" display_name="MinMax error" config_item_id="1000"
+    <tracker_trend trend_id="35" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
                    test_dataset_id="1015" truth_dataset_id="1002" unit="mm" key_metric="1" />
-    <tracker_trend trend_id="36" producer_id="100" metric_name="MinMax error" display_name="MinMax error" config_item_id="1000"
+    <tracker_trend trend_id="36" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
                    test_dataset_id="1016" truth_dataset_id="1002" unit="mm" key_metric="1" />
-    <tracker_trend trend_id="37" producer_id="100" metric_name="MinMax error" display_name="MinMax error" config_item_id="1000"
+    <tracker_trend trend_id="37" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
                    test_dataset_id="1017" truth_dataset_id="1002" unit="mm" key_metric="1" />
-    <tracker_trend trend_id="38" producer_id="100" metric_name="MinMax error" display_name="MinMax error" config_item_id="1000"
+    <tracker_trend trend_id="38" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
                    test_dataset_id="1018" truth_dataset_id="1002" unit="mm" key_metric="1" />
-    <tracker_trend trend_id="39" producer_id="100" metric_name="MinMax error" display_name="MinMax error" config_item_id="1000"
+    <tracker_trend trend_id="39" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
                    test_dataset_id="1019" truth_dataset_id="1002" unit="mm" key_metric="1" />
-    <tracker_trend trend_id="40" producer_id="100" metric_name="MinMax error" display_name="MinMax error" config_item_id="1000"
+    <tracker_trend trend_id="40" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
                    test_dataset_id="1020" truth_dataset_id="1002" unit="mm" key_metric="1" />
     <!-- Greedy max distance trend -->
     <tracker_trend trend_id="41" producer_id="100" metric_name="Greedy max distance" display_name="Greedy max distance" config_item_id="1000"
@@ -132,7 +132,7 @@
     <tracker_scalar scalar_id="38" trend_id="18" value="36.0" submission_id="2" branch="master" />
     <tracker_scalar scalar_id="39" trend_id="19" value="38.0" submission_id="2" branch="master" />
     <tracker_scalar scalar_id="40" trend_id="20" value="40.0" submission_id="2" branch="master" />
-    <!-- One scalar per each MinMax error trend, for submission_id 1 -->
+    <!-- One scalar per each Optimal error trend, for submission_id 1 -->
     <tracker_scalar scalar_id="41" trend_id="21" value="26.0" submission_id="1" branch="master" />
     <tracker_scalar scalar_id="42" trend_id="22" value="27.0" submission_id="1" branch="master" />
     <tracker_scalar scalar_id="43" trend_id="23" value="28.0" submission_id="1" branch="master" />
@@ -153,7 +153,7 @@
     <tracker_scalar scalar_id="58" trend_id="38" value="43.0" submission_id="1" branch="master" />
     <tracker_scalar scalar_id="59" trend_id="39" value="44.0" submission_id="1" branch="master" />
     <tracker_scalar scalar_id="60" trend_id="40" value="45.0" submission_id="1" branch="master" />
-    <!-- One scalar per each MinMax error trend, for submission_id 2 -->
+    <!-- One scalar per each Optimal error trend, for submission_id 2 -->
     <tracker_scalar scalar_id="61" trend_id="21" value="36.0" submission_id="2" branch="master" />
     <tracker_scalar scalar_id="62" trend_id="22" value="37.0" submission_id="2" branch="master" />
     <tracker_scalar scalar_id="63" trend_id="23" value="38.0" submission_id="2" branch="master" />
@@ -177,4 +177,21 @@
     <!-- One scalar per Greedy max distance trend, for submission 1 and 2, giant values that shouldn't be included -->
     <tracker_scalar scalar_id="81" trend_id="41" value="3000055.0" submission_id="1" branch="master" />
     <tracker_scalar scalar_id="82" trend_id="41" value="2000455.0" submission_id="2" branch="master" />
+    <!-- AggregateMetricSpecifications tied to producer 100, all on 'master' -->
+    <tracker_aggregate_metric_specification aggregate_metric_specification_id="1" producer_id="100"
+        branch="master" name="95th Percentile Greedy error" schema="percentile('Greedy error', 95)" />
+    <tracker_aggregate_metric_specification aggregate_metric_specification_id="2" producer_id="100"
+        branch="master" name="55th Percentile Greedy error" schema="percentile('Greedy error', 55)" />
+    <tracker_aggregate_metric_specification aggregate_metric_specification_id="3" producer_id="100"
+        branch="master" name="95th Percentile Greedy distance" schema="percentile('Greedy distance', 95)" />
+    <tracker_aggregate_metric_specification aggregate_metric_specification_id="4" producer_id="100"
+        branch="master" name="55th Percentile Greedy distance" schema="percentile('Greedy distance', 55)" />
+    <tracker_aggregate_metric_specification aggregate_metric_specification_id="5" producer_id="100"
+        branch="master" name="95th Percentile Optimal error" schema="percentile('Optimal error', 95)" />
+    <tracker_aggregate_metric_specification aggregate_metric_specification_id="6" producer_id="100"
+        branch="master" name="55th Percentile Optimal error" schema="percentile('Optimal error', 55)" />
+    <tracker_aggregate_metric_specification aggregate_metric_specification_id="7" producer_id="100"
+        branch="master" name="95th Percentile Optimal distance" schema="percentile('Optimal distance', 95)" />
+    <tracker_aggregate_metric_specification aggregate_metric_specification_id="8" producer_id="100"
+        branch="master" name="55th Percentile Optimal distance" schema="percentile('Optimal distance', 55)" />
 </dataset>

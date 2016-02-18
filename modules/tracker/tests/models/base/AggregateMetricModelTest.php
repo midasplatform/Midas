@@ -18,7 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/** Test the AggregateMetricSpecification and AggregateMetric models. */
+/** Test the AggregateMetric models. */
 class Tracker_AggregateMetricModelTest extends DatabaseTestCase
 {
     /** Set up tests. */
@@ -76,9 +76,9 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         // 50th percentile.
         $this->assertEquals($aggregateMetricDao->getValue(), 20.0);
 
-        // Create an AggregateMetricSpecification for MinMax error 95th Percentile.
-        $name = '95th Percentile MinMax error';
-        $schema = "percentile('MinMax error', 95)";
+        // Create an AggregateMetricSpecification for Optimal error 95th Percentile.
+        $name = '95th Percentile Optimal error';
+        $schema = "percentile('Optimal error', 95)";
         /** @var Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao */
         $aggregateMetricSpecificationDao = $aggregateMetricSpecificationModel->createAggregateMetricSpecification($producerDao, $name, $schema);
 
