@@ -81,6 +81,7 @@ abstract class Tracker_AggregateMetricSpecificationModelBase extends Tracker_App
             $aggregateMetricSpecificationDao->setComparison($comparison);
         }
         $this->save($aggregateMetricSpecificationDao);
+
         return $aggregateMetricSpecificationDao;
     }
 

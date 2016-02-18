@@ -61,4 +61,4 @@ abstract class Tracker_AggregateMetricModelBase extends Tracker_AppModel
      * @return Tracker_AggregateMetricDao metric DAO computed on the submission from the specification
      */
     abstract public function computeAggregateMetricForSubmission($aggregateMetricSpecificationDao, $submissionDao);
- }
+}

@@ -123,5 +123,4 @@ class Tracker_AggregateMetricSpecificationModelTest extends DatabaseTestCase
             $this->assertTrue($found);
         }
     }
-
 }
