@@ -48,14 +48,14 @@ class Tracker_AggregateMetricSpecificationModelTest extends DatabaseTestCase
         $aggregateMetricSpecificationModel = MidasLoader::loadModel('AggregateMetricSpecification', 'tracker');
         $producerAggregateMetricSpecificationDaos = $aggregateMetricSpecificationModel->getProducerAggregateMetricSpecifications($producerDao);
         /** @var Tracker_AggregateMetricSpecificationDao $producerSpec */
-        foreach($producerAggregateMetricSpecificationDaos as $producerSpec) {
+        foreach ($producerAggregateMetricSpecificationDaos as $producerSpec) {
             if (array_key_exists($producerSpec->getAggregateMetricSpecificationId(), $spec1Ids)) {
                 $spec1Ids[$producerSpec->getAggregateMetricSpecificationId()] = true;
             }
         }
         /** @var string $specId */
-        /** @var boolean $found */
-        foreach($spec1Ids as $specId => $found) {
+        /** @var bool $found */
+        foreach ($spec1Ids as $specId => $found) {
             $this->assertTrue($found);
         }
     }
@@ -85,14 +85,14 @@ class Tracker_AggregateMetricSpecificationModelTest extends DatabaseTestCase
         $aggregateMetricSpecificationModel = MidasLoader::loadModel('AggregateMetricSpecification', 'tracker');
         $submissionAggregateMetricSpecificationDaos = $aggregateMetricSpecificationModel->getSubmissionAggregateMetricSpecifications($submissionDao1);
         /** @var Tracker_AggregateMetricSpecificationDao $submissionSpec */
-        foreach($submissionAggregateMetricSpecificationDaos as $submissionSpec) {
+        foreach ($submissionAggregateMetricSpecificationDaos as $submissionSpec) {
             if (array_key_exists($submissionSpec->getAggregateMetricSpecificationId(), $spec1Ids)) {
                 $spec1Ids[$submissionSpec->getAggregateMetricSpecificationId()] = true;
             }
         }
         /** @var string $specId */
-        /** @var boolean $found */
-        foreach($spec1Ids as $specId => $found) {
+        /** @var bool $found */
+        foreach ($spec1Ids as $specId => $found) {
             $this->assertTrue($found);
         }
 
@@ -112,14 +112,14 @@ class Tracker_AggregateMetricSpecificationModelTest extends DatabaseTestCase
         $aggregateMetricSpecificationModel = MidasLoader::loadModel('AggregateMetricSpecification', 'tracker');
         $submissionAggregateMetricSpecificationDaos = $aggregateMetricSpecificationModel->getSubmissionAggregateMetricSpecifications($submissionDao2);
         /** @var Tracker_AggregateMetricSpecificationDao $submissionSpec */
-        foreach($submissionAggregateMetricSpecificationDaos as $submissionSpec) {
+        foreach ($submissionAggregateMetricSpecificationDaos as $submissionSpec) {
             if (array_key_exists($submissionSpec->getAggregateMetricSpecificationId(), $spec2Ids)) {
                 $spec2Ids[$submissionSpec->getAggregateMetricSpecificationId()] = true;
             }
         }
         /** @var string $specId */
-        /** @var boolean $found */
-        foreach($spec2Ids as $specId => $found) {
+        /** @var bool $found */
+        foreach ($spec2Ids as $specId => $found) {
             $this->assertTrue($found);
         }
     }

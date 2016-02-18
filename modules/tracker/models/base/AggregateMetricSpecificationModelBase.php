@@ -63,7 +63,8 @@ abstract class Tracker_AggregateMetricSpecificationModelBase extends Tracker_App
      * one of ['>', '<', '>=', '<', '<=', '==', '!=']
      * @return Tracker_AggregateMetricSpecificationDao created from inputs
      */
-    public function createAggregateMetricSpecification($producerDao, $name, $schema, $branch = 'master', $description = false, $value = false, $comparison = false) {
+    public function createAggregateMetricSpecification($producerDao, $name, $schema, $branch = 'master', $description = false, $value = false, $comparison = false)
+    {
         /** @var Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao */
         $aggregateMetricSpecificationDao = MidasLoader::newDao('AggregateMetricSpecificationDao', 'tracker');
         $aggregateMetricSpecificationDao->setProducerId($producerDao->getProducerId());
@@ -89,7 +90,8 @@ abstract class Tracker_AggregateMetricSpecificationModelBase extends Tracker_App
      * @param Tracker_ProducerDao $producerDao producer DAO
      * @return array AggregateMetricSpecification DOAs all AggregateMetricSpecificationDaos linked to the ProducerDao
      */
-    public function getProducerAggregateMetricSpecifications($producerDao) {
+    public function getProducerAggregateMetricSpecifications($producerDao)
+    {
         return $this->findBy('producer_id', $producerDao->getProducerId());
     }
 
@@ -100,8 +102,8 @@ abstract class Tracker_AggregateMetricSpecificationModelBase extends Tracker_App
      * @return array AggregateMetricSpecification DOAs all AggregateMetricSpecificationDaos linked to the
      * SubmissionDao via its linked producer
      */
-    public function getSubmissionAggregateMetricSpecifications($submissionDao) {
+    public function getSubmissionAggregateMetricSpecifications($submissionDao)
+    {
         return $this->getProducerAggregateMetricSpecifications($submissionDao->getProducer());
     }
-
 }

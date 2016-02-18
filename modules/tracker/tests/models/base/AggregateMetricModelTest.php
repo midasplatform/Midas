@@ -114,7 +114,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
 
         // AMS with missing percentile param.
         /** @var Tracker_AggregateMetricSpecificationDao $greedyErrorMissingPercentileAMSDao */
-        $name='Percentile Greedy error';
+        $name = 'Percentile Greedy error';
         $schema = "percentile('Greedy error')";
         $greedyErrorMissingPercentileAMSDao = $aggregateMetricSpecificationModel->createAggregateMetricSpecification($producer100Dao, $name, $schema);
         $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyErrorMissingPercentileAMSDao, $submission1Dao);
@@ -122,7 +122,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
 
         // AMS with percentile param that won't resolve to an int.
         /** @var Tracker_AggregateMetricSpecificationDao $greedyError9333PercentileAMSDao */
-        $name='93.33 Percentile Greedy error';
+        $name = '93.33 Percentile Greedy error';
         $schema = "percentile('Greedy error', 93.33)";
         $greedyError9333PercentileAMSDao = $aggregateMetricSpecificationModel->createAggregateMetricSpecification($producer100Dao, $name, $schema);
         $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyError9333PercentileAMSDao, $submission1Dao);

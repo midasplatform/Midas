@@ -37,7 +37,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
         }
         $percentile = $params[0];
         asort($values);
-        $ind = round(($percentile/100.0) * count($values)) - 1;
+        $ind = round(($percentile / 100.0) * count($values)) - 1;
         return $values[$ind];
     }
 
@@ -54,7 +54,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
         preg_match("/(\w+)\((.*)\)/", $aggregateMetricSpecificationDao->getSchema(), $matches);
         $aggregationMethod = $matches[1];
         $params = explode(',', $matches[2]);
-        $metricName = str_replace("'", "", $params[0]);
+        $metricName = str_replace("'", '', $params[0]);
         $params = array_slice($params, 1);
 
         // Get the list of relevant trend_ids.
@@ -64,7 +64,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
             ->where('producer_id = ?', $aggregateMetricSpecificationDao->getProducerId())
             ->where('metric_name = ?', $metricName);
         $rows = $this->database->fetchAll($sql);
-        if (sizeof($rows) === 0) {
+        if (count($rows) === 0) {
             return false;
         };
         $trendIds = array();
@@ -80,7 +80,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
             ->where('branch = ?', $aggregateMetricSpecificationDao->getBranch())
             ->where('trend_id IN (?)', $trendIds);
         $rows = $this->database->fetchAll($sql);
-        if (sizeof($rows) === 0) {
+        if (count($rows) === 0) {
             return false;
         };
         $values = array();
@@ -97,10 +97,9 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
             $aggregateMetricDao = MidasLoader::newDao('AggregateMetricDao', 'tracker');
             $aggregateMetricDao->setAggregateMetricSpecificationId($aggregateMetricSpecificationDao->getAggregateMetricSpecificationId());
             $aggregateMetricDao->setSubmissionId($submissionDao->getSubmissionId());
-
             $aggregateMetricDao->setValue($computedValue);
-
             $this->save($aggregateMetricDao);
+
             return $aggregateMetricDao;
         }
     }
