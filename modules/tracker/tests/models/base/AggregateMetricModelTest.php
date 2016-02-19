@@ -27,6 +27,12 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         $this->setupDatabase(array('default')); // core dataset
         $this->setupDatabase(array('aggregateMetric'), 'tracker'); // module dataset
         $this->enabledModules = array('tracker');
+        $db = Zend_Registry::get('dbAdapter');
+        $configDatabase = Zend_Registry::get('configDatabase');
+        if ($configDatabase->database->adapter == 'PDO_PGSQL') {
+            $db->query("SELECT setval('tracker_aggregate_metric_spec_aggregate_metric_spec_id_seq', (SELECT MAX(aggregate_metric_spec_id) FROM tracker_aggregate_metric_spec)+1);");
+            $db->query("SELECT setval('tracker_aggregate_metric_aggregate_metric_id_seq', (SELECT MAX(aggregate_metric_id) FROM tracker_aggregate_metric)+1);");
+        }
         parent::setUp();
     }
 
