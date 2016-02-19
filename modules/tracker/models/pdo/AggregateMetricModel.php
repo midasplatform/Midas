@@ -118,13 +118,13 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
     }
 
     /**
-     * Compute an aggregate metric for the submission based on the spec.
+     * Compute and update an aggregate metric for the submission based on the spec.
      *
      * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao spec DAO
      * @param Tracker_SubmissionDao $submissionDao submission DAO
      * @return false | Tracker_AggregateMetricDao metric DAO computed on the submission from the spec
      */
-    public function computeAggregateMetricForSubmission($aggregateMetricSpecDao, $submissionDao)
+    public function updateAggregateMetricForSubmission($aggregateMetricSpecDao, $submissionDao)
     {
         $values = $this->getAggregateMetricInputValuesForSubmission($aggregateMetricSpecDao, $submissionDao);
         if ($values === false) {
