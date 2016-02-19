@@ -18,8 +18,8 @@
  limitations under the License.
 =========================================================================*/
 
-/** Test the AggregateMetricSpecification. */
-class Tracker_AggregateMetricSpecificationModelTest extends DatabaseTestCase
+/** Test the AggregateMetricSpec. */
+class Tracker_AggregateMetricSpecModelTest extends DatabaseTestCase
 {
     /** Set up tests. */
     public function setUp()
@@ -30,17 +30,17 @@ class Tracker_AggregateMetricSpecificationModelTest extends DatabaseTestCase
         parent::setUp();
     }
 
-    /** test AggregateMetricSpecificationModel createAggregateMetricSpecification function */
-    public function testCreateAggregateMetricSpecification()
+    /** test AggregateMetricSpecModel createAggregateMetricSpec function */
+    public function testCreateAggregateMetricSpec()
     {
-        /** @var AggregateMetricSpecificationModel $aggregateMetricSpecificationModel */
-        $aggregateMetricSpecificationModel = MidasLoader::loadModel('AggregateMetricSpecification', 'tracker');
+        /** @var AggregateMetricSpecModel $aggregateMetricSpecModel */
+        $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
 
         $name = '95th Percentile Greedy distance ';
         $schema = "percentile('Greedy distance', 95)";
 
         // Pass a null producer.
-        $emptyProducerAMSDao = $aggregateMetricSpecificationModel->createAggregateMetricSpecification(null, $name, $schema);
+        $emptyProducerAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec(null, $name, $schema);
         $this->assertFalse($emptyProducerAMSDao);
 
         /** @var Tracker_ProducerModel $producerModel */
@@ -48,14 +48,14 @@ class Tracker_AggregateMetricSpecificationModelTest extends DatabaseTestCase
         /** @var Tracker_ProducerDao $producer100Dao */
         $producer100Dao = $producerModel->load(100);
 
-        $validAMSDao = $aggregateMetricSpecificationModel->createAggregateMetricSpecification($producer100Dao, $name, $schema);
+        $validAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $schema);
         $this->assertEquals($validAMSDao->getName(), $name);
         $this->assertEquals($validAMSDao->getSchema(), $schema);
         $this->assertEquals($validAMSDao->getProducerId(), $producer100Dao->getProducerId());
     }
 
-    /** test AggregateMetricSpecificationModel getAggregateMetricSpecificationsForProducer function */
-    public function testGetAggregateMetricSpecificationsForProducer()
+    /** test AggregateMetricSpecModel getAggregateMetricSpecsForProducer function */
+    public function testGetAggregateMetricSpecsForProducer()
     {
         /** @var Tracker_ProducerModel $producerModel */
         $producerModel = MidasLoader::loadModel('Producer', 'tracker');
@@ -68,13 +68,13 @@ class Tracker_AggregateMetricSpecificationModelTest extends DatabaseTestCase
             $spec1Ids[$id] = false;
         }
 
-        /** @var AggregateMetricSpecificationModel $aggregateMetricSpecificationModel */
-        $aggregateMetricSpecificationModel = MidasLoader::loadModel('AggregateMetricSpecification', 'tracker');
-        $producerAggregateMetricSpecificationDaos = $aggregateMetricSpecificationModel->getAggregateMetricSpecificationsForProducer($producerDao);
-        /** @var Tracker_AggregateMetricSpecificationDao $producerSpec */
-        foreach ($producerAggregateMetricSpecificationDaos as $producerSpec) {
-            if (array_key_exists($producerSpec->getAggregateMetricSpecificationId(), $spec1Ids)) {
-                $spec1Ids[$producerSpec->getAggregateMetricSpecificationId()] = true;
+        /** @var AggregateMetricSpecModel $aggregateMetricSpecModel */
+        $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
+        $producerAggregateMetricSpecDaos = $aggregateMetricSpecModel->getAggregateMetricSpecsForProducer($producerDao);
+        /** @var Tracker_AggregateMetricSpecDao $producerSpec */
+        foreach ($producerAggregateMetricSpecDaos as $producerSpec) {
+            if (array_key_exists($producerSpec->getAggregateMetricSpecId(), $spec1Ids)) {
+                $spec1Ids[$producerSpec->getAggregateMetricSpecId()] = true;
             }
         }
         /** @var string $specId */
@@ -84,12 +84,12 @@ class Tracker_AggregateMetricSpecificationModelTest extends DatabaseTestCase
         }
 
         // Test with null producerDao.
-        $producerAggregateMetricSpecificationDaos = $aggregateMetricSpecificationModel->getAggregateMetricSpecificationsForProducer(null);
-        $this->assertFalse($producerAggregateMetricSpecificationDaos);
+        $producerAggregateMetricSpecDaos = $aggregateMetricSpecModel->getAggregateMetricSpecsForProducer(null);
+        $this->assertFalse($producerAggregateMetricSpecDaos);
     }
 
-    /** test AggregateMetricSpecificationModel getAggregateMetricSpecificationsForSubmission function */
-    public function testGetAggregateMetricSpecificationsForSubmission()
+    /** test AggregateMetricSpecModel getAggregateMetricSpecsForSubmission function */
+    public function testGetAggregateMetricSpecsForSubmission()
     {
         /** @var Tracker_ProducerModel $producerModel */
         $producerModel = MidasLoader::loadModel('Producer', 'tracker');
@@ -109,13 +109,13 @@ class Tracker_AggregateMetricSpecificationModelTest extends DatabaseTestCase
         /** @var Tracker_SubmissionDao $submissionDao1 */
         $submissionDao1 = $submissionModel->load(1);
 
-        /** @var AggregateMetricSpecificationModel $aggregateMetricSpecificationModel */
-        $aggregateMetricSpecificationModel = MidasLoader::loadModel('AggregateMetricSpecification', 'tracker');
-        $submissionAggregateMetricSpecificationDaos = $aggregateMetricSpecificationModel->getAggregateMetricSpecificationsForSubmission($submissionDao1);
-        /** @var Tracker_AggregateMetricSpecificationDao $submissionSpec */
-        foreach ($submissionAggregateMetricSpecificationDaos as $submissionSpec) {
-            if (array_key_exists($submissionSpec->getAggregateMetricSpecificationId(), $spec1Ids)) {
-                $spec1Ids[$submissionSpec->getAggregateMetricSpecificationId()] = true;
+        /** @var AggregateMetricSpecModel $aggregateMetricSpecModel */
+        $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
+        $submissionAggregateMetricSpecDaos = $aggregateMetricSpecModel->getAggregateMetricSpecsForSubmission($submissionDao1);
+        /** @var Tracker_AggregateMetricSpecDao $submissionSpec */
+        foreach ($submissionAggregateMetricSpecDaos as $submissionSpec) {
+            if (array_key_exists($submissionSpec->getAggregateMetricSpecId(), $spec1Ids)) {
+                $spec1Ids[$submissionSpec->getAggregateMetricSpecId()] = true;
             }
         }
         /** @var string $specId */
@@ -136,13 +136,13 @@ class Tracker_AggregateMetricSpecificationModelTest extends DatabaseTestCase
             $spec2Ids[$id] = false;
         }
 
-        /** @var AggregateMetricSpecificationModel $aggregateMetricSpecificationModel */
-        $aggregateMetricSpecificationModel = MidasLoader::loadModel('AggregateMetricSpecification', 'tracker');
-        $submissionAggregateMetricSpecificationDaos = $aggregateMetricSpecificationModel->getAggregateMetricSpecificationsForSubmission($submissionDao2);
-        /** @var Tracker_AggregateMetricSpecificationDao $submissionSpec */
-        foreach ($submissionAggregateMetricSpecificationDaos as $submissionSpec) {
-            if (array_key_exists($submissionSpec->getAggregateMetricSpecificationId(), $spec2Ids)) {
-                $spec2Ids[$submissionSpec->getAggregateMetricSpecificationId()] = true;
+        /** @var AggregateMetricSpecModel $aggregateMetricSpecModel */
+        $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
+        $submissionAggregateMetricSpecDaos = $aggregateMetricSpecModel->getAggregateMetricSpecsForSubmission($submissionDao2);
+        /** @var Tracker_AggregateMetricSpecDao $submissionSpec */
+        foreach ($submissionAggregateMetricSpecDaos as $submissionSpec) {
+            if (array_key_exists($submissionSpec->getAggregateMetricSpecId(), $spec2Ids)) {
+                $spec2Ids[$submissionSpec->getAggregateMetricSpecId()] = true;
             }
         }
         /** @var string $specId */
@@ -152,7 +152,7 @@ class Tracker_AggregateMetricSpecificationModelTest extends DatabaseTestCase
         }
 
         // Test with null submissonDao.
-        $submissionAggregateMetricSpecificationDaos = $aggregateMetricSpecificationModel->getAggregateMetricSpecificationsForSubmission(null);
-        $this->assertFalse($submissionAggregateMetricSpecificationDaos);
+        $submissionAggregateMetricSpecDaos = $aggregateMetricSpecModel->getAggregateMetricSpecsForSubmission(null);
+        $this->assertFalse($submissionAggregateMetricSpecDaos);
     }
 }

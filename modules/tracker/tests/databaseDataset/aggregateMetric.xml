@@ -180,17 +180,17 @@
     <!-- One scalar per Greedy distance trend, for submission 1 and 2 -->
     <tracker_scalar scalar_id="81" trend_id="41" value="3000055.0" submission_id="1" build_results_url="build.results.url" branch="master" />
     <tracker_scalar scalar_id="82" trend_id="41" value="2000455.0" submission_id="2" build_results_url="build.results.url" branch="master" />
-    <!-- AggregateMetricSpecifications tied to producer 100, all on 'master' -->
-    <tracker_aggregate_metric_specification aggregate_metric_specification_id="1" producer_id="100" comparison="!=" value="1.0"
+    <!-- AggregateMetricSpecs tied to producer 100, all on 'master' -->
+    <tracker_aggregate_metric_spec aggregate_metric_spec_id="1" producer_id="100" comparison="!=" value="1.0"
         branch="master" name="95th Percentile Greedy error" description="95th Percentile Greedy error" schema="percentile('Greedy error', 95)" />
-    <tracker_aggregate_metric_specification aggregate_metric_specification_id="2" producer_id="100" comparison="!=" value="1.0"
+    <tracker_aggregate_metric_spec aggregate_metric_spec_id="2" producer_id="100" comparison="!=" value="1.0"
         branch="master" name="55th Percentile Greedy error" description="55th Percentile Greedy error" schema="percentile('Greedy error', 55)" />
-    <tracker_aggregate_metric_specification aggregate_metric_specification_id="3" producer_id="100" comparison="!=" value="1.0"
+    <tracker_aggregate_metric_spec aggregate_metric_spec_id="3" producer_id="100" comparison="!=" value="1.0"
         branch="master" name="95th Percentile Optimal error" description="95th Percentile Optimal error" schema="percentile('Optimal error', 95)" />
-    <tracker_aggregate_metric_specification aggregate_metric_specification_id="4" producer_id="100" comparison="!=" value="1.0"
+    <tracker_aggregate_metric_spec aggregate_metric_spec_id="4" producer_id="100" comparison="!=" value="1.0"
         branch="master" name="55th Percentile Optimal error" description="55th Percentile Optimal error" schema="percentile('Optimal error', 55)" />
-    <tracker_aggregate_metric_specification aggregate_metric_specification_id="5" producer_id="100" comparison="!=" value="1.0"
+    <tracker_aggregate_metric_spec aggregate_metric_spec_id="5" producer_id="100" comparison="!=" value="1.0"
         branch="master" name="55th Percentile Greedy distance" description="55th Percentile Greedy distance" schema="percentile('Greedy distance', 55)" />
-    <tracker_aggregate_metric_specification aggregate_metric_specification_id="6" producer_id="100" comparison="!=" value="1.0"
+    <tracker_aggregate_metric_spec aggregate_metric_spec_id="6" producer_id="100" comparison="!=" value="1.0"
         branch="master" name="55th Percentile Optimal distance" description="55th Percentile Optimal distance" schema="percentile('Optimal distance', 55)" />
 </dataset>

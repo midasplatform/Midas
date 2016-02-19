@@ -23,14 +23,14 @@
  *
  * @method int getAggregateMetricId()
  * @method void setAggregateMetricId(int $aggregateMetricId)
- * @method int getAggregateMetricSpecificationId()
- * @method void setAggregateMetricSpecificationId(int $aggregateMetricSpecificationId)
+ * @method int getAggregateMetricSpecId()
+ * @method void setAggregateMetricSpecId(int $aggregateMetricSpecId)
  * @method int getSubmissionId()
  * @method void setSubmissionId(int $submissionId)
  * @method float getValue()
  * @method void setValue(float $value)
- * @method Tracker_AggregateMetricSpecificationDao getAggregateMetricSpecification()
- * @method void setAggregateMetricSpecification(Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao)
+ * @method Tracker_AggregateMetricSpecDao getAggregateMetricSpec()
+ * @method void setAggregateMetricSpec(Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao)
  * @method Tracker_SubmissionDao getSubmission()
  * @method void setSubmission(Tracker_SubmissionDao $submissionDao)
  */

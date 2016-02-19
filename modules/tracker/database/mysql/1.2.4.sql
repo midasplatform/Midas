@@ -90,16 +90,16 @@ CREATE TABLE IF NOT EXISTS `tracker_param` (
 
 CREATE TABLE IF NOT EXISTS `tracker_aggregate_metric` (
     `aggregate_metric_id` bigint(20) NOT NULL AUTO_INCREMENT,
-    `aggregate_metric_specification_id` bigint(20) NOT NULL,
+    `aggregate_metric_spec_id` bigint(20) NOT NULL,
     `submission_id` bigint(20) NOT NULL,
     `value` double,
     PRIMARY KEY (`aggregate_metric_id`),
-    KEY (`aggregate_metric_specification_id`),
+    KEY (`aggregate_metric_spec_id`),
     KEY (`submission_id`)
 ) DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `tracker_aggregate_metric_specification` (
-    `aggregate_metric_specification_id` bigint(20) NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `tracker_aggregate_metric_spec` (
+    `aggregate_metric_spec_id` bigint(20) NOT NULL AUTO_INCREMENT,
     `producer_id` bigint(20) NOT NULL,
     `branch` varchar(255) NOT NULL DEFAULT '',
     `name` varchar(255) NOT NULL DEFAULT '',
@@ -107,13 +107,13 @@ CREATE TABLE IF NOT EXISTS `tracker_aggregate_metric_specification` (
     `schema` text NOT NULL DEFAULT '',
     `value` double,
     `comparison` varchar(2) NOT NULL DEFAULT '',
-    PRIMARY KEY (`aggregate_metric_specification_id`),
+    PRIMARY KEY (`aggregate_metric_spec_id`),
     KEY (`producer_id`),
     KEY (`branch`)
 ) DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `tracker_user2aggregate_metric_specification` (
+CREATE TABLE IF NOT EXISTS `tracker_user2aggregate_metric_spec` (
     `user_id` bigint(20) NOT NULL,
-    `aggregate_metric_specification_id` bigint(20) NOT NULL,
-    PRIMARY KEY (`user_id`, `aggregate_metric_specification_id`)
+    `aggregate_metric_spec_id` bigint(20) NOT NULL,
+    PRIMARY KEY (`user_id`, `aggregate_metric_spec_id`)
 ) DEFAULT CHARSET=utf8;

@@ -18,9 +18,9 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH.'/modules/tracker/models/base/AggregateMetricSpecificationModelBase.php';
+require_once BASE_PATH.'/modules/tracker/models/base/AggregateMetricSpecModelBase.php';
 
-/** AggregateMetricSpecification model for the tracker module. */
-class Tracker_AggregateMetricSpecificationModel extends Tracker_AggregateMetricSpecificationModelBase
+/** AggregateMetricSpec model for the tracker module. */
+class Tracker_AggregateMetricSpecModel extends Tracker_AggregateMetricSpecModelBase
 {
 }

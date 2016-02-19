@@ -19,10 +19,10 @@
 =========================================================================*/
 
 /**
- * AggregateMetricSpecification DAO for the tracker module.
+ * AggregateMetricSpec DAO for the tracker module.
  *
- * @method int getAggregateMetricSpecificationId()
- * @method void setAggregateMetricSpecificationId(int $aggregateMetricSpecificationId)
+ * @method int getAggregateMetricSpecId()
+ * @method void setAggregateMetricSpecId(int $aggregateMetricSpecId)
  * @method int getProducerId()
  * @method void setProducerId(int $producerId)
  * @method float getBranch()
@@ -40,10 +40,10 @@
  * @method Tracker_ProducerDao getProducer()
  * @method void setProducer(Tracker_ProducerDao $producerDao)
  */
-class Tracker_AggregateMetricSpecificationDao extends Tracker_AppDao
+class Tracker_AggregateMetricSpecDao extends Tracker_AppDao
 {
     /** @var string */
-    public $_model = 'AggregateMetricSpecification';
+    public $_model = 'AggregateMetricSpec';
 
     /** @var string */
     public $_module = 'tracker';

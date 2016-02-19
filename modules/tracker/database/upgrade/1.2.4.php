@@ -27,17 +27,17 @@ class Tracker_Upgrade_1_2_4 extends MIDASUpgrade
         $this->db->query(
             'CREATE TABLE IF NOT EXISTS `tracker_aggregate_metric` ('.
             '    `aggregate_metric_id` bigint(20) NOT NULL AUTO_INCREMENT,'.
-            '    `aggregate_metric_specification_id` bigint(20) NOT NULL,'.
+            '    `aggregate_metric_spec_id` bigint(20) NOT NULL,'.
             '    `submission_id` bigint(20) NOT NULL,'.
             '    `value` double,'.
             '    PRIMARY KEY (`aggregate_metric_id`),'.
-            '    KEY (`aggregate_metric_specification_id`),'.
+            '    KEY (`aggregate_metric_spec_id`),'.
             '    KEY (`submission_id`)'.
             ') DEFAULT CHARSET=utf8;'
         );
         $this->db->query(
-            'CREATE TABLE IF NOT EXISTS `tracker_aggregate_metric_specification` ('.
-            '    `aggregate_metric_specification_id` bigint(20) NOT NULL AUTO_INCREMENT,'.
+            'CREATE TABLE IF NOT EXISTS `tracker_aggregate_metric_spec` ('.
+            '    `aggregate_metric_spec_id` bigint(20) NOT NULL AUTO_INCREMENT,'.
             '    `producer_id` bigint(20) NOT NULL,'.
             "    `branch` varchar(255) NOT NULL DEFAULT '',".
             "    `name` varchar(255) NOT NULL DEFAULT '',".
@@ -45,16 +45,16 @@ class Tracker_Upgrade_1_2_4 extends MIDASUpgrade
             "    `schema` text NOT NULL DEFAULT '',".
             '    `value` double,'.
             "    `comparison` varchar(2) NOT NULL DEFAULT '',".
-            '    PRIMARY KEY (`aggregate_metric_specification_id`),'.
+            '    PRIMARY KEY (`aggregate_metric_spec_id`),'.
             '    KEY (`producer_id`),'.
             '    KEY (`branch`)'.
             ') DEFAULT CHARSET=utf8;'
         );
         $this->db->query(
-            'CREATE TABLE IF NOT EXISTS `tracker_user2aggregate_metric_specification` ('.
+            'CREATE TABLE IF NOT EXISTS `tracker_user2aggregate_metric_spec` ('.
             '    `user_id` bigint(20) NOT NULL,'.
-            '    `aggregate_metric_specification_id` bigint(20) NOT NULL,'.
-            '    PRIMARY KEY (`user_id`, `aggregate_metric_specification_id`)'.
+            '    `aggregate_metric_spec_id` bigint(20) NOT NULL,'.
+            '    PRIMARY KEY (`user_id`, `aggregate_metric_spec_id`)'.
             ') DEFAULT CHARSET=utf8;'
         );
     }
@@ -65,16 +65,16 @@ class Tracker_Upgrade_1_2_4 extends MIDASUpgrade
         $this->db->query(
             'CREATE TABLE IF NOT EXISTS "tracker_aggregate_metric" ('.
             '    "aggregate_metric_id" serial PRIMARY KEY,'.
-            '    "aggregate_metric_specification_id" bigint NOT NULL,'.
+            '    "aggregate_metric_spec_id" bigint NOT NULL,'.
             '    "submission_id" bigint NOT NULL,'.
             '    "value" double precision'.
             ');'
         );
-        $this->db->query('CREATE INDEX "tracker_aggregate_metric_aggregate_metric_specification_id" ON "tracker_aggregate_metric" ("aggregate_metric_specification_id");');
+        $this->db->query('CREATE INDEX "tracker_aggregate_metric_aggregate_metric_spec_id" ON "tracker_aggregate_metric" ("aggregate_metric_spec_id");');
         $this->db->query('CREATE INDEX "tracker_aggregate_metric_submission_id" ON "tracker_aggregate_metric" ("submission_id");');
         $this->db->query(
-            'CREATE TABLE IF NOT EXISTS "tracker_aggregate_metric_specification" ('.
-            '    "aggregate_metric_specification_id" serial PRIMARY KEY,'.
+            'CREATE TABLE IF NOT EXISTS "tracker_aggregate_metric_spec" ('.
+            '    "aggregate_metric_spec_id" serial PRIMARY KEY,'.
             '    "producer_id" bigint NOT NULL,'.
             '    "branch" character varying(255) NOT NULL,'.
             '    "name" character varying(255) NOT NULL,'.
@@ -84,13 +84,13 @@ class Tracker_Upgrade_1_2_4 extends MIDASUpgrade
             '    "comparison" character varying(2) NOT NULL'.
             ');'
         );
-        $this->db->query('CREATE INDEX "tracker_aggregate_metric_specification_producer_id" ON "tracker_aggregate_metric_specification" ("producer_id");');
-        $this->db->query('CREATE INDEX "tracker_aggregate_metric_specification_branch" ON "tracker_aggregate_metric_specification" ("branch");');
+        $this->db->query('CREATE INDEX "tracker_aggregate_metric_spec_producer_id" ON "tracker_aggregate_metric_spec" ("producer_id");');
+        $this->db->query('CREATE INDEX "tracker_aggregate_metric_spec_branch" ON "tracker_aggregate_metric_spec" ("branch");');
         $this->db->query(
-            'CREATE TABLE IF NOT EXISTS "tracker_user2aggregate_metric_specification" ('.
+            'CREATE TABLE IF NOT EXISTS "tracker_user2aggregate_metric_spec" ('.
             '    "user_id"  bigint NOT NULL,'.
-            '    "aggregate_metric_specification_id" bigint NOT NULL,'.
-            '    PRIMARY_KEY("user_id", "aggregate_metric_specification_id")'.
+            '    "aggregate_metric_spec_id" bigint NOT NULL,'.
+            '    PRIMARY_KEY("user_id", "aggregate_metric_spec_id")'.
             ');'
         );
     }

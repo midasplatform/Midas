@@ -65,28 +65,28 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
     }
 
     /**
-     * Return an array of input scalars that would be used by an aggregate metric for the submission based on the specification.
+     * Return an array of input scalars that would be used by an aggregate metric for the submission based on the spec.
      *
-     * @param Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao specification DAO
+     * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao spec DAO
      * @param Tracker_SubmissionDao $submissionDao submission DAO
      * @return false | array array of scalar values that would be input to the aggregate metric
      */
-    public function getAggregateMetricInputValuesForSubmission($aggregateMetricSpecificationDao, $submissionDao)
+    public function getAggregateMetricInputValuesForSubmission($aggregateMetricSpecDao, $submissionDao)
     {
-        if (is_null($aggregateMetricSpecificationDao) || $aggregateMetricSpecificationDao === false) {
+        if (is_null($aggregateMetricSpecDao) || $aggregateMetricSpecDao === false) {
             return false;
         }
         if (is_null($submissionDao) || $submissionDao === false) {
             return false;
         }
 
-        $schema = $this->parseSchema($aggregateMetricSpecificationDao->getSchema());
+        $schema = $this->parseSchema($aggregateMetricSpecDao->getSchema());
         $metricName = $schema['metric_name'];
         // Get the list of relevant trend_ids.
         $sql = $this->database->select()->setIntegrityCheck(false)
             ->from('tracker_trend', array('trend_id'))
             ->where('key_metric = ?', 1)
-            ->where('producer_id = ?', $aggregateMetricSpecificationDao->getProducerId())
+            ->where('producer_id = ?', $aggregateMetricSpecDao->getProducerId())
             ->where('metric_name = ?', $metricName);
         $rows = $this->database->fetchAll($sql);
         if (count($rows) === 0) {
@@ -102,7 +102,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
         $sql = $this->database->select()->setIntegrityCheck(false)
             ->from('tracker_scalar', array('value'))
             ->where('submission_id = ?', $submissionDao->getSubmissionId())
-            ->where('branch = ?', $aggregateMetricSpecificationDao->getBranch())
+            ->where('branch = ?', $aggregateMetricSpecDao->getBranch())
             ->where('trend_id IN (?)', $trendIds);
         $rows = $this->database->fetchAll($sql);
         if (count($rows) === 0) {
@@ -118,19 +118,19 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
     }
 
     /**
-     * Compute an aggregate metric for the submission based on the specification.
+     * Compute an aggregate metric for the submission based on the spec.
      *
-     * @param Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao specification DAO
+     * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao spec DAO
      * @param Tracker_SubmissionDao $submissionDao submission DAO
-     * @return false | Tracker_AggregateMetricDao metric DAO computed on the submission from the specification
+     * @return false | Tracker_AggregateMetricDao metric DAO computed on the submission from the spec
      */
-    public function computeAggregateMetricForSubmission($aggregateMetricSpecificationDao, $submissionDao)
+    public function computeAggregateMetricForSubmission($aggregateMetricSpecDao, $submissionDao)
     {
-        $values = $this->getAggregateMetricInputValuesForSubmission($aggregateMetricSpecificationDao, $submissionDao);
+        $values = $this->getAggregateMetricInputValuesForSubmission($aggregateMetricSpecDao, $submissionDao);
         if ($values === false) {
             return false;
         }
-        $schema = $this->parseSchema($aggregateMetricSpecificationDao->getSchema());
+        $schema = $this->parseSchema($aggregateMetricSpecDao->getSchema());
         $aggregationMethod = $schema['aggregation_method'];
         $aggregationParams = $schema['params'];
         $computedValue = $this->$aggregationMethod($values, $aggregationParams);
@@ -139,7 +139,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
         } else {
             /** @var Tracker_AggregateMetricDao $aggregateMetricDao */
             $aggregateMetricDao = MidasLoader::newDao('AggregateMetricDao', 'tracker');
-            $aggregateMetricDao->setAggregateMetricSpecificationId($aggregateMetricSpecificationDao->getAggregateMetricSpecificationId());
+            $aggregateMetricDao->setAggregateMetricSpecId($aggregateMetricSpecDao->getAggregateMetricSpecId());
             $aggregateMetricDao->setSubmissionId($submissionDao->getSubmissionId());
             $aggregateMetricDao->setValue($computedValue);
             $this->save($aggregateMetricDao);

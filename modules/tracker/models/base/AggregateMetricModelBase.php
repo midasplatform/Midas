@@ -31,15 +31,15 @@ abstract class Tracker_AggregateMetricModelBase extends Tracker_AppModel
         $this->_key = 'aggregate_metric_id';
         $this->_mainData = array(
             'aggregate_metric_id' => array('type' => MIDAS_DATA),
-            'aggregate_metric_specification_id' => array('type' => MIDAS_DATA),
+            'aggregate_metric_spec_id' => array('type' => MIDAS_DATA),
             'submission_id' => array('type' => MIDAS_DATA),
             'value' => array('type' => MIDAS_DATA),
-            'aggregate_metric_specification' => array(
+            'aggregate_metric_spec' => array(
                 'type' => MIDAS_MANY_TO_ONE,
-                'model' => 'AggregateMetricSpecification',
+                'model' => 'AggregateMetricSpec',
                 'module' => $this->moduleName,
-                'parent_column' => 'aggregate_metric_specification_id',
-                'child_column' => 'aggregate_metric_specification_id',
+                'parent_column' => 'aggregate_metric_spec_id',
+                'child_column' => 'aggregate_metric_spec_id',
             ),
             'submission' => array(
                 'type' => MIDAS_MANY_TO_ONE,
@@ -54,22 +54,22 @@ abstract class Tracker_AggregateMetricModelBase extends Tracker_AppModel
     }
 
     /**
-     * Return an array of input scalars that would be used by an aggregate metric for the submission based on the specification.
+     * Return an array of input scalars that would be used by an aggregate metric for the submission based on the spec.
      *
-     * @param Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao specification DAO
+     * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao spec DAO
      * @param Tracker_SubmissionDao $submissionDao submission DAO
      * @return false | array array of scalar values that would be input to the aggregate metric
      */
-    abstract public function getAggregateMetricInputValuesForSubmission($aggregateMetricSpecificationDao, $submissionDao);
+    abstract public function getAggregateMetricInputValuesForSubmission($aggregateMetricSpecDao, $submissionDao);
 
     /**
-     * Compute an aggregate metric for the submission based on the specification.
+     * Compute an aggregate metric for the submission based on the spec.
      *
-     * @param Tracker_AggregateMetricSpecificationDao $aggregateMetricSpecificationDao specification DAO
+     * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao spec DAO
      * @param Tracker_SubmissionDao $submissionDao submission DAO
-     * @return false | Tracker_AggregateMetricDao metric DAO computed on the submission from the specification
+     * @return false | Tracker_AggregateMetricDao metric DAO computed on the submission from the spec
      */
-    abstract public function computeAggregateMetricForSubmission($aggregateMetricSpecificationDao, $submissionDao);
+    abstract public function computeAggregateMetricForSubmission($aggregateMetricSpecDao, $submissionDao);
 
     /**
      * Return all AggregateMetricDaos tied to the submission.

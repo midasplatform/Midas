@@ -92,16 +92,16 @@ CREATE INDEX IF NOT EXISTS "tracker_param_param_name" ON "tracker_param" ("param
 
 CREATE TABLE IF NOT EXISTS "tracker_aggregate_metric" (
     "aggregate_metric_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    "aggregate_metric_specification_id" INTEGER NOT NULL,
+    "aggregate_metric_spec_id" INTEGER NOT NULL,
     "submission_id" INTEGER NOT NULL,
     "value" REAL
 );
 
-CREATE INDEX IF NOT EXISTS "tracker_aggregate_metric_aggregate_metric_specification_id" ON "tracker_aggregate_metric" ("aggregate_metric_specification_id");
+CREATE INDEX IF NOT EXISTS "tracker_aggregate_metric_aggregate_metric_spec_id" ON "tracker_aggregate_metric" ("aggregate_metric_spec_id");
 CREATE INDEX IF NOT EXISTS "tracker_aggregate_metric_submission_id" ON "tracker_aggregate_metric" ("submission_id");
 
-CREATE TABLE IF NOT EXISTS "tracker_aggregate_metric_specification" (
-    "aggregate_metric_specification_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+CREATE TABLE IF NOT EXISTS "tracker_aggregate_metric_spec" (
+    "aggregate_metric_spec_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     "producer_id" INTEGER NOT NULL,
     "branch" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -111,11 +111,11 @@ CREATE TABLE IF NOT EXISTS "tracker_aggregate_metric_specification" (
     "comparison" TEXT NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS "tracker_aggregate_metric_specification_producer_id" ON "tracker_aggregate_metric_specification" ("producer_id");
-CREATE INDEX IF NOT EXISTS "tracker_aggregate_metric_specification_branch" ON "tracker_aggregate_metric_specification" ("branch");
+CREATE INDEX IF NOT EXISTS "tracker_aggregate_metric_spec_producer_id" ON "tracker_aggregate_metric_spec" ("producer_id");
+CREATE INDEX IF NOT EXISTS "tracker_aggregate_metric_spec_branch" ON "tracker_aggregate_metric_spec" ("branch");
 
-CREATE TABLE IF NOT EXISTS "tracker_user2aggregate_metric_specification" (
+CREATE TABLE IF NOT EXISTS "tracker_user2aggregate_metric_spec" (
     "user_id"  INTEGER NOT NULL,
-    "aggregate_metric_specification_id" INTEGER NOT NULL,
-    PRIMARY_KEY("user_id", "aggregate_metric_specification_id")
+    "aggregate_metric_spec_id" INTEGER NOT NULL,
+    PRIMARY_KEY("user_id", "aggregate_metric_spec_id")
 );
