@@ -37,7 +37,8 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
     }
 
     /** createAdditionalGreedyErrorSubmission1Scalars testing utility function. */
-    protected function createAdditionalGreedyErrorSubmission1Scalars() {
+    protected function createAdditionalGreedyErrorSubmission1Scalars()
+    {
         /** @var Tracker_TrendModel $trendModel */
         $trendModel = MidasLoader::loadModel('Trend', 'tracker');
         /** @var Tracker_ScalarModel $scalarModel */
@@ -45,7 +46,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
 
         $extraTrends = array();
         /** @var int $i */
-        for ($i = 0; $i < 4; $i++) {
+        for ($i = 0; $i < 4; ++$i) {
             /** @var Tracker_TrendDao $trendDao */
             $trendDao = $trendModel->createIfNeeded(100, 'Greedy error', 1000, 2000 + $i, 2000);
             $trendDao->setKeyMetric(1);
@@ -69,7 +70,8 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
     }
 
     /** deleteExtraTrends testing utility function. */
-    protected function deleteExtraTrends($extraTrends) {
+    protected function deleteExtraTrends($extraTrends)
+    {
         /** @var Tracker_TrendModel $trendModel */
         $trendModel = MidasLoader::loadModel('Trend', 'tracker');
         /** @var Tracker_TrendDao $trendDao */
@@ -583,7 +585,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
 
         $submission1AggregateMetricDaos = $aggregateMetricModel->computeAggregateMetricsForSubmission($submission1Dao);
         $this->assertEquals(count($submission1AggregateMetricDaos), 5);
-        $submission1MetricValues = array (
+        $submission1MetricValues = array(
             array(19.0 => false),
             array(11.0 => false),
             array(44.0 => false),
@@ -612,7 +614,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
 
         $submission1AggregateMetricDaos = $aggregateMetricModel->computeAggregateMetricsForSubmission($submission1Dao);
         $this->assertEquals(count($submission1AggregateMetricDaos), 5);
-        $submission1MetricValues = array (
+        $submission1MetricValues = array(
             array(23.0 => false),
             array(13.0 => false),
             array(44.0 => false),
@@ -641,7 +643,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         // Retest after deletion.
         $submission1AggregateMetricDaos = $aggregateMetricModel->computeAggregateMetricsForSubmission($submission1Dao);
         $this->assertEquals(count($submission1AggregateMetricDaos), 5);
-        $submission1MetricValues = array (
+        $submission1MetricValues = array(
             array(19.0 => false),
             array(11.0 => false),
             array(44.0 => false),
@@ -669,7 +671,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
 
         $submission2AggregateMetricDaos = $aggregateMetricModel->computeAggregateMetricsForSubmission($submission2Dao);
         $this->assertEquals(count($submission2AggregateMetricDaos), 5);
-        $submission2MetricValues = array (
+        $submission2MetricValues = array(
             array(22.0 => false),
             array(38.0 => false),
             array(46.0 => false),
@@ -705,7 +707,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
 
         $this->assertEquals($submission1MetricsInitialCount, $submission1MetricsFinalCount);
         $this->assertEquals($submission2MetricsInitialCount, $submission2MetricsFinalCount);
-     }
+    }
 
     /** test AggregateMetricModel updateAggregateMetricsForSubmission function */
     public function testUpdateAggregateMetricsForSubmission()
@@ -740,7 +742,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
 
         $submission1AggregateMetricDaos = $aggregateMetricModel->updateAggregateMetricsForSubmission($submission1Dao);
         $this->assertEquals(count($submission1AggregateMetricDaos), 5);
-        $submission1MetricValues = array (
+        $submission1MetricValues = array(
             array(19.0 => false),
             array(11.0 => false),
             array(44.0 => false),
@@ -769,7 +771,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
 
         $submission1AggregateMetricDaos = $aggregateMetricModel->updateAggregateMetricsForSubmission($submission1Dao);
         $this->assertEquals(count($submission1AggregateMetricDaos), 5);
-        $submission1MetricValues = array (
+        $submission1MetricValues = array(
             array(23.0 => false),
             array(13.0 => false),
             array(44.0 => false),
@@ -798,7 +800,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         // Retest after deletion.
         $submission1AggregateMetricDaos = $aggregateMetricModel->updateAggregateMetricsForSubmission($submission1Dao);
         $this->assertEquals(count($submission1AggregateMetricDaos), 5);
-        $submission1MetricValues = array (
+        $submission1MetricValues = array(
             array(19.0 => false),
             array(11.0 => false),
             array(44.0 => false),
@@ -826,7 +828,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
 
         $submission2AggregateMetricDaos = $aggregateMetricModel->updateAggregateMetricsForSubmission($submission2Dao);
         $this->assertEquals(count($submission2AggregateMetricDaos), 5);
-        $submission2MetricValues = array (
+        $submission2MetricValues = array(
             array(22.0 => false),
             array(38.0 => false),
             array(46.0 => false),
@@ -862,6 +864,5 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
 
         $this->assertEquals($submission1MetricsInitialCount + 1, $submission1MetricsFinalCount);
         $this->assertEquals($submission2MetricsInitialCount + 1, $submission2MetricsFinalCount);
-     }
-
+    }
 }

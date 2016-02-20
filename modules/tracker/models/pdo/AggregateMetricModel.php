@@ -125,8 +125,8 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
      * @param Tracker_SubmissionDao $submissionDao submission DAO
      * @return false | Tracker_AggregateMetricDao metric DAO computed on the submission from the spec
      */
-     public function computeAggregateMetricForSubmission($aggregateMetricSpecDao, $submissionDao)
-     {
+    public function computeAggregateMetricForSubmission($aggregateMetricSpecDao, $submissionDao)
+    {
         $values = $this->getAggregateMetricInputValuesForSubmission($aggregateMetricSpecDao, $submissionDao);
         if ($values === false) {
             return false;

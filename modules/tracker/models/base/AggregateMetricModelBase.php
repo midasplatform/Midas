@@ -81,7 +81,7 @@ abstract class Tracker_AggregateMetricModelBase extends Tracker_AppModel
      */
     abstract public function computeAggregateMetricForSubmission($aggregateMetricSpecDao, $submissionDao);
 
-     /**
+    /**
      * Compute on the fly all AggregateMetricDaos for the submission, without
      * saving any results.
      *
