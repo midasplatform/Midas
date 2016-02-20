@@ -118,14 +118,15 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
     }
 
     /**
-     * Compute and update an aggregate metric for the submission based on the spec.
+     * Compute on the fly the AggregateMetricDao for the submission and the
+     * aggregate metric spec, without saving any results.
      *
      * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao spec DAO
      * @param Tracker_SubmissionDao $submissionDao submission DAO
      * @return false | Tracker_AggregateMetricDao metric DAO computed on the submission from the spec
      */
-    public function updateAggregateMetricForSubmission($aggregateMetricSpecDao, $submissionDao)
-    {
+     public function computeAggregateMetricForSubmission($aggregateMetricSpecDao, $submissionDao)
+     {
         $values = $this->getAggregateMetricInputValuesForSubmission($aggregateMetricSpecDao, $submissionDao);
         if ($values === false) {
             return false;
@@ -142,9 +143,99 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
             $aggregateMetricDao->setAggregateMetricSpecId($aggregateMetricSpecDao->getAggregateMetricSpecId());
             $aggregateMetricDao->setSubmissionId($submissionDao->getSubmissionId());
             $aggregateMetricDao->setValue($computedValue);
-            $this->save($aggregateMetricDao);
 
             return $aggregateMetricDao;
         }
+    }
+
+    /**
+     * Delete any existing AggregateMetric for the submission and spec, then compute and save
+     * an AggregateMetric for the submission and spec, returning the AggregateMetric.
+     *
+     * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao spec DAO
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @return false | Tracker_AggregateMetricDao metric DAO computed on the submission from the spec
+     */
+    public function updateAggregateMetricForSubmission($aggregateMetricSpecDao, $submissionDao)
+    {
+        if (is_null($aggregateMetricSpecDao) || $aggregateMetricSpecDao === false) {
+            return false;
+        }
+        if (is_null($submissionDao) || $submissionDao === false) {
+            return false;
+        }
+        Zend_Registry::get('dbAdapter')->delete($this->_name, array(
+            'aggregate_metric_spec_id = '.$aggregateMetricSpecDao->getAggregateMetricSpecId(),
+            'submission_id = '.$submissionDao->getSubmissionId(),
+        ));
+        $aggregateMetricDao = $this->computeAggregateMetricForSubmission($aggregateMetricSpecDao, $submissionDao);
+        if ($aggregateMetricDao === false) {
+            return false;
+        }
+        $this->save($aggregateMetricDao);
+
+        return $aggregateMetricDao;
+    }
+
+    /**
+     * Compute on the fly all AggregateMetricDaos for the submission, without
+     * saving any results.
+     *
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @return false | array AggregateMetric DOAs all AggregateMetricDaos for the
+     * SubmissionDao
+     */
+    public function computeAggregateMetricsForSubmission($submissionDao)
+    {
+        if (is_null($submissionDao) || $submissionDao === false) {
+            return false;
+        }
+        /** @var AggregateMetricSpecModel $aggregateMetricSpecModel */
+        $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
+        $specDaos = $aggregateMetricSpecModel->getAggregateMetricSpecsForSubmission($submissionDao);
+        if ($specDaos === false) {
+            return false;
+        }
+        $aggregateMetrics = array();
+        /** @var Tracker_AggregateMetricSpecDao $specDao */
+        foreach ($specDaos as $specDao) {
+            $aggregateMetricDao = $this->computeAggregateMetricForSubmission($specDao, $submissionDao);
+            if ($aggregateMetricDao !== false) {
+                $aggregateMetrics[] = $aggregateMetricDao;
+            }
+        }
+
+        return $aggregateMetrics;
+    }
+
+    /**
+     * Delete all existing AggregateMetrics for the submission, then compute and save all
+     * AggregateMetrics for the submission, returning the AggregateMetrics.
+     *
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @return false | array AggregateMetric DOAs all AggregateMetricDaos for the
+     * SubmissionDao
+     */
+    public function updateAggregateMetricsForSubmission($submissionDao)
+    {
+        if (is_null($submissionDao) || $submissionDao === false) {
+            return false;
+        }
+        Zend_Registry::get('dbAdapter')->delete($this->_name, 'submission_id = '.$submissionDao->getSubmissionId());
+        /** @var array $computedMetrics */
+        $computedMetrics = $this->computeAggregateMetricsForSubmission($submissionDao);
+        if ($computedMetrics === false) {
+            return false;
+        }
+        $updatedMetrics = array();
+        /* @var Tracker_AggregateMetricDao $computedMetricDao */
+        foreach ($computedMetrics as $computedMetricDao) {
+            if ($computedMetricDao != false) {
+                $this->save($computedMetricDao);
+                $updatedMetrics[] = $computedMetricDao;
+            }
+        }
+
+        return $updatedMetrics;
     }
 }
