@@ -31,6 +31,7 @@ class Tracker_ScalarModelTest extends DatabaseTestCase
         $configDatabase = Zend_Registry::get('configDatabase');
         if ($configDatabase->database->adapter == 'PDO_PGSQL') {
             $db->query("SELECT setval('tracker_submission_submission_id_seq', (SELECT MAX(submission_id) FROM tracker_submission)+1);");
+            $db->query("SELECT setval('tracker_scalar_scalar_id_seq', (SELECT MAX(scalar_id) FROM tracker_scalar)+1);");
         }
         parent::setUp();
     }

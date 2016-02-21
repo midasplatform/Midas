@@ -32,6 +32,8 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         if ($configDatabase->database->adapter == 'PDO_PGSQL') {
             $db->query("SELECT setval('tracker_aggregate_metric_spec_aggregate_metric_spec_id_seq', (SELECT MAX(aggregate_metric_spec_id) FROM tracker_aggregate_metric_spec)+1);");
             $db->query("SELECT setval('tracker_aggregate_metric_aggregate_metric_id_seq', (SELECT MAX(aggregate_metric_id) FROM tracker_aggregate_metric)+1);");
+            $db->query("SELECT setval('tracker_trend_trend_id_seq', (SELECT MAX(trend_id) FROM tracker_trend)+1);");
+            $db->query("SELECT setval('tracker_scalar_scalar_id_seq', (SELECT MAX(scalar_id) FROM tracker_scalar)+1);");
         }
         parent::setUp();
     }
@@ -55,7 +57,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
             $scalarDao = MidasLoader::newDao('ScalarDao', 'tracker');
             $scalarDao->setSubmissionId(1);
             $scalarDao->setTrendId($trendDao->getKey());
-            $scalarDao->setSubmitTime('00000');
+            $scalarDao->setSubmitTime(date('Y-m-d', time()));
             $scalarDao->setProducerRevision(1);
             $scalarDao->setValue(21.0 + $i);
             $scalarDao->setUserId(1);
