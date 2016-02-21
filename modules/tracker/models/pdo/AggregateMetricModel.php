@@ -65,7 +65,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
     }
 
     /**
-     * Return an array of input scalars that would be used by an aggregate metric for the submission based on the spec.
+     * Return a sorted array of input scalars that would be used by an aggregate metric for the submission based on the spec.
      *
      * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao spec DAO
      * @param Tracker_SubmissionDao $submissionDao submission DAO
@@ -113,6 +113,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
         foreach ($rows as $row) {
             $values[] = floatval($row['value']);
         }
+        sort($values);
 
         return $values;
     }

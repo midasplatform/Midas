@@ -54,7 +54,7 @@ abstract class Tracker_AggregateMetricModelBase extends Tracker_AppModel
     }
 
     /**
-     * Return an array of input scalars that would be used by an aggregate metric for the submission based on the spec.
+     * Return a sorted array of input scalars that would be used by an aggregate metric for the submission based on the spec.
      *
      * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao spec DAO
      * @param Tracker_SubmissionDao $submissionDao submission DAO
