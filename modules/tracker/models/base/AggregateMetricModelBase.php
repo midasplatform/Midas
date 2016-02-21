@@ -87,7 +87,7 @@ abstract class Tracker_AggregateMetricModelBase extends Tracker_AppModel
      * saving any results.
      *
      * @param Tracker_SubmissionDao $submissionDao submission DAO
-     * @return false | array AggregateMetric DOAs all AggregateMetricDaos for the
+     * @return false | array AggregateMetric DAOs all AggregateMetricDaos for the
      * SubmissionDao
      */
     abstract public function computeAggregateMetricsForSubmission($submissionDao);
@@ -97,16 +97,26 @@ abstract class Tracker_AggregateMetricModelBase extends Tracker_AppModel
      * AggregateMetrics for the submission, returning the AggregateMetrics.
      *
      * @param Tracker_SubmissionDao $submissionDao submission DAO
-     * @return false | array AggregateMetric DOAs all AggregateMetricDaos for the
+     * @return false | array AggregateMetric DAOs all AggregateMetricDaos for the
      * SubmissionDao
      */
     abstract public function updateAggregateMetricsForSubmission($submissionDao);
 
     /**
+     * Return one existing AggregateMetric tied to the submission and spec.
+     *
+     * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao spec DAO
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @return false | Tracker_AggregateMetricDao the AggregateMetricDao linked to the
+     * SubmissionDao and AggregateMetricSpecDao
+     */
+    abstract public function getAggregateMetricForSubmission($aggregateMetricSpecDao, $submissionDao);
+
+    /**
      * Return all AggregateMetricDaos tied to the submission.
      *
      * @param Tracker_SubmissionDao $submissionDao submission DAO
-     * @return false | array AggregateMetric DOAs all AggregateMetricDaos linked to the
+     * @return false | array AggregateMetric DAOs all AggregateMetricDaos linked to the
      * SubmissionDao
      */
     public function getAggregateMetricsForSubmission($submissionDao)

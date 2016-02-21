@@ -867,4 +867,113 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         $this->assertEquals($submission1MetricsInitialCount + 1, $submission1MetricsFinalCount);
         $this->assertEquals($submission2MetricsInitialCount + 1, $submission2MetricsFinalCount);
     }
+
+    /** test AggregateMetricModel getAggregateMetricForSubmission function */
+    public function testGetAggregateMetricForSubmission() {
+    /** test AggregateMetricModel getAggregateMetricForSubmission function */
+        /** @var Tracker_ProducerModel $producerModel */
+        $producerModel = MidasLoader::loadModel('Producer', 'tracker');
+        /** @var Tracker_SubmissionModel $submissionModel */
+        $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
+        /** @var AggregateMetricSpecModel $aggregateMetricSpecModel */
+        $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
+        /** @var AggregateMetricModel $aggregateMetricModel */
+        $aggregateMetricModel = MidasLoader::loadModel('AggregateMetric', 'tracker');
+
+        /** @var Tracker_ProducerDao $producer100Dao */
+        $producer100Dao = $producerModel->load(100);
+        /** @var Tracker_SubmissionDao $submission1Dao */
+        $submission1Dao = $submissionModel->load(1);
+        /** @var Tracker_SubmissionDao $submission2Dao */
+        $submission2Dao = $submissionModel->load(2);
+
+        // Keep the counts of saved metrics to ensure no new ones are saved.
+        $submission1Metrics = $aggregateMetricModel->getAggregateMetricsForSubmission($submission1Dao);
+        $submission1MetricsInitialCount = count($submission1Metrics);
+        $submission2Metrics = $aggregateMetricModel->getAggregateMetricsForSubmission($submission2Dao);
+        $submission2MetricsInitialCount = count($submission2Metrics);
+
+        /** @var Tracker_AggregateMetricSpecDao $greedyError95thPercentileAMSDao */
+        $greedyError95thPercentileAMSDao = $aggregateMetricSpecModel->load(1);
+        /** @var Tracker_AggregateMetricSpecDao $greedyError55thPercentileAMSDao */
+        $greedyError55thPercentileAMSDao = $aggregateMetricSpecModel->load(2);
+
+        $aggregateMetricDao = $aggregateMetricModel->getAggregateMetricForSubmission($greedyError95thPercentileAMSDao, $submission1Dao);
+        $this->assertEquals($aggregateMetricDao->getValue(), 19.0);
+
+        $aggregateMetricDao = $aggregateMetricModel->getAggregateMetricForSubmission($greedyError95thPercentileAMSDao, $submission2Dao);
+        $this->assertEquals($aggregateMetricDao->getValue(), 38.0);
+
+        $aggregateMetricDao = $aggregateMetricModel->getAggregateMetricForSubmission($greedyError55thPercentileAMSDao, $submission1Dao);
+        $this->assertEquals($aggregateMetricDao->getValue(), 11.0);
+
+        $aggregateMetricDao = $aggregateMetricModel->getAggregateMetricForSubmission($greedyError55thPercentileAMSDao, $submission2Dao);
+        $this->assertEquals($aggregateMetricDao->getValue(), 22.0);
+
+        // Add 4 trends with a scalar each and test again, none of the metric values should change.
+        $extraTrends = $this->createAdditionalGreedyErrorSubmission1Scalars();
+
+        $aggregateMetricDao = $aggregateMetricModel->getAggregateMetricForSubmission($greedyError95thPercentileAMSDao, $submission1Dao);
+        $this->assertEquals($aggregateMetricDao->getValue(), 19.0);
+
+        $aggregateMetricDao = $aggregateMetricModel->getAggregateMetricForSubmission($greedyError55thPercentileAMSDao, $submission1Dao);
+        $this->assertEquals($aggregateMetricDao->getValue(), 11.0);
+
+        $this->deleteExtraTrends($extraTrends);
+
+        // Retest after deletion, again none of the metric values should change.
+        $aggregateMetricDao = $aggregateMetricModel->getAggregateMetricForSubmission($greedyError95thPercentileAMSDao, $submission1Dao);
+        $this->assertEquals($aggregateMetricDao->getValue(), 19.0);
+
+        $aggregateMetricDao = $aggregateMetricModel->getAggregateMetricForSubmission($greedyError55thPercentileAMSDao, $submission1Dao);
+        $this->assertEquals($aggregateMetricDao->getValue(), 11.0);
+
+        /** @var Tracker_AggregateMetricSpecDao $optimalError95thPercentileAMSDao */
+        $optimalError95thPercentileAMSDao = $aggregateMetricSpecModel->load(3);
+        /** @var Tracker_AggregateMetricSpecDao $optimalError55thPercentileAMSDao */
+        $optimalError55thPercentileAMSDao = $aggregateMetricSpecModel->load(4);
+
+        $aggregateMetricDao = $aggregateMetricModel->getAggregateMetricForSubmission($optimalError95thPercentileAMSDao, $submission1Dao);
+        $this->assertEquals($aggregateMetricDao->getValue(), 44.0);
+
+        $aggregateMetricDao = $aggregateMetricModel->getAggregateMetricForSubmission($optimalError95thPercentileAMSDao, $submission2Dao);
+        $this->assertEquals($aggregateMetricDao->getValue(), 54.0);
+
+        $aggregateMetricDao = $aggregateMetricModel->getAggregateMetricForSubmission($optimalError55thPercentileAMSDao, $submission1Dao);
+        $this->assertEquals($aggregateMetricDao->getValue(), 36.0);
+
+        $aggregateMetricDao = $aggregateMetricModel->getAggregateMetricForSubmission($optimalError55thPercentileAMSDao, $submission2Dao);
+        $this->assertEquals($aggregateMetricDao->getValue(), 46.0);
+
+        /** @var Tracker_AggregateMetricSpecDao $greedyDistance55thPercentileAMSDao */
+        $greedyDistance55thPercentileAMSDao = $aggregateMetricSpecModel->load(5);
+
+        $aggregateMetricDao = $aggregateMetricModel->getAggregateMetricForSubmission($greedyDistance55thPercentileAMSDao, $submission1Dao);
+        // This has no trends that are key metrics.
+        $this->assertEquals($aggregateMetricDao, false);
+
+        /** @var Tracker_AggregateMetricSpecDao $optimalDistance55thPercentileAMSDao */
+        $optimalDistance55thPercentileAMSDao = $aggregateMetricSpecModel->load(6);
+
+        $aggregateMetricDao = $aggregateMetricModel->getAggregateMetricForSubmission($optimalDistance55thPercentileAMSDao, $submission1Dao);
+        // Trends have no scalars.
+        $this->assertEquals($aggregateMetricDao, false);
+
+        // Test combinations of null inputs.
+        $nullAMSAggregateMetricDao = $aggregateMetricModel->getAggregateMetricForSubmission(null, $submission1Dao);
+        $this->assertFalse($nullAMSAggregateMetricDao);
+        $nullSubmissionAggregateMetricDao = $aggregateMetricModel->getAggregateMetricForSubmission($optimalDistance55thPercentileAMSDao, null);
+        $this->assertFalse($nullSubmissionAggregateMetricDao);
+        $nullBothAggregateMetricDao = $aggregateMetricModel->getAggregateMetricForSubmission(null, null);
+        $this->assertFalse($nullBothAggregateMetricDao);
+
+        // Finally ensure that no new aggregate metrics have been saved.
+        $submission1Metrics = $aggregateMetricModel->getAggregateMetricsForSubmission($submission1Dao);
+        $submission1MetricsFinalCount = count($submission1Metrics);
+        $submission2Metrics = $aggregateMetricModel->getAggregateMetricsForSubmission($submission2Dao);
+        $submission2MetricsFinalCount = count($submission2Metrics);
+
+        $this->assertEquals($submission1MetricsInitialCount, $submission1MetricsFinalCount);
+        $this->assertEquals($submission2MetricsInitialCount, $submission2MetricsFinalCount);
+    }
 }

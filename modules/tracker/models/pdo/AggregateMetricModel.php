@@ -183,7 +183,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
      * saving any results.
      *
      * @param Tracker_SubmissionDao $submissionDao submission DAO
-     * @return false | array AggregateMetric DOAs all AggregateMetricDaos for the
+     * @return false | array AggregateMetric DAOs all AggregateMetricDaos for the
      * SubmissionDao
      */
     public function computeAggregateMetricsForSubmission($submissionDao)
@@ -214,7 +214,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
      * AggregateMetrics for the submission, returning the AggregateMetrics.
      *
      * @param Tracker_SubmissionDao $submissionDao submission DAO
-     * @return false | array AggregateMetric DOAs all AggregateMetricDaos for the
+     * @return false | array AggregateMetric DAOs all AggregateMetricDaos for the
      * SubmissionDao
      */
     public function updateAggregateMetricsForSubmission($submissionDao)
@@ -238,5 +238,32 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
         }
 
         return $updatedMetrics;
+    }
+
+    /**
+     * Return one existing AggregateMetric tied to the submission and spec.
+     *
+     * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao spec DAO
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @return false | Tracker_AggregateMetricDao the AggregateMetricDao linked to the
+     * SubmissionDao and AggregateMetricSpecDao
+     */
+    public function getAggregateMetricForSubmission($aggregateMetricSpecDao, $submissionDao)
+    {
+        if (is_null($aggregateMetricSpecDao) || $aggregateMetricSpecDao === false) {
+            return false;
+        }
+        if (is_null($submissionDao) || $submissionDao === false) {
+            return false;
+        }
+        $sql = $this->database->select()->setIntegrityCheck(false)
+            ->from('tracker_aggregate_metric')
+            ->where('aggregate_metric_spec_id = ?', $aggregateMetricSpecDao->getAggregateMetricSpecId())
+            ->where('submission_id = ?', $submissionDao->getSubmissionId());
+
+        /** @var Zend_Db_Table_Row_Abstract $row */
+        $row = $this->database->fetchRow($sql);
+
+        return $this->initDao('AggregateMetric', $row, $this->moduleName);
     }
 }
