@@ -1109,5 +1109,13 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
             $this->assertEquals($aggregateMetricDao->getValue(), $expectedValues[$valueIndex]);
             ++$valueIndex;
         }
-    }
+
+        // Test combinations of null inputs.
+        $nullAMSAggregateMetricDao = $aggregateMetricModel->getAggregateMetricsForSubmissions(null, $submissionDaos);
+        $this->assertFalse($nullAMSAggregateMetricDao);
+        $nullSubmissionAggregateMetricDao = $aggregateMetricModel->getAggregateMetricsForSubmissions($optimalError55thPercentileAMSDao, null);
+        $this->assertFalse($nullSubmissionAggregateMetricDao);
+        $nullBothAggregateMetricDao = $aggregateMetricModel->getAggregateMetricsForSubmissions(null, null);
+        $this->assertFalse($nullBothAggregateMetricDao);
+     }
 }
