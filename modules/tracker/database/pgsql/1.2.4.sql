@@ -1,6 +1,6 @@
 -- Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- PostgreSQL database for the tracker module, version 1.2.3
+-- PostgreSQL database for the tracker module, version 1.2.4
 
 SET client_encoding = 'UTF8';
 SET default_with_oids = FALSE;
@@ -91,3 +91,33 @@ CREATE TABLE IF NOT EXISTS "tracker_param" (
 );
 
 CREATE INDEX "tracker_param_param_name_idx" ON "tracker_param" ("param_name");
+
+CREATE TABLE IF NOT EXISTS "tracker_aggregate_metric" (
+    "aggregate_metric_id" serial PRIMARY KEY,
+    "aggregate_metric_spec_id" bigint NOT NULL,
+    "submission_id" bigint NOT NULL,
+    "value" double precision
+);
+
+CREATE INDEX "tracker_aggregate_metric_aggregate_metric_spec_id" ON "tracker_aggregate_metric" ("aggregate_metric_spec_id");
+CREATE INDEX "tracker_aggregate_metric_submission_id" ON "tracker_aggregate_metric" ("submission_id");
+
+CREATE TABLE IF NOT EXISTS "tracker_aggregate_metric_spec" (
+    "aggregate_metric_spec_id" serial PRIMARY KEY,
+    "producer_id" bigint NOT NULL,
+    "branch" character varying(255) NOT NULL,
+    "name" character varying(255) NOT NULL,
+    "description" character varying(255) NOT NULL,
+    "schema" text,
+    "value" double precision,
+    "comparison" character varying(2) NOT NULL
+);
+
+CREATE INDEX "tracker_aggregate_metric_spec_producer_id" ON "tracker_aggregate_metric_spec" ("producer_id");
+CREATE INDEX "tracker_aggregate_metric_spec_branch" ON "tracker_aggregate_metric_spec" ("branch");
+
+CREATE TABLE IF NOT EXISTS "tracker_user2aggregate_metric_spec" (
+    "user_id"  bigint NOT NULL,
+    "aggregate_metric_spec_id" bigint NOT NULL,
+    PRIMARY_KEY("user_id", "aggregate_metric_spec_id")
+);

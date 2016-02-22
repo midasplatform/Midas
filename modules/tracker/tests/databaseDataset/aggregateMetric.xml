@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <tracker_producer producer_id="100" community_id="2000" display_name="Test Producer" repository="https://example.com"
+                      executable_name="test.exe" description="" revision_url="https:/example.net" />
+    <!-- 20 Trends which are Greedy error each with a different test_dataset_id -->
+    <tracker_trend trend_id="1" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
+                   test_dataset_id="1001" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="2" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
+                   test_dataset_id="1002" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="3" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
+                   test_dataset_id="1003" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="4" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
+                   test_dataset_id="1004" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="5" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
+                   test_dataset_id="1005" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="6" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
+                   test_dataset_id="1006" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="7" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
+                   test_dataset_id="1007" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="8" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
+                   test_dataset_id="1008" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="9" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
+                   test_dataset_id="1009" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="10" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
+                   test_dataset_id="1010" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="11" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
+                   test_dataset_id="1011" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="12" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
+                   test_dataset_id="1012" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="13" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
+                   test_dataset_id="1013" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="14" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
+                   test_dataset_id="1014" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="15" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
+                   test_dataset_id="1015" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="16" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
+                   test_dataset_id="1016" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="17" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
+                   test_dataset_id="1017" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="18" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
+                   test_dataset_id="1018" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="19" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
+                   test_dataset_id="1019" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="20" producer_id="100" metric_name="Greedy error" display_name="Greedy error" config_item_id="1000"
+                   test_dataset_id="1020" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <!-- 20 Trends which are Optimal error each with a different test_dataset_id -->
+    <tracker_trend trend_id="21" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
+                   test_dataset_id="1001" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="22" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
+                   test_dataset_id="1002" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="23" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
+                   test_dataset_id="1003" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="24" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
+                   test_dataset_id="1004" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="25" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
+                   test_dataset_id="1005" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="26" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
+                   test_dataset_id="1006" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="27" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
+                   test_dataset_id="1007" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="28" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
+                   test_dataset_id="1008" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="29" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
+                   test_dataset_id="1009" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="30" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
+                   test_dataset_id="1010" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="31" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
+                   test_dataset_id="1011" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="32" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
+                   test_dataset_id="1012" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="33" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
+                   test_dataset_id="1013" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="34" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
+                   test_dataset_id="1014" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="35" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
+                   test_dataset_id="1015" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="36" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
+                   test_dataset_id="1016" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="37" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
+                   test_dataset_id="1017" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="38" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
+                   test_dataset_id="1018" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="39" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
+                   test_dataset_id="1019" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <tracker_trend trend_id="40" producer_id="100" metric_name="Optimal error" display_name="Optimal error" config_item_id="1000"
+                   test_dataset_id="1020" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <!-- Greedy distance trend, has two scalars, but not a key metric -->
+    <tracker_trend trend_id="41" producer_id="100" metric_name="Greedy distance" display_name="Greedy distance" config_item_id="1000"
+                   test_dataset_id="1020" truth_dataset_id="1002" unit="mm" key_metric="0" />
+     <!-- Optimal distance trend, is a key metric, with no scalars -->
+    <tracker_trend trend_id="42" producer_id="100" metric_name="Optimal distance" display_name="Optimal distance" config_item_id="1000"
+                   test_dataset_id="1020" truth_dataset_id="1002" unit="mm" key_metric="1" />
+    <!-- Submissions with a scalar per each above trend -->
+    <!-- Submissions 1 - 7 are in order of submit_time where submission 7 is oldest and submission 1 is newest -->
+    <tracker_submission submission_id="1" producer_id="100" uuid="1234" submit_time="2016-02-07 00:11:22" />
+    <tracker_submission submission_id="2" producer_id="100" uuid="1235" submit_time="2016-02-06 00:11:22" />
+    <!-- Addtional submissions with a small set of scalars for two trends, intended to provide a week's worth of results -->
+    <tracker_submission submission_id="3" producer_id="100" uuid="1236" submit_time="2016-02-05 00:11:22" />
+    <tracker_submission submission_id="4" producer_id="100" uuid="1237" submit_time="2016-02-04 00:11:22" />
+    <tracker_submission submission_id="5" producer_id="100" uuid="1238" submit_time="2016-02-03 00:11:22" />
+    <tracker_submission submission_id="6" producer_id="100" uuid="1239" submit_time="2016-02-02 00:11:22" />
+    <tracker_submission submission_id="7" producer_id="100" uuid="1240" submit_time="2016-02-01 00:11:22" />
+    <!-- One scalar per each Greedy error trend, for submission_id 1 -->
+    <tracker_scalar scalar_id="1" trend_id="1" value="1.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="2" trend_id="2" value="2.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="3" trend_id="3" value="3.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="4" trend_id="4" value="4.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="5" trend_id="5" value="5.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="6" trend_id="6" value="6.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="7" trend_id="7" value="7.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="8" trend_id="8" value="8.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="9" trend_id="9" value="9.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="10" trend_id="10" value="10.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="11" trend_id="11" value="11.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="12" trend_id="12" value="12.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="13" trend_id="13" value="13.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="14" trend_id="14" value="14.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="15" trend_id="15" value="15.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="16" trend_id="16" value="16.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="17" trend_id="17" value="17.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="18" trend_id="18" value="18.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="19" trend_id="19" value="19.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="20" trend_id="20" value="20.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each Greedy error trend, for submission_id 2 -->
+    <tracker_scalar scalar_id="21" trend_id="1" value="2.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="22" trend_id="2" value="4.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="23" trend_id="3" value="6.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="24" trend_id="4" value="8.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="25" trend_id="5" value="10.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="26" trend_id="6" value="12.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="27" trend_id="7" value="14.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="28" trend_id="8" value="16.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="29" trend_id="9" value="18.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="30" trend_id="10" value="20.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="31" trend_id="11" value="22.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="32" trend_id="12" value="24.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="33" trend_id="13" value="26.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="34" trend_id="14" value="28.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="35" trend_id="15" value="30.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="36" trend_id="16" value="32.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="37" trend_id="17" value="34.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="38" trend_id="18" value="36.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="39" trend_id="19" value="38.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="40" trend_id="20" value="40.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each Optimal error trend, for submission_id 1 -->
+    <tracker_scalar scalar_id="41" trend_id="21" value="26.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="42" trend_id="22" value="27.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="43" trend_id="23" value="28.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="44" trend_id="24" value="29.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="45" trend_id="25" value="30.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="46" trend_id="26" value="31.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="47" trend_id="27" value="32.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="48" trend_id="28" value="33.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="49" trend_id="29" value="34.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="50" trend_id="30" value="35.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="51" trend_id="31" value="36.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="52" trend_id="32" value="37.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="53" trend_id="33" value="38.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="54" trend_id="34" value="39.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="55" trend_id="35" value="40.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="56" trend_id="36" value="41.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="57" trend_id="37" value="42.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="58" trend_id="38" value="43.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="59" trend_id="39" value="44.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="60" trend_id="40" value="45.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each Optimal error trend, for submission_id 2 -->
+    <tracker_scalar scalar_id="61" trend_id="21" value="36.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="62" trend_id="22" value="37.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="63" trend_id="23" value="38.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="64" trend_id="24" value="39.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="65" trend_id="25" value="40.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="66" trend_id="26" value="41.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="67" trend_id="27" value="42.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="68" trend_id="28" value="43.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="69" trend_id="29" value="44.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="70" trend_id="30" value="45.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="71" trend_id="31" value="46.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="72" trend_id="32" value="47.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="73" trend_id="33" value="48.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="74" trend_id="34" value="49.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="75" trend_id="35" value="50.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="76" trend_id="36" value="51.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="77" trend_id="37" value="52.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="78" trend_id="38" value="53.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="79" trend_id="39" value="54.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="80" trend_id="40" value="55.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per Greedy distance trend, for submission 1 and 2 -->
+    <tracker_scalar scalar_id="81" trend_id="41" value="3000055.0" submission_id="1" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="82" trend_id="41" value="2000455.0" submission_id="2" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each of the first four Greedy error trends, for submission_id 3 -->
+    <tracker_scalar scalar_id="83" trend_id="1" value="1.0" submission_id="3" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="84" trend_id="2" value="2.0" submission_id="3" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="85" trend_id="3" value="3.0" submission_id="3" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="86" trend_id="4" value="4.0" submission_id="3" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each of the first four Optimal error trends, for submission_id 3 -->
+    <tracker_scalar scalar_id="87" trend_id="21" value="4.0" submission_id="3" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="88" trend_id="22" value="5.0" submission_id="3" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="89" trend_id="23" value="6.0" submission_id="3" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="90" trend_id="24" value="7.0" submission_id="3" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each of the first four Greedy error trends, for submission_id 4 -->
+    <tracker_scalar scalar_id="91" trend_id="1" value="1.0" submission_id="4" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="92" trend_id="2" value="2.0" submission_id="4" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="93" trend_id="3" value="3.0" submission_id="4" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="94" trend_id="4" value="4.0" submission_id="4" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each of the first four Optimal error trends, for submission_id 4 -->
+    <tracker_scalar scalar_id="95" trend_id="21" value="4.0" submission_id="4" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="96" trend_id="22" value="5.0" submission_id="4" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="97" trend_id="23" value="6.0" submission_id="4" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="98" trend_id="24" value="7.0" submission_id="4" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each of the first four Greedy error trends, for submission_id 5 -->
+    <tracker_scalar scalar_id="99" trend_id="1" value="1.0" submission_id="5" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="100" trend_id="2" value="2.0" submission_id="5" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="101" trend_id="3" value="3.0" submission_id="5" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="102" trend_id="4" value="4.0" submission_id="5" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each of the first four Optimal error trends, for submission_id 5 -->
+    <tracker_scalar scalar_id="103" trend_id="21" value="4.0" submission_id="5" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="104" trend_id="22" value="5.0" submission_id="5" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="105" trend_id="23" value="6.0" submission_id="5" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="106" trend_id="24" value="7.0" submission_id="5" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each of the first four Greedy error trends, for submission_id 6 -->
+    <tracker_scalar scalar_id="107" trend_id="1" value="1.0" submission_id="6" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="108" trend_id="2" value="2.0" submission_id="6" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="109" trend_id="3" value="3.0" submission_id="6" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="110" trend_id="4" value="4.0" submission_id="6" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each of the first four Optimal error trends, for submission_id 6 -->
+    <tracker_scalar scalar_id="111" trend_id="21" value="4.0" submission_id="6" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="112" trend_id="22" value="5.0" submission_id="6" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="113" trend_id="23" value="6.0" submission_id="6" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="114" trend_id="24" value="7.0" submission_id="6" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each of the first four Greedy error trends, for submission_id 7 -->
+    <tracker_scalar scalar_id="115" trend_id="1" value="1.0" submission_id="7" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="116" trend_id="2" value="2.0" submission_id="7" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="117" trend_id="3" value="3.0" submission_id="7" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="118" trend_id="4" value="4.0" submission_id="7" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each of the first four Optimal error trends, for submission_id 7 -->
+    <tracker_scalar scalar_id="119" trend_id="21" value="4.0" submission_id="7" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="120" trend_id="22" value="5.0" submission_id="7" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="121" trend_id="23" value="6.0" submission_id="7" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="122" trend_id="24" value="7.0" submission_id="7" build_results_url="build.results.url" branch="master" />
+     <!-- AggregateMetricSpecs tied to producer 100, all on 'master' -->
+    <tracker_aggregate_metric_spec aggregate_metric_spec_id="1" producer_id="100" comparison="!=" value="1.0"
+        branch="master" name="95th Percentile Greedy error" description="95th Percentile Greedy error" schema="percentile('Greedy error', 95)" />
+    <tracker_aggregate_metric_spec aggregate_metric_spec_id="2" producer_id="100" comparison="!=" value="1.0"
+        branch="master" name="55th Percentile Greedy error" description="55th Percentile Greedy error" schema="percentile('Greedy error', 55)" />
+    <tracker_aggregate_metric_spec aggregate_metric_spec_id="3" producer_id="100" comparison="!=" value="1.0"
+        branch="master" name="95th Percentile Optimal error" description="95th Percentile Optimal error" schema="percentile('Optimal error', 95)" />
+    <tracker_aggregate_metric_spec aggregate_metric_spec_id="4" producer_id="100" comparison="!=" value="1.0"
+        branch="master" name="55th Percentile Optimal error" description="55th Percentile Optimal error" schema="percentile('Optimal error', 55)" />
+    <tracker_aggregate_metric_spec aggregate_metric_spec_id="5" producer_id="100" comparison="!=" value="1.0"
+        branch="master" name="55th Percentile Greedy distance" description="55th Percentile Greedy distance" schema="percentile('Greedy distance', 55)" />
+    <tracker_aggregate_metric_spec aggregate_metric_spec_id="6" producer_id="100" comparison="!=" value="1.0"
+        branch="master" name="55th Percentile Optimal distance" description="55th Percentile Optimal distance" schema="percentile('Optimal distance', 55)" />
+</dataset>
