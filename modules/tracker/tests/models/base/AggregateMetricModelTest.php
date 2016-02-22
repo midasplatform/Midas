@@ -1117,5 +1117,5 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         $this->assertFalse($nullSubmissionAggregateMetricDao);
         $nullBothAggregateMetricDao = $aggregateMetricModel->getAggregateMetricsForSubmissions(null, null);
         $this->assertFalse($nullBothAggregateMetricDao);
-     }
+    }
 }
