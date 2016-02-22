@@ -113,6 +113,19 @@ abstract class Tracker_AggregateMetricModelBase extends Tracker_AppModel
     abstract public function getAggregateMetricForSubmission($aggregateMetricSpecDao, $submissionDao);
 
     /**
+     * Return a list of submission ids mapped to an existing aggregate metric for
+     * that submission and the single aggregate metric spec, sorted in ascending order
+     * of submission submit_time.
+     *
+     * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao spec DAO
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @return false | array keys are submission_id and values are Tracker_AggregateMetricDao
+     * for that SubmissionDao and AggregateMetricSpecDao, sorted in ascending order of
+     * SubmissionDao submit_time.
+     */
+    abstract public function getAggregateMetricsForSubmissions($aggregateMetricSpecDao, $submissionDaos);
+
+    /**
      * Return all AggregateMetricDaos tied to the submission.
      *
      * @param Tracker_SubmissionDao $submissionDao submission DAO

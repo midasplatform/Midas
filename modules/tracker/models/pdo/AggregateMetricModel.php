@@ -266,4 +266,57 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
 
         return $this->initDao('AggregateMetric', $row, $this->moduleName);
     }
+
+    /**
+     * Return a list of submission ids mapped to an existing aggregate metric for
+     * that submission and the single aggregate metric spec, sorted in ascending order
+     * of submission submit_time.
+     *
+     * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao spec DAO
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @return false | array keys are submission_id and values are Tracker_AggregateMetricDao
+     * for that SubmissionDao and AggregateMetricSpecDao, sorted in ascending order of
+     * SubmissionDao submit_time.
+     */
+    public function getAggregateMetricsForSubmissions($aggregateMetricSpecDao, $submissionDaos)
+    {
+        if (is_null($aggregateMetricSpecDao) || $aggregateMetricSpecDao === false) {
+            return false;
+        }
+        if (is_null($submissionDaos) || count($submissionDaos) === 0) {
+            return false;
+        }
+
+        $submissionsBySubmissionId = array();
+        /** @var Tracker_SubmissionDao $submissionDao */
+        foreach ($submissionDaos as $submissionDao) {
+            $submissionsBySubmissionId[$submissionDao->getSubmissionId()] = $submissionDao;
+        }
+        $sql = $this->database->select()->setIntegrityCheck(false)
+            ->from('tracker_aggregate_metric')
+            ->where('aggregate_metric_spec_id = ?', $aggregateMetricSpecDao->getAggregateMetricSpecId())
+            ->where('submission_id IN (?)', array_keys($submissionsBySubmissionId));
+        $rows = $this->database->fetchAll($sql);
+        if (count($rows) === 0) {
+            return false;
+        };
+        $aggregateMetricDaosBySubmissionId = array();
+        /** @var Zend_Db_Table_Row_Abstract $row */
+        foreach ($rows as $row) {
+            /** @var Tracker_AggregateMetricDao aggregateMetricDao */
+            $aggregateMetricDao = $this->initDao('AggregateMetric', $row, $this->moduleName);
+            $aggregateMetricDaosBySubmissionId[$aggregateMetricDao->getSubmissionId()] = $aggregateMetricDao;
+        }
+
+        // Sort by ascending submission submit_time order.
+        $cmpBySubmitTime = function ($a, $b) use ($submissionsBySubmissionId) {
+            $submitTimeA = strtotime($submissionsBySubmissionId[$a]->getSubmitTime());
+            $submitTimeB = strtotime($submissionsBySubmissionId[$b]->getSubmitTime());
+
+            return ($submitTimeA - $submitTimeB);
+        };
+        uksort($aggregateMetricDaosBySubmissionId, $cmpBySubmitTime);
+
+        return $aggregateMetricDaosBySubmissionId;
+    }
 }

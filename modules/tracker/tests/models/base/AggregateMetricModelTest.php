@@ -976,4 +976,137 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         $this->assertEquals($submission1MetricsInitialCount, $submission1MetricsFinalCount);
         $this->assertEquals($submission2MetricsInitialCount, $submission2MetricsFinalCount);
     }
+
+    /** test AggregateMetricModel getAggregateMetricsForSubmissions function */
+    public function testGetAggregateMetricsForSubmissions() {
+        /** @var Tracker_ProducerModel $producerModel */
+        $producerModel = MidasLoader::loadModel('Producer', 'tracker');
+        /** @var Tracker_SubmissionModel $submissionModel */
+        $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
+        /** @var AggregateMetricSpecModel $aggregateMetricSpecModel */
+        $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
+        /** @var AggregateMetricModel $aggregateMetricModel */
+        $aggregateMetricModel = MidasLoader::loadModel('AggregateMetric', 'tracker');
+
+        /** @var Tracker_ProducerDao $producer100Dao */
+        $producer100Dao = $producerModel->load(100);
+
+        /** @var Tracker_SubmissionDao $submission1Dao */
+        $submission1Dao = $submissionModel->load(1);
+        /** @var Tracker_SubmissionDao $submission2Dao */
+        $submission2Dao = $submissionModel->load(2);
+        /** @var Tracker_SubmissionDao $submission3Dao */
+        $submission3Dao = $submissionModel->load(3);
+        /** @var Tracker_SubmissionDao $submission4Dao */
+        $submission4Dao = $submissionModel->load(4);
+        /** @var Tracker_SubmissionDao $submission5Dao */
+        $submission5Dao = $submissionModel->load(5);
+        /** @var Tracker_SubmissionDao $submission6Dao */
+        $submission6Dao = $submissionModel->load(6);
+        /** @var Tracker_SubmissionDao $submission7Dao */
+        $submission7Dao = $submissionModel->load(7);
+
+        $submissionDaos = array(
+            $submission1Dao,
+            $submission2Dao,
+            $submission3Dao,
+            $submission4Dao,
+            $submission5Dao,
+            $submission6Dao,
+            $submission7Dao,
+        );
+
+        // Compute and save metrics for all submissions.
+        /** @var Tracker_SubmissionDao $submissionDao */
+        foreach ($submissionDaos as $submissionDao) {
+            $submissionMetrics = $aggregateMetricModel->updateAggregateMetricsForSubmission($submissionDao);
+        }
+
+        /** @var Tracker_AggregateMetricSpecDao $greedyError95thPercentileAMSDao */
+        $greedyError95thPercentileAMSDao = $aggregateMetricSpecModel->load(1);
+        $aggregateMetricsForSubmissions = $aggregateMetricModel->getAggregateMetricsForSubmissions($greedyError95thPercentileAMSDao, $submissionDaos);
+        $expectedValues = array(4.0, 4.0, 4.0, 4.0, 4.0, 38.0, 19.0);
+
+        /** @var int $valueIndex */
+        $valueIndex = 0;
+        /** @var Tracker_AggregateMetricDao $aggregateMetricDao */
+        foreach ($aggregateMetricsForSubmissions as $aggregateMetricDao) {
+            $this->assertEquals($aggregateMetricDao->getValue(), $expectedValues[$valueIndex]);
+            ++$valueIndex;
+        }
+
+        // Test a smaller subset.
+        $submissionSubset = array(
+            $submission1Dao,
+            $submission2Dao,
+            $submission3Dao,
+        );
+        $aggregateMetricsForSubmissions = $aggregateMetricModel->getAggregateMetricsForSubmissions($greedyError95thPercentileAMSDao, $submissionSubset);
+        $expectedValues = array(4.0, 38.0, 19.0);
+
+        $valueIndex = 0;
+        /** @var Tracker_AggregateMetricDao $aggregateMetricDao */
+        foreach ($aggregateMetricsForSubmissions as $aggregateMetricDao) {
+            $this->assertEquals($aggregateMetricDao->getValue(), $expectedValues[$valueIndex]);
+            ++$valueIndex;
+        }
+
+        // Change around the order of submissions, should still get the same result.
+        $submissionDaosReordered = array(
+            $submission3Dao,
+            $submission2Dao,
+            $submission1Dao,
+            $submission4Dao,
+            $submission5Dao,
+            $submission7Dao,
+            $submission6Dao,
+        );
+
+        $aggregateMetricsForSubmissions = $aggregateMetricModel->getAggregateMetricsForSubmissions($greedyError95thPercentileAMSDao, $submissionDaosReordered);
+        $expectedValues = array(4.0, 4.0, 4.0, 4.0, 4.0, 38.0, 19.0);
+
+        /** @var int $valueIndex */
+        $valueIndex = 0;
+        /** @var Tracker_AggregateMetricDao $aggregateMetricDao */
+        foreach ($aggregateMetricsForSubmissions as $aggregateMetricDao) {
+            $this->assertEquals($aggregateMetricDao->getValue(), $expectedValues[$valueIndex]);
+            ++$valueIndex;
+        }
+
+        /** @var Tracker_AggregateMetricSpecDao $greedyError55thPercentileAMSDao */
+        $greedyError55thPercentileAMSDao = $aggregateMetricSpecModel->load(2);
+        $aggregateMetricsForSubmissions = $aggregateMetricModel->getAggregateMetricsForSubmissions($greedyError55thPercentileAMSDao, $submissionDaos);
+        $expectedValues = array(2.0, 2.0, 2.0, 2.0, 2.0, 22.0, 11.0);
+
+        $valueIndex = 0;
+        /** @var Tracker_AggregateMetricDao $aggregateMetricDao */
+        foreach ($aggregateMetricsForSubmissions as $aggregateMetricDao) {
+            $this->assertEquals($aggregateMetricDao->getValue(), $expectedValues[$valueIndex]);
+            ++$valueIndex;
+        }
+
+        /** @var Tracker_AggregateMetricSpecDao $optimalError95thPercentileAMSDao */
+        $optimalError95thPercentileAMSDao = $aggregateMetricSpecModel->load(3);
+        $aggregateMetricsForSubmissions = $aggregateMetricModel->getAggregateMetricsForSubmissions($optimalError95thPercentileAMSDao, $submissionDaos);
+        $expectedValues = array(7.0, 7.0, 7.0, 7.0, 7.0, 54.0, 44.0);
+
+        $valueIndex = 0;
+        /** @var Tracker_AggregateMetricDao $aggregateMetricDao */
+        foreach ($aggregateMetricsForSubmissions as $aggregateMetricDao) {
+            $this->assertEquals($aggregateMetricDao->getValue(), $expectedValues[$valueIndex]);
+            ++$valueIndex;
+        }
+
+        /** @var Tracker_AggregateMetricSpecDao $optimalError55thPercentileAMSDao */
+        $optimalError55thPercentileAMSDao = $aggregateMetricSpecModel->load(4);
+        $aggregateMetricsForSubmissions = $aggregateMetricModel->getAggregateMetricsForSubmissions($optimalError55thPercentileAMSDao, $submissionDaos);
+        $expectedValues = array(5.0, 5.0, 5.0, 5.0, 5.0, 46.0, 36.0);
+
+        $valueIndex = 0;
+        /** @var Tracker_AggregateMetricDao $aggregateMetricDao */
+        foreach ($aggregateMetricsForSubmissions as $aggregateMetricDao) {
+            $this->assertEquals($aggregateMetricDao->getValue(), $expectedValues[$valueIndex]);
+            ++$valueIndex;
+        }
+    }
 }

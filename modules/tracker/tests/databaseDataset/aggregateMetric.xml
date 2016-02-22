@@ -91,8 +91,15 @@
     <tracker_trend trend_id="42" producer_id="100" metric_name="Optimal distance" display_name="Optimal distance" config_item_id="1000"
                    test_dataset_id="1020" truth_dataset_id="1002" unit="mm" key_metric="1" />
     <!-- Submissions with a scalar per each above trend -->
-    <tracker_submission submission_id="1" producer_id="100" uuid="1234" />
-    <tracker_submission submission_id="2" producer_id="100" uuid="1235" />
+    <!-- Submissions 1 - 7 are in order of submit_time where submission 7 is oldest and submission 1 is newest -->
+    <tracker_submission submission_id="1" producer_id="100" uuid="1234" submit_time="2016-02-07 00:11:22" />
+    <tracker_submission submission_id="2" producer_id="100" uuid="1235" submit_time="2016-02-06 00:11:22" />
+    <!-- Addtional submissions with a small set of scalars for two trends, intended to provide a week's worth of results -->
+    <tracker_submission submission_id="3" producer_id="100" uuid="1236" submit_time="2016-02-05 00:11:22" />
+    <tracker_submission submission_id="4" producer_id="100" uuid="1237" submit_time="2016-02-04 00:11:22" />
+    <tracker_submission submission_id="5" producer_id="100" uuid="1238" submit_time="2016-02-03 00:11:22" />
+    <tracker_submission submission_id="6" producer_id="100" uuid="1239" submit_time="2016-02-02 00:11:22" />
+    <tracker_submission submission_id="7" producer_id="100" uuid="1240" submit_time="2016-02-01 00:11:22" />
     <!-- One scalar per each Greedy error trend, for submission_id 1 -->
     <tracker_scalar scalar_id="1" trend_id="1" value="1.0" submission_id="1" build_results_url="build.results.url" branch="master" />
     <tracker_scalar scalar_id="2" trend_id="2" value="2.0" submission_id="1" build_results_url="build.results.url" branch="master" />
@@ -180,7 +187,57 @@
     <!-- One scalar per Greedy distance trend, for submission 1 and 2 -->
     <tracker_scalar scalar_id="81" trend_id="41" value="3000055.0" submission_id="1" build_results_url="build.results.url" branch="master" />
     <tracker_scalar scalar_id="82" trend_id="41" value="2000455.0" submission_id="2" build_results_url="build.results.url" branch="master" />
-    <!-- AggregateMetricSpecs tied to producer 100, all on 'master' -->
+    <!-- One scalar per each of the first four Greedy error trends, for submission_id 3 -->
+    <tracker_scalar scalar_id="83" trend_id="1" value="1.0" submission_id="3" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="84" trend_id="2" value="2.0" submission_id="3" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="85" trend_id="3" value="3.0" submission_id="3" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="86" trend_id="4" value="4.0" submission_id="3" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each of the first four Optimal error trends, for submission_id 3 -->
+    <tracker_scalar scalar_id="87" trend_id="21" value="4.0" submission_id="3" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="88" trend_id="22" value="5.0" submission_id="3" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="89" trend_id="23" value="6.0" submission_id="3" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="90" trend_id="24" value="7.0" submission_id="3" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each of the first four Greedy error trends, for submission_id 4 -->
+    <tracker_scalar scalar_id="91" trend_id="1" value="1.0" submission_id="4" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="92" trend_id="2" value="2.0" submission_id="4" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="93" trend_id="3" value="3.0" submission_id="4" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="94" trend_id="4" value="4.0" submission_id="4" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each of the first four Optimal error trends, for submission_id 4 -->
+    <tracker_scalar scalar_id="95" trend_id="21" value="4.0" submission_id="4" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="96" trend_id="22" value="5.0" submission_id="4" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="97" trend_id="23" value="6.0" submission_id="4" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="98" trend_id="24" value="7.0" submission_id="4" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each of the first four Greedy error trends, for submission_id 5 -->
+    <tracker_scalar scalar_id="99" trend_id="1" value="1.0" submission_id="5" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="100" trend_id="2" value="2.0" submission_id="5" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="101" trend_id="3" value="3.0" submission_id="5" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="102" trend_id="4" value="4.0" submission_id="5" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each of the first four Optimal error trends, for submission_id 5 -->
+    <tracker_scalar scalar_id="103" trend_id="21" value="4.0" submission_id="5" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="104" trend_id="22" value="5.0" submission_id="5" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="105" trend_id="23" value="6.0" submission_id="5" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="106" trend_id="24" value="7.0" submission_id="5" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each of the first four Greedy error trends, for submission_id 6 -->
+    <tracker_scalar scalar_id="107" trend_id="1" value="1.0" submission_id="6" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="108" trend_id="2" value="2.0" submission_id="6" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="109" trend_id="3" value="3.0" submission_id="6" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="110" trend_id="4" value="4.0" submission_id="6" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each of the first four Optimal error trends, for submission_id 6 -->
+    <tracker_scalar scalar_id="111" trend_id="21" value="4.0" submission_id="6" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="112" trend_id="22" value="5.0" submission_id="6" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="113" trend_id="23" value="6.0" submission_id="6" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="114" trend_id="24" value="7.0" submission_id="6" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each of the first four Greedy error trends, for submission_id 7 -->
+    <tracker_scalar scalar_id="115" trend_id="1" value="1.0" submission_id="7" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="116" trend_id="2" value="2.0" submission_id="7" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="117" trend_id="3" value="3.0" submission_id="7" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="118" trend_id="4" value="4.0" submission_id="7" build_results_url="build.results.url" branch="master" />
+    <!-- One scalar per each of the first four Optimal error trends, for submission_id 7 -->
+    <tracker_scalar scalar_id="119" trend_id="21" value="4.0" submission_id="7" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="120" trend_id="22" value="5.0" submission_id="7" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="121" trend_id="23" value="6.0" submission_id="7" build_results_url="build.results.url" branch="master" />
+    <tracker_scalar scalar_id="122" trend_id="24" value="7.0" submission_id="7" build_results_url="build.results.url" branch="master" />
+     <!-- AggregateMetricSpecs tied to producer 100, all on 'master' -->
     <tracker_aggregate_metric_spec aggregate_metric_spec_id="1" producer_id="100" comparison="!=" value="1.0"
         branch="master" name="95th Percentile Greedy error" description="95th Percentile Greedy error" schema="percentile('Greedy error', 95)" />
     <tracker_aggregate_metric_spec aggregate_metric_spec_id="2" producer_id="100" comparison="!=" value="1.0"
