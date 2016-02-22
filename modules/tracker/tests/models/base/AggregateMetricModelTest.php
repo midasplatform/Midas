@@ -869,7 +869,8 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
     }
 
     /** test AggregateMetricModel getAggregateMetricForSubmission function */
-    public function testGetAggregateMetricForSubmission() {
+    public function testGetAggregateMetricForSubmission()
+    {
         /** @var Tracker_ProducerModel $producerModel */
         $producerModel = MidasLoader::loadModel('Producer', 'tracker');
         /** @var Tracker_SubmissionModel $submissionModel */
