@@ -313,7 +313,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
             $submitTimeA = strtotime($submissionsBySubmissionId[$a]->getSubmitTime());
             $submitTimeB = strtotime($submissionsBySubmissionId[$b]->getSubmitTime());
 
-            return ($submitTimeA - $submitTimeB);
+            return $submitTimeA - $submitTimeB;
         };
         uksort($aggregateMetricDaosBySubmissionId, $cmpBySubmitTime);
 
