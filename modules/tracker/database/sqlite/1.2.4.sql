@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS "tracker_aggregate_metric_spec" (
     "branch" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "schema" TEXT NOT NULL,
+    "spec" TEXT NOT NULL,
     "value" REAL,
     "comparison" TEXT NOT NULL
 );

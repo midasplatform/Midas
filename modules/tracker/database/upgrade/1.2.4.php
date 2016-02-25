@@ -42,7 +42,7 @@ class Tracker_Upgrade_1_2_4 extends MIDASUpgrade
             "    `branch` varchar(255) NOT NULL DEFAULT '',".
             "    `name` varchar(255) NOT NULL DEFAULT '',".
             "    `description` varchar(255) NOT NULL DEFAULT '',".
-            "    `schema` text NOT NULL DEFAULT '',".
+            "    `spec` text NOT NULL DEFAULT '',".
             '    `value` double,'.
             "    `comparison` varchar(2) NOT NULL DEFAULT '',".
             '    PRIMARY KEY (`aggregate_metric_spec_id`),'.
@@ -79,7 +79,7 @@ class Tracker_Upgrade_1_2_4 extends MIDASUpgrade
             '    "branch" character varying(255) NOT NULL,'.
             '    "name" character varying(255) NOT NULL,'.
             '    "description" character varying(255) NOT NULL,'.
-            '    "schema" text,'.
+            '    "spec" text,'.
             '    "value" double precision,'.
             '    "comparison" character varying(2) NOT NULL'.
             ');'

@@ -43,10 +43,10 @@ class Tracker_AggregateMetricSpecModelTest extends DatabaseTestCase
         $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
 
         $name = '95th Percentile Greedy distance ';
-        $schema = "percentile('Greedy distance', 95)";
+        $spec = "percentile('Greedy distance', 95)";
 
         // Pass a null producer.
-        $emptyProducerAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec(null, $name, $schema);
+        $emptyProducerAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec(null, $name, $spec);
         $this->assertFalse($emptyProducerAMSDao);
 
         /** @var Tracker_ProducerModel $producerModel */
@@ -54,9 +54,9 @@ class Tracker_AggregateMetricSpecModelTest extends DatabaseTestCase
         /** @var Tracker_ProducerDao $producer100Dao */
         $producer100Dao = $producerModel->load(100);
 
-        $validAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $schema);
+        $validAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $spec);
         $this->assertEquals($validAMSDao->getName(), $name);
-        $this->assertEquals($validAMSDao->getSchema(), $schema);
+        $this->assertEquals($validAMSDao->getSpec(), $spec);
         $this->assertEquals($validAMSDao->getProducerId(), $producer100Dao->getProducerId());
     }
 

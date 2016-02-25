@@ -303,32 +303,32 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
 
         // AMS that doesn't match any trends.
         $name = '95th Percentile Noop distance ';
-        $schema = "percentile('Noop distance', 95)";
+        $spec = "percentile('Noop distance', 95)";
         /** @var Tracker_AggregateMetricSpecDao $noopDistance95thPercentileAMSDao */
-        $noopDistance95thPercentileAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $schema);
+        $noopDistance95thPercentileAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $spec);
         $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($noopDistance95thPercentileAMSDao, $submission1Dao);
         $this->assertEquals($aggregateMetricDao, false);
 
         // AMS that doesn't match any branches.
         /** @var Tracker_AggregateMetricSpecDao $noopDistance95thPercentileTestAMSDao */
         $branch = 'test';
-        $noopDistance95thPercentileTestAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $schema, $branch);
+        $noopDistance95thPercentileTestAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $spec, $branch);
         $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($noopDistance95thPercentileTestAMSDao, $submission1Dao);
         $this->assertEquals($aggregateMetricDao, false);
 
         // AMS with missing percentile param.
         /** @var Tracker_AggregateMetricSpecDao $greedyErrorMissingPercentileAMSDao */
         $name = 'Percentile Greedy error';
-        $schema = "percentile('Greedy error')";
-        $greedyErrorMissingPercentileAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $schema);
+        $spec = "percentile('Greedy error')";
+        $greedyErrorMissingPercentileAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $spec);
         $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyErrorMissingPercentileAMSDao, $submission1Dao);
         $this->assertEquals($aggregateMetricDao, false);
 
         // AMS with percentile param that won't resolve to an int.
         /** @var Tracker_AggregateMetricSpecDao $greedyError9333PercentileAMSDao */
         $name = '93.33 Percentile Greedy error';
-        $schema = "percentile('Greedy error', 93.33)";
-        $greedyError9333PercentileAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $schema);
+        $spec = "percentile('Greedy error', 93.33)";
+        $greedyError9333PercentileAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $spec);
         $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyError9333PercentileAMSDao, $submission1Dao);
         $this->assertEquals($aggregateMetricDao->getValue(), 19.0);
 
@@ -437,32 +437,32 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
 
         // AMS that doesn't match any trends.
         $name = '95th Percentile Noop distance ';
-        $schema = "percentile('Noop distance', 95)";
+        $spec = "percentile('Noop distance', 95)";
         /** @var Tracker_AggregateMetricSpecDao $noopDistance95thPercentileAMSDao */
-        $noopDistance95thPercentileAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $schema);
+        $noopDistance95thPercentileAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $spec);
         $aggregateMetricDao = $aggregateMetricModel->updateAggregateMetricForSubmission($noopDistance95thPercentileAMSDao, $submission1Dao);
         $this->assertEquals($aggregateMetricDao, false);
 
         // AMS that doesn't match any branches.
         /** @var Tracker_AggregateMetricSpecDao $noopDistance95thPercentileTestAMSDao */
         $branch = 'test';
-        $noopDistance95thPercentileTestAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $schema, $branch);
+        $noopDistance95thPercentileTestAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $spec, $branch);
         $aggregateMetricDao = $aggregateMetricModel->updateAggregateMetricForSubmission($noopDistance95thPercentileTestAMSDao, $submission1Dao);
         $this->assertEquals($aggregateMetricDao, false);
 
         // AMS with missing percentile param.
         /** @var Tracker_AggregateMetricSpecDao $greedyErrorMissingPercentileAMSDao */
         $name = 'Percentile Greedy error';
-        $schema = "percentile('Greedy error')";
-        $greedyErrorMissingPercentileAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $schema);
+        $spec = "percentile('Greedy error')";
+        $greedyErrorMissingPercentileAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $spec);
         $aggregateMetricDao = $aggregateMetricModel->updateAggregateMetricForSubmission($greedyErrorMissingPercentileAMSDao, $submission1Dao);
         $this->assertEquals($aggregateMetricDao, false);
 
         // AMS with percentile param that won't resolve to an int.
         /** @var Tracker_AggregateMetricSpecDao $greedyError9333PercentileAMSDao */
         $name = '93.33 Percentile Greedy error';
-        $schema = "percentile('Greedy error', 93.33)";
-        $greedyError9333PercentileAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $schema);
+        $spec = "percentile('Greedy error', 93.33)";
+        $greedyError9333PercentileAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $spec);
         $aggregateMetricDao = $aggregateMetricModel->updateAggregateMetricForSubmission($greedyError9333PercentileAMSDao, $submission1Dao);
         $this->assertEquals($aggregateMetricDao->getValue(), 19.0);
 
@@ -582,8 +582,8 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         // Create a new AMS, with a value of 5.0 for submission 1 and 10.0 for submission 2.
         /** @var Tracker_AggregateMetricSpecDao $greedyError25thPercentileAMSDao */
         $name = '25th Percentile Greedy error';
-        $schema = "percentile('Greedy error', 25)";
-        $greedyError25thPercentileAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $schema);
+        $spec = "percentile('Greedy error', 25)";
+        $greedyError25thPercentileAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $spec);
 
         $submission1AggregateMetricDaos = $aggregateMetricModel->computeAggregateMetricsForSubmission($submission1Dao);
         $this->assertEquals(count($submission1AggregateMetricDaos), 5);
@@ -739,8 +739,8 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         // Create a new AMS, with a value of 5.0 for submission 1 and 10.0 for submission 2.
         /** @var Tracker_AggregateMetricSpecDao $greedyError25thPercentileAMSDao */
         $name = '25th Percentile Greedy error';
-        $schema = "percentile('Greedy error', 25)";
-        $greedyError25thPercentileAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $schema);
+        $spec = "percentile('Greedy error', 25)";
+        $greedyError25thPercentileAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $spec);
 
         $submission1AggregateMetricDaos = $aggregateMetricModel->updateAggregateMetricsForSubmission($submission1Dao);
         $this->assertEquals(count($submission1AggregateMetricDaos), 5);

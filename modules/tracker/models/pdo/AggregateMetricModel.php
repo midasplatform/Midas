@@ -43,15 +43,15 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
     }
 
     /**
-     * Parse a schema for computing aggregate metrics.
+     * Parse a spec for computing aggregate metrics.
      *
-     * @param string schema the schema representing how to compute the aggregate metric
-     * @return false | array the properties of the schema, parsed and separated
+     * @param string spec the spec representing how to compute the aggregate metric
+     * @return false | array the properties of the spec, parsed and separated
      */
-    protected function parseSchema($schema)
+    protected function parseSpec($spec)
     {
-        // Expect schema like "percentile('Greedy max distance', 95)"
-        preg_match("/(\w+)\((.*)\)/", $schema, $matches);
+        // Expect spec like "percentile('Greedy max distance', 95)"
+        preg_match("/(\w+)\((.*)\)/", $spec, $matches);
         $aggregationMethod = $matches[1];
         $params = explode(',', $matches[2]);
         $metricName = str_replace("'", '', $params[0]);
@@ -80,8 +80,8 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
             return false;
         }
 
-        $schema = $this->parseSchema($aggregateMetricSpecDao->getSchema());
-        $metricName = $schema['metric_name'];
+        $spec = $this->parseSpec($aggregateMetricSpecDao->getSpec());
+        $metricName = $spec['metric_name'];
         // Get the list of relevant trend_ids.
         $sql = $this->database->select()->setIntegrityCheck(false)
             ->from('tracker_trend', array('trend_id'))
@@ -132,9 +132,9 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
         if ($values === false) {
             return false;
         }
-        $schema = $this->parseSchema($aggregateMetricSpecDao->getSchema());
-        $aggregationMethod = $schema['aggregation_method'];
-        $aggregationParams = $schema['params'];
+        $spec = $this->parseSpec($aggregateMetricSpecDao->getSpec());
+        $aggregationMethod = $spec['aggregation_method'];
+        $aggregationParams = $spec['params'];
         $computedValue = $this->$aggregationMethod($values, $aggregationParams);
         if ($computedValue === false) {
             return false;
