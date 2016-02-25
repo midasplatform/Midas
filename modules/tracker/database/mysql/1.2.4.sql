@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `tracker_aggregate_metric_spec` (
     `branch` varchar(255) NOT NULL DEFAULT '',
     `name` varchar(255) NOT NULL DEFAULT '',
     `description` varchar(255) NOT NULL DEFAULT '',
-    `schema` text NOT NULL DEFAULT '',
+    `spec` text NOT NULL DEFAULT '',
     `value` double,
     `comparison` varchar(2) NOT NULL DEFAULT '',
     PRIMARY KEY (`aggregate_metric_spec_id`),

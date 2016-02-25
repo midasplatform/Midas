@@ -35,7 +35,7 @@ abstract class Tracker_AggregateMetricSpecModelBase extends Tracker_AppModel
             'branch' => array('type' => MIDAS_DATA),
             'name' => array('type' => MIDAS_DATA),
             'description' => array('type' => MIDAS_DATA),
-            'schema' => array('type' => MIDAS_DATA),
+            'spec' => array('type' => MIDAS_DATA),
             'value' => array('type' => MIDAS_DATA),
             'comparison' => array('type' => MIDAS_DATA),
             'producer' => array(
@@ -55,7 +55,7 @@ abstract class Tracker_AggregateMetricSpecModelBase extends Tracker_AppModel
      *
      * @param Tracker_ProducerDao $producerDao producer DAO
      * @param string $name the name of the aggregate metric spec
-     * @param string $schema the schema for the aggregate metric spec
+     * @param string $spec the spec for the aggregate metric spec
      * @param string $branch the branch of the aggregate metric spec (defaults to 'master')
      * @param false | string $description the description for the aggregate metric spec
      * @param false | string $value the value for the aggregate metric spec threshold
@@ -63,7 +63,7 @@ abstract class Tracker_AggregateMetricSpecModelBase extends Tracker_AppModel
      * one of ['>', '<', '>=', '<', '<=', '==', '!=']
      * @return false | Tracker_AggregateMetricSpecDao created from inputs
      */
-    public function createAggregateMetricSpec($producerDao, $name, $schema, $branch = 'master', $description = false, $value = false, $comparison = false)
+    public function createAggregateMetricSpec($producerDao, $name, $spec, $branch = 'master', $description = false, $value = false, $comparison = false)
     {
         if (is_null($producerDao) || $producerDao === false) {
             return false;
@@ -74,7 +74,7 @@ abstract class Tracker_AggregateMetricSpecModelBase extends Tracker_AppModel
         $aggregateMetricSpecDao->setProducerId($producerDao->getProducerId());
         $aggregateMetricSpecDao->setBranch($branch);
         $aggregateMetricSpecDao->setName($name);
-        $aggregateMetricSpecDao->setSchema($schema);
+        $aggregateMetricSpecDao->setSpec($spec);
         if ($description) {
             $aggregateMetricSpecDao->setDescription($description);
         } else {
