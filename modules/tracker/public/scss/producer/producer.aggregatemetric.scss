@@ -1,0 +1,64 @@
+// Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
+
+a {
+    &.aggregateMetricSpecAction {
+        color: #56758b;
+    }
+}
+
+div {
+    &#addAggregateMetricSpec {
+        margin-top: 10px;
+    }
+
+    &#xaggregateMetricsSpecEdit {
+        border-top: 1px solid;
+        border-top-color: black;
+        margin-top: 10px;
+        padding-top: 10px;
+    }
+
+    &.aggregateMetricSectionTitle {
+        border-top: 1px solid #d7d7d7;
+        color: #555;
+        font-size: 13px;
+        margin-top: 15px;
+        margin-bottom: 10px;
+        padding-top: 10px;
+        text-align: center;
+    }
+
+    &.resultingMetricText {
+        color: #555;
+        font-size: 12px;
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    &.aggregateMetricSpecSave {
+        margin-top: 20px;
+
+        input {
+            background: #f6f9fe;
+            border: 1px solid #808080;
+            color: #2e6e9e;
+            cursor: pointer;
+            float: right;
+            margin-left: 10px;
+        }
+    }
+
+}
+
+table {
+
+    &#aggreagteMetricSpecListTable {
+        table-layout: fixed;
+
+        td.specName {
+            width: 300px;
+        }
+    }
+
+
+}
