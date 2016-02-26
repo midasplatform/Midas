@@ -124,6 +124,16 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
     abstract public function getDistinctBranches();
 
     /**
+     * Return all distinct branch names producing scalars, tied to a specific
+     * producer, for trends that are key_metrics, and matching a trend metric_name.
+     *
+     * @param int $producerId producer id
+     * @param string $metricName trend metric_name
+     * @return array branch names
+     */
+    abstract public function getDistinctBranchesForTrendName($producerId, $metricName);
+
+    /**
      * Add a new scalar to the trend. If overwrite is true, and a scalar already exists on the trend with the same
      * submit time and user, then this will replace that scalar.
      *

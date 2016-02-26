@@ -177,4 +177,39 @@ class Tracker_ScalarModel extends Tracker_ScalarModelBase
 
         return $branches;
     }
+
+    /**
+     * Return all distinct branch names producing scalars, tied to a specific
+     * producer, for trends that are key_metrics, and matching a trend metric_name.
+     *
+     * @param int $producerId producer id
+     * @param string $metricName trend metric_name
+     * @return array branch names
+     */
+    public function getDistinctBranchesForTrendName($producerId, $metricName)
+    {
+        $sql = $this->database->select()->setIntegrityCheck(false)->from(
+            array('s' => 'tracker_scalar'),
+            'branch'
+        )
+        ->distinct()
+        ->join(
+            'tracker_trend',
+            's.trend_id = tracker_trend.trend_id',
+            array()
+        )
+        ->where('tracker_trend.producer_id = ?', $producerId)
+        ->where('tracker_trend.key_metric = ?', 1)
+        ->where('tracker_trend.metric_name = ?', $metricName);
+
+        $rows = $this->database->fetchAll($sql);
+        $branches = array();
+
+        /** @var Zend_Db_Table_Row_Abstract $row */
+        foreach ($rows as $row) {
+            $branches[] = $row['branch'];
+        }
+
+        return $branches;
+    }
 }
