@@ -35,7 +35,7 @@ div {
         text-align: center;
     }
 
-    &.aggregateMetricSpecSave {
+    &#aggregateMetricSpecSaveState {
         margin-top: 20px;
 
         input {
@@ -46,8 +46,31 @@ div {
             float: right;
             margin-left: 10px;
         }
+
+        input:disabled {
+            color: #c0c0c0;
+            cursor: not-allowed;
+        }
     }
 
+}
+
+label {
+    &#aggregateMetricSpecValidationError {
+        color: crimson;
+    }
+}
+
+img {
+    &#aggregateMetricSpecSaveLoading {
+        float: left;
+        margin-right: 15px;
+    }
+
+    &#aggregateMetricSpecDeleteLoading {
+        float: right;
+        margin-right: 40px;
+    }
 }
 
 table {
