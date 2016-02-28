@@ -259,7 +259,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         $this->assertEquals($aggregateMetricDao->getValue(), 23.0);
 
         $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyError55thPercentileAMSDao, $submission1Dao);
-        $this->assertEquals($aggregateMetricDao->getValue(), 13.0);
+        $this->assertEquals($aggregateMetricDao->getValue(), 14.0);
 
         $this->deleteExtraTrends($extraTrends);
 
@@ -393,7 +393,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         $this->assertEquals($aggregateMetricDao->getValue(), 23.0);
 
         $aggregateMetricDao = $aggregateMetricModel->updateAggregateMetricForSubmission($greedyError55thPercentileAMSDao, $submission1Dao);
-        $this->assertEquals($aggregateMetricDao->getValue(), 13.0);
+        $this->assertEquals($aggregateMetricDao->getValue(), 14.0);
 
         $this->deleteExtraTrends($extraTrends);
 
@@ -618,7 +618,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         $this->assertEquals(count($submission1AggregateMetricDaos), 5);
         $submission1MetricValues = array(
             array(23.0 => false),
-            array(13.0 => false),
+            array(14.0 => false),
             array(44.0 => false),
             array(36.0 => false),
             array(6.0 => false),
@@ -775,7 +775,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         $this->assertEquals(count($submission1AggregateMetricDaos), 5);
         $submission1MetricValues = array(
             array(23.0 => false),
-            array(13.0 => false),
+            array(14.0 => false),
             array(44.0 => false),
             array(36.0 => false),
             array(6.0 => false),
@@ -1077,7 +1077,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         /** @var Tracker_AggregateMetricSpecDao $greedyError55thPercentileAMSDao */
         $greedyError55thPercentileAMSDao = $aggregateMetricSpecModel->load(2);
         $aggregateMetricsForSubmissions = $aggregateMetricModel->getAggregateMetricsForSubmissions($greedyError55thPercentileAMSDao, $submissionDaos);
-        $expectedValues = array(2.0, 2.0, 2.0, 2.0, 2.0, 22.0, 11.0);
+        $expectedValues = array(3.0, 3.0, 3.0, 3.0, 3.0, 22.0, 11.0);
 
         $valueIndex = 0;
         /** @var Tracker_AggregateMetricDao $aggregateMetricDao */
@@ -1101,7 +1101,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         /** @var Tracker_AggregateMetricSpecDao $optimalError55thPercentileAMSDao */
         $optimalError55thPercentileAMSDao = $aggregateMetricSpecModel->load(4);
         $aggregateMetricsForSubmissions = $aggregateMetricModel->getAggregateMetricsForSubmissions($optimalError55thPercentileAMSDao, $submissionDaos);
-        $expectedValues = array(5.0, 5.0, 5.0, 5.0, 5.0, 46.0, 36.0);
+        $expectedValues = array(6.0, 6.0, 6.0, 6.0, 6.0, 46.0, 36.0);
 
         $valueIndex = 0;
         /** @var Tracker_AggregateMetricDao $aggregateMetricDao */

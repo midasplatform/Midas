@@ -7,7 +7,7 @@ var midas = midas || {};
 
 $(document).ready(function () {
     'use strict';
-// TODO style selects from round
+// TODO style selects, currently default rounded
 
     /**
      * Interface to server side AggregateMetricSpec REST API.
@@ -82,6 +82,7 @@ $(document).ready(function () {
     function clearSpecInputs() {
         $('.amsField').val('');
         $('#aggregateMetricSpecValidationError').text('');
+        $('#aggregateMetricSpecSpec').val('');
         $('#aggregateMetricSpecMetricName option:disabled').attr('selected', 'selected');
         $('#aggregateMetricSpecComparison option:disabled').attr('selected', 'selected');
         // Remove branches, add the placeholder.
@@ -143,6 +144,17 @@ $(document).ready(function () {
         // TODO style
         $('#aggreagteMetricSpecListTable tr:last').after(row);
     }
+
+    /** TODO */
+    function updateSpecInTable(aggregateMetricSpec) {
+        var amsId = aggregateMetricSpec.aggregate_metric_spec_id;
+        var name = aggregateMetricSpec.name;
+        // Get the row of this spec in the table.
+        var row = $("td").find("[data-aggregate_metric_spec_id='" + amsId + "']").first().closest('tr');
+        // Get the first cell of that row and output the spec's name.
+        $('td:first', row).text(name);
+    }
+
 
     /**
      * Return an object with of the current input values from the spec details panel,
@@ -208,7 +220,6 @@ $(document).ready(function () {
             // and that determines the set of possible branches.
             $('#aggregateMetricSpecValidationError').text("Loaded metric name '"+specParts.metricName+"' is invalid");
             $('img#aggregateMetricSpecSaveLoading').hide();
-            // TODO CHECK loading invalid and then trying to save, once save handler works.
         } else {
             $('#aggregateMetricSpecMetricName').val(specParts.metricName);
             // Don't need to hide the loading image because updateBranchList will.
@@ -224,10 +235,14 @@ $(document).ready(function () {
         }
     }
 
-    /** Handler for Delete action. */
+    /**
+     * Handler for Delete action, delete an Aggregate Metric Spec on the server
+     * and remove it from the table. The handler is tied
+     * to a static parent as the links can be dynamically generated through
+     * creation of new aggregate metric specs.
+     */
     $('#aggreagteMetricSpecListTable').on('click', 'a.removeAggregateMetricSpec', function(){
         var aggregateMetricSpecId = $(event.target).data('aggregate_metric_spec_id');
-        console.log(aggregateMetricSpecId);
         var row = $(event.target).closest('tr');
         var sCb = function (data) {
             row.remove();
@@ -238,20 +253,22 @@ $(document).ready(function () {
         aggregatemetricspecRest('DELETE', aggregateMetricSpecId, null, sCb, null, null);
     });
 
-
     /** Handler for Add action, open the details panel in Create state. */
     $('div#addAggregateMetricSpec').click(function () {
         showDetailsPanel();
-        // TODO ensure edit and create don't both show up
     });
 
-    /** TODO */
+    /**
+     * Handler for Edit action, open the details panel in Edit state after
+     * loading the details of the Aggregate Metric Spec.  The handler is tied
+     * to a static parent as the links can be dynamically generated through
+     * creation of new aggregate metric specs.
+     */
     $('#aggreagteMetricSpecListTable').on('click', 'a.editAggregateMetricSpec', function(){
         var aggregateMetricSpecId = $(event.target).data('aggregate_metric_spec_id');
         showDetailsPanel(true);
         $('img#aggregateMetricSpecSaveLoading').show();
         var successCallback = function (aggregateMetricSpec) {
-            console.log(aggregateMetricSpec);
             populateSpecInputs(aggregateMetricSpec);
         }
         aggregatemetricspecRest('GET', aggregateMetricSpecId, null, successCallback);
@@ -262,6 +279,75 @@ $(document).ready(function () {
         $('div#aggregateMetricSpecCreateEdit').hide();
     });
 
+    /** TODO */
+    function saveAggregateMetricSpec(aggregateMetricSpecId) {
+        $('div#aggregateMetricSpecSaveState input').prop('disabled', true);
+        $('#aggregateMetricSpecValidationError').text('');
+        var specValues = getSpecInputsValues();
+
+        // Validate the inputs.
+        // Order matters, so return after the first invalid field found.
+        var requiredFields = [
+            {'value': specValues.aggregateMetricSpec.name, 'name': 'Name'},
+            {'value': specValues.specInputs.metricName, 'name': 'Metric name'},
+            {'value': specValues.aggregateMetricSpec.branch, 'name': 'Branch'},
+            {'value': specValues.specInputs.aggregateMetric, 'name': 'Aggregate metric'},
+            {'value': specValues.specInputs.param, 'name': 'Param (percentile)'}
+        ];
+        for (var i = 0; i < requiredFields.length; i++) {
+            var value = requiredFields[i].value;
+            var name = requiredFields[i].name;
+            if (!value || value === '') {
+                $('#aggregateMetricSpecValidationError').text(name + ' is a required field');
+                $('div#aggregateMetricSpecSaveState input').prop('disabled', false);
+                return;
+            }
+        }
+        var param = specValues.specInputs.param;
+        if (!$.isNumeric(param) || param < 0 || param > 100) {
+            $('#aggregateMetricSpecValidationError').text('Param (percentile) must be >= 0 and <= 100');
+            $('div#aggregateMetricSpecSaveState input').prop('disabled', false);
+            return;
+        }
+        // Comparison and valid must be empty or not together.
+        var comparisonEmpty = (!specValues.aggregateMetricSpec.comparison || specValues.aggregateMetricSpec.comparison === '');
+        var valueEmpty = (!specValues.aggregateMetricSpec.value || specValues.aggregateMetricSpec.value === '');
+        if (comparisonEmpty !== valueEmpty) {
+            $('#aggregateMetricSpecValidationError').text('Comparison and value must be set together');
+            $('div#aggregateMetricSpecSaveState input').prop('disabled', false);
+            return;
+        } else if (!valueEmpty && !$.isNumeric(specValues.aggregateMetricSpec.value)) {
+            // The case where comparison and value are provided.
+            $('#aggregateMetricSpecValidationError').text('Value must be numeric');
+            $('div#aggregateMetricSpecSaveState input').prop('disabled', false);
+            return;
+        }
+
+        // Save the AMS on the server.
+        $('img#aggregateMetricSpecSaveLoading').show();
+        var successCallback = function (aggregateMetricSpec) {
+            if (aggregateMetricSpecId) {
+                updateSpecInTable(aggregateMetricSpec);
+            } else {
+                addToSpecTable(aggregateMetricSpec);
+            }
+            $('div#aggregateMetricSpecCreateEdit').hide();
+        }
+        var method = aggregateMetricSpecId ? 'PUT' : 'POST';
+        aggregateMetricSpecId = aggregateMetricSpecId ? aggregateMetricSpecId : null;
+        aggregatemetricspecRest(method, aggregateMetricSpecId, specValues.aggregateMetricSpec, successCallback);
+    }
+
+    /**
+     * Handler for Update button:
+     *     update the spec,
+     *     adjust its name in the spec listing table,
+     *     hide the details panel.
+     */
+    $('input#aggregateMetricSpecUpdate').click(function () {
+        saveAggregateMetricSpec($('#aggregateMetricSpecEditId').val());
+    });
+
     /**
      * Handler for Create button:
      *     create the new spec,
@@ -269,66 +355,7 @@ $(document).ready(function () {
      *     hide the details panel.
      */
     $('input#aggregateMetricSpecCreate').click(function () {
-        $('div#aggregateMetricSpecSaveState input').prop('disabled', true);
-        $('#aggregateMetricSpecValidationError').text('');
-        var specValues = getSpecInputsValues();
-
-        // Validate the inputs.
-        var valid = true;
-        // TODO order matters here so need to break after the first invalid
-        // TODO mucho repeated
-        if (!specValues.aggregateMetricSpec.name || specValues.aggregateMetricSpec.name === '') {
-            $('#aggregateMetricSpecValidationError').text('Name is a required field');
-            valid = false;
-        }
-        if (!specValues.aggregateMetricSpec.branch || specValues.aggregateMetricSpec.branch === '') {
-            $('#aggregateMetricSpecValidationError').text('Branch is a required field');
-            valid = false;
-        }
-        if (!specValues.specInputs.aggregateMetric || specValues.specInputs.aggregateMetric === '') {
-            $('#aggregateMetricSpecValidationError').text('Aggregate metric is a required field');
-            valid = false;
-        }
-        if (!specValues.specInputs.metricName || specValues.specInputs.metricName === '') {
-            $('#aggregateMetricSpecValidationError').text('Metric name is a required field');
-            valid = false;
-        }
-        // This is percentile centric now, as it is our only metric.
-        console.log('here');
-        if (!specValues.specInputs.param || specValues.specInputs.param === '') {
-            $('#aggregateMetricSpecValidationError').text('Param (percentile) is a required field');
-            valid = false;
-        } else {
-            var param = specValues.specInputs.param;
-            console.log(param);
-            if (!$.isNumeric(param) || param < 0 || param > 100) {
-                $('#aggregateMetricSpecValidationError').text('Param (percentile) must be >= 0 and <= 100');
-                valid = false;
-            }
-        }
-        // Comparison and valid must be empty or not together.
-        var comparisonEmpty = (!specValues.aggregateMetricSpec.comparison || specValues.aggregateMetricSpec.comparison === '');
-        var valueEmpty = (!specValues.aggregateMetricSpec.value || specValues.aggregateMetricSpec.value === '');
-        if (comparisonEmpty !== valueEmpty) {
-            $('#aggregateMetricSpecValidationError').text('Comparison and value must be set together');
-            valid = false;
-        } else if (!valueEmpty && !$.isNumeric(specValues.aggregateMetricSpec.value)) {
-            // The case where comparison and value are provided.
-            $('#aggregateMetricSpecValidationError').text('Value must be numeric');
-            valid = false;
-        }
-
-        if (!valid) {
-            $('div#aggregateMetricSpecSaveState input').prop('disabled', false);
-        } else {
-            // Create the AMS on the server.
-            $('img#aggregateMetricSpecSaveLoading').show();
-            var successCallback = function (aggregateMetricSpec) {
-                addToSpecTable(aggregateMetricSpec);
-                $('div#aggregateMetricSpecCreateEdit').hide();
-            }
-            aggregatemetricspecRest('POST', null, specValues.aggregateMetricSpec, successCallback);
-        }
+        saveAggregateMetricSpec();
     });
 
     /** Handler for the metric name select. */
