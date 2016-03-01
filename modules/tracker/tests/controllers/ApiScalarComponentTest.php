@@ -30,10 +30,14 @@ class Tracker_ApiScalarComponentTest extends RestCallMethodsTestCase
     {
         $this->enabledModules = array('api', 'scheduler', $this->moduleName);
         $this->_models = array('Assetstore', 'Community', 'Setting', 'User');
-
         $this->setupDatabase(array('default'));
         $this->setupDatabase(array('default'), 'tracker');
-
+        $db = Zend_Registry::get('dbAdapter');
+        $configDatabase = Zend_Registry::get('configDatabase');
+        if ($configDatabase->database->adapter == 'PDO_PGSQL') {
+            $db->query("SELECT setval('tracker_aggregate_metric_spec_aggregate_metric_spec_id_seq', (SELECT MAX(aggregate_metric_spec_id) FROM tracker_aggregate_metric_spec)+1);");
+            $db->query("SELECT setval('tracker_scalar_scalar_id_seq', (SELECT MAX(scalar_id) FROM tracker_scalar)+1);");
+        }
         ControllerTestCase::setUp();
     }
 
