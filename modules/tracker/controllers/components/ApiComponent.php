@@ -674,4 +674,42 @@ class Tracker_ApiComponent extends AppComponent
 
         return $newApi->post($args);
     }
+
+    /**
+     * Return an array of branch names from scalars tied to the producer
+     * and tied to trends with metric names matching the passed trend metric name.
+     *
+     * @param producerId The id of the producer tied to the scalars
+     * @param trendMetricName The metric_name of the trends tied to the scalars
+     * @return An array of branch names
+     * @throws Exception
+     */
+    public function branchesformetricnameList($args)
+    {
+        $this->_checkKeys(array('producerId', 'trendMetricName'), $args);
+        $user = $this->_getUser($args);
+
+        $producerId = $args['producerId'];
+        /** @var Tracker_ProducerModel $producerModel */
+        $producerModel = MidasLoader::loadModel('Producer', 'tracker');
+        /** @var Tracker_ProducerDao $producerDao */
+        $producerDao = $producerModel->load($producerId);
+        /** @var CommunityDao $communityDao */
+        $communityDao = $producerDao->getCommunity();
+
+        /** @var CommunityModel $communityModel */
+        $communityModel = MidasLoader::loadModel('Community');
+        if ($communityDao === false || $communityModel->policyCheck($communityDao, $user, MIDAS_POLICY_ADMIN) === false
+        ) {
+            throw new Zend_Exception('The associated community does not exist or you do not Admin access to the community', 403);
+        }
+
+        $trendMetricName = $args['trendMetricName'];
+        /** @var Tracker_TrendModel $trendModel */
+        $trendModel = MidasLoader::loadModel('Trend', 'tracker');
+        /** @var array $branches */
+        $branches = $trendModel->getDistinctBranchesForMetricName($producerId, $trendMetricName);
+
+        return $branches;
+    }
 }
