@@ -26,8 +26,6 @@ class InstallController extends AppController
     public $_components = array('Random', 'Utility');
     public $_forms = array('Install');
 
-    /**
-     */
     public function init()
     {
         if (file_exists(LOCAL_CONFIGS_PATH.'/database.local.ini') && file_exists(
@@ -38,8 +36,6 @@ class InstallController extends AppController
         }
     }
 
-    /**
-     */
     public function indexAction()
     {
         if (file_exists(LOCAL_CONFIGS_PATH.'/database.local.ini')) {
@@ -56,8 +52,6 @@ class InstallController extends AppController
         }
     }
 
-    /**
-     */
     public function step2Action()
     {
         if (file_exists(LOCAL_CONFIGS_PATH.'/database.local.ini')) {
@@ -220,8 +214,6 @@ class InstallController extends AppController
         }
     }
 
-    /**
-     */
     public function step3Action()
     {
         $this->requireAdminPrivileges();

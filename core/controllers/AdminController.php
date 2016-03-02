@@ -383,8 +383,6 @@ class AdminController extends AppController
         }
     }
 
-    /**
-     */
     public function migratemidas2Action()
     {
         $this->requireAdminPrivileges();

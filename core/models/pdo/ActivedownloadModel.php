@@ -20,8 +20,6 @@
 
 require_once BASE_PATH.'/core/models/base/ActivedownloadModelBase.php';
 
-/**
- */
 class ActivedownloadModel extends ActivedownloadModelBase
 {
     /**
