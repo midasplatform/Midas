@@ -94,7 +94,8 @@ class Tracker_ApiAggregatemetricspecComponentTest extends RestCallMethodsTestCas
             'description' => 'opaque',
             'value' => '23',
             'comparison' => '==',
-            'spec' => "percentile('POST', 23)");
+            'spec' => "percentile('POST', 23)",
+        );
 
         $this->resetAll();
         $this->params = $restParams;
@@ -146,7 +147,8 @@ class Tracker_ApiAggregatemetricspecComponentTest extends RestCallMethodsTestCas
             'description' => 'vivid',
             'value' => '23',
             'comparison' => '==',
-            'spec' => "percentile('NewAlgo', 23)");
+            'spec' => "percentile('NewAlgo', 23)",
+        );
 
         $this->resetAll();
         $this->params = $restParams;
