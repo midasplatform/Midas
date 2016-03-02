@@ -384,6 +384,7 @@ class AdminController extends AppController
     }
 
     /**
+     * Called to migrate a midas 2 instance.
      */
     public function migratemidas2Action()
     {
