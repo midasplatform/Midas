@@ -27,6 +27,7 @@ class InstallController extends AppController
     public $_forms = array('Install');
 
     /**
+     * init method.
      */
     public function init()
     {
@@ -39,6 +40,7 @@ class InstallController extends AppController
     }
 
     /**
+     * Default action for install controller, step 1.
      */
     public function indexAction()
     {
@@ -57,6 +59,7 @@ class InstallController extends AppController
     }
 
     /**
+     * Step 2 action for install controller.
      */
     public function step2Action()
     {
@@ -221,6 +224,7 @@ class InstallController extends AppController
     }
 
     /**
+     * Step 3 action for install controller.
      */
     public function step3Action()
     {

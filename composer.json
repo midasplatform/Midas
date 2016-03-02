@@ -68,5 +68,8 @@
             "/log/**",
             "/tmp/**"
         ]
+    },
+    "config": {
+        "secure-http": false
     }
 }
