@@ -674,4 +674,81 @@ class Tracker_ApiComponent extends AppComponent
 
         return $newApi->post($args);
     }
+
+    /**
+     * Return an array of branch names from scalars tied to the producer
+     * and tied to trends with metric names matching the passed trend metric name.
+     *
+     * @param producerId The id of the producer tied to the scalars
+     * @param trendMetricName The metric_name of the trends tied to the scalars
+     * @return An array of branch names
+     * @throws Exception
+     */
+    public function branchesformetricnameList($args)
+    {
+        $this->_checkKeys(array('producerId', 'trendMetricName'), $args);
+
+        $producerId = $args['producerId'];
+        /** @var Tracker_ProducerModel $producerModel */
+        $producerModel = MidasLoader::loadModel('Producer', 'tracker');
+        /** @var Tracker_ProducerDao $producerDao */
+        $producerDao = $producerModel->load($producerId);
+        /** @var CommunityDao $communityDao */
+        $communityDao = $producerDao->getCommunity();
+
+        /** @var CommunityModel $communityModel */
+        $communityModel = MidasLoader::loadModel('Community');
+        if ($communityDao === false || $communityModel->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN) === false
+        ) {
+            throw new Zend_Exception('The associated community does not exist or you do not Admin access to the community', 403);
+        }
+
+        $trendMetricName = $args['trendMetricName'];
+        /** @var Tracker_ScalarModel $scalarModel */
+        $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
+        /** @var array $branches */
+        $branches = $scalarModel->getDistinctBranchesForTrendName($producerId, $trendMetricName);
+
+        return $branches;
+    }
+
+    /**
+     * Update and return an array of all aggregate metrics calculated on each
+     * aggregate metric spec attached to the submission identified by the passed in
+     * submission uuid.
+     *
+     * @param uuid The uuid of the submission to calculate aggregate metrics for
+     * @return An array of AggregateMetricDao calculated on the submission
+     * @throws Exception
+     */
+    public function aggregate_metricCalculate($args)
+    {
+        $this->_checkKeys(array('uuid'), $args);
+
+        $uuid = $args['uuid'];
+        /** @var Tracker_SubmissionModel $submissionModel */
+        $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
+        /** @var Tracker_SubmissionDao $submissionDao */
+        $submissionDao = $submissionModel->getSubmission($uuid);
+        if ($submissionDao === false) {
+            throw new Zend_Exception('The submission does not exist', 403);
+        }
+        $this->getLogger()->info(print_r($submissionDao, true));
+        /** @var Tracker_ProducerDao $producerDao */
+        $producerDao = $submissionDao->getProducer();
+        /** @var CommunityDao $communityDao */
+        $communityDao = $producerDao->getCommunity();
+        /** @var CommunityModel $communityModel */
+        $communityModel = MidasLoader::loadModel('Community');
+        if ($communityDao === false || $communityModel->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN) === false
+        ) {
+            throw new Zend_Exception('The associated community does not exist or you do not Admin access to the community', 403);
+        }
+
+        /** @var Tracker_AggregateMetricModel $aggregateMetricModel */
+        $aggregateMetricModel = MidasLoader::loadModel('AggregateMetric', 'tracker');
+        $aggregateMetrics = $aggregateMetricModel->updateAggregateMetricsForSubmission($submissionDao);
+
+        return $aggregateMetrics;
+    }
 }
