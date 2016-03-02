@@ -116,7 +116,7 @@ class Tracker_ApiAggregatemetricspecComponentTest extends RestCallMethodsTestCas
         $this->assertEquals($specDao->getSpec(), $restParams['spec']);
 
         // Load from the DB and test again.
-        $specDao = $aggregateMetricSpecModel->load(7);
+        $specDao = $aggregateMetricSpecModel->load($specDao->getAggregateMetricSpecId());
 
         $this->assertEquals($specDao->getProducerId(), $restParams['producer_id']);
         $this->assertEquals($specDao->getComparison(), $restParams['comparison']);
