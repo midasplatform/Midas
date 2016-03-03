@@ -307,5 +307,5 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
 
         // Call delete on the submission so as to not interfere with other tests.
         $submissionModel->delete($submissionDao);
-     }
+    }
 }
