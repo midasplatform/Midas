@@ -36,8 +36,13 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
             return false;
         }
         $percentile = $params[0];
+        $percentile = $percentile > 100.0 ? 100.0 : $percentile;
+        $percentile = $percentile < 0.0 ? 0.0 : $percentile;
+
         asort($values);
         $ind = round(($percentile / 100.0) * count($values)) - 1;
+        // Ind may be below 0, in this case the closest value is the 0th index.
+        $ind = $ind < 0 ? 0 : $ind;
 
         return $values[$ind];
     }
