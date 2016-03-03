@@ -123,4 +123,25 @@ abstract class Tracker_AggregateMetricSpecModelBase extends Tracker_AppModel
 
         return $this->getAggregateMetricSpecsForProducer($submissionDao->getProducer());
     }
+
+    /**
+     * Check whether the given policy is valid for the given aggregateMetricSpec and user.
+     *
+     * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao aggregateMetricSpec DAO
+     * @param null|UserDao $userDao user DAO
+     * @param int $policy policy
+     * @return bool true if the given policy is valid for the given aggregateMetricSpec and user
+     */
+    public function policyCheck($aggregateMetricSpecDao, $userDao = null, $policy = MIDAS_POLICY_READ)
+    {
+        if (is_null($aggregateMetricSpecDao) || $aggregateMetricSpecDao === false) {
+            return false;
+        }
+
+        /** @var Tracker_ProducerModel $producerModel */
+        $producerModel = MidasLoader::loadModel('Producer', $this->moduleName);
+        $producerDao = $aggregateMetricSpecDao->getProducer();
+
+        return $producerModel->policyCheck($producerDao, $userDao, $policy);
+    }
 }
