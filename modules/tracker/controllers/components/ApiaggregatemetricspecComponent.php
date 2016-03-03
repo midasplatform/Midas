@@ -161,9 +161,6 @@ class Tracker_ApiaggregatemetricspecComponent extends AppComponent
         $aggregateMetricSpecDao = $aggregateMetricSpecModel->initDao('AggregateMetricSpec', $args, $this->moduleName);
         $aggregateMetricSpecModel->save($aggregateMetricSpecDao);
 
-        /** @var Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao */
-        $aggregateMetricSpecDao = $aggregateMetricSpecModel->load($aggregateMetricSpecDao->getAggregateMetricSpecId());
-
         return $this->_toArray($aggregateMetricSpecDao);
     }
 
