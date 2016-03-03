@@ -189,4 +189,123 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $this->assertTrue(in_array('master', $branches));
         $this->assertTrue(in_array('test', $branches));
     }
+
+    /**
+     * Test updating the aggregate metrics tied to a submission.
+     *
+     * @throws Zend_Exception
+     */
+    public function testAggregatemetricsUpdate()
+    {
+        // Create a new submission.
+        $uuidComponent = MidasLoader::loadComponent('Uuid');
+        $uuid = $uuidComponent->generate();
+        /** @var Tracker_ProducerModel $producerModel */
+        $producerModel = MidasLoader::loadModel('Producer', 'tracker');
+        /** @var Tracker_ProducerDao $producerDao */
+        $producerDao = $producerModel->load(100);
+        /** @var Tracker_SubmissionModel $submissionModel */
+        $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
+        $submissionModel->createSubmission($producerDao, $uuid, 'Tmp submission');
+        /** @var Tracker_SubmissionDao $submissionDao */
+        $submissionDao = $submissionModel->getSubmission($uuid);
+
+        // Create 4 scalars on the submission.
+
+        /** @var Tracker_TrendModel $trendModel */
+        $trendModel = MidasLoader::loadModel('Trend', 'tracker');
+        /** @var Tracker_ScalarModel $scalarModel */
+        $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
+
+        $token = $this->_loginAsAdministrator();
+        /** @var AuthenticationComponent $authComponent */
+        $authComponent = MidasLoader::loadComponent('Authentication');
+        /** @var UserDao $userDao */
+        $userDao = $authComponent->getUser(array('token' => $token), null);
+
+        /** @var Tracker_TrendDao $greedyError1TrendDao */
+        $greedyError1TrendDao = $trendModel->load(1);
+        $scalarModel->addToTrend($greedyError1TrendDao, 'now', $submissionDao->getSubmissionId(), 'deadbeef', 101, $userDao, false, false, 'url', 'master');
+        /** @var Tracker_TrendDao $greedyError2TrendDao */
+        $greedyError2TrendDao = $trendModel->load(2);
+        $scalarModel->addToTrend($greedyError2TrendDao, 'now', $submissionDao->getSubmissionId(), 'deadbeef', 102, $userDao, false, false, 'url', 'master');
+        /** @var Tracker_TrendDao $greedyError3TrendDao */
+        $greedyError3TrendDao = $trendModel->load(3);
+        $scalarModel->addToTrend($greedyError3TrendDao, 'now', $submissionDao->getSubmissionId(), 'deadbeef', 103, $userDao, false, false, 'url', 'master');
+        /** @var Tracker_TrendDao $greedyError4TrendDao */
+        $greedyError4TrendDao = $trendModel->load(4);
+        $scalarModel->addToTrend($greedyError4TrendDao, 'now', $submissionDao->getSubmissionId(), 'deadbeef', 104, $userDao, false, false, 'url', 'master');
+
+        // Get existing aggregate metrics for this submission, there should be 0.
+
+        /** @var Tracker_AggregateMetricModel $aggregateMetricModel */
+        $aggregateMetricModel = MidasLoader::loadModel('AggregateMetric', 'tracker');
+        /** array $aggregateMetrics */
+        $aggregateMetrics = $aggregateMetricModel->getAggregateMetricsForSubmission($submissionDao);
+
+        // Call the API to update and return metrics for this submission.
+
+        $this->resetAll();
+        $this->params['method'] = 'midas.tracker.aggregatemetrics.update';
+        $this->params['token'] = $token;
+        $this->params['uuid'] = $uuid;
+        $resp = $this->_callJsonApi();
+        $aggregateMetrics = array();
+        /** stdClass $aggregateMetricStdClass */
+        foreach ($resp->data as $aggregateMetricStdClass) {
+            $aggregateMetrics[] = $aggregateMetricModel->initDao('AggregateMetric', json_decode(json_encode($aggregateMetricStdClass), true), $this->moduleName);
+        }
+
+        // Expect Greedy error [0, 55, 95] percentiles.
+
+        $expectedMetricValues = array(
+            array(104.0 => false),
+            array(102.0 => false),
+            array(101.0 => false),
+        );
+        /** @var Tracker_AggregateMetricDao $aggregateMetricDao */
+        foreach ($aggregateMetrics as $aggregateMetricDao) {
+            /** @var int $index */
+            /** @var array $metricValue */
+            foreach ($expectedMetricValues as $index => $metricValue) {
+                if ($aggregateMetricDao->getValue() == key($metricValue)) {
+                    $expectedMetricValues[$index] = array(key($metricValue) => true);
+                }
+            }
+        }
+        /** @var int $index */
+        /** @var float $metricValue */
+        foreach ($expectedMetricValues as $index => $metricValue) {
+            $this->assertTrue($metricValue[key($metricValue)]);
+        }
+
+        // Now calling get on the model should return the correct metrics.
+
+        /** array $aggregateMetrics */
+        $aggregateMetrics = $aggregateMetricModel->getAggregateMetricsForSubmission($submissionDao);
+
+        $expectedMetricValues = array(
+            array(104.0 => false),
+            array(102.0 => false),
+            array(101.0 => false),
+        );
+        /** @var Tracker_AggregateMetricDao $aggregateMetricDao */
+        foreach ($aggregateMetrics as $aggregateMetricDao) {
+            /** @var int $index */
+            /** @var array $metricValue */
+            foreach ($expectedMetricValues as $index => $metricValue) {
+                if ($aggregateMetricDao->getValue() == key($metricValue)) {
+                    $expectedMetricValues[$index] = array(key($metricValue) => true);
+                }
+            }
+        }
+        /** @var int $index */
+        /** @var float $metricValue */
+        foreach ($expectedMetricValues as $index => $metricValue) {
+            $this->assertTrue($metricValue[key($metricValue)]);
+        }
+
+        // Call delete on the submission so as to not interfere with other tests.
+        $submissionModel->delete($submissionDao);
+     }
 }
