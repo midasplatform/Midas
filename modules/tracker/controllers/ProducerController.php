@@ -260,7 +260,7 @@ class Tracker_ProducerController extends Tracker_AppController
 
         $producerParams = array(
             'producer_id' => $producerDao->getProducerId(),
-            'key_metric' => 1
+            'key_metric' => 1,
         );
         $distinctTrendNames = array();
         /** @var array $producerTrends */
