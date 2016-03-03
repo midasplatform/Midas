@@ -72,7 +72,7 @@ class Tracker_ScalarModelTest extends DatabaseTestCase
         $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
 
         /** @var Tracker_TrendDao $metricTrend0 */
-        $metricTrend0 = $trendModel->load(1);
+        $metricTrend0 = $trendModel->load(1001);
         $scalarValue0 = 0;
         $params0 = array(
             'num_param' => 90,
@@ -122,7 +122,7 @@ class Tracker_ScalarModelTest extends DatabaseTestCase
 
         // Scalar the second.
         /** @var Tracker_TrendDao $metricTrend1 */
-        $metricTrend1 = $trendModel->load(2);
+        $metricTrend1 = $trendModel->load(1002);
         $scalarValue1 = 1;
         $params1 = array(
             'num_param' => 92,

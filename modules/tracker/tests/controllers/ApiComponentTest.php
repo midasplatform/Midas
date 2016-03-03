@@ -28,10 +28,20 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
     /** Setup. */
     public function setUp()
     {
+        $this->setupDatabase(array('default'));
+        $this->setupDatabase(array('default'), 'tracker'); // module dataset
+        $this->setupDatabase(array('aggregateMetric'), 'tracker'); // module dataset
+
         $this->enabledModules = array('api', 'scheduler', $this->moduleName);
         $this->_models = array('Assetstore', 'Community', 'Setting', 'User');
 
-        $this->setupDatabase(array('default'));
+        $db = Zend_Registry::get('dbAdapter');
+        $configDatabase = Zend_Registry::get('configDatabase');
+        if ($configDatabase->database->adapter == 'PDO_PGSQL') {
+            $db->query("SELECT setval('tracker_trend_trend_id_seq', (SELECT MAX(trend_id) FROM tracker_trend)+1);");
+            $db->query("SELECT setval('tracker_submission_submission_id_seq', (SELECT MAX(submission_id) FROM tracker_submission)+1);");
+            $db->query("SELECT setval('tracker_scalar_scalar_id_seq', (SELECT MAX(scalar_id) FROM tracker_scalar)+1);");
+        }
 
         ControllerTestCase::setUp();
     }
@@ -157,5 +167,26 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $res = $this->_callJsonApi();
 
         return $res->data;
+    }
+
+    /**
+     * Test listing the branch names tied to a producer and trend metric_name.
+     *
+     * @throws Zend_Exception
+     */
+    public function testBranchesformetricnameList()
+    {
+        $token = $this->_loginAsAdministrator();
+        $this->resetAll();
+        $this->params['method'] = 'midas.tracker.branchesformetricname.list';
+        $this->params['token'] = $token;
+        $this->params['producerId'] = '100';
+        $this->params['trendMetricName'] = 'Greedy error';
+        $res = $this->_callJsonApi();
+        /** @var array branches */
+        $branches = $res->data;
+        $this->assertEquals(count($branches), 2);
+        $this->assertTrue(in_array('master', $branches));
+        $this->assertTrue(in_array('test', $branches));
     }
 }
