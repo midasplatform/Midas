@@ -35,6 +35,14 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $this->enabledModules = array('api', 'scheduler', $this->moduleName);
         $this->_models = array('Assetstore', 'Community', 'Setting', 'User');
 
+        $db = Zend_Registry::get('dbAdapter');
+        $configDatabase = Zend_Registry::get('configDatabase');
+        if ($configDatabase->database->adapter == 'PDO_PGSQL') {
+            $db->query("SELECT setval('tracker_trend_trend_id_seq', (SELECT MAX(trend_id) FROM tracker_trend)+1);");
+            $db->query("SELECT setval('tracker_submission_submission_id_seq', (SELECT MAX(submission_id) FROM tracker_submission)+1);");
+            $db->query("SELECT setval('tracker_scalar_scalar_id_seq', (SELECT MAX(scalar_id) FROM tracker_scalar)+1);");
+        }
+
         ControllerTestCase::setUp();
     }
 

@@ -34,6 +34,12 @@ class Tracker_ApiScalarComponentTest extends RestCallMethodsTestCase
         $this->setupDatabase(array('default'));
         $this->setupDatabase(array('default'), 'tracker');
 
+        $db = Zend_Registry::get('dbAdapter');
+        $configDatabase = Zend_Registry::get('configDatabase');
+        if ($configDatabase->database->adapter == 'PDO_PGSQL') {
+            $db->query("SELECT setval('tracker_scalar_scalar_id_seq', (SELECT MAX(scalar_id) FROM tracker_scalar)+1);");
+        }
+
         ControllerTestCase::setUp();
     }
 
@@ -52,7 +58,7 @@ class Tracker_ApiScalarComponentTest extends RestCallMethodsTestCase
         /** @var Tracker_TrendModel $trendModel */
         $trendModel = MidasLoader::loadModel('Trend', 'tracker');
         /** @var Tracker_TrendDao $trend */
-        $trend = $trendModel->load(1);
+        $trend = $trendModel->load(1001);
 
         /** @var Tracker_ScalarModel $scalarModel */
         $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
