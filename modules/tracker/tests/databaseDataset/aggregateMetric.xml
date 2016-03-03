@@ -100,6 +100,8 @@
     <tracker_submission submission_id="5" producer_id="100" uuid="1238" submit_time="2016-02-03 00:11:22" />
     <tracker_submission submission_id="6" producer_id="100" uuid="1239" submit_time="2016-02-02 00:11:22" />
     <tracker_submission submission_id="7" producer_id="100" uuid="1240" submit_time="2016-02-01 00:11:22" />
+    <!-- Submission tied to branch "test" -->
+    <tracker_submission submission_id="8" producer_id="100" uuid="1241" submit_time="2016-02-01 00:11:23" />
     <!-- One scalar per each Greedy error trend, for submission_id 1 -->
     <tracker_scalar scalar_id="1" trend_id="1" value="1.0" submission_id="1" build_results_url="build.results.url" branch="master" />
     <tracker_scalar scalar_id="2" trend_id="2" value="2.0" submission_id="1" build_results_url="build.results.url" branch="master" />
@@ -237,7 +239,9 @@
     <tracker_scalar scalar_id="120" trend_id="22" value="5.0" submission_id="7" build_results_url="build.results.url" branch="master" />
     <tracker_scalar scalar_id="121" trend_id="23" value="6.0" submission_id="7" build_results_url="build.results.url" branch="master" />
     <tracker_scalar scalar_id="122" trend_id="24" value="7.0" submission_id="7" build_results_url="build.results.url" branch="master" />
-     <!-- AggregateMetricSpecs tied to producer 100, all on 'master' -->
+    <!-- One scalar for Greedy error trend, for submission_id 8 -->
+    <tracker_scalar scalar_id="123" trend_id="1" value="1.0" submission_id="8" build_results_url="build.results.url" branch="test" />
+    <!-- AggregateMetricSpecs tied to producer 100, all on 'master' -->
     <tracker_aggregate_metric_spec aggregate_metric_spec_id="1" producer_id="100" comparison="!=" value="1.0"
         branch="master" name="95th Percentile Greedy error" description="95th Percentile Greedy error" spec="percentile('Greedy error', 95)" />
     <tracker_aggregate_metric_spec aggregate_metric_spec_id="2" producer_id="100" comparison="!=" value="1.0"
