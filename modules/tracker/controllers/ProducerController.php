@@ -33,7 +33,7 @@ class Tracker_ProducerController extends Tracker_AppController
     public $_models = array('Community');
 
     /** @var array */
-    public $_moduleModels = array('Producer', 'Trend');
+    public $_moduleModels = array('AggregateMetric', 'AggregateMetricSpec', 'Producer', 'Trend');
 
     /**
      * List all producers for a given community (in the tab). Requires read permission on community.
@@ -64,6 +64,7 @@ class Tracker_ProducerController extends Tracker_AppController
 
         $this->view->community = $communityDao;
         $this->view->producers = $this->Tracker_Producer->getByCommunityId($communityId);
+        $this->view->isAdmin = $this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
     }
 
     /**
@@ -234,5 +235,49 @@ class Tracker_ProducerController extends Tracker_AppController
 
         $this->Tracker_Producer->save($producerDao);
         echo JsonComponent::encode(array('status' => 'ok', 'message' => 'Changes saved', 'producer' => $producerDao));
+    }
+
+    /**
+     * Dialog for create/edit/view/deleting an aggregate metric for this producer.
+     *
+     * @param producerId Id of the producer.  Admin permission on the associated community required.
+     * @throws Zend_Exception
+     */
+    public function aggregatemetricAction()
+    {
+        $this->disableLayout();
+
+        $producerId = $this->getParam('producerId');
+        /** @var Tracker_ProducerDao $producerDao */
+        $producerDao = $this->Tracker_Producer->load($producerId);
+        /** @var CommunityDao $communityDao */
+        $communityDao = $producerDao->getCommunity();
+
+        if ($communityDao === false || $this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN) === false
+        ) {
+            throw new Zend_Exception('The associated community does not exist or you do not Admin access to the community', 403);
+        }
+
+        $producerParams = array(
+            'producer_id' => $producerDao->getProducerId(),
+            'key_metric' => 1
+        );
+        $distinctTrendNames = array();
+        /** @var array $producerTrends */
+        $producerTrends = $this->Tracker_Trend->getAllByParams($producerParams);
+        /** @var Tracker_TrendDao $trendDao */
+        foreach ($producerTrends as $trendDao) {
+            /** @var string $trendMetricName */
+            $trendMetricName = $trendDao->getMetricName();
+            if (!in_array($trendMetricName, $distinctTrendNames)) {
+                $distinctTrendNames[] = $trendMetricName;
+            }
+        }
+
+        /** @var array $aggregateMetricSpecs */
+        $aggregateMetricSpecs = $this->Tracker_AggregateMetricSpec->getAggregateMetricSpecsForProducer($producerDao);
+        $this->view->producer = $producerDao;
+        $this->view->aggregateMetricSpecs = $aggregateMetricSpecs;
+        $this->view->distinctTrendNames = $distinctTrendNames;
     }
 }

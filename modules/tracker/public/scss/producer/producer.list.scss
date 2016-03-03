@@ -15,6 +15,16 @@ div {
         }
     }
 
+    &.producerManageAggregateMetric {
+        float: right;
+        color: #56758b;
+
+        &:hover {
+            background-color: #E5E5E5;
+            cursor: pointer;
+        }
+    }
+
     &.noProducers {
         font-style: italic;
     }
