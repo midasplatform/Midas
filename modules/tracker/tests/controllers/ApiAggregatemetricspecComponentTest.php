@@ -61,9 +61,9 @@ class Tracker_ApiAggregatemetricspecComponentTest extends RestCallMethodsTestCas
         $resp = $this->_callRestApi('GET', '/tracker/aggregatemetricspec/1');
 
         /** @var Tracker_AggregateMetricSpecModel $aggregateMetricSpecModel */
-        $aggregateMetricSpecModel = midasloader::loadmodel('AggregateMetricSpec', 'tracker');
+        $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
         /** @var Tracker_AggregateMetricSpecDao $specDao */
-        $specDao = $aggregateMetricSpecModel->initdao('AggregateMetricSpec', json_decode(json_encode($resp['body']), true), $this->moduleName);
+        $specDao = $aggregateMetricSpecModel->initDao('AggregateMetricSpec', json_decode(json_encode($resp['body']), true), $this->moduleName);
 
         $this->assertEquals($specDao->getProducerId(), '100');
         $this->assertEquals($specDao->getComparison(), '!=');
@@ -75,7 +75,7 @@ class Tracker_ApiAggregatemetricspecComponentTest extends RestCallMethodsTestCas
     }
 
     /**
-     * Test createing an existing aggregate metric spec with a set of params, via POST.
+     * Test creating an existing aggregate metric spec with a set of params, via POST.
      *
      * @throws Zend_Exception
      */
@@ -102,9 +102,9 @@ class Tracker_ApiAggregatemetricspecComponentTest extends RestCallMethodsTestCas
         $resp = $this->_callRestApi('POST', '/tracker/aggregatemetricspec/');
 
         /** @var Tracker_AggregateMetricSpecModel $aggregateMetricSpecModel */
-        $aggregateMetricSpecModel = midasloader::loadmodel('AggregateMetricSpec', 'tracker');
+        $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
         /** @var Tracker_AggregateMetricSpecDao $specDao */
-        $specDao = $aggregateMetricSpecModel->initdao('AggregateMetricSpec', json_decode(json_encode($resp['body']), true), $this->moduleName);
+        $specDao = $aggregateMetricSpecModel->initDao('AggregateMetricSpec', json_decode(json_encode($resp['body']), true), $this->moduleName);
 
         // Test the result of the API call.
         $this->assertEquals($specDao->getProducerId(), $restParams['producer_id']);
@@ -155,9 +155,9 @@ class Tracker_ApiAggregatemetricspecComponentTest extends RestCallMethodsTestCas
         $resp = $this->_callRestApi('PUT', '/tracker/aggregatemetricspec/1');
 
         /** @var Tracker_AggregateMetricSpecModel $aggregateMetricSpecModel */
-        $aggregateMetricSpecModel = midasloader::loadmodel('AggregateMetricSpec', 'tracker');
+        $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
         /** @var Tracker_AggregateMetricSpecDao $specDao */
-        $specDao = $aggregateMetricSpecModel->initdao('AggregateMetricSpec', json_decode(json_encode($resp['body']), true), $this->moduleName);
+        $specDao = $aggregateMetricSpecModel->initDao('AggregateMetricSpec', json_decode(json_encode($resp['body']), true), $this->moduleName);
 
         // Test the result of the API call.
         $this->assertEquals($specDao->getProducerId(), $restParams['producer_id']);
@@ -197,7 +197,7 @@ class Tracker_ApiAggregatemetricspecComponentTest extends RestCallMethodsTestCas
         );
 
         /** @var Tracker_AggregateMetricSpecModel $aggregateMetricSpecModel */
-        $aggregateMetricSpecModel = midasloader::loadmodel('AggregateMetricSpec', 'tracker');
+        $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
         /** @var Tracker_AggregateMetricSpecDao $specDao */
         $specDao = $aggregateMetricSpecModel->load(1);
         $this->assertNotEquals($specDao, false);
