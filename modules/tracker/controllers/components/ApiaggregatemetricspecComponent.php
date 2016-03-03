@@ -202,13 +202,14 @@ class Tracker_ApiaggregatemetricspecComponent extends AppComponent
             throw new Exception('The aggregateMetricSpec does not exist or you do not have the necessary permission', MIDAS_INVALID_POLICY);
         }
 
-        /** @var Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao */
-        $aggregateMetricSpecDao = $aggregateMetricSpecModel->initDao('AggregateMetricSpec', $args, $this->moduleName);
-        $aggregateMetricSpecDao->setAggregateMetricSpecId($aggregateMetricSpecId);
+        /** @var string $name */
+        /** @var mixed $option */
+        foreach ($aggregateMetricSpecModel->getMainData() as $name => $option) {
+            if (isset($args[$name])) {
+                $aggregateMetricSpecDao->$name = $args[$name];
+            }
+        }
         $aggregateMetricSpecModel->save($aggregateMetricSpecDao);
-
-        /** @var Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao */
-        $aggregateMetricSpecDao = $aggregateMetricSpecModel->load($aggregateMetricSpecId);
 
         return $this->_toArray($aggregateMetricSpecDao);
     }

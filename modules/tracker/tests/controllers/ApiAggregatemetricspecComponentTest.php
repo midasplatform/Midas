@@ -146,7 +146,7 @@ class Tracker_ApiAggregatemetricspecComponentTest extends RestCallMethodsTestCas
             'name' => 'NewAlgo 23 percentile',
             'description' => 'vivid',
             'value' => '23',
-            'comparison' => '==',
+            // Don't change comparison, to test that an unset value won't change.
             'spec' => "percentile('NewAlgo', 23)",
         );
 
@@ -161,7 +161,7 @@ class Tracker_ApiAggregatemetricspecComponentTest extends RestCallMethodsTestCas
 
         // Test the result of the API call.
         $this->assertEquals($specDao->getProducerId(), $restParams['producer_id']);
-        $this->assertEquals($specDao->getComparison(), $restParams['comparison']);
+        $this->assertEquals($specDao->getComparison(), '!=');
         $this->assertEquals($specDao->getValue(), $restParams['value']);
         $this->assertEquals($specDao->getBranch(), $restParams['branch']);
         $this->assertEquals($specDao->getName(), $restParams['name']);
@@ -172,7 +172,7 @@ class Tracker_ApiAggregatemetricspecComponentTest extends RestCallMethodsTestCas
         $specDao = $aggregateMetricSpecModel->load(1);
 
         $this->assertEquals($specDao->getProducerId(), $restParams['producer_id']);
-        $this->assertEquals($specDao->getComparison(), $restParams['comparison']);
+        $this->assertEquals($specDao->getComparison(), '!=');
         $this->assertEquals($specDao->getValue(), $restParams['value']);
         $this->assertEquals($specDao->getBranch(), $restParams['branch']);
         $this->assertEquals($specDao->getName(), $restParams['name']);
