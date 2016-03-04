@@ -117,7 +117,9 @@ CREATE INDEX "tracker_aggregate_metric_spec_producer_id" ON "tracker_aggregate_m
 CREATE INDEX "tracker_aggregate_metric_spec_branch" ON "tracker_aggregate_metric_spec" ("branch");
 
 CREATE TABLE IF NOT EXISTS "tracker_user2aggregate_metric_spec" (
+    "id" serial PRIMARY KEY,
     "user_id"  bigint NOT NULL,
-    "aggregate_metric_spec_id" bigint NOT NULL,
-    PRIMARY_KEY("user_id", "aggregate_metric_spec_id")
+    "aggregate_metric_spec_id" bigint NOT NULL
 );
+
+CREATE INDEX "tracker_user2aggregate_metric_spec_ams_id_idx" ON "tracker_user2aggregate_metric_spec" ("aggregate_metric_spec_id");
