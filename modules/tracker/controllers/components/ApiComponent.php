@@ -763,7 +763,8 @@ class Tracker_ApiComponent extends AppComponent
      * @return AggregateMetricSpecDao aggregate metric spec DAO
      * @throws Exception
      */
-    private function _loadAggregateMetricSpec($userDao, $aggregateMetricSpecId, $policy = MIDAS_POLICY_READ) {
+    private function _loadAggregateMetricSpec($userDao, $aggregateMetricSpecId, $policy = MIDAS_POLICY_READ)
+    {
         /** @var Tracker_AggregateMetricSpecModel $aggregateMetricSpecModel */
         $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
         /** @var Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao */
