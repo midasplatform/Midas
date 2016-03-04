@@ -30,7 +30,8 @@ class Tracker_AggregateMetricSpecModel extends Tracker_AggregateMetricSpecModelB
      * @param UserDao $userDao user DAO
      * @return bool true if the notification could be created, false otherwise
      */
-    public function createUserNotification($aggregateMetricSpecDao, $userDao) {
+    public function createUserNotification($aggregateMetricSpecDao, $userDao)
+    {
         if (is_null($aggregateMetricSpecDao) || $aggregateMetricSpecDao === false) {
             return false;
         }
@@ -52,6 +53,7 @@ class Tracker_AggregateMetricSpecModel extends Tracker_AggregateMetricSpecModelB
                 'user_id' => $userDao->getUserId(),
             );
             $this->database->getdb()->insert('tracker_user2aggregate_metric_spec', $data);
+
             return true;
         }
     }
@@ -65,7 +67,8 @@ class Tracker_AggregateMetricSpecModel extends Tracker_AggregateMetricSpecModelB
      * notification does not exist for this user and aggregate metric spec upon
      * returning, false otherwise
      */
-    public function deleteUserNotification($aggregateMetricSpecDao, $userDao) {
+    public function deleteUserNotification($aggregateMetricSpecDao, $userDao)
+    {
         if (is_null($aggregateMetricSpecDao) || $aggregateMetricSpecDao === false) {
             return false;
         }
@@ -76,6 +79,7 @@ class Tracker_AggregateMetricSpecModel extends Tracker_AggregateMetricSpecModelB
             'aggregate_metric_spec_id = ?' => $aggregateMetricSpecDao->getAggregateMetricSpecId(),
             'user_id = ?' => $userDao->getUserId(),
         ));
+
         return true;
     }
 
@@ -86,7 +90,8 @@ class Tracker_AggregateMetricSpecModel extends Tracker_AggregateMetricSpecModelB
      * @return false|array of UserDao for all users with notification on the passed in $aggregateMetricSpecDao,
      * or false if the passed in spec is invalid
      */
-    public function getAllNotifiedUsers($aggregateMetricSpecDao) {
+    public function getAllNotifiedUsers($aggregateMetricSpecDao)
+    {
         if (is_null($aggregateMetricSpecDao) || $aggregateMetricSpecDao === false) {
             return false;
         }
@@ -102,6 +107,7 @@ class Tracker_AggregateMetricSpecModel extends Tracker_AggregateMetricSpecModelB
         foreach ($rows as $row) {
             $userDaos[] = $userModel->load($row['user_id']);
         }
+
         return $userDaos;
     }
 
@@ -111,7 +117,8 @@ class Tracker_AggregateMetricSpecModel extends Tracker_AggregateMetricSpecModelB
      *
      * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao aggregateMetricSpec DAO
      */
-    public function delete($aggregateMetricSpecDao) {
+    public function delete($aggregateMetricSpecDao)
+    {
         if (is_null($aggregateMetricSpecDao) || $aggregateMetricSpecDao === false) {
             return;
         }

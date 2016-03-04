@@ -484,7 +484,7 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
             $expectedUserIds[$notifiedUser->user_id] = true;
         }
         /** @var int $expectedUserId */
-        /** @var boolean $found */
+        /** @var bool $found */
         foreach ($expectedUserIds as $expectedUserId => $found) {
             $this->assertTrue($found);
         }
@@ -515,7 +515,7 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
             $expectedUserIds[$notifiedUser->user_id] = true;
         }
         /** @var int $expectedUserId */
-        /** @var boolean $found */
+        /** @var bool $found */
         foreach ($expectedUserIds as $expectedUserId => $found) {
             $this->assertTrue($found);
         }
