@@ -51,6 +51,35 @@ abstract class Tracker_AggregateMetricSpecModelBase extends Tracker_AppModel
     }
 
     /**
+     * Create a user notification tied to the aggregate metric spec.
+     *
+     * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao aggregateMetricSpec DAO
+     * @param UserDao $userDao user DAO
+     * @return bool true if the notification could be created, false otherwise
+     */
+    abstract public function createUserNotification($aggregateMetricSpecDao, $userDao);
+
+    /**
+     * Delete a user notification tied to the aggregate metric spec.
+     *
+     * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao aggregateMetricSpec DAO
+     * @param UserDao $userDao user DAO
+     * @return bool true if the user and aggregate metric spec are valid and a
+     * notification does not exist for this user and aggregate metric spec upon
+     * returning, false otherwise
+     */
+    abstract public function deleteUserNotification($aggregateMetricSpecDao, $userDao);
+
+    /**
+     * Return a list of User Daos for all users with notifications on this aggregate metric spec.
+     *
+     * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao aggregateMetricSpec DAO
+     * @return false|array of UserDao for all users with notification on the passed in $aggregateMetricSpecDao,
+     * or false if the passed in spec is invalid
+     */
+    abstract public function getAllNotifiedUsers($aggregateMetricSpecDao);
+
+    /**
      * Create an AggregateMetricSpecDao from the inputs.
      *
      * @param Tracker_ProducerDao $producerDao producer DAO
