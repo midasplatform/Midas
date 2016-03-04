@@ -34,15 +34,26 @@ class Tracker_AggregateMetricSpecModel extends Tracker_AggregateMetricSpecModelB
         if (is_null($aggregateMetricSpecDao) || $aggregateMetricSpecDao === false) {
             return false;
         }
-        if (is_null($userdao) || $userdao === false) {
+        if (is_null($userDao) || $userDao === false) {
             return false;
         }
-        $data = array(
-            'aggregate_metric_spec_id' => $aggregateMetricSpecDao->getAggregateMetricSpecId(),
-            'user_id' => $userdao->getuserid(),
-        );
-        $this->database->getdb()->insert('tracker_user2aggregate_metric_spec', $data);
-        return true;
+        // Don't insert if it exists already.
+        $sql = $this->database->select()->setIntegrityCheck(false)
+            ->from('tracker_user2aggregate_metric_spec')
+            ->where('aggregate_metric_spec_id = ?', $aggregateMetricSpecDao->getAggregateMetricSpecId())
+            ->where('user_id = ?', $userDao->getUserId());
+        /** @var Zend_Db_Table_Row_Abstract $row */
+        $row = $this->database->fetchRow($sql);
+        if (!is_null($row)) {
+            return true;
+        } else {
+            $data = array(
+                'aggregate_metric_spec_id' => $aggregateMetricSpecDao->getAggregateMetricSpecId(),
+                'user_id' => $userDao->getUserId(),
+            );
+            $this->database->getdb()->insert('tracker_user2aggregate_metric_spec', $data);
+            return true;
+        }
     }
 
     /**
@@ -58,14 +69,13 @@ class Tracker_AggregateMetricSpecModel extends Tracker_AggregateMetricSpecModelB
         if (is_null($aggregateMetricSpecDao) || $aggregateMetricSpecDao === false) {
             return false;
         }
-        if (is_null($userdao) || $userdao === false) {
+        if (is_null($userDao) || $userDao === false) {
             return false;
         }
-        $data = array(
-            'aggregate_metric_spec_id' => $aggregateMetricSpecDao->getAggregateMetricSpecId(),
-            'user_id' => $userdao->getuserid(),
-        );
-        $this->database->getdb()->delete('tracker_user2aggregate_metric_spec', $data);
+        $this->database->getDB()->delete('tracker_user2aggregate_metric_spec', array(
+            'aggregate_metric_spec_id = ?' => $aggregateMetricSpecDao->getAggregateMetricSpecId(),
+            'user_id = ?' => $userDao->getUserId(),
+        ));
         return true;
     }
 
@@ -80,7 +90,7 @@ class Tracker_AggregateMetricSpecModel extends Tracker_AggregateMetricSpecModelB
         if (is_null($aggregateMetricSpecDao) || $aggregateMetricSpecDao === false) {
             return false;
         }
-        $sql = $this->database->select()
+        $sql = $this->database->select()->setIntegrityCheck(false)
                     ->from('tracker_user2aggregate_metric_spec', array('user_id'))
                     ->where('aggregate_metric_spec_id = ?', $aggregateMetricSpecDao->getAggregateMetricSpecId());
         $rows = $this->database->fetchAll($sql);
