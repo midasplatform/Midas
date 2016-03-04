@@ -752,4 +752,103 @@ class Tracker_ApiComponent extends AppComponent
 
         return $aggregateMetrics;
     }
+
+    /**
+     * Load the aggregate metric spec with the passed in id and ensure the user
+     * has read access to it.
+     *
+     * @param UserDao $userDao DAO
+     * @param string $aggregateMetricSpecId
+     * @param {MIDAS_POLICY_READ|MIDAS_POLICY_WRITE|MIDAS_POLICY_ADMIN} $policy the policy level required on the spec
+     * @return AggregateMetricSpecDao aggregate metric spec DAO
+     * @throws Exception
+     */
+    private function _loadAggregateMetricSpec($userDao, $aggregateMetricSpecId, $policy = MIDAS_POLICY_READ) {
+        /** @var Tracker_AggregateMetricSpecModel $aggregateMetricSpecModel */
+        $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
+        /** @var Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao */
+        $aggregateMetricSpecDao = $aggregateMetricSpecModel->load($aggregateMetricSpecId);
+        if ($aggregateMetricSpecModel->policyCheck($aggregateMetricSpecDao, $userDao, $policy) === false) {
+            throw new Zend_Exception('The aggregate metric spec does not exist or you do not have access to it', 403);
+        }
+
+        return $aggregateMetricSpecDao;
+    }
+
+    /**
+     * Create a notification for a user against an aggregate metric spec, so that
+     * whenever an aggregate metric created from that aggregate metric spec
+     * is beyond the notification threshold, the user will be notified by email.
+     *
+     * @param userId The id of the user to create a notification for
+     * @param aggregateMetricSpecId The id of the aggregate metric spec
+     * @throws Exception
+     */
+    public function aggregatemetricspecnotifieduserCreate($args)
+    {
+        $this->_checkKeys(array('userId', 'aggregateMetricSpecId'), $args);
+        $user = $this->_getUser($args);
+
+        $aggregateMetricSpecId = $args['aggregateMetricSpecId'];
+        $aggregateMetricSpecDao = $this->_loadAggregateMetricSpec($user, $aggregateMetricSpecId, MIDAS_POLICY_ADMIN);
+
+        /** @var UserModel $userModel */
+        $userModel = MidasLoader::loadModel('User');
+        /** @var UserDao $notificationUserDao */
+        $notificationUserDao = $userModel->load($args['userId']);
+
+        /** @var Tracker_AggregateMetricSpecModel $aggregateMetricSpecModel */
+        $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
+        $aggregateMetricSpecModel->createUserNotification($aggregateMetricSpecDao, $notificationUserDao);
+    }
+
+    /**
+     * Delete a notification for a user against an aggregate metric spec, so that
+     * the user will no longer receive notifications from aggregate metrics created
+     * from that aggregate metric spec.
+     *
+     * @param userId The id of the user to delete a notification for
+     * @param aggregateMetricSpecId The id of the aggregate metric spec
+     * @throws Exception
+     */
+    public function aggregatemetricspecnotifieduserDelete($args)
+    {
+        $this->_checkKeys(array('userId', 'aggregateMetricSpecId'), $args);
+        $user = $this->_getUser($args);
+
+        $aggregateMetricSpecId = $args['aggregateMetricSpecId'];
+        $aggregateMetricSpecDao = $this->_loadAggregateMetricSpec($user, $aggregateMetricSpecId, MIDAS_POLICY_ADMIN);
+
+        /** @var UserModel $userModel */
+        $userModel = MidasLoader::loadModel('User');
+        /** @var UserDao $notificationUserDao */
+        $notificationUserDao = $userModel->load($args['userId']);
+
+        /** @var Tracker_AggregateMetricSpecModel $aggregateMetricSpecModel */
+        $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
+        $aggregateMetricSpecModel->deleteUserNotification($aggregateMetricSpecDao, $notificationUserDao);
+    }
+
+    /**
+     * Return a list of User Daos for all users with notifications on this aggregate metric spec.
+     *
+     * @param aggregateMetricSpecId the id of the aggregate metric spec
+     * @return array of UserDao for all users with notification on the passed in aggregateMetricSpecId
+     */
+    public function aggregatemetricspecnotifiedusersList($args)
+    {
+        $this->_checkKeys(array('aggregateMetricSpecId'), $args);
+        $user = $this->_getUser($args);
+
+        $aggregateMetricSpecDao = $this->_loadAggregateMetricSpec($user, $args['aggregateMetricSpecId']);
+
+        /** @var Tracker_AggregateMetricSpecModel $aggregateMetricSpecModel */
+        $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
+        $notifiedUsers = $aggregateMetricSpecModel->getAllNotifiedUsers($aggregateMetricSpecDao);
+        if ($notifiedUsers === false) {
+            $notifiedUsers = array();
+        }
+
+        return $notifiedUsers;
+    }
 }
