@@ -49,6 +49,23 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
     }
 
     /**
+     * Associate the given submission and item.
+     *
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @param ItemDao $itemDao item DAO
+     * @param string $label label
+     */
+    abstract public function associateItem($submissionDao, $itemDao, $label);
+
+    /**
+     * Return the items associated with the given submission.
+     *
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @return array array of associative arrays with keys "item" and "label"
+     */
+    abstract public function getAssociatedItems($scalarDao);
+
+    /**
      * Create a submission.
      *
      * @param Tracker_ProducerDao $producerDao the producer to which the submission was submitted

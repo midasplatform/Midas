@@ -74,23 +74,6 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
     }
 
     /**
-     * Associate the given scalar and item.
-     *
-     * @param Tracker_ScalarDao $scalarDao scalar DAO
-     * @param ItemDao $itemDao item DAO
-     * @param string $label label
-     */
-    abstract public function associateItem($scalarDao, $itemDao, $label);
-
-    /**
-     * Return the items associated with the given scalar.
-     *
-     * @param Tracker_ScalarDao $scalarDao scalar DAO
-     * @return array array of associative arrays with keys "item" and "label"
-     */
-    abstract public function getAssociatedItems($scalarDao);
-
-    /**
      * Return any other scalars from the same submission as the given scalar.
      *
      * @param Tracker_ScalarDao $scalarDao scalar DAO

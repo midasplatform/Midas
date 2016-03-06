@@ -28,6 +28,52 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
     const SEC_IN_DAY = 86400;
 
     /**
+     * Associate the given submission and item.
+     *
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @param ItemDao $itemDao item DAO
+     * @param string $label label
+     */
+    public function associateItem($submissionDao, $itemDao, $label)
+    {
+        $data = array('submission_id' => $submissionDao->getKey(), 'item_id' => $itemDao->getKey(), 'label' => $label);
+        $this->database->getDB()->insert('tracker_submission2item', $data);
+    }
+
+    /**
+     * Return the items associated with the given submission.
+     *
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @return array array of associative arrays with keys "item" and "label"
+     */
+    public function getAssociatedItems($submissionDao)
+    {
+        $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_submission2item')->where(
+            'submission_id = ?',
+            $submissionDao->getKey()
+        );
+        $rows = $this->database->fetchAll($sql);
+        $results = array();
+
+        /** @var ItemModel $itemModel */
+        $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var Zend_Db_Table_Row_Abstract $row */
+        foreach ($rows as $row) {
+            $itemDao = $itemModel->load($row['item_id']);
+            $results[] = array('label' => $row['label'], 'item' => $itemDao);
+        }
+        usort(
+            $results,
+            function ($a, $b) {
+                return strcmp($a['label'], $b['label']);
+            }
+        );
+
+        return $results;
+    }
+
+    /**
      * Create a submission.
      *
      * @param Tracker_ProducerDao $producerDao the producer to which the submission was submitted

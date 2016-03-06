@@ -23,51 +23,6 @@ require_once BASE_PATH.'/modules/tracker/models/base/ScalarModelBase.php';
 /** Scalar model for the tracker module. */
 class Tracker_ScalarModel extends Tracker_ScalarModelBase
 {
-    /**
-     * Associate the given scalar and item.
-     *
-     * @param Tracker_ScalarDao $scalarDao scalar DAO
-     * @param ItemDao $itemDao item DAO
-     * @param string $label label
-     */
-    public function associateItem($scalarDao, $itemDao, $label)
-    {
-        $data = array('scalar_id' => $scalarDao->getKey(), 'item_id' => $itemDao->getKey(), 'label' => $label);
-        $this->database->getDB()->insert('tracker_scalar2item', $data);
-    }
-
-    /**
-     * Return the items associated with the given scalar.
-     *
-     * @param Tracker_ScalarDao $scalarDao scalar DAO
-     * @return array array of associative arrays with keys "item" and "label"
-     */
-    public function getAssociatedItems($scalarDao)
-    {
-        $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_scalar2item')->where(
-            'scalar_id = ?',
-            $scalarDao->getKey()
-        );
-        $rows = $this->database->fetchAll($sql);
-        $results = array();
-
-        /** @var ItemModel $itemModel */
-        $itemModel = MidasLoader::loadModel('Item');
-
-        /** @var Zend_Db_Table_Row_Abstract $row */
-        foreach ($rows as $row) {
-            $itemDao = $itemModel->load($row['item_id']);
-            $results[] = array('label' => $row['label'], 'item' => $itemDao);
-        }
-        usort(
-            $results,
-            function ($a, $b) {
-                return strcmp($a['label'], $b['label']);
-            }
-        );
-
-        return $results;
-    }
 
     /**
      * Return any other scalars from the same submission as the given scalar.
