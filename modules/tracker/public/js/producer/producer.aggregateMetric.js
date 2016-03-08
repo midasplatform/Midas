@@ -538,10 +538,14 @@ $(document).ready(function () {
         var jsonMethod = 'midas.tracker.aggregatemetricspecnotifieduser.delete';
         var args = 'aggregateMetricSpecId=' + aggregateMetricSpecId + '&userId=' + userId;
         callAjaxWebApi(jsonMethod, 'POST', args, function (retVal) {
-            // TODO better return value handling
-            row.remove();
-            addClassesToTableRows('aggregateMetricSpecAlertedUsers');
-            $('#aggregateMetricSpecAlertsLoading').hide();
+            if (retVal.data && retVal.data.user_id == userId) {
+                row.remove();
+                addClassesToTableRows('aggregateMetricSpecAlertedUsers');
+                $('#aggregateMetricSpecAlertsLoading').hide();
+            } else {
+                midas.createNotice('Unexpected return value, check error console', 3000, 'error');
+                console.error(retVal);
+            }
         });
     });
 
@@ -605,20 +609,21 @@ $(document).ready(function () {
             var jsonMethod = 'midas.tracker.aggregatemetricspecnotifieduser.create';
             var args = 'aggregateMetricSpecId=' + aggregateMetricSpecId + '&userId=' + userId;
             callAjaxWebApi(jsonMethod, 'POST', args, function (retVal) {
-                // TODO better return value handling
-                addToAlertedUsersTable(userName, userId);
-                addClassesToTableRows('aggregateMetricSpecAlertedUsers');
-                $('#addAlertUserSearch').val('Start typing a name or email address...');
-                $('#addAlertUserSearchValue').val('init');
-                $('#aggregateMetricSpecAlertsLoading').hide();
+                if (retVal.data && retVal.data.user_id == userId) {
+                    addToAlertedUsersTable(userName, userId);
+                    addClassesToTableRows('aggregateMetricSpecAlertedUsers');
+                    $('#addAlertUserSearchValue').val('init');
+                    $('#aggregateMetricSpecAlertsLoading').hide();
+                } else {
+                    midas.createNotice('Unexpected return value, check error console', 3000, 'error');
+                    console.error(retVal);
+                }
             });
         } // end select
     });
 
     $('#addAlertUserSearch').focus(function () {
         'use strict';
-        console.log('focus');
-        console.log($('#addAlertUserSearchValue').val());
         if ($('#addAlertUserSearchValue').val() == 'init') {
             $('#addAlertUserSearchValue').val($(this).val());
             $(this).val('');
