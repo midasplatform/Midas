@@ -342,6 +342,7 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $this->params['userId'] = 1;
         $this->params['aggregateMetricSpecId'] = 1;
         $resp = $this->_callJsonApi();
+        $this->assertEquals(1, $resp->data->user_id);
 
         $this->resetAll();
         $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifiedusers.list';
@@ -402,6 +403,7 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $this->params['userId'] = 2;
         $this->params['aggregateMetricSpecId'] = 1;
         $resp = $this->_callJsonApi();
+        $this->assertEquals(2, $resp->data->user_id);
 
         $this->resetAll();
         $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifiedusers.list';
@@ -465,6 +467,7 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $this->params['userId'] = 2;
         $this->params['aggregateMetricSpecId'] = 1;
         $resp = $this->_callJsonApi();
+        $this->assertEquals(2, $resp->data->user_id);
 
         $this->resetAll();
         $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifiedusers.list';
@@ -497,6 +500,7 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $this->params['userId'] = 1;
         $this->params['aggregateMetricSpecId'] = 1;
         $resp = $this->_callJsonApi();
+        $this->assertEquals(1, $resp->data->user_id);
 
         $this->resetAll();
         $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifiedusers.list';

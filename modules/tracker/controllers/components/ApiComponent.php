@@ -783,6 +783,7 @@ class Tracker_ApiComponent extends AppComponent
      *
      * @param userId The id of the user to create a notification for
      * @param aggregateMetricSpecId The id of the aggregate metric spec
+     * @return UserDao the user DAO of the user who will be alerted
      * @throws Exception
      */
     public function aggregatemetricspecnotifieduserCreate($args)
@@ -801,6 +802,8 @@ class Tracker_ApiComponent extends AppComponent
         /** @var Tracker_AggregateMetricSpecModel $aggregateMetricSpecModel */
         $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
         $aggregateMetricSpecModel->createUserNotification($aggregateMetricSpecDao, $notificationUserDao);
+
+        return $notificationUserDao;
     }
 
     /**
@@ -810,6 +813,7 @@ class Tracker_ApiComponent extends AppComponent
      *
      * @param userId The id of the user to delete a notification for
      * @param aggregateMetricSpecId The id of the aggregate metric spec
+     * @return UserDao the user DAO of the user who will no longer be alerted
      * @throws Exception
      */
     public function aggregatemetricspecnotifieduserDelete($args)
@@ -828,6 +832,8 @@ class Tracker_ApiComponent extends AppComponent
         /** @var Tracker_AggregateMetricSpecModel $aggregateMetricSpecModel */
         $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
         $aggregateMetricSpecModel->deleteUserNotification($aggregateMetricSpecDao, $notificationUserDao);
+
+        return $notificationUserDao;
     }
 
     /**
