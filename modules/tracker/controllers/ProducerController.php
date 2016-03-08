@@ -277,7 +277,7 @@ class Tracker_ProducerController extends Tracker_AppController
         /** @var array $aggregateMetricSpecs */
         $aggregateMetricSpecs = $this->Tracker_AggregateMetricSpec->getAggregateMetricSpecsForProducer($producerDao);
         $this->view->producer = $producerDao;
-        $this->view->aggregateMetricSpecs = $aggregateMetricSpecs;
         $this->view->distinctTrendNames = $distinctTrendNames;
+        $this->view->trackerJson = json_encode(array('aggregateMetricSpecs' => $aggregateMetricSpecs));
     }
 }
