@@ -65,4 +65,4 @@ skip_files:
   - ^(.*/)?core/configs/.*\.local\.ini$
   - ^(.*/)?(\.git|\.idea|\.vagrant|data|docs|env|log|provisioning|site|tests|tmp|utils)/.*
   - ^(.*/)?(core|modules/.*)/(database/(pgsql|sqlite)|tests)/.*
-  - ^(.*/)?modules/(archive|dicom.*|javauploaddownload|metadataextractor|pvw|remoteprocessing|solr|statistics|visualize)/.*
+  - ^(.*/)?modules/(archive|dicom.*|javauploaddownload|metadataextractor|pvw|remoteprocessing|solr|visualize)/.*

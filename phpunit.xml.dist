@@ -45,9 +45,6 @@
         <testsuite name="sizequota">
             <directory>modules/sizequota/tests</directory>
         </testsuite>
-        <testsuite name="statistics">
-            <directory>modules/statistics/tests</directory>
-        </testsuite>
         <testsuite name="validation">
             <directory>modules/validation/tests</directory>
         </testsuite>

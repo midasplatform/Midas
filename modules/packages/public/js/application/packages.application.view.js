@@ -38,9 +38,7 @@ midas.packages.renderPackages = function (release, packages) {
         html += '<td><a href="' + json.global.webroot + '/download?items=' + encodeURIComponent(val.item_id) + '">' +
             '<img alt="" src="' + json.global.webroot + '/modules/packages/public/images/package.png"/> Download</a> / ';
         html += '<a href="' + json.global.webroot + '/item/' + encodeURIComponent(val.item_id) + '">' +
-            '<img alt="" src="' + json.global.coreWebroot + '/public/images/icons/page_white_go.png"/> View</a> / ';
-        html += '<a href="' + json.global.webroot + '/statistics/item?id=' + encodeURIComponent(val.item_id) + '">' +
-            '<img alt="" src="' + json.global.webroot + '/modules/statistics/public/images/chart_bar.png"/> Stats</a></td>';
+            '<img alt="" src="' + json.global.coreWebroot + '/public/images/icons/page_white_go.png"/> View</a></td>';
         html += '</tr>';
         table.find('tbody').append(html);
     });

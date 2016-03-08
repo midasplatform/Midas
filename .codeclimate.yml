@@ -40,8 +40,6 @@ exclude_paths:
   - 'library/SwaggerUI/*'
   - 'log/*'
   - 'modules/oai/library/oai/*'
-  - 'modules/statistics/public/js/googlemaps/*'
-  - 'modules/statistics/public/js/jquery/*'
   - 'modules/visualize/public/js/jquery/*'
   - 'modules/visualize/public/js/webgl/*'
   - 'provisioning/*'
