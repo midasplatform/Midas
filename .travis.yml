@@ -57,4 +57,4 @@ before_script:
 script:
   - mkdir _test && cd _test
   - cmake ..
-  - ctest -j2 -V .
+  - ctest -E 'GeolocationLookup|PerformCleanup' -j2 -V .
