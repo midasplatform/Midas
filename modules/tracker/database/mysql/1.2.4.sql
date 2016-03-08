@@ -115,5 +115,5 @@ CREATE TABLE IF NOT EXISTS `tracker_aggregate_metric_spec` (
 CREATE TABLE IF NOT EXISTS `tracker_user2aggregate_metric_spec` (
     `user_id` bigint(20) NOT NULL,
     `aggregate_metric_spec_id` bigint(20) NOT NULL,
-    PRIMARY KEY (`user_id`, `aggregate_metric_spec_id`)
+    UNIQUE KEY `tracker_user_aggregate_metric_spec_id` (`user_id`, `aggregate_metric_spec_id`)
 ) DEFAULT CHARSET=utf8;

@@ -363,7 +363,8 @@ CREATE INDEX "user_idx_lastname_firstname" ON "user" ("lastname", "firstname");
 CREATE TABLE IF NOT EXISTS "user2group" (
     "id" serial PRIMARY KEY,
     "user_id" bigint NOT NULL,
-    "group_id" bigint NOT NULL
+    "group_id" bigint NOT NULL,
+    UNIQUE ("user_id", "group_id")
 );
 
 CREATE TABLE IF NOT EXISTS "userapi" (
