@@ -35,7 +35,7 @@ class Tracker_Notification extends ApiEnabled_Notification
     public $_models = array('User');
 
     /** @var array */
-    public $_moduleModels = array('Scalar', 'Trend');
+    public $_moduleModels = array('Scalar', 'Trend', 'AggregateMetricSpec', 'AggregateMetric');
 
     /** @var array */
     public $_moduleComponents = array('Api');
@@ -58,6 +58,7 @@ class Tracker_Notification extends ApiEnabled_Notification
         $this->addCallBack('CALLBACK_CORE_ITEM_DELETED', 'itemDeleted');
         $this->addCallBack('CALLBACK_CORE_USER_DELETED', 'userDeleted');
 
+        $this->addTask('TASK_TRACKER_SEND_AGGREGATE_METRIC_NOTIFICATION', 'sendAggregateEmail', 'Send aggregate metric threshold violation email');
         $this->addTask('TASK_TRACKER_SEND_THRESHOLD_NOTIFICATION', 'sendEmail', 'Send threshold violation email');
         $this->addTask(
             'TASK_TRACKER_DELETE_TEMP_SCALAR',
@@ -195,6 +196,86 @@ class Tracker_Notification extends ApiEnabled_Notification
         $body .= '    <meta itemprop="name" content="View trend"/>'.PHP_EOL;
         $body .= '  </div>'.PHP_EOL;
         $body .= '  <meta itemprop="description" content="View the trend plot"/>'.PHP_EOL;
+        $body .= '</div>'.PHP_EOL;
+
+        Zend_Registry::get('notifier')->callback(
+            'CALLBACK_CORE_SEND_MAIL_MESSAGE',
+            array(
+                'to' => $email,
+                'subject' => $subject,
+                'html' => $body,
+                'event' => 'tracker_threshold_crossed',
+            )
+        );
+    }
+
+    /**
+     * Send an email to the user that an aggregate metric threshold was crossed.
+     *
+     * @param array $params associative array of parameters including the keys
+     * "aggregate_metric_spec_id", "aggregate_metric_id", "recipient_id".
+     */
+    public function sendAggregateEmail($params)
+    {
+        /** @var UserDao $userDao */
+        $userDao = $this->User->load($params['recipient_id']);
+        if ($userDao === false) {
+            $this->getLogger()->warn(
+                'Attempting to send aggregate metric threshold notification to user id '.$params['recipientId'].': No such user.'
+            );
+
+            return;
+        }
+
+        /** @var Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao */
+        $aggregateMetricSpecDao = $this->Tracker_AggregateMetricSpec->load($params['aggregate_metric_spec_id']);
+        if ($aggregateMetricSpecDao === false) {
+            $this->getLogger()->warn(
+                'Attempting to send aggregate metric threshold notification with aggregate metric spec '.$params['aggregateMetricSpecId'].': No such spec.'
+            );
+
+            return;
+        }
+
+        /** @var Tracker_AggregateMetricDao $aggregateMetricDao */
+        $aggregateMetricDao = $this->Tracker_AggregateMetric->load($params['aggregate_metric_id']);
+        if ($aggregateMetricDao === false) {
+            $this->getLogger()->warn(
+                'Attempting to send aggregate metric threshold notification with aggregate metric '.$params['aggregateMetricId'].': No such metric.'
+            );
+
+            return;
+        }
+
+        $submissionDao = $aggregateMetricDao->getSubmission();
+        $producerDao = $aggregateMetricSpecDao->getProducer();
+        $fullUrl = UtilityComponent::getServerURL().$this->webroot;
+        $email = $userDao->getEmail();
+
+        $producerName = $producerDao->getDisplayName();
+        $metricName = $aggregateMetricSpecDao->getName();
+        $thresholdValue = $aggregateMetricSpecDao->getValue();
+        $thresholdComparison = $aggregateMetricSpecDao->getComparison();
+        $metricValue = $aggregateMetricDao->getValue();
+        $subject = 'Threshold Alert: '.$producerName.': '.$metricName;
+
+        $body = 'Hello,<br/><br/>This email was sent because a submission aggregate metric exceeded a specified threshold.<br/><br/>';
+        $body .= '<b>Community:</b> <a href="'.$fullUrl.'/community/'.$producerDao->getCommunityId(
+            ).'">'.htmlspecialchars($producerDao->getCommunity()->getName(), ENT_QUOTES, 'UTF-8').'</a><br/>';
+        $body .= '<b>Producer:</b> <a href="'.$fullUrl.'/'.$this->moduleName.'/producer/view?producerId='.$producerDao->getKey(
+            ).'">'.htmlspecialchars($producerDao->getDisplayName(), ENT_QUOTES, 'UTF-8').'</a><br/>';
+        $body .= '<b>Metric:</b> <a href="'.$fullUrl.'">'.htmlspecialchars($metricName, ENT_QUOTES, 'UTF-8').'</a><br/>';
+        $body .= '<b>Value:</b> '.htmlspecialchars($metricValue, ENT_QUOTES, 'UTF-8').'<br/>';
+        $body .= '<b>Threshold:</b> '.htmlspecialchars($thresholdComparison, ENT_QUOTES, 'UTF-8').' '.htmlspecialchars($thresholdValue, ENT_QUOTES, 'UTF-8').'<br/>'.PHP_EOL;
+
+        // Add gmail "View Action".
+        $dashboardUrl = $fullUrl;
+        $body .= '<div itemscope itemtype="http://schema.org/EmailMessage">'.PHP_EOL;
+        $body .= '  <div itemprop="action" itemscope itemtype="http://schema.org/ViewAction">'.PHP_EOL;
+        $body .= '    <link itemprop="url" href="'.$dashboardUrl.'"/>'.PHP_EOL;
+        $body .= '    <meta itemprop="name" content="View submission dashboard"/>'.PHP_EOL;
+        $body .= '  </div>'.PHP_EOL;
+        $body .= '  <meta itemprop="description" content="View the submission dashboard"/>'.PHP_EOL;
         $body .= '</div>'.PHP_EOL;
 
         Zend_Registry::get('notifier')->callback(

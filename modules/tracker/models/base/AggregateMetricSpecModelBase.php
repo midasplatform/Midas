@@ -80,6 +80,18 @@ abstract class Tracker_AggregateMetricSpecModelBase extends Tracker_AppModel
     abstract public function getAllNotifiedUsers($aggregateMetricSpecDao);
 
     /**
+     * Return a list of Jobs scheduled to notify users that the passed aggregate metric is above
+     * the threshold defined in the passed aggregate metric spec.
+     *
+     * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao aggregateMetricSpec DAO
+     * @param Tracker_AggregateMetricDao $aggregateMetricDao aggregateMetric DAO
+     * @return false|array of Scheduler_JobDao for all users with a notification created, which will only
+     * be populated if the aggregate metric is above the threshold defined on the aggregate metric spec and
+     * there exist users to be notified on the aggregate metric spec, or false if the inputs are invalid.
+     */
+    abstract public function scheduleNotificationJobs($aggregateMetricSpecDao, $aggregateMetricDao);
+
+    /**
      * Create an AggregateMetricSpecDao from the inputs.
      *
      * @param Tracker_ProducerDao $producerDao producer DAO
