@@ -323,29 +323,6 @@ $(document).ready(function () {
         aggregatemetricspecRest(method, aggregateMetricSpecId, specValues.aggregateMetricSpec, successCallback);
     }
 
-    /**
-     * Displays the loading image, updates the branch list based on
-     * the current metric name, then hides the loading image.
-     * @param successCallback callback on success, not passed any value
-     */
-    function updateBranchList(successCallback) {
-        var producerId = $('#producerId').val();
-        var metricName = $('select#aggregateMetricSpecMetricName').val();
-        $('#aggregateMetricSpecSaveLoading').show();
-
-        var jsonMethod = 'midas.tracker.branchesformetricname.list';
-        var args = 'producerId=' + producerId + '&trendMetricName='+metricName;
-        callAjaxWebApi(jsonMethod, 'GET', args, function (retVal) {
-            $('#aggregateMetricSpecBranch').find('option').remove();
-            var branches = retVal.data;
-            $.each(branches, function (key, value) {
-                $('#aggregateMetricSpecBranch').append('<option value="'+value+'">' + value + '</option>');
-            });
-            $('#aggregateMetricSpecSaveLoading').hide();
-            if (successCallback) { successCallback(); }
-        });
-    }
-
     /** Clear all spec inputs of any value. */
     function clearSpecInputs() {
         $('.amsField').val('');
@@ -353,9 +330,7 @@ $(document).ready(function () {
         $('#aggregateMetricSpecSpec').val('');
         $('#aggregateMetricSpecMetricName option:disabled').attr('selected', 'selected');
         $('#aggregateMetricSpecComparison option:disabled').attr('selected', 'selected');
-        // Remove branches, add the placeholder.
-        $('#aggregateMetricSpecBranch').find('option').remove();
-        $('#aggregateMetricSpecBranch').append('<option disabled selected value>  -- select a branch -- </option>');
+        $('#aggregateMetricSpecBranch').val('master');
     }
 
     /** Update display of disabled composite spec input from individual elements. */
@@ -435,23 +410,12 @@ $(document).ready(function () {
         $('#aggregateMetricSpecAggregateMetric').val(specParts.metric);
         var metricNameFound = selectValueFound('aggregateMetricSpecMetricName', specParts.metricName);
         if (!metricNameFound) {
-            // Don't set the branch name because the metric name is invalid,
-            // and that determines the set of possible branches.
             $('#aggregateMetricSpecValidationError').text("Loaded metric name '"+specParts.metricName+"' is invalid");
-            $('#aggregateMetricSpecSaveLoading').hide();
         } else {
             $('#aggregateMetricSpecMetricName').val(specParts.metricName);
-            // Don't need to hide the loading image because updateBranchList will.
-            var successCallback = function () {
-                var branchNameFound = selectValueFound('aggregateMetricSpecBranch', aggregateMetricSpec.branch);
-                if (!branchNameFound) {
-                    $('#aggregateMetricSpecValidationError').text("Loaded branch '"+aggregateMetricSpec.branch+"' is invalid");
-                } else {
-                    $('#aggregateMetricSpecBranch').val(aggregateMetricSpec.branch);
-                }
-            };
-            updateBranchList(successCallback);
+            $('#aggregateMetricSpecBranch').val(aggregateMetricSpec.branch);
         }
+        $('#aggregateMetricSpecSaveLoading').hide();
     }
 
     // Spec Details panel handlers
@@ -459,7 +423,6 @@ $(document).ready(function () {
     /** Handler for the metric name select. */
     $('select#aggregateMetricSpecMetricName').change(function () {
         updateSpec();
-        updateBranchList();
     });
 
     /** Handler for aggregate metric select. */
