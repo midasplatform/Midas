@@ -18,6 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
+
 echo '<script type="text/javascript" src="/modules/api/public/js/common/common.ajaxapi.js"></script>';
 echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/producer/producer.aggregateMetric.js"></script>';
 ?>
@@ -26,38 +27,24 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/pro
 <div id='aggregateMetricSpecManage'>
     <?php
         echo '<input type="hidden" id="producerId" value="'.$this->producer->getProducerId().'" />';
-        echo $this->producer->getDisplayName().' existing aggregate metric specs';
     ?>
+    <input type="hidden" id='aggregateMetricSpecEditId'/>
     <div id='aggregateMetricSpecList'>
-    <table id='aggreagteMetricSpecListTable'>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Actions</th>
-            </tr>
-            <tbody>
-                <?php
-                    /** @var Tracker_AggregateMetricSpecDao $AggregateMetricSpecDao */
-                    foreach ($this->aggregateMetricSpecs as $aggregateMetricSpecDao) {
-                        echo '<tr>';
-                        echo '<td class="specName">'.$aggregateMetricSpecDao->getName().'</td>';
-                        echo '  <td><span class="actionsList">';
-                        echo '  <a qtip="Edit aggregate metric spec" class="tableActions aggregateMetricSpecAction editAggregateMetricSpec" data-aggregate_metric_spec_id="'.$aggregateMetricSpecDao->getAggregateMetricSpecId().'">';
-                        echo '    <img class="tableActions" alt="" src="'.$this->coreWebroot.'/public/images/icons/edit.png" /> Edit</a>';
-                        echo '  <a qtip="Remove aggregate metric spec" class="tableActions aggregateMetricSpecAction removeAggregateMetricSpec" data-aggregate_metric_spec_id="'.$aggregateMetricSpecDao->getAggregateMetricSpecId().'">';
-                        echo '    <img class="tableActions" alt="" src="'.$this->coreWebroot.'/public/images/icons/close.png" /> Delete</a>';
-                        echo '</tr>';
-                    }
-                ?>
-            </tbody>
-    </table>
+        <table id='aggregateMetricSpecListTable'>
+            <thead>
+                <tr>
+                    <th><?php echo $this->producer->getDisplayName().' metrics'; ?></th>
+                    <th>Actions</th>
+                </tr>
+                <tbody>
+                </tbody>
+        </table>
     </div>
     <?php echo '<div id="addAggregateMetricSpec"><a class="aggregateMetricSpecAction" tip="Add an aggregate metric spec"><img class="tableActions" alt="" src="'.$this->coreWebroot.'/public/images/icons/add.png" /> Add aggregate metric spec</a>'; ?>
     <img id="aggregateMetricSpecDeleteLoading" alt="loading" style="display: none;" src="/core/public/images/icons/loading.gif" /></div>
     <div id='aggregateMetricSpecCreateEdit' style='display: none;'>
-        <input type="hidden" id='aggregateMetricSpecEditId'/>
-        <div class="aggregateMetricSectionTitle aggregateMetricSpecCreate" style="display: none;">Create the aggregate metric spec</div>
-        <div class="aggregateMetricSectionTitle aggregateMetricSpecEdit" style="display: none;">Edit aggregate metric spec</div>
+        <div class="aggregateMetricSpecCreate aggregateMetricSectionTitle" style="display: none;">Create the aggregate metric spec</div>
+        <div class="aggregateMetricSpecEdit aggregateMetricSectionTitle" style="display: none;">Edit aggregate metric spec</div>
             <table>
                 <tbody>
                     <tr>
@@ -116,11 +103,11 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/pro
                     </tr>
                 </tbody>
             </table>
-            <div class="aggregateMetricSectionTitle">Define the notification threshold</div>
+            <div class="aggregateMetricSectionTitle">Define the alert threshold</div>
             <table>
                 <tbody>
                     <tr>
-                        <td>notification threshold comparison</td>
+                        <td>alert threshold comparison</td>
                         <td>
                             <select class="amsField" id='aggregateMetricSpecComparison'>
                                 <option disabled selected value>  -- select a comparison -- </option>
@@ -134,7 +121,7 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/pro
                         </td>
                     </tr>
                     <tr>
-                        <td>notification threshold value</td>
+                        <td>alert threshold value</td>
                         <td><input id='aggregateMetricSpecValue' class="amsField" type="text" /></td>
                     </tr>
                 </tbody>
@@ -147,5 +134,49 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/pro
             <input id="aggregateMetricSpecUpdate" class="aggregateMetricSpecEdit" style="display: none;" input type="button" value="Update" />
             <input id="aggregateMetricSpecCancel" type="button" value="Cancel" />
         </div>
+    </div>
+    <div id='aggregateMetricUserAlerts' style='display: none;'>
+        <div><span>Alerts for aggregate metric spec <label id='aggregateMetricUserAlertsSpecName'></label></span><div>
+        <div><input id='aggregateMetricUserAlertsSpec' type="text" disabled="disabled"/></div>
+        <div id='aggregateMetricUserAlertsThreshold'>
+            Alert Threshold
+            <table id='aggregateMetricUserAlertsThresholdDefinition'>
+                <tbody>
+                    <tr>
+                        <td>comparison</td>
+                        <td><input id='aggregateMetricSpecAlertComparison' type="text" disabled="disabled"/></td>
+                    </tr>
+                    <tr>
+                        <td>value</td>
+                        <td><input id='aggregateMetricSpecAlertValue' type="text" disabled="disabled"/></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <table id='aggregateMetricSpecAlertedUsers'>
+            <thead>
+                <tr>
+                    <th>Alerted Users</th>
+                    <th>Actions</th>
+                </tr>
+                <tbody>
+                </tbody>
+        </table>
+        <div id="addAggregateMetricSpecAlertUser">
+            Add a user to be alerted<br/>
+            <div class='alertUserSearch'>
+                    <input type='text' id='addAlertUserSearch' value='' autocomplete='off'
+                       autocorrect='off' autocapitalize='off'/>
+                <input type='hidden' id='addAlertUserSearchValue' value='init'/>
+            </div>
+        </div>
+        <div id="aggregateMetricSpecUserAlertsSaveState">
+            <img id="aggregateMetricSpecAlertsLoading" alt="loading" style="display: none;" src="/core/public/images/icons/loading.gif" />
+            <label id="aggregateMetricSpecUserAlertsValidationError"></label>
+            <input id="aggregateMetricSpecUserAlertsDone" type="button" value="Done" />
+        </div>
+    </div>
+    <div style="display: none;" class="trackerJsonContent">
+        <?php echo $this->escape($this->trackerJson).PHP_EOL; ?>
     </div>
 </div>
