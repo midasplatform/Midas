@@ -64,7 +64,6 @@ class Tracker_ProducerController extends Tracker_AppController
 
         $this->view->community = $communityDao;
         $this->view->producers = $this->Tracker_Producer->getByCommunityId($communityId);
-        $this->view->isAdmin = $this->Community->policyCheck($communityDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
     }
 
     /**

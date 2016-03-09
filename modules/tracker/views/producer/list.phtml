@@ -40,9 +40,6 @@
             if ($producerDao->getDescription() != '') {
                 echo '<div class="producerDescription">'.$this->escape($producerDao->getDescription()).'</div>';
             }
-            if ($this->isAdmin) {
-                echo '<div data-producer_id="'.$this->escape($producerDao->getKey()).'" class="producerManageAggregateMetric"><img src="'.$this->coreWebroot.'/public/images/icons/cog_go.png" alt="manage aggregate metrics"/> Aggregate Metrics</div>';
-            }
             echo '</div>';
         }
         ?>
