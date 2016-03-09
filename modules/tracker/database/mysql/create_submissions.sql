@@ -4,8 +4,8 @@ BEGIN
   DECLARE cur_id bigint(20) default -1;
   DECLARE cur_time timestamp default NOW();
 
-  DECLARE curs CURSOR FOR SELECT scalar_id, submit_time FROM tracker_scalar WHERE submission_id=-1 group by submit_time;
-
+  DECLARE curs CURSOR FOR SELECT scalar_id, submit_time FROM tracker_scalar
+    WHERE submission_id=-1 group by submit_time;
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
     
   OPEN curs;
