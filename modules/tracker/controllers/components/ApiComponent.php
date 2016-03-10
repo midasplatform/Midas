@@ -719,6 +719,8 @@ class Tracker_ApiComponent extends AppComponent
      * submission uuid.
      *
      * @param uuid The uuid of the submission to calculate aggregate metrics for
+     * @param notify (Optional) If set, will schedule notifications for the calculated metrics
+     * if any are above their defined threshold
      * @return An array of AggregateMetricDao calculated on the submission
      * @throws Exception
      */
@@ -749,6 +751,19 @@ class Tracker_ApiComponent extends AppComponent
         /** @var Tracker_AggregateMetricModel $aggregateMetricModel */
         $aggregateMetricModel = MidasLoader::loadModel('AggregateMetric', 'tracker');
         $aggregateMetrics = $aggregateMetricModel->updateAggregateMetricsForSubmission($submissionDao);
+
+        if (array_key_exists('notify', $args) && $args['notify']) {
+            /** @var Tracker_AggregateMetricSpecModel $aggregateMetricSpecModel */
+            $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
+            /** @var Tracker_ThresholdNotificationComponent $notifyComponent */
+            $notifyComponent = MidasLoader::loadComponent('ThresholdNotification', 'tracker');
+            /** @var Tracker_AggregateMetricDao $aggregateMetricDao */
+            foreach ($aggregateMetrics as $aggregateMetricDao) {
+                /* @var Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao */
+                $aggregateMetricSpecDao = $aggregateMetricDao->getAggregateMetricSpec();
+                $notificationJobs = $aggregateMetricSpecModel->scheduleNotificationJobs($aggregateMetricSpecDao, $aggregateMetricDao);
+            }
+        }
 
         return $aggregateMetrics;
     }

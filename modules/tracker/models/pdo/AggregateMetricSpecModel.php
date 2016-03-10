@@ -112,6 +112,84 @@ class Tracker_AggregateMetricSpecModel extends Tracker_AggregateMetricSpecModelB
     }
 
     /**
+     * Return a list of Jobs scheduled to notify users that the passed aggregate metric is above
+     * the threshold defined in the passed aggregate metric spec.
+     *
+     * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao aggregateMetricSpec DAO
+     * @param Tracker_AggregateMetricDao $aggregateMetricDao aggregateMetric DAO
+     * @return false|array of Scheduler_JobDao for all users with a notification created, which will only
+     * be populated if the aggregate metric is above the threshold defined on the aggregate metric spec and
+     * there exist users to be notified on the aggregate metric spec, or false if the inputs are invalid.
+     */
+    public function scheduleNotificationJobs($aggregateMetricSpecDao, $aggregateMetricDao)
+    {
+        if (is_null($aggregateMetricSpecDao) || $aggregateMetricSpecDao === false) {
+            return false;
+        }
+        if (is_null($aggregateMetricDao) || $aggregateMetricDao === false) {
+            return false;
+        }
+
+        // if the value exists and the threshold exists, test it
+        $value = $aggregateMetricDao->getValue();
+        $thresholdValue = $aggregateMetricSpecDao->getValue();
+        /** @var bool $aboveThreshold */
+        $aboveThreshold = false;
+        switch ($aggregateMetricSpecDao->getComparison()) {
+            case '>':
+                $aboveThreshold = $value > $thresholdValue;
+                break;
+            case '<':
+                $aboveThreshold = $value < $thresholdValue;
+                break;
+            case '>=':
+                $aboveThreshold = $value >= $thresholdValue;
+                break;
+            case '<=':
+                $aboveThreshold = $value <= $thresholdValue;
+                break;
+            case '==':
+                $aboveThreshold = $value === $thresholdValue;
+                break;
+            case '!=':
+                $aboveThreshold = $value !== $thresholdValue;
+                break;
+            default:
+                $aboveThreshold = false;
+        }
+
+        $jobs = array();
+        if ($aboveThreshold) {
+            $notifiedUsers = $this->getAllNotifiedUsers($aggregateMetricSpecDao);
+            if ($notifiedUsers && count($notifiedUsers) > 0) {
+                /** @var Scheduler_JobModel $jobModel */
+                $jobModel = MidasLoader::loadModel('Job', 'scheduler');
+                /** @var userDao $userDao */
+                foreach ($notifiedUsers as $userDao) {
+                    /** @var Scheduler_JobDao $jobDao */
+                    $jobDao = MidasLoader::newDao('JobDao', 'scheduler');
+                    $jobDao->setTask('TASK_TRACKER_SEND_AGGREGATE_METRIC_NOTIFICATION');
+                    $jobDao->setPriority(1);
+                    $jobDao->setRunOnlyOnce(1);
+                    $jobDao->setFireTime(date('Y-m-d H:i:s'));
+                    $jobDao->setTimeInterval(0);
+                    $jobDao->setStatus(SCHEDULER_JOB_STATUS_TORUN);
+                    $jobDao->setCreatorId($userDao->getUserId());
+                    $jobDao->setParams(JsonComponent::encode(array(
+                        'aggregate_metric_spec_id' => $aggregateMetricSpecDao->getAggregateMetricSpecId(),
+                        'aggregate_metric_id' => $aggregateMetricDao->getAggregateMetricId(),
+                        'recipient_id' => $userDao->getUserId(),
+                    )));
+                    $jobModel->save($jobDao);
+                    $jobs[] = $jobDao;
+                }
+            }
+        }
+
+        return $jobs;
+    }
+
+    /**
      * Delete the given aggregate metric spec, any metrics calculated based on that spec,
      * and any associated notifications.
      *

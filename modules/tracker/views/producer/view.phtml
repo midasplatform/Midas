@@ -116,6 +116,12 @@ $this->headScript()->appendFile($this->moduleWebroot.'/public/js/producer/produc
                         <span class="keyMetricToggleVerb">Set</span> as key metric<span class="keyMetricTogglePlural"></span>
                     </a>
                 </li>
+                <li>
+                    <a data-producer_id="<?php echo $this->escape($this->producer->getKey()); ?>" class="producerManageAggregateMetric">
+                        <img alt="manage aggregate metrics" src="<?php echo $this->coreWebroot; ?>/public/images/icons/cog_go.png"/> Aggregate Metrics</a>
+
+                </li>
+
             <?php
             }
             ?>

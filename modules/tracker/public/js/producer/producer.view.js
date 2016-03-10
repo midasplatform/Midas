@@ -36,6 +36,12 @@ $(document).ready(function () {
         });
     });
 
+    $('a.producerManageAggregateMetric').click(function () {
+        var producerId = $(event.target).data('producer_id');
+        midas.loadDialog('aggregateMetricProducerId' + producerId, '/tracker/producer/aggregatemetric?producerId=' + producerId);
+        midas.showDialog('Manage Aggregate Metric Specs', false);
+    });
+
     $('input.selectTrend').click(function () {
         var checked = $('input.selectTrend:checked');
         if (checked.length == 2) {
