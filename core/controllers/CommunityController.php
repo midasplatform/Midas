@@ -433,6 +433,15 @@ class CommunityController extends AppController
             'CALLBACK_CORE_GET_COMMUNITY_VIEW_ADMIN_ACTIONS',
             array('community' => $communityDao)
         );
+
+        $db = Zend_Db_Table::getDefaultAdapter();
+        $profiler = $db -> getProfiler();
+        $profile = '';
+        foreach($profiler -> getQueryProfiles() as $query) {
+                $profile .= $query -> getQuery() . "\n"
+                             . 'Time: ' . $query -> getElapsedSecs();
+        }
+        $this->getLogger()->info($profile);
     }
 
     /** Delete a community */

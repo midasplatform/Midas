@@ -87,6 +87,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                 'username' => $config->database->params->username,
                 'password' => $config->database->params->password,
                 'driver_options' => $driverOptions,
+                'profiler' => true,
             );
 
             if (empty($config->database->params->unix_socket)) {
