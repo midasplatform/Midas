@@ -259,23 +259,45 @@ class Tracker_Notification extends ApiEnabled_Notification
         $metricValue = $aggregateMetricDao->getValue();
         $subject = 'Threshold Alert: '.$producerName.': '.$metricName;
 
+        /** @var array $retVal */
+        $retVal = Zend_Registry::get('notifier')->callback(
+            'CALLBACK_TRACKER_AGGREGATE_METRIC_NOTIFICATION_URL',
+            array(
+                'producer' => $producerDao,
+                'submission' => $submissionDao,
+                'aggregateMetric' => $aggregateMetricDao,
+                'aggregateMetricSpec' => $aggregateMetricSpecDao,
+                'serverRootUrl' => $fullUrl,
+            )
+        );
+        /** @var string $aggregateMetricNotificationUrl */
+        $aggregateMetricNotificationUrl = '';
+        // Take the first response.
+        /** @var string $name */
+        foreach ($retVal as $name => $returnedUrl) {
+            $aggregateMetricNotificationUrl = $returnedUrl;
+            break;
+        }
+        if (!$aggregateMetricNotificationUrl || $aggregateMetricNotificationUrl === '') {
+            $aggregateMetricNotificationUrl = $fullUrl;
+        }
+
         $body = 'Hello,<br/><br/>This email was sent because a submission aggregate metric exceeded a specified threshold.<br/><br/>';
         $body .= '<b>Community:</b> <a href="'.$fullUrl.'/community/'.$producerDao->getCommunityId(
             ).'">'.htmlspecialchars($producerDao->getCommunity()->getName(), ENT_QUOTES, 'UTF-8').'</a><br/>';
         $body .= '<b>Producer:</b> <a href="'.$fullUrl.'/'.$this->moduleName.'/producer/view?producerId='.$producerDao->getKey(
             ).'">'.htmlspecialchars($producerDao->getDisplayName(), ENT_QUOTES, 'UTF-8').'</a><br/>';
-        $body .= '<b>Metric:</b> <a href="'.$fullUrl.'">'.htmlspecialchars($metricName, ENT_QUOTES, 'UTF-8').'</a><br/>';
+        $body .= '<b>Metric:</b> <a href="'.$aggregateMetricNotificationUrl.'">'.htmlspecialchars($metricName, ENT_QUOTES, 'UTF-8').'</a><br/>';
         $body .= '<b>Value:</b> '.htmlspecialchars($metricValue, ENT_QUOTES, 'UTF-8').'<br/>';
         $body .= '<b>Threshold:</b> '.htmlspecialchars($thresholdComparison, ENT_QUOTES, 'UTF-8').' '.htmlspecialchars($thresholdValue, ENT_QUOTES, 'UTF-8').'<br/>'.PHP_EOL;
 
         // Add gmail "View Action".
-        $dashboardUrl = $fullUrl;
         $body .= '<div itemscope itemtype="http://schema.org/EmailMessage">'.PHP_EOL;
         $body .= '  <div itemprop="action" itemscope itemtype="http://schema.org/ViewAction">'.PHP_EOL;
-        $body .= '    <link itemprop="url" href="'.$dashboardUrl.'"/>'.PHP_EOL;
-        $body .= '    <meta itemprop="name" content="View submission dashboard"/>'.PHP_EOL;
+        $body .= '    <link itemprop="url" href="'.$aggregateMetricNotificationUrl.'"/>'.PHP_EOL;
+        $body .= '    <meta itemprop="name" content="View aggregate metric"/>'.PHP_EOL;
         $body .= '  </div>'.PHP_EOL;
-        $body .= '  <meta itemprop="description" content="View the submission dashboard"/>'.PHP_EOL;
+        $body .= '  <meta itemprop="description" content="View aggregate metric"/>'.PHP_EOL;
         $body .= '</div>'.PHP_EOL;
 
         Zend_Registry::get('notifier')->callback(
