@@ -37,3 +37,30 @@ require_once BASE_PATH.'/core/include.php';
 
 $application = new Zend_Application('global', CORE_CONFIG);
 $application->bootstrap()->run();
+
+
+if (array_key_exists('profiler', $_GET)) {
+    Zend_Registry::get('logger')->info('Profiler for '.$_SERVER['REQUEST_URI']);
+    $db = Zend_Db_Table::getDefaultAdapter();
+    $profiler = $db -> getProfiler();
+    $profile = '';
+    $queryCounts = array();
+    $queryTimes = array();
+    foreach($profiler -> getQueryProfiles() as $query) {
+            if (array_key_exists($query->getQuery(), $queryCounts)) {
+                $queryCounts[$query->getQuery()] += 1;
+            } else {
+                $queryCounts[$query->getQuery()] = 1;
+            }
+            $queryTimes[] = array('query' => $query->getQuery(), 'time_seconds' => $query->getElapsedSecs());
+    }
+    // Sort queries by count and time
+    arsort($queryCounts, SORT_NUMERIC);
+    function cmp($a, $b) {
+        if ($a['time_seconds'] == $b['time_seconds']) { return 0; }
+        return ($a['time_seconds'] < $b['time_seconds']) ? 1 : -1;
+    }
+    uasort($queryTimes, 'cmp');
+    Zend_Registry::get('logger')->info(print_r($queryCounts, true));
+    Zend_Registry::get('logger')->info(print_r($queryTimes, true));
+}
