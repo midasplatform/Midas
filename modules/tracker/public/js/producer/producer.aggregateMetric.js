@@ -29,6 +29,7 @@ $(document).ready(function () {
         var restCall = {
             url: url,
             type: method,
+            dataType: 'json',
             success: function (retVal) {
                 if (sCb) { sCb(retVal); }
             },
