@@ -29,6 +29,7 @@ $(document).ready(function () {
         var restCall = {
             url: url,
             type: method,
+            dataType: 'json',
             success: function (retVal) {
                 if (sCb) { sCb(retVal); }
             },
@@ -127,6 +128,8 @@ $(document).ready(function () {
         $('#aggregateMetricSpecListTable tbody tr').each(function (ind, elem) {
             $(this).removeClass('activeRow');
         });
+        $('#aggregateMetricSpecCreateEdit').hide();
+        $('#aggregateMetricUserAlerts').hide();
     }
 
     /**
@@ -138,8 +141,6 @@ $(document).ready(function () {
         $('#aggregateMetricSpecEditId').val(aggregateMetricSpecId);
         unhighlightActiveRow();
         actionLink.closest('tr').addClass('activeRow');
-        $('#aggregateMetricSpecCreateEdit').hide();
-        $('#aggregateMetricUserAlerts').hide();
     }
 
     /**
