@@ -61,6 +61,18 @@ if (array_key_exists('profiler', $_GET)) {
         return ($a['time_seconds'] < $b['time_seconds']) ? 1 : -1;
     }
     uasort($queryTimes, 'cmp');
-    Zend_Registry::get('logger')->info(print_r($queryCounts, true));
-    Zend_Registry::get('logger')->info(print_r($queryTimes, true));
+
+    if (array_key_exists('profilerFiveSlowest', $_GET)) {
+        // Logs much less info, only the five slowest queries.
+        $fiveSlowest = array();
+        $count = 0;
+        foreach($queryTimes as $query => $time) {
+            $fiveSlowest[$query] = $time;
+            if ($count++ == 4) { break; }
+        }
+        Zend_Registry::get('logger')->info(print_r($fiveSlowest, true));
+    } else {
+        Zend_Registry::get('logger')->info(print_r($queryCounts, true));
+        Zend_Registry::get('logger')->info(print_r($queryTimes, true));
+    }
 }
