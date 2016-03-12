@@ -24,6 +24,7 @@
  * @property Tracker_ScalarModel $Tracker_Scalar
  * @property Tracker_ThresholdNotificationModel $Tracker_ThresholdNotification
  * @property Tracker_TrendModel $Tracker_Trend
+ * @property Tracker_SubmissionModel $Tracker_Submission
  */
 class Tracker_TrendController extends Tracker_AppController
 {
@@ -31,7 +32,7 @@ class Tracker_TrendController extends Tracker_AppController
     public $_components = array('Breadcrumb');
 
     /** @var array */
-    public $_moduleModels = array('Producer', 'Scalar', 'ThresholdNotification', 'Trend');
+    public $_moduleModels = array('Producer', 'Scalar', 'ThresholdNotification', 'Trend', 'Submission');
 
     /**
      * View a given trend.
@@ -81,7 +82,7 @@ class Tracker_TrendController extends Tracker_AppController
 
         $userId = $this->userSession->Dao ? $this->userSession->Dao->getKey() : null;
 
-        $this->view->allBranches = $this->Tracker_Scalar->getDistinctBranches();
+        $this->view->allBranches = $this->Tracker_Submission->getDistinctBranches();
 
         $trendIds = explode(' ', trim(str_replace(',', ' ', $trendId)));
         $trendDaos = array();

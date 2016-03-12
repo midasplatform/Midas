@@ -1,4 +1,4 @@
-CREATE DEFINER=`root`@`%` PROCEDURE `migrate_items_to_submissions`()
+CREATE PROCEDURE `migrate_items_to_submissions`()
 BEGIN
 
   DECLARE finished INTEGER DEFAULT 0;

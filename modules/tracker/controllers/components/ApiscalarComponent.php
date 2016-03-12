@@ -121,16 +121,8 @@ class Tracker_ApiscalarComponent extends AppComponent
      * @path /tracker/scalar
      * @http POST
      * @param trend_id
-     * @param submission_id (Optional)
-     * @param user_id (Optional)
-     * @param official (Optional)
-     * @param build_results_url (Optional)
-     * @param params (Optional)
-     * @param extra_urls (Optional)
-     * @param branch (Optional)
-     * @param submit_time (Optional)
-     * @param value (Optional)
-     * @param producer_revision (Optional)
+     * @param submission_id
+     * @param value
      * @return array
      *
      * @param array $args parameters
@@ -157,14 +149,6 @@ class Tracker_ApiscalarComponent extends AppComponent
             throw new Exception('The trend does not exist or you do not have the necessary permission', MIDAS_INVALID_POLICY);
         }
 
-        if (isset($args['params']) && !is_null($args['params']) && !is_string($args['params'])) {
-            $args['params'] = json_encode($args['params']);
-        }
-
-        if (isset($args['extra_urls']) && !is_null($args['extra_urls']) && !is_string($args['extra_urls'])) {
-            $args['extra_urls'] = json_encode($args['extra_urls']);
-        }
-
         /** @var Tracker_ScalarModel $scalarModel */
         $scalarModel = MidasLoader::loadModel('Scalar', $this->moduleName);
 
@@ -186,15 +170,7 @@ class Tracker_ApiscalarComponent extends AppComponent
      * @param id
      * @param trend_id
      * @param submission_id (Optional)
-     * @param user_id (Optional)
-     * @param official (Optional)
-     * @param build_results_url (Optional)
-     * @param params (Optional)
-     * @param extra_urls (Optional)
-     * @param branch (Optional)
-     * @param submit_time (Optional)
      * @param value (Optional)
-     * @param producer_revision (Optional)
      * @return array
      *
      * @param array $args parameters
@@ -221,32 +197,10 @@ class Tracker_ApiscalarComponent extends AppComponent
             throw new Exception('The scalar does not exist or you do not have the necessary permission', MIDAS_INVALID_POLICY);
         }
 
-        if (isset($args['params']) && !is_null($args['params'])) {
-            $params = $args['params'];
-            unset($args['params']);
-        }
-
-        if (isset($args['extra_urls']) && !is_null($args['extra_urls']) && !is_string($args['extra_urls'])) {
-            $args['extra_urls'] = json_encode($args['extra_urls']);
-        }
-
         /** @var Tracker_ScalarDao $scalarDao */
         $scalarDao = $scalarModel->initDao('Scalar', $args, $this->moduleName);
         $scalarDao->setScalarId($scalarId);
         $scalarModel->save($scalarDao);
-
-        if (isset($params) && is_string($params)) {
-            $params = json_decode($params);
-            $paramModel = MidasLoader::loadModel('Param', $this->moduleName);
-            foreach ($params as $paramName => $paramValue) {
-                /** @var Tracker_ParamDao $paramDao */
-                $paramDao = MidasLoader::newDao('ParamDao', $this->moduleName);
-                $paramDao->setScalarId($scalarDao->getScalarId());
-                $paramDao->setParamName($paramName);
-                $paramDao->setParamValue($paramValue);
-                $paramModel->save($paramDao);
-            }
-        }
 
         /** @var Tracker_ScalarDao $scalarDao */
         $scalarDao = $scalarModel->load($scalarId);

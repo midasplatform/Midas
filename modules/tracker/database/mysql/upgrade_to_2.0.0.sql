@@ -19,6 +19,17 @@ CREATE TABLE IF NOT EXISTS `tracker_submissionparam` (
   KEY (`param_name`)
 ) DEFAULT CHARSET=utf8;
 
+DROP PROCEDURE IF EXISTS `create_submissions`;
+DROP PROCEDURE IF EXISTS `migrate_items_to_submissions`;
+DROP PROCEDURE IF EXISTS `migrate_params`;
+DROP PROCEDURE IF EXISTS `scalar_to_submission`;
+DELIMITER '$$'
+SOURCE create_submissions.sql
+SOURCE migrate_items_to_submissions.sql
+SOURCE migrate_params.sql
+SOURCE scalar_to_submission.sql
+DELIMITER ';'
+
 ALTER TABLE tracker_submission ADD COLUMN `producer_revision` VARCHAR(255);
 ALTER TABLE tracker_submission ADD COLUMN `user_id` bigint(20) NOT NULL DEFAULT '-1';
 ALTER TABLE tracker_submission ADD COLUMN `official` tinyint(4) NOT NULL DEFAULT '1';
@@ -37,7 +48,7 @@ CALL migrate_params();
 
 CALL migrate_items_to_submissions();
 
-CALL scalar_to_submissions();
+CALL scalar_to_submission();
 
 DROP TABLE IF EXISTS tracker_param;
 

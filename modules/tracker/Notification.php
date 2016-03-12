@@ -25,6 +25,7 @@ require_once BASE_PATH.'/modules/api/library/APIEnabledNotification.php';
  *
  * @property Tracker_ScalarModel $Tracker_Scalar
  * @property Tracker_TrendModel $Tracker_Trend
+ * @property Tracker_SubmissionModel $Tracker_Submission
  */
 class Tracker_Notification extends ApiEnabled_Notification
 {
@@ -35,7 +36,7 @@ class Tracker_Notification extends ApiEnabled_Notification
     public $_models = array('User');
 
     /** @var array */
-    public $_moduleModels = array('Scalar', 'Trend', 'AggregateMetricSpec', 'AggregateMetric');
+    public $_moduleModels = array('Scalar', 'Trend', 'AggregateMetricSpec', 'AggregateMetric', 'Submission');
 
     /** @var array */
     public $_moduleComponents = array('Api');
@@ -94,7 +95,7 @@ class Tracker_Notification extends ApiEnabled_Notification
     }
 
     /**
-     * When an item is deleted, we must delete associated item2scalar records.
+     * When an item is deleted, we must delete associated item2submission records.
      *
      * @todo
      * @param array $args associative array of parameters including the key "item"

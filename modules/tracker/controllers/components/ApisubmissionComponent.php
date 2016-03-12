@@ -129,9 +129,17 @@ class Tracker_ApisubmissionComponent extends AppComponent
      *
      * @path /tracker/submission
      * @http POST
-     * @param producer_id
+     * @param communityId
+     * @param producerDisplayName
+     * @param producerRevision
      * @param uuid (Optional)
      * @param name (Optional)
+     * @param submitTime (Optional)
+     * @param branch (Optional)
+     * @param buildResultsUrl (Optional)
+     * @param params (Optional)
+     * @param extraUrls (Optional)
+     * @param reproductionCommand (Optional)
      * @return array
      *
      * @param array $args parameters
@@ -143,7 +151,7 @@ class Tracker_ApisubmissionComponent extends AppComponent
         $apihelperComponent = MidasLoader::loadComponent('Apihelper');
         $apihelperComponent->requirePolicyScopes(
             array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
-        $apihelperComponent->validateParams($args, array('producer_id'));
+        $apihelperComponent->validateParams($args, array('communityId', 'producerDisplayName', 'producerRevision'));
 
         $this->_checkUser($args,
                           'Only authenticated users can create submissions.');
@@ -152,11 +160,32 @@ class Tracker_ApisubmissionComponent extends AppComponent
         $submissionModel = MidasLoader::loadModel('Submission',
                                                   $this->moduleName);
 
+        /** @var Tracker_ProducerModel $producerModel */
+        $producerModel = MidasLoader::loadModel('Producer', $this->moduleName);
+
         if (!isset($args['uuid'])) {
             /** @var UuidComponent $uuidComponent */
             $uuidComponent = MidasLoader::loadComponent('UuidComponent');
             $args['uuid'] = $uuidComponent->generate();
         }
+
+        if (isset($args['extraUrls'])) {
+            $args['extraUrls'] = json_decode($args['extraUrls'], true);
+        }
+
+        $args['buildResultsUrl'] = isset($args['buildResultsUrl']) ? $args['buildResultsUrl'] : '';
+        $args['branch'] = isset($args['branch']) ? $args['branch'] : '';
+        $args['reproductionCommand'] = isset($args['reproductionCommand']) ? $args['reproductionCommand'] : '';
+
+        $submitTime = strtotime($args['submitTime']);
+        if ($submitTime === false) {
+            throw new Exception('Invalid submitTime value: '.$args['submitTime'], -1);
+        }
+        $submitTime = date('Y-m-d H:i:s', $submitTime);
+        $args['submitTime'] = $submitTime;
+        $args['producerRevision'] = trim($args['producerRevision']);
+        $args['producer_id'] = $producerModel->getByCommunityIdAndName(
+            $args['communityId'], $args['producerDisplayName'])->getKey();
 
         /** @var Tracker_SubmissionDao $submissionDao */
         $submissionDao = $submissionModel->initDao('Submission',
@@ -171,10 +200,23 @@ class Tracker_ApisubmissionComponent extends AppComponent
                                 MIDAS_INVALID_PARAMETER);
         }
 
-        $submissionId = $submissionDao->getSubmissionId();
+        if (isset($args['params']) && !is_null($args['params'])) {
+            $params = $args['params'];
+            unset($args['params']);
+        }
 
-        /** @var Tracker_SubmissionDao $submissionDao */
-        $submissionDao = $submissionModel->load($submissionId);
+        if (isset($params) && is_string($params)) {
+            $params = json_decode($params);
+            $paramModel = MidasLoader::loadModel('Param', $this->moduleName);
+            foreach ($params as $paramName => $paramValue) {
+                /** @var Tracker_ParamDao $paramDao */
+                $paramDao = MidasLoader::newDao('ParamDao', $this->moduleName);
+                $paramDao->setSubmissionId($submissionDao->getKey());
+                $paramDao->setParamName($paramName);
+                $paramDao->setParamValue($paramValue);
+                $paramModel->save($paramDao);
+            }
+        }
 
         return $this->_toArray($submissionDao);
     }
@@ -185,8 +227,13 @@ class Tracker_ApisubmissionComponent extends AppComponent
      * @path /tracker/submission/{id}
      * @http PUT
      * @param id
-     * @param uuid (Optional)
      * @param name (Optional)
+     * @param submitTime (Optional)
+     * @param branch (Optional)
+     * @param buildResultsUrl (Optional)
+     * @param params (Optional)
+     * @param extraUrls (Optional)
+     * @param reproductionCommand (Optional)
      * @return array
      *
      * @param array $args parameters
@@ -216,6 +263,15 @@ class Tracker_ApisubmissionComponent extends AppComponent
         if (is_null($submissionDao) || $submissionDao === false) {
             throw new Exception('A submission with id '.$submissionId.
                                 ' does not exist.', MIDAS_NOT_FOUND);
+        }
+
+        if(isset($args['submitTime'])) {
+            $submitTime = strtotime($args['submitTime']);
+            if ($submitTime === false) {
+                throw new Exception('Invalid submitTime value: ' . $args['submitTime'], -1);
+            }
+            $submitTime = date('Y-m-d H:i:s', $submitTime);
+            $args['submitTime'] = $submitTime;
         }
 
         /** @var Tracker_SubmissionDao $submissionDao */

@@ -78,24 +78,26 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
      */
     public function getScalars($trendDao, $startDate = null, $endDate = null, $userId = null, $branch = null)
     {
-        $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_scalar')->where(
+        $sql = $this->database->select()->setIntegrityCheck(false)->from(array('s' => 'tracker_scalar')
+        )->join(array('u' => 'tracker_submission'), 's.submission_id = u.submission_id'
+        )->where(
             'trend_id = ?',
             $trendDao->getKey()
-        )->order(array('submit_time ASC'));
+        )->order(array('u.submit_time ASC'));
 
         if (!is_null($startDate)) {
-            $sql->where('submit_time >= ?', $startDate);
+            $sql->where('u.submit_time >= ?', $startDate);
         }
 
         if (!is_null($endDate)) {
-            $sql->where('submit_time <= ?', $endDate);
+            $sql->where('u.submit_time <= ?', $endDate);
         }
 
         if (!is_null($branch)) {
             if (is_array($branch)) {
-                $sql->where('branch IN (?)', $branch);
+                $sql->where('u.branch IN (?)', $branch);
             } else {
-                $sql->where('branch = ?', $branch);
+                $sql->where('u.branch = ?', $branch);
             }
         }
 
@@ -201,18 +203,20 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
     public function getDistinctBranchesForMetricName($producerId, $metricName)
     {
         $sql = $this->database->select()->setIntegrityCheck(false)->from(
-            array('tracker_scalar'),
+            array('u' => 'tracker_submission'),
             'branch'
         )
-        ->distinct()
-        ->join(
-            'tracker_trend',
-            'tracker_scalar.trend_id = tracker_trend.trend_id',
+        ->distinct()->join(
+            array('s' => 'tracker_scalar'),
+           's.submission_id = u.submission_id'
+         )->join(
+            array('t' => 'tracker_trend'),
+            's.trend_id = t.trend_id',
             array()
         )
-        ->where('tracker_trend.producer_id = ?', $producerId)
-        ->where('tracker_trend.key_metric = ?', 1)
-        ->where('tracker_trend.metric_name = ?', $metricName);
+        ->where('t.producer_id = ?', $producerId)
+        ->where('t.key_metric = ?', 1)
+        ->where('t.metric_name = ?', $metricName);
 
         $rows = $this->database->fetchAll($sql);
         $branches = array();

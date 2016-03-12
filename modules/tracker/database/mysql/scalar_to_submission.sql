@@ -1,4 +1,4 @@
-CREATE DEFINER=`root`@`%` PROCEDURE `scalar_to_submission`()
+CREATE PROCEDURE `scalar_to_submission`()
 BEGIN
 
   DECLARE finished INTEGER DEFAULT 0;

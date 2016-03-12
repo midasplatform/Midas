@@ -30,17 +30,17 @@ abstract class Tracker_ParamModelBase extends Tracker_AppModel
         $this->_key = 'param_id';
         $this->_mainData = array(
             'param_id' => array('type' => MIDAS_DATA),
-            'scalar_id' => array('type' => MIDAS_DATA),
+            'submission_id' => array('type' => MIDAS_DATA),
             'param_name' => array('type' => MIDAS_DATA),
             'param_type' => array('type' => MIDAS_DATA),
             'text_value' => array('type' => MIDAS_DATA),
             'numeric_value' => array('type' => MIDAS_DATA),
-            'scalar' => array(
+            'submission' => array(
                 'type' => MIDAS_MANY_TO_ONE,
-                'model' => 'Scalar',
+                'model' => 'Submission',
                 'module' => $this->moduleName,
-                'parent_column' => 'scalar_id',
-                'child_column' => 'scalar_id',
+                'parent_column' => 'submission_id',
+                'child_column' => 'submission_id',
             ),
         );
 

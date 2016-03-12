@@ -22,11 +22,12 @@
  * Scalar controller for the tracker module.
  *
  * @property Tracker_ScalarModel $Tracker_Scalar
+ * @property Tracker_SubmissionModelModel $Tracker_Submission
  */
 class Tracker_ScalarController extends Tracker_AppController
 {
     /** @var array */
-    public $_moduleModels = array('Scalar');
+    public $_moduleModels = array('Scalar', 'Submission');
 
     /**
      * Display the dialog of scalar details, including associated result items with thumbnails.
@@ -50,18 +51,24 @@ class Tracker_ScalarController extends Tracker_AppController
         /** @var Tracker_ScalarDao $scalarDao */
         $scalarDao = $this->Tracker_Scalar->load($scalarId);
 
+        /** @var Tracker_SubmissionDao $submissionDao */
+        $submissionDao = $this->Tracker_Submission->load($scalarDao->getSubmissionId());
+
         if ($this->Tracker_Scalar->policyCheck($scalarDao, $this->userSession->Dao, MIDAS_POLICY_READ) === false
         ) {
             throw new Zend_Exception('The scalar does not exist or you do not have the necessary permission', 403);
         }
 
+        // TODO(cpatrick): This may be a performance issue.
         $this->view->isAdmin = $this->Tracker_Scalar->policyCheck($scalarDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
-        $this->view->scalar = $scalarDao;
-        $this->view->extraParams = $scalarDao->getParams();
-        $this->view->extraUrls = json_decode($scalarDao->getExtraUrls(), true);
 
-        $revisionUrl = $scalarDao->getTrend()->getProducer()->getRevisionUrl();
-        $producerRevision = $scalarDao->getProducerRevision();
+        $this->view->scalar = $scalarDao;
+        $this->view->submission = $submissionDao;
+        $this->view->extraParams = $submissionDao->getParams();
+        $this->view->extraUrls = json_decode($submissionDao->getExtraUrls(), true);
+
+        $revisionUrl = $submissionDao->getProducer()->getRevisionUrl();
+        $producerRevision = $submissionDao->getProducerRevision();
 
         if (!is_null($revisionUrl)) {
             $producerRevisionUrl = preg_replace('/%revision/', $producerRevision, $revisionUrl);
@@ -70,11 +77,11 @@ class Tracker_ScalarController extends Tracker_AppController
             $this->view->revisionHtml = $producerRevision;
         }
 
-        $this->view->resultItems = $this->Tracker_Scalar->getAssociatedItems($scalarDao);
-        $this->view->otherValues = $this->Tracker_Scalar->getOtherValuesFromSubmission($scalarDao);
+        $this->view->resultItems = $this->Tracker_Submission->getAssociatedItems($submissionDao);
+        $this->view->otherValues = $this->Tracker_Submission->getValuesFromSubmission($submissionDao);
 
-        if ($scalarDao->getUserId() !== -1) {
-            $this->view->submittedBy = $scalarDao->getUser();
+        if ($submissionDao->getUserId() !== -1) {
+            $this->view->submittedBy = $submissionDao->getUser();
         } else {
             $this->view->submittedBy = null;
         }

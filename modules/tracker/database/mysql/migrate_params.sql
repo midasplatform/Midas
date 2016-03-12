@@ -1,4 +1,4 @@
-CREATE DEFINER=`root`@`%` PROCEDURE `migrate_params`()
+CREATE PROCEDURE `migrate_params`()
 BEGIN
 
   DECLARE finished INTEGER DEFAULT 0;

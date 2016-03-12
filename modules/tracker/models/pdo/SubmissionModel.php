@@ -124,6 +124,30 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
     }
 
     /**
+     * Return the values (trend name, value, and unit in an array) from a given submission.
+     *
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @return array associative array with keys equal to the metric names
+     */
+    public function getValuesFromSubmission($submissionDao)
+    {
+        $sql = $this->database->select()->setIntegrityCheck(false)->from(array('s' => 'tracker_scalar'))->join(
+            array('t' => 'tracker_trend'),
+            's.trend_id = t.trend_id'
+        )->where('s.submission_id = ?', $submissionDao->getSubmissionId()
+        )->order('metric_name ASC');
+
+        $rows = $this->database->fetchAll($sql);
+        $scalarDaos = array();
+        /** @var Zend_Db_Table_Row_Abstract $row */
+        foreach ($rows as $row) {
+            $scalarDaos[$row['metric_name']] = array('value' => number_format((float) $row['value'], 4, '.', ''), 'unit' => $row['unit']);
+        }
+        return $scalarDaos;
+    }
+
+
+    /**
      * Get submissions associated with a given producer.
      *
      * @param Tracker_ProducerDao $producerDao producer DAO
@@ -268,5 +292,26 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
         }
 
         return $trendDaos;
+    }
+
+
+    /**
+     * Return all distinct branch names of revisions producing submissions.
+     *
+     * @return array branch names
+     */
+    public function getDistinctBranches()
+    {
+        $sql = $this->database->select()->setIntegrityCheck(false)->from(
+            array('s' => 'tracker_submission'),
+            'branch'
+        )->distinct();
+        $rows = $this->database->fetchAll($sql);
+        $branches = array();
+        /** @var Zend_Db_Table_Row_Abstract $row */
+        foreach ($rows as $row) {
+            $branches[] = $row['branch'];
+        }
+        return $branches;
     }
 }

@@ -1,4 +1,4 @@
-CREATE DEFINER=`root`@`%` PROCEDURE `create_submissions`()
+CREATE PROCEDURE `create_submissions`()
 BEGIN
   DECLARE finished INTEGER DEFAULT 0;
   DECLARE cur_id bigint(20) default -1;
