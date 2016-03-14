@@ -60,6 +60,7 @@ class AdminController extends AppController
         $formArray = $this->getFormAsArray($configForm);
         $formArray['title']->setValue($this->Setting->getValueByName('title'));
         $formArray['description']->setValue($this->Setting->getValueByName('description'));
+        $formArray['google_analytics_property']->setValue($this->Setting->getValueByName('google_analytics_property'));
         $formArray['language']->setValue($this->Setting->getValueByNameWithDefault('language', 'en'));
         $formArray['time_zone']->setValue($this->Setting->getValueByNameWithDefault('time_zone', 'UTC'));
         $formArray['dynamic_help']->setValue((int) $this->Setting->getValueByNameWithDefault('dynamic_help', 0));
@@ -86,6 +87,7 @@ class AdminController extends AppController
             if (isset($submitConfig)) {
                 $this->Setting->setConfig('title', $this->getParam('title'));
                 $this->Setting->setConfig('description', $this->getParam('description'));
+                $this->Setting->setConfig('google_analytics_property', $this->getParam('google_analytics_property'));
                 $this->Setting->setConfig('language', $this->getParam('language'));
                 $this->Setting->setConfig('time_zone', $this->getParam('time_zone'));
                 $this->Setting->setConfig('dynamic_help', (int) $this->getParam('dynamic_help'));
