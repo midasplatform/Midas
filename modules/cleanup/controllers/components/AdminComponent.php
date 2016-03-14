@@ -33,7 +33,7 @@ class Cleanup_AdminComponent extends AppComponent
      */
     public function schedulePerformCleanupJob($days, $tempDirectory, $userDao = null)
     {
-        /**  @var Scheduler_JobModel $jobModel */
+        /** @var Scheduler_JobModel $jobModel */
         $jobModel = MidasLoader::loadModel('Job', 'scheduler');
         $jobDaos = $jobModel->getJobsByTask('TASK_CLEANUP_PERFORM_CLEANUP');
         $cleanupJobDao = false;
