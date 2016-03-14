@@ -581,7 +581,7 @@ class ApisystemComponent extends AppComponent
         }
 
         $license = array_key_exists('license', $args) ?  $args['license'] : null;
-        $changes = array_key_exists('changes', $args) ? $args['changes'] : '';
+        $changes = array_key_exists('changes', $args) ? $args['changes'] : 'Initial revision';
         $revisionNumber = null;
         if (isset($revision) && $revision !== false) {
             $revisionNumber = $revision->getRevision();
