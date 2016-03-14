@@ -32,6 +32,8 @@ class AdminForm extends AppForm
 
         $description = new Zend_Form_Element_Textarea('description');
 
+        $googleAnalyticsProperty = new Zend_Form_Element_Text('google_analytics_property');
+
         $language = new Zend_Form_Element_Select('language');
         $language->addMultiOptions(array('en' => 'English', 'fr' => 'French'));
 
@@ -63,6 +65,7 @@ class AdminForm extends AppForm
             array(
                 $title,
                 $description,
+                $googleAnalyticsProperty,
                 $language,
                 $timeZone,
                 $dynamicHelp,

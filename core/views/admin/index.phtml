@@ -60,6 +60,10 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jquery.clu
                 <label for='description'>Description</label>
                 {$this->configForm['description']}
               </div>
+              <div qtip='Provide a Google Analytics property.'>
+                <label for='google_analytics_property'>Google Analytics Property</label>
+                {$this->configForm['google_analytics_property']}
+              </div>
               <div";
     if ((int) Zend_Registry::get('configCore')->get('internationalization', 0) === 0) {
         echo " style='display:none;' ";

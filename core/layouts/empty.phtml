@@ -43,6 +43,10 @@ echo $this->doctype().PHP_EOL;
     $this->headLink()->headLink(array('rel' => 'icon', 'href' => $this->baseUrl('favicon.ico'), 'APPEND'));
     echo $this->headLink().PHP_EOL;
 
+    if ($this->googleAnalyticsScript) {
+        $this->headScript()->prependScript($this->googleAnalyticsScript);
+    }
+
     $this->headScript()->prependFile($this->baseUrl('core/public/js/layout/jquery.qtip.min.js'));
     $this->headScript()->prependFile($this->baseUrl('core/public/js/layout/jquery.treeTable.js'));
     $this->headScript()->prependFile($this->baseUrl('core/public/js/layout/midas.progress.js'));
