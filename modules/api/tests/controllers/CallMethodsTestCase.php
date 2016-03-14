@@ -276,7 +276,7 @@ class Api_CallMethodsTestCase extends ControllerTestCase
         /** @var FolderModel $folderModel */
         $folderModel = MidasLoader::loadModel('Folder');
 
-        /** @var FolderpolicyuserModel  $folderpolicyuserModel */
+        /** @var FolderpolicyuserModel $folderpolicyuserModel */
         $folderpolicyuserModel = MidasLoader::loadModel('Folderpolicyuser');
 
         /** @var ItemModel $itemModel */
