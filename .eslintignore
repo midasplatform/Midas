@@ -6,7 +6,6 @@
 bower_components/
 library/SwaggerUI/
 modules/{pvw,visualize}/public/js/jquery/colorpicker.js
-modules/statistics/public/js/googlemaps/*.js
 modules/visualize/public/js/{paraview,webgl}/*.js
 node_modules/
 vendor/
