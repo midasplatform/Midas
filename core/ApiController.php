@@ -39,6 +39,57 @@ class ApiController extends REST_Controller
         $this->_response->setHttpResponseCode(200); // 200 OK
     }
 
+    public function postDispatch()
+    {
+        /** @var SettingModel $settingModel */
+        $settingModel = MidasLoader::loadModel('Setting');
+        $tid = $settingModel->getValueByNameWithDefault('google_analytics_property', false);
+
+        if ($tid !== false && empty($tid) === false) {
+            /** @var UuidComponent $uuidComponent */
+            $uuidComponent = MidasLoader::loadComponent('Uuid');
+            $request = $this->getRequest();
+            $fields = array(
+                'v' => 1,
+                'tid' => $tid,
+                'ds' => 'api',
+                'cid' => $uuidComponent->generate(false),
+                't' => 'pageview',
+                'ni' => 1,
+                'dl' => htmlspecialchars($request->getRequestUri(), ENT_QUOTES, 'UTF-8'),
+            );
+
+            $userDao = $this->_getUser($request->getParams());
+
+            if ($userDao !== false) {
+                $fields['uid'] = $userDao->getUserId();
+            }
+
+            /** @var RandomComponent $randomComponent */
+            $randomComponent = MidasLoader::loadComponent('Random');
+            $fields['z'] = $randomComponent->generateInt();
+
+            if ($request->getScheme() === 'http') {
+                $url = 'http://www.google-analytics.com/collect';
+            } else {
+                $url = 'https://ssl.google-analytics.com/collect';
+            }
+
+            $options = array(
+                'http' => array(
+                    'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                    'method'  => 'POST',
+                    'content' => http_build_query($fields),
+                ),
+            );
+
+            $context  = stream_context_create($options);
+            file_get_contents($url, false, $context);
+        }
+
+        parent::postDispatch();
+    }
+
     /**
      * Return the user DAO.
      *

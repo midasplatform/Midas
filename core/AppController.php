@@ -68,15 +68,6 @@ class AppController extends MIDAS_GlobalController
         $this->view->title = $settingModel->getValueByNameWithDefault('title', 'Midas Platform - Digital Archiving System');
         $this->view->metaDescription = $settingModel->getValueByNameWithDefault('description', '');
 
-        $googleAnalyticsProperty = $settingModel->getValueByNameWithDefault('google_analytics_property', false);
-
-        if ($googleAnalyticsProperty !== false && empty($googleAnalyticsProperty) === false) {
-            $this->view->googleAnalyticsScript
-                = "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','".htmlspecialchars($googleAnalyticsProperty, ENT_QUOTES, 'UTF-8')."','auto');ga('send','pageview');";
-        } else {
-            $this->view->googleAnalyticsScript = false;
-        }
-
         // Set the version
         $version = UtilityComponent::getCurrentModuleVersion('core');
         $this->view->version = $version !== false ? $version : '3.4.x';
@@ -199,6 +190,19 @@ class AppController extends MIDAS_GlobalController
         } else {
             Zend_Registry::set('userSession', null);
             $user = null;
+        }
+
+        $googleAnalyticsProperty = $settingModel->getValueByNameWithDefault('google_analytics_property', false);
+
+        if ($googleAnalyticsProperty !== false && empty($googleAnalyticsProperty) === false) {
+            $gaCreate = "ga('create','".htmlspecialchars($googleAnalyticsProperty, ENT_QUOTES, 'UTF-8')."','auto'";
+            if ($this->logged) {
+                $gaCreate .= ",{'userId':'".htmlspecialchars($this->userSession->Dao->getUserId(), ENT_QUOTES, 'UTF-8')."'}";
+            }
+            $gaCreate .= ')';
+            $this->view->googleAnalyticsScript = "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');".$gaCreate.";ga('send','pageview');";
+        } else {
+            $this->view->googleAnalyticsScript = false;
         }
 
         // init notifier
