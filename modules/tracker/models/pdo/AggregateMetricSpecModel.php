@@ -169,7 +169,7 @@ class Tracker_AggregateMetricSpecModel extends Tracker_AggregateMetricSpecModelB
                     /** @var Scheduler_JobDao $jobDao */
                     $jobDao = MidasLoader::newDao('JobDao', 'scheduler');
                     $jobDao->setTask('TASK_TRACKER_SEND_AGGREGATE_METRIC_NOTIFICATION');
-                    $jobDao->setPriority(1);
+                    $jobDao->setPriority(MIDAS_EVENT_PRIORITY_HIGH);
                     $jobDao->setRunOnlyOnce(1);
                     $jobDao->setFireTime(date('Y-m-d H:i:s'));
                     $jobDao->setTimeInterval(0);
