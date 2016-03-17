@@ -23,7 +23,6 @@ require_once BASE_PATH.'/modules/tracker/models/base/ScalarModelBase.php';
 /** Scalar model for the tracker module. */
 class Tracker_ScalarModel extends Tracker_ScalarModelBase
 {
-
     /**
      * Return any other scalars from the same submission as the given scalar.
      *
