@@ -187,22 +187,23 @@ class Tracker_ApisubmissionComponent extends AppComponent
         $args['producer_id'] = $producerModel->getByCommunityIdAndName(
             $args['communityId'], $args['producerDisplayName'])->getKey();
 
+        // Remove params from the submission args for later insertion in param table
+        if (isset($args['params']) && !is_null($args['params'])) {
+            $params = $args['params'];
+            unset($args['params']);
+        }
+
         /** @var Tracker_SubmissionDao $submissionDao */
         $submissionDao = $submissionModel->initDao('Submission',
-                                                   $args,
-                                                   $this->moduleName);
+            $args,
+            $this->moduleName);
 
         // Catch violation of the unique constraint.
         try {
             $submissionModel->save($submissionDao);
         } catch (Zend_Db_Statement_Exception $e) {
-            throw new Exception('That uuid is already in use.',
+            throw new Exception('That uuid is already in use',
                                 MIDAS_INVALID_PARAMETER);
-        }
-
-        if (isset($args['params']) && !is_null($args['params'])) {
-            $params = $args['params'];
-            unset($args['params']);
         }
 
         if (isset($params) && is_string($params)) {
@@ -265,7 +266,7 @@ class Tracker_ApisubmissionComponent extends AppComponent
                                 ' does not exist.', MIDAS_NOT_FOUND);
         }
 
-        if(isset($args['submitTime'])) {
+        if (isset($args['submitTime'])) {
             $submitTime = strtotime($args['submitTime']);
             if ($submitTime === false) {
                 throw new Exception('Invalid submitTime value: ' . $args['submitTime'], -1);

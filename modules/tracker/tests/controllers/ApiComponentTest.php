@@ -35,14 +35,6 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $this->enabledModules = array('api', 'scheduler', $this->moduleName);
         $this->_models = array('Assetstore', 'Community', 'Setting', 'User');
 
-        $db = Zend_Registry::get('dbAdapter');
-        $configDatabase = Zend_Registry::get('configDatabase');
-        if ($configDatabase->database->adapter == 'PDO_PGSQL') {
-            $db->query("SELECT setval('tracker_trend_trend_id_seq', (SELECT MAX(trend_id) FROM tracker_trend)+1);");
-            $db->query("SELECT setval('tracker_submission_submission_id_seq', (SELECT MAX(submission_id) FROM tracker_submission)+1);");
-            $db->query("SELECT setval('tracker_scalar_scalar_id_seq', (SELECT MAX(scalar_id) FROM tracker_scalar)+1);");
-        }
-
         ControllerTestCase::setUp();
     }
 
@@ -55,21 +47,33 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
     {
         $uuidComponent = MidasLoader::loadComponent('Uuid');
         $uuid = $uuidComponent->generate();
+        $uuid2 = $uuidComponent->generate();
+        $uuid3 = $uuidComponent->generate();
 
         $token = $this->_loginAsAdministrator();
 
+        $metric1Params = array('num_param' => 19.0, 'text_param' => 'metric1 text', 'null_param' => null);
+        $metric2Params = array('num_param' => 20.0, 'text_param' => 'metric2 text', 'null_param' => null);
+        $this->_submitSubmission($token, $uuid);
+        $this->_submitSubmission($token, $uuid2, $metric1Params);
+        $this->_submitSubmission($token, $uuid3, $metric2Params);
         $outputs = array();
         $outputs['metric_0'] = $this->_submitScalar($token, $uuid, 'metric_0', '18');
-        $metric1Params = array('num_param' => 19.0, 'text_param' => 'metric1 text', 'null_param' => null);
-        $outputs['metric_1'] = $this->_submitScalar($token, $uuid, 'metric_1', '19', 'meters', $metric1Params);
-        $metric2Params = array('num_param' => 20.0, 'text_param' => 'metric2 text', 'null_param' => null);
-        $outputs['metric_2'] = $this->_submitScalar($token, $uuid, 'metric_2', '20', 'mm', $metric2Params);
+        $outputs['metric_1'] = $this->_submitScalar($token, $uuid2, 'metric_1', '19', 'meters');
+        $outputs['metric_2'] = $this->_submitScalar($token, $uuid3, 'metric_2', '20', 'mm');
 
         /** @var Tracker_SubmissionModel $submissionModel */
         $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
 
         /** @var Tracker_SubmissionDao $submissionDao */
         $submissionDao = $submissionModel->getSubmission($uuid);
+
+        /** @var Tracker_SubmissionDao $submissionDao2 */
+        $submissionDao2 = $submissionModel->getSubmission($uuid2);
+
+        /** @var Tracker_SubmissionDao $submissionDao3 */
+        $submissionDao3 = $submissionModel->getSubmission($uuid3);
+
         $scalarDaos = $submissionModel->getScalars($submissionDao);
 
         // Maps the scalars for each metric.
@@ -84,9 +88,9 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         }
 
         // Params should be a zero element array here.
-        $this->assertTrue(!($metricToScalar['metric_0']->getParams()));
+        $this->assertTrue(!($submissionDao->getParams()));
 
-        $metric1Params = $metricToScalar['metric_1']->getParams();
+        $metric1Params = $submissionDao2->getParams();
         $metric1ParamChecks = array(
             'num_param' => array('found' => false, 'type' => 'numeric', 'val' => 19.0),
             'text_param' => array('found' => false, 'type' => 'text', 'val' => 'metric1 text'),
@@ -110,7 +114,7 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
             $this->assertTrue($checks['found']);
         }
 
-        $metric2Params = $metricToScalar['metric_2']->getParams();
+        $metric2Params = $submissionDao3->getParams();
         $metric2ParamChecks = array(
             'num_param' => array('found' => false, 'type' => 'numeric', 'val' => 20.0),
             'text_param' => array('found' => false, 'type' => 'text', 'val' => 'metric2 text'),
@@ -152,7 +156,6 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $this->params['method'] = 'midas.tracker.scalar.add';
         $this->params['token'] = $token;
         $this->params['communityId'] = '2000';
-        $this->params['producerDisplayName'] = 'Test Producer';
         $this->params['metricName'] = $metric;
         $this->params['value'] = $value;
         $this->params['producerRevision'] = 'deadbeef';
@@ -166,6 +169,23 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         }
         $res = $this->_callJsonApi();
 
+        return $res->data;
+    }
+
+    private function _submitSubmission($token, $uuid, $params = false)
+    {
+        $this->resetAll();
+        $this->params['method'] = 'midas.tracker.submission.add';
+        $this->params['token'] = $token;
+        $this->params['communityId'] = '2000';
+        $this->params['producerDisplayName'] = 'Test Producer';
+        $this->params['producerRevision'] = 'deadbeef';
+        $this->params['submitTime'] = 'now';
+        $this->params['uuid'] = $uuid;
+        if ($params !== false) {
+            $this->params['params'] = json_encode($params);
+        }
+        $res = $this->_callJsonApi();
         return $res->data;
     }
 
@@ -225,16 +245,16 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
 
         /** @var Tracker_TrendDao $greedyError1TrendDao */
         $greedyError1TrendDao = $trendModel->load(1);
-        $scalarModel->addToTrend($greedyError1TrendDao, 'now', $submissionDao->getSubmissionId(), 'deadbeef', 101, $userDao, false, false, 'url', 'master');
+        $scalarModel->addToTrend($greedyError1TrendDao, $submissionDao, 101);
         /** @var Tracker_TrendDao $greedyError2TrendDao */
         $greedyError2TrendDao = $trendModel->load(2);
-        $scalarModel->addToTrend($greedyError2TrendDao, 'now', $submissionDao->getSubmissionId(), 'deadbeef', 102, $userDao, false, false, 'url', 'master');
+        $scalarModel->addToTrend($greedyError2TrendDao, $submissionDao, 102);
         /** @var Tracker_TrendDao $greedyError3TrendDao */
         $greedyError3TrendDao = $trendModel->load(3);
-        $scalarModel->addToTrend($greedyError3TrendDao, 'now', $submissionDao->getSubmissionId(), 'deadbeef', 103, $userDao, false, false, 'url', 'master');
+        $scalarModel->addToTrend($greedyError3TrendDao, $submissionDao, 103);
         /** @var Tracker_TrendDao $greedyError4TrendDao */
         $greedyError4TrendDao = $trendModel->load(4);
-        $scalarModel->addToTrend($greedyError4TrendDao, 'now', $submissionDao->getSubmissionId(), 'deadbeef', 104, $userDao, false, false, 'url', 'master');
+        $scalarModel->addToTrend($greedyError4TrendDao, $submissionDao, 104);
 
         // Get existing aggregate metrics for this submission, there should be 0.
 
