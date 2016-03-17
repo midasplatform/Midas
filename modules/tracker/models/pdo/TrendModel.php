@@ -206,7 +206,7 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
             array('u' => 'tracker_submission'),
             'branch'
         )
-        ->distinct()->join(
+        ->join(
             array('s' => 'tracker_scalar'),
            's.submission_id = u.submission_id'
          )->join(
@@ -216,7 +216,7 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
         )
         ->where('t.producer_id = ?', $producerId)
         ->where('t.key_metric = ?', 1)
-        ->where('t.metric_name = ?', $metricName);
+        ->where('t.metric_name = ?', $metricName)->group('branch');
 
         $rows = $this->database->fetchAll($sql);
         $branches = array();

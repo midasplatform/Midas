@@ -105,10 +105,15 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
 
         // Get all the scalar values from these trends in the submission.
         $sql = $this->database->select()->setIntegrityCheck(false)
-            ->from('tracker_scalar', array('value'))
-            ->where('submission_id = ?', $submissionDao->getSubmissionId())
-            ->where('branch = ?', $aggregateMetricSpecDao->getBranch())
-            ->where('trend_id IN (?)', $trendIds);
+            ->from('tracker_scalar')
+            ->join(
+                'tracker_submission',
+                'tracker_scalar.submission_id = tracker_submission.submission_id',
+                array()
+            )
+            ->where('tracker_submission.submission_id = ?', $submissionDao->getSubmissionId())
+            ->where('tracker_submission.branch = ?', $aggregateMetricSpecDao->getBranch())
+            ->where('tracker_scalar.trend_id IN (?)', $trendIds);
         $rows = $this->database->fetchAll($sql);
         if (count($rows) === 0) {
             return false;

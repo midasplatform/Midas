@@ -271,6 +271,7 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $this->params['token'] = $token;
         $this->params['uuid'] = $uuid;
         $resp = $this->_callJsonApi();
+        var_dump($resp);
         $aggregateMetrics = array();
         /** stdClass $aggregateMetricStdClass */
         foreach ($resp->data as $aggregateMetricStdClass) {
