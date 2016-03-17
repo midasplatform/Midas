@@ -269,7 +269,7 @@ class Tracker_ApisubmissionComponent extends AppComponent
         if (isset($args['submitTime'])) {
             $submitTime = strtotime($args['submitTime']);
             if ($submitTime === false) {
-                throw new Exception('Invalid submitTime value: ' . $args['submitTime'], -1);
+                throw new Exception('Invalid submitTime value: '.$args['submitTime'], -1);
             }
             $submitTime = date('Y-m-d H:i:s', $submitTime);
             $args['submitTime'] = $submitTime;

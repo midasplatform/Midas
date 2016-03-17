@@ -143,9 +143,9 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
         foreach ($rows as $row) {
             $scalarDaos[$row['metric_name']] = array('value' => number_format((float) $row['value'], 4, '.', ''), 'unit' => $row['unit']);
         }
+
         return $scalarDaos;
     }
-
 
     /**
      * Get submissions associated with a given producer.
@@ -294,7 +294,6 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
         return $trendDaos;
     }
 
-
     /**
      * Return all distinct branch names of revisions producing submissions.
      *
@@ -312,6 +311,7 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
         foreach ($rows as $row) {
             $branches[] = $row['branch'];
         }
+
         return $branches;
     }
 }

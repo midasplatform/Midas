@@ -48,7 +48,7 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
                 'module' => $this->moduleName,
                 'parent_column' => 'submission_id',
                 'child_column' => 'submission_id',
-            )
+            ),
         );
 
         $this->initialize();
@@ -77,10 +77,11 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
      *
      * @param Tracker_TrendDao $trendDao trend DAO
      * @param Tracker_SubmissionDao $submissionDao submission DAO
-     * @param double $value
+     * @param float $value
      * @return Tracker_ScalarDao scalar DAO
      */
-    public function addToTrend($trendDao, $submissionDao, $value) {
+    public function addToTrend($trendDao, $submissionDao, $value)
+    {
 
         /** @var Tracker_ScalarDao $scalarDao */
         $scalarDao = MidasLoader::newDao('ScalarDao', $this->moduleName);

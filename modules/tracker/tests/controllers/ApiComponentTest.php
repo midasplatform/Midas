@@ -186,6 +186,7 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
             $this->params['params'] = json_encode($params);
         }
         $res = $this->_callJsonApi();
+
         return $res->data;
     }
 

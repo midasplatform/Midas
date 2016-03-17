@@ -56,7 +56,7 @@ class Tracker_ApiComponent extends AppComponent
     }
 
     /**
-     * Associate a result item with a particular submission
+     * Associate a result item with a particular submission.
      *
      * @param submissionId the submission to associate the item with
      * @param itemId The id of the item to associate with the scalar
