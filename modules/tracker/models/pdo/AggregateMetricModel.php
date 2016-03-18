@@ -111,11 +111,11 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
                 'tracker_scalar.submission_id = tracker_submission.submission_id',
                 array()
             )
-            ->where('tracker_submission.submission_id = ?', $submissionDao->getSubmissionId())
+            ->where('tracker_submission.submission_id = ?', $submissionDao->getKey())
             ->where('tracker_submission.branch = ?', $aggregateMetricSpecDao->getBranch())
             ->where('tracker_scalar.trend_id IN (?)', $trendIds);
         $rows = $this->database->fetchAll($sql);
-        if (count($rows) === 0) {
+                if (count($rows) === 0) {
             return false;
         };
         $values = array();

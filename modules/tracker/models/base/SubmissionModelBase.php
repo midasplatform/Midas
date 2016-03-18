@@ -91,9 +91,10 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
      * @param Tracker_ProducerDao $producerDao the producer to which the submission was submitted
      * @param string $uuid the uuid of the submission
      * @param string $name the name of the submission (defaults to '')
+     * @param array $params the parameters used to generate the submission (defaults to null)
      * @return Tracker_SubmissionDao
      */
-    abstract public function createSubmission($producerDao, $uuid, $name = '');
+    abstract public function createSubmission($producerDao, $uuid, $name = '', $params = null);
 
     /**
      * Get a submission from its uuid.

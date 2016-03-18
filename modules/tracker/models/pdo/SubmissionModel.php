@@ -79,9 +79,10 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
      * @param Tracker_ProducerDao $producerDao the producer to which the submission was submitted
      * @param string $uuid the uuid of the submission
      * @param string $name the name of the submission (defaults to '')
-     * @return void
+     * @param array $params the parameters used to generate the submission (defaults to null)
+     * @return Tracker_SubmissionDao
      */
-    public function createSubmission($producerDao, $uuid, $name = '')
+    public function createSubmission($producerDao, $uuid, $name = '', $params = null)
     {
         $data = array(
             'producer_id' => $producerDao->getKey(),
@@ -89,6 +90,19 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
             'name' => $name,
         );
         $this->database->getDB()->insert('tracker_submission', $data);
+        $submissionDao = $this->getSubmission($uuid);
+        if (!empty($params) && is_array($params)) {
+            $paramModel = MidasLoader::loadModel('Param', $this->moduleName);
+            foreach ($params as $paramName => $paramValue) {
+                /** @var Tracker_ParamDao $paramDao */
+                $paramDao = MidasLoader::newDao('ParamDao', $this->moduleName);
+                $paramDao->setSubmissionId($submissionDao->getKey());
+                $paramDao->setParamName($paramName);
+                $paramDao->setParamValue($paramValue);
+                $paramModel->save($paramDao);
+            }
+        }
+        return $submissionDao;
     }
 
     /**
@@ -313,5 +327,19 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
         }
 
         return $branches;
+    }
+
+
+    /**
+     * Delete a given submission
+     *
+     * @param Tracker_SubmissionDao $submissionDao
+     */
+    public function delete($submissionDao)
+    {
+        $this->database->getDB()->delete('tracker_submission2item', 'submission_id = '.$submissionDao->getKey());
+        $this->database->getDB()->delete('tracker_param', 'submission_id = '.$submissionDao->getKey());
+
+        parent::delete($submissionDao);
     }
 }

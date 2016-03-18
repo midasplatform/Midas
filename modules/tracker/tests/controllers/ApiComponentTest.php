@@ -137,6 +137,11 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         foreach ($metric2ParamChecks as $checks) {
             $this->assertTrue($checks['found']);
         }
+
+        // clean up
+        $submissionModel->delete($submissionDao);
+        $submissionModel->delete($submissionDao2);
+        $submissionModel->delete($submissionDao3);
     }
 
     /**
@@ -230,6 +235,8 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $submissionModel->createSubmission($producerDao, $uuid, 'Tmp submission');
         /** @var Tracker_SubmissionDao $submissionDao */
         $submissionDao = $submissionModel->getSubmission($uuid);
+        $submissionDao->setBranch('master');
+        $submissionModel->save($submissionDao);
 
         // Create 4 scalars on the submission.
 
@@ -244,18 +251,21 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         /** @var UserDao $userDao */
         $userDao = $authComponent->getUser(array('token' => $token), null);
 
+        /** @var array $scalars */
+        $scalars = array();
+
         /** @var Tracker_TrendDao $greedyError1TrendDao */
         $greedyError1TrendDao = $trendModel->load(1);
-        $scalarModel->addToTrend($greedyError1TrendDao, $submissionDao, 101);
+        $scalars[] = $scalarModel->addToTrend($greedyError1TrendDao, $submissionDao, 101);
         /** @var Tracker_TrendDao $greedyError2TrendDao */
         $greedyError2TrendDao = $trendModel->load(2);
-        $scalarModel->addToTrend($greedyError2TrendDao, $submissionDao, 102);
+        $scalars[] = $scalarModel->addToTrend($greedyError2TrendDao, $submissionDao, 102);
         /** @var Tracker_TrendDao $greedyError3TrendDao */
         $greedyError3TrendDao = $trendModel->load(3);
-        $scalarModel->addToTrend($greedyError3TrendDao, $submissionDao, 103);
+        $scalars[] = $scalarModel->addToTrend($greedyError3TrendDao, $submissionDao, 103);
         /** @var Tracker_TrendDao $greedyError4TrendDao */
         $greedyError4TrendDao = $trendModel->load(4);
-        $scalarModel->addToTrend($greedyError4TrendDao, $submissionDao, 104);
+        $scalars[] = $scalarModel->addToTrend($greedyError4TrendDao, $submissionDao, 104);
 
         // Get existing aggregate metrics for this submission, there should be 0.
 
@@ -271,7 +281,6 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $this->params['token'] = $token;
         $this->params['uuid'] = $uuid;
         $resp = $this->_callJsonApi();
-        var_dump($resp);
         $aggregateMetrics = array();
         /** stdClass $aggregateMetricStdClass */
         foreach ($resp->data as $aggregateMetricStdClass) {
