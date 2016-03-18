@@ -78,7 +78,6 @@ class Tracker_ScalarModelTest extends DatabaseTestCase
             $scalarValue0
         );
 
-
         $this->assertEquals($scalarDao0->getValue(), $scalarValue0);
 
         // Scalar the second.

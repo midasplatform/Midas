@@ -102,6 +102,7 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
                 $paramModel->save($paramDao);
             }
         }
+
         return $submissionDao;
     }
 
@@ -329,9 +330,8 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
         return $branches;
     }
 
-
     /**
-     * Delete a given submission
+     * Delete a given submission.
      *
      * @param Tracker_SubmissionDao $submissionDao
      */
