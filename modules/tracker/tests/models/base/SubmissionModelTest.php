@@ -52,7 +52,6 @@ class Tracker_SubmissionModelTest extends DatabaseTestCase
         /** @var UserDao $userDao */
         $userDao = $userModel->load($usersFile[0]->getKey());
 
-
         /** @var Tracker_ProducerDao $producerDao */
         $producerDao = $producerModel->load(100);
 
