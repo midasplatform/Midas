@@ -25,6 +25,7 @@
  * @method void setScalarId(int $scalarId)
  * @method int getSubmissionId()
  * @method void setSubmissionId(int $submissionId)
+ * @method Tracker_SubmissionDao getSubmission()
  * @method int getTrendId()
  * @method void setTrendId(int $trendId)
  * @method float getValue()

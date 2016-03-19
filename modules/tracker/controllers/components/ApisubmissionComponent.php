@@ -170,20 +170,20 @@ class Tracker_ApisubmissionComponent extends AppComponent
         }
 
         if (isset($args['extraUrls'])) {
-            $args['extraUrls'] = json_decode($args['extraUrls'], true);
+            $args['extra_urls'] = json_decode($args['extraUrls'], true);
         }
 
-        $args['buildResultsUrl'] = isset($args['buildResultsUrl']) ? $args['buildResultsUrl'] : '';
+        $args['build_results_url'] = isset($args['buildResultsUrl']) ? $args['buildResultsUrl'] : '';
         $args['branch'] = isset($args['branch']) ? $args['branch'] : '';
-        $args['reproductionCommand'] = isset($args['reproductionCommand']) ? $args['reproductionCommand'] : '';
+        $args['reproduction_command'] = isset($args['reproductionCommand']) ? $args['reproductionCommand'] : '';
 
         $submitTime = strtotime($args['submitTime']);
         if ($submitTime === false) {
             throw new Exception('Invalid submitTime value: '.$args['submitTime'], -1);
         }
         $submitTime = date('Y-m-d H:i:s', $submitTime);
-        $args['submitTime'] = $submitTime;
-        $args['producerRevision'] = trim($args['producerRevision']);
+        $args['submit_time'] = $submitTime;
+        $args['producer_revision'] = trim($args['producerRevision']);
         $args['producer_id'] = $producerModel->getByCommunityIdAndName(
             $args['communityId'], $args['producerDisplayName'])->getKey();
 
