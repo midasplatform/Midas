@@ -259,17 +259,13 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
         $dayBeforeQueryTime = date('Y-m-d H:i:s', strtotime($queryTime) - self::SEC_IN_DAY);
         $sql = $this->database->select()->setIntegrityCheck(false)
             ->from('tracker_submission')
-            ->join(
-                'tracker_scalar',
-                'tracker_submission.submission_id = tracker_scalar.submission_id',
-                array())
-            ->where('tracker_submission.submit_time <= ?', $queryTime);
+            ->where('submit_time <= ?', $queryTime);
         if ($onlyOneDay) {
-            $sql = $sql->where('tracker_submission.submit_time > ?', $dayBeforeQueryTime);
+            $sql = $sql->where('submit_time > ?', $dayBeforeQueryTime);
         }
-        $sql = $sql->where('tracker_submission.producer_id = ?', $producerDao->getKey())
+        $sql = $sql->where('producer_id = ?', $producerDao->getKey())
             ->where('branch = ?', $branch)
-            ->order('tracker_submission.submit_time', 'DSC')
+            ->order('submit_time', 'DSC')
             ->limit(1);
         $res = $this->database->fetchAll($sql);
         if (count($res) === 1) {
@@ -310,7 +306,7 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
     }
 
     /**
-     * Return all distinct branch names of revisions producing submissions.
+     * Return all distinct branch names from submissions.
      *
      * @return array branch names
      */

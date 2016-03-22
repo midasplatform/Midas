@@ -82,7 +82,6 @@ class Tracker_SubmissionModelTest extends DatabaseTestCase
         );
 
         $submissionDao0Params = $submissionDao0->getParams();
-        var_dump($submissionDao0Params);
         foreach ($submissionDao0Params as $param) {
             $checks = $paramChecks[$param->getParamName()];
             $this->assertEquals($checks['type'], $param->getParamType());

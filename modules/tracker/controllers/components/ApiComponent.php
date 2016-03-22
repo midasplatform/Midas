@@ -58,7 +58,7 @@ class Tracker_ApiComponent extends AppComponent
     /**
      * Associate a result item with a particular submission.
      *
-     * @param submissionId the submission to associate the item with
+     * @param submissionUuid the uuid of the submission to associate the item with
      * @param itemId The id of the item to associate with the scalar
      * @param label The label describing the nature of the association
      * @throws Exception
@@ -73,7 +73,7 @@ class Tracker_ApiComponent extends AppComponent
 
         /** @var Tracker_ScalarModel $scalarModel */
         $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
-        $this->_checkKeys(array('scalarIds', 'itemId', 'label'), $args);
+        $this->_checkKeys(array('submissionUuid', 'itemId', 'label'), $args);
         $user = $this->_getUser($args);
 
         /** @var ItemDao $item */
@@ -85,21 +85,21 @@ class Tracker_ApiComponent extends AppComponent
             throw new Exception('Read permission on the item required', 403);
         }
 
-        $submissionId = $args['submissionId'];
+        $submissionUuid = $args['submissionUuid'];
 
         /** @var Tracker_SubmissionDao $submission */
-        $submission = $submissionModel->load($submissionId);
+        $submission = $submissionModel->findBy('uuid', $submissionUuid);
 
         if (!$submission) {
-            throw new Exception('Invalid submission id: '.$submissionId, 404);
+            throw new Exception('Invalid submission uuid: '.$submissionUuid, 404);
         }
 
         if (!$communityModel->policyCheck(
             $submission->getProducer()->getCommunity(),
             $user,
-            MIDAS_POLICY_ADMIN
+            MIDAS_POLICY_WRITE
         )) {
-            throw new Exception('Admin permission on the community required', 403);
+            throw new Exception('Write permission on the community required', 403);
         }
 
         $submissionModel->associateItem($submission, $item, $args['label']);
@@ -112,7 +112,8 @@ class Tracker_ApiComponent extends AppComponent
      * @param producerDisplayName The display name of the producer
      * @param metricName The metric name that identifies which trend this point belongs to
      * @param value The value of the scalar
-     * @param submissionUuid the uuid of the submission
+     * @param submissionUuid the uuid of the submission. If a submission does not exist with the specified uuid, one
+     *                       will be created.
      * @param configItemId (Optional) If this value pertains to a specific configuration item, pass its id here
      * @param testDatasetId (Optional) If this value pertains to a specific test dataset, pass its id here
      * @param truthDatasetId (Optional) If this value pertains to a specific ground truth dataset, pass its id here
@@ -128,7 +129,13 @@ class Tracker_ApiComponent extends AppComponent
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $this->_checkKeys(
-            array('communityId', 'producerDisplayName', 'metricName', 'value'),
+            array(
+                'communityId',
+                'metricName',
+                'producerDisplayName',
+                'submissionUuid',
+                'value'
+            ),
             $args
         );
         $user = $this->_getUser($args);
@@ -283,7 +290,7 @@ class Tracker_ApiComponent extends AppComponent
      *
      * @param producerRevision The repository revision of the producer that produced this value
      * @param submitTime The submit timestamp. Must be parseable with PHP strtotime().
-     * @param uuid (Optional) A unique identifier for the submission
+     * @param uuid (Optional) A unique identifier for the submission. If none is passed, one will be generated.
      * @param name (Optional) A name for the submission
      * @param buildResultsUrl (Optional) The URL where build results can be viewed
      * @param extraUrls (Optional) JSON list of additional links
@@ -302,44 +309,6 @@ class Tracker_ApiComponent extends AppComponent
                                              'tracker');
 
         return $newApi->post($args);
-    }
-
-    /**
-     * Return an array of branch names from scalars tied to the producer
-     * and tied to trends with metric names matching the passed trend metric name.
-     *
-     * @param producerId The id of the producer tied to the scalars
-     * @param trendMetricName The metric_name of the trends tied to the scalars
-     * @return An array of branch names
-     * @throws Exception
-     */
-    public function branchesformetricnameList($args)
-    {
-        $this->_checkKeys(array('producerId', 'trendMetricName'), $args);
-        $user = $this->_getUser($args);
-
-        $producerId = $args['producerId'];
-        /** @var Tracker_ProducerModel $producerModel */
-        $producerModel = MidasLoader::loadModel('Producer', 'tracker');
-        /** @var Tracker_ProducerDao $producerDao */
-        $producerDao = $producerModel->load($producerId);
-        /** @var CommunityDao $communityDao */
-        $communityDao = $producerDao->getCommunity();
-
-        /** @var CommunityModel $communityModel */
-        $communityModel = MidasLoader::loadModel('Community');
-        if ($communityDao === false || $communityModel->policyCheck($communityDao, $user, MIDAS_POLICY_ADMIN) === false
-        ) {
-            throw new Zend_Exception('The associated community does not exist or you do not Admin access to the community', 403);
-        }
-
-        $trendMetricName = $args['trendMetricName'];
-        /** @var Tracker_TrendModel $trendModel */
-        $trendModel = MidasLoader::loadModel('Trend', 'tracker');
-        /** @var array $branches */
-        $branches = $trendModel->getDistinctBranchesForMetricName($producerId, $trendMetricName);
-
-        return $branches;
     }
 
     /**

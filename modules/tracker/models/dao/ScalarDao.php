@@ -26,10 +26,13 @@
  * @method int getSubmissionId()
  * @method void setSubmissionId(int $submissionId)
  * @method Tracker_SubmissionDao getSubmission()
+ * @method void setSubmission(Tracker_SubmissionDao $submissionDao)
  * @method int getTrendId()
  * @method void setTrendId(int $trendId)
  * @method float getValue()
  * @method void setValue(float $value)
+ * @method string getSubmitTime() // read-only from submission join
+ * @method int getOfficial() // read-only from submission join
  * @method Tracker_TrendDao getTrend()
  * @method void setTrend(Tracker_TrendDao $trendDao)
  */

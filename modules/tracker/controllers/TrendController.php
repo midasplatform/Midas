@@ -25,6 +25,7 @@
  * @property Tracker_ThresholdNotificationModel $Tracker_ThresholdNotification
  * @property Tracker_TrendModel $Tracker_Trend
  * @property Tracker_SubmissionModel $Tracker_Submission
+ * @property Tracker_ProducerModel $Tracker_Producer
  */
 class Tracker_TrendController extends Tracker_AppController
 {

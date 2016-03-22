@@ -1,6 +1,6 @@
 -- Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- MySQL database for the tracker module, version 1.2.4
+-- MySQL database for the tracker module, version 2.0.0
 
 CREATE TABLE IF NOT EXISTS `tracker_producer` (
     `producer_id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `tracker_scalar` (
     `scalar_id` bigint(20) NOT NULL AUTO_INCREMENT,
     `trend_id` bigint(20) NOT NULL,
     `value` double,
-    `submission_id` bigint(20) NOT NULL DEFAULT '-1',
+    `submission_id` bigint(20) NOT NULL,
     PRIMARY KEY (`scalar_id`),
     KEY (`trend_id`),
     KEY (`submission_id`)

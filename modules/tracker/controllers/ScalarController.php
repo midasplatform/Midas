@@ -22,7 +22,7 @@
  * Scalar controller for the tracker module.
  *
  * @property Tracker_ScalarModel $Tracker_Scalar
- * @property Tracker_SubmissionModelModel $Tracker_Submission
+ * @property Tracker_SubmissionModel $Tracker_Submission
  */
 class Tracker_ScalarController extends Tracker_AppController
 {
@@ -59,7 +59,6 @@ class Tracker_ScalarController extends Tracker_AppController
             throw new Zend_Exception('The scalar does not exist or you do not have the necessary permission', 403);
         }
 
-        // TODO(cpatrick): This may be a performance issue.
         $this->view->isAdmin = $this->Tracker_Scalar->policyCheck($scalarDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
 
         $this->view->scalar = $scalarDao;

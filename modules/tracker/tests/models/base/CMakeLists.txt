@@ -24,4 +24,4 @@ add_midas_mysql_test(${module_name_titlecase}AggregateMetricModel AggregateMetri
 add_midas_mysql_test(${module_name_titlecase}AggregateMetricSpecModel AggregateMetricSpecModelTest.php)
 add_midas_mysql_test(${module_name_titlecase}ScalarModel ScalarModelTest.php)
 add_midas_mysql_test(${module_name_titlecase}SubmissionModel SubmissionModelTest.php)
-add_midas_mysql_test(${module_name_titlecase}TrendModel TrendModelTest.php)
+

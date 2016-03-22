@@ -184,8 +184,12 @@ class Tracker_ApisubmissionComponent extends AppComponent
         $submitTime = date('Y-m-d H:i:s', $submitTime);
         $args['submit_time'] = $submitTime;
         $args['producer_revision'] = trim($args['producerRevision']);
-        $args['producer_id'] = $producerModel->getByCommunityIdAndName(
-            $args['communityId'], $args['producerDisplayName'])->getKey();
+        /** @var Tracker_ProducerDao $producerDao */
+        $producerDao = $producerModel->getByCommunityIdAndName(
+            $args['communityId'],
+            $args['producerDisplayName']
+        );
+        $args['producer_id'] = $producerDao->getKey();
 
         // Remove params from the submission args for later insertion in param table
         if (isset($args['params']) && !is_null($args['params'])) {
@@ -232,7 +236,6 @@ class Tracker_ApisubmissionComponent extends AppComponent
      * @param submitTime (Optional)
      * @param branch (Optional)
      * @param buildResultsUrl (Optional)
-     * @param params (Optional)
      * @param extraUrls (Optional)
      * @param reproductionCommand (Optional)
      * @return array
@@ -273,6 +276,11 @@ class Tracker_ApisubmissionComponent extends AppComponent
             }
             $submitTime = date('Y-m-d H:i:s', $submitTime);
             $args['submitTime'] = $submitTime;
+        }
+
+        // Disallow modification of the uuid.
+        if (isset($args['uuid'])) {
+            unset($args['uuid']);
         }
 
         /** @var Tracker_SubmissionDao $submissionDao */

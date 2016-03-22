@@ -23,8 +23,8 @@
  *
  * @method int getParamId()
  * @method void setParamId(int $paramId)
- * @method int getScalarId()
- * @method void setScalarId(int $scalarId)
+ * @method int getSubmissionId()
+ * @method void setSubmissionId(int $submissionId)
  * @method int getParamName()
  * @method void setParamName(int $paramName)
  * @method int getParamType()
