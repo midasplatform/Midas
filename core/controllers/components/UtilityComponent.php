@@ -980,13 +980,12 @@ class UtilityComponent extends AppComponent
         /** @var int $commonSuffixInd */
         $commonSuffixInd = $len1;
         /** @var int $i */
-        $i = 1;
-        for (; $i < $len1 + 1; $i = $i + 1) {
+        for ($i = 1; $i < $len1 + 1; $i = $i + 1) {
             // Start walking backwards from the end of $string1 .
             if ($i > $len2) {
                 // The case that $string2 is shorter than $string1 .
                 break;
-            } else if ($string1[$len1 - $i] !== $string2[$len2 - $i]) {
+            } elseif ($string1[$len1 - $i] !== $string2[$len2 - $i]) {
                 // Found the first non-matching character.
                 break;
             } else {

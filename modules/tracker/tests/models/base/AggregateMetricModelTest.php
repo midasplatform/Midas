@@ -1183,7 +1183,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
 
         // Calculate aggregate metrics on submissions 1..7
         /** @var int $i */
-        for($i = 1; $i < 8; $i = $i + 1) {
+        for ($i = 1; $i < 8; $i = $i + 1) {
             /** @var Tracker_SubmissionDao $submissionDao */
             $submissionDao = $submissionModel->load($i);
             /** @var array $aggregateMetrics */
