@@ -1164,4 +1164,87 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         $nullBothAggregateMetricDao = $aggregateMetricModel->getAggregateMetricsForSubmissions(null, null);
         $this->assertFalse($nullBothAggregateMetricDao);
     }
+
+    /** test AggregateMetricModel getAggregateMetricsSeries function */
+    public function testGetAggregateMetricsSeries()
+    {
+        /** @var Tracker_ProducerModel $producerModel */
+        $producerModel = MidasLoader::loadModel('Producer', 'tracker');
+        /** @var Tracker_SubmissionModel $submissionModel */
+        $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
+        /** @var AggregateMetricSpecModel $aggregateMetricSpecModel */
+        $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
+        $greedyError95thPercentileAMSDao = $aggregateMetricSpecModel->load(1);
+        /** @var AggregateMetricModel $aggregateMetricModel */
+        $aggregateMetricModel = MidasLoader::loadModel('AggregateMetric', 'tracker');
+
+        /** @var Tracker_ProducerDao $producer100Dao */
+        $producer100Dao = $producerModel->load(100);
+
+        // Calculate aggregate metrics on submissions 1..7
+        /** @var int $i */
+        for($i = 1; $i < 8; $i++) {
+            /** @var Tracker_SubmissionDao $submissionDao */
+            $submissionDao = $submissionModel->load($i);
+            /** @var array $aggregateMetrics */
+            $aggregateMetrics = $aggregateMetricModel->updateAggregateMetricForSubmission($greedyError95thPercentileAMSDao, $submissionDao);
+        }
+
+        // Since today's date is at least a week past 2016-02-07, unless you are time travelling
+        // or your system clock is off, this should return an empty array.
+        $this->assertTrue(empty($aggregateMetricModel->getAggregateMetricsSeries($producer100Dao)));//, $lastDate=false, $daysInterval=7, $branch='master')
+
+        $aggregateMetricSeries = $aggregateMetricModel->getAggregateMetricsSeries($producer100Dao, date('2016-02-07 23:59:59'));
+        $this->assertFalse(empty($aggregateMetricSeries));
+        $this->assertEquals(5, count($aggregateMetricSeries));
+        $expectedSeries = array(
+            '95th Percentile Optimal error' => array(7, 7, 7, 7, 7, 54, 44),
+            '95th Percentile Greedy error' => array(4, 4, 4, 4, 4, 38, 19),
+            '55th Percentile Optimal error' => array(5, 5, 5, 5, 5, 46, 36),
+            '55th Percentile Greedy error' => array(2, 2, 2, 2, 2, 22, 11),
+            '0th Percentile Greedy error' => array(1, 1, 1, 1, 1, 2, 1),
+        );
+        /** @var string $expectedSeriesKey */
+        /** @var array $expectedSeriesValues */
+        foreach($expectedSeries as $expectedSeriesKey => $expectedSeriesValues) {
+            $this->assertTrue(array_key_exists($expectedSeriesKey, $aggregateMetricSeries));
+            $this->assertEquals($expectedSeriesValues, $aggregateMetricSeries[$expectedSeriesKey]);
+        }
+
+        // Get the series for 5 days.
+        $aggregateMetricSeries = $aggregateMetricModel->getAggregateMetricsSeries($producer100Dao, date('2016-02-07 23:59:59'), 5);
+        $this->assertFalse(empty($aggregateMetricSeries));
+        $this->assertEquals(5, count($aggregateMetricSeries));
+        $expectedSeries = array(
+            '95th Percentile Optimal error' => array(7, 7, 7, 54, 44),
+            '95th Percentile Greedy error' => array(4, 4, 4, 38, 19),
+            '55th Percentile Optimal error' => array(5, 5, 5, 46, 36),
+            '55th Percentile Greedy error' => array(2, 2, 2, 22, 11),
+            '0th Percentile Greedy error' => array(1, 1, 1, 2, 1),
+        );
+        /** @var string $expectedSeriesKey */
+        /** @var array $expectedSeriesValues */
+        foreach($expectedSeries as $expectedSeriesKey => $expectedSeriesValues) {
+            $this->assertTrue(array_key_exists($expectedSeriesKey, $aggregateMetricSeries));
+            $this->assertEquals($expectedSeriesValues, $aggregateMetricSeries[$expectedSeriesKey]);
+        }
+
+        // Get the series for 5 days starting back 2 days.
+        $aggregateMetricSeries = $aggregateMetricModel->getAggregateMetricsSeries($producer100Dao, date('2016-02-05 23:59:59'), 5);
+        $this->assertFalse(empty($aggregateMetricSeries));
+        $this->assertEquals(5, count($aggregateMetricSeries));
+        $expectedSeries = array(
+            '95th Percentile Optimal error' => array(7, 7, 7, 7, 7),
+            '95th Percentile Greedy error' => array(4, 4, 4, 4, 4),
+            '55th Percentile Optimal error' => array(5, 5, 5, 5, 5),
+            '55th Percentile Greedy error' => array(2, 2, 2, 2, 2),
+            '0th Percentile Greedy error' => array(1, 1, 1, 1, 1),
+        );
+        /** @var string $expectedSeriesKey */
+        /** @var array $expectedSeriesValues */
+        foreach($expectedSeries as $expectedSeriesKey => $expectedSeriesValues) {
+            $this->assertTrue(array_key_exists($expectedSeriesKey, $aggregateMetricSeries));
+            $this->assertEquals($expectedSeriesValues, $aggregateMetricSeries[$expectedSeriesKey]);
+        }
+    }
 }

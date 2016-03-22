@@ -335,9 +335,9 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
      *
      * @param Tracker_ProducerDao $producerDao producer DAO
      * @param false|date $lastDate the end of the datetime interval, if false
-     * (the default) is passed, $lastDate will be set to today's date
+     * (the default) is passed, $lastDate will be set to midnight today
      * @param int $daysInterval the number of days in the total datetime
-     * interval that ends with $lastDate, defaults to 7
+     * interval that ends with $lastDate, defaults to 7, which is a week
      * @param string $branch the branch tied to submissions for calculated
      * metrics, defaults to 'master'
      * @return array keys are AggregateMetricSpecDao Name, values are lists of
@@ -350,7 +350,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
             return array();
         }
         if ($lastDate === false) {
-            $lastDate = date('Y-m-d');
+            $lastDate = date('Y-m-d') . ' 23:59:59';
         }
         $sql = $this->database->select()->setIntegrityCheck(false)
             ->from(array('am' => 'tracker_aggregate_metric'),
@@ -373,7 +373,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
         /** @var array $rows */
         $rows = $this->database->fetchAll($sql);
         if (count($rows) === 0) {
-            return false;
+            return array();
         };
 
         $metricsSeries = array();
@@ -383,7 +383,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
             if (!array_key_exists($seriesName, $metricsSeries)) {
                 $metricsSeries[$seriesName] = array();
             }
-            $metricsSeries[$seriesName][] = $row['value'];
+            $metricsSeries[$seriesName][] = floatval($row['value']);
         }
 
         return $metricsSeries;

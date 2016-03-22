@@ -135,9 +135,9 @@ abstract class Tracker_AggregateMetricModelBase extends Tracker_AppModel
      *
      * @param Tracker_ProducerDao $producerDao producer DAO
      * @param false|date $lastDate the end of the datetime interval, if false
-     * (the default) is passed, $lastDate will be set to today's date
+     * (the default) is passed, $lastDate will be set to midnight today
      * @param int $daysInterval the number of days in the total datetime
-     * interval that ends with $lastDate, defaults to 7
+     * interval that ends with $lastDate, defaults to 7, which is a week
      * @param string $branch the branch tied to submissions for calculated
      * metrics, defaults to 'master'
      * @return array keys are AggregateMetricSpecDao Name, values are lists of
