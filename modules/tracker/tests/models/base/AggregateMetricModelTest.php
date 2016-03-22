@@ -1192,10 +1192,10 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
 
         // Since today's date is at least a week past 2016-02-07, unless you are time travelling
         // or your system clock is off, this should return an empty array.
-        $this->assertTrue(empty($aggregateMetricModel->getAggregateMetricsSeries($producer100Dao)));
+        $this->assertTrue(count($aggregateMetricModel->getAggregateMetricsSeries($producer100Dao)) === 0);
 
         $aggregateMetricSeries = $aggregateMetricModel->getAggregateMetricsSeries($producer100Dao, date('2016-02-07 23:59:59'));
-        $this->assertFalse(empty($aggregateMetricSeries));
+        $this->assertFalse(count($aggregateMetricSeries) === 0);
         $this->assertEquals(5, count($aggregateMetricSeries));
         $expectedSeries = array(
             '95th Percentile Optimal error' => array(7, 7, 7, 7, 7, 54, 44),
@@ -1213,7 +1213,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
 
         // Get the series for 5 days.
         $aggregateMetricSeries = $aggregateMetricModel->getAggregateMetricsSeries($producer100Dao, date('2016-02-07 23:59:59'), 5);
-        $this->assertFalse(empty($aggregateMetricSeries));
+        $this->assertFalse(count($aggregateMetricSeries) === 0);
         $this->assertEquals(5, count($aggregateMetricSeries));
         $expectedSeries = array(
             '95th Percentile Optimal error' => array(7, 7, 7, 54, 44),
@@ -1231,7 +1231,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
 
         // Get the series for 5 days starting back 2 days.
         $aggregateMetricSeries = $aggregateMetricModel->getAggregateMetricsSeries($producer100Dao, date('2016-02-05 23:59:59'), 5);
-        $this->assertFalse(empty($aggregateMetricSeries));
+        $this->assertFalse(count($aggregateMetricSeries) === 0);
         $this->assertEquals(5, count($aggregateMetricSeries));
         $expectedSeries = array(
             '95th Percentile Optimal error' => array(7, 7, 7, 7, 7),
