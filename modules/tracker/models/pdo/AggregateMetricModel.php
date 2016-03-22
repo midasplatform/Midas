@@ -324,4 +324,68 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
 
         return $aggregateMetricDaosBySubmissionId;
     }
+
+    /**
+     * Return an associative array with Aggregate Metric Names as keys and
+     * a list of calculated Aggregate Metric Values as values for the
+     * $producerDao and $branch, within the days interval up to $lastDate,
+     * where the values in the lists are sorted by ascending submission time,
+     * but there is no guarantee that the values in separate lists match up
+     * in time or frequency.
+     *
+     * @param Tracker_ProducerDao $producerDao producer DAO
+     * @param false|date $lastDate the end of the datetime interval, if false
+     * (the default) is passed, $lastDate will be set to today's date
+     * @param int $daysInterval the number of days in the total datetime
+     * interval that ends with $lastDate, defaults to 7
+     * @param string $branch the branch tied to submissions for calculated
+     * metrics, defaults to 'master'
+     * @return array keys are AggregateMetricSpecDao Name, values are lists of
+     * AggregateMetric values calculated that match the input param filters and
+     * are sorted in their individual lists in ascending submission time order.
+     */
+    public function getAggregateMetricsSeries($producerDao, $lastDate=false, $daysInterval=7, $branch='master')
+    {
+        if (is_null($producerDao) || $producerDao === false) {
+            return array();
+        }
+        if ($lastDate === false) {
+            $lastDate = date('Y-m-d');
+        }
+        $sql = $this->database->select()->setIntegrityCheck(false)
+            ->from(array('am' => 'tracker_aggregate_metric'),
+                   array('ams.name', 'am.value'))
+            ->join(array('u' => 'tracker_submission'),
+                   'am.submission_id = u.submission_id',
+                   array())
+            // TODO Tracker 2.0 delete this join >>
+            ->join(array('ams' => 'tracker_aggregate_metric_spec'),
+                   'ams.aggregate_metric_spec_id = am.aggregate_metric_spec_id',
+                   array())
+            // << TODO Tracker 2.0 delete this join
+            ->where('ams.branch = ?', $branch) // TODO Tracker 2.0 u.branch = ?
+            ->where('u.producer_id = ?', $producerDao->getProducerId())
+            ->where('u.submit_time > DATE_SUB(?, INTERVAL '.$daysInterval.' DAY)', $lastDate)
+            ->where('u.submit_time <= ?', $lastDate)
+            ->order('ams.name')
+            ->order('u.submit_time');
+
+        /** @var array $rows */
+        $rows = $this->database->fetchAll($sql);
+        if (count($rows) === 0) {
+            return false;
+        };
+
+        $metricsSeries = array();
+        /** @var Zend_Db_Table_Row_Abstract $row */
+        foreach ($rows as $row) {
+            $seriesName = $row['name'];
+            if (!array_key_exists($seriesName, $metricsSeries)) {
+                $metricsSeries[$seriesName] = array();
+            }
+            $metricsSeries[$seriesName][] = $row['value'];
+        }
+
+        return $metricsSeries;
+    }
 }

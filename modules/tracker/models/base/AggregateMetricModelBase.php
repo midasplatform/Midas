@@ -126,6 +126,27 @@ abstract class Tracker_AggregateMetricModelBase extends Tracker_AppModel
     abstract public function getAggregateMetricsForSubmissions($aggregateMetricSpecDao, $submissionDaos);
 
     /**
+     * Return an associative array with Aggregate Metric Names as keys and
+     * a list of calculated Aggregate Metric Values as values for the
+     * $producerDao and $branch, within the days interval up to $lastDate,
+     * where the values in the lists are sorted by ascending submission time,
+     * but there is no guarantee that the values in separate lists match up
+     * in time or frequency.
+     *
+     * @param Tracker_ProducerDao $producerDao producer DAO
+     * @param false|date $lastDate the end of the datetime interval, if false
+     * (the default) is passed, $lastDate will be set to today's date
+     * @param int $daysInterval the number of days in the total datetime
+     * interval that ends with $lastDate, defaults to 7
+     * @param string $branch the branch tied to submissions for calculated
+     * metrics, defaults to 'master'
+     * @return array keys are AggregateMetricSpecDao Name, values are lists of
+     * AggregateMetric values calculated that match the input param filters and
+     * are sorted in their individual lists in ascending submission time order.
+     */
+    abstract public function getAggregateMetricsSeries($producerDao, $theDate, $daysInterval, $branch);
+
+    /**
      * Return all AggregateMetricDaos tied to the submission.
      *
      * @param Tracker_SubmissionDao $submissionDao submission DAO
