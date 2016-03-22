@@ -134,7 +134,7 @@ class Tracker_ApiComponent extends AppComponent
                 'metricName',
                 'producerDisplayName',
                 'submissionUuid',
-                'value'
+                'value',
             ),
             $args
         );
