@@ -344,13 +344,13 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
      * AggregateMetric values calculated that match the input param filters and
      * are sorted in their individual lists in ascending submission time order.
      */
-    public function getAggregateMetricsSeries($producerDao, $lastDate=false, $daysInterval=7, $branch='master')
+    public function getAggregateMetricsSeries($producerDao, $lastDate = false, $daysInterval = 7, $branch = 'master')
     {
         if (is_null($producerDao) || $producerDao === false) {
             return array();
         }
         if ($lastDate === false) {
-            $lastDate = date('Y-m-d') . ' 23:59:59';
+            $lastDate = date('Y-m-d').' 23:59:59';
         }
         $sql = $this->database->select()->setIntegrityCheck(false)
             ->from(array('am' => 'tracker_aggregate_metric'),

@@ -1183,7 +1183,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
 
         // Calculate aggregate metrics on submissions 1..7
         /** @var int $i */
-        for($i = 1; $i < 8; $i++) {
+        for($i = 1; $i < 8; $i = $i + 1) {
             /** @var Tracker_SubmissionDao $submissionDao */
             $submissionDao = $submissionModel->load($i);
             /** @var array $aggregateMetrics */
@@ -1192,7 +1192,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
 
         // Since today's date is at least a week past 2016-02-07, unless you are time travelling
         // or your system clock is off, this should return an empty array.
-        $this->assertTrue(empty($aggregateMetricModel->getAggregateMetricsSeries($producer100Dao)));//, $lastDate=false, $daysInterval=7, $branch='master')
+        $this->assertTrue(empty($aggregateMetricModel->getAggregateMetricsSeries($producer100Dao)));
 
         $aggregateMetricSeries = $aggregateMetricModel->getAggregateMetricsSeries($producer100Dao, date('2016-02-07 23:59:59'));
         $this->assertFalse(empty($aggregateMetricSeries));
@@ -1206,7 +1206,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         );
         /** @var string $expectedSeriesKey */
         /** @var array $expectedSeriesValues */
-        foreach($expectedSeries as $expectedSeriesKey => $expectedSeriesValues) {
+        foreach ($expectedSeries as $expectedSeriesKey => $expectedSeriesValues) {
             $this->assertTrue(array_key_exists($expectedSeriesKey, $aggregateMetricSeries));
             $this->assertEquals($expectedSeriesValues, $aggregateMetricSeries[$expectedSeriesKey]);
         }
@@ -1224,7 +1224,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         );
         /** @var string $expectedSeriesKey */
         /** @var array $expectedSeriesValues */
-        foreach($expectedSeries as $expectedSeriesKey => $expectedSeriesValues) {
+        foreach ($expectedSeries as $expectedSeriesKey => $expectedSeriesValues) {
             $this->assertTrue(array_key_exists($expectedSeriesKey, $aggregateMetricSeries));
             $this->assertEquals($expectedSeriesValues, $aggregateMetricSeries[$expectedSeriesKey]);
         }
@@ -1242,7 +1242,7 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         );
         /** @var string $expectedSeriesKey */
         /** @var array $expectedSeriesValues */
-        foreach($expectedSeries as $expectedSeriesKey => $expectedSeriesValues) {
+        foreach ($expectedSeries as $expectedSeriesKey => $expectedSeriesValues) {
             $this->assertTrue(array_key_exists($expectedSeriesKey, $aggregateMetricSeries));
             $this->assertEquals($expectedSeriesValues, $aggregateMetricSeries[$expectedSeriesKey]);
         }
