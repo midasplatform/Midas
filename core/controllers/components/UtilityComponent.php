@@ -972,7 +972,6 @@ class UtilityComponent extends AppComponent
             return $commonSuffix;
         }
 
-
         /** @var int $len1 */
         $len1 = strlen($string1);
         /** @var int $len2 */
