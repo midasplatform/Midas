@@ -55,13 +55,14 @@ DROP TABLE IF EXISTS tracker_param;
 RENAME TABLE tracker_submissionparam TO tracker_param;
 
 ALTER TABLE tracker_scalar CHANGE `submission_id` `submission_id` bigint(20) NOT NULL;
-ALTER TABLE tracker_scalar DROP COLUMN `producer_revision`;
-ALTER TABLE tracker_scalar DROP COLUMN `user_id`;
-ALTER TABLE tracker_scalar DROP COLUMN `official`;
-ALTER TABLE tracker_scalar DROP COLUMN `build_results_url`;
-ALTER TABLE tracker_scalar DROP COLUMN `branch`;
-ALTER TABLE tracker_scalar DROP COLUMN `extra_urls`;
-ALTER TABLE tracker_scalar DROP COLUMN `reproduction_command`;
-ALTER TABLE tracker_scalar DROP COLUMN `submit_time`;
+ALTER TABLE tracker_scalar
+    DROP COLUMN `producer_revision`,
+    DROP COLUMN `user_id`,
+    DROP COLUMN `official`,
+    DROP COLUMN `build_results_url`,
+    DROP COLUMN `branch`,
+    DROP COLUMN `extra_urls`,
+    DROP COLUMN `reproduction_command`,
+    DROP COLUMN `submit_time`;
 
 DROP TABLE IF EXISTS `tracker_scalar2item`;
