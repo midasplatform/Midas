@@ -352,6 +352,8 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
         if ($lastDate === false) {
             $lastDate = date('Y-m-d').' 23:59:59';
         }
+        $firstDate = new DateTime($lastDate);
+        $firstDate->modify('-'.$daysInterval.' day');
         $sql = $this->database->select()->setIntegrityCheck(false)
             ->from(array('am' => 'tracker_aggregate_metric'),
                    array('ams.name', 'am.value'))
@@ -365,7 +367,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
             // << TODO Tracker 2.0 delete this join
             ->where('ams.branch = ?', $branch) // TODO Tracker 2.0 u.branch = ?
             ->where('u.producer_id = ?', $producerDao->getProducerId())
-            ->where('u.submit_time > DATE_SUB(?, INTERVAL '.$daysInterval.' DAY)', $lastDate)
+            ->where('u.submit_time > ?', $firstDate->format('Y-m-d H:i:s'))
             ->where('u.submit_time <= ?', $lastDate)
             ->order('ams.name')
             ->order('u.submit_time');

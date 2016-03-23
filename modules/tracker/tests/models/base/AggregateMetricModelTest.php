@@ -1198,11 +1198,11 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         $this->assertFalse(count($aggregateMetricSeries) === 0);
         $this->assertEquals(5, count($aggregateMetricSeries));
         $expectedSeries = array(
-            '95th Percentile Optimal error' => array(7, 7, 7, 7, 7, 54, 44),
-            '95th Percentile Greedy error' => array(4, 4, 4, 4, 4, 38, 19),
-            '55th Percentile Optimal error' => array(5, 5, 5, 5, 5, 46, 36),
-            '55th Percentile Greedy error' => array(2, 2, 2, 2, 2, 22, 11),
-            '0th Percentile Greedy error' => array(1, 1, 1, 1, 1, 2, 1),
+            '95th Percentile Optimal error' => array(7.0, 7.0, 7.0, 7.0, 7.0, 54.0, 44.0),
+            '95th Percentile Greedy error' => array(4.0, 4.0, 4.0, 4.0, 4.0, 38.0, 19.0),
+            '55th Percentile Optimal error' => array(5.0, 5.0, 5.0, 5.0, 5.0, 46.0, 36.0),
+            '55th Percentile Greedy error' => array(2.0, 2.0, 2.0, 2.0, 2.0, 22.0, 11.0),
+            '0th Percentile Greedy error' => array(1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0),
         );
         /** @var string $expectedSeriesKey */
         /** @var array $expectedSeriesValues */
@@ -1216,11 +1216,11 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         $this->assertFalse(count($aggregateMetricSeries) === 0);
         $this->assertEquals(5, count($aggregateMetricSeries));
         $expectedSeries = array(
-            '95th Percentile Optimal error' => array(7, 7, 7, 54, 44),
-            '95th Percentile Greedy error' => array(4, 4, 4, 38, 19),
-            '55th Percentile Optimal error' => array(5, 5, 5, 46, 36),
-            '55th Percentile Greedy error' => array(2, 2, 2, 22, 11),
-            '0th Percentile Greedy error' => array(1, 1, 1, 2, 1),
+            '95th Percentile Optimal error' => array(7.0, 7.0, 7.0, 54.0, 44.0),
+            '95th Percentile Greedy error' => array(4.0, 4.0, 4.0, 38.0, 19.0),
+            '55th Percentile Optimal error' => array(5.0, 5.0, 5.0, 46.0, 36.0),
+            '55th Percentile Greedy error' => array(2.0, 2.0, 2.0, 22.0, 11.0),
+            '0th Percentile Greedy error' => array(1.0, 1.0, 1.0, 2.0, 1.0),
         );
         /** @var string $expectedSeriesKey */
         /** @var array $expectedSeriesValues */
@@ -1234,11 +1234,11 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         $this->assertFalse(count($aggregateMetricSeries) === 0);
         $this->assertEquals(5, count($aggregateMetricSeries));
         $expectedSeries = array(
-            '95th Percentile Optimal error' => array(7, 7, 7, 7, 7),
-            '95th Percentile Greedy error' => array(4, 4, 4, 4, 4),
-            '55th Percentile Optimal error' => array(5, 5, 5, 5, 5),
-            '55th Percentile Greedy error' => array(2, 2, 2, 2, 2),
-            '0th Percentile Greedy error' => array(1, 1, 1, 1, 1),
+            '95th Percentile Optimal error' => array(7.0, 7.0, 7.0, 7.0, 7.0),
+            '95th Percentile Greedy error' => array(4.0, 4.0, 4.0, 4.0, 4.0),
+            '55th Percentile Optimal error' => array(5.0, 5.0, 5.0, 5.0, 5.0),
+            '55th Percentile Greedy error' => array(2.0, 2.0, 2.0, 2.0, 2.0),
+            '0th Percentile Greedy error' => array(1.0, 1.0, 1.0, 1.0, 1.0),
         );
         /** @var string $expectedSeriesKey */
         /** @var array $expectedSeriesValues */
