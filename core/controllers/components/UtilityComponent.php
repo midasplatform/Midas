@@ -954,4 +954,47 @@ class UtilityComponent extends AppComponent
         $secure = (int) Zend_Registry::get('configGlobal')->get('cookie_secure', 1) === 1;
         setcookie($name, $value, $expires->getTimestamp(), '/', $request->getHttpHost(), $secure, true);
     }
+
+    /**
+     * Find the longest common suffix of two strings.
+     * @param string $string1 the first string
+     * @param string $string2 the second string
+     * @return string the longest common suffix of $string1 and $string2
+     */
+    public static function longestCommonSuffix($string1, $string2)
+    {
+        /** @var string $commonSuffix */
+        $commonSuffix = '';
+        if (is_null($string1) || $string1 === false || $string1 === '') {
+            return $commonSuffix;
+        }
+        if (is_null($string2) || $string2 === false || $string2 === '') {
+            return $commonSuffix;
+        }
+
+        /** @var int $len1 */
+        $len1 = strlen($string1);
+        /** @var int $len2 */
+        $len2 = strlen($string2);
+        /** @var int $commonSuffixInd */
+        $commonSuffixInd = $len1;
+        /** @var int $i */
+        for ($i = 1; $i < $len1 + 1; $i = $i + 1) {
+            // Start walking backwards from the end of $string1 .
+            if ($i > $len2) {
+                // The case that $string2 is shorter than $string1 .
+                break;
+            } elseif ($string1[$len1 - $i] !== $string2[$len2 - $i]) {
+                // Found the first non-matching character.
+                break;
+            } else {
+                $commonSuffixInd = $len1 - $i;
+            }
+        }
+        if ($commonSuffixInd !== $len1) {
+            $commonSuffix = substr($string1, $commonSuffixInd);
+        }
+
+        return $commonSuffix;
+    }
 }

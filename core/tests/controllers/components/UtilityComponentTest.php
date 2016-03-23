@@ -53,4 +53,60 @@ class Core_UtilityComponentTest extends ControllerTestCase
         $val = UtilityComponent::filterHtmlTags($text);
         $this->assertEquals($val, 'malicious javascript');
     }
+
+    /**
+     * Test longestCommonSuffix function.
+     */
+    public function testLongestCommonSuffix()
+    {
+        $s1 = '';
+        $s2 = '';
+        $commonSuffix = '';
+        $this->assertEquals(UtilityComponent::longestCommonSuffix($s1, $s2), $commonSuffix);
+
+        $s1 = '';
+        $s2 = 'Greedy Error';
+        $commonSuffix = '';
+        $this->assertEquals(UtilityComponent::longestCommonSuffix($s1, $s2), $commonSuffix);
+
+        $s1 = 'Greedy Error';
+        $s2 = '';
+        $commonSuffix = '';
+        $this->assertEquals(UtilityComponent::longestCommonSuffix($s1, $s2), $commonSuffix);
+
+        $s1 = 'MST VOODOO 50th percentile Greedy Error';
+        $s2 = 'MST VOODOO 50th percentile Greedy Errory';
+        $commonSuffix = '';
+        $this->assertEquals(UtilityComponent::longestCommonSuffix($s1, $s2), $commonSuffix);
+
+        $s1 = 'MST VOODOO 50th percentile Greedy Errory';
+        $s2 = 'MST VOODOO 50th percentile Greedy Error';
+        $commonSuffix = '';
+        $this->assertEquals(UtilityComponent::longestCommonSuffix($s1, $s2), $commonSuffix);
+
+        $s1 = 'MST VOODOO 50th percentile Greedy Error';
+        $s2 = 'MST HOODOO 50th percentile Greedy Error';
+        $commonSuffix = 'OODOO 50th percentile Greedy Error';
+        $this->assertEquals(UtilityComponent::longestCommonSuffix($s1, $s2), $commonSuffix);
+
+        $s1 = 'MST HOODOO 50th percentile Greedy Error';
+        $s2 = 'MST VOODOO 50th percentile Greedy Error';
+        $commonSuffix = 'OODOO 50th percentile Greedy Error';
+        $this->assertEquals(UtilityComponent::longestCommonSuffix($s1, $s2), $commonSuffix);
+
+        $s1 = 'MST HOODOO 50th percentile Greedy Error';
+        $s2 = 'Greedy Error';
+        $commonSuffix = 'Greedy Error';
+        $this->assertEquals(UtilityComponent::longestCommonSuffix($s1, $s2), $commonSuffix);
+
+        $s1 = 'Greedy Error';
+        $s2 = 'MST HOODOO 50th percentile Greedy Error';
+        $commonSuffix = 'Greedy Error';
+        $this->assertEquals(UtilityComponent::longestCommonSuffix($s1, $s2), $commonSuffix);
+
+        $s1 = 'MST VOODOO 50th percentile Greedy Error';
+        $s2 = 'MST VOODOO 50th percentile Greedy Error';
+        $commonSuffix = 'MST VOODOO 50th percentile Greedy Error';
+        $this->assertEquals(UtilityComponent::longestCommonSuffix($s1, $s2), $commonSuffix);
+    }
 }

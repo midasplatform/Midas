@@ -184,7 +184,7 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
         }
         $sql = $sql->where('tracker_submission.producer_id = ?', $producerDao->getKey())
             ->where('branch = ?', $branch)
-            ->order('tracker_submission.submit_time', 'DSC')
+            ->order('submit_time DESC')
             ->limit(1);
         $res = $this->database->fetchAll($sql);
         if (count($res) === 1) {
