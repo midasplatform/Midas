@@ -191,5 +191,4 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
 
         return $trendDaos;
     }
-
 }
