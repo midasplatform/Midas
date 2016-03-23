@@ -365,12 +365,10 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
             ->join(array('u' => 'tracker_submission'),
                    'am.submission_id = u.submission_id',
                    array())
-            // TODO Tracker 2.0 delete this join >>
             ->join(array('ams' => 'tracker_aggregate_metric_spec'),
                    'ams.aggregate_metric_spec_id = am.aggregate_metric_spec_id',
                    array())
-            // << TODO Tracker 2.0 delete this join
-            ->where('ams.branch = ?', $branch) // TODO Tracker 2.0 u.branch = ?
+            ->where('ams.branch = ?', $branch)
             ->where('u.producer_id = ?', $producerDao->getProducerId())
             ->where('u.submit_time > ?', $firstDate->format('Y-m-d H:i:s'))
             ->where('u.submit_time <= ?', $lastDate)
