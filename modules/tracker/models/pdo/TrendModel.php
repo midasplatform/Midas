@@ -192,40 +192,4 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
         return $trendDaos;
     }
 
-    /**
-     * Return all distinct branch names producing scalars, tied to a specific
-     * producer, for trends that are key_metrics, and matching a trend metric_name.
-     *
-     * @param int $producerId producer id
-     * @param string $metricName trend metric_name
-     * @return array branch names
-     */
-    public function getDistinctBranchesForMetricName($producerId, $metricName)
-    {
-        $sql = $this->database->select()->setIntegrityCheck(false)->from(
-            array('u' => 'tracker_submission'),
-            'branch'
-        )
-        ->join(
-            array('s' => 'tracker_scalar'),
-           's.submission_id = u.submission_id'
-         )->join(
-            array('t' => 'tracker_trend'),
-            's.trend_id = t.trend_id',
-            array()
-        )
-        ->where('t.producer_id = ?', $producerId)
-        ->where('t.key_metric = ?', 1)
-        ->where('t.metric_name = ?', $metricName)->group('branch');
-
-        $rows = $this->database->fetchAll($sql);
-        $branches = array();
-
-        /** @var Zend_Db_Table_Row_Abstract $row */
-        foreach ($rows as $row) {
-            $branches[] = $row['branch'];
-        }
-
-        return $branches;
-    }
 }

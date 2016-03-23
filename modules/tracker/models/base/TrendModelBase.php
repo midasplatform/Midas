@@ -119,16 +119,6 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
     abstract public function getTrendsGroupByDatasets($producerDao, $onlyKey = false);
 
     /**
-     * Return all distinct branch names producing scalars, tied to a specific
-     * producer, for trends that are key_metrics, and matching a trend metric_name.
-     *
-     * @param int $producerId producer id
-     * @param string $metricName trend metric_name
-     * @return array branch names
-     */
-    abstract public function getDistinctBranchesForMetricName($producerId, $metricName);
-
-    /**
      * Save the given trend. Ensure that null values are explicitly set in the database.
      *
      * @param Tracker_TrendDao $trendDao trend DAO

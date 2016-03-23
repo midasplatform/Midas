@@ -175,6 +175,7 @@ class Tracker_ApisubmissionComponent extends AppComponent
 
         $args['build_results_url'] = isset($args['buildResultsUrl']) ? $args['buildResultsUrl'] : '';
         $args['branch'] = isset($args['branch']) ? $args['branch'] : '';
+        $args['name'] = isset($args['name']) ? $args['name'] : '';
         $args['reproduction_command'] = isset($args['reproductionCommand']) ? $args['reproductionCommand'] : '';
 
         $submitTime = strtotime($args['submitTime']);
