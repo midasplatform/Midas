@@ -54,6 +54,7 @@ DROP TABLE IF EXISTS tracker_param;
 
 RENAME TABLE tracker_submissionparam TO tracker_param;
 
+ALTER TABLE tracker_scalar CHANGE `submission_id` `submission_id` bigint(20) NOT NULL;
 ALTER TABLE tracker_scalar DROP COLUMN `producer_revision`;
 ALTER TABLE tracker_scalar DROP COLUMN `user_id`;
 ALTER TABLE tracker_scalar DROP COLUMN `official`;
