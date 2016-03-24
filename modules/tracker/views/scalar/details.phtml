@@ -145,27 +145,6 @@ if (count($this->extraParams)) {
     </table>
 </div>
 
-<div class="resultItems">
-    <div class="sectionDivider"><span class="sectionTitle">Result items</span>
-    </div>
-    <?php
-    /** @var array $result */
-    foreach ($this->resultItems as $result) {
-        /** @var ItemDao $itemDao */
-        $itemDao = $result['item'];
-        echo '<div class="resultItemContainer"><span class="resultItemLabel">'.$this->escape($result['label']).':</span> ';
-        echo '<a element="'.$this->escape($itemDao->getKey()).'" class="resultItemLink" href="'.$this->webroot.'/item/'.$this->escape($itemDao->getKey(
-            )).'" ';
-        echo 'thumbnail="'.$this->escape($itemDao->getThumbnailId()).'">'.$this->escape($itemDao->getName()).'</a>';
-        echo '</div>';
-    }
-    if (empty($this->resultItems)) {
-        echo '<span class="itemLinkNone">No result items submitted</span>';
-    }
-    ?>
-
-</div>
-
 <div class="bottomButtons">
     <?php
     if ($this->isAdmin) {

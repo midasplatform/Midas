@@ -76,7 +76,6 @@ class Tracker_ScalarController extends Tracker_AppController
             $this->view->revisionHtml = $producerRevision;
         }
 
-        $this->view->resultItems = $this->Tracker_Submission->getAssociatedItems($submissionDao);
         $this->view->otherValues = $this->Tracker_Submission->getValuesFromSubmission($submissionDao);
 
         if ($submissionDao->getUserId() !== -1) {
