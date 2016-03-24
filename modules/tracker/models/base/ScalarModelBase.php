@@ -33,11 +33,13 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
             'trend_id' => array('type' => MIDAS_DATA),
             'submission_id' => array('type' => MIDAS_DATA),
             /**
-             * submit_time and official are not actually present in the scalar table,
-             * but they are present here to be populated in the DAO when scalars are
-             * retrieved via a join query with submission.
+             * submit_time, branch, and official are not actually present in
+             * the scalar table, but they are present here to be populated in
+             * the DAO when scalars are retrieved via a join query with
+             * submission.
              */
             'submit_time' => array('type' => MIDAS_DATA),   // from submission
+            'branch' => array('type' => MIDAS_DATA),        // from submission
             'official' => array('type' => MIDAS_DATA),      // from submission
             'value' => array('type' => MIDAS_DATA),
             'trend' => array(
