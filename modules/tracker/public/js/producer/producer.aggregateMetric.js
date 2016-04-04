@@ -230,6 +230,7 @@ $(document).ready(function () {
         $('#aggregateMetricUserAlerts').show();
         var aggregateMetricSpecId = $(this).data('aggregate_metric_spec_id');
         $('#aggregateMetricUserAlertsSpecName').text(amsName);
+        $('#aggregateMetricUserAlertsBranch').text('');
         $('#aggregateMetricSpecAlertValue').val('');
         $('#aggregateMetricSpecAlertComparison').val('');
         $('#aggregateMetricUserAlertsSpec').val('');
@@ -239,6 +240,7 @@ $(document).ready(function () {
         $('#addAlertUserSearchValue').val('init');
         var successCallback = function (aggregateMetricSpec) {
             $('#aggregateMetricUserAlertsSpecName').text(aggregateMetricSpec.name);
+            $('#aggregateMetricUserAlertsBranch').text(aggregateMetricSpec.branch);
             $('#aggregateMetricSpecAlertValue').val(aggregateMetricSpec.value);
             $('#aggregateMetricSpecAlertComparison').val(aggregateMetricSpec.comparison);
             $('#aggregateMetricUserAlertsSpec').val(aggregateMetricSpec.spec);
