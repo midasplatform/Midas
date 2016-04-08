@@ -29,10 +29,4 @@ class Tracker_Upgrade_1_0_2 extends MIDASUpgrade
     {
         $this->db->query('ALTER TABLE `tracker_producer` ADD COLUMN `revision_url` text NOT NULL;');
     }
-
-    /** Upgrade a PostgreSQL database. */
-    public function pgsql()
-    {
-        $this->db->query("ALTER TABLE tracker_producer ADD COLUMN revision_url text NOT NULL DEFAULT '';");
-    }
 }

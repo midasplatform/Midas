@@ -26,10 +26,4 @@ class Tracker_Upgrade_1_2_3 extends MIDASUpgrade
     {
         $this->db->query('ALTER TABLE `tracker_scalar` ADD COLUMN `reproduction_command` text;');
     }
-
-    /** Upgrade a PostgreSQL database. */
-    public function pgsql()
-    {
-        $this->db->query('ALTER TABLE tracker_scalar ADD COLUMN reproduction_command text;');
-    }
 }

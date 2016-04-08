@@ -38,20 +38,4 @@ class Tracker_Upgrade_1_2_0 extends MIDASUpgrade
             '    UNIQUE KEY (`uuid`)'.
             ') DEFAULT CHARSET=utf8;');
     }
-
-    /** Upgrade a PostgreSQL database. */
-    public function pgsql()
-    {
-        $this->db->query('ALTER TABLE tracker_scalar ADD COLUMN submission_id bigint NOT NULL DEFAULT -1::bigint;');
-        $this->db->query(
-            'CREATE TABLE IF NOT EXISTS "tracker_submission" ('.
-            '    "submission_id" serial PRIMARY KEY,'.
-            '    "producer_id" bigint,'.
-            '    "name" character varying(255) NOT NULL DEFAULT \'\'::character varying,'.
-            '    "uuid" character varying(255) NOT NULL DEFAULT \'\'::character varying,'.
-            '    "submit_time" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);'
-        );
-        $this->db->query('CREATE UNIQUE INDEX "tracker_submission_uuid" ON "tracker_submission" ("uuid");');
-        $this->db->query('CREATE INDEX "tracker_submission_submit_time" ON "tracker_submission" ("submit_time");');
-    }
 }
