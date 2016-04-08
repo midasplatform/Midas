@@ -41,12 +41,14 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
             if (count($this->trends) === 1) {
                 /** @var Tracker_TrendDao $trendDao */
                 $trendDao = $this->trends[0];
+                /** @var Tracker_TrendgroupDao $trendGroup */
+                $trendGroup = $trendDao->getTrendgroup();
                 ?>
             Configuration data:
                 <?php
-                if ($trendDao->getConfigItemId()) {
-                    echo '<a href="'.$this->webroot.'/item/'.$this->escape($trendDao->getConfigItemId(
-                        )).'">'.$this->escape($trendDao->getConfigItem()->getName()).'</a>';
+                if ($trendGroup->getConfigItemId()) {
+                    echo '<a href="'.$this->webroot.'/item/'.$this->escape($trendGroup->getConfigItemId(
+                        )).'">'.$this->escape($trendGroup->getConfigItem()->getName()).'</a>';
                 } else {
                     echo '<span class="itemLinkNone">none</span>';
                 }
@@ -55,9 +57,9 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
         <div>
             Test data:
                 <?php
-                if ($trendDao->getTestDatasetId()) {
-                    echo '<a href="'.$this->webroot.'/item/'.$this->escape($trendDao->getTestDatasetId(
-                        )).'">'.$this->escape($trendDao->getTestDatasetItem()->getName()).'</a>';
+                if ($trendGroup->getTestDatasetId()) {
+                    echo '<a href="'.$this->webroot.'/item/'.$this->escape($trendGroup->getTestDatasetId(
+                        )).'">'.$this->escape($trendGroup->getTestDatasetItem()->getName()).'</a>';
                 } else {
                     echo '<span class="itemLinkNone">none</span>';
                 }
@@ -66,9 +68,9 @@ $this->headScript()->appendFile($this->coreWebroot.'/public/js/jquery/jqplot/jqp
         <div>
             Ground truth data:
                 <?php
-                if ($trendDao->getTruthDatasetId()) {
-                    echo '<a href="'.$this->webroot.'/item/'.$this->escape($trendDao->getTruthDatasetId(
-                        )).'">'.$this->escape($trendDao->getTruthDatasetItem()->getName()).'</a>';
+                if ($trendGroup->getTruthDatasetId()) {
+                    echo '<a href="'.$this->webroot.'/item/'.$this->escape($trendGroup->getTruthDatasetId(
+                        )).'">'.$this->escape($trendGroup->getTruthDatasetItem()->getName()).'</a>';
                 } else {
                     echo '<span class="itemLinkNone">none</span>';
                 }

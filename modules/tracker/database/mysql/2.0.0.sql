@@ -64,16 +64,25 @@ CREATE TABLE IF NOT EXISTS `tracker_threshold_notification` (
 
 CREATE TABLE IF NOT EXISTS `tracker_trend` (
     `trend_id` bigint(20) NOT NULL AUTO_INCREMENT,
-    `producer_id` bigint(20) NOT NULL,
+    `trendgroup_id` bigint(20),
     `metric_name` varchar(255) NOT NULL,
     `display_name` varchar(255) NOT NULL,
     `unit` varchar(255) NOT NULL,
-    `config_item_id` bigint(20),
-    `test_dataset_id` bigint(20),
-    `truth_dataset_id` bigint(20),
     `key_metric` tinyint(4) NOT NULL DEFAULT '0',
     PRIMARY KEY (`trend_id`),
     KEY (`producer_id`)
+) DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `tracker_trendgroup` (
+    `trendgroup_id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `producer_id` bigint(20) NOT NULL,
+    `config_item_id` bigint(20),
+    `test_dataset_id` bigint(20),
+    `truth_dataset_id` bigint(20),
+    PRIMARY KEY (`trendgroup_id`),
+    KEY (`config_item_id`),
+    KEY (`test_dataset_id`),
+    KEY (`truth_dataset_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `tracker_param` (

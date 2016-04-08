@@ -19,15 +19,31 @@ CREATE TABLE IF NOT EXISTS `tracker_submissionparam` (
   KEY (`param_name`)
 ) DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `tracker_trendgroup` (
+  `trendgroup_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `producer_id` bigint(20) NOT NULL,
+  `config_item_id` bigint(20),
+  `test_dataset_id` bigint(20),
+  `truth_dataset_id` bigint(20),
+  PRIMARY KEY (`trendgroup_id`),
+  KEY (`config_item_id`),
+  KEY (`test_dataset_id`),
+  KEY (`truth_dataset_id`)
+) DEFAULT CHARSET=utf8;
+
+
 DROP PROCEDURE IF EXISTS `create_submissions`;
 DROP PROCEDURE IF EXISTS `migrate_items_to_submissions`;
 DROP PROCEDURE IF EXISTS `migrate_params`;
 DROP PROCEDURE IF EXISTS `scalar_to_submission`;
+DROP PROCEDURE IF EXISTS `create_trendgroups`;
+
 DELIMITER '$$'
 SOURCE create_submissions.sql
 SOURCE migrate_items_to_submissions.sql
 SOURCE migrate_params.sql
 SOURCE scalar_to_submission.sql
+SOURCE create_trendgroups.sql
 DELIMITER ';'
 
 ALTER TABLE tracker_submission ADD COLUMN `producer_revision` VARCHAR(255);
@@ -42,6 +58,8 @@ ALTER TABLE tracker_submission ADD KEY (`user_id`);
 ALTER TABLE tracker_submission ADD KEY(`submit_time`);
 ALTER TABLE tracker_submission ADD KEY (`branch`);
 
+ALTER TABLE tracker_trend ADD COLUMN `trendgroup_id` bigint(20) NOT NULL DEFAULT '-1';
+
 CALL create_submissions();
 
 CALL migrate_params();
@@ -49,6 +67,8 @@ CALL migrate_params();
 CALL migrate_items_to_submissions();
 
 CALL scalar_to_submission();
+
+CALL create_trendgroups();
 
 DROP TABLE IF EXISTS tracker_param;
 
@@ -66,3 +86,9 @@ ALTER TABLE tracker_scalar
     DROP COLUMN `submit_time`;
 
 DROP TABLE IF EXISTS `tracker_scalar2item`;
+
+ALTER TABLE tracker_trend
+    DROP COLUMN  `producer_id`,
+    DROP COLUMN `config_item_id`,
+    DROP COLUMN `test_dataset_id`,
+    DROP COLUMN `truth_dataset_id`;

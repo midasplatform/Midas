@@ -19,40 +19,33 @@
 =========================================================================*/
 
 /**
- * Trend DAO for the tracker module.
+ * Trend Group DAO for the tracker module.
  *
- * @method int getTrendId()
- * @method void setTrendId(int $trendId)
- * @method int getTrendGroupId()
- * @method void setTrendGroupId(int $trendGroupId)
- * @method string getMetricName()
- * @method void setMetricName(string $metricName)
- * @method string getDisplayName()
- * @method void setDisplayName(string $displayName)
- * @method string getUnit()
- * @method void setUnit(string $unit)
- * @method array getScalars()
- * @method void setScalars(array $scalarDaos)
- * @method void setKeyMetric(int $keyMetric)
- * @method int getKeyMetric()
- * @method Tracker_TrendgroupDao getTrendgroup()
- * @method void setTrendgroup(Tracker_TrendgroupDao $trendgroup)
+ * @method int getProducerId()
+ * @method void setProducerId(int $producerId)
+ * @method int getConfigItemId()
+ * @method void setConfigItemId(int $configItemId)
+ * @method int getTestDatasetId()
+ * @method void setTestDatasetId(int $testDatasetId)
+ * @method int getTruthDatasetId()
+ * @method void setTruthDatasetId(int $truthDatasetId)
+ * @method Tracker_ProducerDao getProducer()
+ * @method void setProducer(Tracker_ProducerDao $producerDao)
+ * @method ItemDao getConfigItem()
+ * @method void setConfigItem(ItemDao $configItemDao)
+ * @method ItemDao getTestDatasetItem()
+ * @method void setTestDatasetItem(ItemDao $testDatasetItemDao)
+ * @method ItemDao getTruthDatasetItem()
+ * @method void setTruthDatasetItem(ItemDao $truthDatasetItemDao)
+ * @method array getTrends()
+ * @method void setTrends(array $trendDaos)
  */
-class Tracker_TrendDao extends Tracker_AppDao
+class Tracker_TrendgroupDao extends Tracker_AppDao
 {
     /** @var string */
-    public $_model = 'Trend';
+    public $_model = 'Trendgroup';
 
     /** @var string */
     public $_module = 'tracker';
-
-    /**
-     * Alias for getKeyMetric.
-     * @return bool
-     */
-    public function isKeyMetric()
-    {
-        return (int) $this->getKeyMetric() === 1;
-    }
 
 }

@@ -36,32 +36,35 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
      */
     public function getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId, $unit = false)
     {
-        $sql = $this->database->select()->setIntegrityCheck(false)->where('producer_id = ?', $producerId)->where(
-            'metric_name = ?',
+        $sql = $this->database->select()->setIntegrityCheck(false)->from(array('t' => 'tracker_trend')
+        )->join(array('g' => 'tracker_trendgroup'), 't.trendgroup_id = g.trendgroup_id'
+        )->where('g.producer_id = ?', $producerId)->where(
+            't.metric_name = ?',
             $metricName
         );
 
         if (is_null($configItemId)) {
-            $sql->where('config_item_id IS NULL');
+            $sql->where('g.config_item_id IS NULL');
         } else {
-            $sql->where('config_item_id = ?', $configItemId);
+            $sql->where('g.config_item_id = ?', $configItemId);
         }
 
         if (is_null($truthDatasetId)) {
-            $sql->where('truth_dataset_id IS NULL');
+            $sql->where('g.truth_dataset_id IS NULL');
         } else {
-            $sql->where('truth_dataset_id = ?', $truthDatasetId);
+            $sql->where('g.truth_dataset_id = ?', $truthDatasetId);
         }
 
         if (is_null($testDatasetId)) {
-            $sql->where('test_dataset_id IS NULL');
+            $sql->where('g.test_dataset_id IS NULL');
         } else {
-            $sql->where('test_dataset_id = ?', $testDatasetId);
+            $sql->where('g.test_dataset_id = ?', $testDatasetId);
         }
 
-        if ($unit !== false) {
+        // TODO(cpatrick): I don't think this is needed.
+        /* if ($unit !== false) {
             $sql->where('unit = ?', $unit);
-        }
+        }*/
 
         return $this->initDao('Trend', $this->database->fetchRow($sql), $this->moduleName);
     }
@@ -122,10 +125,9 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
      */
     public function getTrendsGroupByDatasets($producerDao, $onlyKey = false)
     {
-        $sql = $this->database->select()->setIntegrityCheck(false)->from(
-            $this->_name,
-            array('config_item_id', 'test_dataset_id', 'truth_dataset_id')
-        )->where('producer_id = ?', $producerDao->getKey())->distinct();
+        $sql = $this->database->select()->setIntegrityCheck(false)->from(array('t' => 'tracker_trend'), array('trendgroup_id')
+        )->join(array('g' => 'tracker_trendgroup'), 't.trendgroup_id = g.trendgroup_id'
+        )->where('g.producer_id = ?', $producerDao->getKey())->distinct();
 
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
@@ -166,7 +168,7 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
      */
     public function getAllByParams($params)
     {
-        $sql = $this->database->select()->setIntegrityCheck(false);
+        $sql = $this->database->select()->from(array('t' => 'tracker_trend'))->join(array('g' => 'tracker_trendgroup'), 't.trendgroup_id=g.trendgroup_id')->setIntegrityCheck(false);
 
         /**
          * @var string $column
