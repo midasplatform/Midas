@@ -33,10 +33,16 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
      * @param Tracker_SubmissionDao $submissionDao submission DAO
      * @param ItemDao $itemDao item DAO
      * @param string $label label
+     * @param Tracker_TrendgroupDao $trendgroupDao trendgroup DAO
      */
-    public function associateItem($submissionDao, $itemDao, $label)
+    public function associateItem($submissionDao, $itemDao, $label, $trendgroupDao)
     {
-        $data = array('submission_id' => $submissionDao->getKey(), 'item_id' => $itemDao->getKey(), 'label' => $label);
+        $data = array(
+            'submission_id' => $submissionDao->getKey(),
+            'item_id' => $itemDao->getKey(),
+            'label' => $label,
+            'trendgroup_id' => $trendgroupDao->getKey()
+        );
         $this->database->getDB()->insert('tracker_submission2item', $data);
     }
 
@@ -44,13 +50,17 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
      * Return the items associated with the given submission.
      *
      * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @param Tracker_TrendgroupDao $trendgroupDao trendgroup DAO
      * @return array array of associative arrays with keys "item" and "label"
      */
-    public function getAssociatedItems($submissionDao)
+    public function getAssociatedItems($submissionDao, $trendgroupDao)
     {
         $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_submission2item')->where(
             'submission_id = ?',
             $submissionDao->getKey()
+        )->where(
+            'trendgroup_id = ?',
+            $trendgroupDao->getKey()
         );
         $rows = $this->database->fetchAll($sql);
         $results = array();

@@ -61,6 +61,9 @@ class Tracker_ApiComponent extends AppComponent
      * @param submissionUuid the uuid of the submission to associate the item with
      * @param itemId The id of the item to associate with the scalar
      * @param label The label describing the nature of the association
+     * @param testDatasetId the id for the test dataset
+     * @param truthDatasetId the id of the truth dataset
+     * @param configItemId the id of the config dataset
      * @throws Exception
      */
     public function itemAssociate($args)
@@ -73,6 +76,10 @@ class Tracker_ApiComponent extends AppComponent
 
         /** @var Tracker_ScalarModel $scalarModel */
         $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
+
+        /** @var Tracker_TrendgroupModel $trendgroupModel */
+        $trendgroupModel = MidasLoader::loadModel('Trendgroup', 'tracker');
+
         $this->_checkKeys(array('submissionUuid', 'itemId', 'label'), $args);
         $user = $this->_getUser($args);
 
@@ -102,7 +109,19 @@ class Tracker_ApiComponent extends AppComponent
             throw new Exception('Write permission on the community required', 403);
         }
 
-        $submissionModel->associateItem($submission, $item, $args['label']);
+        $configItemId = $args['configItemId'];
+        $testDatasetId = $args['testDatasetId'];
+        $truthDatasetId = $args['truthDatasetId'];
+
+        /** @var Tracker_TrendgroupDao $trendgroup */
+        $trendgroup = $trendgroupModel->createIfNeeded(
+            $submission->getProducer()->getKey(),
+            $configItemId,
+            $testDatasetId,
+            $truthDatasetId
+        );
+
+        $submissionModel->associateItem($submission, $item, $args['label'], $trendgroup);
     }
 
     /**

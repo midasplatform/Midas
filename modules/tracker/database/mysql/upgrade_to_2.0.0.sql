@@ -4,7 +4,10 @@ CREATE TABLE IF NOT EXISTS `tracker_submission2item` (
   `submission_id` bigint(20) NOT NULL,
   `item_id` bigint(20) NOT NULL,
   `label` varchar(255) NOT NULL,
-  KEY (`submission_id`)
+  `trendgroup_id` bigint(20) NOT NULL,
+  KEY (`submission_id`),
+  KEY (`item_id`),
+  KEY (`trendgroup_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `tracker_submissionparam` (
@@ -64,11 +67,11 @@ CALL create_submissions();
 
 CALL migrate_params();
 
+CALL create_trendgroups();
+
 CALL migrate_items_to_submissions();
 
 CALL scalar_to_submission();
-
-CALL create_trendgroups();
 
 DROP TABLE IF EXISTS tracker_param;
 
