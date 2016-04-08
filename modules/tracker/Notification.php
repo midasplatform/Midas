@@ -257,6 +257,7 @@ class Tracker_Notification extends ApiEnabled_Notification
 
         $producerName = $producerDao->getDisplayName();
         $metricName = $aggregateMetricSpecDao->getName();
+        $branch = $aggregateMetricSpecDao->getBranch();
         $thresholdValue = $aggregateMetricSpecDao->getValue();
         $thresholdComparison = $aggregateMetricSpecDao->getComparison();
         $metricValue = $aggregateMetricDao->getValue();
@@ -290,6 +291,7 @@ class Tracker_Notification extends ApiEnabled_Notification
             ).'">'.htmlspecialchars($producerDao->getCommunity()->getName(), ENT_QUOTES, 'UTF-8').'</a><br/>';
         $body .= '<b>Producer:</b> <a href="'.$fullUrl.'/'.$this->moduleName.'/producer/view?producerId='.$producerDao->getKey(
             ).'">'.htmlspecialchars($producerDao->getDisplayName(), ENT_QUOTES, 'UTF-8').'</a><br/>';
+        $body .= '<b>Branch:</b> <a href="'.$aggregateMetricNotificationUrl.'">'.htmlspecialchars($branch, ENT_QUOTES, 'UTF-8').'</a><br/>';
         $body .= '<b>Metric:</b> <a href="'.$aggregateMetricNotificationUrl.'">'.htmlspecialchars($metricName, ENT_QUOTES, 'UTF-8').'</a><br/>';
         $body .= '<b>Value:</b> '.htmlspecialchars($metricValue, ENT_QUOTES, 'UTF-8').'<br/>';
         $body .= '<b>Threshold:</b> '.htmlspecialchars($thresholdComparison, ENT_QUOTES, 'UTF-8').' '.htmlspecialchars($thresholdValue, ENT_QUOTES, 'UTF-8').'<br/>'.PHP_EOL;

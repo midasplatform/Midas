@@ -37,6 +37,12 @@ div {
         border-top: 2px solid darkblue !important;
     }
 
+    &#aggregateMetricSpecEditWarning {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        color: orange;
+    }
+
     &#aggregateMetricUserAlerts {
         border-top: 2px solid darkblue;
         color: #555;
@@ -59,7 +65,7 @@ div {
             }
         }
 
-        input#aggregateMetricUserAlertsSpec {
+        textarea#aggregateMetricUserAlertsSpec {
             margin-top: 10px;
             width: 100%;
         }
