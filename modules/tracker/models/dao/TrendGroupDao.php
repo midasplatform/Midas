@@ -47,5 +47,4 @@ class Tracker_TrendgroupDao extends Tracker_AppDao
 
     /** @var string */
     public $_module = 'tracker';
-
 }

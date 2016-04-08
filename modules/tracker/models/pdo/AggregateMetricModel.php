@@ -96,7 +96,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
         $rows = $this->database->fetchAll($sql);
         if (count($rows) === 0) {
             return false;
-        };
+        }
         $trendIds = array();
         /** @var Zend_Db_Table_Row_Abstract $row */
         foreach ($rows as $row) {
@@ -117,7 +117,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
         $rows = $this->database->fetchAll($sql);
         if (count($rows) === 0) {
             return false;
-        };
+        }
         $values = array();
         /** @var Zend_Db_Table_Row_Abstract $row */
         foreach ($rows as $row) {
@@ -309,7 +309,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
         $rows = $this->database->fetchAll($sql);
         if (count($rows) === 0) {
             return false;
-        };
+        }
         $aggregateMetricDaosBySubmissionId = array();
         /** @var Zend_Db_Table_Row_Abstract $row */
         foreach ($rows as $row) {
@@ -379,7 +379,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
         $rows = $this->database->fetchAll($sql);
         if (count($rows) === 0) {
             return array();
-        };
+        }
 
         $metricsSeries = array();
         /** @var Zend_Db_Table_Row_Abstract $row */

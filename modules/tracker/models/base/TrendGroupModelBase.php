@@ -81,6 +81,5 @@ abstract class Tracker_TrendgroupModelBase extends Tracker_AppModel
      * @param null|int $truthDatasetId truth dataset item id
      * @return Tracker_TrendgroupDao trend DAO
      */
-    public abstract function createIfNeeded($producerId, $configItemId, $testDatasetId, $truthDatasetId);
-
+    abstract public function createIfNeeded($producerId, $configItemId, $testDatasetId, $truthDatasetId);
 }
