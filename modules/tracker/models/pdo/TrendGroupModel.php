@@ -18,7 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-require_once BASE_PATH . '/modules/tracker/models/base/TrendgroupModelBase.php';
+require_once BASE_PATH.'/modules/tracker/models/base/TrendgroupModelBase.php';
 
 /** Trend Group model for the tracker module. */
 class Tracker_TrendgroupModel extends Tracker_TrendgroupModelBase
@@ -60,7 +60,6 @@ class Tracker_TrendgroupModel extends Tracker_TrendgroupModelBase
         $trendgroupDao = $this->initDao('Trendgroup', $this->database->fetchRow($sql), $this->moduleName);
 
         if ($trendgroupDao === false) {
-
             $trendGroupDao = MidasLoader::newDao('TrendgroupDao', $this->moduleName);
 
             $trendGroupDao->setProducerId($producerId);
@@ -79,6 +78,7 @@ class Tracker_TrendgroupModel extends Tracker_TrendgroupModelBase
 
             $this->save($trendGroupDao);
         }
+
         return $trendgroupDao;
     }
 }

@@ -54,5 +54,4 @@ class Tracker_TrendDao extends Tracker_AppDao
     {
         return (int) $this->getKeyMetric() === 1;
     }
-
 }
