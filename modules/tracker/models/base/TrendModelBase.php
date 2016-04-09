@@ -128,7 +128,7 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
         if ($trendDao === false) {
 
             /** @var Tracker_TrendGroupModel $trendGroupModel */
-            $trendGroupModel = MidasLoader::loadModel('TrendGroup', $this->moduleName);
+            $trendGroupModel = MidasLoader::loadModel('Trendgroup', $this->moduleName);
 
             /** @var Tracker_TrendDao $trendDao */
             $trendDao = MidasLoader::newDao('TrendDao', $this->moduleName);
@@ -143,7 +143,7 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
             }
             $trendDao->setUnit($unit);
 
-            $trendDao->setTrendGroupId($trendGroupDao->getKey());
+            $trendDao->setTrendgroupId($trendGroupDao->getKey());
 
             // Our pgsql code can't handle ACTUAL booleans :deep_sigh:
             $trendDao->setKeyMetric('0');

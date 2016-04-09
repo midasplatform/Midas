@@ -39,44 +39,44 @@ class Tracker_TrendgroupModel extends Tracker_TrendgroupModelBase
         )->where('producer_id = ?', $producerId);
 
         if (is_null($configItemId)) {
-            $sql->where('g.config_item_id IS NULL');
+            $sql->where('config_item_id IS NULL');
         } else {
-            $sql->where('g.config_item_id = ?', $configItemId);
+            $sql->where('config_item_id = ?', $configItemId);
         }
 
         if (is_null($truthDatasetId)) {
-            $sql->where('g.truth_dataset_id IS NULL');
+            $sql->where('truth_dataset_id IS NULL');
         } else {
-            $sql->where('g.truth_dataset_id = ?', $truthDatasetId);
+            $sql->where('truth_dataset_id = ?', $truthDatasetId);
         }
 
         if (is_null($testDatasetId)) {
-            $sql->where('g.test_dataset_id IS NULL');
+            $sql->where('test_dataset_id IS NULL');
         } else {
-            $sql->where('g.test_dataset_id = ?', $testDatasetId);
+            $sql->where('test_dataset_id = ?', $testDatasetId);
         }
 
         /** @var Tracker_TrendGroupDao $trendGroupDao */
         $trendgroupDao = $this->initDao('Trendgroup', $this->database->fetchRow($sql), $this->moduleName);
 
         if ($trendgroupDao === false) {
-            $trendGroupDao = MidasLoader::newDao('TrendgroupDao', $this->moduleName);
+            $trendgroupDao = MidasLoader::newDao('TrendgroupDao', $this->moduleName);
 
-            $trendGroupDao->setProducerId($producerId);
+            $trendgroupDao->setProducerId($producerId);
 
             if (!is_null($configItemId)) {
-                $trendGroupDao->setConfigItemId($configItemId);
+                $trendgroupDao->setConfigItemId($configItemId);
             }
 
             if (!is_null($testDatasetId)) {
-                $trendGroupDao->setTestDatasetId($testDatasetId);
+                $trendgroupDao->setTestDatasetId($testDatasetId);
             }
 
             if (!is_null($truthDatasetId)) {
-                $trendGroupDao->setTruthDatasetId($truthDatasetId);
+                $trendgroupDao->setTruthDatasetId($truthDatasetId);
             }
 
-            $this->save($trendGroupDao);
+            $this->save($trendgroupDao);
         }
 
         return $trendgroupDao;

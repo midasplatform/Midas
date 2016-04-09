@@ -90,6 +90,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
         // Get the list of relevant trend_ids.
         $sql = $this->database->select()->setIntegrityCheck(false)
             ->from('tracker_trend', array('trend_id'))
+            ->join('tracker_trendgroup', 'tracker_trendgroup.trendgroup_id=tracker_trend.trendgroup_id')
             ->where('key_metric = ?', 1)
             ->where('producer_id = ?', $aggregateMetricSpecDao->getProducerId())
             ->where('metric_name = ?', $metricName);
