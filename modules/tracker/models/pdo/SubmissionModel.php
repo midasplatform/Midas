@@ -41,7 +41,7 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
             'submission_id' => $submissionDao->getKey(),
             'item_id' => $itemDao->getKey(),
             'label' => $label,
-            'trendgroup_id' => $trendgroupDao->getKey()
+            'trendgroup_id' => $trendgroupDao->getKey(),
         );
         $this->database->getDB()->insert('tracker_submission2item', $data);
     }
