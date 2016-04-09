@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS `tracker_trendgroup` (
   `test_dataset_id` bigint(20),
   `truth_dataset_id` bigint(20),
   PRIMARY KEY (`trendgroup_id`),
+  KEY (`producer_id`),
   KEY (`config_item_id`),
   KEY (`test_dataset_id`),
   KEY (`truth_dataset_id`)
@@ -62,6 +63,7 @@ ALTER TABLE tracker_submission ADD KEY(`submit_time`);
 ALTER TABLE tracker_submission ADD KEY (`branch`);
 
 ALTER TABLE tracker_trend ADD COLUMN `trendgroup_id` bigint(20) NOT NULL DEFAULT '-1';
+ALTER TABLE tracker_trend ADD KEY (`trendgroup_id`);
 
 CALL create_submissions();
 
@@ -91,7 +93,7 @@ ALTER TABLE tracker_scalar
 DROP TABLE IF EXISTS `tracker_scalar2item`;
 
 ALTER TABLE tracker_trend
-    DROP COLUMN  `producer_id`,
+    DROP COLUMN `producer_id`,
     DROP COLUMN `config_item_id`,
     DROP COLUMN `test_dataset_id`,
     DROP COLUMN `truth_dataset_id`;

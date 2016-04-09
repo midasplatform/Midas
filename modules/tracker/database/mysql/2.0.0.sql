@@ -72,7 +72,8 @@ CREATE TABLE IF NOT EXISTS `tracker_trend` (
     `display_name` varchar(255) NOT NULL,
     `unit` varchar(255) NOT NULL,
     `key_metric` tinyint(4) NOT NULL DEFAULT '0',
-    PRIMARY KEY (`trend_id`)
+    PRIMARY KEY (`trend_id`),
+    KEY (`trendgroup_id`)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `tracker_trendgroup` (
@@ -82,6 +83,7 @@ CREATE TABLE IF NOT EXISTS `tracker_trendgroup` (
     `test_dataset_id` bigint(20),
     `truth_dataset_id` bigint(20),
     PRIMARY KEY (`trendgroup_id`),
+    KEY (`producer_id`),
     KEY (`config_item_id`),
     KEY (`test_dataset_id`),
     KEY (`truth_dataset_id`)
