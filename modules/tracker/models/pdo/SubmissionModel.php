@@ -121,20 +121,22 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
      *
      * @param Tracker_SubmissionDao $submissionDao submission DAO
      * @param bool $key whether to only retrieve scalars of key trends
+     * @param bool|false|Tracker_TrendgroupDao $trendGroup dao of trend group to limit scalars
      * @return array scalar DAOs
+     * @throws Zend_Exception
      */
-    public function getScalars($submissionDao, $key = false)
+    public function getScalars($submissionDao, $key = false, $trendGroup = false)
     {
+        $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_scalar')->join(
+            'tracker_trend',
+            'tracker_scalar.trend_id = tracker_trend.trend_id',
+            array()
+        )->where('submission_id = ?', $submissionDao->getKey());
         if ($key) {
-            $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_scalar')->join(
-                'tracker_trend',
-                'tracker_scalar.trend_id = tracker_trend.trend_id',
-                array()
-            )->where('submission_id = ?', $submissionDao->getKey()
-            )->where('key_metric = ?', 1);
-        } else {
-            $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_scalar')
-                ->where('submission_id = ?', $submissionDao->getKey());
+            $sql = $sql->where('key_metric = ?', 1);
+        }
+        if ($trendGroup) {
+            $sql = $sql->where('trendgroup_id = ?', $trendGroup->getKey());
         }
 
         $scalarDaos = array();

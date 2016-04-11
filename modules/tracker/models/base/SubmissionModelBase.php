@@ -124,12 +124,15 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
     abstract public function getSubmissionsByProducer($producerDao);
 
     /**
-     * Get the scalars associated with a submission.
+     * Return the scalars for a given submission.
+     *
      * @param Tracker_SubmissionDao $submissionDao submission DAO
      * @param bool $key whether to only retrieve scalars of key trends
-     * @return array submission DAOs
+     * @param bool|false|Tracker_TrendgroupDao $trendGroup dao of trend group to limit scalars
+     * @return array scalar DAOs
+     * @throws Zend_Exception
      */
-    abstract public function getScalars($submissionDao, $key = false);
+    abstract public function getScalars($submissionDao, $key = false, $trendGroup = false);
 
     /**
      * Return the values (trend name, value, and unit in an array) from a given submission.
