@@ -97,6 +97,7 @@ CREATE TABLE IF NOT EXISTS `tracker_param` (
     `text_value` text,
     `numeric_value` double,
     PRIMARY KEY (`param_id`),
+    KEY (`submission_id`),
     KEY (`param_name`)
 ) DEFAULT CHARSET=utf8;
 

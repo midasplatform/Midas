@@ -61,7 +61,7 @@ abstract class Tracker_TrendgroupModelBase extends Tracker_AppModel
             ),
             'trends' => array(
                 'type' => MIDAS_ONE_TO_MANY,
-                'model' => 'Scalar',
+                'model' => 'Trend',
                 'module' => $this->moduleName,
                 'parent_column' => 'trendgroup_id',
                 'child_column' => 'trendgroup_id',

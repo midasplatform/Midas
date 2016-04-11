@@ -24,17 +24,16 @@ require_once BASE_PATH.'/modules/tracker/models/base/TrendModelBase.php';
 class Tracker_TrendModel extends Tracker_TrendModelBase
 {
     /**
-     * Return the trend DAO that matches the given the producer id, metric name, associated items, and unit.
+     * Return the trend DAO that matches the given the producer id, metric name, and associated items.
      *
      * @param int $producerId producer id
      * @param string $metricName metric name
      * @param null|int $configItemId configuration item id
      * @param null|int $testDatasetId test dataset item id
      * @param null|int $truthDatasetId truth dataset item id
-     * @param false|string $unit (Optional) scalar value unit, defaults to false
      * @return false|Tracker_TrendDao trend DAO or false if none exists
      */
-    public function getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId, $unit = false)
+    public function getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId)
     {
         $sql = $this->database->select()->setIntegrityCheck(false)->from(array('t' => 'tracker_trend')
         )->join(array('g' => 'tracker_trendgroup'), 't.trendgroup_id = g.trendgroup_id'
@@ -60,11 +59,6 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
         } else {
             $sql->where('g.test_dataset_id = ?', $testDatasetId);
         }
-
-        // TODO(cpatrick): I don't think this is needed.
-        /* if ($unit !== false) {
-            $sql->where('unit = ?', $unit);
-        }*/
 
         return $this->initDao('Trend', $this->database->fetchRow($sql), $this->moduleName);
     }
@@ -116,23 +110,23 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
     }
 
     /**
-     * Return all trends corresponding to the given producer. They will be grouped by distinct
-     * config/test/truth dataset combinations.
+     * Return all trends corresponding to the given producer. They will be grouped by their trend
+     * group and returned along with the test, truth, and config item DAOs.
      *
      * @param Tracker_ProducerDao $producerDao producer DAO
      * @param bool $onlyKey whether to return only key trends
      * @return array array of associative arrays with keys "configItem", "testDataset", "truthDataset", and "trends"
      */
-    public function getTrendsGroupByDatasets($producerDao, $onlyKey = false)
+    public function getTrendsByGroup($producerDao, $onlyKey = false)
     {
-        $sql = $this->database->select()->setIntegrityCheck(false)->from(array('t' => 'tracker_trend'), array('trendgroup_id')
-        )->join(array('g' => 'tracker_trendgroup'), 't.trendgroup_id = g.trendgroup_id'
-        )->where('g.producer_id = ?', $producerDao->getKey())->distinct();
+        $sql = $this->database->select()->setIntegrityCheck(false)
+            ->from('tracker_trendgroup')
+            ->where('producer_id = ?', $producerDao->getKey());
+        $rows = $this->database->fetchAll($sql);
 
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
         $results = array();
-        $rows = $this->database->fetchAll($sql);
 
         /** @var Zend_Db_Table_Row_Abstract $row */
         foreach ($rows as $row) {
@@ -145,10 +139,7 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
                 'truthDataset' => $truthDatasetItemDao,
             );
             $queryParams = array(
-                'producer_id' => $producerDao->getKey(),
-                'config_item_id' => $row['config_item_id'],
-                'test_dataset_id' => $row['test_dataset_id'],
-                'truth_dataset_id' => $row['truth_dataset_id'],
+                't.trendgroup_id' => $row['trendgroup_id']
             );
             if ($onlyKey !== false) {
                 $queryParams['key_metric'] = '1';

@@ -55,17 +55,16 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
     }
 
     /**
-     * Return the trend DAO that matches the given the producer id, metric name, associated items, and unit.
+     * Return the trend DAO that matches the given the producer id, metric name, and associated items.
      *
      * @param int $producerId producer id
      * @param string $metricName metric name
      * @param null|int $configItemId configuration item id
      * @param null|int $testDatasetId test dataset item id
      * @param null|int $truthDatasetId truth dataset item id
-     * @param false|string $unit (Optional) scalar value unit, defaults to false
      * @return false|Tracker_TrendDao trend DAO or false if none exists
      */
-    abstract public function getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId, $unit = false);
+    abstract public function getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId);
 
     /**
      * Return the trend DAOs that match the given associative array of database columns and values.
@@ -88,14 +87,14 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
     abstract public function getScalars($trendDao, $startDate = null, $endDate = null, $userId = null, $branch = null);
 
     /**
-     * Return all trends corresponding to the given producer. They will be grouped by distinct
-     * config/test/truth dataset combinations.
+     * Return all trends corresponding to the given producer. They will be grouped by their trend
+     * group and returned along with the test, truth, and config item DAOs.
      *
      * @param Tracker_ProducerDao $producerDao producer DAO
      * @param bool $onlyKey whether to return only key trends
-     * @return array
+     * @return array array of associative arrays with keys "configItem", "testDataset", "truthDataset", and "trends"
      */
-    abstract public function getTrendsGroupByDatasets($producerDao, $onlyKey = false);
+    abstract public function getTrendsByGroup($producerDao, $onlyKey = false);
 
     /**
      * Save the given trend. Ensure that null values are explicitly set in the database.
@@ -123,7 +122,7 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
      */
     public function createIfNeeded($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId, $unit = false)
     {
-        $trendDao = $this->getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId, $unit);
+        $trendDao = $this->getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId);
 
         if ($trendDao === false) {
 

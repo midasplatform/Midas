@@ -59,11 +59,11 @@ class Tracker_ApiComponent extends AppComponent
      * Associate a result item with a particular submission.
      *
      * @param submissionUuid the uuid of the submission to associate the item with
-     * @param itemId The id of the item to associate with the scalar
+     * @param itemId The id of the item to associate with the submission
      * @param label The label describing the nature of the association
-     * @param testDatasetId the id for the test dataset
-     * @param truthDatasetId the id of the truth dataset
-     * @param configItemId the id of the config dataset
+     * @param testDatasetId (Optional) the id for the test dataset
+     * @param truthDatasetId (Optional) the id of the truth dataset
+     * @param configItemId (Optional) the id of the config dataset
      * @throws Exception
      */
     public function itemAssociate($args)
