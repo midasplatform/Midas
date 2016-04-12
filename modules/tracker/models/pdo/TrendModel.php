@@ -139,7 +139,7 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
                 'truthDataset' => $truthDatasetItemDao,
             );
             $queryParams = array(
-                't.trendgroup_id' => $row['trendgroup_id']
+                't.trendgroup_id' => $row['trendgroup_id'],
             );
             if ($onlyKey !== false) {
                 $queryParams['key_metric'] = '1';
