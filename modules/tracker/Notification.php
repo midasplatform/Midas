@@ -38,7 +38,7 @@ class Tracker_Notification extends ApiEnabled_Notification
     public $_models = array('User');
 
     /** @var array */
-    public $_moduleModels = array('AggregateMetric', 'AggregateMetricSpec', 'Scalar', 'Submission', 'Trend');
+    public $_moduleModels = array('AggregateMetric', 'AggregateMetricNotification', 'AggregateMetricSpec', 'Scalar', 'Submission', 'Trend');
 
     /** @var array */
     public $_moduleComponents = array('Api');
@@ -224,17 +224,7 @@ class Tracker_Notification extends ApiEnabled_Notification
         $userDao = $this->User->load($params['recipient_id']);
         if ($userDao === false) {
             $this->getLogger()->warn(
-                'Attempting to send aggregate metric threshold notification to user id '.$params['recipientId'].': No such user.'
-            );
-
-            return;
-        }
-
-        /** @var Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao */
-        $aggregateMetricSpecDao = $this->Tracker_AggregateMetricSpec->load($params['aggregate_metric_spec_id']);
-        if ($aggregateMetricSpecDao === false) {
-            $this->getLogger()->warn(
-                'Attempting to send aggregate metric threshold notification with aggregate metric spec '.$params['aggregateMetricSpecId'].': No such spec.'
+                'Attempting to send aggregate metric threshold notification to user id '.$params['recipient_id'].': No such user.'
             );
 
             return;
@@ -244,7 +234,27 @@ class Tracker_Notification extends ApiEnabled_Notification
         $aggregateMetricDao = $this->Tracker_AggregateMetric->load($params['aggregate_metric_id']);
         if ($aggregateMetricDao === false) {
             $this->getLogger()->warn(
-                'Attempting to send aggregate metric threshold notification with aggregate metric '.$params['aggregateMetricId'].': No such metric.'
+                'Attempting to send aggregate metric threshold notification with aggregate metric '.$params['aggregate_metric_id'].': No such metric.'
+            );
+
+            return;
+        }
+
+        /** @var Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao */
+        $aggregateMetricSpecDao = $aggregateMetricDao->getAggregateMetricSpec();
+        if ($aggregateMetricSpecDao === false) {
+            $this->getLogger()->warn(
+                'Attempting to send aggregate metric threshold notification with aggregate metric spec that does not exist.'
+            );
+
+            return;
+        }
+
+        /** @var Tracker_AggregateMetricNotificationDao $aggregateMetricNotificationDao */
+        $aggregateMetricNotificationDao = $this->Tracker_AggregateMetricNotification->load($params['aggregate_metric_notification_id']);
+        if ($aggregateMetricDao === false) {
+            $this->getLogger()->warn(
+                'Attempting to send aggregate metric threshold notification with aggregate metric notification id '.$params['aggregate_metric_notification_id'].': No such notification.'
             );
 
             return;
@@ -257,9 +267,9 @@ class Tracker_Notification extends ApiEnabled_Notification
 
         $producerName = $producerDao->getDisplayName();
         $metricName = $aggregateMetricSpecDao->getName();
-        $branch = $aggregateMetricSpecDao->getBranch();
-        $thresholdValue = $aggregateMetricSpecDao->getValue();
-        $thresholdComparison = $aggregateMetricSpecDao->getComparison();
+        $thresholdValue = $aggregateMetricNotificationDao->getValue();
+        $thresholdComparison = $aggregateMetricNotificationDao->getComparison();
+        $branch = $aggregateMetricNotificationDao->getBranch();
         $metricValue = $aggregateMetricDao->getValue();
         $subject = 'Threshold Alert: '.$producerName.': '.$metricName;
 
