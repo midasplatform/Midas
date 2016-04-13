@@ -147,8 +147,12 @@ $(document).ready(function () {
         $('div#aggregateMetricSpecSaveState input').prop('disabled', false);
         if (editMode) {
             $('.aggregateMetricSpecCreate').hide();
+            $('.aggregateMetricSpecComposition input').prop('disabled', true);
+            $('.aggregateMetricSpecComposition select').prop('disabled', true);
             $('.aggregateMetricSpecEdit').show();
         } else {
+            $('.aggregateMetricSpecComposition input').prop('disabled', false);
+            $('.aggregateMetricSpecComposition select').prop('disabled', false);
             $('.aggregateMetricSpecCreate').show();
             $('.aggregateMetricSpecEdit').hide();
         }
