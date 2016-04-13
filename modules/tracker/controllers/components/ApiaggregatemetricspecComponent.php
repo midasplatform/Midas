@@ -122,12 +122,9 @@ class Tracker_ApiaggregatemetricspecComponent extends AppComponent
      * @path /tracker/aggregatemetricspec
      * @http POST
      * @param producer_id
-     * @param branch
      * @param name
      * @param spec
      * @param description (Optional)
-     * @param value (Optional)
-     * @param comparison (Optional)
      * @return array
      *
      * @param array $args parameters
@@ -171,12 +168,9 @@ class Tracker_ApiaggregatemetricspecComponent extends AppComponent
      * @http PUT
      * @param id
      * @param producer_id (Optional)
-     * @param branch (Optional)
      * @param name (Optional)
      * @param spec (Optional)
      * @param description (Optional)
-     * @param value (Optional)
-     * @param comparison (Optional)
      * @return array
      *
      * @param array $args parameters

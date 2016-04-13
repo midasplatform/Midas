@@ -336,13 +336,23 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $userDao = $authComponent->getUser(array('token' => $token), null);
 
         $this->resetAll();
-        $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifiedusers.list';
+        $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifications.list';
         $this->params['token'] = $token;
         $this->params['aggregateMetricSpecId'] = 1;
         $resp = $this->_callJsonApi();
         /** @var array $notifiedUsers */
-        $notifiedUsers = $resp->data;
-        $this->assertEquals(0, count($notifiedUsers));
+        $notifications = $resp->data;
+        // Initialliy there is one notification with zero users.
+        $this->assertEquals(1, count($notifications));
+        $this->assertEquals(0, count($notifications[0]->users));
+        /** @var Tracker_AggregateMetricNotificationModel $aggregateMetricNotificationModel */
+        $aggregateMetricNotificationModel = MidasLoader::loadModel('AggregateMetricNotification', 'tracker');
+        /** @var Tracker_AggregateMetricNotificationDao $notificationDao */
+        $notificationDao = $aggregateMetricNotificationModel->initDao('AggregateMetricNotification', json_decode(json_encode($notifications[0]->notification), true), $this->moduleName);
+        $this->assertEquals($notificationDao->getAggregateMetricSpecId(), 1);
+        $this->assertEquals($notificationDao->getValue(), 19.0);
+        $this->assertEquals($notificationDao->getComparison(), '>');
+        $this->assertEquals($notificationDao->getBranch(), 'master');
 
         // Create one notified user.
 
@@ -350,17 +360,22 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifieduser.create';
         $this->params['token'] = $token;
         $this->params['userId'] = 1;
-        $this->params['aggregateMetricSpecId'] = 1;
+        $this->params['aggregateMetricNotificationId'] = $notificationDao->getAggregateMetricNotificationId();
         $resp = $this->_callJsonApi();
         $this->assertEquals(1, $resp->data->user_id);
 
         $this->resetAll();
-        $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifiedusers.list';
+        $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifications.list';
         $this->params['token'] = $token;
         $this->params['aggregateMetricSpecId'] = 1;
         $resp = $this->_callJsonApi();
+        /** @var array $notifications */
+        $notifications = $resp->data;
+        // There should be one user on this notification.
+        $this->assertEquals(1, count($notifications));
+        $this->assertEquals(1, count($notifications[0]->users));
         /** @var array $notifiedUsers */
-        $notifiedUsers = $resp->data;
+        $notifiedUsers = $notifications[0]->users;
         /** @var array $expectedUserIds */
         $expectedUserIds = array(
             1 => false,
@@ -374,6 +389,12 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         foreach ($expectedUserIds as $expectedUserId) {
             $this->assertTrue($expectedUserIds[$expectedUserId]);
         }
+        /** @var Tracker_AggregateMetricNotificationDao $notificationDao */
+        $notificationDao = $aggregateMetricNotificationModel->initDao('AggregateMetricNotification', json_decode(json_encode($notifications[0]->notification), true), $this->moduleName);
+        $this->assertEquals($notificationDao->getAggregateMetricSpecId(), 1);
+        $this->assertEquals($notificationDao->getValue(), 19.0);
+        $this->assertEquals($notificationDao->getComparison(), '>');
+        $this->assertEquals($notificationDao->getBranch(), 'master');
 
         // Create a notification with the same user.
 
@@ -381,16 +402,18 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifieduser.create';
         $this->params['token'] = $token;
         $this->params['userId'] = 1;
-        $this->params['aggregateMetricSpecId'] = 1;
+        $this->params['aggregateMetricNotificationId'] = 1;
         $resp = $this->_callJsonApi();
 
         $this->resetAll();
-        $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifiedusers.list';
+        $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifications.list';
         $this->params['token'] = $token;
         $this->params['aggregateMetricSpecId'] = 1;
         $resp = $this->_callJsonApi();
+        /** @var array $notifications */
+        $notifications = $resp->data;
         /** @var array $notifiedUsers */
-        $notifiedUsers = $resp->data;
+        $notifiedUsers = $notifications[0]->users;
         /** @var array $expectedUserIds */
         $expectedUserIds = array(
             1 => false,
@@ -404,6 +427,12 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         foreach ($expectedUserIds as $expectedUserId) {
             $this->assertTrue($expectedUserIds[$expectedUserId]);
         }
+        /** @var Tracker_AggregateMetricNotificationDao $notificationDao */
+        $notificationDao = $aggregateMetricNotificationModel->initDao('AggregateMetricNotification', json_decode(json_encode($notifications[0]->notification), true), $this->moduleName);
+        $this->assertEquals($notificationDao->getAggregateMetricSpecId(), 1);
+        $this->assertEquals($notificationDao->getValue(), 19.0);
+        $this->assertEquals($notificationDao->getComparison(), '>');
+        $this->assertEquals($notificationDao->getBranch(), 'master');
 
         // Create a notification with a second user.
 
@@ -411,17 +440,19 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifieduser.create';
         $this->params['token'] = $token;
         $this->params['userId'] = 2;
-        $this->params['aggregateMetricSpecId'] = 1;
+        $this->params['aggregateMetricNotificationId'] = 1;
         $resp = $this->_callJsonApi();
         $this->assertEquals(2, $resp->data->user_id);
 
         $this->resetAll();
-        $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifiedusers.list';
+        $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifications.list';
         $this->params['token'] = $token;
         $this->params['aggregateMetricSpecId'] = 1;
         $resp = $this->_callJsonApi();
+        /** @var array $notifications */
+        $notifications = $resp->data;
         /** @var array $notifiedUsers */
-        $notifiedUsers = $resp->data;
+        $notifiedUsers = $notifications[0]->users;
         /** @var array $expectedUserIds */
         $expectedUserIds = array(
             1 => false,
@@ -443,16 +474,18 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifieduser.create';
         $this->params['token'] = $token;
         $this->params['userId'] = 3;
-        $this->params['aggregateMetricSpecId'] = 1;
+        $this->params['aggregateMetricNotificationId'] = 1;
         $resp = $this->_callJsonApi();
 
         $this->resetAll();
-        $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifiedusers.list';
+        $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifications.list';
         $this->params['token'] = $token;
         $this->params['aggregateMetricSpecId'] = 1;
         $resp = $this->_callJsonApi();
+        /** @var array $notifications */
+        $notifications = $resp->data;
         /** @var array $notifiedUsers */
-        $notifiedUsers = $resp->data;
+        $notifiedUsers = $notifications[0]->users;
         /** @var array $expectedUserIds */
         $expectedUserIds = array(
             1 => false,
@@ -475,17 +508,19 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifieduser.delete';
         $this->params['token'] = $token;
         $this->params['userId'] = 2;
-        $this->params['aggregateMetricSpecId'] = 1;
+        $this->params['aggregateMetricNotificationId'] = 1;
         $resp = $this->_callJsonApi();
         $this->assertEquals(2, $resp->data->user_id);
 
         $this->resetAll();
-        $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifiedusers.list';
+        $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifications.list';
         $this->params['token'] = $token;
         $this->params['aggregateMetricSpecId'] = 1;
         $resp = $this->_callJsonApi();
+        /** @var array $notifications */
+        $notifications = $resp->data;
         /** @var array $notifiedUsers */
-        $notifiedUsers = $resp->data;
+        $notifiedUsers = $notifications[0]->users;
         /** @var array $expectedUserIds */
         $expectedUserIds = array(
             1 => false,
@@ -508,17 +543,19 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifieduser.delete';
         $this->params['token'] = $token;
         $this->params['userId'] = 1;
-        $this->params['aggregateMetricSpecId'] = 1;
+        $this->params['aggregateMetricNotificationId'] = 1;
         $resp = $this->_callJsonApi();
         $this->assertEquals(1, $resp->data->user_id);
 
         $this->resetAll();
-        $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifiedusers.list';
+        $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifications.list';
         $this->params['token'] = $token;
         $this->params['aggregateMetricSpecId'] = 1;
         $resp = $this->_callJsonApi();
+        /** @var array $notifications */
+        $notifications = $resp->data;
         /** @var array $notifiedUsers */
-        $notifiedUsers = $resp->data;
+        $notifiedUsers = $notifications[0]->users;
         /** @var array $expectedUserIds */
         $expectedUserIds = array(
             3 => false,
@@ -540,16 +577,18 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifieduser.delete';
         $this->params['token'] = $token;
         $this->params['userId'] = 3;
-        $this->params['aggregateMetricSpecId'] = 1;
+        $this->params['aggregateMetricNotificationId'] = 1;
         $resp = $this->_callJsonApi();
 
         $this->resetAll();
-        $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifiedusers.list';
+        $this->params['method'] = 'midas.tracker.aggregatemetricspecnotifications.list';
         $this->params['token'] = $token;
         $this->params['aggregateMetricSpecId'] = 1;
         $resp = $this->_callJsonApi();
+        /** @var array $notifications */
+        $notifications = $resp->data;
         /** @var array $notifiedUsers */
-        $notifiedUsers = $resp->data;
+        $notifiedUsers = $notifications[0]->users;
         $this->assertEquals(0, count($notifiedUsers));
     }
 }
