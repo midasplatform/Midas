@@ -253,12 +253,46 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         /** array $aggregateMetrics */
         $aggregateMetrics = $aggregateMetricModel->getAggregateMetricsForSubmission($submissionDao);
 
+        // Add users 1 & 2 to notification 1, 95th percentile Greedy error > 19.0
+        // Add users 1 & 3 to notification 2, 55th percentile Greedy error != 11.0
+
+        /** @var Tracker_AggregateMetricNotificationModel $aggregateMetricNotificationModel */
+        $aggregateMetricNotificationModel = MidasLoader::loadModel('AggregateMetricNotification', 'tracker');
+
+        /** @var Tracker_AggregateMetricNotificationDao $amn95thPercentileGreedyError */
+        $amn95thPercentileGreedyError = $aggregateMetricNotificationModel->load(1);
+        /** @var Tracker_AggregateMetricNotificationDao $amn55thPercentileGreedyError */
+        $amn55thPercentileGreedyError = $aggregateMetricNotificationModel->load(2);
+
+        /** @var UserModel $userModel */
+        $userModel = MidasLoader::loadModel('User');
+        /** @var UserDao $user1Dao */
+        $user1Dao = $userModel->load(1);
+        /** @var UserDao $user2Dao */
+        $user2Dao = $userModel->load(2);
+        /** @var UserDao $user3Dao */
+        $user3Dao = $userModel->load(3);
+
+        $aggregateMetricNotificationModel->createUserNotification($amn95thPercentileGreedyError, $user1Dao);
+        $aggregateMetricNotificationModel->createUserNotification($amn95thPercentileGreedyError, $user2Dao);
+
+        $aggregateMetricNotificationModel->createUserNotification($amn55thPercentileGreedyError, $user1Dao);
+        $aggregateMetricNotificationModel->createUserNotification($amn55thPercentileGreedyError, $user3Dao);
+
+        // Sadly, enabling a module does not import its constants.
+        require_once BASE_PATH.'/modules/scheduler/constant/module.php';
+        /** @var Scheduler_JobModel $jobModel */
+        $jobModel = MidasLoader::loadModel('Job', 'scheduler');
+        // Ensure there aren't any notification jobs existing.
+        $this->assertEquals(0, count($jobModel->findBy('task', 'TASK_TRACKER_SEND_AGGREGATE_METRIC_NOTIFICATION')));
+
         // Call the API to update and return metrics for this submission.
 
         $this->resetAll();
         $this->params['method'] = 'midas.tracker.aggregatemetrics.update';
         $this->params['token'] = $token;
         $this->params['uuid'] = $uuid;
+        $this->params['notify'] = true;
         $resp = $this->_callJsonApi();
         $aggregateMetrics = array();
         /** stdClass $aggregateMetricStdClass */
@@ -315,8 +349,85 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
             $this->assertTrue($metricValue[key($metricValue)]);
         }
 
-        // Call delete on the submission so as to not interfere with other tests.
+        // Check that the correction notifications were scheduled.
+
+        $expectedParams = array(
+            array(
+                'aggregate_metric_notification_id' => '1',
+                'aggregate_metric_id' => '1',
+                'recipient_id' => '1',
+                'found' => false,
+            ),
+            array(
+                'aggregate_metric_notification_id' => '1',
+                'aggregate_metric_id' => '1',
+                'recipient_id' => '2',
+                'found' => false,
+            ),
+            array(
+                'aggregate_metric_notification_id' => '2',
+                'aggregate_metric_id' => '2',
+                'recipient_id' => '1',
+                'found' => false,
+            ),
+            array(
+                'aggregate_metric_notification_id' => '2',
+                'aggregate_metric_id' => '2',
+                'recipient_id' => '3',
+                'found' => false,
+            ),
+        );
+
+        /** @var array $aggregateMetricNotificationJobs */
+        $aggregateMetricNotificationJobs = $jobModel->findBy('task', 'TASK_TRACKER_SEND_AGGREGATE_METRIC_NOTIFICATION');
+        $this->assertEquals(4, count($aggregateMetricNotificationJobs));
+        /** @var Scheduler_JobDao $job */
+        foreach ($aggregateMetricNotificationJobs as $job) {
+            /** @var string $params */
+            $params = $job->getParams();
+            preg_match("/\"aggregate_metric_notification_id\":\"(\d+)\",\"aggregate_metric_id\":\"(\d+)\",\"recipient_id\":\"(\d+)\"/", $params, $matches);
+            /** @var string $notificationId */
+            $notificationId = $matches[1];
+            /** @var string $metricId */
+            $metricId = $matches[2];
+            /** @var string $userId */
+            $userId = $matches[3];
+
+            /** @var int $ind */
+            /** @var array $expectedParam */
+            foreach ($expectedParams as $ind => $expectedParam) {
+                if ($expectedParam['aggregate_metric_notification_id'] == $notificationId &&
+                    $expectedParam['aggregate_metric_id'] == $metricId &&
+                    $expectedParam['recipient_id'] == $userId) {
+                        $expectedParams[$ind]['found'] = true;
+                        break;
+                }
+            }
+        }
+
+        // Check that all the expected jobs were found.
+        /** @var int $ind */
+        /** @var array $expectedParam */
+        foreach ($expectedParams as $ind => $expectedParam) {
+            $this->assertTrue($expectedParam['found']);
+        }
+
+        // Clean up after the test so as to not interfere with other tests.
+
+        // Delete all the jobs.
+        /** @var Scheduler_JobDao $job */
+        foreach ($aggregateMetricNotificationJobs as $job) {
+            $jobModel->delete($job);
+        }
+
+        // Delete the created submission.
         $submissionModel->delete($submissionDao);
+
+        // Delete the users associated to notifications.
+        $aggregateMetricNotificationModel->deleteUserNotification($amn95thPercentileGreedyError, $user1Dao);
+        $aggregateMetricNotificationModel->deleteUserNotification($amn95thPercentileGreedyError, $user2Dao);
+        $aggregateMetricNotificationModel->deleteUserNotification($amn55thPercentileGreedyError, $user1Dao);
+        $aggregateMetricNotificationModel->deleteUserNotification($amn55thPercentileGreedyError, $user3Dao);
     }
 
     /**
