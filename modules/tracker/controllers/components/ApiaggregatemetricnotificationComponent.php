@@ -89,7 +89,7 @@ class Tracker_ApiaggregatemetricnotificationComponent extends AppComponent
         /** @var Tracker_AggregateMetricNotificationDao $aggregateMetricNotificationDao */
         $aggregateMetricNotificationDao = $aggregateMetricNotificationModel->load($aggregateMetricNotificationId);
         $userDao = $apihelperComponent->getUser($args);
-        if ($aggregateMetricSpecModel->policyCheck($aggregateMetricNotificationDao->getAggregateMetricSpec(), $userDao, MIDAS_POLICY_WRITE) === false) {
+        if ($aggregateMetricSpecModel->policyCheck($aggregateMetricNotificationDao->getAggregateMetricSpec(), $userDao, MIDAS_POLICY_READ) === false) {
             throw new Exception('The aggregateMetricNotification does not exist or you do not have the necessary permission', MIDAS_INVALID_POLICY);
         }
 
