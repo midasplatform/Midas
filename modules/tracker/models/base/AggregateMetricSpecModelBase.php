@@ -32,7 +32,6 @@ abstract class Tracker_AggregateMetricSpecModelBase extends Tracker_AppModel
         $this->_mainData = array(
             'aggregate_metric_spec_id' => array('type' => MIDAS_DATA),
             'producer_id' => array('type' => MIDAS_DATA),
-            'branch' => array('type' => MIDAS_DATA),
             'name' => array('type' => MIDAS_DATA),
             'description' => array('type' => MIDAS_DATA),
             'spec' => array('type' => MIDAS_DATA),
@@ -51,60 +50,15 @@ abstract class Tracker_AggregateMetricSpecModelBase extends Tracker_AppModel
     }
 
     /**
-     * Create a user notification tied to the aggregate metric spec.
-     *
-     * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao aggregateMetricSpec DAO
-     * @param UserDao $userDao user DAO
-     * @return bool true if the notification could be created, false otherwise
-     */
-    abstract public function createUserNotification($aggregateMetricSpecDao, $userDao);
-
-    /**
-     * Delete a user notification tied to the aggregate metric spec.
-     *
-     * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao aggregateMetricSpec DAO
-     * @param UserDao $userDao user DAO
-     * @return bool true if the user and aggregate metric spec are valid and a
-     * notification does not exist for this user and aggregate metric spec upon
-     * returning, false otherwise
-     */
-    abstract public function deleteUserNotification($aggregateMetricSpecDao, $userDao);
-
-    /**
-     * Return a list of User Daos for all users with notifications on this aggregate metric spec.
-     *
-     * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao aggregateMetricSpec DAO
-     * @return false|array of UserDao for all users with notification on the passed in $aggregateMetricSpecDao,
-     * or false if the passed in spec is invalid
-     */
-    abstract public function getAllNotifiedUsers($aggregateMetricSpecDao);
-
-    /**
-     * Return a list of Jobs scheduled to notify users that the passed aggregate metric is above
-     * the threshold defined in the passed aggregate metric spec.
-     *
-     * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao aggregateMetricSpec DAO
-     * @param Tracker_AggregateMetricDao $aggregateMetricDao aggregateMetric DAO
-     * @return false|array of Scheduler_JobDao for all users with a notification created, which will only
-     * be populated if the aggregate metric is above the threshold defined on the aggregate metric spec and
-     * there exist users to be notified on the aggregate metric spec, or false if the inputs are invalid.
-     */
-    abstract public function scheduleNotificationJobs($aggregateMetricSpecDao, $aggregateMetricDao);
-
-    /**
      * Create an AggregateMetricSpecDao from the inputs.
      *
      * @param Tracker_ProducerDao $producerDao producer DAO
      * @param string $name the name of the aggregate metric spec
      * @param string $spec the spec for the aggregate metric spec
-     * @param string $branch the branch of the aggregate metric spec (defaults to 'master')
      * @param false | string $description the description for the aggregate metric spec
-     * @param false | string $value the value for the aggregate metric spec threshold
-     * @param false | string $comparison the comparison for the aggregate metric spec threshold,
-     * one of ['>', '<', '>=', '<', '<=', '==', '!=']
      * @return false | Tracker_AggregateMetricSpecDao created from inputs
      */
-    public function createAggregateMetricSpec($producerDao, $name, $spec, $branch = 'master', $description = false, $value = false, $comparison = false)
+    public function createAggregateMetricSpec($producerDao, $name, $spec, $description = false)
     {
         if (is_null($producerDao) || $producerDao === false) {
             return false;
@@ -113,21 +67,12 @@ abstract class Tracker_AggregateMetricSpecModelBase extends Tracker_AppModel
         /** @var Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao */
         $aggregateMetricSpecDao = MidasLoader::newDao('AggregateMetricSpecDao', 'tracker');
         $aggregateMetricSpecDao->setProducerId($producerDao->getProducerId());
-        $aggregateMetricSpecDao->setBranch($branch);
         $aggregateMetricSpecDao->setName($name);
         $aggregateMetricSpecDao->setSpec($spec);
         if ($description) {
             $aggregateMetricSpecDao->setDescription($description);
         } else {
             $aggregateMetricSpecDao->setDescription('');
-        }
-        if ($value) {
-            $aggregateMetricSpecDao->setValue($value);
-        }
-        if ($comparison) {
-            $aggregateMetricSpecDao->setComparison($comparison);
-        } else {
-            $aggregateMetricSpecDao->setComparison('');
         }
         $this->save($aggregateMetricSpecDao);
 

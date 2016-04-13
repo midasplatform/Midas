@@ -21,18 +21,14 @@
 /** Test the AggregateMetricSpec. */
 class Tracker_AggregateMetricSpecModelTest extends DatabaseTestCase
 {
+    public $moduleName = 'tracker';
+
     /** Set up tests. */
     public function setUp()
     {
         $this->setupDatabase(array('default')); // core dataset
         $this->setupDatabase(array('aggregateMetric'), 'tracker'); // module dataset
         $this->enabledModules = array('tracker');
-        $db = Zend_Registry::get('dbAdapter');
-        $configDatabase = Zend_Registry::get('configDatabase');
-        if ($configDatabase->database->adapter == 'PDO_PGSQL') {
-            $db->query("SELECT setval('tracker_aggregate_metric_spec_aggregate_metric_spec_id_seq', (SELECT MAX(aggregate_metric_spec_id) FROM tracker_aggregate_metric_spec)+1);");
-            $db->query("SELECT setval('tracker_aggregate_metric_aggregate_metric_id_seq', (SELECT MAX(aggregate_metric_id) FROM tracker_aggregate_metric)+1);");
-        }
         parent::setUp();
     }
 
@@ -162,62 +158,6 @@ class Tracker_AggregateMetricSpecModelTest extends DatabaseTestCase
         $this->assertFalse($submissionAggregateMetricSpecDaos);
     }
 
-    /** test AggregateMetricSpecModel notification related functions */
-    public function testAggregateMetricSpecNotificationFunctions()
-    {
-        /** @var AggregateMetricSpecModel $aggregateMetricSpecModel */
-        $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
-
-        $name = '67th Percentile Greedy distance ';
-        $spec = "percentile('Greedy distance', 67)";
-
-        /** @var Tracker_ProducerModel $producerModel */
-        $producerModel = MidasLoader::loadModel('Producer', 'tracker');
-        /** @var Tracker_ProducerDao $producer100Dao */
-        $producer100Dao = $producerModel->load(100);
-
-        /** @var AggregateMetricSpecDao $validAMSDao */
-        $validAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $spec);
-
-        // There should be no notifications.
-        $this->assertEquals(0, count($aggregateMetricSpecModel->getAllNotifiedUsers($validAMSDao)));
-
-        /** @var UserModel $userModel */
-        $userModel = MidasLoader::loadModel('User');
-        /** @var UserDao $user1Dao */
-        $user1Dao = $userModel->load(1);
-        /** @var UserDao $user2Dao */
-        $user2Dao = $userModel->load(2);
-        /** @var UserDao $user3Dao */
-        $user3Dao = $userModel->load(3);
-
-        // Create 3 notifications.
-        $aggregateMetricSpecModel->createUserNotification($validAMSDao, $user1Dao);
-        // Try to repeat a creation, should not fail.
-        $aggregateMetricSpecModel->createUserNotification($validAMSDao, $user1Dao);
-        $aggregateMetricSpecModel->createUserNotification($validAMSDao, $user2Dao);
-        $aggregateMetricSpecModel->createUserNotification($validAMSDao, $user3Dao);
-
-        $this->assertEquals(3, count($aggregateMetricSpecModel->getAllNotifiedUsers($validAMSDao)));
-
-        // Delete and check.
-        $aggregateMetricSpecModel->deleteUserNotification($validAMSDao, $user3Dao);
-        $this->assertEquals(2, count($aggregateMetricSpecModel->getAllNotifiedUsers($validAMSDao)));
-
-        $aggregateMetricSpecModel->deleteUserNotification($validAMSDao, $user1Dao);
-        /** @var array $notifications */
-        $notifications = $aggregateMetricSpecModel->getAllNotifiedUsers($validAMSDao);
-        $this->assertEquals(1, count($notifications));
-        // Deleted 1 and 3, 2 should be left.
-        $this->assertEquals($notifications[0]->user_id, 2);
-
-        $aggregateMetricSpecModel->deleteUserNotification($validAMSDao, $user2Dao);
-        $this->assertEquals(0, count($aggregateMetricSpecModel->getAllNotifiedUsers($validAMSDao)));
-
-        // Clean up the created spec.
-        $aggregateMetricSpecModel->delete($validAMSDao);
-    }
-
     /** test AggregateMetricSpecModel delete function */
     public function testAggregateMetricSpecDelete()
     {
@@ -256,8 +196,7 @@ class Tracker_AggregateMetricSpecModelTest extends DatabaseTestCase
         /** @var AggregateMetricSpecDao $validAMSDao */
         $validAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $spec);
 
-        // There should be no notifications.
-        $this->assertEquals(0, count($aggregateMetricSpecModel->getAllNotifiedUsers($validAMSDao)));
+        // Create A notification, tied to 2 users.
 
         /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
@@ -265,15 +204,28 @@ class Tracker_AggregateMetricSpecModelTest extends DatabaseTestCase
         $user1Dao = $userModel->load(1);
         /** @var UserDao $user2Dao */
         $user2Dao = $userModel->load(2);
-        /** @var UserDao $user3Dao */
-        $user3Dao = $userModel->load(3);
 
-        // Create 3 notifications.
-        $aggregateMetricSpecModel->createUserNotification($validAMSDao, $user1Dao);
-        $aggregateMetricSpecModel->createUserNotification($validAMSDao, $user2Dao);
-        $aggregateMetricSpecModel->createUserNotification($validAMSDao, $user3Dao);
+        /** @var Tracker_AggregateMetricNotificationModel $aggregateMetricNotificationModel */
+        $aggregateMetricNotificationModel = MidasLoader::loadModel('AggregateMetricNotification', 'tracker');
 
-        $this->assertEquals(3, count($aggregateMetricSpecModel->getAllNotifiedUsers($validAMSDao)));
+        $notificationProperties = array(
+            'aggregate_metric_spec_id' => $validAMSDao->getAggregateMetricSpecId(),
+            'branch' => 'notify 1',
+            'comparison' => '==',
+            'value' => '16.0',
+        );
+        /** @var Tracker_AggregateMetricNotificationDao $notification1Dao */
+        $notification1Dao = $aggregateMetricNotificationModel->initDao('AggregateMetricNotification', $notificationProperties, $this->moduleName);
+        $aggregateMetricNotificationModel->save($notification1Dao);
+        $aggregateMetricNotificationModel->createUserNotification($notification1Dao, $user1Dao);
+        $aggregateMetricNotificationModel->createUserNotification($notification1Dao, $user2Dao);
+
+        $this->assertEquals(2, count($aggregateMetricNotificationModel->getAllNotifiedUsers($notification1Dao)));
+
+        /** @var AggregateMetricSpecDao $cachedAMSDao */
+        $cachedAMSDao = $aggregateMetricSpecModel->load($validAMSDao->getAggregateMetricSpecId());
+
+        // Compute some aggregate metrics to check that they will be deleted.
 
         /** @var AggregateMetricModel $aggregateMetricModel */
         $aggregateMetricModel = MidasLoader::loadModel('AggregateMetric', 'tracker');
@@ -285,27 +237,31 @@ class Tracker_AggregateMetricSpecModelTest extends DatabaseTestCase
         $aggregateMetricDaos = $aggregateMetricModel->getAggregateMetricsForSubmission($submission1Dao);
         $this->assertEquals(1, count($aggregateMetricDaos));
         $this->assertEquals($aggregateMetricDaos[0]->getValue(), 7.0);
-
         $aggregateMetricDao = $aggregateMetricModel->updateAggregateMetricForSubmission($validAMSDao, $submission2Dao);
         $this->assertEquals($aggregateMetricDao->getValue(), 14.0);
         $aggregateMetricDaos = $aggregateMetricModel->getAggregateMetricsForSubmission($submission2Dao);
         $this->assertEquals(1, count($aggregateMetricDaos));
         $this->assertEquals($aggregateMetricDaos[0]->getValue(), 14.0);
 
-        // Delete the created spec.
         /** @var AggregateMetricSpecDao $cachedAMSDao */
         $cachedAMSDao = $aggregateMetricSpecModel->load($validAMSDao->getAggregateMetricSpecId());
+
+        // Delete the created spec, which should cascade to the metrics, the notifications, and the notification users.
         $aggregateMetricSpecModel->delete($validAMSDao);
 
         $aggregateMetricDaos = $aggregateMetricModel->getAggregateMetricsForSubmission($submission1Dao);
         $this->assertEquals(0, count($aggregateMetricDaos));
         $aggregateMetricDaos = $aggregateMetricModel->getAggregateMetricsForSubmission($submission2Dao);
         $this->assertEquals(0, count($aggregateMetricDaos));
-        // The AMS is deleted in the DB, but we have cached a DAO so we can ensure there are no notifications.
-        $this->assertEquals(0, count($aggregateMetricSpecModel->getAllNotifiedUsers($cachedAMSDao)));
 
         /** @var AggregateMetricSpecDao $loadedAMSDao */
         $loadedAMSDao = $aggregateMetricSpecModel->load($cachedAMSDao->getAggregateMetricSpecId());
         $this->assertFalse($loadedAMSDao);
+
+        // There shouldn't be any linked users.
+        $this->assertEquals(0, count($aggregateMetricNotificationModel->getAllNotifiedUsers($notification1Dao)));
+        // Reloading the notification DAO should produce false.
+        $notification1Dao = $aggregateMetricNotificationModel->load($notification1Dao->getAggregateMetricNotificationId());
+        $this->assertFalse($notification1Dao);
     }
 }
