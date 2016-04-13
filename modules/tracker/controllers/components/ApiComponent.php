@@ -370,15 +370,12 @@ class Tracker_ApiComponent extends AppComponent
         $aggregateMetrics = $aggregateMetricModel->updateAggregateMetricsForSubmission($submissionDao);
 
         if (array_key_exists('notify', $args) && $args['notify']) {
-            /** @var Tracker_AggregateMetricSpecModel $aggregateMetricSpecModel */
-            $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
-            /** @var Tracker_ThresholdNotificationComponent $notifyComponent */
-            $notifyComponent = MidasLoader::loadComponent('ThresholdNotification', 'tracker');
+            /** @var Tracker_AggregateMetricNotificationModel $aggregateMetricNotificationModel */
+            $aggregateMetricNotificationModel = MidasLoader::loadModel('AggregateMetricNotification', 'tracker');
             /** @var Tracker_AggregateMetricDao $aggregateMetricDao */
             foreach ($aggregateMetrics as $aggregateMetricDao) {
-                /* @var Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao */
-                $aggregateMetricSpecDao = $aggregateMetricDao->getAggregateMetricSpec();
-                $notificationJobs = $aggregateMetricSpecModel->scheduleNotificationJobs($aggregateMetricSpecDao, $aggregateMetricDao);
+                /* @var array $notificationJobs */
+                $notificationJobs = $aggregateMetricNotificationModel->scheduleNotificationJobs($aggregateMetricDao);
             }
         }
 
