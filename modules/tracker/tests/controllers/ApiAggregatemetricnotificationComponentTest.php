@@ -218,7 +218,6 @@ class Tracker_ApiAggregatemetricnotificationComponentTest extends RestCallMethod
         $this->assertEquals($notificationDao->getComparison(), $restParams['comparison']);
         $this->assertEquals($notificationDao->getBranch(), $restParams['branch']);
 
-
         $notificationId = $notificationDao->getAggregateMetricNotificationId();
         $resp = $this->_callRestApi('DELETE', '/tracker/aggregatemetricnotification/'.$notificationId);
 
