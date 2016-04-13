@@ -399,8 +399,8 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
                 if ($expectedParam['aggregate_metric_notification_id'] == $notificationId &&
                     $expectedParam['aggregate_metric_id'] == $metricId &&
                     $expectedParam['recipient_id'] == $userId) {
-                        $expectedParams[$ind]['found'] = true;
-                        break;
+                    $expectedParams[$ind]['found'] = true;
+                    break;
                 }
             }
         }
