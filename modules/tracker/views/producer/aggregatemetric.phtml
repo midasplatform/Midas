@@ -30,7 +30,7 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/pro
     ?>
     <input type="hidden" id='aggregateMetricSpecEditId'/>
     <div id='aggregateMetricSpecList'>
-        <table id='aggregateMetricSpecListTable'>
+        <table id='aggregateMetricSpecListTable' class='actionTable'>
             <thead>
                 <tr>
                     <th><?php echo $this->producer->getDisplayName().' metrics'; ?></th>
@@ -40,12 +40,12 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/pro
                 </tbody>
         </table>
     </div>
-    <?php echo '<div id="addAggregateMetricSpec"><a class="aggregateMetricSpecAction" tip="Add an aggregate metric spec"><img class="tableActions" alt="" src="'.$this->coreWebroot.'/public/images/icons/add.png" /> Add aggregate metric spec</a>'; ?>
-    <img id="aggregateMetricSpecDeleteLoading" alt="loading" style="display: none;" src="/core/public/images/icons/loading.gif" /></div>
+    <?php echo '<div id="addAggregateMetricSpec"><a class="actionLink aggregateMetricSpecAction" tip="Add an aggregate metric spec"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/add.png" /> Add aggregate metric spec</a>'; ?>
+    <img id="aggregateMetricSpecDeleteLoading" class="loadingImg" alt="loading" style="display: none;" src="/core/public/images/icons/loading.gif" /></div>
     <div id='aggregateMetricSpecCreateEdit' style='display: none;'>
-        <div class="aggregateMetricSpecCreate aggregateMetricSectionTitle" style="display: none;">Create the aggregate metric spec</div>
-        <div class="aggregateMetricSpecEdit aggregateMetricSectionTitle" style="display: none;">Edit aggregate metric spec</div>
-            <table>
+        <div class="aggregateMetricSpecCreate aggregateMetricSectionTitle subsectionTitle" style="display: none;">Create aggregate metric spec</div>
+        <div class="aggregateMetricSpecEdit aggregateMetricSectionTitle subsectionTitle" style="display: none;">Edit aggregate metric spec</div>
+            <table class="fieldTable">
                 <tbody>
                     <tr>
                         <td><label for="name"><?php echo $this->t('name') ?></label></td>
@@ -59,9 +59,9 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/pro
             </table>
 
         <div class="aggregateMetricSpecComposition">
-            <div class="aggregateMetricSectionTitle">Define the aggregate metric</div>
+            <div class="aggregateMetricSectionTitle subsubsectionTitle">Define the aggregate metric</div>
             <div id="aggregateMetricSpecEditWarning" class="aggregateMetricSpecEdit" style="display: none">Warning: do not change the metric definition of an existing spec</div>
-            <table>
+            <table class="fieldTable">
                 <tbody>
                     <tr>
                         <td>metric name</td>
@@ -77,10 +77,6 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/pro
                         </td>
                     </tr>
                     <tr>
-                        <td>branch</td>
-                        <td><input class="amsField" id='aggregateMetricSpecBranch' type="text" value=""/></td>
-                    </tr>
-                    <tr>
                         <td>aggregate metric</td>
                         <td>
                             <select class="amsField" id='aggregateMetricSpecAggregateMetric'>
@@ -93,20 +89,56 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/pro
                         <td><input class="amsField" id='aggregateMetricSpecParam' type="text" value="95"/></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><div class="amsField resultingMetricText">generated metric</div></td>
+                        <td colspan="2"><div class="amsField resultingMetricText subsubsectionTitle">Generated metric</div></td>
                     </tr>
                     <tr>
                         <td colspan="2"><input style="width:100%;" id='aggregateMetricSpecSpec' type="text" disabled='disabled'/></td>
                     </tr>
                 </tbody>
             </table>
-            <div class="aggregateMetricSectionTitle">Define the alert threshold</div>
-            <table>
+        </div>
+        <div id="aggregateMetricSpecSaveState" class="saveState">
+            <img id="aggregateMetricSpecSaveLoading" class="loadingImg" alt="loading" style="display: none;" src="/core/public/images/icons/loading.gif" />
+            <label id="aggregateMetricSpecValidationError" class="validationError"></label>
+            <input id="aggregateMetricSpecCreate" class="aggregateMetricSpecCreate" style="display: none;" input type="button" value="Create" />
+            <input id="aggregateMetricSpecUpdate" class="aggregateMetricSpecEdit" style="display: none;" input type="button" value="Update" />
+            <input id="aggregateMetricSpecCancel" type="button" value="Cancel" />
+        </div>
+    </div>
+    <div id='aggregateMetricUserAlerts' style='display: none;'>
+        <div class='subsectionTitle'><span>Alerts for <label id='aggregateMetricUserAlertsSpecName'></label></span></div>
+        <div><textarea rows='4' id='aggregateMetricUserAlertsSpec' disabled="disabled"/></div>
+        <div id='aggregateMetricNotifications'>
+            <table id='aggregateMetricNotificationsTable' class='actionTable'>
+                <thead>
+                    <tr>
+                        <th>Branch</th>
+                        <th>Comparison</th>
+                        <th>Value</th>
+                        <th>Actions</th>
+                    </tr>
+                    <tbody>
+                    </tbody>
+            </table>
+        </div>
+    <?php echo '<div id="addAggregateMetricNotification"><a class="actionLink aggregateMetricNotificationAction" tip="Add an aggregate metric alert"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/add.png" /> Add notification to the current aggregate metric spec</a></div>'; ?>
+          <div id='aggregateMetricNotificationEdit' style="display: none;">
+            <div class='subsectionTitle editAlert' style="display: none;">Edit alert</div>
+            <div class='subsectionTitle createAlert' style="display: none;">Create alert</div>
+            <table class="fieldTable">
                 <tbody>
+                    <tr>
+                        <td>alert threshold branch</td>
+                        <td><input id='aggregateMetricNotificationBranch' class="amsField" type="text" /></td>
+                    </tr>
+                    <tr>
+                        <td>alert threshold value</td>
+                        <td><input id='aggregateMetricNotificationValue' class="amsField" type="text" /></td>
+                    </tr>
                     <tr>
                         <td>alert threshold comparison</td>
                         <td>
-                            <select class="amsField" id='aggregateMetricSpecComparison'>
+                            <select class="amsField" id='aggregateMetricNotificationComparison'>
                                 <option disabled selected value>  -- select a comparison -- </option>
                                 <option>&#62;</option>
                                 <option>&#62;&#61;</option>
@@ -117,60 +149,44 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/pro
                             </select>
                         </td>
                     </tr>
-                    <tr>
-                        <td>alert threshold value</td>
-                        <td><input id='aggregateMetricSpecValue' class="amsField" type="text" /></td>
-                    </tr>
                 </tbody>
             </table>
-        </div>
-        <div id="aggregateMetricSpecSaveState">
-            <img id="aggregateMetricSpecSaveLoading" alt="loading" style="display: none;" src="/core/public/images/icons/loading.gif" />
-            <label id="aggregateMetricSpecValidationError"></label>
-            <input id="aggregateMetricSpecCreate" class="aggregateMetricSpecCreate" style="display: none;" input type="button" value="Create" />
-            <input id="aggregateMetricSpecUpdate" class="aggregateMetricSpecEdit" style="display: none;" input type="button" value="Update" />
-            <input id="aggregateMetricSpecCancel" type="button" value="Cancel" />
-        </div>
-    </div>
-    <div id='aggregateMetricUserAlerts' style='display: none;'>
-        <div><span>Alerts for aggregate metric spec <label id='aggregateMetricUserAlertsSpecName'></label> on branch <label id='aggregateMetricUserAlertsBranch'></label></span><div>
-        <div><textarea rows='4' id='aggregateMetricUserAlertsSpec' disabled='disabled'/></div>
-        <div id='aggregateMetricUserAlertsThreshold'>
-            Alert Threshold
-            <table id='aggregateMetricUserAlertsThresholdDefinition'>
-                <tbody>
+            <div id="aggregateMetricNotificationSaveState" class="saveState">
+                <img id="aggregateMetricNotificationSaveLoading" class="loadingImg" alt="loading" style="display: none;" src="/core/public/images/icons/loading.gif" />
+                <label id="aggregateMetricNotificationValidationError" class="validationError"></label>
+                <input id="aggregateMetricNotificationCreate" class="aggregateMetricNotificationCreate" style="display: none;" input type="button" value="Create" />
+                <input id="aggregateMetricNotificationUpdate" class="aggregateMetricNotificationEdit" style="display: none;" input type="button" value="Update" />
+                <input id="aggregateMetricNotificationSaveCancel" type="button" value="Cancel" />
+            </div>
+          </div>
+        <div id='aggregateMetricNotificationUsers' style="display: none;">
+            <div class='subsectionTitle'></div>
+            <table id='aggregateMetricSpecAlertedUsers' class='actionTable'>
+                <thead>
                     <tr>
-                        <td>comparison</td>
-                        <td><input id='aggregateMetricSpecAlertComparison' type="text" disabled="disabled"/></td>
+                        <th>Alerted Users</th>
+                        <th>Actions</th>
                     </tr>
-                    <tr>
-                        <td>value</td>
-                        <td><input id='aggregateMetricSpecAlertValue' type="text" disabled="disabled"/></td>
-                    </tr>
-                </tbody>
+                    <tbody>
+                    </tbody>
             </table>
-        </div>
-        <table id='aggregateMetricSpecAlertedUsers'>
-            <thead>
-                <tr>
-                    <th>Alerted Users</th>
-                    <th>Actions</th>
-                </tr>
-                <tbody>
-                </tbody>
-        </table>
-        <div id="addAggregateMetricSpecAlertUser">
-            Add a user to be alerted<br/>
-            <div class='alertUserSearch'>
-                    <input type='text' id='addAlertUserSearch' value='' autocomplete='off'
-                       autocorrect='off' autocapitalize='off'/>
-                <input type='hidden' id='addAlertUserSearchValue' value='init'/>
+            <div id="addAggregateMetricSpecAlertUser">
+                <div class="subsubsectionTitle">Add a user to be alerted</div>
+                <div class='alertUserSearch'>
+                        <input type='text' id='addAlertUserSearch' value='' autocomplete='off'
+                           autocorrect='off' autocapitalize='off'/>
+                    <input type='hidden' id='addAlertUserSearchValue' value='init'/>
+                </div>
+            </div>
+            <div id="aggregateMetricSpecUserAlertsSaveState" class="saveState">
+                <img id="aggregateMetricSpecAlertsLoading" class="loadingImg" alt="loading" style="display: none;" src="/core/public/images/icons/loading.gif" />
+                <label id="aggregateMetricSpecUserAlertsValidationError" class="validationError"></label>
+                <input id="aggregateMetricSpecUserAlertsDone" type="button" value="Cancel" />
             </div>
         </div>
-        <div id="aggregateMetricSpecUserAlertsSaveState">
-            <img id="aggregateMetricSpecAlertsLoading" alt="loading" style="display: none;" src="/core/public/images/icons/loading.gif" />
-            <label id="aggregateMetricSpecUserAlertsValidationError"></label>
-            <input id="aggregateMetricSpecUserAlertsDone" type="button" value="Done" />
+        <div class="saveState">
+            <img id="aggregateMetricNotificationRemoveLoading" class="loadingImg" alt="loading" style="display: none;" src="/core/public/images/icons/loading.gif" />
+            <input id="aggregateMetricNotificationCancel" type="button" style="display: none;" value="Cancel" />
         </div>
     </div>
     <div style="display: none;" class="trackerJsonContent">
