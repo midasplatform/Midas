@@ -69,7 +69,7 @@ class Tracker_AggregateMetricNotificationModelTest extends DatabaseTestCase
 
         $expectedNotifiedUsers95thGreedyError = array(
             $user1Dao->getUserId() => false,
-            $user2Dao->getUserId() => false
+            $user2Dao->getUserId() => false,
         );
 
         $aggregateMetricNotificationModel->createUserNotification($amn95thPercentileGreedyError, $user1Dao);
@@ -92,7 +92,7 @@ class Tracker_AggregateMetricNotificationModelTest extends DatabaseTestCase
 
         $expectedNotifiedUsers55thGreedyError = array(
             $user1Dao->getUserId() => false,
-            $user3Dao->getUserId() => false
+            $user3Dao->getUserId() => false,
         );
 
         $aggregateMetricNotificationModel->createUserNotification($amn55thPercentileGreedyError, $user1Dao);
@@ -152,7 +152,7 @@ class Tracker_AggregateMetricNotificationModelTest extends DatabaseTestCase
 
         $expectedNotifiedUsers95thGreedyError = array(
             $user1Dao->getUserId() => false,
-            $user2Dao->getUserId() => false
+            $user2Dao->getUserId() => false,
         );
 
         /** @var Tracker_AggregateMetricDao $greedyError95thSubmission2Metric */
@@ -185,7 +185,7 @@ class Tracker_AggregateMetricNotificationModelTest extends DatabaseTestCase
 
         $expectedNotifiedUsers55thGreedyError = array(
             $user1Dao->getUserId() => false,
-            $user3Dao->getUserId() => false
+            $user3Dao->getUserId() => false,
         );
 
         /** @var Tracker_AggregateMetricDao $greedyError55thSubmission2Metric */
@@ -261,7 +261,7 @@ class Tracker_AggregateMetricNotificationModelTest extends DatabaseTestCase
 
         // Ensure the linked users are deleted.
         $db = Zend_Registry::get('dbAdapter');
-        $row = $db->query('select count(*) as count from tracker_user2aggregate_metric_notification where aggregate_metric_notification_id = '. $amnId)->fetch();
+        $row = $db->query('select count(*) as count from tracker_user2aggregate_metric_notification where aggregate_metric_notification_id = '.$amnId)->fetch();
         $this->assertEquals($row['count'], 0);
         $this->assertFalse($aggregateMetricNotificationModel->load($amnId));
     }
