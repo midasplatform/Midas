@@ -74,7 +74,7 @@ class Tracker_ApiComponent extends AppComponent
         /** @var ItemModel $itemModel */
         $itemModel = MidasLoader::loadModel('Item');
 
-        /** @var Tracker_ScalarModel $scalarModel */
+        /** @var Tracker_SubmissionModel $submissionModel */
         $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
 
         /** @var Tracker_TrendgroupModel $trendgroupModel */
@@ -95,7 +95,7 @@ class Tracker_ApiComponent extends AppComponent
         $submissionUuid = $args['submissionUuid'];
 
         /** @var Tracker_SubmissionDao $submission */
-        $submission = $submissionModel->findBy('uuid', $submissionUuid);
+        $submission = $submissionModel->getSubmission($submissionUuid);
 
         if (!$submission) {
             throw new Exception('Invalid submission uuid: '.$submissionUuid, 404);
