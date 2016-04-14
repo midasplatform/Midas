@@ -31,16 +31,17 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
         $this->_mainData = array(
             'scalar_id' => array('type' => MIDAS_DATA),
             'trend_id' => array('type' => MIDAS_DATA),
-            'user_id' => array('type' => MIDAS_DATA),
             'submission_id' => array('type' => MIDAS_DATA),
-            'official' => array('type' => MIDAS_DATA),
-            'build_results_url' => array('type' => MIDAS_DATA),
-            'extra_urls' => array('type' => MIDAS_DATA),
-            'branch' => array('type' => MIDAS_DATA),
-            'submit_time' => array('type' => MIDAS_DATA),
+            /**
+             * submit_time, branch, and official are not actually present in
+             * the scalar table, but they are present here to be populated in
+             * the DAO when scalars are retrieved via a join query with
+             * submission.
+             */
+            'submit_time' => array('type' => MIDAS_DATA),   // from submission
+            'branch' => array('type' => MIDAS_DATA),        // from submission
+            'official' => array('type' => MIDAS_DATA),      // from submission
             'value' => array('type' => MIDAS_DATA),
-            'producer_revision' => array('type' => MIDAS_DATA),
-            'reproduction_command' => array('type' => MIDAS_DATA),
             'trend' => array(
                 'type' => MIDAS_MANY_TO_ONE,
                 'model' => 'Trend',
@@ -55,56 +56,10 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
                 'parent_column' => 'submission_id',
                 'child_column' => 'submission_id',
             ),
-            'user' => array(
-                'type' => MIDAS_MANY_TO_ONE,
-                'model' => 'User',
-                'parent_column' => 'user_id',
-                'child_column' => 'user_id',
-            ),
-            'params' => array(
-                'type' => MIDAS_ONE_TO_MANY,
-                'model' => 'Param',
-                'module' => $this->moduleName,
-                'parent_column' => 'scalar_id',
-                'child_column' => 'scalar_id',
-            ),
         );
 
         $this->initialize();
     }
-
-    /**
-     * Associate the given scalar and item.
-     *
-     * @param Tracker_ScalarDao $scalarDao scalar DAO
-     * @param ItemDao $itemDao item DAO
-     * @param string $label label
-     */
-    abstract public function associateItem($scalarDao, $itemDao, $label);
-
-    /**
-     * Return the items associated with the given scalar.
-     *
-     * @param Tracker_ScalarDao $scalarDao scalar DAO
-     * @return array array of associative arrays with keys "item" and "label"
-     */
-    abstract public function getAssociatedItems($scalarDao);
-
-    /**
-     * Return any other scalars from the same submission as the given scalar.
-     *
-     * @param Tracker_ScalarDao $scalarDao scalar DAO
-     * @return array scalar DAOs
-     */
-    abstract public function getOtherScalarsFromSubmission($scalarDao);
-
-    /**
-     * Return any other values from the same submission as the given scalar.
-     *
-     * @param Tracker_ScalarDao $scalarDao scalar DAO
-     * @return array associative array with keys equal to the metric names
-     */
-    abstract public function getOtherValuesFromSubmission($scalarDao);
 
     /**
      * Return a scalar given a trend id, submit time, and user id.
@@ -117,87 +72,31 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
     abstract public function getByTrendAndTimestamp($trendId, $submitTime, $userId = null);
 
     /**
-     * Return all distinct branch names of revisions producing scalars.
+     * Return any other scalars from the same submission as the given scalar.
      *
-     * @return array branch names
+     * @param Tracker_ScalarDao $scalarDao scalar DAO
+     * @return array scalar DAOs
      */
-    abstract public function getDistinctBranches();
+    abstract public function getOtherScalarsFromSubmission($scalarDao);
 
     /**
-     * Add a new scalar to the trend. If overwrite is true, and a scalar already exists on the trend with the same
-     * submit time and user, then this will replace that scalar.
+     * Add a new scalar to the trend.
      *
      * @param Tracker_TrendDao $trendDao trend DAO
-     * @param string $submitTime submit time
-     * @param string $producerRevision producer revision
-     * @param float $value scalar value
-     * @param UserDao $userDao user DAO
-     * @param bool $overwrite true if a scalar with the same trend, submit time, and user should be overwritten
-     * @param bool $official true if the submission containing the scalar should be official
-     * @param string $buildResultsUrl build results URL
-     * @param null|string $branch branch name
-     * @param null|string|array $params parameters
-     * @param null|string|array $extraUrls extra URLs
-     * @param null|string $reproductionCommand the command to reproduce this run
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @param float $value
      * @return Tracker_ScalarDao scalar DAO
      */
-    public function addToTrend(
-        $trendDao,
-        $submitTime,
-        $submissionId,
-        $producerRevision,
-        $value,
-        $userDao,
-        $overwrite = true,
-        $official = true,
-        $buildResultsUrl = '',
-        $branch = '',
-        $params = null,
-        $extraUrls = null,
-        $reproductionCommand = null
-    ) {
-        if ($overwrite === true) {
-            $scalarDao = $this->getByTrendAndTimestamp($trendDao->getKey(), $submitTime, $userDao->getKey());
-
-            if ($scalarDao !== false) {
-                $this->delete($scalarDao);
-            }
-        }
-
-        if (empty($extraUrls)) {
-            $extraUrls = null;
-        } elseif (is_array($extraUrls)) {
-            $extraUrls = json_encode($extraUrls);
-        }
-
-        $userId = (is_null($userDao) || $userDao === false) ? -1 : $userDao->getKey();
+    public function addToTrend($trendDao, $submissionDao, $value)
+    {
 
         /** @var Tracker_ScalarDao $scalarDao */
         $scalarDao = MidasLoader::newDao('ScalarDao', $this->moduleName);
-        $scalarDao->setSubmissionId($submissionId);
-        $scalarDao->setTrendId($trendDao->getKey());
-        $scalarDao->setSubmitTime($submitTime);
-        $scalarDao->setProducerRevision($producerRevision);
-        $scalarDao->setValue($value);
-        $scalarDao->setUserId($userId);
-        $scalarDao->setOfficial((int) $official);
-        $scalarDao->setBuildResultsUrl($buildResultsUrl);
-        $scalarDao->setBranch(trim($branch));
-        $scalarDao->setExtraUrls($extraUrls);
-        $scalarDao->setReproductionCommand($reproductionCommand);
-        $this->save($scalarDao);
 
-        if (!empty($params) && is_array($params)) {
-            $paramModel = MidasLoader::loadModel('Param', $this->moduleName);
-            foreach ($params as $paramName => $paramValue) {
-                /** @var Tracker_ParamDao $paramDao */
-                $paramDao = MidasLoader::newDao('ParamDao', $this->moduleName);
-                $paramDao->setScalarId($scalarDao->getScalarId());
-                $paramDao->setParamName($paramName);
-                $paramDao->setParamValue($paramValue);
-                $paramModel->save($paramDao);
-            }
-        }
+        $scalarDao->setSubmissionId($submissionDao->getKey());
+        $scalarDao->setTrendId($trendDao->getKey());
+        $scalarDao->setValue($value);
+        $this->save($scalarDao);
 
         return $scalarDao;
     }

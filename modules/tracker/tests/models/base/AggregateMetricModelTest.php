@@ -27,24 +27,33 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         $this->setupDatabase(array('default')); // core dataset
         $this->setupDatabase(array('aggregateMetric'), 'tracker'); // module dataset
         $this->enabledModules = array('tracker');
-        $db = Zend_Registry::get('dbAdapter');
-        $configDatabase = Zend_Registry::get('configDatabase');
-        if ($configDatabase->database->adapter == 'PDO_PGSQL') {
-            $db->query("SELECT setval('tracker_aggregate_metric_spec_aggregate_metric_spec_id_seq', (SELECT MAX(aggregate_metric_spec_id) FROM tracker_aggregate_metric_spec)+1);");
-            $db->query("SELECT setval('tracker_aggregate_metric_aggregate_metric_id_seq', (SELECT MAX(aggregate_metric_id) FROM tracker_aggregate_metric)+1);");
-            $db->query("SELECT setval('tracker_trend_trend_id_seq', (SELECT MAX(trend_id) FROM tracker_trend)+1);");
-            $db->query("SELECT setval('tracker_scalar_scalar_id_seq', (SELECT MAX(scalar_id) FROM tracker_scalar)+1);");
-        }
+
         parent::setUp();
     }
 
     /** createAdditionalGreedyErrorSubmission1Scalars testing utility function. */
     protected function createAdditionalGreedyErrorSubmission1Scalars()
     {
+        /** @var Tracker_ProducerModel $producerModel */
+        $producerModel = MidasLoader::loadModel('Producer', 'tracker');
         /** @var Tracker_TrendModel $trendModel */
         $trendModel = MidasLoader::loadModel('Trend', 'tracker');
         /** @var Tracker_ScalarModel $scalarModel */
         $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
+        /** @var Tracker_SubmissionModel $submissionModel */
+        $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
+
+        $producerDao = $producerModel->load(100);
+
+        $submissionDao = $submissionModel->load(1);
+        $submissionDao->setSubmitTime(date('Y-m-d', time()));
+        $submissionDao->setProducerRevision(1);
+
+        $submissionDao->setUserId(1);
+        $submissionDao->setOfficial((int) true);
+        $submissionDao->setBuildResultsUrl('build.results.url');
+        $submissionDao->setBranch('master');
+        $submissionModel->save($submissionDao);
 
         $extraTrends = array();
         /** @var int $i */
@@ -55,15 +64,9 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
             $trendModel->save($trendDao);
             /** @var Tracker_ScalarDao $scalarDao */
             $scalarDao = MidasLoader::newDao('ScalarDao', 'tracker');
-            $scalarDao->setSubmissionId(1);
+            $scalarDao->setSubmissionId($submissionDao->getKey());
             $scalarDao->setTrendId($trendDao->getKey());
-            $scalarDao->setSubmitTime(date('Y-m-d', time()));
-            $scalarDao->setProducerRevision(1);
             $scalarDao->setValue(21.0 + $i);
-            $scalarDao->setUserId(1);
-            $scalarDao->setOfficial((int) true);
-            $scalarDao->setBuildResultsUrl('build.results.url');
-            $scalarDao->setBranch('master');
             $scalarModel->save($scalarDao);
             $extraTrends[] = $trendDao;
         }
@@ -94,8 +97,6 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         /** @var AggregateMetricModel $aggregateMetricModel */
         $aggregateMetricModel = MidasLoader::loadModel('AggregateMetric', 'tracker');
 
-        /** @var Tracker_ProducerDao $producer100Dao */
-        $producer100Dao = $producerModel->load(100);
         /** @var Tracker_SubmissionDao $submission1Dao */
         $submission1Dao = $submissionModel->load(1);
         /** @var Tracker_SubmissionDao $submission2Dao */

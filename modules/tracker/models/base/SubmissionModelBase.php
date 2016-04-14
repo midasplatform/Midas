@@ -36,6 +36,13 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
             'name' => array('type' => MIDAS_DATA),
             'uuid' => array('type' => MIDAS_DATA),
             'submit_time' => array('type' => MIDAS_DATA),
+            'user_id' => array('type' => MIDAS_DATA),
+            'official' => array('type' => MIDAS_DATA),
+            'build_results_url' => array('type' => MIDAS_DATA),
+            'extra_urls' => array('type' => MIDAS_DATA),
+            'branch' => array('type' => MIDAS_DATA),
+            'producer_revision' => array('type' => MIDAS_DATA),
+            'reproduction_command' => array('type' => MIDAS_DATA),
             'producer' => array(
                 'type' => MIDAS_MANY_TO_ONE,
                 'model' => 'Producer',
@@ -43,10 +50,42 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
                 'parent_column' => 'producer_id',
                 'child_column' => 'producer_id',
             ),
+            'params' => array(
+                'type' => MIDAS_ONE_TO_MANY,
+                'model' => 'Param',
+                'module' => $this->moduleName,
+                'parent_column' => 'submission_id',
+                'child_column' => 'submission_id',
+            ),
+            'user' => array(
+                'type' => MIDAS_MANY_TO_ONE,
+                'model' => 'User',
+                'parent_column' => 'user_id',
+                'child_column' => 'user_id',
+            ),
         );
 
         $this->initialize();
     }
+
+    /**
+     * Associate the given submission and item.
+     *
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @param ItemDao $itemDao item DAO
+     * @param string $label label
+     * @param Tracker_TrendgroupDao $trendgroupDao trendgroup DAO
+     */
+    abstract public function associateItem($submissionDao, $itemDao, $label, $trendgroupDao);
+
+    /**
+     * Return the items associated with the given submission.
+     *
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @param Tracker_TrendgroupDao $trendgroupDao trendgroup DAO
+     * @return array array of associative arrays with keys "item" and "label"
+     */
+    abstract public function getAssociatedItems($submissionDao, $trendgroupDao);
 
     /**
      * Create a submission.
@@ -54,9 +93,10 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
      * @param Tracker_ProducerDao $producerDao the producer to which the submission was submitted
      * @param string $uuid the uuid of the submission
      * @param string $name the name of the submission (defaults to '')
+     * @param array $params the parameters used to generate the submission (defaults to null)
      * @return Tracker_SubmissionDao
      */
-    abstract public function createSubmission($producerDao, $uuid, $name = '');
+    abstract public function createSubmission($producerDao, $uuid, $name = '', $params = null);
 
     /**
      * Get a submission from its uuid.
@@ -84,12 +124,23 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
     abstract public function getSubmissionsByProducer($producerDao);
 
     /**
-     * Get the scalars associated with a submission.
+     * Return the scalars for a given submission.
+     *
      * @param Tracker_SubmissionDao $submissionDao submission DAO
      * @param bool $key whether to only retrieve scalars of key trends
-     * @return array submission DAOs
+     * @param bool|false|Tracker_TrendgroupDao $trendGroup dao of trend group to limit scalars
+     * @return array scalar DAOs
+     * @throws Zend_Exception
      */
-    abstract public function getScalars($submissionDao, $key = false);
+    abstract public function getScalars($submissionDao, $key = false, $trendGroup = false);
+
+    /**
+     * Return the values (trend name, value, and unit in an array) from a given submission.
+     *
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @return array associative array with keys equal to the metric names
+     */
+    abstract public function getValuesFromSubmission($submissionDao);
 
     /**
      * Get the single latest submission associated with a given producer.
@@ -114,4 +165,11 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
      * @return array Tracker_TrendDaos
      */
     abstract public function getTrends($submissionDao, $key = true);
+
+    /**
+     * Return all distinct branch names of revisions producing submissions.
+     *
+     * @return array branch names
+     */
+    abstract public function getDistinctBranches();
 }

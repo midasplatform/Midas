@@ -20,6 +20,5 @@
 set(module_name tracker)
 to_titlecase(${module_name} module_name_titlecase)
 
-add_midas_test(${module_name_titlecase}ApiComponent ApiComponentTest.php)
-add_midas_test(${module_name_titlecase}ApiAggregatemetricspecComponent ApiAggregatemetricspecComponentTest.php)
-add_midas_test(${module_name_titlecase}ApiScalarComponent ApiScalarComponentTest.php)
+add_midas_mysql_test(${module_name_titlecase}ApiComponent ApiComponentTest.php)
+add_midas_mysql_test(${module_name_titlecase}ApiAggregatemetricspecComponent ApiAggregatemetricspecComponentTest.php)

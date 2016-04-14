@@ -39,23 +39,6 @@ class Tracker_Upgrade_1_2_2 extends MIDASUpgrade
         $this->db->query('ALTER TABLE `tracker_scalar` DROP `params`;');
     }
 
-    /** Upgrade a PostgreSQL database. */
-    public function pgsql()
-    {
-        $this->db->query(
-            "CREATE TABLE IF NOT EXISTS tracker_param (
-                param_id serial PRIMARY KEY,
-                scalar_id bigint NOT NULL,
-                param_name character varying(255) NOT NULL,
-                param_type text CHECK (param_type in ('text', 'numeric')),
-                text_value text,
-                numeric_value double precision);"
-        );
-        $this->db->query('CREATE INDEX tracker_param_param_name_idx ON tracker_param (param_name);');
-        $this->migrateScalarParams();
-        $this->db->query('ALTER TABLE tracker_scalar DROP COLUMN params;');
-    }
-
     /** Migrate tracker_scalar params to tracker_param. */
     private function migrateScalarParams()
     {

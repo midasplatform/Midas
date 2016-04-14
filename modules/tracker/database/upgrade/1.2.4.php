@@ -58,42 +58,4 @@ class Tracker_Upgrade_1_2_4 extends MIDASUpgrade
             ') DEFAULT CHARSET=utf8;'
         );
     }
-
-    /** Upgrade a PostgreSQL database. */
-    public function pgsql()
-    {
-        $this->db->query(
-            'CREATE TABLE IF NOT EXISTS "tracker_aggregate_metric" ('.
-            '    "aggregate_metric_id" serial PRIMARY KEY,'.
-            '    "aggregate_metric_spec_id" bigint NOT NULL,'.
-            '    "submission_id" bigint NOT NULL,'.
-            '    "value" double precision'.
-            ');'
-        );
-        $this->db->query('CREATE INDEX "tracker_aggregate_metric_aggregate_metric_spec_id" ON "tracker_aggregate_metric" ("aggregate_metric_spec_id");');
-        $this->db->query('CREATE INDEX "tracker_aggregate_metric_submission_id" ON "tracker_aggregate_metric" ("submission_id");');
-        $this->db->query(
-            'CREATE TABLE IF NOT EXISTS "tracker_aggregate_metric_spec" ('.
-            '    "aggregate_metric_spec_id" serial PRIMARY KEY,'.
-            '    "producer_id" bigint NOT NULL,'.
-            '    "branch" character varying(255) NOT NULL,'.
-            '    "name" character varying(255) NOT NULL,'.
-            '    "description" character varying(255) NOT NULL,'.
-            '    "spec" text,'.
-            '    "value" double precision,'.
-            '    "comparison" character varying(2) NOT NULL'.
-            ');'
-        );
-        $this->db->query('CREATE INDEX "tracker_aggregate_metric_spec_producer_id" ON "tracker_aggregate_metric_spec" ("producer_id");');
-        $this->db->query('CREATE INDEX "tracker_aggregate_metric_spec_branch" ON "tracker_aggregate_metric_spec" ("branch");');
-        $this->db->query(
-            'CREATE TABLE IF NOT EXISTS "tracker_user2aggregate_metric_spec" ('.
-            '    "id" serial PRIMARY KEY,'.
-            '    "user_id"  bigint NOT NULL,'.
-            '    "aggregate_metric_spec_id" bigint NOT NULL,'.
-            '    PRIMARY_KEY("user_id", "aggregate_metric_spec_id")'.
-            ');'
-        );
-        $this->db->query('CREATE INDEX "tracker_user2aggregate_metric_spec_ams_id_idx" ON "tracker_user2aggregate_metric_spec" ("aggregate_metric_spec_id");');
-    }
 }

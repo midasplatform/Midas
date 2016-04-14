@@ -19,27 +19,31 @@
 =========================================================================*/
 
 /**
- * Scalar DAO for the tracker module.
+ * Trend Group DAO for the tracker module.
  *
- * @method int getScalarId()
- * @method void setScalarId(int $scalarId)
- * @method int getSubmissionId()
- * @method void setSubmissionId(int $submissionId)
- * @method Tracker_SubmissionDao getSubmission()
- * @method void setSubmission(Tracker_SubmissionDao $submissionDao)
- * @method int getTrendId()
- * @method void setTrendId(int $trendId)
- * @method float getValue()
- * @method void setValue(float $value)
- * @method string getSubmitTime() // read-only from submission join
- * @method int getOfficial() // read-only from submission join
- * @method Tracker_TrendDao getTrend()
- * @method void setTrend(Tracker_TrendDao $trendDao)
+ * @method int getProducerId()
+ * @method void setProducerId(int $producerId)
+ * @method int getConfigItemId()
+ * @method void setConfigItemId(int $configItemId)
+ * @method int getTestDatasetId()
+ * @method void setTestDatasetId(int $testDatasetId)
+ * @method int getTruthDatasetId()
+ * @method void setTruthDatasetId(int $truthDatasetId)
+ * @method Tracker_ProducerDao getProducer()
+ * @method void setProducer(Tracker_ProducerDao $producerDao)
+ * @method ItemDao getConfigItem()
+ * @method void setConfigItem(ItemDao $configItemDao)
+ * @method ItemDao getTestDatasetItem()
+ * @method void setTestDatasetItem(ItemDao $testDatasetItemDao)
+ * @method ItemDao getTruthDatasetItem()
+ * @method void setTruthDatasetItem(ItemDao $truthDatasetItemDao)
+ * @method array getTrends()
+ * @method void setTrends(array $trendDaos)
  */
-class Tracker_ScalarDao extends Tracker_AppDao
+class Tracker_TrendgroupDao extends Tracker_AppDao
 {
     /** @var string */
-    public $_model = 'Scalar';
+    public $_model = 'Trendgroup';
 
     /** @var string */
     public $_module = 'tracker';

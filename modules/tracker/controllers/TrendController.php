@@ -24,6 +24,8 @@
  * @property Tracker_ScalarModel $Tracker_Scalar
  * @property Tracker_ThresholdNotificationModel $Tracker_ThresholdNotification
  * @property Tracker_TrendModel $Tracker_Trend
+ * @property Tracker_SubmissionModel $Tracker_Submission
+ * @property Tracker_ProducerModel $Tracker_Producer
  */
 class Tracker_TrendController extends Tracker_AppController
 {
@@ -31,7 +33,7 @@ class Tracker_TrendController extends Tracker_AppController
     public $_components = array('Breadcrumb');
 
     /** @var array */
-    public $_moduleModels = array('Producer', 'Scalar', 'ThresholdNotification', 'Trend');
+    public $_moduleModels = array('Producer', 'Scalar', 'ThresholdNotification', 'Trend', 'Submission');
 
     /**
      * View a given trend.
@@ -81,7 +83,7 @@ class Tracker_TrendController extends Tracker_AppController
 
         $userId = $this->userSession->Dao ? $this->userSession->Dao->getKey() : null;
 
-        $this->view->allBranches = $this->Tracker_Scalar->getDistinctBranches();
+        $this->view->allBranches = $this->Tracker_Submission->getDistinctBranches();
 
         $trendIds = explode(' ', trim(str_replace(',', ' ', $trendId)));
         $trendDaos = array();
@@ -104,7 +106,7 @@ class Tracker_TrendController extends Tracker_AppController
             );
 
             if (!isset($this->view->json['tracker']['producerId'])) {
-                $this->view->json['tracker']['producerId'] = $trendDao->getProducerId();
+                $this->view->json['tracker']['producerId'] = $trendDao->getTrendgroup()->getProducerId();
             }
 
             $trendDaos[] = $trendDao;
@@ -112,7 +114,7 @@ class Tracker_TrendController extends Tracker_AppController
 
         /** @var Tracker_TrendDao $trendDao */
         $trendDao = $trendDaos[0];
-        $producerDao = $trendDao->getProducer();
+        $producerDao = $trendDao->getTrendgroup()->getProducer();
         $communityDao = $producerDao->getCommunity();
 
         if (count($trendDaos) === 1) {
@@ -131,7 +133,7 @@ class Tracker_TrendController extends Tracker_AppController
             /** @var Tracker_TrendDao $rightTrendDao */
             $rightTrendDao = $this->Tracker_Trend->load($rightTrendId);
 
-            if ($communityDao !== false && $communityDao->getKey() !== $rightTrendDao->getProducer()->getCommunityId()
+            if ($communityDao !== false && $communityDao->getKey() !== $rightTrendDao->getTrendgroup()->getProducer()->getCommunityId()
             ) {
                 throw new Zend_Exception('The right trend must belong to the same community as the other trends', 403);
             }
@@ -555,8 +557,11 @@ class Tracker_TrendController extends Tracker_AppController
         /** @var Tracker_TrendDao $trendDao */
         $trendDao = $this->Tracker_Trend->load($trendId);
 
+        /** @var Tracker_TrendgroupDao $trendGroup */
+        $trendGroup = $trendDao->getTrendgroup();
+
         /** @var Tracker_ProducerDao $producerDao */
-        $producerDao = $trendDao->getProducer();
+        $producerDao = $trendGroup->getProducer();
 
         if ($this->Tracker_Producer->policyCheck($producerDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN) === false
         ) {

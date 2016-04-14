@@ -30,38 +30,17 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
         $this->_key = 'trend_id';
         $this->_mainData = array(
             'trend_id' => array('type' => MIDAS_DATA),
-            'producer_id' => array('type' => MIDAS_DATA),
             'metric_name' => array('type' => MIDAS_DATA),
             'display_name' => array('type' => MIDAS_DATA),
             'unit' => array('type' => MIDAS_DATA),
-            'config_item_id' => array('type' => MIDAS_DATA),
-            'test_dataset_id' => array('type' => MIDAS_DATA),
-            'truth_dataset_id' => array('type' => MIDAS_DATA),
             'key_metric' => array('type' => MIDAS_DATA),
-            'producer' => array(
+            'trendgroup_id' => array('type' => MIDAS_DATA),
+            'trendgroup' => array(
                 'type' => MIDAS_MANY_TO_ONE,
-                'model' => 'Producer',
+                'model' => 'Trendgroup',
                 'module' => $this->moduleName,
-                'parent_column' => 'producer_id',
-                'child_column' => 'producer_id',
-            ),
-            'config_item' => array(
-                'type' => MIDAS_MANY_TO_ONE,
-                'model' => 'Item',
-                'parent_column' => 'config_item_id',
-                'child_column' => 'item_id',
-            ),
-            'test_dataset_item' => array(
-                'type' => MIDAS_MANY_TO_ONE,
-                'model' => 'Item',
-                'parent_column' => 'test_dataset_id',
-                'child_column' => 'item_id',
-            ),
-            'truth_dataset_item' => array(
-                'type' => MIDAS_MANY_TO_ONE,
-                'model' => 'Item',
-                'parent_column' => 'truth_dataset_id',
-                'child_column' => 'item_id',
+                'parent_column' => 'trendgroup_id',
+                'child_column' => 'trendgroup_id',
             ),
             'scalars' => array(
                 'type' => MIDAS_ONE_TO_MANY,
@@ -76,17 +55,16 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
     }
 
     /**
-     * Return the trend DAO that matches the given the producer id, metric name, associated items, and unit.
+     * Return the trend DAO that matches the given the producer id, metric name, and associated items.
      *
      * @param int $producerId producer id
      * @param string $metricName metric name
      * @param null|int $configItemId configuration item id
      * @param null|int $testDatasetId test dataset item id
      * @param null|int $truthDatasetId truth dataset item id
-     * @param false|string $unit (Optional) scalar value unit, defaults to false
      * @return false|Tracker_TrendDao trend DAO or false if none exists
      */
-    abstract public function getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId, $unit = false);
+    abstract public function getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId);
 
     /**
      * Return the trend DAOs that match the given associative array of database columns and values.
@@ -109,24 +87,14 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
     abstract public function getScalars($trendDao, $startDate = null, $endDate = null, $userId = null, $branch = null);
 
     /**
-     * Return all trends corresponding to the given producer. They will be grouped by distinct
-     * config/test/truth dataset combinations.
+     * Return all trends corresponding to the given producer. They will be grouped by their trend
+     * group and returned along with the test, truth, and config item DAOs.
      *
      * @param Tracker_ProducerDao $producerDao producer DAO
      * @param bool $onlyKey whether to return only key trends
-     * @return array
+     * @return array array of associative arrays with keys "configItem", "testDataset", "truthDataset", and "trends"
      */
-    abstract public function getTrendsGroupByDatasets($producerDao, $onlyKey = false);
-
-    /**
-     * Return all distinct branch names producing scalars, tied to a specific
-     * producer, for trends that are key_metrics, and matching a trend metric_name.
-     *
-     * @param int $producerId producer id
-     * @param string $metricName trend metric_name
-     * @return array branch names
-     */
-    abstract public function getDistinctBranchesForMetricName($producerId, $metricName);
+    abstract public function getTrendsByGroup($producerDao, $onlyKey = false);
 
     /**
      * Save the given trend. Ensure that null values are explicitly set in the database.
@@ -154,12 +122,19 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
      */
     public function createIfNeeded($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId, $unit = false)
     {
-        $trendDao = $this->getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId, $unit);
+        $trendDao = $this->getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId);
 
         if ($trendDao === false) {
+
+            /** @var Tracker_TrendGroupModel $trendGroupModel */
+            $trendGroupModel = MidasLoader::loadModel('Trendgroup', $this->moduleName);
+
             /** @var Tracker_TrendDao $trendDao */
             $trendDao = MidasLoader::newDao('TrendDao', $this->moduleName);
-            $trendDao->setProducerId($producerId);
+
+            /** @var Tracker_TrendGroupDao $trendGroupDao */
+            $trendGroupDao = $trendGroupModel->createIfNeeded($producerId, $configItemId, $testDatasetId, $truthDatasetId);
+
             $trendDao->setMetricName($metricName);
             $trendDao->setDisplayName($metricName);
             if ($unit === false) {
@@ -167,17 +142,7 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
             }
             $trendDao->setUnit($unit);
 
-            if (!is_null($configItemId)) {
-                $trendDao->setConfigItemId($configItemId);
-            }
-
-            if (!is_null($testDatasetId)) {
-                $trendDao->setTestDatasetId($testDatasetId);
-            }
-
-            if (!is_null($truthDatasetId)) {
-                $trendDao->setTruthDatasetId($truthDatasetId);
-            }
+            $trendDao->setTrendgroupId($trendGroupDao->getKey());
 
             // Our pgsql code can't handle ACTUAL booleans :deep_sigh:
             $trendDao->setKeyMetric('0');
@@ -253,7 +218,7 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
 
         /** @var Tracker_ProducerModel $producerModel */
         $producerModel = MidasLoader::loadModel('Producer', $this->moduleName);
-        $producerDao = $trendDao->getProducer();
+        $producerDao = $trendDao->getTrendgroup()->getProducer();
 
         return $producerModel->policyCheck($producerDao, $userDao, $policy);
     }

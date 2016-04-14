@@ -28,14 +28,71 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
     const SEC_IN_DAY = 86400;
 
     /**
+     * Associate the given submission and item.
+     *
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @param ItemDao $itemDao item DAO
+     * @param string $label label
+     * @param Tracker_TrendgroupDao $trendgroupDao trendgroup DAO
+     */
+    public function associateItem($submissionDao, $itemDao, $label, $trendgroupDao)
+    {
+        $data = array(
+            'submission_id' => $submissionDao->getKey(),
+            'item_id' => $itemDao->getKey(),
+            'label' => $label,
+            'trendgroup_id' => $trendgroupDao->getKey(),
+        );
+        $this->database->getDB()->insert('tracker_submission2item', $data);
+    }
+
+    /**
+     * Return the items associated with the given submission.
+     *
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @param Tracker_TrendgroupDao $trendgroupDao trendgroup DAO
+     * @return array array of associative arrays with keys "item" and "label"
+     */
+    public function getAssociatedItems($submissionDao, $trendgroupDao)
+    {
+        $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_submission2item')->where(
+            'submission_id = ?',
+            $submissionDao->getKey()
+        )->where(
+            'trendgroup_id = ?',
+            $trendgroupDao->getKey()
+        );
+        $rows = $this->database->fetchAll($sql);
+        $results = array();
+
+        /** @var ItemModel $itemModel */
+        $itemModel = MidasLoader::loadModel('Item');
+
+        /** @var Zend_Db_Table_Row_Abstract $row */
+        foreach ($rows as $row) {
+            $itemDao = $itemModel->load($row['item_id']);
+            $results[] = array('label' => $row['label'], 'item' => $itemDao);
+        }
+        usort(
+            $results,
+            function ($a, $b) {
+                return strcmp($a['label'], $b['label']);
+            }
+        );
+
+        return $results;
+    }
+
+    /**
      * Create a submission.
      *
      * @param Tracker_ProducerDao $producerDao the producer to which the submission was submitted
      * @param string $uuid the uuid of the submission
      * @param string $name the name of the submission (defaults to '')
-     * @return void
+     * @param array $params the parameters used to generate the submission (defaults to null)
+     * @return Tracker_SubmissionDao
      */
-    public function createSubmission($producerDao, $uuid, $name = '')
+    public function createSubmission($producerDao, $uuid, $name = '', $params = null)
     {
         $data = array(
             'producer_id' => $producerDao->getKey(),
@@ -43,6 +100,20 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
             'name' => $name,
         );
         $this->database->getDB()->insert('tracker_submission', $data);
+        $submissionDao = $this->getSubmission($uuid);
+        if (!empty($params) && is_array($params)) {
+            $paramModel = MidasLoader::loadModel('Param', $this->moduleName);
+            foreach ($params as $paramName => $paramValue) {
+                /** @var Tracker_ParamDao $paramDao */
+                $paramDao = MidasLoader::newDao('ParamDao', $this->moduleName);
+                $paramDao->setSubmissionId($submissionDao->getKey());
+                $paramDao->setParamName($paramName);
+                $paramDao->setParamValue($paramValue);
+                $paramModel->save($paramDao);
+            }
+        }
+
+        return $submissionDao;
     }
 
     /**
@@ -50,20 +121,22 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
      *
      * @param Tracker_SubmissionDao $submissionDao submission DAO
      * @param bool $key whether to only retrieve scalars of key trends
+     * @param bool|false|Tracker_TrendgroupDao $trendGroup dao of trend group to limit scalars
      * @return array scalar DAOs
+     * @throws Zend_Exception
      */
-    public function getScalars($submissionDao, $key = false)
+    public function getScalars($submissionDao, $key = false, $trendGroup = false)
     {
+        $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_scalar')->join(
+            'tracker_trend',
+            'tracker_scalar.trend_id = tracker_trend.trend_id',
+            array()
+        )->where('submission_id = ?', $submissionDao->getKey());
         if ($key) {
-            $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_scalar')->join(
-                'tracker_trend',
-                'tracker_scalar.trend_id = tracker_trend.trend_id',
-                array()
-            )->where('submission_id = ?', $submissionDao->getKey()
-            )->where('key_metric = ?', 1);
-        } else {
-            $sql = $this->database->select()->setIntegrityCheck(false)->from('tracker_scalar')
-                ->where('submission_id = ?', $submissionDao->getKey());
+            $sql = $sql->where('key_metric = ?', 1);
+        }
+        if ($trendGroup) {
+            $sql = $sql->where('trendgroup_id = ?', $trendGroup->getKey());
         }
 
         $scalarDaos = array();
@@ -72,6 +145,30 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
         /** @var Zend_Db_Table_Row_Abstract $row */
         foreach ($rows as $row) {
             $scalarDaos[] = $this->initDao('Scalar', $row, $this->moduleName);
+        }
+
+        return $scalarDaos;
+    }
+
+    /**
+     * Return the values (trend name, value, and unit in an array) from a given submission.
+     *
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @return array associative array with keys equal to the metric names
+     */
+    public function getValuesFromSubmission($submissionDao)
+    {
+        $sql = $this->database->select()->setIntegrityCheck(false)->from(array('s' => 'tracker_scalar'))->join(
+            array('t' => 'tracker_trend'),
+            's.trend_id = t.trend_id'
+        )->where('s.submission_id = ?', $submissionDao->getSubmissionId()
+        )->order('metric_name ASC');
+
+        $rows = $this->database->fetchAll($sql);
+        $scalarDaos = array();
+        /** @var Zend_Db_Table_Row_Abstract $row */
+        foreach ($rows as $row) {
+            $scalarDaos[$row['metric_name']] = array('value' => number_format((float) $row['value'], 4, '.', ''), 'unit' => $row['unit']);
         }
 
         return $scalarDaos;
@@ -174,15 +271,11 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
         $dayBeforeQueryTime = date('Y-m-d H:i:s', strtotime($queryTime) - self::SEC_IN_DAY);
         $sql = $this->database->select()->setIntegrityCheck(false)
             ->from('tracker_submission')
-            ->join(
-                'tracker_scalar',
-                'tracker_submission.submission_id = tracker_scalar.submission_id',
-                array())
-            ->where('tracker_submission.submit_time <= ?', $queryTime);
+            ->where('submit_time <= ?', $queryTime);
         if ($onlyOneDay) {
-            $sql = $sql->where('tracker_submission.submit_time > ?', $dayBeforeQueryTime);
+            $sql = $sql->where('submit_time > ?', $dayBeforeQueryTime);
         }
-        $sql = $sql->where('tracker_submission.producer_id = ?', $producerDao->getKey())
+        $sql = $sql->where('producer_id = ?', $producerDao->getKey())
             ->where('branch = ?', $branch)
             ->order('submit_time DESC')
             ->limit(1);
@@ -222,5 +315,39 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
         }
 
         return $trendDaos;
+    }
+
+    /**
+     * Return all distinct branch names from submissions.
+     *
+     * @return array branch names
+     */
+    public function getDistinctBranches()
+    {
+        $sql = $this->database->select()->setIntegrityCheck(false)->from(
+            array('s' => 'tracker_submission'),
+            'branch'
+        )->distinct();
+        $rows = $this->database->fetchAll($sql);
+        $branches = array();
+        /** @var Zend_Db_Table_Row_Abstract $row */
+        foreach ($rows as $row) {
+            $branches[] = $row['branch'];
+        }
+
+        return $branches;
+    }
+
+    /**
+     * Delete a given submission.
+     *
+     * @param Tracker_SubmissionDao $submissionDao
+     */
+    public function delete($submissionDao)
+    {
+        $this->database->getDB()->delete('tracker_submission2item', 'submission_id = '.$submissionDao->getKey());
+        $this->database->getDB()->delete('tracker_param', 'submission_id = '.$submissionDao->getKey());
+
+        parent::delete($submissionDao);
     }
 }

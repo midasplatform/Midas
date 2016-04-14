@@ -92,7 +92,7 @@ class Tracker_ProducerController extends Tracker_AppController
         }
 
         $this->view->producer = $producerDao;
-        $this->view->trendGroups = $this->Tracker_Trend->getTrendsGroupByDatasets($producerDao);
+        $this->view->trendGroups = $this->Tracker_Trend->getTrendsByGroup($producerDao);
         $this->view->isAdmin = $this->Tracker_Producer->policyCheck($producerDao, $this->userSession->Dao, MIDAS_POLICY_ADMIN);
         $this->view->json['tracker']['producer'] = $producerDao;
 

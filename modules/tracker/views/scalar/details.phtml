@@ -41,13 +41,13 @@
         <tr>
             <th>Submitted:</th>
             <td>
-                <span id="thisSubmitTime"><?php echo $this->escape($this->scalar->getSubmitTime()); ?></span>
+                <span id="thisSubmitTime"><?php echo $this->escape($this->submission->getSubmitTime()); ?></span>
                 <?php
                 if ($this->submittedBy) {
                     echo ' by <a href="'.$this->webroot.'/user/'.$this->escape($this->submittedBy->getKey(
                         )).'">'.$this->escape($this->submittedBy->getFullName()).'</a> ';
                 }
-                if (!$this->scalar->getOfficial()) {
+                if (!$this->submission->getOfficial()) {
                     echo '(unofficial)';
                 }
                 ?>
@@ -60,21 +60,21 @@
             </td>
         </tr>
         <?php
-        if ($this->scalar->getBranch()) {
+        if ($this->submission->getBranch()) {
             ?>
             <tr>
                 <th>Branch:</th>
-                <td><?php echo $this->escape($this->scalar->getBranch()); ?></td>
+                <td><?php echo $this->escape($this->submission->getBranch()); ?></td>
             </tr>
         <?php
         }
-        if ($this->scalar->getBuildResultsUrl()) {
+        if ($this->submission->getBuildResultsUrl()) {
             ?>
             <tr>
                 <th>Build Results:</th>
                 <td>
                     <a target="_blank"
-                       href="<?php echo $this->escape($this->scalar->getBuildResultsUrl()); ?>">Click here</a>
+                       href="<?php echo $this->escape($this->submission->getBuildResultsUrl()); ?>">Click here</a>
                 </td>
             </tr>
         <?php
@@ -89,7 +89,8 @@
         }
         $htmlArray = Zend_Registry::get('notifier')->callback(
             'CALLBACK_TRACKER_SCALAR_DETAIL_INFO',
-            array('scalar' => $this->scalar)
+            array('scalar' => $this->scalar,
+                  'submission' => $this->submission)
         );
 
         /** @var string $html */
@@ -142,27 +143,6 @@ if (count($this->extraParams)) {
         ?>
         </tbody>
     </table>
-</div>
-
-<div class="resultItems">
-    <div class="sectionDivider"><span class="sectionTitle">Result items</span>
-    </div>
-    <?php
-    /** @var array $result */
-    foreach ($this->resultItems as $result) {
-        /** @var ItemDao $itemDao */
-        $itemDao = $result['item'];
-        echo '<div class="resultItemContainer"><span class="resultItemLabel">'.$this->escape($result['label']).':</span> ';
-        echo '<a element="'.$this->escape($itemDao->getKey()).'" class="resultItemLink" href="'.$this->webroot.'/item/'.$this->escape($itemDao->getKey(
-            )).'" ';
-        echo 'thumbnail="'.$this->escape($itemDao->getThumbnailId()).'">'.$this->escape($itemDao->getName()).'</a>';
-        echo '</div>';
-    }
-    if (empty($this->resultItems)) {
-        echo '<span class="itemLinkNone">No result items submitted</span>';
-    }
-    ?>
-
 </div>
 
 <div class="bottomButtons">

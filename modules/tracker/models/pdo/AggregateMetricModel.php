@@ -90,13 +90,14 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
         // Get the list of relevant trend_ids.
         $sql = $this->database->select()->setIntegrityCheck(false)
             ->from('tracker_trend', array('trend_id'))
+            ->join('tracker_trendgroup', 'tracker_trendgroup.trendgroup_id=tracker_trend.trendgroup_id')
             ->where('key_metric = ?', 1)
             ->where('producer_id = ?', $aggregateMetricSpecDao->getProducerId())
             ->where('metric_name = ?', $metricName);
         $rows = $this->database->fetchAll($sql);
         if (count($rows) === 0) {
             return false;
-        };
+        }
         $trendIds = array();
         /** @var Zend_Db_Table_Row_Abstract $row */
         foreach ($rows as $row) {
@@ -105,14 +106,19 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
 
         // Get all the scalar values from these trends in the submission.
         $sql = $this->database->select()->setIntegrityCheck(false)
-            ->from('tracker_scalar', array('value'))
-            ->where('submission_id = ?', $submissionDao->getSubmissionId())
-            ->where('branch = ?', $aggregateMetricSpecDao->getBranch())
-            ->where('trend_id IN (?)', $trendIds);
+            ->from('tracker_scalar')
+            ->join(
+                'tracker_submission',
+                'tracker_scalar.submission_id = tracker_submission.submission_id',
+                array()
+            )
+            ->where('tracker_submission.submission_id = ?', $submissionDao->getKey())
+            ->where('tracker_submission.branch = ?', $aggregateMetricSpecDao->getBranch())
+            ->where('tracker_scalar.trend_id IN (?)', $trendIds);
         $rows = $this->database->fetchAll($sql);
         if (count($rows) === 0) {
             return false;
-        };
+        }
         $values = array();
         /** @var Zend_Db_Table_Row_Abstract $row */
         foreach ($rows as $row) {
@@ -304,7 +310,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
         $rows = $this->database->fetchAll($sql);
         if (count($rows) === 0) {
             return false;
-        };
+        }
         $aggregateMetricDaosBySubmissionId = array();
         /** @var Zend_Db_Table_Row_Abstract $row */
         foreach ($rows as $row) {
@@ -360,12 +366,10 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
             ->join(array('u' => 'tracker_submission'),
                    'am.submission_id = u.submission_id',
                    array())
-            // TODO Tracker 2.0 delete this join >>
             ->join(array('ams' => 'tracker_aggregate_metric_spec'),
                    'ams.aggregate_metric_spec_id = am.aggregate_metric_spec_id',
                    array())
-            // << TODO Tracker 2.0 delete this join
-            ->where('ams.branch = ?', $branch) // TODO Tracker 2.0 u.branch = ?
+            ->where('ams.branch = ?', $branch)
             ->where('u.producer_id = ?', $producerDao->getProducerId())
             ->where('u.submit_time > ?', $firstDate->format('Y-m-d H:i:s'))
             ->where('u.submit_time <= ?', $lastDate)
@@ -376,7 +380,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
         $rows = $this->database->fetchAll($sql);
         if (count($rows) === 0) {
             return array();
-        };
+        }
 
         $metricsSeries = array();
         /** @var Zend_Db_Table_Row_Abstract $row */

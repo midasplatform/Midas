@@ -18,12 +18,20 @@
  limitations under the License.
 =========================================================================*/
 
-/** Upgrade the tracker module to version 1.2.3. */
-class Tracker_Upgrade_1_2_3 extends MIDASUpgrade
+/**
+ * Upgrade the tracker module to version 2.0.0.
+ */
+class Tracker_Upgrade_2_0_0 extends MIDASUpgrade
 {
     /** Upgrade a MySQL database. */
     public function mysql()
     {
-        $this->db->query('ALTER TABLE `tracker_scalar` ADD COLUMN `reproduction_command` text;');
+        // THIS UPGRADE DOES NOTHING. TODO(cpatrick).
+        // ../mysql/upgrade_to_2.0.0.sql should be run after installing the
+        // four stored procedures (all in ../mysql/ and named the same):
+        //    create_submissions
+        //    migrate_params
+        //    migrate_items_to_submissions
+        //    scalar_to_submission
     }
 }
