@@ -30,15 +30,18 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/pro
     ?>
     <input type="hidden" id='aggregateMetricSpecEditId'/>
     <div id='aggregateMetricSpecList'>
-        <table id='aggregateMetricSpecListTable' class='actionTable'>
-            <thead>
-                <tr>
-                    <th><?php echo $this->producer->getDisplayName().' metrics'; ?></th>
-                    <th>Actions</th>
-                </tr>
+        <div id='aggregateMetricSpecContent'>
+            <table id='aggregateMetricSpecListTable' class='actionTable'>
+                <thead>
+                    <tr>
+                        <th><?php echo $this->producer->getDisplayName().' metrics'; ?></th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
                 <tbody>
                 </tbody>
-        </table>
+            </table>
+        </div>
     </div>
     <?php echo '<div id="addAggregateMetricSpec"><a class="actionLink aggregateMetricSpecAction" tip="Add an aggregate metric spec"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/add.png" /> Add aggregate metric spec</a>'; ?>
     <img id="aggregateMetricSpecDeleteLoading" class="loadingImg" alt="loading" style="display: none;" src="/core/public/images/icons/loading.gif" /></div>
@@ -104,6 +107,11 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/pro
             <input id="aggregateMetricSpecUpdate" class="aggregateMetricSpecEdit" style="display: none;" input type="button" value="Update" />
             <input id="aggregateMetricSpecCancel" type="button" value="Cancel" />
         </div>
+    </div>
+    <div id="amsDeleteConfirmSaveState" style='display: none;' class="saveState">
+        <img id="aggregateMetricDeleteLoading" class="loadingImg" alt="loading" style="display: none;" src="/core/public/images/icons/loading.gif" />
+        <input id="amsDeleteConfirmDelete" type="button" value="Confirm Delete" />
+        <input id="amsDeleteCancelDelete" type="button" value="Cancel" />
     </div>
     <div id='aggregateMetricUserAlerts' style='display: none;'>
         <div class='subsectionTitle'><span>Alerts for <label id='aggregateMetricUserAlertsSpecName'></label></span></div>
