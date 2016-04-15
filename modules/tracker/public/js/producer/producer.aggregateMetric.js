@@ -3,7 +3,7 @@
 /* global ajaxWebApi */
 /* global json */
 
-var midas = midas || {};
+    var midas = midas || {};
 
 $(document).ready(function () {
     'use strict';
@@ -162,20 +162,27 @@ $(document).ready(function () {
     function unhighlightActiveRow() {
         $('#aggregateMetricSpecListTable tbody tr').each(function (ind, elem) {
             $(this).removeClass('activeRow');
+            $(this).removeClass('activeDeleteRow');
         });
         $('#aggregateMetricSpecCreateEdit').hide();
         $('#aggregateMetricUserAlerts').hide();
+        $('#aggregateMetricDeleteLoading').hide();
+        $('#amsDeleteConfirmSaveState').hide();
     }
 
     /**
      * Highlight the row which houses the current action in the Aggregate Metric Spec table.
      * @param element actionLink the anchor element that was clicked.
      */
-    function activateRow(actionLink) {
+    function activateRow(actionLink, deleteRow) {
         var aggregateMetricSpecId = actionLink.data('aggregate_metric_spec_id');
         $('#aggregateMetricSpecEditId').val(aggregateMetricSpecId);
         unhighlightActiveRow();
-        actionLink.closest('tr').addClass('activeRow');
+        if (deleteRow) {
+            actionLink.closest('tr').addClass('activeDeleteRow');
+        } else {
+            actionLink.closest('tr').addClass('activeRow');
+        }
     }
 
     /**
@@ -222,18 +229,11 @@ $(document).ready(function () {
      * creation of new aggregate metric specs.
      */
     $('#aggregateMetricSpecListTable').on('click', 'a.removeAggregateMetricSpec', function(){
-        activateRow($(this));
-        var specName = $(this).closest('tr').find('td.specName').html();
-        var deleteConfirm = '<div id="amsDeleteConfirm" class="aggregateMetricSpecContent">';
-        deleteConfirm += '<div id="toDeleteSpecName">Delete '+specName+'</div>';
-        deleteConfirm += '</div>';
+        activateRow($(this), true);
         $('#amsDeleteConfirmSaveState').show();
-        $('#aggregateMetricSpecContent').prepend(deleteConfirm);
-        $('#amsDeleteConfirm').css("height", $('#aggregateMetricSpecContent').height());
-        $('#amsDeleteConfirm').css("width", $('#aggregateMetricSpecContent').width());
-
         var aggregateMetricSpecId = $(this).data('aggregate_metric_spec_id');
         var row = $(this).closest('tr');
+        // successCallback for delete ajax request.
         var sCb = function (data) {
             row.remove();
             $('#aggregateMetricDeleteLoading').hide();
@@ -242,9 +242,8 @@ $(document).ready(function () {
             addClassesToTableRows('aggregateMetricSpecListTable');
         };
 
-        /** Handler for Confirm delete action, deletes the Spec and removes the deletion warning. */
+        /** Handler for Confirm delete action, deletes the Spec. */
         $('input#amsDeleteConfirmDelete').off('click').on('click', function() {
-            $('#amsDeleteConfirm').remove();
             $('#amsDeleteConfirmSaveState input').prop('disabled', true);
             $('#aggregateMetricDeleteLoading').show();
             aggregatemetricspecRest('DELETE', aggregateMetricSpecId, null, sCb, null, null);
@@ -253,7 +252,7 @@ $(document).ready(function () {
 
     /** Handler for Cancel delete action, removes the deletion warning. */
     $('input#amsDeleteCancelDelete').on('click', function() {
-        $('#amsDeleteConfirm').remove();
+        unhighlightActiveRow();
         $('#amsDeleteConfirmSaveState').hide();
     });
 

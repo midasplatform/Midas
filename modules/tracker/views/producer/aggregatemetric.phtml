@@ -30,18 +30,16 @@ echo '<script type="text/javascript" src="'.$this->moduleWebroot.'/public/js/pro
     ?>
     <input type="hidden" id='aggregateMetricSpecEditId'/>
     <div id='aggregateMetricSpecList'>
-        <div id='aggregateMetricSpecContent'>
-            <table id='aggregateMetricSpecListTable' class='actionTable'>
-                <thead>
-                    <tr>
-                        <th><?php echo $this->producer->getDisplayName().' metrics'; ?></th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
+        <table id='aggregateMetricSpecListTable' class='actionTable'>
+            <thead>
+                <tr>
+                    <th><?php echo $this->producer->getDisplayName().' metrics'; ?></th>
+                    <th>Actions</th>
+                </tr>
+            <thead>
+            <tbody>
+            </tbody>
+        </table>
     </div>
     <?php echo '<div id="addAggregateMetricSpec"><a class="actionLink aggregateMetricSpecAction" tip="Add an aggregate metric spec"><img alt="" src="'.$this->coreWebroot.'/public/images/icons/add.png" /> Add aggregate metric spec</a>'; ?>
     <img id="aggregateMetricSpecDeleteLoading" class="loadingImg" alt="loading" style="display: none;" src="/core/public/images/icons/loading.gif" /></div>

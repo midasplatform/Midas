@@ -15,6 +15,11 @@ div#aggregateMetricSpecManage {
                 background-color: #c0d1fe !important;
             }
 
+            tr.activeDeleteRow {
+                border: 2px solid red;
+                background-color: #c0d1fe !important;
+            }
+
             tr.even {
                 background-color: #f4f4f4;
             }
@@ -68,28 +73,6 @@ div#aggregateMetricSpecManage {
     }
 
     div {
-        &#aggregateMetricSpecContent {
-            position: relative;
-        }
-        &#amsDeleteConfirm {
-            position: absolute;
-            z-index: 3;
-            border: 2px solid crimson;
-            background-color: #c0d1fe;
-
-            div#toDeleteSpecName {
-                font-weight: bold;
-                margin-top: 15px;
-                margin-bottom: 15px;
-                text-align: center;
-                height: 20%;
-            }
-            div#amsDeleteConfirmSaveState {
-                border: none;
-                width: 95%;
-                padding: 0px;
-            }
-        }
         &.subsectionTitle {
             border-top: 2px solid darkblue;
             margin-top: 15px;
@@ -117,6 +100,10 @@ div#aggregateMetricSpecManage {
                 cursor: pointer;
                 float: right;
                 margin-left: 10px;
+            }
+
+            input#amsDeleteConfirmDelete {
+                border: 1px solid red;
             }
 
             input:disabled {
