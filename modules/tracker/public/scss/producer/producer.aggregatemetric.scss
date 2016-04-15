@@ -1,232 +1,138 @@
 // Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
-a {
-    &.aggregateMetricSpecAction {
-        color: #56758b;
+div#aggregateMetricSpecManage {
+    table {
+        width: 100%;
 
-        &:hover {
-            background-color: #E5E5E5;
-            cursor: pointer;
-        }
-    }
-
-    &.alertedUsersAction {
-        color: #56758b;
-
-        &:hover {
-            background-color: #E5E5E5;
-            cursor: pointer;
-        }
-    }
-}
-
-div {
-    &#addAggregateMetricSpec {
-        margin-top: 10px;
-    }
-
-    &#aggregateMetricSpecList {
-        margin-top: 10px;
-    }
-
-    &.aggregateMetricSpecCreate {
-        border-top: 2px solid darkblue !important;
-    }
-
-    &.aggregateMetricSpecEdit {
-        border-top: 2px solid darkblue !important;
-    }
-
-    &#aggregateMetricSpecEditWarning {
-        padding-top: 10px;
-        padding-bottom: 10px;
-        color: orange;
-    }
-
-    &#aggregateMetricUserAlerts {
-        border-top: 2px solid darkblue;
-        color: #555;
-        font-size: 13px;
-        margin-top: 15px;
-        margin-bottom: 10px;
-        padding-top: 10px;
-        text-align: center;
-
-        div#aggregateMetricUserAlertsThreshold {
+        &.actionTable {
+            table-layout: fixed;
+            border: 2px solid #ddd;
             margin-top: 15px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
 
-            table#aggregateMetricUserAlertsThresholdDefinition {
-                margin-top: 10px;
+            tr.activeRow {
+                border: 2px solid darkblue;
+                background-color: #c0d1fe !important;
+            }
 
-                td:first-of-type {
-                    text-align: left;
+            tr.activeDeleteRow {
+                border: 2px solid red;
+                background-color: #c0d1fe !important;
+            }
+
+            tr.even {
+                background-color: #f4f4f4;
+            }
+
+            th {
+                border-bottom: solid 1px black;
+
+                &:last-of-type {
+                    text-align: center;
+                    border-left: dotted 1px black;
+                    width: 30%;
+                }
+            }
+
+            td {
+                &:last-of-type {
+                    border-left: dotted 1px black;
+                }
+            }
+
+            span.actionsList {
+                display: flex;
+                justify-content: space-around;
+
+                a:first-of-type {
+                    padding-left: 5px;
                 }
             }
         }
-
-        textarea#aggregateMetricUserAlertsSpec {
-            margin-top: 10px;
-            width: 100%;
-        }
-
-        div#addAggregateMetricSpecAlertUser {
-            margin-top: 15px;
-            text-align: center;
-        }
-
-        div.alertUserSearch {
-            margin-top: 10px;
-
+        &.fieldTable {
             input {
+                width: 100%;
+            }
+            select {
                 width: 100%;
             }
         }
     }
 
-    &.aggregateMetricSectionTitle {
-        border-top: 1px solid #d7d7d7;
-        color: #555;
-        font-size: 13px;
-        margin-top: 15px;
-        margin-bottom: 10px;
-        padding-top: 10px;
-        text-align: center;
-    }
+    a.actionLink {
+        color: #56758b;
 
-
-    &.resultingMetricText {
-        color: #555;
-        font-size: 12px;
-        margin-top: 10px;
-        text-align: center;
-    }
-
-    &#aggregateMetricSpecUserAlertsSaveState {
-        margin-top: 20px;
-
-        input {
-            background: #f6f9fe;
-            border: 1px solid #808080;
-            color: #2e6e9e;
+        &:hover {
+            background-color: #E5E5E5;
             cursor: pointer;
-            float: right;
-            margin-left: 10px;
         }
     }
 
-    &#aggregateMetricSpecSaveState {
-        margin-top: 20px;
-
-        input {
-            background: #f6f9fe;
-            border: 1px solid #808080;
-            color: #2e6e9e;
-            cursor: pointer;
-            float: right;
-            margin-left: 10px;
-        }
-
-        input:disabled {
-            color: #c0c0c0;
-            cursor: not-allowed;
-        }
-    }
-
-
-
-}
-
-label {
-    &#aggregateMetricSpecValidationError {
+    label.validationError {
         color: crimson;
     }
-}
 
-img {
-    &#aggregateMetricSpecSaveLoading {
-        float: left;
-        margin-right: 15px;
-    }
-
-    &#aggregateMetricSpecDeleteLoading {
-        float: right;
-        margin-right: 40px;
-    }
-
-    &#aggregateMetricSpecAlertsLoading {
-        float: left;
-    }
-}
-
-table {
-
-    &#aggregateMetricSpecAlertedUsers {
-        table-layout: fixed;
-        border: 2px solid #ddd;
-        width: 100%;
-
-        th {
-            border-bottom: solid 1px black;
+    div {
+        &.subsectionTitle {
+            border-top: 2px solid darkblue;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            padding-top: 10px;
+            color: #555;
+            font-size: 13px;
             text-align: center;
+            font-weight: bold;
+        }
+        &.subsubsectionTitle {
+            color: #555;
+            font-size: 12px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        &.saveState {
+            margin-top: 15px;
 
-            &:first-of-type {
-                width: 70%;
-                border-right: dotted 1px black;
+            input {
+                background: #f6f9fe;
+                border: 1px solid #808080;
+                color: #2e6e9e;
+                cursor: pointer;
+                float: right;
+                margin-left: 10px;
+            }
+
+            input#amsDeleteConfirmDelete {
+                border: 1px solid red;
+            }
+
+            input:disabled {
+                color: #c0c0c0;
+                cursor: not-allowed;
             }
         }
-
-        tr.even {
-            background-color: #f4f4f4;
-        }
-
-        td.userName {
-            border-right: dotted 1px black;
-            text-align: left;
-        }
-
-        tr.activeRow {
-            border: 2px solid darkblue;
-            background-color: #c0d1fe;
+        &#aggregateMetricSpecEditWarning {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            color: orange;
         }
     }
 
+    img.loadingImg {
+        float: left;
 
-    &#aggregateMetricSpecListTable {
-        table-layout: fixed;
-        border: 2px solid #ddd;
+        &#aggregateMetricSpecDeleteLoading {
+            float: right;
+            margin-right: 40px;
+        }
+    }
+
+    textarea#aggregateMetricUserAlertsSpec {
+        margin-top: 10px;
         width: 100%;
+    }
 
-        th {
-            border-bottom: solid 1px black;
-            text-align: center;
-
-            &:first-of-type {
-                width: 70%;
-                border-right: dotted 1px black;
-            }
-        }
-
-        td.specName {
-            border-right: dotted 1px black;
-        }
-
-        tr.even {
-            background-color: #f4f4f4;
-        }
-
-        tr.activeRow {
-            border: 2px solid darkblue;
-            background-color: #c0d1fe;
-        }
-
-        span.actionsList {
-            display: flex;
-            justify-content: space-around;
-
-            a:first-of-type {
-                padding-left: 5px;
-            }
-        }
+    input#addAlertUserSearch {
+        width: 100%
     }
 }

@@ -320,24 +320,17 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($optimalDistance55thPercentileAMSDao, $submission1Dao);
         $this->assertEquals($aggregateMetricDao, false);
 
-        // AMSes that match branch 'test', with only one scalar.
-
+        // Submissions tied to branch 'test', with only one scalar.
         /** @var Tracker_SubmissionDao $submission8Dao */
         $submission8Dao = $submissionModel->load(8);
 
-        /** @var Tracker_AggregateMetricSpecDao $greedyErrorTest0thPercentileAMSDao */
-        $greedyErrorTest0thPercentileAMSDao = $aggregateMetricSpecModel->load(8);
-        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyErrorTest0thPercentileAMSDao, $submission8Dao);
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyError0thPercentileAMSDao, $submission8Dao);
         $this->assertEquals($aggregateMetricDao->getValue(), 654.0);
 
-        /** @var Tracker_AggregateMetricSpecDao $greedyErrorTest55thPercentileAMSDao */
-        $greedyErrorTest55thPercentileAMSDao = $aggregateMetricSpecModel->load(9);
-        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyErrorTest55thPercentileAMSDao, $submission8Dao);
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyError55thPercentileAMSDao, $submission8Dao);
         $this->assertEquals($aggregateMetricDao->getValue(), 654.0);
 
-        /** @var Tracker_AggregateMetricSpecDao $greedyErrorTest99thPercentileAMSDao */
-        $greedyErrorTest99thPercentileAMSDao = $aggregateMetricSpecModel->load(10);
-        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyErrorTest99thPercentileAMSDao, $submission8Dao);
+        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($greedyError95thPercentileAMSDao, $submission8Dao);
         $this->assertEquals($aggregateMetricDao->getValue(), 654.0);
 
         // AMS that doesn't match any trends.
@@ -346,13 +339,6 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         /** @var Tracker_AggregateMetricSpecDao $noopDistance95thPercentileAMSDao */
         $noopDistance95thPercentileAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $spec);
         $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($noopDistance95thPercentileAMSDao, $submission1Dao);
-        $this->assertEquals($aggregateMetricDao, false);
-
-        // AMS that doesn't match any branches.
-        /** @var Tracker_AggregateMetricSpecDao $noopDistance95thPercentileTestAMSDao */
-        $branch = 'test';
-        $noopDistance95thPercentileTestAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $spec, $branch);
-        $aggregateMetricDao = $aggregateMetricModel->computeAggregateMetricForSubmission($noopDistance95thPercentileTestAMSDao, $submission1Dao);
         $this->assertEquals($aggregateMetricDao, false);
 
         // AMS with missing percentile param.
@@ -480,13 +466,6 @@ class Tracker_AggregateMetricModelTest extends DatabaseTestCase
         /** @var Tracker_AggregateMetricSpecDao $noopDistance95thPercentileAMSDao */
         $noopDistance95thPercentileAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $spec);
         $aggregateMetricDao = $aggregateMetricModel->updateAggregateMetricForSubmission($noopDistance95thPercentileAMSDao, $submission1Dao);
-        $this->assertEquals($aggregateMetricDao, false);
-
-        // AMS that doesn't match any branches.
-        /** @var Tracker_AggregateMetricSpecDao $noopDistance95thPercentileTestAMSDao */
-        $branch = 'test';
-        $noopDistance95thPercentileTestAMSDao = $aggregateMetricSpecModel->createAggregateMetricSpec($producer100Dao, $name, $spec, $branch);
-        $aggregateMetricDao = $aggregateMetricModel->updateAggregateMetricForSubmission($noopDistance95thPercentileTestAMSDao, $submission1Dao);
         $this->assertEquals($aggregateMetricDao, false);
 
         // AMS with missing percentile param.

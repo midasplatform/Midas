@@ -113,7 +113,6 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
                 array()
             )
             ->where('tracker_submission.submission_id = ?', $submissionDao->getKey())
-            ->where('tracker_submission.branch = ?', $aggregateMetricSpecDao->getBranch())
             ->where('tracker_scalar.trend_id IN (?)', $trendIds);
         $rows = $this->database->fetchAll($sql);
         if (count($rows) === 0) {
@@ -369,7 +368,7 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
             ->join(array('ams' => 'tracker_aggregate_metric_spec'),
                    'ams.aggregate_metric_spec_id = am.aggregate_metric_spec_id',
                    array())
-            ->where('ams.branch = ?', $branch)
+            ->where('u.branch = ?', $branch)
             ->where('u.producer_id = ?', $producerDao->getProducerId())
             ->where('u.submit_time > ?', $firstDate->format('Y-m-d H:i:s'))
             ->where('u.submit_time <= ?', $lastDate)

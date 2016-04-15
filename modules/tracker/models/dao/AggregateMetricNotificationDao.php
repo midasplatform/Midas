@@ -19,29 +19,23 @@
 =========================================================================*/
 
 /**
- * AggregateMetricSpec DAO for the tracker module.
+ * AggregateMetricNotification DAO for the tracker module.
  *
- * @method int getAggregateMetricSpecId()
- * @method void setAggregateMetricSpecId(int $aggregateMetricSpecId)
- * @method int getProducerId()
- * @method void setProducerId(int $producerId)
- * @method float getName()
- * @method void setName(float $name)
- * @method float getDescription()
- * @method void setDescription(float $description)
- * @method float getSpec()
- * @method void setSpec(float $spec)
+ * @method int getAggregateMetricNotificationId()
+ * @method void setAggregateMetricNotificationId(int $aggregateMetricNotificationId)
+ * @method float getBranch()
+ * @method void setBranch(string $branch)
  * @method float getValue()
  * @method void setValue(float $value)
  * @method float getComparison()
- * @method void setComparison(float $comparison)
- * @method Tracker_ProducerDao getProducer()
- * @method void setProducer(Tracker_ProducerDao $producerDao)
+ * @method void setComparison(string $comparison)
+ * @method Tracker_AggregateMetricSpecDao getAggregateMetricSpec()
+ * @method void setAggregateMetricSpec(Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao)
  */
-class Tracker_AggregateMetricSpecDao extends Tracker_AppDao
+class Tracker_AggregateMetricNotificationDao extends Tracker_AppDao
 {
     /** @var string */
-    public $_model = 'AggregateMetricSpec';
+    public $_model = 'AggregateMetricNotification';
 
     /** @var string */
     public $_module = 'tracker';

@@ -61,9 +61,6 @@ class Tracker_ApiAggregatemetricspecComponentTest extends RestCallMethodsTestCas
         $specDao = $aggregateMetricSpecModel->initDao('AggregateMetricSpec', json_decode(json_encode($resp['body']), true), $this->moduleName);
 
         $this->assertEquals($specDao->getProducerId(), '100');
-        $this->assertEquals($specDao->getComparison(), '!=');
-        $this->assertEquals($specDao->getValue(), '1.0');
-        $this->assertEquals($specDao->getBranch(), 'master');
         $this->assertEquals($specDao->getName(), '95th Percentile Greedy error');
         $this->assertEquals($specDao->getDescription(), '95th Percentile Greedy error');
         $this->assertEquals($specDao->getSpec(), "percentile('Greedy error', 95)");
@@ -84,11 +81,8 @@ class Tracker_ApiAggregatemetricspecComponentTest extends RestCallMethodsTestCas
         $restParams = array(
             'token' => $token,
             'producer_id' => 100,
-            'branch' => 'newbranch',
             'name' => 'POST 23 percentile',
             'description' => 'opaque',
-            'value' => '23',
-            'comparison' => '==',
             'spec' => "percentile('POST', 23)",
         );
 
@@ -103,9 +97,6 @@ class Tracker_ApiAggregatemetricspecComponentTest extends RestCallMethodsTestCas
 
         // Test the result of the API call.
         $this->assertEquals($specDao->getProducerId(), $restParams['producer_id']);
-        $this->assertEquals($specDao->getComparison(), $restParams['comparison']);
-        $this->assertEquals($specDao->getValue(), $restParams['value']);
-        $this->assertEquals($specDao->getBranch(), $restParams['branch']);
         $this->assertEquals($specDao->getName(), $restParams['name']);
         $this->assertEquals($specDao->getDescription(), $restParams['description']);
         $this->assertEquals($specDao->getSpec(), $restParams['spec']);
@@ -114,9 +105,6 @@ class Tracker_ApiAggregatemetricspecComponentTest extends RestCallMethodsTestCas
         $specDao = $aggregateMetricSpecModel->load($specDao->getAggregateMetricSpecId());
 
         $this->assertEquals($specDao->getProducerId(), $restParams['producer_id']);
-        $this->assertEquals($specDao->getComparison(), $restParams['comparison']);
-        $this->assertEquals($specDao->getValue(), $restParams['value']);
-        $this->assertEquals($specDao->getBranch(), $restParams['branch']);
         $this->assertEquals($specDao->getName(), $restParams['name']);
         $this->assertEquals($specDao->getDescription(), $restParams['description']);
         $this->assertEquals($specDao->getSpec(), $restParams['spec']);
@@ -137,11 +125,8 @@ class Tracker_ApiAggregatemetricspecComponentTest extends RestCallMethodsTestCas
         $restParams = array(
             'token' => $token,
             'producer_id' => 200,
-            'branch' => 'splitter',
             'name' => 'NewAlgo 23 percentile',
             'description' => 'vivid',
-            'value' => '23',
-            // Don't change comparison, to test that an unset value won't change.
             'spec' => "percentile('NewAlgo', 23)",
         );
 
@@ -156,9 +141,6 @@ class Tracker_ApiAggregatemetricspecComponentTest extends RestCallMethodsTestCas
 
         // Test the result of the API call.
         $this->assertEquals($specDao->getProducerId(), $restParams['producer_id']);
-        $this->assertEquals($specDao->getComparison(), '!=');
-        $this->assertEquals($specDao->getValue(), $restParams['value']);
-        $this->assertEquals($specDao->getBranch(), $restParams['branch']);
         $this->assertEquals($specDao->getName(), $restParams['name']);
         $this->assertEquals($specDao->getDescription(), $restParams['description']);
         $this->assertEquals($specDao->getSpec(), $restParams['spec']);
@@ -167,9 +149,6 @@ class Tracker_ApiAggregatemetricspecComponentTest extends RestCallMethodsTestCas
         $specDao = $aggregateMetricSpecModel->load(1);
 
         $this->assertEquals($specDao->getProducerId(), $restParams['producer_id']);
-        $this->assertEquals($specDao->getComparison(), '!=');
-        $this->assertEquals($specDao->getValue(), $restParams['value']);
-        $this->assertEquals($specDao->getBranch(), $restParams['branch']);
         $this->assertEquals($specDao->getName(), $restParams['name']);
         $this->assertEquals($specDao->getDescription(), $restParams['description']);
         $this->assertEquals($specDao->getSpec(), $restParams['spec']);
