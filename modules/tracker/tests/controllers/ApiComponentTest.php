@@ -708,7 +708,7 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
      *
      * @throws Zend_Exception
      */
-    function testSubmissionProducerCreation()
+    public function testSubmissionProducerCreation()
     {
         /** @var UuidComponent $uuidComponent */
         $uuidComponent = MidasLoader::loadComponent('Uuid');

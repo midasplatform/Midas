@@ -166,7 +166,6 @@ class Tracker_ApisubmissionComponent extends AppComponent
                           'Only authenticated users can create submissions.');
         $user = $apiHelperComponent->getUser($args);
 
-
         /** @var CommunityDao $community */
         $community = $communityModel->load($args['communityId']);
         if (!$community || !$communityModel->policyCheck(
