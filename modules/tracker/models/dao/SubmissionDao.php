@@ -23,6 +23,8 @@
  *
  * @method int getSubmissionId()
  * @method void setSubmissionId(int $submissionId)
+ * @method int getProducerId()
+ * @method void setProducerId(int $producerId)
  * @method int getUserId()
  * @method void setUserId(int $userId)
  * @method string getName()

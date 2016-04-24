@@ -147,21 +147,43 @@ class Tracker_ApisubmissionComponent extends AppComponent
      */
     public function post($args)
     {
-        /** @var ApihelperComponent $apihelperComponent */
-        $apihelperComponent = MidasLoader::loadComponent('Apihelper');
-        $apihelperComponent->requirePolicyScopes(
+        /** @var ApihelperComponent $apiHelperComponent */
+        $apiHelperComponent = MidasLoader::loadComponent('Apihelper');
+
+        /** @var CommunityModel $communityModel */
+        $communityModel = MidasLoader::loadModel('Community');
+        /** @var Tracker_SubmissionModel $submissionModel */
+        $submissionModel = MidasLoader::loadModel('Submission',
+            $this->moduleName);
+        /** @var Tracker_ProducerModel $producerModel */
+        $producerModel = MidasLoader::loadModel('Producer', $this->moduleName);
+
+        $apiHelperComponent->requirePolicyScopes(
             array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
-        $apihelperComponent->validateParams($args, array('communityId', 'producerDisplayName', 'producerRevision'));
+        $apiHelperComponent->validateParams($args, array('communityId', 'producerDisplayName', 'producerRevision'));
 
         $this->_checkUser($args,
                           'Only authenticated users can create submissions.');
+        $user = $apiHelperComponent->getUser($args);
 
-        /** @var Tracker_SubmissionModel $submissionModel */
-        $submissionModel = MidasLoader::loadModel('Submission',
-                                                  $this->moduleName);
 
-        /** @var Tracker_ProducerModel $producerModel */
-        $producerModel = MidasLoader::loadModel('Producer', $this->moduleName);
+        /** @var CommunityDao $community */
+        $community = $communityModel->load($args['communityId']);
+        if (!$community || !$communityModel->policyCheck(
+                $community,
+                $user,
+                MIDAS_POLICY_WRITE
+            )
+        ) {
+            throw new Exception('Write permission required on community', 403);
+        }
+
+        $producerDisplayName = trim($args['producerDisplayName']);
+        if ($producerDisplayName == '') {
+            throw new Exception('Producer display name must not be empty', -1);
+        }
+
+        $producer = $producerModel->createIfNeeded($community->getKey(), $producerDisplayName);
 
         if (!isset($args['uuid'])) {
             /** @var UuidComponent $uuidComponent */
@@ -185,12 +207,8 @@ class Tracker_ApisubmissionComponent extends AppComponent
         $submitTime = date('Y-m-d H:i:s', $submitTime);
         $args['submit_time'] = $submitTime;
         $args['producer_revision'] = trim($args['producerRevision']);
-        /** @var Tracker_ProducerDao $producerDao */
-        $producerDao = $producerModel->getByCommunityIdAndName(
-            $args['communityId'],
-            $args['producerDisplayName']
-        );
-        $args['producer_id'] = $producerDao->getKey();
+
+        $args['producer_id'] = $producer->getKey();
 
         // Remove params from the submission args for later insertion in param table
         if (isset($args['params']) && !is_null($args['params'])) {

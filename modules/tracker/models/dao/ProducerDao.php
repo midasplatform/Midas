@@ -37,8 +37,8 @@
  * @method void setDescription(string $description)
  * @method CommunityDao getCommunity()
  * @method void setCommunity(CommunityDao $communityDao)
- * @method array getTrends()
- * @method void setTrends(array $trendDaos)
+ * @method array getTrendgroups()
+ * @method void setTrendgroups(array $trendgroupDaos)
  */
 class Tracker_ProducerDao extends Tracker_AppDao
 {
