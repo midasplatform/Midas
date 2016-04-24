@@ -72,7 +72,7 @@ abstract class Tracker_TrendgroupModelBase extends Tracker_AppModel
     }
 
     /**
-     * Delete the trend group and all of its subordinate trends
+     * Delete the trend group and all of its subordinate trends.
      *
      * @param Tracker_TrendgroupDao $dao
      */
