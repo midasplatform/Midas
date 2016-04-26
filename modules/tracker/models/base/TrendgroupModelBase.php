@@ -72,6 +72,25 @@ abstract class Tracker_TrendgroupModelBase extends Tracker_AppModel
     }
 
     /**
+     * Delete the trend group and all of its subordinate trends.
+     *
+     * @param Tracker_TrendgroupDao $dao
+     */
+    public function delete($dao)
+    {
+        /** @var Tracker_TrendModel $trendModel */
+        $trendModel = MidasLoader::loadModel('Trend', $this->moduleName);
+        $trends = $dao->getTrends();
+
+        /** @var Tracker_TrendDao $trend */
+        foreach ($trends as $trend) {
+            $trendModel->delete($trend);
+        }
+
+        parent::delete($dao);
+    }
+
+    /**
      * Return the trendgroup DAO that matches the given producer id and associated item if the trendgroup exists.
      * Otherwise, create the trend DAO.
      *

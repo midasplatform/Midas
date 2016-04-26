@@ -125,7 +125,9 @@ class Tracker_ApiComponent extends AppComponent
     }
 
     /**
-     * Create a new scalar data point (must have write access to the community).
+     * Create a new scalar data point (must have write access to the community),
+     * creating a producer along the way if the requested producer does not
+     * already exist.
      *
      * @param communityId The id of the community that owns the producer
      * @param producerDisplayName The display name of the producer
@@ -305,19 +307,22 @@ class Tracker_ApiComponent extends AppComponent
     }
 
     /**
-     * Create a new submission.
+     * Create a new submission (must have write access to the community),
+     * creating a producer along the way if the requested producer does not
+     * already exist.
      *
+     * @param communityId The community attached to the producer
+     * @param producerDisplayName Displayed name of the producer
      * @param producerRevision The repository revision of the producer that produced this value
-     * @param submitTime The submit timestamp. Must be parseable with PHP strtotime().
      * @param uuid (Optional) A unique identifier for the submission. If none is passed, one will be generated.
      * @param name (Optional) A name for the submission
-     * @param buildResultsUrl (Optional) The URL where build results can be viewed
-     * @param extraUrls (Optional) JSON list of additional links
-     * @param params (Optional) JSON object of arbitrary key/value pairs to display
+     * @param submitTime (Optional) The submit timestamp. Must be parseable with PHP strtotime()
      * @param branch (Optional) The branch name within the source repository
-     * @param silent (Optional) If set, do not perform threshold-based email notifications for this scalar
-     * @param unofficial (Optional) If passed, creates an unofficial scalar visible only to the user performing the submission
+     * @param buildResultsUrl (Optional) The URL where build results can be viewed
+     * @param params (Optional) JSON object of arbitrary key/value pairs to display
+     * @param extraUrls (Optional) JSON list of additional links
      * @param reproductionCommand (Optional) If passed, the command to produce this scalar
+     *
      * @return The submission DAO that was created
      * @throws Exception
      */

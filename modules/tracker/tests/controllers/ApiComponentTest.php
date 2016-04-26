@@ -702,4 +702,49 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $notifiedUsers = $notifications[0]->users;
         $this->assertEquals(0, count($notifiedUsers));
     }
+
+    /**
+     * Test that submissions to a producer that does not yet exist will create a producer.
+     *
+     * @throws Zend_Exception
+     */
+    public function testSubmissionProducerCreation()
+    {
+        /** @var UuidComponent $uuidComponent */
+        $uuidComponent = MidasLoader::loadComponent('Uuid');
+        $uuid = $uuidComponent->generate();
+
+        /** @var Tracker_ProducerModel $producerModel */
+        $producerModel = MidasLoader::loadModel('Producer', 'tracker');
+        /** @var Tracker_SubmissionModel $submissionModel */
+        $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
+
+        $token = $this->_loginAsAdministrator();
+
+        $testName = 'Brand new producer';
+
+        $shouldNotBeAProducer = $producerModel->getByCommunityIdAndName(2000, $testName);
+        $this->assertFalse($shouldNotBeAProducer);
+
+        $this->resetAll();
+        $this->params['method'] = 'midas.tracker.submission.add';
+        $this->params['token'] = $token;
+        $this->params['communityId'] = '2000';
+        $this->params['producerDisplayName'] = $testName;
+        $this->params['producerRevision'] = 'deadbeef';
+        $this->params['submitTime'] = 'now';
+        $this->params['uuid'] = $uuid;
+        $res = $this->_callJsonApi();
+
+        /** @var Tracker_SubmissionDao $submission */
+        $submission = $submissionModel->initDao('Submission',
+            json_decode(json_encode($res->data), true), $this->moduleName);
+        /** @var Tracker_ProducerDao $producer */
+        $producer = $producerModel->getByCommunityIdAndName(2000, $testName);
+
+        $this->assertEquals($submission->getProducerId(), $producer->getKey());
+
+        $producerModel->delete($producer);
+        $submissionModel->delete($submission);
+    }
 }

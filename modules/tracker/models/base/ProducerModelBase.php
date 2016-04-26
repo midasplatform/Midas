@@ -42,9 +42,9 @@ abstract class Tracker_ProducerModelBase extends Tracker_AppModel
                 'parent_column' => 'community_id',
                 'child_column' => 'community_id',
             ),
-            'trends' => array(
+            'trendgroups' => array(
                 'type' => MIDAS_ONE_TO_MANY,
-                'model' => 'Trend',
+                'model' => 'Trendgroup',
                 'module' => $this->moduleName,
                 'parent_column' => 'producer_id',
                 'child_column' => 'producer_id',
@@ -106,13 +106,13 @@ abstract class Tracker_ProducerModelBase extends Tracker_AppModel
      */
     public function delete($producerDao)
     {
-        /** @var Tracker_TrendModel $trendModel */
-        $trendModel = MidasLoader::loadModel('Trend', $this->moduleName);
-        $trendDaos = $producerDao->getTrends();
+        /** @var Tracker_TrendgroupModel $trendgroupModel */
+        $trendgroupModel = MidasLoader::loadModel('Trendgroup', $this->moduleName);
+        $trendgroupDaos = $producerDao->getTrendgroups();
 
-        /** @var Tracker_TrendDao $trendDao */
-        foreach ($trendDaos as $trendDao) {
-            $trendModel->delete($trendDao);
+        /** @var Tracker_TrendgroupDao $trendgroupDao */
+        foreach ($trendgroupDaos as $trendgroupDao) {
+            $trendgroupModel->delete($trendgroupDao);
         }
 
         parent::delete($producerDao);
