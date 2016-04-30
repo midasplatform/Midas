@@ -35,8 +35,10 @@ abstract class Tracker_AggregateMetricSpecModelBase extends Tracker_AppModel
             'name' => array('type' => MIDAS_DATA),
             'description' => array('type' => MIDAS_DATA),
             'spec' => array('type' => MIDAS_DATA),
-            'value' => array('type' => MIDAS_DATA),
-            'comparison' => array('type' => MIDAS_DATA),
+            'abbreviation' => array('type' => MIDAS_DATA),
+            'warning' => array('type' => MIDAS_DATA),
+            'fail' => array('type' => MIDAS_DATA),
+            'max' => array('type' => MIDAS_DATA),
             'producer' => array(
                 'type' => MIDAS_MANY_TO_ONE,
                 'model' => 'Producer',
