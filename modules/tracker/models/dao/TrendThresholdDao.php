@@ -37,7 +37,7 @@
  * @method void setMax(float $max)
  * @method Tracker_ProducerDao getProducer()
  * @method void setProducer(Tracker_ProducerDao $producerDao)
-  */
+ */
 class Tracker_TrendThresholdDao extends Tracker_AppDao
 {
     /** @var string */
