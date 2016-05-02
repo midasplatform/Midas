@@ -43,7 +43,7 @@
   when: ansible_pkg_mgr == 'yum'
 
 - name: pip install
-  pip: name={{ item }} virtualenv=/vagrant/env state=present
+  pip: name={{ item }} virtualenv=/home/vagrant/env state=present
   with_items:
     - mkdocs
     - pydas
