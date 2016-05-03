@@ -19,18 +19,14 @@
 =========================================================================*/
 
 /**
- * AggregateMetricSpec DAO for the tracker module.
+ * Trend Threshold DAO for the tracker module.
  *
- * @method int getAggregateMetricSpecId()
- * @method void setAggregateMetricSpecId(int $aggregateMetricSpecId)
+ * @method int getTrendThresholdId()
+ * @method void setTrendThresholdId(int $trendThresholdId)
  * @method int getProducerId()
  * @method void setProducerId(int $producerId)
- * @method string getName()
- * @method void setName(string $name)
- * @method string getDescription()
- * @method void setDescription(string $description)
- * @method string getSpec()
- * @method void setSpec(string $spec)
+ * @method string getMetricName()
+ * @method void setMetricName(string $metricName)
  * @method string getAbbreviation()
  * @method void setAbbreviation(string $abbreviation)
  * @method float getWarning()
@@ -42,10 +38,10 @@
  * @method Tracker_ProducerDao getProducer()
  * @method void setProducer(Tracker_ProducerDao $producerDao)
  */
-class Tracker_AggregateMetricSpecDao extends Tracker_AppDao
+class Tracker_TrendThresholdDao extends Tracker_AppDao
 {
     /** @var string */
-    public $_model = 'AggregateMetricSpec';
+    public $_model = 'TrendThreshold';
 
     /** @var string */
     public $_module = 'tracker';
