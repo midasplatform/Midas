@@ -185,6 +185,7 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $this->params['communityId'] = '2000';
         $this->params['producerDisplayName'] = 'Test Producer';
         $this->params['producerRevision'] = 'deadbeef';
+        $this->params['branch'] = 'master';
         $this->params['submitTime'] = 'now';
         $this->params['uuid'] = $uuid;
         if ($params !== false) {
@@ -732,6 +733,7 @@ class Tracker_ApiComponentTest extends Api_CallMethodsTestCase
         $this->params['communityId'] = '2000';
         $this->params['producerDisplayName'] = $testName;
         $this->params['producerRevision'] = 'deadbeef';
+        $this->params['branch'] = 'master';
         $this->params['submitTime'] = 'now';
         $this->params['uuid'] = $uuid;
         $res = $this->_callJsonApi();
