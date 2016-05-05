@@ -314,10 +314,10 @@ class Tracker_ApiComponent extends AppComponent
      * @param communityId The community attached to the producer
      * @param producerDisplayName Displayed name of the producer
      * @param producerRevision The repository revision of the producer that produced this value
+     * @param branch The branch name within the source repository
      * @param uuid (Optional) A unique identifier for the submission. If none is passed, one will be generated.
      * @param name (Optional) A name for the submission
      * @param submitTime (Optional) The submit timestamp. Must be parseable with PHP strtotime()
-     * @param branch (Optional) The branch name within the source repository
      * @param buildResultsUrl (Optional) The URL where build results can be viewed
      * @param params (Optional) JSON object of arbitrary key/value pairs to display
      * @param extraUrls (Optional) JSON list of additional links

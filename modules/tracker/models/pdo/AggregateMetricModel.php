@@ -48,28 +48,6 @@ class Tracker_AggregateMetricModel extends Tracker_AggregateMetricModelBase
     }
 
     /**
-     * Parse a spec for computing aggregate metrics.
-     *
-     * @param string spec the spec representing how to compute the aggregate metric
-     * @return false | array the properties of the spec, parsed and separated
-     */
-    protected function parseSpec($spec)
-    {
-        // Expect spec like "percentile('Greedy max distance', 95)"
-        preg_match("/(\w+)\((.*)\)/", $spec, $matches);
-        $aggregationMethod = $matches[1];
-        $params = explode(',', $matches[2]);
-        $metricName = str_replace("'", '', $params[0]);
-        $params = array_slice($params, 1);
-
-        return array(
-            'aggregation_method' => $aggregationMethod,
-            'metric_name' => $metricName,
-            'params' => $params,
-        );
-    }
-
-    /**
      * Return a sorted array of input scalars that would be used by an aggregate metric for the submission based on the spec.
      *
      * @param Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao spec DAO

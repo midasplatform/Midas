@@ -132,10 +132,10 @@ class Tracker_ApisubmissionComponent extends AppComponent
      * @param communityId
      * @param producerDisplayName
      * @param producerRevision
+     * @param branch
      * @param uuid (Optional)
      * @param name (Optional)
      * @param submitTime (Optional)
-     * @param branch (Optional)
      * @param buildResultsUrl (Optional)
      * @param params (Optional)
      * @param extraUrls (Optional)
@@ -160,7 +160,7 @@ class Tracker_ApisubmissionComponent extends AppComponent
 
         $apiHelperComponent->requirePolicyScopes(
             array(MIDAS_API_PERMISSION_SCOPE_WRITE_DATA));
-        $apiHelperComponent->validateParams($args, array('communityId', 'producerDisplayName', 'producerRevision'));
+        $apiHelperComponent->validateParams($args, array('communityId', 'producerDisplayName', 'producerRevision', 'branch'));
 
         $this->_checkUser($args,
                           'Only authenticated users can create submissions.');
@@ -182,6 +182,11 @@ class Tracker_ApisubmissionComponent extends AppComponent
             throw new Exception('Producer display name must not be empty', -1);
         }
 
+        $branch = trim($args['branch']);
+        if ($branch == '') {
+            throw new Exception('Branch must not be empty', -1);
+        }
+
         $producer = $producerModel->createIfNeeded($community->getKey(), $producerDisplayName);
 
         if (!isset($args['uuid'])) {
@@ -195,7 +200,6 @@ class Tracker_ApisubmissionComponent extends AppComponent
         }
 
         $args['build_results_url'] = isset($args['buildResultsUrl']) ? $args['buildResultsUrl'] : '';
-        $args['branch'] = isset($args['branch']) ? $args['branch'] : '';
         $args['name'] = isset($args['name']) ? $args['name'] : '';
         $args['reproduction_command'] = isset($args['reproductionCommand']) ? $args['reproductionCommand'] : '';
 
