@@ -172,4 +172,21 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
      * @return array branch names
      */
     abstract public function getDistinctBranches();
+
+    /**
+     * Return the scalar values with their associated trend name and test
+     * dataset name for a given submission.
+     *
+     * @param Tracker_ProducerDao $producerDao producer DAO
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @param bool $key (optional) whether to only retrieve scalars of key trends
+     * @param int $daysInterval (optional) if set, will return scalars for all submissions with
+     * the same branch and producer as the passed in submission, searching up to this many
+     * days previous to the passed in submission
+     * @return array tabular data including the submission uuid, branch, producer id, producer name
+     * producer revision, submit time, metric (trend) name, value, unit, and test dataset name per row,
+     * where the first row has column headers.
+     * @throws Zend_Exception
+     */
+    abstract public function getTabularSubmissionDetails($producerDao, $submissionDao, $key = false, $daysInterval = false);
 }

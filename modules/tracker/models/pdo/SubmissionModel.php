@@ -339,6 +339,80 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
     }
 
     /**
+     * Return the scalar values with their associated trend name and test
+     * dataset name for a given submission.
+     *
+     * @param Tracker_ProducerDao $producerDao producer DAO
+     * @param Tracker_SubmissionDao $submissionDao submission DAO
+     * @param bool $key (optional) whether to only retrieve scalars of key trends
+     * @param int $daysInterval (optional) if set, will return scalars for all submissions with
+     * the same branch and producer as the passed in submission, searching up to this many
+     * days previous to the passed in submission
+     * @return array tabular data including the submission uuid, branch, producer id, producer name
+     * producer revision, submit time, metric (trend) name, value, unit, and test dataset name per row,
+     * where the first row has column headers.
+     * @throws Zend_Exception
+     */
+    public function getTabularSubmissionDetails($producerDao, $submissionDao, $key = false, $daysInterval = false)
+    {
+        $sql = $this->database->select()->setIntegrityCheck(false)
+            ->from(array('u' => 'tracker_submission'),
+                   array('u.uuid', 'u.branch', 'u.producer_revision', 'u.submit_time'))
+            ->join(array('c' => 'tracker_scalar'),
+                   'u.submission_id = c.submission_id',
+                   array('c.value'))
+            ->join(array('t' => 'tracker_trend'),
+                   'c.trend_id = t.trend_id',
+                   array('t.metric_name', 't.unit'))
+            ->join(array('tg' => 'tracker_trendgroup'),
+                   't.trendgroup_id = tg.trendgroup_id')
+            ->join(array('i' => 'item'),
+                   'i.item_id = tg.test_dataset_id',
+                   array('test_dataset_name' => 'i.name'));
+        if ($key) {
+            $sql = $sql->where('key_metric = ?', 1);
+        }
+        if ($daysInterval !== false) {
+            $firstDate = new DateTime($submissionDao->getSubmitTime());
+            $firstDate->modify('-'.$daysInterval.' day');
+            $sql->where('u.branch = ?', $submissionDao->getBranch())
+                ->where('u.producer_id = ?', $producerDao->getProducerId())
+                ->where('u.submit_time > ?', $firstDate->format('Y-m-d H:i:s'))
+                ->where('u.submit_time <= ?', $submissionDao->getSubmitTime())
+                ->order('u.submit_time');
+        } else {
+            $sql->where('u.submission_id = ?', $submissionDao->getSubmissionId());
+        }
+
+        $results = array();
+        $invariantCols = array(
+            'branch' => $submissionDao->getBranch(),
+            'producer_name' => $producerDao->getDisplayName(),
+            'producer_id' => $submissionDao->getProducerId(),
+        );
+        $colHeaders = array(
+            'uuid', 'producer_revision', 'submit_time', 'metric_name', 'test_dataset_name', 'value', 'unit'
+        );
+        $results[] = array_merge(array_keys($invariantCols), $colHeaders);
+        $rows = $this->database->fetchAll($sql);
+        /** @var Zend_Db_Table_Row_Abstract $row */
+        foreach ($rows as $row) {
+            $resultRow = array();
+            /** @var string $submissionColHeader */
+            /** @var string $submissionCol */
+            foreach ($invariantCols as $submissionColHeader => $submissionCol) {
+                $resultRow[] = $submissionCol;
+            }
+            /** @var string $colHeader */
+            foreach ($colHeaders as $colHeader) {
+                $resultRow[] = $row[$colHeader];
+            }
+            $results[] = $resultRow;
+        }
+        return $results;
+    }
+
+    /**
      * Delete a given submission.
      *
      * @param Tracker_SubmissionDao $submissionDao
