@@ -197,4 +197,67 @@
     <pendinguser pendinguser_id="1001" email="dummy@dummy.com" auth_key="12345" firstname="Dummy" lastname="Dummy"
         date_creation="2011-01-27 12:11:02"/>
     <password hash="dummy_hash"/>
+
+    <!-- 20 test datasets -->
+    <item item_id="2001" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72751'/>
+    <itempolicyuser item_id="2001" user_id="1" policy='2'/>
+    <item2folder item_id="2001" folder_id='1014'/>
+    <item item_id="2002" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72752'/>
+    <itempolicyuser item_id="2002" user_id="1" policy='2'/>
+    <item2folder item_id="2002" folder_id='1014'/>
+    <item item_id="2003" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72754'/>
+    <itempolicyuser item_id="2003" user_id="1" policy='2'/>
+    <item2folder item_id="2003" folder_id='1014'/>
+    <item item_id="2004" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72755'/>
+    <itempolicyuser item_id="2004" user_id="1" policy='2'/>
+    <item2folder item_id="2004" folder_id='1014'/>
+    <item item_id="2005" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72756'/>
+    <itempolicyuser item_id="2005" user_id="1" policy='2'/>
+    <item2folder item_id="2005" folder_id='1014'/>
+    <item item_id="2006" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72757'/>
+    <itempolicyuser item_id="2006" user_id="1" policy='2'/>
+    <item2folder item_id="2006" folder_id='1014'/>
+    <item item_id="2007" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72758'/>
+    <itempolicyuser item_id="2007" user_id="1" policy='2'/>
+    <item2folder item_id="2007" folder_id='1014'/>
+    <item item_id="2008" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72759'/>
+    <itempolicyuser item_id="2008" user_id="1" policy='2'/>
+    <item2folder item_id="2008" folder_id='1014'/>
+    <item item_id="2009" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72760'/>
+    <itempolicyuser item_id="2009" user_id="1" policy='2'/>
+    <item2folder item_id="2009" folder_id='1014'/>
+    <item item_id="2010" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72761'/>
+    <itempolicyuser item_id="2010" user_id="1" policy='2'/>
+    <item2folder item_id="2010" folder_id='1014'/>
+    <item item_id="2011" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72762'/>
+    <itempolicyuser item_id="2011" user_id="1" policy='2'/>
+    <item2folder item_id="2011" folder_id='1014'/>
+    <item item_id="2012" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72763'/>
+    <itempolicyuser item_id="2012" user_id="1" policy='2'/>
+    <item2folder item_id="2012" folder_id='1014'/>
+    <item item_id="2013" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72764'/>
+    <itempolicyuser item_id="2013" user_id="1" policy='2'/>
+    <item2folder item_id="2013" folder_id='1014'/>
+    <item item_id="2014" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72765'/>
+    <itempolicyuser item_id="2014" user_id="1" policy='2'/>
+    <item2folder item_id="2014" folder_id='1014'/>
+    <item item_id="2015" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72766'/>
+    <itempolicyuser item_id="2015" user_id="1" policy='2'/>
+    <item2folder item_id="2015" folder_id='1014'/>
+    <item item_id="2016" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72767'/>
+    <itempolicyuser item_id="2016" user_id="1" policy='2'/>
+    <item2folder item_id="2016" folder_id='1014'/>
+    <item item_id="2017" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72768'/>
+    <itempolicyuser item_id="2017" user_id="1" policy='2'/>
+    <item2folder item_id="2017" folder_id='1014'/>
+    <item item_id="2018" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72769'/>
+    <itempolicyuser item_id="2018" user_id="1" policy='2'/>
+    <item2folder item_id="2018" folder_id='1014'/>
+    <item item_id="2019" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72770'/>
+    <itempolicyuser item_id="2019" user_id="1" policy='2'/>
+    <item2folder item_id="2019" folder_id='1014'/>
+    <item item_id="2020" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72753'/>
+    <itempolicyuser item_id="2020" user_id="1" policy='2'/>
+    <item2folder item_id="2020" folder_id='1014'/>
+
 </dataset>
