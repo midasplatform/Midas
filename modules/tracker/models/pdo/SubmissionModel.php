@@ -344,7 +344,7 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
      *
      * @param Tracker_ProducerDao $producerDao producer DAO
      * @param Tracker_SubmissionDao $submissionDao submission DAO
-     * @param bool $key (optional) whether to only retrieve scalars of key trends
+     * @param bool $key (optional) whether to only retrieve scalars of key trends, defaults to true
      * @param int $daysInterval (optional) if set, will return scalars for all submissions with
      * the same branch and producer as the passed in submission, searching up to this many
      * days previous to the passed in submission
@@ -353,7 +353,7 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
      * where the first row has column headers.
      * @throws Zend_Exception
      */
-    public function getTabularSubmissionDetails($producerDao, $submissionDao, $key = false, $daysInterval = false)
+    public function getTabularSubmissionDetails($producerDao, $submissionDao, $key = true, $daysInterval = false)
     {
         $sql = $this->database->select()->setIntegrityCheck(false)
             ->from(array('u' => 'tracker_submission'),
@@ -386,9 +386,9 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
 
         $results = array();
         $invariantCols = array(
-            'branch' => $submissionDao->getBranch(),
             'producer_name' => $producerDao->getDisplayName(),
             'producer_id' => $submissionDao->getProducerId(),
+            'branch' => $submissionDao->getBranch(),
         );
         $colHeaders = array(
             'uuid', 'producer_revision', 'submit_time', 'metric_name', 'test_dataset_name', 'value', 'unit'
