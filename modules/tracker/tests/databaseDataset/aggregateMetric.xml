@@ -5,64 +5,64 @@
 
     <!-- 20 Trends which are Greedy error each with a different test_dataset_id -->
     <tracker_trendgroup trendgroup_id="101" producer_id="100"
-                        config_item_id="1000" test_dataset_id="1001" truth_dataset_id="1002" />
+                        config_item_id="1000" test_dataset_id="2001" truth_dataset_id="1002" />
     <tracker_trend trendgroup_id="101" trend_id="1" metric_name="Greedy error" display_name="Greedy error" unit="mm" key_metric="1" />
     <tracker_trendgroup trendgroup_id="102" producer_id="100"
-                        config_item_id="1000" test_dataset_id="1002" truth_dataset_id="1002" />
+                        config_item_id="1000" test_dataset_id="2002" truth_dataset_id="1002" />
     <tracker_trend trendgroup_id="102" trend_id="2" metric_name="Greedy error" display_name="Greedy error" unit="mm" key_metric="1" />
     <tracker_trendgroup trendgroup_id="103" producer_id="100"
-                        config_item_id="1000" test_dataset_id="1003" truth_dataset_id="1002" />
+                        config_item_id="1000" test_dataset_id="2003" truth_dataset_id="1002" />
     <tracker_trend trendgroup_id="103" trend_id="3" metric_name="Greedy error" display_name="Greedy error" unit="mm" key_metric="1" />
     <tracker_trendgroup trendgroup_id="104" producer_id="100"
-                        config_item_id="1000" test_dataset_id="1004" truth_dataset_id="1002" />
+                        config_item_id="1000" test_dataset_id="2004" truth_dataset_id="1002" />
     <tracker_trend trendgroup_id="104" trend_id="4" metric_name="Greedy error" display_name="Greedy error" unit="mm" key_metric="1" />
     <tracker_trendgroup trendgroup_id="105" producer_id="100"
-                        config_item_id="1000" test_dataset_id="1005" truth_dataset_id="1002" />
+                        config_item_id="1000" test_dataset_id="2005" truth_dataset_id="1002" />
     <tracker_trend trendgroup_id="105" trend_id="5" metric_name="Greedy error" display_name="Greedy error" unit="mm" key_metric="1" />
     <tracker_trendgroup trendgroup_id="106" producer_id="100"
-                        config_item_id="1000" test_dataset_id="1006" truth_dataset_id="1002" />
+                        config_item_id="1000" test_dataset_id="2006" truth_dataset_id="1002" />
     <tracker_trend trendgroup_id="106" trend_id="6" metric_name="Greedy error" display_name="Greedy error" unit="mm" key_metric="1" />
     <tracker_trendgroup trendgroup_id="107" producer_id="100"
-                        config_item_id="1000" test_dataset_id="1007" truth_dataset_id="1002" />
+                        config_item_id="1000" test_dataset_id="2007" truth_dataset_id="1002" />
     <tracker_trend trendgroup_id="107" trend_id="7" metric_name="Greedy error" display_name="Greedy error" unit="mm" key_metric="1" />
     <tracker_trendgroup trendgroup_id="108" producer_id="100"
-                        config_item_id="1000" test_dataset_id="1008" truth_dataset_id="1002" />
+                        config_item_id="1000" test_dataset_id="2008" truth_dataset_id="1002" />
     <tracker_trend trendgroup_id="108" trend_id="8" metric_name="Greedy error" display_name="Greedy error" unit="mm" key_metric="1" />
     <tracker_trendgroup trendgroup_id="109" producer_id="100"
-                        config_item_id="1000" test_dataset_id="1009" truth_dataset_id="1002" />
+                        config_item_id="1000" test_dataset_id="2009" truth_dataset_id="1002" />
     <tracker_trend trendgroup_id="109" trend_id="9" metric_name="Greedy error" display_name="Greedy error" unit="mm" key_metric="1" />
     <tracker_trendgroup trendgroup_id="110" producer_id="100"
-                        config_item_id="1000" test_dataset_id="1010" truth_dataset_id="1002" />
+                        config_item_id="1000" test_dataset_id="2010" truth_dataset_id="1002" />
     <tracker_trend trendgroup_id="110" trend_id="10" metric_name="Greedy error" display_name="Greedy error" unit="mm" key_metric="1" />
     <tracker_trendgroup trendgroup_id="111" producer_id="100"
-                        config_item_id="1000" test_dataset_id="1011" truth_dataset_id="1002" />
+                        config_item_id="1000" test_dataset_id="2011" truth_dataset_id="1002" />
     <tracker_trend trendgroup_id="111" trend_id="11" metric_name="Greedy error" display_name="Greedy error" unit="mm" key_metric="1" />
     <tracker_trendgroup trendgroup_id="112" producer_id="100"
-                        config_item_id="1000" test_dataset_id="1012" truth_dataset_id="1002" />
+                        config_item_id="1000" test_dataset_id="2012" truth_dataset_id="1002" />
     <tracker_trend trendgroup_id="112" trend_id="12" metric_name="Greedy error" display_name="Greedy error" unit="mm" key_metric="1" />
     <tracker_trendgroup trendgroup_id="113" producer_id="100"
-                        config_item_id="1000" test_dataset_id="1013" truth_dataset_id="1002" />
+                        config_item_id="1000" test_dataset_id="2013" truth_dataset_id="1002" />
     <tracker_trend trendgroup_id="113" trend_id="13" metric_name="Greedy error" display_name="Greedy error" unit="mm" key_metric="1" />
     <tracker_trendgroup trendgroup_id="114" producer_id="100"
-                        config_item_id="1000" test_dataset_id="1014" truth_dataset_id="1002" />
+                        config_item_id="1000" test_dataset_id="2014" truth_dataset_id="1002" />
     <tracker_trend trendgroup_id="114" trend_id="14" metric_name="Greedy error" display_name="Greedy error" unit="mm" key_metric="1" />
     <tracker_trendgroup trendgroup_id="115" producer_id="100"
-                        config_item_id="1000" test_dataset_id="1015" truth_dataset_id="1002" />
+                        config_item_id="1000" test_dataset_id="2015" truth_dataset_id="1002" />
     <tracker_trend trendgroup_id="115" trend_id="15" metric_name="Greedy error" display_name="Greedy error" unit="mm" key_metric="1" />
     <tracker_trendgroup trendgroup_id="116" producer_id="100"
-                        config_item_id="1000" test_dataset_id="1016" truth_dataset_id="1002" />
+                        config_item_id="1000" test_dataset_id="2016" truth_dataset_id="1002" />
     <tracker_trend trendgroup_id="116" trend_id="16" metric_name="Greedy error" display_name="Greedy error" unit="mm" key_metric="1" />
     <tracker_trendgroup trendgroup_id="117" producer_id="100"
-                        config_item_id="1000" test_dataset_id="1017" truth_dataset_id="1002" />
+                        config_item_id="1000" test_dataset_id="2017" truth_dataset_id="1002" />
     <tracker_trend trendgroup_id="117" trend_id="17" metric_name="Greedy error" display_name="Greedy error" unit="mm" key_metric="1" />
     <tracker_trendgroup trendgroup_id="118" producer_id="100"
-                        config_item_id="1000" test_dataset_id="1018" truth_dataset_id="1002" />
+                        config_item_id="1000" test_dataset_id="2018" truth_dataset_id="1002" />
     <tracker_trend trendgroup_id="118" trend_id="18" metric_name="Greedy error" display_name="Greedy error" unit="mm" key_metric="1" />
     <tracker_trendgroup trendgroup_id="119" producer_id="100"
-                        config_item_id="1000" test_dataset_id="1019" truth_dataset_id="1002" />
+                        config_item_id="1000" test_dataset_id="2019" truth_dataset_id="1002" />
     <tracker_trend trendgroup_id="119" trend_id="19" metric_name="Greedy error" display_name="Greedy error" unit="mm" key_metric="1" />
     <tracker_trendgroup trendgroup_id="120" producer_id="100"
-                        config_item_id="1000" test_dataset_id="1020" truth_dataset_id="1002" />
+                        config_item_id="1000" test_dataset_id="2020" truth_dataset_id="1002" />
     <tracker_trend trendgroup_id="120" trend_id="20" metric_name="Greedy error" display_name="Greedy error" unit="mm" key_metric="1" />
 
     <!-- 20 Trends which are Optimal error each with a different test_dataset_id -->
@@ -93,16 +93,24 @@
     <tracker_trend trend_id="42" trendgroup_id="120" metric_name="Optimal distance" display_name="Optimal distance" unit="mm" key_metric="1" />
     <!-- Submissions with a scalar per each above trend -->
     <!-- Submissions 1 - 7 are in order of submit_time where submission 7 is oldest and submission 1 is newest -->
-    <tracker_submission submission_id="1" producer_id="100" uuid="1234" submit_time="2016-02-07 00:11:22" build_results_url="build.results.url" branch="master" />
-    <tracker_submission submission_id="2" producer_id="100" uuid="1235" submit_time="2016-02-06 00:11:22" build_results_url="build.results.url" branch="master" />
+    <tracker_submission submission_id="1" producer_id="100" uuid="1234" submit_time="2016-02-07 00:11:22" build_results_url="build.results.url"
+        branch="master" producer_revision="master_1234" />
+    <tracker_submission submission_id="2" producer_id="100" uuid="1235" submit_time="2016-02-06 00:11:22" build_results_url="build.results.url"
+        branch="master" producer_revision="master_1235" />
     <!-- Addtional submissions with a small set of scalars for two trends, intended to provide a week's worth of results -->
-    <tracker_submission submission_id="3" producer_id="100" uuid="1236" submit_time="2016-02-05 00:11:22" build_results_url="build.results.url" branch="master" />
-    <tracker_submission submission_id="4" producer_id="100" uuid="1237" submit_time="2016-02-04 00:11:22" build_results_url="build.results.url" branch="master" />
-    <tracker_submission submission_id="5" producer_id="100" uuid="1238" submit_time="2016-02-03 00:11:22" build_results_url="build.results.url" branch="master" />
-    <tracker_submission submission_id="6" producer_id="100" uuid="1239" submit_time="2016-02-02 00:11:22" build_results_url="build.results.url" branch="master" />
-    <tracker_submission submission_id="7" producer_id="100" uuid="1240" submit_time="2016-02-01 00:11:22" build_results_url="build.results.url" branch="master" />/>
+    <tracker_submission submission_id="3" producer_id="100" uuid="1236" submit_time="2016-02-05 00:11:22" build_results_url="build.results.url"
+        branch="master" producer_revision="master_1236" />
+    <tracker_submission submission_id="4" producer_id="100" uuid="1237" submit_time="2016-02-04 00:11:22" build_results_url="build.results.url"
+        branch="master" producer_revision="master_1237" />
+    <tracker_submission submission_id="5" producer_id="100" uuid="1238" submit_time="2016-02-03 00:11:22" build_results_url="build.results.url"
+        branch="master" producer_revision="master_1238" />
+    <tracker_submission submission_id="6" producer_id="100" uuid="1239" submit_time="2016-02-02 00:11:22" build_results_url="build.results.url"
+        branch="master" producer_revision="master_1239" />
+    <tracker_submission submission_id="7" producer_id="100" uuid="1240" submit_time="2016-02-01 00:11:22" build_results_url="build.results.url"
+        branch="master" producer_revision="master_1240" />
     <!-- Submission tied to branch "test" -->
-    <tracker_submission submission_id="8" producer_id="100" uuid="1241" submit_time="2016-02-01 00:11:23" build_results_url="build.results.url" branch="test" />
+    <tracker_submission submission_id="8" producer_id="100" uuid="1241" submit_time="2016-02-01 00:11:23" build_results_url="build.results.url"
+        branch="test" producer_revision="test_1241" />
     <!-- One scalar per each Greedy error trend, for submission_id 1 -->
     <tracker_scalar scalar_id="1" trend_id="1" value="1.0" submission_id="1" />
     <tracker_scalar scalar_id="2" trend_id="2" value="2.0" submission_id="1" />
