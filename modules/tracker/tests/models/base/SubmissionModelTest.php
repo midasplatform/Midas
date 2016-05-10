@@ -18,7 +18,7 @@
  limitations under the License.
 =========================================================================*/
 
-/** Test the scalar model. */
+/** Test the submission model. */
 class Tracker_SubmissionModelTest extends DatabaseTestCase
 {
     /** Set up tests. */
@@ -26,12 +26,13 @@ class Tracker_SubmissionModelTest extends DatabaseTestCase
     {
         $this->setupDatabase(array('default')); // core dataset
         $this->setupDatabase(array('default'), 'tracker'); // module dataset
+        $this->setupDatabase(array('aggregateMetric'), 'tracker'); // module dataset
         $this->enabledModules = array('tracker');
 
         parent::setUp();
     }
 
-    /** testScalarModel */
+    /** testSubmissionModel */
     public function testSubmissionModel()
     {
         /** @var Tracker_ParamModel $paramModel */
@@ -103,7 +104,7 @@ class Tracker_SubmissionModelTest extends DatabaseTestCase
             'null_param_subtest' => null,
             'emptystring_param_subtest' => '',
         );
-        /** @var Tracker_SubmissionDao $submissionDao0 */
+        /** @var Tracker_SubmissionDao $submissionDao1 */
         $submissionDao1 = $submissionModel->createSubmission($producerDao, $uuid1, '', $params1);
         $submissionDao1->setProducerRevision($producerRevision);
         $submissionDao1->setUserId($userDao->getKey());
@@ -150,5 +151,92 @@ class Tracker_SubmissionModelTest extends DatabaseTestCase
             $submissionParamReloaded = $paramModel->load($submissionParam->getParamId());
             $this->assertFalse($submissionParamReloaded, 'Submission param 2 should have been deleted');
         }
+    }
+
+    /** testGetTabularSubmissionDetails */
+    public function testGetTabularSubmissionDetails()
+    {
+        /** @var Tracker_SubmissionModel $submissionModel */
+        $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
+        /** @var Tracker_SubmissionDao $submissionDao1 */
+        $submission1Dao = $submissionModel->load(1);
+        /** @var Tracker_SubmissionDao $submissionDao2 */
+        $submission2Dao = $submissionModel->load(2);
+        /** @var Tracker_SubmissionDao $submissionDao8 */
+        $submission8Dao = $submissionModel->load(8);
+
+        /** @var Tracker_ProducerModel $producerModel */
+        $producerModel = MidasLoader::loadModel('Producer', 'tracker');
+        /** @var Tracker_ProducerDao $producerDao */
+        $producerDao = $producerModel->load(100);
+
+        $submission1KeyTable = $submissionModel->getTabularSubmissionDetails($producerDao, $submission1Dao);
+        // 40 key metrics plus header row
+        $this->assertEquals(41, count($submission1KeyTable));
+
+        $submission1AllTable = $submissionModel->getTabularSubmissionDetails($producerDao, $submission1Dao, false);
+        // 40 key metrics plus 1 non-key metric row plus header row
+        $this->assertEquals(42, count($submission1AllTable));
+
+       // Need to back up by 2 days since the previous submission is exactly 24 hours before.
+        $submission1_1day_KeyTable = $submissionModel->getTabularSubmissionDetails($producerDao, $submission1Dao, true, 2);
+        // 40 key metrics per submission plus header row
+        $this->assertEquals(81, count($submission1_1day_KeyTable));
+
+        // Need to back up by 2 days since the previous submission is exactly 24 hours before.
+        $submission1_1day_AllTable = $submissionModel->getTabularSubmissionDetails($producerDao, $submission1Dao, false, 2);
+        // 40 key metrics per submission plus one non-key metric per submission plus header row
+        $this->assertEquals(83, count($submission1_1day_AllTable));
+
+        // Back up by 3 days.
+        $submission1_3day_KeyTable = $submissionModel->getTabularSubmissionDetails($producerDao, $submission1Dao, true, 3);
+        // 40 key metrics per first two submissions
+        // 8 key metric for third submission
+        // plus header row
+        $this->assertEquals(89, count($submission1_3day_KeyTable));
+
+        // Back up by 3 days.
+        $submission1_3day_AllTable = $submissionModel->getTabularSubmissionDetails($producerDao, $submission1Dao, false, 3);
+        // 40 key metrics per first two submissions
+        // 8 key metric for third submission
+        // 1 non-key metric per first two submissions
+        // plus header row
+        $this->assertEquals(91, count($submission1_3day_AllTable));
+
+        // Get them all.
+        $submission1_10day_KeyTable = $submissionModel->getTabularSubmissionDetails($producerDao, $submission1Dao, true, 10);
+        // 40 key metrics per first two submissions
+        // 8 key metric for (3, 4, 5, 6, 7) submission
+        // plus header row
+        $this->assertEquals(121, count($submission1_10day_KeyTable));
+
+        // Get them all.
+        $submission1_10day_AllTable = $submissionModel->getTabularSubmissionDetails($producerDao, $submission1Dao, false, 10);
+        // 40 key metrics per first two submissions
+        // 8 key metric for (3, 4, 5, 6, 7) submission
+        // 1 non-key metric per first two submissions
+        // plus header row
+        $this->assertEquals(123, count($submission1_10day_AllTable));
+
+        // Ignore submission 1.
+        $submission2_10day_KeyTable = $submissionModel->getTabularSubmissionDetails($producerDao, $submission2Dao, true, 10);
+        // 40 key metrics for submission 2
+        // 8 key metric for (3, 4, 5, 6, 7) submission
+        // plus header row
+        $this->assertEquals(81, count($submission2_10day_KeyTable));
+
+        // Get them all.
+        $submission2_10day_AllTable = $submissionModel->getTabularSubmissionDetails($producerDao, $submission2Dao, false, 10);
+        // 40 key metrics for submission 2
+        // 8 key metric for (3, 4, 5, 6, 7) submission
+        // 1 non-key metric per first two submissions
+        // plus header row
+        $this->assertEquals(82, count($submission2_10day_AllTable));
+
+        // A different branch with only 1 submission of 1 key metric scalar, plus the header row.
+        $submission8_10day_KeyTable = $submissionModel->getTabularSubmissionDetails($producerDao, $submission8Dao, true, 10);
+        $this->assertEquals(2, count($submission8_10day_KeyTable));
+        $submission8_10day_AllTable = $submissionModel->getTabularSubmissionDetails($producerDao, $submission8Dao, false, 10);
+        $this->assertEquals(2, count($submission8_10day_AllTable));
     }
 }
