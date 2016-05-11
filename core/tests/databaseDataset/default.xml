@@ -259,5 +259,4 @@
     <item item_id="2020" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72753'/>
     <itempolicyuser item_id="2020" user_id="1" policy='2'/>
     <item2folder item_id="2020" folder_id='1014'/>
-
 </dataset>

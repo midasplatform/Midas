@@ -2,7 +2,6 @@
 <dataset>
     <tracker_producer producer_id="100" community_id="2000" display_name="Test Producer" repository="https://example.com"
                       executable_name="test.exe" description="" revision_url="https:/example.net" />
-
     <!-- 20 Trends which are Greedy error each with a different test_dataset_id -->
     <tracker_trendgroup trendgroup_id="101" producer_id="100"
                         config_item_id="1000" test_dataset_id="2001" truth_dataset_id="1002" />
