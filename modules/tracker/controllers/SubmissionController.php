@@ -73,14 +73,18 @@ class Tracker_SubmissionController extends Tracker_AppController
         $daysInterval = $daysInterval ? $daysInterval : false;
         $results = $this->Tracker_Submission->getTabularSubmissionDetails($producerDao, $submissionDao, $keyMetrics, $daysInterval);
 
-        $output = fopen('php://output', 'w') || exit("Can't open php://output");
-        $filename = 'producer_'.$submissionDao->getProducerId().'_'.$submissionDao->getUuid().'.csv';
-        header('Content-type: application/csv');
-        header('Content-Disposition: attachment; filename="'.$filename.'"');
-        /** @var array $resultsRow */
-        foreach ($results as $resultsRow) {
-            fputcsv($output, $resultsRow);
+        $output = fopen('php://output', 'w');
+        if ($output === false) {
+            exit("Can't open php://output");
+        } else {
+            $filename = 'producer_'.$submissionDao->getProducerId().'_'.$submissionDao->getUuid().'.csv';
+            header('Content-type: application/csv');
+            header('Content-Disposition: attachment; filename="'.$filename.'"');
+            /** @var array $resultsRow */
+            foreach ($results as $resultsRow) {
+                fputcsv($output, $resultsRow);
+            }
+            fclose($output) || exit("Can't close php://output");
         }
-        fclose($output) || exit("Can't close php://output");
     }
 }
