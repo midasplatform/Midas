@@ -259,15 +259,4 @@
     <item item_id="2020" name="test_dataset_1" description="" type="1" uuid='10061fdf82007c245b07d8d6c4fcb4205f2621eb72753'/>
     <itempolicyuser item_id="2020" user_id="1" policy='2'/>
     <item2folder item_id="2020" folder_id='1014'/>
-
-    <community community_id="2002" name="Private Community" description="Private Community Only User 1 Admin"
-        creation="2011-01-27 12:09:02" privacy="1" folder_id="2011" admingroup_id="3006" moderatorgroup_id="3007"
-        membergroup_id="3008" uuid='7811ff82107d245f0798d654fc24205f2621eb72999'/>
-    <group group_id="3006" community_id="2002" name="Private Community Admin"/>
-    <group group_id="3007" community_id="2002" name="Private Community Moderator"/>
-    <group group_id="3008" community_id="2002" name="Private Community Member"/>
-    <user2group group_id="3008" user_id="1"/>
-    <folder folder_id="2011" name="Private Community Folder" description="" privacy_status="1" left_index="1"
-        right_index="2" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72899' parent_id="-1"/>
-
 </dataset>

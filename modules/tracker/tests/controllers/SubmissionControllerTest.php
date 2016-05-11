@@ -25,7 +25,7 @@ class Tracker_SubmissionControllerTest extends ControllerTestCase
     public function setUp()
     {
         $this->setupDatabase(array('default')); // core dataset
-        $this->setupDatabase(array('aggregateMetric'), 'tracker'); // module dataset
+        $this->setupDatabase(array('submission'), 'tracker'); // module dataset
         $this->enabledModules = array('tracker');
 
         parent::setUp();

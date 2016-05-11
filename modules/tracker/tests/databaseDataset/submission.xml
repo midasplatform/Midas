@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <community community_id="2002" name="Private Community" description="Private Community Only User 1 Admin"
+        creation="2011-01-27 12:09:02" privacy="1" folder_id="2011" admingroup_id="3006" moderatorgroup_id="3007"
+        membergroup_id="3008" uuid='7811ff82107d245f0798d654fc24205f2621eb72999'/>
+    <group group_id="3006" community_id="2002" name="Private Community Admin"/>
+    <group group_id="3007" community_id="2002" name="Private Community Moderator"/>
+    <group group_id="3008" community_id="2002" name="Private Community Member"/>
+    <user2group group_id="3008" user_id="1"/>
+    <folder folder_id="2011" name="Private Community Folder" description="" privacy_status="1" left_index="1"
+        right_index="2" uuid='4e311fdf82007c245b07d8d6c4fcb4205f2621eb72899' parent_id="-1"/>
+
+    <tracker_producer producer_id="101" community_id="2002" display_name="Access Test Producer" repository="https://example.com"
+        executable_name="test.exe" description="" revision_url="https:/example.net" />
+    <tracker_submission submission_id="10" producer_id="101" uuid="2234" submit_time="2016-02-07 00:11:22" build_results_url="build.results.url"
+        branch="master" producer_revision="master_2234" />
+</dataset>
