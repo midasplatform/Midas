@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
+    <tracker_producer producer_id="101" community_id="2002" display_name="Access Test Producer" repository="https://example.com"
+                      executable_name="test.exe" description="" revision_url="https:/example.net" />
+    <tracker_submission submission_id="10" producer_id="101" uuid="2234" submit_time="2016-02-07 00:11:22" build_results_url="build.results.url"
+        branch="master" producer_revision="master_2234" />
+
     <tracker_producer producer_id="100" community_id="2000" display_name="Test Producer" repository="https://example.com"
                       executable_name="test.exe" description="" revision_url="https:/example.net" />
-
     <!-- 20 Trends which are Greedy error each with a different test_dataset_id -->
     <tracker_trendgroup trendgroup_id="101" producer_id="100"
                         config_item_id="1000" test_dataset_id="2001" truth_dataset_id="1002" />
