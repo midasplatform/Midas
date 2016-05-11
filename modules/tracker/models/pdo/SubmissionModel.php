@@ -391,7 +391,7 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
             'branch' => $submissionDao->getBranch(),
         );
         $colHeaders = array(
-            'uuid', 'producer_revision', 'submit_time', 'metric_name', 'test_dataset_name', 'value', 'unit'
+            'uuid', 'producer_revision', 'submit_time', 'metric_name', 'test_dataset_name', 'value', 'unit',
         );
         $results[] = array_merge(array_keys($invariantCols), $colHeaders);
         $rows = $this->database->fetchAll($sql);
@@ -409,6 +409,7 @@ class Tracker_SubmissionModel extends Tracker_SubmissionModelBase
             }
             $results[] = $resultRow;
         }
+
         return $results;
     }
 
