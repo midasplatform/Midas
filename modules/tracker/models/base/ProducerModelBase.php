@@ -36,6 +36,7 @@ abstract class Tracker_ProducerModelBase extends Tracker_AppModel
             'executable_name' => array('type' => MIDAS_DATA),
             'display_name' => array('type' => MIDAS_DATA),
             'description' => array('type' => MIDAS_DATA),
+            'histogram_max_x' => array('type' => MIDAS_DATA),
             'community' => array(
                 'type' => MIDAS_MANY_TO_ONE,
                 'model' => 'Community',
