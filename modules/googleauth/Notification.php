@@ -86,6 +86,7 @@ class Googleauth_Notification extends MIDAS_Notification
         $authLinksDiv .= '<span><a class="googleauth-login" style="text-decoration: underline;" href="'.htmlspecialchars($tempAuthUrl, ENT_QUOTES, 'UTF-8').'">'.'Login with your Google account</a></span>';
         $authLinksDiv .= '<span style="padding-left: 15px"><a class="googleauth-login" style="text-decoration: underline;" href="'.htmlspecialchars($permanentAuthUrl, ENT_QUOTES, 'UTF-8').'">'.'Permanently login with your Google account</a></span>';
         $authLinksDiv .= '</div><script type="text/javascript"'.' src="'.UtilityComponent::getServerURL().$baseUrl.'/modules/'.$this->moduleName.'/public/js/login/googleauth.login.js"></script>';
+
         return $authLinksDiv;
     }
 
