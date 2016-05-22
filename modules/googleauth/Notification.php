@@ -77,9 +77,16 @@ class Googleauth_Notification extends MIDAS_Notification
         $namespace->oauthToken = $csrf;
         session_write_close();
 
-        $authUrl = $client->createAuthUrl();
+        $tempAuthUrl = $client->createAuthUrl();
+        // 'force' needs to be set in combination with 'offline' to get a refresh token.
+        $client->setApprovalPrompt('force');
+        $permanentAuthUrl = $client->createAuthUrl();
 
-        return '<div style="margin-top: 10px; display: inline-block;">Or '.'<a class="googleauth-login" style="text-decoration: underline;" href="'.htmlspecialchars($authUrl, ENT_QUOTES, 'UTF-8').'">'.'Login with your Google account</a></div><script type="text/javascript"'.' src="'.UtilityComponent::getServerURL().$baseUrl.'/modules/'.$this->moduleName.'/public/js/login/googleauth.login.js"></script>';
+        $authLinksDiv = '<div style="margin-top: 10px; display: inline-block;">Or ';
+        $authLinksDiv .= '<span><a class="googleauth-login" style="text-decoration: underline;" href="'.htmlspecialchars($tempAuthUrl, ENT_QUOTES, 'UTF-8').'">'.'Login with your Google account</a></span>';
+        $authLinksDiv .= '<span style="padding-left: 15px"><a class="googleauth-login" style="text-decoration: underline;" href="'.htmlspecialchars($permanentAuthUrl, ENT_QUOTES, 'UTF-8').'">'.'Permanently login with your Google account</a></span>';
+        $authLinksDiv .= '</div><script type="text/javascript"'.' src="'.UtilityComponent::getServerURL().$baseUrl.'/modules/'.$this->moduleName.'/public/js/login/googleauth.login.js"></script>';
+        return $authLinksDiv;
     }
 
     /**
@@ -132,13 +139,17 @@ class Googleauth_Notification extends MIDAS_Notification
 
                 if ($client->isAccessTokenExpired()) {
                     $refreshToken = $client->getRefreshToken();
-                    $client->refreshToken($refreshToken);
+                    if ($refreshToken) {
+                        $client->refreshToken($refreshToken);
 
-                    $date = new DateTime();
-                    $interval = new DateInterval('P1M');
-                    $expires = $date->add($interval);
+                        $date = new DateTime();
+                        $interval = new DateInterval('P1M');
+                        $expires = $date->add($interval);
 
-                    $this->ModuleComponent->Cookie->setAccessTokenCookie($request, $client, $expires);
+                        $this->ModuleComponent->Cookie->setAccessTokenCookie($request, $client, $expires);
+                    } else {
+                        return false;
+                    }
                 }
             }
 
