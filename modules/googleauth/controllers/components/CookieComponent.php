@@ -46,7 +46,7 @@ class Googleauth_CookieComponent extends AppComponent
         /** @var UserapiModel $userApiModel */
         $userApiModel = MidasLoader::loadModel('Userapi');
         $userApiDao = $userApiModel->getByAppAndUser('Default', $userDao);
-        $value = 'googleauth:'.$userDao->getUserId().':'.md5($userApiDao->getApikey().':');
+        $value = 'googleauth:'.$userDao->getUserId().':'.md5($userApiDao->getApikey());
         UtilityComponent::setCookie($request, MIDAS_USER_COOKIE_NAME, $value, $expires);
     }
 }
