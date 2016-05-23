@@ -152,9 +152,11 @@ class Googleauth_Notification extends MIDAS_Notification
                         return false;
                     }
                 }
-            }
 
-            return $userDao;
+                return $userDao;
+            }
+            // No point in returning a valid Midas session when the Googleauth
+            // session is inaccessible or invalid.
         }
 
         return false;
