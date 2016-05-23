@@ -80,11 +80,11 @@ class Googleauth_Notification extends MIDAS_Notification
         $tempAuthUrl = $client->createAuthUrl();
         // 'force' needs to be set in combination with 'offline' to get a refresh token.
         $client->setApprovalPrompt('force');
-        $permanentAuthUrl = $client->createAuthUrl();
+        $rememberedAuthUrl = $client->createAuthUrl();
 
         $authLinksDiv = '<div style="margin-top: 10px; display: inline-block;">Or ';
         $authLinksDiv .= '<span><a class="googleauth-login" style="text-decoration: underline;" href="'.htmlspecialchars($tempAuthUrl, ENT_QUOTES, 'UTF-8').'">'.'Login with your Google account</a></span>';
-        $authLinksDiv .= '<span style="padding-left: 15px"><a class="googleauth-login" style="text-decoration: underline;" href="'.htmlspecialchars($permanentAuthUrl, ENT_QUOTES, 'UTF-8').'">'.'Permanently login with your Google account</a></span>';
+        $authLinksDiv .= '<span style="padding-left: 15px"><a class="googleauth-login" style="text-decoration: underline;" href="'.htmlspecialchars($rememberedAuthUrl, ENT_QUOTES, 'UTF-8').'">'.'Login with your Google account for one month</a></span>';
         $authLinksDiv .= '</div><script type="text/javascript"'.' src="'.UtilityComponent::getServerURL().$baseUrl.'/modules/'.$this->moduleName.'/public/js/login/googleauth.login.js"></script>';
 
         return $authLinksDiv;
