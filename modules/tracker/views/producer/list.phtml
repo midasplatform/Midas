@@ -40,6 +40,13 @@
             if ($producerDao->getDescription() != '') {
                 echo '<div class="producerDescription">'.$this->escape($producerDao->getDescription()).'</div>';
             }
+            if (array_key_exists($producerDao->getProducerId(), $this->producerListLinks)) {
+                /** @var string $text */
+                /** @var string $url */
+                foreach($this->producerListLinks[$producerDao->getProducerId()] as $text => $url) {
+                    echo '<div class="producerLink"><a href="'.$url.'">'.$text.'</a></div>';
+                }
+            }
             echo '</div>';
         }
         ?>
