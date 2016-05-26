@@ -73,7 +73,7 @@ class Tracker_ProducerController extends Tracker_AppController
         $producers = $this->Tracker_Producer->getByCommunityId($communityId);
         $producerListLinks = array();
         /** @var ProducerDao $producerDao */
-        foreach($producers as $producerDao) {
+        foreach ($producers as $producerDao) {
             /** @var array $retVal */
             $retVal = Zend_Registry::get('notifier')->callback(
                 'CALLBACK_TRACKER_PRODUCER_LIST_LINK',
@@ -83,7 +83,7 @@ class Tracker_ProducerController extends Tracker_AppController
             );
             /** @var string $module */
             /** @var string $value */
-            foreach($retVal as $module => $value) {
+            foreach ($retVal as $module => $value) {
                 $producerListLinks[$producerDao->getProducerId()] = $value;
             }
         }
