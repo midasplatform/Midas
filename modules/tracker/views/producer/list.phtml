@@ -18,7 +18,13 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<script type="text/javascript" src="<?php echo $this->moduleWebroot; ?>/public/js/producer/producer.list.js"></script>
+<?php
+if (!$this->directLink) {
+?>
+  <script type="text/javascript" src="<?php echo $this->moduleWebroot; ?>/public/js/producer/producer.list.js"></script>
+<?php
+}
+?>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot; ?>/public/css/common/common.genericPage.css"/>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot; ?>/public/css/community/community.view.css"/>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot; ?>/public/css/producer/producer.list.css"/>
