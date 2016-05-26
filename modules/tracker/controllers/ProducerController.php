@@ -45,7 +45,13 @@ class Tracker_ProducerController extends Tracker_AppController
      */
     public function listAction()
     {
-        $this->disableLayout();
+        $directLink = $this->getParam('directLink');
+        if (isset($directLink)) {
+            $this->view->directLink = true;
+        } else {
+            $this->view->directLink = false;
+            $this->disableLayout();
+        }
 
         /** @var int $communityId */
         $communityId = $this->getParam('communityId');
