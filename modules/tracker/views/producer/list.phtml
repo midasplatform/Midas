@@ -18,13 +18,47 @@
  limitations under the License.
 =========================================================================*/
 ?>
-<script type="text/javascript" src="<?php echo $this->moduleWebroot; ?>/public/js/producer/producer.list.js"></script>
+<?php
+if (!$this->directLink) {
+?>
+  <script type="text/javascript" src="<?php echo $this->moduleWebroot; ?>/public/js/producer/producer.list.js"></script>
+<?php
+}
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot; ?>/public/css/common/common.genericPage.css"/>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->coreWebroot; ?>/public/css/community/community.view.css"/>
 <link type="text/css" rel="stylesheet" href="<?php echo $this->moduleWebroot; ?>/public/css/producer/producer.list.css"/>
 
-<div class="producersTabWrapper">
-    <div class="introText">The <?php echo $this->escape($this->community->getName()); ?> community contains the following producers:
-    </div>
-
+<?php
+if ($this->directLink) {
+?>
+   <div class="viewMain">
+     <div class="genericThumbnail">
+       <?php
+         $thumbnail = null;
+         if (!empty($thumbnail)) {
+           echo "<img src='{$this->webroot}data/thumbnail/{$this->escape($thumbnail)}' alt=''/>";
+         } else {
+           echo "<img src='{$this->coreWebroot}/public/images/icons/community-big.png' alt=''/>";
+         }
+       ?>
+       </div>
+       <div class="genericInfo">
+       <div class="genericName"><?php echo $this->escape($this->community->getName().' Producers'); ?></div>
+       <div id="communitySubtitle" class="genericSubtitle" style="color:grey;">
+         <?php
+         if (!empty($rawDescription)) {
+           echo substr($this->escape($strippedDescription), 0, 240).' <a href="#" class="more">More &raquo;</a>';
+         }
+         ?>
+       </div>
+     </div>
+<?php
+    echo '<div class="producersDirectLink">';
+} else {
+    echo '<div class="producersTabWrapper">';
+}
+?>
     <div class="producerList">
         <?php
         if (empty($this->producers)) {
@@ -40,8 +74,20 @@
             if ($producerDao->getDescription() != '') {
                 echo '<div class="producerDescription">'.$this->escape($producerDao->getDescription()).'</div>';
             }
+            if (array_key_exists($producerDao->getProducerId(), $this->producerListLinks)) {
+                /** @var string $text */
+                /** @var string $url */
+                foreach($this->producerListLinks[$producerDao->getProducerId()] as $text => $url) {
+                    echo '<div class="producerLink"><a href="'.$url.'">'.$text.'</a></div>';
+                }
+            }
             echo '</div>';
         }
         ?>
     </div>
 </div>
+<?php
+if ($this->directLink) {
+    echo '</div>';
+}
+?>

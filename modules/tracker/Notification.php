@@ -72,7 +72,7 @@ class Tracker_Notification extends ApiEnabled_Notification
     }
 
     /**
-     * Show the trackers tab on the community view page.
+     * Show the Producers tab on the community view page.
      *
      * @param array $args associative array of parameters including the key "community"
      * @return array
@@ -82,7 +82,7 @@ class Tracker_Notification extends ApiEnabled_Notification
         /** @var CommunityDao $communityDao */
         $communityDao = $args['community'];
 
-        return array('Trackers' => $this->moduleWebroot.'/producer/list?communityId='.$communityDao->getKey());
+        return array('Producers' => $this->moduleWebroot.'/producer/list?communityId='.$communityDao->getKey());
     }
 
     /**

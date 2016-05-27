@@ -45,7 +45,13 @@ class Tracker_ProducerController extends Tracker_AppController
      */
     public function listAction()
     {
-        $this->disableLayout();
+        $directLink = $this->getParam('directLink');
+        if (isset($directLink)) {
+            $this->view->directLink = true;
+        } else {
+            $this->view->directLink = false;
+            $this->disableLayout();
+        }
 
         /** @var int $communityId */
         $communityId = $this->getParam('communityId');
@@ -63,7 +69,27 @@ class Tracker_ProducerController extends Tracker_AppController
         }
 
         $this->view->community = $communityDao;
+
+        $producers = $this->Tracker_Producer->getByCommunityId($communityId);
+        $producerListLinks = array();
+        /** @var ProducerDao $producerDao */
+        foreach ($producers as $producerDao) {
+            /** @var array $retVal */
+            $retVal = Zend_Registry::get('notifier')->callback(
+                'CALLBACK_TRACKER_PRODUCER_LIST_LINK',
+                array(
+                    'producer' => $producerDao,
+                )
+            );
+            /** @var string $module */
+            /** @var string $value */
+            foreach ($retVal as $module => $value) {
+                $producerListLinks[$producerDao->getProducerId()] = $value;
+            }
+        }
+
         $this->view->producers = $this->Tracker_Producer->getByCommunityId($communityId);
+        $this->view->producerListLinks = $producerListLinks;
     }
 
     /**
