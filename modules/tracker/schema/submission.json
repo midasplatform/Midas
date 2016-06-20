@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Midas Tracker Submission",
+  "description": "A specification for submissions to Midas Tracker.",
+  "type": "object",
+  "properties": {
+    "about": {
+      "title": "About block",
+      "description": "Miscellaneous values about the submission.",
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "title": "About field",
+          "description": "Values to be displayed in the about box. Some of these are specially handled by Midas.",
+          "type": "object",
+          "required": [
+            "name",
+            "value"
+          ]
+        }
+      }
+    },
+    "metrics": {
+      "title": "Metrics block",
+      "description": "Values produced as part of the submission that represent measurable, scalar quantities.",
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "title": "Metric field",
+          "description": "A measurable, scalar quantity produced by a submission.",
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "metric": {
+              "type": "string"
+            },
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "type": "string"
+            },
+            "metric_group": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "value"
+          ]
+        }
+      }
+    },
+    "plotgroups": {
+      "title": "Plotgroups block",
+      "description": "A set of plots to be uploaded and displayed.",
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "title": "Plotgroup field",
+          "description": "A description of a generated plot to enable upload and rendering.",
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "json": {
+              "type": "string"
+            },
+            "metric": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "metric_group": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "path"
+          ]
+        }
+      }
+    }
+  }
+}

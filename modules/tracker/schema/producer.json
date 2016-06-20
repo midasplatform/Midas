@@ -1,0 +1,140 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Tracker Producer",
+  "description": "A specification for Midas Tracker Producers.",
+  "type": "object",
+  "definitions": {
+    "metric": {
+      "type": "object",
+      "properties": {
+        "lower_is_better": {
+          "type": "boolean"
+        },
+        "fail": {
+          "type": "number"
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "warning": {
+          "type": "number"
+        }
+      }
+    },
+    "key_metric": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/metric"
+        },
+        {
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "abbreviation": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      ]
+    },
+    "aggregate_metric": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/key_metric"
+        },
+        {
+          "properties": {
+            "definition": {
+              "type": "string",
+              "pattern": "^percentile\\('.+',\\s*[0-9][0-9]?\\)"
+            },
+            "notifications": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "comparison": {
+                    "type": "string",
+                    "enum": [
+                      "<",
+                      "<=",
+                      "==",
+                      ">",
+                      ">=",
+                      "!="
+                    ]
+                  },
+                  "branch": {
+                    "type": "string"
+                  },
+                  "emails": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "email"
+                    }
+                  }
+                },
+                "required": [
+                  "value",
+                  "comparison"
+                ]
+              }
+            }
+          },
+          "required": [
+            "definition"
+          ]
+        }
+      ]
+    }
+  },
+  "properties": {
+    "defaults": {
+      "title": "Pipeline global defaults for metrics",
+      "description": "Global metric defaults for report and dashboard thresholds.",
+      "$ref": "#/definitions/metric"
+    },
+    "producer": {
+      "title": "Producer name",
+      "description": "Producer name tied to community, created if does not exist.",
+      "type": "string"
+    },
+    "key_metrics": {
+      "title": "Key Metrics",
+      "description": "Key metrics with thresholds for this producer.",
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "#/definitions/key_metric"
+          }
+        ]
+      }
+    },
+    "aggregate_metrics": {
+      "title": "Aggregate Metrics",
+      "description": "Aggregate key metric definitions and thresholds for this producer.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/aggregate_metric"
+      }
+    },
+    "grid_across_metric_groups": {
+      "type": "boolean"
+    }
+  }
+}
