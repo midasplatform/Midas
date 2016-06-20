@@ -336,6 +336,72 @@ class Tracker_ApiComponent extends AppComponent
     }
 
     /**
+     * Validate documents tied to a submission.
+     *
+     * @param uuid The uuid of the submission to validate documents for.
+     * @param producerConfig (Optional) JSON object describing the pipeline
+     * @param submissionDocument (Optional) JSON object describing the submission
+     */
+    public function submissionValidate($args)
+    {
+        $this->_checkKeys(array('uuid'), $args);
+        $user = $this->_getUser($args);
+
+        $uuid = $args['uuid'];
+        /** @var Tracker_SubmissionModel $submissionModel */
+        $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
+        /** @var Tracker_SubmissionDao $submissionDao */
+        $submissionDao = $submissionModel->getSubmission($uuid);
+        if ($submissionDao === false) {
+            throw new Zend_Exception('The submission does not exist', 403);
+        }
+
+        if(isset($args['producerConfig'])) {
+            // At the current time, we are looking for the producerConfig,
+            // validating it, and logging a warning with any violations, we
+            // are not saving the producerConfig.
+            $producerConfig = $args['producerConfig'];
+            $refResolver = new JsonSchema\RefResolver(new JsonSchema\Uri\UriRetriever(), new JsonSchema\Uri\UriResolver());
+            $schemaPath = BASE_PATH.'/modules/tracker/schema/producer.json';
+
+            $schema = $refResolver->resolve('file://' . realpath($schemaPath));
+            $validator = new JsonSchema\Validator();
+            $validator->check(json_decode($producerConfig), $schema);
+
+            if (!$validator->isValid()) {
+                $this->getLogger()->warn("The supplied producerConfig JSON for uuid ".$uuid." does not validate. Violations:\n");
+                foreach ($validator->getErrors() as $error) {
+                    $this->getLogger()->warn(sprintf("[%s] %s\n", $error['property'], $error['message']));
+                }
+            } else {
+                $this->getLogger()->info("The supplied producerConfig JSON for uuid ".$uuid." is valid.");
+            }
+        }
+
+        if(isset($args['submissionDocument'])) {
+            // At the current time, we are looking for the submissionDocument,
+            // validating it, and logging a warning with any violations, we
+            // are not saving the producerConfig.
+            $submissionDocument = $args['submissionDocument'];
+            $refResolver = new JsonSchema\RefResolver(new JsonSchema\Uri\UriRetriever(), new JsonSchema\Uri\UriResolver());
+            $schemaPath = BASE_PATH.'/modules/tracker/schema/submission.json';
+
+            $schema = $refResolver->resolve('file://' . realpath($schemaPath));
+            $validator = new JsonSchema\Validator();
+            $validator->check(json_decode($submissionDocument), $schema);
+
+            if (!$validator->isValid()) {
+                $this->getLogger()->warn("The supplied submissionDocument JSON for uuid ".$uuid." does not validate. Violations:\n");
+                foreach ($validator->getErrors() as $error) {
+                    $this->getLogger()->warn(sprintf("[%s] %s\n", $error['property'], $error['message']));
+                }
+            } else {
+                $this->getLogger()->info("The supplied submissionDocument JSON for uuid ".$uuid." is valid.");
+            }
+        }
+    }
+
+    /**
      * Update and return an array of all aggregate metrics calculated on each
      * aggregate metric spec attached to the submission identified by the passed in
      * submission uuid.
