@@ -191,7 +191,7 @@ class Tracker_ApisubmissionComponent extends AppComponent
 
         if (!isset($args['uuid'])) {
             /** @var UuidComponent $uuidComponent */
-            $uuidComponent = MidasLoader::loadComponent('UuidComponent');
+            $uuidComponent = MidasLoader::loadComponent('Uuid');
             $args['uuid'] = $uuidComponent->generate();
         }
 
