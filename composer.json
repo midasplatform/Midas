@@ -23,7 +23,7 @@
         "justinrainbow/json-schema": "~2.0",
         "maennchen/zipstream-php": "^0.3.0",
         "moontoast/math": "^1.1.0",
-        "ramsey/uuid": "3.2.0",
+        "ramsey/uuid": ">=2.8.3 <4.0",
         "reprovinci/solr-php-client": "^1.0.3",
         "sendgrid/sendgrid": "^4.0.1",
         "zendframework/zendframework1": "^1.12.17"
