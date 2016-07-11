@@ -317,6 +317,10 @@ class Api_ApiComponent extends AppComponent
      * When passing the <b>folderid</b> param, the name of the newly created item,
      * if not supplied, the item will have the same name as <b>filename</b>.
      * @param checksum (Optional) The md5 checksum of the file to be uploaded.
+     * @param create_additional_revision (Optional) When a <b>checksum</b> is passed and
+     * the server already has the file, by default a reference to the existing
+     * bitstream will be added to the latest revision. By setting
+     * <b>create_additional_revision</b> to true, a new revision will be created.
      * @return An upload token that can be used to upload a file.
      *            If <b>folderid</b> is passed instead of <b>itemid</b>, a new item will be created
      *            in that folder, but the id of the newly created item will not be
