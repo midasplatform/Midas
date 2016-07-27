@@ -28,9 +28,9 @@ class ApicommunityComponent extends AppComponent
      * @http POST
      * @param name The community name
      * @param description (Optional) The community description
-     * @param uuid (Optional) Uuid of the community. If none is passed, will generate one.
-     * @param privacy (Optional) Default 'Public', possible values [Public|Private].
-     * @param canjoin (Optional) Default 'Everyone', possible values [Everyone|Invitation].
+     * @param uuid (Optional) Uuid of the community. If none is passed, will generate one
+     * @param privacy (Optional) Default 'Public', possible values [Public|Private]
+     * @param canjoin (Optional) Default 'Everyone', possible values [Everyone|Invitation]
      * @return The community dao that was created
      *
      * @param array $args parameters

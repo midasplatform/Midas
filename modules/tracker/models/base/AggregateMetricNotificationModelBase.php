@@ -87,7 +87,7 @@ abstract class Tracker_AggregateMetricNotificationModelBase extends Tracker_AppM
      * the threshold defined on any aggregate metric notification tied to the
      * aggregate metric spec that generated the aggregate metric and there exist
      * users to be notified on the aggregate metric notification,
-     * or false if the inputs are invalid.
+     * or false if the inputs are invalid
      */
     abstract public function scheduleNotificationJobs($aggregateMetricDao);
 }

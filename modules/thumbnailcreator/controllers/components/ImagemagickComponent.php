@@ -30,7 +30,7 @@ class Thumbnailcreator_ImagemagickComponent extends AppComponent
      * Echoes an error message if a problem occurs (for the scheduler log).
      *
      * @param array|ItemDao $item item to create the thumbnail for
-     * @param null|string $inputFile file to thumbnail. If none is specified, uses the first bitstream in the head revision of the item.
+     * @param null|string $inputFile file to thumbnail. If none is specified, uses the first bitstream in the head revision of the item
      */
     public function createThumbnail($item, $inputFile = null)
     {

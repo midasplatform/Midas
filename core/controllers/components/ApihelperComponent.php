@@ -345,7 +345,7 @@ class ApihelperComponent extends AppComponent
      * @return A list with three keys: privacy, user, group; privacy will be the
      *           resource's privacy string [Public|Private]; user will be a list of
      *           (user_id, policy, email); group will be a list of (group_id, policy, name).
-     *           policy for user and group will be a policy string [Admin|Write|Read].
+     *           policy for user and group will be a policy string [Admin|Write|Read]
      */
     public function listResourcePermissions($policyStatus, $userPolicies, $groupPolicies)
     {

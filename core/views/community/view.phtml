@@ -92,16 +92,7 @@ $strippedDescription = strip_tags($description);
                         <a id="tabInfoLink" href="#tabs-info"><?php echo $this->t('Info'); ?></a></li>
                 <?php
                 }
-                ?>
 
-                <?php
-                if ($this->isMember) {
-                    ?>
-                    <li>
-                        <a id="tabSharedLink" href="#tabs-shared"><?php echo $this->t('Shared with members'); ?></a>
-                    </li>
-                <?php
-                }
                 foreach ($this->customTabs as $module => $value) {
                     if (!$value) {
                         continue;
@@ -178,17 +169,6 @@ $strippedDescription = strip_tags($description);
                     </tbody>
                 </table>
             </div>
-            <?php
-            if ($this->isMember) {
-                ?>
-                <div id="tabs-shared">
-                    <?php
-                    $this->listFiles = $this->shareItems;
-                    echo $this->element('listfiles');
-                    ?>
-                </div>
-            <?php
-            }?>
         </div>
     </div>
 

@@ -63,7 +63,7 @@ class Tracker_ParamDao extends Tracker_AppDao
      * Get the value of the param, regardless of its type, returning either a
      * numeric or a string.
      *
-     * @return float|int|string|null.
+     * @return float|int|string|null
      */
     public function getParamValue()
     {

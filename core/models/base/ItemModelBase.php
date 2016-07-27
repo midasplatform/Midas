@@ -76,9 +76,6 @@ abstract class ItemModelBase extends AppModel
     /** Get shared to user */
     abstract public function getSharedToUser($userDao, $limit = 20);
 
-    /** Get shared to community */
-    abstract public function getSharedToCommunity($communityDao, $limit = 20);
-
     /** Check policy */
     abstract public function policyCheck($itemdao, $userDao = null, $policy = 0);
 
@@ -177,7 +174,7 @@ abstract class ItemModelBase extends AppModel
      * @param dao The item dao to save
      * @param metadataChanged (bool, default = true) This parameter is passed to the
      *                        CALLBACK_CORE_ITEM_SAVED and should only be set to true on the
-     *                        final save of the item in the controller's execution.
+     *                        final save of the item in the controller's execution
      */
     public function save($dao, $metadataChanged = true)
     {

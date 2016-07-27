@@ -265,7 +265,7 @@ class Tracker_ProducerController extends Tracker_AppController
     /**
      * Dialog for create/edit/view/deleting an aggregate metric for this producer.
      *
-     * @param producerId Id of the producer.  Admin permission on the associated community required.
+     * @param producerId Id of the producer.  Admin permission on the associated community required
      * @throws Zend_Exception
      */
     public function aggregatemetricAction()

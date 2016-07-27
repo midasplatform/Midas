@@ -27,7 +27,7 @@ class Oauth_AuthorizeController extends Oauth_AppController
     /**
      * Renders the oauth login screen. See http://tools.ietf.org/html/draft-ietf-oauth-v2-31#section-4.1.1.
      *
-     * @param response_type Should be set to "code".
+     * @param response_type Should be set to "code"
      * @param client_id The identifier of the client
      * @param redirect_uri The redirect URI to redirect the end user to upon successful login
      * @param [scope] JSON-encoded array of scope constants (see api module constants). Defaults to ALL if not set
@@ -85,7 +85,7 @@ class Oauth_AuthorizeController extends Oauth_AppController
      * @param redirect_uri The client's desired redirect URI
      * @param login The user's login
      * @param password The user's password
-     * @param allowOrDeny Whether to allow or deny the request. Set to 'Allow' to allow.
+     * @param allowOrDeny Whether to allow or deny the request. Set to 'Allow' to allow
      * @param [state] Opaque state pointer string to be passed back to the client appended to the redirect URI
      * @throws Zend_Exception
      */

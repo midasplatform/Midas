@@ -134,11 +134,11 @@ class Tracker_ApiComponent extends AppComponent
      * @param metricName The metric name that identifies which trend this point belongs to
      * @param value The value of the scalar
      * @param submissionUuid the uuid of the submission. If a submission does not exist with the specified uuid, one
-     *                       will be created.
+     *                       will be created
      * @param configItemId (Optional) If this value pertains to a specific configuration item, pass its id here
      * @param testDatasetId (Optional) If this value pertains to a specific test dataset, pass its id here
      * @param truthDatasetId (Optional) If this value pertains to a specific ground truth dataset, pass its id here
-     * @param unit (Optional) If passed, the unit of the scalar value that identifies which trend this point belongs to.
+     * @param unit (Optional) If passed, the unit of the scalar value that identifies which trend this point belongs to
      * @return The scalar DAO that was created
      * @throws Exception
      */
@@ -315,7 +315,7 @@ class Tracker_ApiComponent extends AppComponent
      * @param producerDisplayName Displayed name of the producer
      * @param producerRevision The repository revision of the producer that produced this value
      * @param branch The branch name within the source repository
-     * @param uuid (Optional) A unique identifier for the submission. If none is passed, one will be generated.
+     * @param uuid (Optional) A unique identifier for the submission. If none is passed, one will be generated
      * @param name (Optional) A name for the submission
      * @param submitTime (Optional) The submit timestamp. Must be parseable with PHP strtotime()
      * @param buildResultsUrl (Optional) The URL where build results can be viewed
@@ -338,7 +338,7 @@ class Tracker_ApiComponent extends AppComponent
     /**
      * Validate documents tied to a submission.
      *
-     * @param uuid The uuid of the submission to validate documents for.
+     * @param uuid The uuid of the submission to validate documents for
      * @param producerConfig (Optional) JSON object describing the pipeline
      * @param submissionDocument (Optional) JSON object describing the submission
      */

@@ -130,7 +130,7 @@ class Googleappengine_ApiuploadComponent extends AppComponent
             }
         }
 
-        $license = isset($args['license']) ?  $args['license'] : null;
+        $license = isset($args['license']) ? $args['license'] : null;
         $checksum = md5_file($tmpName);
         $revisionNumber = null;
 

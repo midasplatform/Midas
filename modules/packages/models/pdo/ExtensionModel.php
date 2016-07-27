@@ -29,7 +29,7 @@ class Packages_ExtensionModel extends Packages_ExtensionModelBase
      * @param array $params Optional associative array specifying 'extension_id', 'os', 'arch',
      *                      'submissiontype', 'packagetype', 'slicer_revision', 'revision',
      *                      'productname', 'codebase', 'release' and 'category'.
-     *                      Can also specify 'order', 'direction', 'limit', and 'offset'.
+     *                      Can also specify 'order', 'direction', 'limit', and 'offset'
      * @return array array('extensions' => list of matching extensions,
      *                            'total' => number of total matching extensions
      */
