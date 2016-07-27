@@ -82,7 +82,7 @@ class ApigroupComponent extends AppComponent
      * @http PUT
      * @param id the group to add the user to
      * @param user_id the user to add to the group
-     * @return success = true on success.
+     * @return success = true on success
      *
      * @param array $args parameters
      */
@@ -104,7 +104,7 @@ class ApigroupComponent extends AppComponent
      * @http PUT
      * @param id the group to remove the user from
      * @param user_id the user to remove from the group
-     * @return success = true on success.
+     * @return success = true on success
      *
      * @param array $args parameters
      */
@@ -179,7 +179,7 @@ class ApigroupComponent extends AppComponent
      * @http POST
      * @param community_id the id of the community the group will associate with
      * @param name the name of the new group
-     * @return group_id of the newly created group on success.
+     * @return group_id of the newly created group on success
      *
      * @param array $args parameters
      * @throws Exception
@@ -224,7 +224,7 @@ class ApigroupComponent extends AppComponent
      * @path /group/{id}
      * @http DELETE
      * @param id the id of the group to be removed
-     * @return success = true on success.
+     * @return success = true on success
      *
      * @param array $args parameters
      * @throws Exception

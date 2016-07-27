@@ -98,7 +98,7 @@ class ApiController extends REST_Controller
      * @param string $restAction RESTful actions: get, index, post, put or delete
      * @param array $apiFunctions An array of method name in RESTful action
      *   => function name in the corresponding ApiComponent. This array must have
-     *   'default' in its keys.
+     *   'default' in its keys
      * @param null|string $moduleName module from which to get the ApiComponent
      * @param bool $rpcStyle wrap data in RPC-style "data" and "msg" fields
      *

@@ -44,7 +44,7 @@ class ModuleDao extends AppDao
     /**
      * Return the current version of this module.
      *
-     * @return string current version of this module.
+     * @return string current version of this module
      */
     public function getCurrentVersion()
     {
@@ -54,7 +54,7 @@ class ModuleDao extends AppDao
     /**
      * Set the current version of this module.
      *
-     * @param string $currentVersion current version of this module.
+     * @param string $currentVersion current version of this module
      * @throws Zend_Exception
      */
     public function setCurrentVersion($currentVersion)
@@ -71,7 +71,7 @@ class ModuleDao extends AppDao
     /**
      * Return true if this module is enabled.
      *
-     * @return bool true if this module is enabled, false otherwise.
+     * @return bool true if this module is enabled, false otherwise
      */
     public function isEnabled()
     {

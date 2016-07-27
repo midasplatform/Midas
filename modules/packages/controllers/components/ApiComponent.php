@@ -84,10 +84,10 @@ class Packages_ApiComponent extends AppComponent
      * @param revision (Optional) The revision of the package
      * @param application_revision (Optional) The application revision the package was built against
      * @param release (Optional) Release identifier associated with a package.
-     * If not set, it will return both released and non-released packages.
+     * If not set, it will return both released and non-released packages
      * @param order (Optional) What parameter to order results by (revision | packagetype | submissiontype | arch | os)
      * @param direction (Optional) What direction to order results by (asc | desc).  Default asc
-     * @param limit (Optional) Limit result count. Must be a positive integer.
+     * @param limit (Optional) Limit result count. Must be a positive integer
      * @return An array of extension daos
      */
     public function extensionList($args)
@@ -164,7 +164,7 @@ class Packages_ApiComponent extends AppComponent
      * @param icon_url (Optional) The url of the icon for the extension
      * @param development_status (Optional) Arbitrary description of the status of the extension (stable, active, etc)
      * @param category (Optional) Category under which to place the extension. Subcategories should be delimited by . character.
-     * If none is passed, will render under the Miscellaneous category.
+     * If none is passed, will render under the Miscellaneous category
      * @param enabled (Optional) Boolean indicating if the extension should be automatically enabled after its installation
      * @param homepage (Optional) The url of the extension homepage
      * @param screenshots (Optional) Space -separate list of URLs of screenshots for the extension
@@ -307,10 +307,10 @@ class Packages_ApiComponent extends AppComponent
      * @param codebase (Optional) The codebase name (Example: Slicer4)
      * @param revision (Optional) The revision of the package
      * @param release (Optional) Release identifier associated with a package.
-     * If not set, it will return both released and non-released packages.
+     * If not set, it will return both released and non-released packages
      * @param order (Optional) What parameter to order results by (revision | packagetype | submissiontype | arch | os)
      * @param direction (Optional) What direction to order results by (asc | desc).  Default asc
-     * @param limit (Optional) Limit result count. Must be a positive integer.
+     * @param limit (Optional) Limit result count. Must be a positive integer
      * @return An array of packages
      */
     public function packageList($args)

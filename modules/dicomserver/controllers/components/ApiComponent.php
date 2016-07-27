@@ -47,7 +47,7 @@ class Dicomserver_ApiComponent extends AppComponent
      * @param incoming_dir (Optional) The incoming directory to receive and process DICOM files
      * @param dest_folder (Optional) Pydas upload destination folder
      * @param dcmqrscp_cmd (Optional) The command to run dcmqrscp
-     * @param get_command (Optional) If set, will not start DICOM server, but only get command used to start DICOM server in command line.
+     * @param get_command (Optional) If set, will not start DICOM server, but only get command used to start DICOM server in command line
      * @return
      */
     public function start($args)
@@ -73,7 +73,7 @@ class Dicomserver_ApiComponent extends AppComponent
      * @param storescp_cmd (Optional) The command to run storescp
      * @param dcmqrscp_cmd (Optional) The command to run dcmqrscp
      * @param incoming_dir (Optional) The incoming directory to receive and process DICOM files
-     * @param get_command (Optional) If set, will not stop DICOM server, but only get command used to stop DICOM server in command line.
+     * @param get_command (Optional) If set, will not stop DICOM server, but only get command used to stop DICOM server in command line
      * @return
      */
     public function stop($args)

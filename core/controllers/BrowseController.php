@@ -527,7 +527,7 @@ class BrowseController extends AppController
      *                 {success: {folders: [<id>, <id>, ...], items: [<id>, <id>, ...]},
      *                 failure: {folders: [<id>, <id>, ...], items: [<id>, <id>, ...]}}
      *                 Denoting which deletes succeeded and which failed.  Invalid ids will be considered
-     *                 already deleted and are thus returned as successful.
+     *                 already deleted and are thus returned as successful
      */
     public function deleteAction()
     {

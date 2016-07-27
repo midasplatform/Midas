@@ -121,7 +121,7 @@ abstract class Tracker_AggregateMetricModelBase extends Tracker_AppModel
      * @param Tracker_SubmissionDao $submissionDao submission DAO
      * @return false | array keys are submission_id and values are Tracker_AggregateMetricDao
      * for that SubmissionDao and AggregateMetricSpecDao, sorted in ascending order of
-     * SubmissionDao submit_time.
+     * SubmissionDao submit_time
      */
     abstract public function getAggregateMetricsForSubmissions($aggregateMetricSpecDao, $submissionDaos);
 
@@ -142,7 +142,7 @@ abstract class Tracker_AggregateMetricModelBase extends Tracker_AppModel
      * metrics, defaults to 'master'
      * @return array keys are AggregateMetricSpecDao Name, values are lists of
      * AggregateMetric values calculated that match the input param filters and
-     * are sorted in their individual lists in ascending submission time order.
+     * are sorted in their individual lists in ascending submission time order
      */
     abstract public function getAggregateMetricsSeries($producerDao, $theDate, $daysInterval, $branch);
 

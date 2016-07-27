@@ -662,8 +662,8 @@ class UserController extends AppController
     /**
      * Test whether a given user already exists or not.
      *
-     * @param entry The email/login to test.
-     * @return Echoes "true" or "false".
+     * @param entry The email/login to test
+     * @return Echoes "true" or "false"
      */
     public function userexistsAction()
     {

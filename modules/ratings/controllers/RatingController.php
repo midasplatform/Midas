@@ -27,7 +27,7 @@ class Ratings_RatingController extends Ratings_AppController
      * Set a rating on an item.
      *
      * @param itemId The item id to set the rating on
-     * @param rating The rating (0-5) to set for the currently logged user. 0 means remove user's rating.
+     * @param rating The rating (0-5) to set for the currently logged user. 0 means remove user's rating
      * @throws Zend_Exception
      */
     public function rateitemAction()

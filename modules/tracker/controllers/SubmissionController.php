@@ -35,11 +35,11 @@ class Tracker_SubmissionController extends Tracker_AppController
     /**
      * Return a csv file holding the outputs of this submission.
      *
-     * @param submissionUuid Uuid of the submission.  Read permission on the associated community required.
-     * @param keyMetricsOnly (optional) Whether to return all metrics or key metrics only, defaults to true.
+     * @param submissionUuid Uuid of the submission.  Read permission on the associated community required
+     * @param keyMetricsOnly (optional) Whether to return all metrics or key metrics only, defaults to true
      * @param daysInterval (optional) If set, return all scalars from submissions with the same branch
      * and producer as the passed in submission, searching as far back as daysInterval before the
-     * passed in submission.
+     * passed in submission
      * @throws Zend_Exception
      */
     public function csvAction()

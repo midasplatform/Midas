@@ -227,7 +227,7 @@ class KWUtils
      * application is executable
      * @return string the path to the application, throws a Zend_Exception if the app
      *             can't be found, or if $check_execution_flag  is set and the app is not
-     *             executable.
+     *             executable
      * @throws Zend_Exception
      */
     public static function findApp($app_name, $check_execution_flag)

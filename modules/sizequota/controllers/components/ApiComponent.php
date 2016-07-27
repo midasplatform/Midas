@@ -71,7 +71,7 @@ class Sizequota_ApiComponent extends AppComponent
      *
      * @param folder The folder id
      * @param quota (Optional) The quota. Pass a number of bytes or the empty string for unlimited.
-     * If this parameter isn't specified, deletes the current quota entry if one exists.
+     * If this parameter isn't specified, deletes the current quota entry if one exists
      */
     public function set($args)
     {

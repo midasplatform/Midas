@@ -216,7 +216,7 @@ class Tracker_Notification extends ApiEnabled_Notification
      * Send an email to the user that an aggregate metric threshold was crossed.
      *
      * @param array $params associative array of parameters including the keys
-     * "aggregate_metric_spec_id", "aggregate_metric_id", "recipient_id".
+     * "aggregate_metric_spec_id", "aggregate_metric_id", "recipient_id"
      */
     public function sendAggregateEmail($params)
     {

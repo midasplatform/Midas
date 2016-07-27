@@ -149,7 +149,7 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
      * @param false | string $date the end of the interval or false to use 23:59:59 of the current day
      * @param string $branch the branch of the submission for which to search
      * @param bool $onlyOneDay if true return submissions 24 hours back from $date (In the case of $date === false,
-     * search only in the current day.) If false, search back as far as possible.
+     * search only in the current day.) If false, search back as far as possible
      * @return false | Tracker_SubmissionDao submission
      */
     abstract public function getLatestSubmissionByProducerDateAndBranch($producerDao,
@@ -185,7 +185,7 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
      * days previous to the passed in submission
      * @return array tabular data including the submission uuid, branch, producer id, producer name
      * producer revision, submit time, metric (trend) name, value, unit, and test dataset name per row,
-     * where the first row has column headers.
+     * where the first row has column headers
      * @throws Zend_Exception
      */
     abstract public function getTabularSubmissionDetails($producerDao, $submissionDao, $key = false, $daysInterval = false);

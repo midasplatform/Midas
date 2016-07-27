@@ -46,7 +46,7 @@ class ProgressController extends AppController
      * Action for querying progress of a certain event. Should be called with ajax.
      *
      * @param progressId The id of the progress object to query
-     * @return Echoes the progress dao if one exists, or false if it is completed or DNE.
+     * @return Echoes the progress dao if one exists, or false if it is completed or DNE
      */
     public function getAction()
     {
