@@ -157,8 +157,8 @@ class DownloadBitstreamComponent extends AppComponent
  * IIS, or SCRIPT_NAME in CGI mode).  Also exposes some additional custom
  * environment information.
  *
- * @param string $key Environment variable name.
- * @return string Environment variable setting.
+ * @param string $key Environment variable name
+ * @return string Environment variable setting
  * @link http://book.cakephp.org/view/1130/env
  */
 function env($key)

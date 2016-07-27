@@ -235,18 +235,18 @@ class ApisystemComponent extends AppComponent
      * @param token (Optional) Authentication token
      * @param folderid The id of the folder in which to create a new item that
      * will contain the link. The new item will have the same name as
-     * <b>url</b> unless <b>itemname</b> is supplied.
+     * <b>url</b> unless <b>itemname</b> is supplied
      * @param url The URL of the link you will create, will be used as the name
      * of the bitstream and of the item (unless <b>itemname</b> is
-     * supplied).
+     * supplied)
      * @param itemname (Optional)
      * The name of the newly created item, if not supplied, the item will
-     * have the same name as <b>url</b>.
+     * have the same name as <b>url</b>
      * @param length (Optional)
-     * The length in bytes of the file to which the link points.
+     * The length in bytes of the file to which the link points
      * @param checksum (Optional)
-     * The md5 checksum of the file to which the link points.
-     * @return The item information of the item created.
+     * The md5 checksum of the file to which the link points
+     * @return The item information of the item created
      *
      * @param array $args parameters
      * @throws Exception
@@ -310,20 +310,20 @@ class ApisystemComponent extends AppComponent
      * @param useSession (Optional) Authenticate using the current Midas session
      * @param token (Optional) Authentication token
      * @param itemid (Optional)
-     * The id of the item to upload into.
+     * The id of the item to upload into
      * @param folderid (Optional)
      * The id of the folder to create a new item in and then upload to.
      * The new item will have the same name as <b>filename</b> unless <b>itemname</b>
-     * is supplied.
+     * is supplied
      * @param filename The filename of the file you will upload, will be used as the
-     * bitstream's name and the item's name (unless <b>itemname</b> is supplied).
+     * bitstream's name and the item's name (unless <b>itemname</b> is supplied)
      * @param itemdescription (Optional)
      * When passing the <b>folderid</b> param, the description of the item,
-     * if not supplied the item's description will be blank.
+     * if not supplied the item's description will be blank
      * @param itemname (Optional)
      * When passing the <b>folderid</b> param, the name of the newly created item,
-     * if not supplied, the item will have the same name as <b>filename</b>.
-     * @param checksum (Optional) The md5 checksum of the file to be uploaded.
+     * if not supplied, the item will have the same name as <b>filename</b>
+     * @param checksum (Optional) The md5 checksum of the file to be uploaded
      * @return An upload token that can be used to upload a file.
      *            If <b>folderid</b> is passed instead of <b>itemid</b>, a new item will be created
      *            in that folder, but the id of the newly created item will not be
@@ -333,7 +333,7 @@ class ApisystemComponent extends AppComponent
      *            server already has this file and there is no need to follow this
      *            call with a call to <b>/system/upload</b>, as the passed in
      *            file will have been added as a bitstream to the item's latest
-     *            revision, creating a new revision if one doesn't exist.
+     *            revision, creating a new revision if one doesn't exist
      *
      * @param array $args parameters
      * @throws Exception
@@ -458,19 +458,19 @@ class ApisystemComponent extends AppComponent
      *
      * @path /system/upload
      * @http POST
-     * @param uploadtoken The upload token (see <b>midas.upload.generatetoken</b>).
-     * @param filename The name of the bitstream that will be added to the item.
-     * @param length The length in bytes of the file being uploaded.
-     * @param mode (Optional) Stream or multipart. Default is stream.
+     * @param uploadtoken The upload token (see <b>midas.upload.generatetoken</b>)
+     * @param filename The name of the bitstream that will be added to the item
+     * @param length The length in bytes of the file being uploaded
+     * @param mode (Optional) Stream or multipart. Default is stream
      * @param revision (Optional)
      * If set, will add a new file into the existing passed in revision number.
      * If set to "head", will add a new file into the most recent revision,
-     * and will create a new revision in this case if none exists.
+     * and will create a new revision in this case if none exists
      * @param changes (Optional)
      * The changes field on the affected item revision,
-     * e.g. for recording what has changed since the previous revision.
-     * @param license (Optional) The license for the revision.
-     * @return The item information of the item created or changed.
+     * e.g. for recording what has changed since the previous revision
+     * @param license (Optional) The license for the revision
+     * @return The item information of the item created or changed
      *
      * @param array $args parameters
      * @throws Exception
@@ -580,7 +580,7 @@ class ApisystemComponent extends AppComponent
             }
         }
 
-        $license = array_key_exists('license', $args) ?  $args['license'] : null;
+        $license = array_key_exists('license', $args) ? $args['license'] : null;
         $changes = array_key_exists('changes', $args) ? $args['changes'] : '';
         $revisionNumber = null;
         if (isset($revision) && $revision !== false) {

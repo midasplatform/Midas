@@ -25,7 +25,7 @@ class BreadcrumbComponent extends AppComponent
      * Build a breadcrumb bar for the header and set it on the view provided.
      *
      * @param array $nodes ordered list of nodes. Each node must have a 'type' key whose value is
-     * in the set {'community', 'folder', 'item', 'user', 'custom'}.
+     * in the set {'community', 'folder', 'item', 'user', 'custom'}
      * @param Zend_View $view view in which to set the header
      * @return string
      * @throws Zend_Exception

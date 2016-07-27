@@ -177,7 +177,7 @@ abstract class ItemModelBase extends AppModel
      * @param dao The item dao to save
      * @param metadataChanged (bool, default = true) This parameter is passed to the
      *                        CALLBACK_CORE_ITEM_SAVED and should only be set to true on the
-     *                        final save of the item in the controller's execution.
+     *                        final save of the item in the controller's execution
      */
     public function save($dao, $metadataChanged = true)
     {

@@ -51,7 +51,7 @@ class Ldap_Upgrade_1_1_0 extends MIDASUpgrade
             $settingModel->setConfig(LDAP_SEARCH_TERM_KEY, $searchTerm, $this->moduleName);
             $proxyBaseDn = isset($config->ldap->proxyBasedn) ? $config->ldap->proxyBasedn : LDAP_PROXY_BASE_DN_DEFAULT_VALUE;
             $settingModel->setConfig(LDAP_PROXY_BASE_DN_KEY, $proxyBaseDn, $this->moduleName);
-            $proxyPassword = isset($config->ldap->proxyPassword) ? $config->ldap->proxyPassword :  LDAP_PROXY_PASSWORD_DEFAULT_VALUE;
+            $proxyPassword = isset($config->ldap->proxyPassword) ? $config->ldap->proxyPassword : LDAP_PROXY_PASSWORD_DEFAULT_VALUE;
             $settingModel->setConfig(LDAP_PROXY_PASSWORD_KEY, $proxyPassword, $this->moduleName);
             $useActiveDirectory = isset($config->ldap->useActiveDirectory) ? $config->ldap->useActiveDirectory : LDAP_USE_ACTIVE_DIRECTORY_DEFAULT_VALUE;
             $settingModel->setConfig(LDAP_USE_ACTIVE_DIRECTORY_KEY, $useActiveDirectory, $this->moduleName);

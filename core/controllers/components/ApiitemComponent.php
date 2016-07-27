@@ -29,7 +29,7 @@ class ApiitemComponent extends AppComponent
      * @param id The id of the item
      * @param revision (Optional) Revision of the item. Defaults to latest revision
      * @return the sought metadata array on success,
-     *             will fail if there are no revisions or the specified revision is not found.
+     *             will fail if there are no revisions or the specified revision is not found
      *
      * @param array $args parameters
      * @throws Exception
@@ -74,11 +74,11 @@ class ApiitemComponent extends AppComponent
      * @param id The id of the item
      * @param element The metadata element
      * @param value The metadata value for the field
-     * @param qualifier (Optional) The metadata qualifier. Defaults to empty string.
-     * @param type (Optional) The metadata type (integer constant). Defaults to MIDAS_METADATA_TEXT type (0).
-     * @param revision (Optional) Revision of the item. Defaults to latest revision.
+     * @param qualifier (Optional) The metadata qualifier. Defaults to empty string
+     * @param type (Optional) The metadata type (integer constant). Defaults to MIDAS_METADATA_TEXT type (0)
+     * @param revision (Optional) Revision of the item. Defaults to latest revision
      * @return true on success,
-     *              will fail if there are no revisions or the specified revision is not found.
+     *              will fail if there are no revisions or the specified revision is not found
      *
      * @param array $args parameters
      * @throws Exception
@@ -118,19 +118,19 @@ class ApiitemComponent extends AppComponent
      * @path /item/setmultiplemetadata/{id}
      * @http PUT
      * @param id The id of the item
-     * @param revision (Optional) Item Revision number to set metadata on, defaults to latest revision.
+     * @param revision (Optional) Item Revision number to set metadata on, defaults to latest revision
      * @param count The number of metadata tuples that will be set.  For every one
      * of these metadata tuples there will be the following set of params with counters
      * at the end of each param name, from 1..<b>count</b>, following the example
      * using the value <b>i</b> (i.e., replace <b>i</b> with values 1..<b>count</b>)
-     * (<b>element_i</b>, <b>value_i</b>, <b>qualifier_i</b>, <b>type_i</b>).
+     * (<b>element_i</b>, <b>value_i</b>, <b>qualifier_i</b>, <b>type_i</b>)
      *
      * @param element_i metadata element for tuple i
      * @param value_i   metadata value for the field, for tuple i
-     * @param qualifier_i (Optional) metadata qualifier for tuple i. Defaults to empty string.
-     * @param type_i (Optional) metadata type (integer constant). Defaults to MIDAS_METADATA_TEXT type (0).
+     * @param qualifier_i (Optional) metadata qualifier for tuple i. Defaults to empty string
+     * @param type_i (Optional) metadata type (integer constant). Defaults to MIDAS_METADATA_TEXT type (0)
      * @return true on success,
-     *              will fail if there are no revisions or the specified revision is not found.
+     *              will fail if there are no revisions or the specified revision is not found
      *
      * @param array $args parameters
      * @throws Exception
@@ -180,10 +180,10 @@ class ApiitemComponent extends AppComponent
      * @http PUT
      * @param id The id of the item
      * @param metadata The metadata list to add or update, must be passed in the request body
-     * as 'application/json'.
-     * @param revision (Optional) Item Revision number to set metadata on, defaults to latest revision.
+     * as 'application/json'
+     * @param revision (Optional) Item Revision number to set metadata on, defaults to latest revision
      * @return item on success,
-     *              will fail if there are no revisions or the specified revision is not found.
+     *              will fail if there are no revisions or the specified revision is not found
      *
      * @param array $args parameters
      * @throws Exception
@@ -235,13 +235,13 @@ class ApiitemComponent extends AppComponent
      * @http PUT
      * @param id The id of the item
      * @param element The metadata element
-     * @param qualifier (Optional) The metadata qualifier. Defaults to empty string.
+     * @param qualifier (Optional) The metadata qualifier. Defaults to empty string
      * @param type (Optional) metadata type (integer constant).
-     * Defaults to MIDAS_METADATA_TEXT (0).
-     * @param revision (Optional) Revision of the item. Defaults to latest revision.
+     * Defaults to MIDAS_METADATA_TEXT (0)
+     * @param revision (Optional) Revision of the item. Defaults to latest revision
      * @return true on success,
      *              false if the metadata was not found on the item revision,
-     *              will fail if there are no revisions or the specified revision is not found.
+     *              will fail if there are no revisions or the specified revision is not found
      *
      * @param array $args parameters
      * @throws Exception
@@ -292,9 +292,9 @@ class ApiitemComponent extends AppComponent
      * @http PUT
      * @param id The id of the item
      * @param revision (Optional)
-     * Revision of the item. Defaults to latest revision; pass <b>all</b> to delete all metadata from all revisions.
+     * Revision of the item. Defaults to latest revision; pass <b>all</b> to delete all metadata from all revisions
      * @return true on success,
-     *              will fail if there are no revisions or the specified revision is not found.
+     *              will fail if there are no revisions or the specified revision is not found
      *
      * @param array $args parameters
      * @throws Exception
@@ -565,7 +565,7 @@ class ApiitemComponent extends AppComponent
      * @return Array with three keys: privacy, user, group; privacy will be the
      *           item's privacy string [Public|Private]; user will be a list of
      *           (user_id, policy, email); group will be a list of (group_id, policy, name).
-     *           policy for user and group will be a policy string [Admin|Write|Read].
+     *           policy for user and group will be a policy string [Admin|Write|Read]
      *
      * @param array $args parameters
      * @throws Exception
@@ -607,14 +607,14 @@ class ApiitemComponent extends AppComponent
      *
      * @path /item
      * @http POST
-     * @param parentid The id of the parent folder. Only required for creating a new item.
+     * @param parentid The id of the parent folder. Only required for creating a new item
      * @param name The name of the item to create
      * @param description (Optional) The description of the item
-     * @param uuid (Optional) Uuid of the item. If none is passed, will generate one.
+     * @param uuid (Optional) Uuid of the item. If none is passed, will generate one
      * @param privacy (Optional) [Public|Private], default will inherit from parent folder
      * @param updatebitstream (Optional) If set, the bitstream's name will be updated
      * simultaneously with the item's name if and only if the item has already
-     * existed and its latest revision contains only one bitstream.
+     * existed and its latest revision contains only one bitstream
      * @return The item object that was created
      *
      * @param array $args parameters
@@ -908,10 +908,10 @@ class ApiitemComponent extends AppComponent
      *
      * @path /item/addpolicygroup/{id}
      * @http PUT
-     * @param id The id of the item.
-     * @param group_id The id of the group.
-     * @param policy Desired policy status, one of [Admin|Write|Read].
-     * @return success = true on success.
+     * @param id The id of the item
+     * @param group_id The id of the group
+     * @param policy Desired policy status, one of [Admin|Write|Read]
+     * @return success = true on success
      *
      * @param array $args parameters
      * @throws Exception
@@ -957,9 +957,9 @@ class ApiitemComponent extends AppComponent
      *
      * @path /item/removepolicygroup/{id}
      * @http PUT
-     * @param id The id of the item.
-     * @param group_id The id of the group.
-     * @return success = true on success.
+     * @param id The id of the item
+     * @param group_id The id of the group
+     * @return success = true on success
      *
      * @param array $args parameters
      * @throws Exception
@@ -1007,10 +1007,10 @@ class ApiitemComponent extends AppComponent
      *
      * @path /item/addpolicyuser/{id}
      * @http PUT
-     * @param id The id of the item.
-     * @param user_id The id of the targeted user to create the policy for.
-     * @param policy Desired policy status, one of [Admin|Write|Read].
-     * @return success = true on success.
+     * @param id The id of the item
+     * @param user_id The id of the targeted user to create the policy for
+     * @param policy Desired policy status, one of [Admin|Write|Read]
+     * @return success = true on success
      *
      * @param array $args parameters
      * @throws Exception
@@ -1057,9 +1057,9 @@ class ApiitemComponent extends AppComponent
      *
      * @path /item/removepolicyuser/{id}
      * @http PUT
-     * @param id The id of the item.
-     * @param user_id The id of the target user.
-     * @return success = true on success.
+     * @param id The id of the item
+     * @param user_id The id of the target user
+     * @return success = true on success
      *
      * @param array $args parameters
      * @throws Exception

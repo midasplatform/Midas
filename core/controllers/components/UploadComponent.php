@@ -356,7 +356,7 @@ class UploadComponent extends AppComponent
      * @param null|int $itemRevisionNumber [optional][default=null] Revision number for the item
      * @param null|int $license [optional][default=null] License text for the revision
      * @param string $fileChecksum [optional][default=''] If passed, will use it instead of calculating it ourselves
-     * @param bool $copy [optional][default=false] If true, will copy the file. Otherwise it will just move it into the assetstore.
+     * @param bool $copy [optional][default=false] If true, will copy the file. Otherwise it will just move it into the assetstore
      * @param null|int $fileSize If passed, will use it instead of calculating it ourselves
      * @param null|string $mimeType If passed, will use it instead of calculating it ourselves
      * @return ItemDao

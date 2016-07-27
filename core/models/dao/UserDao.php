@@ -84,7 +84,7 @@ class UserDao extends AppDao
     /**
      * Return true if this user is an administrator.
      *
-     * @return bool true if this user is an administrator, false otherwise.
+     * @return bool true if this user is an administrator, false otherwise
      */
     public function isAdmin()
     {

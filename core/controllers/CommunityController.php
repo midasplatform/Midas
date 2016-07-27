@@ -462,7 +462,7 @@ class CommunityController extends AppController
     /**
      * Dialog for inviting a user to a community.
      *
-     * @param communityId Id of the community to invite into. Write permission required.
+     * @param communityId Id of the community to invite into. Write permission required
      * @throws Zend_Exception
      */
     public function invitationAction()
@@ -498,7 +498,7 @@ class CommunityController extends AppController
      * @param [groupId] Id of the group to invite into.  If none is passed, uses the members group
      * @param [userId] Id of the user to invite. If not passed, must pass email parameter
      * @param [email] Email of the user to invite.  If not passed, must pass userId parameter.
-     * If no such user exists, sends an email inviting the user to register and join the group.
+     * If no such user exists, sends an email inviting the user to register and join the group
      */
     public function addusertogroupAction()
     {
@@ -551,7 +551,7 @@ class CommunityController extends AppController
      * @param [groupId] Id of the group to invite into.  If none is passed, uses the members group
      * @param [userId] Id of the user to invite. If not passed, must pass email parameter
      * @param [email] Email of the user to invite.  If not passed, must pass userId parameter.
-     * If no such user exists, sends an email inviting the user to register and join the group.
+     * If no such user exists, sends an email inviting the user to register and join the group
      * @throws Zend_Exception
      */
     public function sendinvitationAction()

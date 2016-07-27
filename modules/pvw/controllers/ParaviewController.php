@@ -31,7 +31,7 @@ class Pvw_ParaviewController extends Pvw_AppController
      * be returned to the client.
      *
      * @param [appname] The name of the application to start, defaults to midas.
-     * All available apps live in the 'apps' directory of this module.
+     * All available apps live in the 'apps' directory of this module
      * @param itemId The id of the item to be rendered. Item data will be symlinked into the
      * location expected by pvpython
      * @param [meshes] List of item id's representing meshes to display in the scene, separated by ;

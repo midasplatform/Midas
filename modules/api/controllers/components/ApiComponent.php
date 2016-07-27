@@ -276,21 +276,21 @@ class Api_ApiComponent extends AppComponent
     /**
      * Create a link bitstream.
      *
-     * @param token Authentication token.
+     * @param token Authentication token
      * @param folderid The id of the folder in which to create a new item that
      * will contain the link. The new item will have the same name as
-     * <b>url</b> unless <b>itemname</b> is supplied.
+     * <b>url</b> unless <b>itemname</b> is supplied
      * @param url The URL of the link you will create, will be used as the name
      * of the bitstream and of the item (unless <b>itemname</b> is
-     * supplied).
+     * supplied)
      * @param itemname (Optional)
      * The name of the newly created item, if not supplied, the item will
-     * have the same name as <b>url</b>.
+     * have the same name as <b>url</b>
      * @param length (Optional)
-     * The length in bytes of the file to which the link points.
+     * The length in bytes of the file to which the link points
      * @param checksum (Optional)
-     * The md5 checksum of the file to which the link points.
-     * @return The item information of the item created.
+     * The md5 checksum of the file to which the link points
+     * @return The item information of the item created
      */
     public function linkCreate($args)
     {
@@ -301,22 +301,22 @@ class Api_ApiComponent extends AppComponent
      * Generate a unique upload token.  Either <b>itemid</b> or <b>folderid</b> is required,
      * but both are not allowed.
      *
-     * @param token Authentication token.
+     * @param token Authentication token
      * @param itemid
      The id of the item to upload into.
      * @param folderid
      The id of the folder to create a new item in and then upload to.
      * The new item will have the same name as <b>filename</b> unless <b>itemname</b>
-     * is supplied.
+     * is supplied
      * @param filename The filename of the file you will upload, will be used as the
-     * bitstream's name and the item's name (unless <b>itemname</b> is supplied).
+     * bitstream's name and the item's name (unless <b>itemname</b> is supplied)
      * @param itemdescription (Optional)
      * When passing the <b>folderid</b> param, the description of the item,
-     * if not supplied the item's description will be blank.
+     * if not supplied the item's description will be blank
      * @param itemname (Optional)
      * When passing the <b>folderid</b> param, the name of the newly created item,
-     * if not supplied, the item will have the same name as <b>filename</b>.
-     * @param checksum (Optional) The md5 checksum of the file to be uploaded.
+     * if not supplied, the item will have the same name as <b>filename</b>
+     * @param checksum (Optional) The md5 checksum of the file to be uploaded
      * @return An upload token that can be used to upload a file.
      *            If <b>folderid</b> is passed instead of <b>itemid</b>, a new item will be created
      *            in that folder, but the id of the newly created item will not be
@@ -326,7 +326,7 @@ class Api_ApiComponent extends AppComponent
      *            server already has this file and there is no need to follow this
      *            call with a call to <b>midas.upload.perform</b>, as the passed in
      *            file will have been added as a bitstream to the item's latest
-     *            revision, creating a new revision if one doesn't exist.
+     *            revision, creating a new revision if one doesn't exist
      */
     public function uploadGeneratetoken($args)
     {
@@ -350,19 +350,19 @@ class Api_ApiComponent extends AppComponent
      * generating the upload token in a new revision to that item, unless
      * <b>revision</b> param is set.
      *
-     * @param uploadtoken The upload token (see <b>midas.upload.generatetoken</b>).
-     * @param filename The name of the bitstream that will be added to the item.
-     * @param length The length in bytes of the file being uploaded.
-     * @param mode (Optional) Stream or multipart. Default is stream.
+     * @param uploadtoken The upload token (see <b>midas.upload.generatetoken</b>)
+     * @param filename The name of the bitstream that will be added to the item
+     * @param length The length in bytes of the file being uploaded
+     * @param mode (Optional) Stream or multipart. Default is stream
      * @param revision (Optional)
      * If set, will add a new file into the existing passed in revision number.
      * If set to "head", will add a new file into the most recent revision,
-     * and will create a new revision in this case if none exists.
+     * and will create a new revision in this case if none exists
      * @param changes (Optional)
      * The changes field on the affected item revision,
-     * e.g. for recording what has changed since the previous revision.
-     * @param license (Optional) The license for the revision.
-     * @return The item information of the item created or changed.
+     * e.g. for recording what has changed since the previous revision
+     * @param license (Optional) The license for the revision
+     * @return The item information of the item created or changed
      */
     public function uploadPerform($args)
     {
@@ -375,9 +375,9 @@ class Api_ApiComponent extends AppComponent
      * @param token Authentication token
      * @param name The community name
      * @param description (Optional) The community description
-     * @param uuid (Optional) Uuid of the community. If none is passed, will generate one.
-     * @param privacy (Optional) Default 'Public', possible values [Public|Private].
-     * @param canjoin (Optional) Default 'Everyone', possible values [Everyone|Invitation].
+     * @param uuid (Optional) Uuid of the community. If none is passed, will generate one
+     * @param privacy (Optional) Default 'Public', possible values [Public|Private]
+     * @param canjoin (Optional) Default 'Everyone', possible values [Everyone|Invitation]
      * @return The community dao that was created
      */
     public function communityCreate($args)
@@ -441,10 +441,10 @@ class Api_ApiComponent extends AppComponent
      * @param token Authentication token
      * @param name The name of the folder to create
      * @param description (Optional) The description of the folder
-     * @param uuid (Optional) Uuid of the folder. If none is passed, will generate one.
-     * @param privacy (Optional) Possible values [Public|Private]. Default behavior is to inherit from parent folder.
+     * @param uuid (Optional) Uuid of the folder. If none is passed, will generate one
+     * @param privacy (Optional) Possible values [Public|Private]. Default behavior is to inherit from parent folder
      * @param reuseExisting (Optional) If this parameter is set, will just return the existing folder if there is one with the name provided
-     * @param parentid The id of the parent folder. Set this to -1 to create a top level user folder.
+     * @param parentid The id of the parent folder. Set this to -1 to create a top level user folder
      * @return The folder object that was created
      */
     public function folderCreate($args)
@@ -519,7 +519,7 @@ class Api_ApiComponent extends AppComponent
      * @return A list with three keys: privacy, user, group; privacy will be the
      *           folder's privacy string [Public|Private]; user will be a list of
      *           (user_id, policy, email); group will be a list of (group_id, policy, name).
-     *           policy for user and group will be a policy string [Admin|Write|Read].
+     *           policy for user and group will be a policy string [Admin|Write|Read]
      */
     public function folderListPermissions($args)
     {
@@ -534,10 +534,10 @@ class Api_ApiComponent extends AppComponent
      * Set the privacy status on a folder, and push this value down recursively
      * to all children folders and items, requires Admin access to the folder.
      *
-     * @param folder_id The id of the folder.
-     * @param privacy Desired privacy status, one of [Public|Private].
+     * @param folder_id The id of the folder
+     * @param privacy Desired privacy status, one of [Public|Private]
      * @return An array with keys 'success' and 'failure' indicating a count
-     *            of children resources that succeeded or failed the permission change.
+     *            of children resources that succeeded or failed the permission change
      */
     public function folderSetPrivacyRecursive($args)
     {
@@ -553,13 +553,13 @@ class Api_ApiComponent extends AppComponent
      * if a folderpolicygroup exists for that group and folder, it will be replaced
      * with the passed in policy.
      *
-     * @param folder_id The id of the folder.
-     * @param group_id The id of the group.
-     * @param policy Desired policy status, one of [Admin|Write|Read].
+     * @param folder_id The id of the folder
+     * @param group_id The id of the group
+     * @param policy Desired policy status, one of [Admin|Write|Read]
      * @param recursive If included will push all policies from
-     * the passed in folder down to its child folders and items, default is non-recursive.
+     * the passed in folder down to its child folders and items, default is non-recursive
      * @return An array with keys 'success' and 'failure' indicating a count of
-     *            resources affected by the addition.
+     *            resources affected by the addition
      */
     public function folderAddPolicygroup($args)
     {
@@ -574,12 +574,12 @@ class Api_ApiComponent extends AppComponent
      * Remove a folderpolicygroup from a folder with the passed in group if the
      * folderpolicygroup exists.
      *
-     * @param folder_id The id of the folder.
-     * @param group_id The id of the group.
+     * @param folder_id The id of the folder
+     * @param group_id The id of the group
      * @param recursive If included will push all policies after the removal from
-     * the passed in folder down to its child folders and items, default is non-recursive.
+     * the passed in folder down to its child folders and items, default is non-recursive
      * @return An array with keys 'success' and 'failure' indicating a count of
-     *            resources affected by the removal.
+     *            resources affected by the removal
      */
     public function folderRemovePolicygroup($args)
     {
@@ -595,13 +595,13 @@ class Api_ApiComponent extends AppComponent
      * if a folderpolicyuser exists for that user and folder, it will be replaced
      * with the passed in policy.
      *
-     * @param folder_id The id of the folder.
-     * @param user_id The id of the targeted user to create the policy for.
-     * @param policy Desired policy status, one of [Admin|Write|Read].
+     * @param folder_id The id of the folder
+     * @param user_id The id of the targeted user to create the policy for
+     * @param policy Desired policy status, one of [Admin|Write|Read]
      * @param recursive If included will push all policies from
-     * the passed in folder down to its child folders and items, default is non-recursive.
+     * the passed in folder down to its child folders and items, default is non-recursive
      * @return An array with keys 'success' and 'failure' indicating a count of
-     *            resources affected by the addition.
+     *            resources affected by the addition
      */
     public function folderAddPolicyuser($args)
     {
@@ -616,12 +616,12 @@ class Api_ApiComponent extends AppComponent
      * Remove a folderpolicyuser from a folder with the passed in user if the
      * folderpolicyuser exists.
      *
-     * @param folder_id The id of the folder.
-     * @param user_id The id of the target user.
+     * @param folder_id The id of the folder
+     * @param user_id The id of the target user
      * @param recursive If included will push all policies after the removal from
-     * the passed in folder down to its child folders and items, default is non-recursive.
+     * the passed in folder down to its child folders and items, default is non-recursive
      * @return An array with keys 'success' and 'failure' indicating a count of
-     *            resources affected by the removal.
+     *            resources affected by the removal
      */
     public function folderRemovePolicyuser($args)
     {
@@ -650,14 +650,14 @@ class Api_ApiComponent extends AppComponent
      * begins with an underscore are assumed to be metadata fields to set on the item.
      *
      * @param token Authentication token
-     * @param parentid The id of the parent folder. Only required for creating a new item.
+     * @param parentid The id of the parent folder. Only required for creating a new item
      * @param name The name of the item to create
      * @param description (Optional) The description of the item
-     * @param uuid (Optional) Uuid of the item. If none is passed, will generate one.
+     * @param uuid (Optional) Uuid of the item. If none is passed, will generate one
      * @param privacy (Optional) [Public|Private], default will inherit from parent folder
      * @param updatebitstream (Optional) If set, the bitstream's name will be updated
      * simultaneously with the item's name if and only if the item has already
-     * existed and its latest revision contains only one bitstream.
+     * existed and its latest revision contains only one bitstream
      * @return The item object that was created
      */
     public function itemCreate($args)
@@ -709,7 +709,7 @@ class Api_ApiComponent extends AppComponent
      * @param id The id of the item
      * @param revision (Optional) Revision of the item. Defaults to latest revision
      * @return the sought metadata array on success,
-     *             will fail if there are no revisions or the specified revision is not found.
+     *             will fail if there are no revisions or the specified revision is not found
      */
     public function itemGetmetadata($args)
     {
@@ -723,11 +723,11 @@ class Api_ApiComponent extends AppComponent
      * @param itemId The id of the item
      * @param element The metadata element
      * @param value The metadata value for the field
-     * @param qualifier (Optional) The metadata qualifier. Defaults to empty string.
-     * @param type (Optional) The metadata type (integer constant). Defaults to MIDAS_METADATA_TEXT type (0).
-     * @param revision (Optional) Revision of the item. Defaults to latest revision.
+     * @param qualifier (Optional) The metadata qualifier. Defaults to empty string
+     * @param type (Optional) The metadata type (integer constant). Defaults to MIDAS_METADATA_TEXT type (0)
+     * @param revision (Optional) Revision of the item. Defaults to latest revision
      * @return true on success,
-     *              will fail if there are no revisions or the specified revision is not found.
+     *              will fail if there are no revisions or the specified revision is not found
      */
     public function itemSetmetadata($args)
     {
@@ -744,19 +744,19 @@ class Api_ApiComponent extends AppComponent
      *
      * @param token Authentication token
      * @param itemid The id of the item
-     * @param revision (Optional) Item Revision number to set metadata on, defaults to latest revision.
+     * @param revision (Optional) Item Revision number to set metadata on, defaults to latest revision
      * @param count The number of metadata tuples that will be set.  For every one
      * of these metadata tuples there will be the following set of params with counters
      * at the end of each param name, from 1..<b>count</b>, following the example
      * using the value <b>i</b> (i.e., replace <b>i</b> with values 1..<b>count</b>)
-     * (<b>element_i</b>, <b>value_i</b>, <b>qualifier_i</b>, <b>type_i</b>).
+     * (<b>element_i</b>, <b>value_i</b>, <b>qualifier_i</b>, <b>type_i</b>)
      *
      * @param element_i metadata element for tuple i
      * @param value_i   metadata value for the field, for tuple i
-     * @param qualifier_i (Optional) metadata qualifier for tuple i. Defaults to empty string.
-     * @param type_i (Optional) metadata type (integer constant). Defaults to MIDAS_METADATA_TEXT type (0).
+     * @param qualifier_i (Optional) metadata qualifier for tuple i. Defaults to empty string
+     * @param type_i (Optional) metadata type (integer constant). Defaults to MIDAS_METADATA_TEXT type (0)
      * @return true on success,
-     *              will fail if there are no revisions or the specified revision is not found.
+     *              will fail if there are no revisions or the specified revision is not found
      */
     public function itemSetmultiplemetadata($args)
     {
@@ -777,10 +777,10 @@ class Api_ApiComponent extends AppComponent
      * @param token Authentication token
      * @param itemid The id of the item
      * @param metadata The metadata list to add or update, must be passed in the request body
-     * as 'application/json'.
-     * @param revision (Optional) Item Revision number to set metadata on, defaults to latest revision.
+     * as 'application/json'
+     * @param revision (Optional) Item Revision number to set metadata on, defaults to latest revision
      * @return item on success,
-     *              will fail if there are no revisions or the specified revision is not found.
+     *              will fail if there are no revisions or the specified revision is not found
      */
     public function itemAddmetadata($args)
     {
@@ -798,13 +798,13 @@ class Api_ApiComponent extends AppComponent
      * @param token Authentication token
      * @param itemid The id of the item
      * @param element The metadata element
-     * @param qualifier (Optional) The metadata qualifier. Defaults to empty string.
+     * @param qualifier (Optional) The metadata qualifier. Defaults to empty string
      * @param type (Optional) metadata type (integer constant).
-     * Defaults to MIDAS_METADATA_TEXT (0).
-     * @param revision (Optional) Revision of the item. Defaults to latest revision.
+     * Defaults to MIDAS_METADATA_TEXT (0)
+     * @param revision (Optional) Revision of the item. Defaults to latest revision
      * @return true on success,
      *              false if the metadata was not found on the item revision,
-     *              will fail if there are no revisions or the specified revision is not found.
+     *              will fail if there are no revisions or the specified revision is not found
      */
     public function itemDeletemetadata($args)
     {
@@ -823,9 +823,9 @@ class Api_ApiComponent extends AppComponent
      * @param token Authentication token
      * @param itemid The id of the item
      * @param revision (Optional)
-     * Revision of the item. Defaults to latest revision; pass <b>all</b> to delete all metadata from all revisions.
+     * Revision of the item. Defaults to latest revision; pass <b>all</b> to delete all metadata from all revisions
      * @return true on success,
-     *              will fail if there are no revisions or the specified revision is not found.
+     *              will fail if there are no revisions or the specified revision is not found
      */
     public function itemDeletemetadataAll($args)
     {
@@ -869,7 +869,7 @@ class Api_ApiComponent extends AppComponent
      * @return A list with three keys: privacy, user, group; privacy will be the
      *           item's privacy string [Public|Private]; user will be a list of
      *           (user_id, policy, email); group will be a list of (group_id, policy, name).
-     *           policy for user and group will be a policy string [Admin|Write|Read].
+     *           policy for user and group will be a policy string [Admin|Write|Read]
      */
     public function itemListPermissions($args)
     {
@@ -937,10 +937,10 @@ class Api_ApiComponent extends AppComponent
      * if an itempolicygroup exists for that group and item, it will be replaced
      * with the passed in policy.
      *
-     * @param item_id The id of the item.
-     * @param group_id The id of the group.
-     * @param policy Desired policy status, one of [Admin|Write|Read].
-     * @return success = true on success.
+     * @param item_id The id of the item
+     * @param group_id The id of the group
+     * @param policy Desired policy status, one of [Admin|Write|Read]
+     * @return success = true on success
      */
     public function itemAddPolicygroup($args)
     {
@@ -955,9 +955,9 @@ class Api_ApiComponent extends AppComponent
      * Remove a itempolicygroup from a item with the passed in group if the
      * itempolicygroup exists.
      *
-     * @param item_id The id of the item.
-     * @param group_id The id of the group.
-     * @return success = true on success.
+     * @param item_id The id of the item
+     * @param group_id The id of the group
+     * @return success = true on success
      */
     public function itemRemovePolicygroup($args)
     {
@@ -973,10 +973,10 @@ class Api_ApiComponent extends AppComponent
      * if an itempolicyuser exists for that user and item, it will be replaced
      * with the passed in policy.
      *
-     * @param item_id The id of the item.
-     * @param user_id The id of the targeted user to create the policy for.
-     * @param policy Desired policy status, one of [Admin|Write|Read].
-     * @return success = true on success.
+     * @param item_id The id of the item
+     * @param user_id The id of the targeted user to create the policy for
+     * @param policy Desired policy status, one of [Admin|Write|Read]
+     * @return success = true on success
      */
     public function itemAddPolicyuser($args)
     {
@@ -991,9 +991,9 @@ class Api_ApiComponent extends AppComponent
      * Remove an itempolicyuser from an item with the passed in user if the
      * itempolicyuser exists.
      *
-     * @param item_id The id of the item.
-     * @param user_id The id of the target user.
-     * @return success = true on success.
+     * @param item_id The id of the item
+     * @param user_id The id of the target user
+     * @return success = true on success
      */
     public function itemRemovePolicyuser($args)
     {
@@ -1172,7 +1172,7 @@ class Api_ApiComponent extends AppComponent
      *
      * @param group_id the group to add the user to
      * @param user_id the user to add to the group
-     * @return success = true on success.
+     * @return success = true on success
      */
     public function groupAddUser($args)
     {
@@ -1189,7 +1189,7 @@ class Api_ApiComponent extends AppComponent
      *
      * @param group_id the group to remove the user from
      * @param user_id the user to remove from the group
-     * @return success = true on success.
+     * @return success = true on success
      */
     public function groupRemoveUser($args)
     {
@@ -1206,7 +1206,7 @@ class Api_ApiComponent extends AppComponent
      *
      * @param community_id the id of the community the group will associate with
      * @param name the name of the new group
-     * @return group_id of the newly created group on success.
+     * @return group_id of the newly created group on success
      */
     public function groupAdd($args)
     {
@@ -1218,7 +1218,7 @@ class Api_ApiComponent extends AppComponent
      * community.
      *
      * @param group_id the id of the group to be removed
-     * @return success = true on success.
+     * @return success = true on success
      */
     public function groupRemove($args)
     {
