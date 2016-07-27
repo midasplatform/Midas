@@ -241,37 +241,6 @@ class ItemModel extends ItemModelBase
     }
 
     /**
-     * Get items shared to the given community.
-     *
-     * @param CommunityDao $communityDao
-     * @param int $limit
-     * @return array
-     * @throws Zend_Exception
-     */
-    public function getSharedToCommunity($communityDao, $limit = 20)
-    {
-        $groupId = $communityDao->getMemberGroup()->getKey();
-        if (!is_numeric($groupId)) {
-            throw new Zend_Exception('Error in parameter groupId when getting items shared to community.');
-        }
-        $sql = $this->database->select()->setIntegrityCheck(false)->from(array('i' => 'item'))->join(
-            array('p' => 'itempolicygroup'),
-            'i.item_id = p.item_id',
-            array('p.policy', 'policy_date' => 'p.date')
-        )->where('group_id = ? ', $groupId)->order(array('p.date DESC'))->limit($limit);
-        $rowset = $this->database->fetchAll($sql);
-        $results = array();
-        foreach ($rowset as $row) {
-            $tmp = $this->initDao('Item', $row);
-            $tmp->policy = $row['policy'];
-            $tmp->policy_date = $row['policy_date'];
-            $results[] = $tmp;
-        }
-
-        return $results;
-    }
-
-    /**
      * Get the most popular items.
      *
      * @param UserDao $userDao

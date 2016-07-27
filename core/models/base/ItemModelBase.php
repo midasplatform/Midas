@@ -76,9 +76,6 @@ abstract class ItemModelBase extends AppModel
     /** Get shared to user */
     abstract public function getSharedToUser($userDao, $limit = 20);
 
-    /** Get shared to community */
-    abstract public function getSharedToCommunity($communityDao, $limit = 20);
-
     /** Check policy */
     abstract public function policyCheck($itemdao, $userDao = null, $policy = 0);
 
