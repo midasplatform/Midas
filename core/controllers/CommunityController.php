@@ -396,10 +396,6 @@ class CommunityController extends AppController
         $this->view->json['community'] = $communityDao->toArray();
         $this->view->json['community']['sendInvitation'] = $this->t('Send invitation');
 
-        if ($this->view->isMember) {
-            $this->view->shareItems = $this->Item->getSharedToCommunity($communityDao);
-        }
-
         $this->view->title .= ' - '.$communityDao->getName();
         $this->view->metaDescription = substr(
             UtilityComponent::markdown(htmlspecialchars($communityDao->getDescription(), ENT_COMPAT, 'UTF-8')),
