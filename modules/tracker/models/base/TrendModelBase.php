@@ -97,6 +97,15 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
     abstract public function getTrendsByGroup($producerDao, $onlyKey = false);
 
     /**
+     * Set all Trends with the passed in metric_name to key_metrics,
+     * for the passed in Producer.
+     *
+     * @param Tracker_ProducerDao $producerDao producer DAO
+     * @param string $metricName The metric_name to match against trends
+     */
+    abstract public function setAggregatableTrendAsKeyMetrics($producerDao, $metricName);
+
+    /**
      * Save the given trend. Ensure that null values are explicitly set in the database.
      *
      * @param Tracker_TrendDao $trendDao trend DAO
