@@ -36,7 +36,9 @@ abstract class Tracker_TrendThresholdModelBase extends Tracker_AppModel
             'abbreviation' => array('type' => MIDAS_DATA),
             'warning' => array('type' => MIDAS_DATA),
             'fail' => array('type' => MIDAS_DATA),
+            'min' => array('type' => MIDAS_DATA),
             'max' => array('type' => MIDAS_DATA),
+            'lower_is_better' => array('type' => MIDAS_DATA),
             'producer' => array(
                 'type' => MIDAS_MANY_TO_ONE,
                 'model' => 'Producer',
@@ -48,4 +50,27 @@ abstract class Tracker_TrendThresholdModelBase extends Tracker_AppModel
 
         $this->initialize();
     }
+
+    /**
+     * Create or update a Tracker TrendThreshold tied to the Producer and metric_name.
+     *
+     * @param Tracker_ProducerDao $producerDao
+     * @param string $metricName metric name of the trend threshold
+     * @param false|string $abbreviation name abbreviation for the threshold
+     * @param false|float $warning warning value for this threshold
+     * @param false|float $fail fail value for this threshold
+     * @param false|float $min min value for display of this threshold
+     * @param false|float $max max value for display of this threshold
+     * @param false|boolean $lowerIsBetter whether lower values are better for this threshold
+     * @return Tracker_TrendThresholdDao updated or created DAO
+     */
+     abstract public function upsert(
+        $producerDao,
+        $metricName,
+        $abbreviation = false,
+        $warning = false,
+        $fail = false,
+        $min = false,
+        $max = false,
+        $lowerIsBetter = false);
 }
