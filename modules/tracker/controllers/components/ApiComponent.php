@@ -341,6 +341,7 @@ class Tracker_ApiComponent extends AppComponent
      * @param uuid The uuid of the submission to validate documents for
      * @param producerConfig (Optional) JSON object describing the pipeline
      * @param submissionDocument (Optional) JSON object describing the submission
+     * @throws Exception
      */
     public function submissionValidate($args)
     {
@@ -370,11 +371,66 @@ class Tracker_ApiComponent extends AppComponent
 
             if (!$validator->isValid()) {
                 $this->getLogger()->warn('The supplied producerConfig JSON for uuid '.$uuid." does not validate. Violations:\n");
+                /** @var array $error */
                 foreach ($validator->getErrors() as $error) {
                     $this->getLogger()->warn(sprintf("[%s] %s\n", $error['property'], $error['message']));
                 }
             } else {
                 $this->getLogger()->info('The supplied producerConfig JSON for uuid '.$uuid.' is valid.');
+
+                /** @var Tracker_ProducerModel $producerModel */
+                $producerModel = MidasLoader::loadModel('Producer', 'tracker');
+                /** @var Tracker_ProducerDao $producerDao */
+                $producerDao = $submissionDao->getProducer();
+                if (!$producerModel->policyCheck(
+                    $producerDao,
+                    $user,
+                    MIDAS_POLICY_WRITE
+                )) {
+                    throw new Exception('Write permission on the producer required', 403);
+                }
+                /** @var stdClass $producerDefinition */
+                $producerDefinition = json_decode($producerConfig);
+                // Ensure that Producer and Community match.
+                if ($producerDefinition->producer !== $producerDao->getDisplayName()) {
+                    throw new Exception('Producer schema name must match existing Producer display name', 404);
+                }
+                if ($producerDefinition->community !== $producerDao->getCommunity()->getName()) {
+                    throw new Exception('Producer schema community name must match existing Producer Community name', 404);
+                }
+
+                // Save the producer definition to the producer.
+                $producerDao->setProducerDefinition($producerConfig);
+                $producerModel->save($producerDao);
+
+                $defaults = $producerDefinition->defaults;
+                if (!isset($defaults)) {
+                    // Provide a default for $defaults so the below ?: logic works.
+                    $defaults = new stdClass();
+                }
+                $keyMetrics = $producerDefinition->key_metrics;
+                /** @var stdClass $keyMetric */
+                foreach($keyMetrics as $keyMetric) {
+                    /** @var Tracker_TrendModel $trendModel */
+                    $trendModel = MidasLoader::loadModel('Trend', 'tracker');
+                    // Set any needed trends to be key_metrics.
+                    $trendModel->setAggregatableTrendAsKeyMetrics($producerDao, $keyMetric->name);
+                    /** @var Tracker_TrendThresholdModel $trendThresholdModel */
+                    $trendThresholdModel = MidasLoader::loadModel('TrendThreshold', 'tracker');
+                    $trendThresholdModel->upsert($producerDao, $keyMetric->name,
+                        isset($keyMetric->abbreviation) ? $keyMetric->abbreviation : false,
+                        isset($keyMetric->warning) ? $keyMetric->warning :
+                            (isset($defaults->warning) ? $defaults->warning : false),
+                        isset($keyMetric->fail) ? $keyMetric->fail :
+                            (isset($defaults->fail) ? $defaults->fail : false),
+                        isset($keyMetric->min) ? $keyMetric->min :
+                            (isset($defaults->min) ? $defaults->min : false),
+                        isset($keyMetric->max) ? $keyMetric->max :
+                            (isset($defaults->max) ? $defaults->max : false),
+                        isset($keyMetric->lower_is_better) ? $keyMetric->lower_is_better :
+                            (isset($defaults->lower_is_better) ? $defaults->lower_is_better : false)
+                    );
+                }
             }
         }
 
