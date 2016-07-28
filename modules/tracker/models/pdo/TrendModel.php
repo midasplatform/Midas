@@ -166,9 +166,9 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
         $producerIdQ = $this->database->getDB()->quote($producerDao->getProducerId());
         $metricNameQ = $this->database->getDB()->quote($metricName);
         $update = 'UPDATE tracker_trend, tracker_trendgroup SET key_metric=1 WHERE'.
-            ' producer_id = ' . $producerIdQ .
+            ' producer_id = '.$producerIdQ.
             ' AND tracker_trend.trendgroup_id = tracker_trendgroup.trendgroup_id '.
-            ' AND tracker_trend.metric_name = ' . $metricNameQ;
+            ' AND tracker_trend.metric_name = '.$metricNameQ;
         $this->database->getDB()->query($update);
     }
 

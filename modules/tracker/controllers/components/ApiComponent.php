@@ -410,7 +410,7 @@ class Tracker_ApiComponent extends AppComponent
                 }
                 $keyMetrics = $producerDefinition->key_metrics;
                 /** @var stdClass $keyMetric */
-                foreach($keyMetrics as $keyMetric) {
+                foreach ($keyMetrics as $keyMetric) {
                     /** @var Tracker_TrendModel $trendModel */
                     $trendModel = MidasLoader::loadModel('Trend', 'tracker');
                     // Set any needed trends to be key_metrics.
