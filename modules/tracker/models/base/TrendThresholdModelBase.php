@@ -51,19 +51,19 @@ abstract class Tracker_TrendThresholdModelBase extends Tracker_AppModel
         $this->initialize();
     }
 
-    /**
-     * Create or update a Tracker TrendThreshold tied to the Producer and metric_name.
-     *
-     * @param Tracker_ProducerDao $producerDao
-     * @param string $metricName metric name of the trend threshold
-     * @param false|string $abbreviation name abbreviation for the threshold
-     * @param false|float $warning warning value for this threshold
-     * @param false|float $fail fail value for this threshold
-     * @param false|float $min min value for display of this threshold
-     * @param false|float $max max value for display of this threshold
-     * @param false|boolean $lowerIsBetter whether lower values are better for this threshold
-     * @return Tracker_TrendThresholdDao updated or created DAO
-     */
+     /**
+      * Create or update a Tracker TrendThreshold tied to the Producer and metric_name.
+      *
+      * @param Tracker_ProducerDao $producerDao
+      * @param string $metricName metric name of the trend threshold
+      * @param false|string $abbreviation name abbreviation for the threshold
+      * @param false|float $warning warning value for this threshold
+      * @param false|float $fail fail value for this threshold
+      * @param false|float $min min value for display of this threshold
+      * @param false|float $max max value for display of this threshold
+      * @param false|bool $lowerIsBetter whether lower values are better for this threshold
+      * @return Tracker_TrendThresholdDao updated or created DAO
+      */
      abstract public function upsert(
         $producerDao,
         $metricName,

@@ -37,7 +37,7 @@
  * @method void setMin(float $min)
  * @method float getMax()
  * @method void setMax(float $max)
- * @method boolean getLowerIsBetter()
+ * @method bool getLowerIsBetter()
  * @method void setLowerIsBetter(boolean $lowerIsBetter)
  * @method Tracker_ProducerDao getProducer()
  * @method void setProducer(Tracker_ProducerDao $producerDao)
