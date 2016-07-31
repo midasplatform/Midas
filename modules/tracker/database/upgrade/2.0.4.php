@@ -35,5 +35,9 @@ class Tracker_Upgrade_2_0_4 extends MIDASUpgrade
             '   ADD COLUMN `min` double,'.
             '   ADD COLUMN `lower_is_better` tinyint(4) NOT NULL DEFAULT 0;'
         );
+        $this->db->query(
+            'ALTER TABLE `tracker_submission` '.
+            '   ADD COLUMN `document` text;'
+        );
     }
 }

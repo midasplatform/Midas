@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS `tracker_submission` (
     `branch` varchar(255) NOT NULL DEFAULT '',
     `extra_urls` text,
     `reproduction_command` text,
+    `document` text,
     PRIMARY KEY (`submission_id`),
     UNIQUE KEY (`uuid`),
     KEY (`user_id`),
