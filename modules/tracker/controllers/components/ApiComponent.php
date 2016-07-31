@@ -442,9 +442,6 @@ class Tracker_ApiComponent extends AppComponent
         }
 
         if (isset($args['submissionDocument'])) {
-            // At the current time, we are looking for the submissionDocument,
-            // validating it, and logging a warning with any violations, we
-            // are not saving the producerConfig.
             $submissionDocument = $args['submissionDocument'];
             $refResolver = new JsonSchema\RefResolver(new JsonSchema\Uri\UriRetriever(), new JsonSchema\Uri\UriResolver());
             $schemaPath = BASE_PATH.'/modules/tracker/schema/submission.json';
@@ -460,7 +457,21 @@ class Tracker_ApiComponent extends AppComponent
                 }
             } else {
                 $this->getLogger()->info('The supplied submissionDocument JSON for uuid '.$uuid.' is valid.');
-            }
+
+                /** @var Tracker_ProducerModel $producerModel */
+                $producerModel = MidasLoader::loadModel('Producer', 'tracker');
+                /** @var Tracker_ProducerDao $producerDao */
+                $producerDao = $submissionDao->getProducer();
+                if (!$producerModel->policyCheck(
+                    $producerDao,
+                    $user,
+                    MIDAS_POLICY_WRITE
+                )) {
+                    throw new Exception('Write permission on the producer required', 403);
+                }
+                $submissionDao->setDocument($submissionDocument);
+                $submissionModel->save($submissionDao);
+              }
         }
     }
 
