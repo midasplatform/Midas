@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS `tracker_producer` (
     `description` text NOT NULL,
     `revision_url` text NOT NULL,
     `histogram_max_x` double,
+    `grid_across_metric_groups` tinyint(4) NOT NULL DEFAULT '0',
+    `histogram_number_of_bins` int(11) NOT NULL DEFAULT '10',
     `producer_definition` text,
     PRIMARY KEY (`producer_id`),
     KEY (`community_id`)

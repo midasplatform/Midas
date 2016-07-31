@@ -26,6 +26,8 @@ class Tracker_Upgrade_2_0_4 extends MIDASUpgrade
     {
         $this->db->query(
             'ALTER TABLE `tracker_producer` '.
+            '   ADD COLUMN `grid_across_metric_groups` tinyint(4) NOT NULL DEFAULT 0,'.
+            '   ADD COLUMN `histogram_number_of_bins` int(11) NOT NULL DEFAULT 10,'.
             '   ADD COLUMN `producer_definition` text;'
         );
         $this->db->query(

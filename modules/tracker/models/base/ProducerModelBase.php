@@ -37,6 +37,8 @@ abstract class Tracker_ProducerModelBase extends Tracker_AppModel
             'display_name' => array('type' => MIDAS_DATA),
             'description' => array('type' => MIDAS_DATA),
             'histogram_max_x' => array('type' => MIDAS_DATA),
+            'grid_across_metric_groups' => array('type' => MIDAS_DATA),
+            'histogram_number_of_bins' => array('type' => MIDAS_DATA),
             'producer_definition' => array('type' => MIDAS_DATA),
             'community' => array(
                 'type' => MIDAS_MANY_TO_ONE,
@@ -47,6 +49,13 @@ abstract class Tracker_ProducerModelBase extends Tracker_AppModel
             'trendgroups' => array(
                 'type' => MIDAS_ONE_TO_MANY,
                 'model' => 'Trendgroup',
+                'module' => $this->moduleName,
+                'parent_column' => 'producer_id',
+                'child_column' => 'producer_id',
+            ),
+            'trendthresholds' => array(
+                'type' => MIDAS_ONE_TO_MANY,
+                'model' => 'TrendThreshold',
                 'module' => $this->moduleName,
                 'parent_column' => 'producer_id',
                 'child_column' => 'producer_id',
