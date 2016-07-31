@@ -358,9 +358,6 @@ class Tracker_ApiComponent extends AppComponent
         }
 
         if (isset($args['producerConfig'])) {
-            // At the current time, we are looking for the producerConfig,
-            // validating it, and logging a warning with any violations, we
-            // are not saving the producerConfig.
             $producerConfig = $args['producerConfig'];
             $refResolver = new JsonSchema\RefResolver(new JsonSchema\Uri\UriRetriever(), new JsonSchema\Uri\UriResolver());
             $schemaPath = BASE_PATH.'/modules/tracker/schema/producer.json';
@@ -401,6 +398,16 @@ class Tracker_ApiComponent extends AppComponent
 
                 // Save the producer definition to the producer.
                 $producerDao->setProducerDefinition($producerConfig);
+                // Update top level fields on the producer based on the definition.
+                if (isset($producerDefinition->histogram_max_x)) {
+                    $producerDao->setHistogramMaxX($producerDefinition->histogram_max_x);
+                }
+                if (isset($producerDefinition->grid_across_metric_groups)) {
+                    $producerDao->setGridAcrossMetricGroups($producerDefinition->grid_across_metric_groups);
+                }
+                if (isset($producerDefinition->histogram_number_of_bins)) {
+                    $producerDao->setHistogramNumberOfBins($producerDefinition->histogram_number_of_bins);
+                }
                 $producerModel->save($producerDao);
 
                 $defaults = $producerDefinition->defaults;
