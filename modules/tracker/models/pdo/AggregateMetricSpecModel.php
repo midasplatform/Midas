@@ -44,7 +44,7 @@ class Tracker_AggregateMetricSpecModel extends Tracker_AggregateMetricSpecModelB
         $name,
         $spec,
         $abbreviation = false,
-        $description,
+        $description = false,
         $warning = false,
         $fail = false,
         $min = false,

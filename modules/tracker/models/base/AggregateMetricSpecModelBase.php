@@ -104,7 +104,7 @@ abstract class Tracker_AggregateMetricSpecModelBase extends Tracker_AppModel
         $name,
         $spec,
         $abbreviation = false,
-        $description,
+        $description = false,
         $warning = false,
         $fail = false,
         $min = false,
