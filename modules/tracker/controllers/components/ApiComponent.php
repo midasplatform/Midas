@@ -415,15 +415,16 @@ class Tracker_ApiComponent extends AppComponent
                     // Provide a default for $defaults so the below ?: logic works.
                     $defaults = new stdClass();
                 }
+                // Add or update any key metrics and thresholds.
+                /** @var Tracker_TrendModel $trendModel */
+                $trendModel = MidasLoader::loadModel('Trend', 'tracker');
+                /** @var Tracker_TrendThresholdModel $trendThresholdModel */
+                $trendThresholdModel = MidasLoader::loadModel('TrendThreshold', 'tracker');
                 $keyMetrics = $producerDefinition->key_metrics;
                 /** @var stdClass $keyMetric */
                 foreach ($keyMetrics as $keyMetric) {
-                    /** @var Tracker_TrendModel $trendModel */
-                    $trendModel = MidasLoader::loadModel('Trend', 'tracker');
                     // Set any needed trends to be key_metrics.
                     $trendModel->setAggregatableTrendAsKeyMetrics($producerDao, $keyMetric->name);
-                    /** @var Tracker_TrendThresholdModel $trendThresholdModel */
-                    $trendThresholdModel = MidasLoader::loadModel('TrendThreshold', 'tracker');
                     $trendThresholdModel->upsert($producerDao, $keyMetric->name,
                         isset($keyMetric->abbreviation) ? $keyMetric->abbreviation : false,
                         isset($keyMetric->warning) ? $keyMetric->warning :
@@ -438,6 +439,62 @@ class Tracker_ApiComponent extends AppComponent
                             (isset($defaults->lower_is_better) ? $defaults->lower_is_better : false)
                     );
                 }
+                // Add or update any aggregate metrics and thresholds, based on matching
+                // the producer and spec.
+                $aggregateMetrics = $producerDefinition->aggregate_metrics;
+                /** @var Tracker_AggregateMetricSpecModel $aggregateMetricSpecModel */
+                $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
+                /** @var Tracker_AggregateMetricNotificationModel $aggregateMetricNotificationModel */
+                $aggregateMetricNotificationModel = MidasLoader::loadModel('AggregateMetricNotification', 'tracker');
+                /** @var UserModel $userModel */
+                $userModel = MidasLoader::loadModel('User');
+                /** @var stdClass $aggregateMetric */
+                foreach ($aggregateMetrics as $aggregateMetric) {
+                    /** @var Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao */
+                    $aggregateMetricSpecDao = $aggregateMetricSpecModel->upsert($producerDao, $aggregateMetric->name, $aggregateMetric->definition,
+                        isset($aggregateMetric->abbreviation) ? $aggregateMetric->abbreviation : false,
+                        // Set empty string for description.
+                        '',
+                        isset($aggregateMetric->warning) ? $aggregateMetric->warning :
+                            (isset($defaults->warning) ? $defaults->warning : false),
+                        isset($aggregateMetric->fail) ? $aggregateMetric->fail :
+                            (isset($defaults->fail) ? $defaults->fail : false),
+                        isset($aggregateMetric->min) ? $aggregateMetric->min :
+                            (isset($defaults->min) ? $defaults->min : false),
+                        isset($aggregateMetric->max) ? $aggregateMetric->max :
+                            (isset($defaults->max) ? $defaults->max : false),
+                        isset($aggregateMetric->lower_is_better) ? $aggregateMetric->lower_is_better :
+                            (isset($defaults->lower_is_better) ? $defaults->lower_is_better : false)
+                    );
+                    // Delete any notifications tied to this Aggregate Metric, and create any
+                    // as needed.
+                    $staleNotifications = $aggregateMetricNotificationModel->findBy('aggregate_metric_spec_id', $aggregateMetricSpecDao->getAggregateMetricSpecId());
+                    /** @var Tracker_AggregateMetricNotificationDao $staleNotification */
+                    foreach ($staleNotifications as $staleNotification) {
+                        $aggregateMetricNotificationModel->delete($staleNotification);
+                    }
+                    if (isset($aggregateMetric->notifications)) {
+                        /** @var stdClass $notification */
+                        foreach ($aggregateMetric->notifications as $notification) {
+                            /** @var Tracker_AggregateMetricNotificationDao $aggregateMetricNotificationDao */
+                            $aggregateMetricNotificationDao = MidasLoader::newDao('AggregateMetricNotificationDao', $this->moduleName);
+                            $aggregateMetricNotificationDao->setAggregateMetricSpecId($aggregateMetricSpecDao->getAggregateMetricSpecId());
+                            $aggregateMetricNotificationDao->setBranch($notification->branch);
+                            $aggregateMetricNotificationDao->setComparison($notification->comparison);
+                            $aggregateMetricNotificationDao->setValue($notification->value);
+                            $aggregateMetricNotificationModel->save($aggregateMetricNotificationDao);
+                            if (isset($notification->emails)) {
+                                foreach ($notification->emails as $email) {
+                                    // We can only add notifications for valid users.
+                                    $userDao = $userModel->getByEmail($email);
+                                    if ($userDao !== false) {
+                                        $aggregateMetricNotificationModel->createUserNotification($aggregateMetricNotificationDao, $userDao);
+                                    }
+                                }
+                            }
+                        }
+                    }
+               }
             }
         }
 
