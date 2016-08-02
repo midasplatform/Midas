@@ -50,48 +50,48 @@ class Tracker_AggregateMetricSpecModel extends Tracker_AggregateMetricSpecModelB
         $min = false,
         $max = false,
         $lowerIsBetter = false)
-     {
-         if (is_null($producerDao) || $producerDao === false) {
-             return false;
-         }
-         $sql = $this->database->select()->setIntegrityCheck(false)
+    {
+        if (is_null($producerDao) || $producerDao === false) {
+            return false;
+        }
+        $sql = $this->database->select()->setIntegrityCheck(false)
             ->where('producer_id = ?', $producerDao->getProducerId())
             ->where('spec = ?', $spec);
          /** @var Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao */
          $aggregateMetricSpecDao = $this->initDao('AggregateMetricSpec', $this->database->fetchRow($sql), $this->moduleName);
-         if ($aggregateMetricSpecDao === false) {
-             $aggregateMetricSpecDao = MidasLoader::newDao('AggregateMetricSpecDao', $this->moduleName);
-             $aggregateMetricSpecDao->setProducerId($producerDao->getProducerId());
-             $aggregateMetricSpecDao->setSpec($spec);
-         }
-         $aggregateMetricSpecDao->setName($name);
-         if ($abbreviation !== false) {
-             $aggregateMetricSpecDao->setAbbreviation($abbreviation);
-         }
-         if ($description !== false) {
-             $aggregateMetricSpecDao->setDescription($description);
-         }
-         if ($warning !== false) {
-             $aggregateMetricSpecDao->setWarning($warning);
-         }
-         if ($fail !== false) {
-             $aggregateMetricSpecDao->setFail($fail);
-         }
-         if ($min !== false) {
-             $aggregateMetricSpecDao->setMin($min);
-         }
-         if ($max !== false) {
-             $aggregateMetricSpecDao->setMax($max);
-         }
-         if ($lowerIsBetter !== false) {
-             $aggregateMetricSpecDao->setLowerIsBetter($lowerIsBetter);
-         }
-         $this->save($aggregateMetricSpecDao);
+        if ($aggregateMetricSpecDao === false) {
+            $aggregateMetricSpecDao = MidasLoader::newDao('AggregateMetricSpecDao', $this->moduleName);
+            $aggregateMetricSpecDao->setProducerId($producerDao->getProducerId());
+            $aggregateMetricSpecDao->setSpec($spec);
+        }
+        $aggregateMetricSpecDao->setName($name);
+        if ($abbreviation !== false) {
+            $aggregateMetricSpecDao->setAbbreviation($abbreviation);
+        }
+        if ($description !== false) {
+            $aggregateMetricSpecDao->setDescription($description);
+        }
+        if ($warning !== false) {
+            $aggregateMetricSpecDao->setWarning($warning);
+        }
+        if ($fail !== false) {
+            $aggregateMetricSpecDao->setFail($fail);
+        }
+        if ($min !== false) {
+            $aggregateMetricSpecDao->setMin($min);
+        }
+        if ($max !== false) {
+            $aggregateMetricSpecDao->setMax($max);
+        }
+        if ($lowerIsBetter !== false) {
+            $aggregateMetricSpecDao->setLowerIsBetter($lowerIsBetter);
+        }
+        $this->save($aggregateMetricSpecDao);
 
-         return $aggregateMetricSpecDao;
-     }
+        return $aggregateMetricSpecDao;
+    }
 
-     /**
+    /**
      * Delete the given aggregate metric spec, any metrics calculated based on that spec,
      * and any associated notifications.
      *
