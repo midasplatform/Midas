@@ -494,7 +494,7 @@ class Tracker_ApiComponent extends AppComponent
                             }
                         }
                     }
-               }
+                }
             }
         }
 
