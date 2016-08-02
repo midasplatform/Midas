@@ -84,6 +84,34 @@ abstract class Tracker_AggregateMetricSpecModelBase extends Tracker_AppModel
     }
 
     /**
+     * Create or update a Tracker AggregateMetricSpec, matching on the Producer
+     * and spec fields.
+     *
+     * @param Tracker_ProducerDao $producerDao
+     * @param string $name name of the aggregate metric
+     * @param string $spec the spec for the aggregate metric spec
+     * @param false|string $abbreviation name abbreviation for the threshold
+     * @param false|string $description the description for the aggregate metric spec
+     * @param false|float $warning warning value for this threshold
+     * @param false|float $fail fail value for this threshold
+     * @param false|float $min min value for display of this threshold
+     * @param false|float $max max value for display of this threshold
+     * @param false|bool $lowerIsBetter whether lower values are better for this threshold
+     * @return false|Tracker_AggregateMetricSpecDao created from inputs
+     */
+    abstract public function upsert(
+        $producerDao,
+        $name,
+        $spec,
+        $abbreviation = false,
+        $description,
+        $warning = false,
+        $fail = false,
+        $min = false,
+        $max = false,
+        $lowerIsBetter = false);
+
+    /**
      * Return all AggregateMetricSpecDaos tied to the producer.
      *
      * @param Tracker_ProducerDao $producerDao producer DAO

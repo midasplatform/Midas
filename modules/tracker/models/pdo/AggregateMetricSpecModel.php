@@ -24,6 +24,74 @@ require_once BASE_PATH.'/modules/tracker/models/base/AggregateMetricSpecModelBas
 class Tracker_AggregateMetricSpecModel extends Tracker_AggregateMetricSpecModelBase
 {
     /**
+     * Create or update a Tracker AggregateMetricSpec, matching on the Producer
+     * and spec fields.
+     *
+     * @param Tracker_ProducerDao $producerDao
+     * @param string $name name of the aggregate metric
+     * @param string $spec the spec for the aggregate metric spec
+     * @param false|string $abbreviation name abbreviation for the threshold
+     * @param false|string $description the description for the aggregate metric spec
+     * @param false|float $warning warning value for this threshold
+     * @param false|float $fail fail value for this threshold
+     * @param false|float $min min value for display of this threshold
+     * @param false|float $max max value for display of this threshold
+     * @param false|bool $lowerIsBetter whether lower values are better for this threshold
+     * @return false|Tracker_AggregateMetricSpecDao created from inputs
+     */
+    public function upsert(
+        $producerDao,
+        $name,
+        $spec,
+        $abbreviation = false,
+        $description,
+        $warning = false,
+        $fail = false,
+        $min = false,
+        $max = false,
+        $lowerIsBetter = false)
+     {
+         if (is_null($producerDao) || $producerDao === false) {
+             return false;
+         }
+         $sql = $this->database->select()->setIntegrityCheck(false)
+            ->where('producer_id = ?', $producerDao->getProducerId())
+            ->where('spec = ?', $spec);
+         /** @var Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao */
+         $aggregateMetricSpecDao = $this->initDao('AggregateMetricSpec', $this->database->fetchRow($sql), $this->moduleName);
+         if ($aggregateMetricSpecDao === false) {
+             $aggregateMetricSpecDao = MidasLoader::newDao('AggregateMetricSpecDao', $this->moduleName);
+             $aggregateMetricSpecDao->setProducerId($producerDao->getProducerId());
+             $aggregateMetricSpecDao->setSpec($spec);
+         }
+         $aggregateMetricSpecDao->setName($name);
+         if ($abbreviation !== false) {
+             $aggregateMetricSpecDao->setAbbreviation($abbreviation);
+         }
+         if ($description !== false) {
+             $aggregateMetricSpecDao->setDescription($description);
+         }
+         if ($warning !== false) {
+             $aggregateMetricSpecDao->setWarning($warning);
+         }
+         if ($fail !== false) {
+             $aggregateMetricSpecDao->setFail($fail);
+         }
+         if ($min !== false) {
+             $aggregateMetricSpecDao->setMin($min);
+         }
+         if ($max !== false) {
+             $aggregateMetricSpecDao->setMax($max);
+         }
+         if ($lowerIsBetter !== false) {
+             $aggregateMetricSpecDao->setLowerIsBetter($lowerIsBetter);
+         }
+         $this->save($aggregateMetricSpecDao);
+
+         return $aggregateMetricSpecDao;
+     }
+
+     /**
      * Delete the given aggregate metric spec, any metrics calculated based on that spec,
      * and any associated notifications.
      *
