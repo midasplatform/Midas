@@ -52,10 +52,12 @@ class Tracker_TrendThresholdModel extends Tracker_TrendThresholdModelBase
          $sql = $this->database->select()->setIntegrityCheck(false)
             ->where('producer_id = ?', $producerDao->getProducerId())
             ->where('metric_name = ?', $metricName);
-        /** @var Tracker_TrendThresholdDao $trendThresholdDao */
-        $trendThresholdDao = $this->initDao('TrendThreshold', $this->database->fetchRow($sql), $this->moduleName);
+         /** @var Tracker_TrendThresholdDao $trendThresholdDao */
+         $trendThresholdDao = $this->initDao('TrendThreshold', $this->database->fetchRow($sql), $this->moduleName);
          if ($trendThresholdDao === false) {
              $trendThresholdDao = MidasLoader::newDao('TrendThresholdDao', $this->moduleName);
+             $trendThresholdDao->setProducerId($producerDao->getProducerId());
+             $trendThresholdDao->setMetricName($metricName);
          }
          if ($abbreviation !== false) {
              $trendThresholdDao->setAbbreviation($abbreviation);
