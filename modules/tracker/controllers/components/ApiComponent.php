@@ -471,7 +471,7 @@ class Tracker_ApiComponent extends AppComponent
                 }
                 $submissionDao->setDocument($submissionDocument);
                 $submissionModel->save($submissionDao);
-              }
+            }
         }
     }
 
