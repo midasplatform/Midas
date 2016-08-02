@@ -139,7 +139,9 @@ CREATE TABLE IF NOT EXISTS `tracker_aggregate_metric_spec` (
     `abbreviation` varchar(255) NOT NULL DEFAULT '',
     `warning` double,
     `fail` double,
+    `min` double,
     `max` double,
+    `lower_is_better` tinyint(4) NOT NULL DEFAULT '0',
     PRIMARY KEY (`aggregate_metric_spec_id`),
     KEY (`producer_id`)
 ) DEFAULT CHARSET=utf8;
