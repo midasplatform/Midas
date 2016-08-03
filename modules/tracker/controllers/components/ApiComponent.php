@@ -442,7 +442,7 @@ class Tracker_ApiComponent extends AppComponent
                     foreach ($populatedMetricUnassigned as $key => $unassignedValue) {
                         if (isset($metric->$key)) {
                             $populatedMetric[$key] = $metric->$key;
-                        } elseif(isset($defaults->$key)) {
+                        } elseif (isset($defaults->$key)) {
                             $populatedMetric[$key] = $defaults->$key;
                         } else {
                             $populatedMetric[$key] = $unassignedValue;
@@ -455,6 +455,7 @@ class Tracker_ApiComponent extends AppComponent
                         $populatedMetric['lower_is_better'] =
                             $populatedMetric['warning'] < $populatedMetric['fail'];
                     }
+
                     return $populatedMetric;
                 };
 
