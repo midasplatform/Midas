@@ -336,7 +336,9 @@ class Tracker_ApiComponent extends AppComponent
     }
 
     /**
-     * Validate documents tied to a submission.
+     * Validate the producer configuration and submission documents that are tied
+     * to a submission, updating the properties of the producer based off of
+     * the producer configuration.
      *
      * @param uuid The uuid of the submission to validate documents for
      * @param producerConfig (Optional) JSON object describing the pipeline
@@ -415,6 +417,47 @@ class Tracker_ApiComponent extends AppComponent
                     // Provide a default for $defaults so the below ?: logic works.
                     $defaults = new stdClass();
                 }
+
+                /**
+                 * Helper function to populate a metric based on the overall
+                 * metrics defaults, overriding any default values with any
+                 * specified in the metric itself, populating all properties with
+                 * some unassigned (false or null) value if no other value is found.
+                 * @param stdClass $metric the metric with specific values
+                 * @return array populated metric values
+                 */
+                $populateMetricValues = function ($metric) use ($defaults) {
+                    $populatedMetricUnassigned = array(
+                        'abbreviation' => false,
+                        'min' => false,
+                        'max' => false,
+                        'warning' => false,
+                        'fail' => false,
+                        // Special handling as false is meaningful in this case.
+                        'lower_is_better' => null,
+                    );
+                    $populatedMetric = array();
+                    /** @var string $key */
+                    /** @var mixed $unassignedValue */
+                    foreach ($populatedMetricUnassigned as $key => $unassignedValue) {
+                        if (isset($metric->$key)) {
+                            $populatedMetric[$key] = $metric->$key;
+                        } elseif(isset($defaults->$key)) {
+                            $populatedMetric[$key] = $defaults->$key;
+                        } else {
+                            $populatedMetric[$key] = $unassignedValue;
+                        }
+                    }
+                    if ($populatedMetric['lower_is_better'] === null &&
+                        $populatedMetric['warning'] !== false &&
+                        $populatedMetric['fail'] !== false) {
+                        // We can infer in this case.
+                        $populatedMetric['lower_is_better'] =
+                            $populatedMetric['warning'] < $populatedMetric['fail'];
+                    }
+                    return $populatedMetric;
+                };
+
                 // Add or update any key metrics and thresholds.
                 /** @var Tracker_TrendModel $trendModel */
                 $trendModel = MidasLoader::loadModel('Trend', 'tracker');
@@ -425,18 +468,16 @@ class Tracker_ApiComponent extends AppComponent
                 foreach ($keyMetrics as $keyMetric) {
                     // Set any needed trends to be key_metrics.
                     $trendModel->setAggregatableTrendAsKeyMetrics($producerDao, $keyMetric->name);
-                    $trendThresholdModel->upsert($producerDao, $keyMetric->name,
-                        isset($keyMetric->abbreviation) ? $keyMetric->abbreviation : false,
-                        isset($keyMetric->warning) ? $keyMetric->warning :
-                            (isset($defaults->warning) ? $defaults->warning : false),
-                        isset($keyMetric->fail) ? $keyMetric->fail :
-                            (isset($defaults->fail) ? $defaults->fail : false),
-                        isset($keyMetric->min) ? $keyMetric->min :
-                            (isset($defaults->min) ? $defaults->min : false),
-                        isset($keyMetric->max) ? $keyMetric->max :
-                            (isset($defaults->max) ? $defaults->max : false),
-                        isset($keyMetric->lower_is_better) ? $keyMetric->lower_is_better :
-                            (isset($defaults->lower_is_better) ? $defaults->lower_is_better : false)
+                    $metricValues = $populateMetricValues($keyMetric);
+                    $trendThresholdModel->upsert(
+                        $producerDao,
+                        $keyMetric->name,
+                        $metricValues['abbreviation'],
+                        $metricValues['warning'],
+                        $metricValues['fail'],
+                        $metricValues['min'],
+                        $metricValues['max'],
+                        $metricValues['lower_is_better']
                     );
                 }
                 // Add or update any aggregate metrics and thresholds, based on matching
@@ -450,21 +491,20 @@ class Tracker_ApiComponent extends AppComponent
                 $userModel = MidasLoader::loadModel('User');
                 /** @var stdClass $aggregateMetric */
                 foreach ($aggregateMetrics as $aggregateMetric) {
+                    $metricValues = $populateMetricValues($aggregateMetric);
                     /** @var Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao */
-                    $aggregateMetricSpecDao = $aggregateMetricSpecModel->upsert($producerDao, $aggregateMetric->name, $aggregateMetric->definition,
-                        isset($aggregateMetric->abbreviation) ? $aggregateMetric->abbreviation : false,
+                    $aggregateMetricSpecDao = $aggregateMetricSpecModel->upsert(
+                        $producerDao,
+                        $aggregateMetric->name,
+                        $aggregateMetric->definition,
+                        $metricValues['abbreviation'],
                         // Set empty string for description.
                         '',
-                        isset($aggregateMetric->warning) ? $aggregateMetric->warning :
-                            (isset($defaults->warning) ? $defaults->warning : false),
-                        isset($aggregateMetric->fail) ? $aggregateMetric->fail :
-                            (isset($defaults->fail) ? $defaults->fail : false),
-                        isset($aggregateMetric->min) ? $aggregateMetric->min :
-                            (isset($defaults->min) ? $defaults->min : false),
-                        isset($aggregateMetric->max) ? $aggregateMetric->max :
-                            (isset($defaults->max) ? $defaults->max : false),
-                        isset($aggregateMetric->lower_is_better) ? $aggregateMetric->lower_is_better :
-                            (isset($defaults->lower_is_better) ? $defaults->lower_is_better : false)
+                        $metricValues['warning'],
+                        $metricValues['fail'],
+                        $metricValues['min'],
+                        $metricValues['max'],
+                        $metricValues['lower_is_better']
                     );
                     // Delete any notifications tied to this Aggregate Metric, and create any
                     // as needed.
