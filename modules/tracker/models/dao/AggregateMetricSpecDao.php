@@ -37,8 +37,12 @@
  * @method void setWarning(float $warning)
  * @method float getFail()
  * @method void setFail(float $fail)
+ * @method float getMin()
+ * @method void setMin(float $min)
  * @method float getMax()
  * @method void setMax(float $max)
+ * @method bool getLowerIsBetter()
+ * @method void setLowerIsBetter(boolean $lowerIsBetter)
  * @method Tracker_ProducerDao getProducer()
  * @method void setProducer(Tracker_ProducerDao $producerDao)
  */

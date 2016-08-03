@@ -39,6 +39,16 @@
  * @method void setCommunity(CommunityDao $communityDao)
  * @method array getTrendgroups()
  * @method void setTrendgroups(array $trendgroupDaos)
+ * @method array getTrendthresholds()
+ * @method void setTrendthresholds(array $trendthresholdDaos)
+ * @method void setHistogramMaxX(float $histogramMaxX)
+ * @method float getHistogramMaxX()
+ * @method bool getGridAcrossMetricGroups()
+ * @method void setGridAcrossMetricGroups(boolean $gridAcrossMetricGroups)
+ * @method int getHistogramNumberOfBins()
+ * @method void setHistogramNumberOfBins(int $histogramNumberOfBins)
+ * @method string getProducerDefinition()
+ * @method void setProducerDefinition(string $producerDefinition)
  */
 class Tracker_ProducerDao extends Tracker_AppDao
 {

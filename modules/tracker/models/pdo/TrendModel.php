@@ -152,6 +152,27 @@ class Tracker_TrendModel extends Tracker_TrendModelBase
     }
 
     /**
+     * Set all Trends with the passed in metric_name to key_metrics,
+     * for the passed in Producer.
+     *
+     * @param Tracker_ProducerDao $producerDao producer DAO
+     * @param string $metricName The metric_name to match against trends
+     */
+    public function setAggregatableTrendAsKeyMetrics($producerDao, $metricName)
+    {
+        if (is_null($producerDao) || $producerDao === false) {
+            return false;
+        }
+        $producerIdQ = $this->database->getDB()->quote($producerDao->getProducerId());
+        $metricNameQ = $this->database->getDB()->quote($metricName);
+        $update = 'UPDATE tracker_trend, tracker_trendgroup SET key_metric=1 WHERE'.
+            ' producer_id = '.$producerIdQ.
+            ' AND tracker_trend.trendgroup_id = tracker_trendgroup.trendgroup_id '.
+            ' AND tracker_trend.metric_name = '.$metricNameQ;
+        $this->database->getDB()->query($update);
+    }
+
+    /**
      * Return the trend DAOs that match the given associative array of database columns and values.
      *
      * @param array $params associative array of database columns and values

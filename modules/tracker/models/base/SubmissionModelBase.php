@@ -42,6 +42,7 @@ abstract class Tracker_SubmissionModelBase extends Tracker_AppModel
             'extra_urls' => array('type' => MIDAS_DATA),
             'branch' => array('type' => MIDAS_DATA),
             'producer_revision' => array('type' => MIDAS_DATA),
+            'document' => array('type' => MIDAS_DATA),
             'reproduction_command' => array('type' => MIDAS_DATA),
             'producer' => array(
                 'type' => MIDAS_MANY_TO_ONE,

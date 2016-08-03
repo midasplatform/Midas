@@ -1,6 +1,6 @@
 -- Midas Server. Copyright Kitware SAS. Licensed under the Apache License 2.0.
 
--- MySQL database for the tracker module, version 2.0.3
+-- MySQL database for the tracker module, version 2.0.4
 
 CREATE TABLE IF NOT EXISTS `tracker_producer` (
     `producer_id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -11,6 +11,9 @@ CREATE TABLE IF NOT EXISTS `tracker_producer` (
     `description` text NOT NULL,
     `revision_url` text NOT NULL,
     `histogram_max_x` double,
+    `grid_across_metric_groups` tinyint(4) NOT NULL DEFAULT '0',
+    `histogram_number_of_bins` int(11) NOT NULL DEFAULT '10',
+    `producer_definition` text,
     PRIMARY KEY (`producer_id`),
     KEY (`community_id`)
 ) DEFAULT CHARSET=utf8;
@@ -38,6 +41,7 @@ CREATE TABLE IF NOT EXISTS `tracker_submission` (
     `branch` varchar(255) NOT NULL DEFAULT '',
     `extra_urls` text,
     `reproduction_command` text,
+    `document` text,
     PRIMARY KEY (`submission_id`),
     UNIQUE KEY (`uuid`),
     KEY (`user_id`),
@@ -84,7 +88,9 @@ CREATE TABLE IF NOT EXISTS `tracker_trend_threshold` (
     `abbreviation` varchar(255) NOT NULL DEFAULT '',
     `warning` double,
     `fail` double,
+    `min` double,
     `max` double,
+    `lower_is_better` tinyint(4) NOT NULL DEFAULT '0',
     PRIMARY KEY (`trend_threshold_id`),
     KEY (`producer_id`)
 ) DEFAULT CHARSET=utf8;
@@ -133,7 +139,9 @@ CREATE TABLE IF NOT EXISTS `tracker_aggregate_metric_spec` (
     `abbreviation` varchar(255) NOT NULL DEFAULT '',
     `warning` double,
     `fail` double,
+    `min` double,
     `max` double,
+    `lower_is_better` tinyint(4) NOT NULL DEFAULT '0',
     PRIMARY KEY (`aggregate_metric_spec_id`),
     KEY (`producer_id`)
 ) DEFAULT CHARSET=utf8;

@@ -49,6 +49,8 @@
  * @method void setProducerRevision(string $producerRevision)
  * @method string getReproductionCommand()
  * @method void setReproductionCommand(string $reproductionCommand)
+ * @method string getDocument()
+ * @method void setDocument(string $document)
  */
 class Tracker_SubmissionDao extends Tracker_AppDao
 {

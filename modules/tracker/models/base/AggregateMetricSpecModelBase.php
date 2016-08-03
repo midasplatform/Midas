@@ -38,7 +38,9 @@ abstract class Tracker_AggregateMetricSpecModelBase extends Tracker_AppModel
             'abbreviation' => array('type' => MIDAS_DATA),
             'warning' => array('type' => MIDAS_DATA),
             'fail' => array('type' => MIDAS_DATA),
+            'min' => array('type' => MIDAS_DATA),
             'max' => array('type' => MIDAS_DATA),
+            'lower_is_better' => array('type' => MIDAS_DATA),
             'producer' => array(
                 'type' => MIDAS_MANY_TO_ONE,
                 'model' => 'Producer',
@@ -80,6 +82,34 @@ abstract class Tracker_AggregateMetricSpecModelBase extends Tracker_AppModel
 
         return $aggregateMetricSpecDao;
     }
+
+    /**
+     * Create or update a Tracker AggregateMetricSpec, matching on the Producer
+     * and spec fields.
+     *
+     * @param Tracker_ProducerDao $producerDao
+     * @param string $name name of the aggregate metric
+     * @param string $spec the spec for the aggregate metric spec
+     * @param false|string $abbreviation name abbreviation for the threshold
+     * @param false|string $description the description for the aggregate metric spec
+     * @param false|float $warning warning value for this threshold
+     * @param false|float $fail fail value for this threshold
+     * @param false|float $min min value for display of this threshold
+     * @param false|float $max max value for display of this threshold
+     * @param false|bool $lowerIsBetter whether lower values are better for this threshold
+     * @return false|Tracker_AggregateMetricSpecDao created from inputs
+     */
+    abstract public function upsert(
+        $producerDao,
+        $name,
+        $spec,
+        $abbreviation = false,
+        $description = false,
+        $warning = false,
+        $fail = false,
+        $min = false,
+        $max = false,
+        $lowerIsBetter = false);
 
     /**
      * Return all AggregateMetricSpecDaos tied to the producer.

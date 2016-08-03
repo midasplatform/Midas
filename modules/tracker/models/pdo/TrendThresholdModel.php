@@ -23,4 +23,62 @@ require_once BASE_PATH.'/modules/tracker/models/base/TrendThresholdModelBase.php
 /** Trend Threshold model for the tracker module. */
 class Tracker_TrendThresholdModel extends Tracker_TrendThresholdModelBase
 {
+    /**
+      * Create or update a Tracker TrendThreshold tied to the Producer and metric_name.
+      *
+      * @param Tracker_ProducerDao $producerDao
+      * @param string $metricName metric name of the trend threshold
+      * @param false|string $abbreviation name abbreviation for the threshold
+      * @param false|float $warning warning value for this threshold
+      * @param false|float $fail fail value for this threshold
+      * @param false|float $min min value for display of this threshold
+      * @param false|float $max max value for display of this threshold
+      * @param false|bool $lowerIsBetter whether lower values are better for this threshold
+      * @return Tracker_TrendThresholdDao updated or created DAO
+      */
+     public function upsert(
+        $producerDao,
+        $metricName,
+        $abbreviation = false,
+        $warning = false,
+        $fail = false,
+        $min = false,
+        $max = false,
+        $lowerIsBetter = false)
+     {
+         if (is_null($producerDao) || $producerDao === false) {
+             return false;
+         }
+         $sql = $this->database->select()->setIntegrityCheck(false)
+            ->where('producer_id = ?', $producerDao->getProducerId())
+            ->where('metric_name = ?', $metricName);
+         /** @var Tracker_TrendThresholdDao $trendThresholdDao */
+         $trendThresholdDao = $this->initDao('TrendThreshold', $this->database->fetchRow($sql), $this->moduleName);
+         if ($trendThresholdDao === false) {
+             $trendThresholdDao = MidasLoader::newDao('TrendThresholdDao', $this->moduleName);
+             $trendThresholdDao->setProducerId($producerDao->getProducerId());
+             $trendThresholdDao->setMetricName($metricName);
+         }
+         if ($abbreviation !== false) {
+             $trendThresholdDao->setAbbreviation($abbreviation);
+         }
+         if ($warning !== false) {
+             $trendThresholdDao->setWarning($warning);
+         }
+         if ($fail !== false) {
+             $trendThresholdDao->setFail($fail);
+         }
+         if ($min !== false) {
+             $trendThresholdDao->setMin($min);
+         }
+         if ($max !== false) {
+             $trendThresholdDao->setMax($max);
+         }
+         if ($lowerIsBetter !== false) {
+             $trendThresholdDao->setLowerIsBetter($lowerIsBetter);
+         }
+         $this->save($trendThresholdDao);
+
+         return $trendThresholdDao;
+     }
 }

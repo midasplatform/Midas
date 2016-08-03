@@ -336,11 +336,14 @@ class Tracker_ApiComponent extends AppComponent
     }
 
     /**
-     * Validate documents tied to a submission.
+     * Validate the producer configuration and submission documents that are tied
+     * to a submission, updating the properties of the producer based off of
+     * the producer configuration.
      *
      * @param uuid The uuid of the submission to validate documents for
      * @param producerConfig (Optional) JSON object describing the pipeline
      * @param submissionDocument (Optional) JSON object describing the submission
+     * @throws Exception
      */
     public function submissionValidate($args)
     {
@@ -357,9 +360,6 @@ class Tracker_ApiComponent extends AppComponent
         }
 
         if (isset($args['producerConfig'])) {
-            // At the current time, we are looking for the producerConfig,
-            // validating it, and logging a warning with any violations, we
-            // are not saving the producerConfig.
             $producerConfig = $args['producerConfig'];
             $refResolver = new JsonSchema\RefResolver(new JsonSchema\Uri\UriRetriever(), new JsonSchema\Uri\UriResolver());
             $schemaPath = BASE_PATH.'/modules/tracker/schema/producer.json';
@@ -370,18 +370,176 @@ class Tracker_ApiComponent extends AppComponent
 
             if (!$validator->isValid()) {
                 $this->getLogger()->warn('The supplied producerConfig JSON for uuid '.$uuid." does not validate. Violations:\n");
+                /** @var array $error */
                 foreach ($validator->getErrors() as $error) {
                     $this->getLogger()->warn(sprintf("[%s] %s\n", $error['property'], $error['message']));
                 }
             } else {
                 $this->getLogger()->info('The supplied producerConfig JSON for uuid '.$uuid.' is valid.');
+
+                /** @var Tracker_ProducerModel $producerModel */
+                $producerModel = MidasLoader::loadModel('Producer', 'tracker');
+                /** @var Tracker_ProducerDao $producerDao */
+                $producerDao = $submissionDao->getProducer();
+                if (!$producerModel->policyCheck(
+                    $producerDao,
+                    $user,
+                    MIDAS_POLICY_WRITE
+                )) {
+                    throw new Exception('Write permission on the producer required', 403);
+                }
+                /** @var stdClass $producerDefinition */
+                $producerDefinition = json_decode($producerConfig);
+                // Ensure that Producer and Community match.
+                if ($producerDefinition->producer !== $producerDao->getDisplayName()) {
+                    throw new Exception('Producer schema name must match existing Producer display name', 404);
+                }
+                if ($producerDefinition->community !== $producerDao->getCommunity()->getName()) {
+                    throw new Exception('Producer schema community name must match existing Producer Community name', 404);
+                }
+
+                // Save the producer definition to the producer.
+                $producerDao->setProducerDefinition($producerConfig);
+                // Update top level fields on the producer based on the definition.
+                if (isset($producerDefinition->histogram_max_x)) {
+                    $producerDao->setHistogramMaxX($producerDefinition->histogram_max_x);
+                }
+                if (isset($producerDefinition->grid_across_metric_groups)) {
+                    $producerDao->setGridAcrossMetricGroups($producerDefinition->grid_across_metric_groups);
+                }
+                if (isset($producerDefinition->histogram_number_of_bins)) {
+                    $producerDao->setHistogramNumberOfBins($producerDefinition->histogram_number_of_bins);
+                }
+                $producerModel->save($producerDao);
+
+                $defaults = $producerDefinition->defaults;
+                if (!isset($defaults)) {
+                    // Provide a default for $defaults so the below ?: logic works.
+                    $defaults = new stdClass();
+                }
+
+                /**
+                 * Helper function to populate a metric based on the overall
+                 * metrics defaults, overriding any default values with any
+                 * specified in the metric itself, populating all properties with
+                 * some unassigned (false or null) value if no other value is found.
+                 * @param stdClass $metric the metric with specific values
+                 * @return array populated metric values
+                 */
+                $populateMetricValues = function ($metric) use ($defaults) {
+                    $populatedMetricUnassigned = array(
+                        'abbreviation' => false,
+                        'min' => false,
+                        'max' => false,
+                        'warning' => false,
+                        'fail' => false,
+                        // Special handling as false is meaningful in this case.
+                        'lower_is_better' => null,
+                    );
+                    $populatedMetric = array();
+                    /** @var string $key */
+                    /** @var mixed $unassignedValue */
+                    foreach ($populatedMetricUnassigned as $key => $unassignedValue) {
+                        if (isset($metric->$key)) {
+                            $populatedMetric[$key] = $metric->$key;
+                        } elseif (isset($defaults->$key)) {
+                            $populatedMetric[$key] = $defaults->$key;
+                        } else {
+                            $populatedMetric[$key] = $unassignedValue;
+                        }
+                    }
+                    if ($populatedMetric['lower_is_better'] === null &&
+                        $populatedMetric['warning'] !== false &&
+                        $populatedMetric['fail'] !== false) {
+                        // We can infer in this case.
+                        $populatedMetric['lower_is_better'] =
+                            $populatedMetric['warning'] < $populatedMetric['fail'];
+                    }
+
+                    return $populatedMetric;
+                };
+
+                // Add or update any key metrics and thresholds.
+                /** @var Tracker_TrendModel $trendModel */
+                $trendModel = MidasLoader::loadModel('Trend', 'tracker');
+                /** @var Tracker_TrendThresholdModel $trendThresholdModel */
+                $trendThresholdModel = MidasLoader::loadModel('TrendThreshold', 'tracker');
+                $keyMetrics = $producerDefinition->key_metrics;
+                /** @var stdClass $keyMetric */
+                foreach ($keyMetrics as $keyMetric) {
+                    // Set any needed trends to be key_metrics.
+                    $trendModel->setAggregatableTrendAsKeyMetrics($producerDao, $keyMetric->name);
+                    $metricValues = $populateMetricValues($keyMetric);
+                    $trendThresholdModel->upsert(
+                        $producerDao,
+                        $keyMetric->name,
+                        $metricValues['abbreviation'],
+                        $metricValues['warning'],
+                        $metricValues['fail'],
+                        $metricValues['min'],
+                        $metricValues['max'],
+                        $metricValues['lower_is_better']
+                    );
+                }
+                // Add or update any aggregate metrics and thresholds, based on matching
+                // the producer and spec.
+                $aggregateMetrics = $producerDefinition->aggregate_metrics;
+                /** @var Tracker_AggregateMetricSpecModel $aggregateMetricSpecModel */
+                $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
+                /** @var Tracker_AggregateMetricNotificationModel $aggregateMetricNotificationModel */
+                $aggregateMetricNotificationModel = MidasLoader::loadModel('AggregateMetricNotification', 'tracker');
+                /** @var UserModel $userModel */
+                $userModel = MidasLoader::loadModel('User');
+                /** @var stdClass $aggregateMetric */
+                foreach ($aggregateMetrics as $aggregateMetric) {
+                    $metricValues = $populateMetricValues($aggregateMetric);
+                    /** @var Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao */
+                    $aggregateMetricSpecDao = $aggregateMetricSpecModel->upsert(
+                        $producerDao,
+                        $aggregateMetric->name,
+                        $aggregateMetric->definition,
+                        $metricValues['abbreviation'],
+                        // Set empty string for description.
+                        '',
+                        $metricValues['warning'],
+                        $metricValues['fail'],
+                        $metricValues['min'],
+                        $metricValues['max'],
+                        $metricValues['lower_is_better']
+                    );
+                    // Delete any notifications tied to this Aggregate Metric, and create any
+                    // as needed.
+                    $staleNotifications = $aggregateMetricNotificationModel->findBy('aggregate_metric_spec_id', $aggregateMetricSpecDao->getAggregateMetricSpecId());
+                    /** @var Tracker_AggregateMetricNotificationDao $staleNotification */
+                    foreach ($staleNotifications as $staleNotification) {
+                        $aggregateMetricNotificationModel->delete($staleNotification);
+                    }
+                    if (isset($aggregateMetric->notifications)) {
+                        /** @var stdClass $notification */
+                        foreach ($aggregateMetric->notifications as $notification) {
+                            /** @var Tracker_AggregateMetricNotificationDao $aggregateMetricNotificationDao */
+                            $aggregateMetricNotificationDao = MidasLoader::newDao('AggregateMetricNotificationDao', $this->moduleName);
+                            $aggregateMetricNotificationDao->setAggregateMetricSpecId($aggregateMetricSpecDao->getAggregateMetricSpecId());
+                            $aggregateMetricNotificationDao->setBranch($notification->branch);
+                            $aggregateMetricNotificationDao->setComparison($notification->comparison);
+                            $aggregateMetricNotificationDao->setValue($notification->value);
+                            $aggregateMetricNotificationModel->save($aggregateMetricNotificationDao);
+                            if (isset($notification->emails)) {
+                                foreach ($notification->emails as $email) {
+                                    // We can only add notifications for valid users.
+                                    $userDao = $userModel->getByEmail($email);
+                                    if ($userDao !== false) {
+                                        $aggregateMetricNotificationModel->createUserNotification($aggregateMetricNotificationDao, $userDao);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
         if (isset($args['submissionDocument'])) {
-            // At the current time, we are looking for the submissionDocument,
-            // validating it, and logging a warning with any violations, we
-            // are not saving the producerConfig.
             $submissionDocument = $args['submissionDocument'];
             $refResolver = new JsonSchema\RefResolver(new JsonSchema\Uri\UriRetriever(), new JsonSchema\Uri\UriResolver());
             $schemaPath = BASE_PATH.'/modules/tracker/schema/submission.json';
@@ -397,6 +555,20 @@ class Tracker_ApiComponent extends AppComponent
                 }
             } else {
                 $this->getLogger()->info('The supplied submissionDocument JSON for uuid '.$uuid.' is valid.');
+
+                /** @var Tracker_ProducerModel $producerModel */
+                $producerModel = MidasLoader::loadModel('Producer', 'tracker');
+                /** @var Tracker_ProducerDao $producerDao */
+                $producerDao = $submissionDao->getProducer();
+                if (!$producerModel->policyCheck(
+                    $producerDao,
+                    $user,
+                    MIDAS_POLICY_WRITE
+                )) {
+                    throw new Exception('Write permission on the producer required', 403);
+                }
+                $submissionDao->setDocument($submissionDocument);
+                $submissionModel->save($submissionDao);
             }
         }
     }
