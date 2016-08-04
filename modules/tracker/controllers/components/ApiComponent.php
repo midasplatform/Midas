@@ -398,143 +398,146 @@ class Tracker_ApiComponent extends AppComponent
                     throw new Exception('Producer schema community name must match existing Producer Community name', 404);
                 }
 
-                // Save the producer definition to the producer.
-                $producerDao->setProducerDefinition($producerConfig);
-                // Update top level fields on the producer based on the definition.
-                if (isset($producerDefinition->histogram_max_x)) {
-                    $producerDao->setHistogramMaxX($producerDefinition->histogram_max_x);
-                }
-                if (isset($producerDefinition->grid_across_metric_groups)) {
-                    $producerDao->setGridAcrossMetricGroups($producerDefinition->grid_across_metric_groups);
-                }
-                if (isset($producerDefinition->histogram_number_of_bins)) {
-                    $producerDao->setHistogramNumberOfBins($producerDefinition->histogram_number_of_bins);
-                }
-                $producerModel->save($producerDao);
+                // Save a hash of the producer definition, compare this incoming
+                // definition and only update if necessary.
+                $newDefinitionHash = md5($producerConfig);
+                if ($producerDao->getProducerDefinition() !== $newDefinitionHash) {
+                    $defaults = $producerDefinition->defaults;
+                    if (!isset($defaults)) {
+                        // Provide a default for $defaults so the below ?: logic works.
+                        $defaults = new stdClass();
+                    }
 
-                $defaults = $producerDefinition->defaults;
-                if (!isset($defaults)) {
-                    // Provide a default for $defaults so the below ?: logic works.
-                    $defaults = new stdClass();
-                }
-
-                /**
-                 * Helper function to populate a metric based on the overall
-                 * metrics defaults, overriding any default values with any
-                 * specified in the metric itself, populating all properties with
-                 * some unassigned (false or null) value if no other value is found.
-                 * @param stdClass $metric the metric with specific values
-                 * @return array populated metric values
-                 */
-                $populateMetricValues = function ($metric) use ($defaults) {
-                    $populatedMetricUnassigned = array(
-                        'abbreviation' => false,
-                        'min' => false,
-                        'max' => false,
-                        'warning' => false,
-                        'fail' => false,
-                        // Special handling as false is meaningful in this case.
-                        'lower_is_better' => null,
-                    );
-                    $populatedMetric = array();
-                    /** @var string $key */
-                    /** @var mixed $unassignedValue */
-                    foreach ($populatedMetricUnassigned as $key => $unassignedValue) {
-                        if (isset($metric->$key)) {
-                            $populatedMetric[$key] = $metric->$key;
-                        } elseif (isset($defaults->$key)) {
-                            $populatedMetric[$key] = $defaults->$key;
-                        } else {
-                            $populatedMetric[$key] = $unassignedValue;
+                    /**
+                     * Helper function to populate a metric based on the overall
+                     * metrics defaults, overriding any default values with any
+                     * specified in the metric itself, populating all properties with
+                     * some unassigned (false or null) value if no other value is found.
+                     * @param stdClass $metric the metric with specific values
+                     * @return array populated metric values
+                     */
+                    $populateMetricValues = function ($metric) use ($defaults) {
+                        $populatedMetricUnassigned = array(
+                            'abbreviation' => false,
+                            'min' => false,
+                            'max' => false,
+                            'warning' => false,
+                            'fail' => false,
+                            // Special handling as false is meaningful in this case.
+                            'lower_is_better' => null,
+                        );
+                        $populatedMetric = array();
+                        /** @var string $key */
+                        /** @var mixed $unassignedValue */
+                        foreach ($populatedMetricUnassigned as $key => $unassignedValue) {
+                            if (isset($metric->$key)) {
+                                $populatedMetric[$key] = $metric->$key;
+                            } elseif (isset($defaults->$key)) {
+                                $populatedMetric[$key] = $defaults->$key;
+                            } else {
+                                $populatedMetric[$key] = $unassignedValue;
+                            }
                         }
-                    }
-                    if ($populatedMetric['lower_is_better'] === null &&
-                        $populatedMetric['warning'] !== false &&
-                        $populatedMetric['fail'] !== false) {
-                        // We can infer in this case.
-                        $populatedMetric['lower_is_better'] =
-                            $populatedMetric['warning'] < $populatedMetric['fail'];
-                    }
+                        if ($populatedMetric['lower_is_better'] === null &&
+                            $populatedMetric['warning'] !== false &&
+                            $populatedMetric['fail'] !== false) {
+                            // We can infer in this case.
+                            $populatedMetric['lower_is_better'] =
+                                $populatedMetric['warning'] < $populatedMetric['fail'];
+                        }
 
-                    return $populatedMetric;
-                };
+                        return $populatedMetric;
+                    };
 
-                // Add or update any key metrics and thresholds.
-                /** @var Tracker_TrendModel $trendModel */
-                $trendModel = MidasLoader::loadModel('Trend', 'tracker');
-                /** @var Tracker_TrendThresholdModel $trendThresholdModel */
-                $trendThresholdModel = MidasLoader::loadModel('TrendThreshold', 'tracker');
-                $keyMetrics = $producerDefinition->key_metrics;
-                /** @var stdClass $keyMetric */
-                foreach ($keyMetrics as $keyMetric) {
-                    // Set any needed trends to be key_metrics.
-                    $trendModel->setAggregatableTrendAsKeyMetrics($producerDao, $keyMetric->name);
-                    $metricValues = $populateMetricValues($keyMetric);
-                    $trendThresholdModel->upsert(
-                        $producerDao,
-                        $keyMetric->name,
-                        $metricValues['abbreviation'],
-                        $metricValues['warning'],
-                        $metricValues['fail'],
-                        $metricValues['min'],
-                        $metricValues['max'],
-                        $metricValues['lower_is_better']
-                    );
-                }
-                // Add or update any aggregate metrics and thresholds, based on matching
-                // the producer and spec.
-                $aggregateMetrics = $producerDefinition->aggregate_metrics;
-                /** @var Tracker_AggregateMetricSpecModel $aggregateMetricSpecModel */
-                $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
-                /** @var Tracker_AggregateMetricNotificationModel $aggregateMetricNotificationModel */
-                $aggregateMetricNotificationModel = MidasLoader::loadModel('AggregateMetricNotification', 'tracker');
-                /** @var UserModel $userModel */
-                $userModel = MidasLoader::loadModel('User');
-                /** @var stdClass $aggregateMetric */
-                foreach ($aggregateMetrics as $aggregateMetric) {
-                    $metricValues = $populateMetricValues($aggregateMetric);
-                    /** @var Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao */
-                    $aggregateMetricSpecDao = $aggregateMetricSpecModel->upsert(
-                        $producerDao,
-                        $aggregateMetric->name,
-                        $aggregateMetric->definition,
-                        $metricValues['abbreviation'],
-                        // Set empty string for description.
-                        '',
-                        $metricValues['warning'],
-                        $metricValues['fail'],
-                        $metricValues['min'],
-                        $metricValues['max'],
-                        $metricValues['lower_is_better']
-                    );
-                    // Delete any notifications tied to this Aggregate Metric, and create any
-                    // as needed.
-                    $staleNotifications = $aggregateMetricNotificationModel->findBy('aggregate_metric_spec_id', $aggregateMetricSpecDao->getAggregateMetricSpecId());
-                    /** @var Tracker_AggregateMetricNotificationDao $staleNotification */
-                    foreach ($staleNotifications as $staleNotification) {
-                        $aggregateMetricNotificationModel->delete($staleNotification);
+                    // Add or update any key metrics and thresholds.
+                    /** @var Tracker_TrendModel $trendModel */
+                    $trendModel = MidasLoader::loadModel('Trend', 'tracker');
+                    /** @var Tracker_TrendThresholdModel $trendThresholdModel */
+                    $trendThresholdModel = MidasLoader::loadModel('TrendThreshold', 'tracker');
+                    $keyMetrics = $producerDefinition->key_metrics;
+                    /** @var stdClass $keyMetric */
+                    foreach ($keyMetrics as $keyMetric) {
+                        // Set any needed trends to be key_metrics.
+                        $trendModel->setAggregatableTrendAsKeyMetrics($producerDao, $keyMetric->name);
+                        $metricValues = $populateMetricValues($keyMetric);
+                        $trendThresholdModel->upsert(
+                            $producerDao,
+                            $keyMetric->name,
+                            $metricValues['abbreviation'],
+                            $metricValues['warning'],
+                            $metricValues['fail'],
+                            $metricValues['min'],
+                            $metricValues['max'],
+                            $metricValues['lower_is_better']
+                        );
                     }
-                    if (isset($aggregateMetric->notifications)) {
-                        /** @var stdClass $notification */
-                        foreach ($aggregateMetric->notifications as $notification) {
-                            /** @var Tracker_AggregateMetricNotificationDao $aggregateMetricNotificationDao */
-                            $aggregateMetricNotificationDao = MidasLoader::newDao('AggregateMetricNotificationDao', $this->moduleName);
-                            $aggregateMetricNotificationDao->setAggregateMetricSpecId($aggregateMetricSpecDao->getAggregateMetricSpecId());
-                            $aggregateMetricNotificationDao->setBranch($notification->branch);
-                            $aggregateMetricNotificationDao->setComparison($notification->comparison);
-                            $aggregateMetricNotificationDao->setValue($notification->value);
-                            $aggregateMetricNotificationModel->save($aggregateMetricNotificationDao);
-                            if (isset($notification->emails)) {
-                                foreach ($notification->emails as $email) {
-                                    // We can only add notifications for valid users.
-                                    $userDao = $userModel->getByEmail($email);
-                                    if ($userDao !== false) {
-                                        $aggregateMetricNotificationModel->createUserNotification($aggregateMetricNotificationDao, $userDao);
+                    // Add or update any aggregate metrics and thresholds, based on matching
+                    // the producer and spec.
+                    $aggregateMetrics = $producerDefinition->aggregate_metrics;
+                    /** @var Tracker_AggregateMetricSpecModel $aggregateMetricSpecModel */
+                    $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
+                    /** @var Tracker_AggregateMetricNotificationModel $aggregateMetricNotificationModel */
+                    $aggregateMetricNotificationModel = MidasLoader::loadModel('AggregateMetricNotification', 'tracker');
+                    /** @var UserModel $userModel */
+                    $userModel = MidasLoader::loadModel('User');
+                    /** @var stdClass $aggregateMetric */
+                    foreach ($aggregateMetrics as $aggregateMetric) {
+                        $metricValues = $populateMetricValues($aggregateMetric);
+                        /** @var Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao */
+                        $aggregateMetricSpecDao = $aggregateMetricSpecModel->upsert(
+                            $producerDao,
+                            $aggregateMetric->name,
+                            $aggregateMetric->definition,
+                            $metricValues['abbreviation'],
+                            // Set empty string for description.
+                            '',
+                            $metricValues['warning'],
+                            $metricValues['fail'],
+                            $metricValues['min'],
+                            $metricValues['max'],
+                            $metricValues['lower_is_better']
+                        );
+                        // Delete any notifications tied to this Aggregate Metric, and create any
+                        // as needed.
+                        $staleNotifications = $aggregateMetricNotificationModel->findBy('aggregate_metric_spec_id', $aggregateMetricSpecDao->getAggregateMetricSpecId());
+                        /** @var Tracker_AggregateMetricNotificationDao $staleNotification */
+                        foreach ($staleNotifications as $staleNotification) {
+                            $aggregateMetricNotificationModel->delete($staleNotification);
+                        }
+                        if (isset($aggregateMetric->notifications)) {
+                            /** @var stdClass $notification */
+                            foreach ($aggregateMetric->notifications as $notification) {
+                                /** @var Tracker_AggregateMetricNotificationDao $aggregateMetricNotificationDao */
+                                $aggregateMetricNotificationDao = MidasLoader::newDao('AggregateMetricNotificationDao', $this->moduleName);
+                                $aggregateMetricNotificationDao->setAggregateMetricSpecId($aggregateMetricSpecDao->getAggregateMetricSpecId());
+                                $aggregateMetricNotificationDao->setBranch($notification->branch);
+                                $aggregateMetricNotificationDao->setComparison($notification->comparison);
+                                $aggregateMetricNotificationDao->setValue($notification->value);
+                                $aggregateMetricNotificationModel->save($aggregateMetricNotificationDao);
+                                if (isset($notification->emails)) {
+                                    foreach ($notification->emails as $email) {
+                                        // We can only add notifications for valid users.
+                                        $userDao = $userModel->getByEmail($email);
+                                        if ($userDao !== false) {
+                                            $aggregateMetricNotificationModel->createUserNotification($aggregateMetricNotificationDao, $userDao);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                    // Update top level fields on the producer based on the definition.
+                    if (isset($producerDefinition->histogram_max_x)) {
+                        $producerDao->setHistogramMaxX($producerDefinition->histogram_max_x);
+                    }
+                    if (isset($producerDefinition->grid_across_metric_groups)) {
+                        $producerDao->setGridAcrossMetricGroups($producerDefinition->grid_across_metric_groups);
+                    }
+                    if (isset($producerDefinition->histogram_number_of_bins)) {
+                        $producerDao->setHistogramNumberOfBins($producerDefinition->histogram_number_of_bins);
+                    }
+                    $producerDao->setProducerDefinition($newDefinitionHash);
+                    $producerModel->save($producerDao);
                 }
             }
         }
