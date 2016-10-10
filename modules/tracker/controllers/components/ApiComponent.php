@@ -336,6 +336,200 @@ class Tracker_ApiComponent extends AppComponent
     }
 
     /**
+     * Parses a valid associative array from a string containing a json document.
+     *
+     * @param string jsonString string that should be a json document
+     * @return mixed associative array of the parsed json document
+     * @throws Exception
+     */
+    protected function _parseValidJson($jsonString)
+    {
+        $json = json_decode($jsonString, true);
+        $jsonLastError = json_last_error();
+        if ($jsonLastError !== JSON_ERROR_NONE) {
+            $this->getLogger()->info('The jsonString is invalid JSON: '.$jsonLastError);
+        }
+        return $json;
+    }
+
+    /**
+     * Validates a string against a json-schema found at schemaPath.
+     *
+     * @param string documentString string that should be a json document
+     * @param string schemaPath filesystem path to a json-schema document
+     * @return bool true if a valid json document parsed from documentString
+     * can be validated by the valid json-schema file found at schemaPath,
+     * false otherwise
+     * @throws Exception
+     */
+    protected function _validateJson($documentString, $schemaPath)
+    {
+        $documentJson = $this->_parseValidJson($documentString);
+        if ($documentJson === null) {
+            $this->getLogger()->info('The document is invalid JSON.');
+            return false;
+        }
+        $schemaString = file_get_contents($schemaPath);
+        $schemaJson = $this->_parseValidJson($schemaString);
+        if ($schemaJson === null) {
+            $this->getLogger()->info('The schema is invalid JSON.');
+            return false;
+        }
+        $refResolver = new JsonSchema\RefResolver(new JsonSchema\Uri\UriRetriever(), new JsonSchema\Uri\UriResolver());
+        $schema = $refResolver->resolve('file://'.realpath($schemaPath));
+        $validator = new JsonSchema\Validator();
+        $validator->check(json_decode($documentString), $schema);
+        $valid = $validator->isValid();
+        if (!$valid) {
+            $this->getLogger()->warn('The supplied document JSON does not validate. Violations:\n');
+            foreach ($validator->getErrors() as $error) {
+                $this->getLogger()->warn(sprintf("[%s] %s\n", $error['property'], $error['message']));
+                echo sprintf("[%s] %s\n", $error['property'], $error['message']);
+            }
+            return false;
+        }
+        return $documentJson;
+     }
+
+    /**
+     * Finds an Item by name, ensuring that the user has read access.
+     *
+     * @param string name Name of the item
+     * @param UserDao userDao User to check permissions for
+     * @return ItemDao Found and readable item
+     * @throws Exception
+     */
+    protected function _findReadableItemByName($name, $userDao)
+    {
+        if ($name === '' || $name === false) {
+            throw new Exception('Invalid item', 404);
+        }
+        /** @var ItemModel $itemModel */
+        $itemModel = MidasLoader::loadModel('Item');
+        /** @var array $itemDaos */
+        $itemDaos = $itemModel->getByName($name);
+        if (count($itemDaos) < 1) {
+            throw new Exception('Invalid item with name '.$name, 404);
+        }
+        /** @var ItemDao $itemDao */
+        $itemDao = $itemDaos[0];
+        if (!$itemModel->policyCheck($itemDao, $userDao, MIDAS_POLICY_READ)) {
+            throw new Exception('Read permission on the dataset item required', 403);
+        }
+        return $itemDao;
+    }
+
+    /**
+     * Add the values of a submission document to the database.
+     *
+     * @param string communityName maybe Name of the community associated to the submission
+     * @param string producerDisplayName maybe Display name of the producer associated to the submission
+     * @throws Exception
+     */
+    public function submissionAddFromArchive($args)
+    {
+        // Allow a producer config to be passed?  Probably should so that
+        // they can update the producer.
+        // TODO do we want these as query params or in the json?  probably in the json.
+        $this->_checkKeys(array('communityName', 'producerDisplayName'), $args);
+        $userDao = $this->_getUser($args);
+        $communityName = $args['communityName'];
+        // skipping experimental for now, hopefully this is obsolete
+        // //$experimental = isset($args['experimental']) ? $args['experimental'] : false;
+        $folderName = $args['folderName'];
+        $privacy = $args['privacy'];
+
+        /** @var CommunityModel $communityModel */
+        $communityModel = MidasLoader::loadModel('Community');
+        /** @var CommunityDao $communityDao */
+        $communityDao = $communityModel->getByName($communityName);
+        if ($communityDao === false || !$communityModel->policyCheck($communityDao, $userDao, MIDAS_POLICY_WRITE)
+        ) {
+            throw new Exception(
+                "This community doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY
+            );
+        }
+
+        $producerDisplayName = $args['producerDisplayName'];
+        if ($producerDisplayName == '') {
+            throw new Exception('Producer display name must not be empty', -1);
+        }
+        /** @var Tracker_ProducerModel $producerModel */
+        $producerModel = MidasLoader::loadModel('Producer', 'tracker');
+        /** @var Tracker_ProducerDao $producerDao */
+        $producerDao = $producerModel->createIfNeeded($communityDao->getKey(), $producerDisplayName);
+
+        // TODO Somehow get the submission document
+        // this should come from GCS or somewhere
+
+        // TODO HACK
+        $submissionDocumentPath = '/home/vagrant/test_sub.json';
+        $submissionDocument = file_get_contents($submissionDocumentPath);
+        $schemaPath = BASE_PATH.'/modules/tracker/schema/submission.json';
+        $submissionJson = $this->_validateJson($submissionDocument, $schemaPath);
+        if ($submissionJson) {
+            $uuid = $submissionJson['uuid'];
+            $this->getLogger()->info('The supplied submissionDocument JSON for uuid '.$uuid.' is valid.');
+            /** @var Tracker_SubmissionModel $submissionModel */
+            $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
+            /** @var Tracker_SubmissionDao $submissionDao */
+            $submissionDao = $submissionModel->getOrCreateSubmission($producerDao, $uuid);
+            if ($submissionDao === false) {
+                throw new Zend_Exception('The submission does not exist', 403);
+            }
+
+            $testDatasetName = $submissionJson['test_dataset'];
+            /** @var ItemDao $testDatasetItemDao */
+            $testDatasetItemDao = $this->_findReadableItemByName($testDatasetName, $userDao);
+
+            /** @var ItemDao $truthDatasetItemDao */
+            $truthDatasetItemDao = null;
+            if (array_key_exists('truth_dataset', $submissionJson)) {
+                $truthDatasetName = $submissionJson['truth_dataset'];
+                $truthDatasetItemDao = $this->_findReadableItemByName($truthDatasetName, $userDao);
+            }
+
+            /** @var ItemDao $configItemDao */
+            $configItemDao = null;
+            if (array_key_exists('config_dataset', $submissionJson)) {
+                $configDatasetName = $submissionJson['config_dataset'];
+                $configItemDao = $this->_findReadableItemByName($configDatasetName, $userDao);
+            }
+
+            $submissionMetrics = array();
+            if (array_key_exists('metrics', $submissionJson)) {
+                $submissionMetrics = $submissionJson['metrics'];
+            }
+            /** @var Tracker_TrendModel $trendModel */
+            $trendModel = MidasLoader::loadModel('Trend', 'tracker');
+            /** @var Tracker_ScalarModel $scalarModel */
+            $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
+            /** @var mixed $metric */
+            foreach ($submissionMetrics as $metric) {
+                if (array_key_exists('unit', $metric)) {
+                    $unit = $metric['unit'];
+                } else {
+                    $unit = false;
+                }
+
+                /** @var Tracker_TrendDao $trendDao */
+                $trendDao = $trendModel->createIfNeeded(
+                    $producerDao->getKey(),
+                    $metric['name'],
+                    $configItemDao === null ? null : $configItemDao->getKey(),
+                    $testDatasetItemDao->getKey(),
+                    $truthDatasetItemDao === null ? null : $truthDatasetItemDao->getKey(),
+                    $unit
+                );
+                /** @var Tracker_ScalarDao $scalarDao */
+                $scalarDao = $scalarModel->addToTrend($trendDao, $submissionDao, $metric['value']);
+            }
+        } else {
+            throw new Exception('Submission document is invalid', 401);
+        }
+    }
+
+    /**
      * Validate the producer configuration and submission documents that are tied
      * to a submission, updating the properties of the producer based off of
      * the producer configuration.
