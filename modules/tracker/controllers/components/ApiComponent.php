@@ -349,6 +349,7 @@ class Tracker_ApiComponent extends AppComponent
         if ($jsonLastError !== JSON_ERROR_NONE) {
             $this->getLogger()->info('The jsonString is invalid JSON: '.$jsonLastError);
         }
+
         return $json;
     }
 
@@ -367,12 +368,14 @@ class Tracker_ApiComponent extends AppComponent
         $documentJson = $this->_parseValidJson($documentString);
         if ($documentJson === null) {
             $this->getLogger()->info('The document is invalid JSON.');
+
             return false;
         }
         $schemaString = file_get_contents($schemaPath);
         $schemaJson = $this->_parseValidJson($schemaString);
         if ($schemaJson === null) {
             $this->getLogger()->info('The schema is invalid JSON.');
+
             return false;
         }
         $refResolver = new JsonSchema\RefResolver(new JsonSchema\Uri\UriRetriever(), new JsonSchema\Uri\UriResolver());
@@ -386,10 +389,12 @@ class Tracker_ApiComponent extends AppComponent
                 $this->getLogger()->warn(sprintf("[%s] %s\n", $error['property'], $error['message']));
                 echo sprintf("[%s] %s\n", $error['property'], $error['message']);
             }
+
             return false;
         }
+
         return $documentJson;
-     }
+    }
 
     /**
      * Finds an Item by name, ensuring that the user has read access.
@@ -416,6 +421,7 @@ class Tracker_ApiComponent extends AppComponent
         if (!$itemModel->policyCheck($itemDao, $userDao, MIDAS_POLICY_READ)) {
             throw new Exception('Read permission on the dataset item required', 403);
         }
+
         return $itemDao;
     }
 
@@ -514,7 +520,8 @@ class Tracker_ApiComponent extends AppComponent
      * @return Tracker_ProducerDao producerDao The updated Producer
      * @throws Exception
      */
-    protected function _updateProducerDefinition($producerDocument, $producerDefinition, $producerDao) {
+    protected function _updateProducerDefinition($producerDocument, $producerDefinition, $producerDao)
+    {
         /** @var Tracker_TrendModel $trendModel */
         $trendModel = MidasLoader::loadModel('Trend', 'tracker');
         // Save a hash of the producer definition, compare this incoming
@@ -564,6 +571,7 @@ class Tracker_ApiComponent extends AppComponent
                     $populatedMetric['lower_is_better'] =
                         $populatedMetric['warning'] < $populatedMetric['fail'];
                 }
+
                 return $populatedMetric;
             };
 
