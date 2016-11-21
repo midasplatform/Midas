@@ -13,6 +13,10 @@ _Server component of the Midas Platform_
 [![PHP Dependencies](https://www.versioneye.com/user/projects/54fdf4ad4a10649b1b000002/badge.svg)](https://www.versioneye.com/user/projects/54fdf4ad4a10649b1b000002)
 [![StyleCI](https://styleci.io/repos/18849230/shield)](https://styleci.io/repos/18849230)
 
+## Use Girder Instead of Midas ##
+
+Prefer [Girder](https://github.com/girder/girder), which is a more modern and better supported platform than Midas.  There is [documentation](https://github.com/girder/girder/tree/master/scripts/midas) for migrating a Midas3 instance to Girder.  Help is available, documented in the [Girder GitHub repo](https://github.com/girder/girder).
+
 ## Overview ##
 
 Midas Server is an open-source application that enables the rapid creation of
