@@ -15,7 +15,9 @@ _Server component of the Midas Platform_
 
 ## Use Girder Instead of Midas ##
 
-Prefer [Girder](https://github.com/girder/girder), which is a more modern and better supported platform than Midas.  There is [documentation](https://github.com/girder/girder/tree/master/scripts/midas) for migrating a Midas3 instance to Girder.  Help is available, documented in the [Girder GitHub repo](https://github.com/girder/girder).
+Prefer [Girder](https://github.com/girder/girder), which is a more modern and better supported platform than Midas Platform.  Help is available for Girder, documented in the [Girder GitHub repo README](https://github.com/girder/girder/blob/master/README.rst), and Girder's [readthedocs](http://girder.readthedocs.io/en/latest/) page.
+
+There is [documentation](https://github.com/girder/girder/blob/master/scripts/midas/README.md) for migrating a Midas Server instance to Girder, along with migration scripts.
 
 ## Overview ##
 
