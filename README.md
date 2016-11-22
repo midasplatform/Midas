@@ -10,9 +10,9 @@ _Server component of the Midas Platform_
 [![Packagist License](https://img.shields.io/packagist/l/midas-platform/midas-server.svg)](https://packagist.org/packages/midas-platform/midas-server)
 [![StyleCI](https://styleci.io/repos/18849230/shield)](https://styleci.io/repos/18849230)
 
-## Use Girder Instead of Midas ##
+## Use Girder Instead of Midas Platform ##
 
-Prefer [Girder](https://github.com/girder/girder), which is a more modern and better supported platform than Midas Platform.  Help is available for Girder, documented in the [Girder GitHub repo README](https://github.com/girder/girder/blob/master/README.rst), and Girder's [readthedocs](http://girder.readthedocs.io/en/latest/) page.
+Prefer [Girder](https://github.com/girder/girder), which is a more modern and better supported platform than Midas Platform.  Help is available for Girder, documented in the [Girder GitHub repo README](https://github.com/girder/girder/blob/master/README.rst), and Girder's [Read the Docs](http://girder.readthedocs.io/en/latest/) page.
 
 There is [documentation](https://github.com/girder/girder/blob/master/scripts/midas/README.md) for migrating a Midas Server instance to Girder, along with migration scripts.
 
