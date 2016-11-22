@@ -5,13 +5,16 @@
 _Server component of the Midas Platform_
 
 [![Build Status](https://img.shields.io/travis/midasplatform/Midas/master.svg)](https://travis-ci.org/midasplatform/Midas)
-[![Coverage Status](https://img.shields.io/coveralls/midasplatform/Midas.svg)](https://coveralls.io/r/midasplatform/Midas)
 [![Documentation Status](https://readthedocs.org/projects/midas-server/badge/?version=latest)](https://readthedocs.org/projects/midas-server/?badge=latest)
-[![Code Climate](https://img.shields.io/codeclimate/github/midasplatform/Midas.svg)](https://codeclimate.com/github/midasplatform/Midas)
 [![Packagist Version](https://img.shields.io/packagist/v/midas-platform/midas-server.svg)](https://packagist.org/packages/midas-platform/midas-server)
 [![Packagist License](https://img.shields.io/packagist/l/midas-platform/midas-server.svg)](https://packagist.org/packages/midas-platform/midas-server)
-[![PHP Dependencies](https://www.versioneye.com/user/projects/54fdf4ad4a10649b1b000002/badge.svg)](https://www.versioneye.com/user/projects/54fdf4ad4a10649b1b000002)
 [![StyleCI](https://styleci.io/repos/18849230/shield)](https://styleci.io/repos/18849230)
+
+## Use Girder Instead of Midas Platform ##
+
+Prefer [Girder](https://github.com/girder/girder), which is a more modern and better supported platform than Midas Platform.  Help is available for Girder, documented in the [Girder GitHub repo README](https://github.com/girder/girder/blob/master/README.rst), and Girder's [Read the Docs](http://girder.readthedocs.io/en/latest/) page.
+
+There is [documentation](https://github.com/girder/girder/blob/master/scripts/midas/README.md) for migrating a Midas Server instance to Girder, along with migration scripts.
 
 ## Overview ##
 
