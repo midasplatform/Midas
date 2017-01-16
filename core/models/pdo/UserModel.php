@@ -103,9 +103,10 @@ class UserModel extends UserModelBase
     }
 
     /** Get all */
-    public function getAll($onlyPublic = false, $limit = 20, $order = 'lastname', $offset = null, $currentUser = null)
+    public function getAll($onlyPublic = false, $limit = 20, $fields = array('*'), $order = 'lastname', $offset = null, $currentUser = null)
     {
         $sql = $this->database->select();
+        $sql->from("user", $fields);
         if ($onlyPublic) {
             $orClause = '';
             if ($currentUser !== null && $currentUser->getPrivacy() == MIDAS_USER_PRIVATE
@@ -140,7 +141,7 @@ class UserModel extends UserModelBase
         $rowset = $this->database->fetchAll($sql);
         $return = array();
         foreach ($rowset as $row) {
-            $return[] = $this->initDao('User', $row);
+            $return[] = $this->initDao('User', $row, null, true);
         }
 
         return $return;
