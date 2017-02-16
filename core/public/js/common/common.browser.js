@@ -508,7 +508,7 @@ midas.createAction = function (node) {
         midas.showDialog('Link to this item');
     });
     $('a.downloadFolderLink').click(function () {
-        midas.createNotice("Folder download is disabled. Contact jchris.fillionr[at]kitware[dot]com if you have questions.", 4000, 'warning');
+        midas.createNotice("Folder download is disabled. Contact kitware[at]kitware[dot]com if you have questions.", 4000, 'warning');
         /*
         var folderId = $(this).attr('element');
         $.post(json.global.webroot + '/download/checksize', {
