@@ -63,7 +63,14 @@ class ApiuserComponent extends AppComponent
         /** @var UserModel $userModel */
         $userModel = MidasLoader::loadModel('User');
 
-        return $userModel->getAll(true, $args['limit'], array('firstname','lastname','company','website'));
+        return $userModel->getAll(
+            /* $onlyPublic = */ true,
+            /* $limit = */ $args['limit'],
+            /* $order = */ 'lastname',
+            /* $offset = */ null,
+            /* $currentUser = */ null,
+            /* $fields = */ array('firstname','lastname','company','website')
+            );
     }
 
     /**

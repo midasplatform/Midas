@@ -103,7 +103,7 @@ class UserModel extends UserModelBase
     }
 
     /** Get all */
-    public function getAll($onlyPublic = false, $limit = 20, $fields = array('*'), $order = 'lastname', $offset = null, $currentUser = null)
+    public function getAll($onlyPublic = false, $limit = 20, $order = 'lastname', $offset = null, $currentUser = null, $fields = array('*'))
     {
         $sql = $this->database->select();
         $sql->from("user", $fields);
