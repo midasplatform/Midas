@@ -33,7 +33,7 @@
         "fabpot/php-cs-fixer": "^1.11.1",
         "jokkedk/zfdebug": "^1.6.2",
         "leafo/scssphp": "^0.4.0",
-        "phpcheckstyle/phpcheckstyle": "V0.14.1",
+        "phpcheckstyle/phpcheckstyle": "V0.14.6",
         "phpunit/dbunit": "^1.4.1",
         "phpunit/phpcov": "^2.0.2",
         "phpunit/phpunit": "^4.8.23",
