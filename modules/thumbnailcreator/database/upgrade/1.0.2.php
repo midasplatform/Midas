@@ -75,7 +75,6 @@ class Thumbnailcreator_Upgrade_1_0_2 extends MIDASUpgrade
 
         $oldpath = BASE_PATH.'/'.$thumbnail;
         if (!file_exists($oldpath)) { //thumbnail file no longer exists, so we remove its reference
-
             return;
         }
 

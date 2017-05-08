@@ -73,13 +73,13 @@ class Core_FeedModelTest extends DatabaseTestCase
         $itemFile = $this->loadData('Item', 'default');
         $feed = $this->Feed->createFeed($usersFile[0], MIDAS_FEED_CREATE_COMMUNITY, $communityFile[0]);
         $this->assertEquals(true, $feed->saved);
-        $feed = $this->Feed->createFeed($usersFile [0], MIDAS_FEED_CREATE_FOLDER, $folderFile[0]);
+        $feed = $this->Feed->createFeed($usersFile[0], MIDAS_FEED_CREATE_FOLDER, $folderFile[0]);
         $this->assertEquals(true, $feed->saved);
-        $feed = $this->Feed->createFeed($usersFile [0], MIDAS_FEED_CREATE_ITEM, $itemFile[0]);
+        $feed = $this->Feed->createFeed($usersFile[0], MIDAS_FEED_CREATE_ITEM, $itemFile[0]);
         $this->assertEquals(true, $feed->saved);
-        $feed = $this->Feed->createFeed($usersFile [0], MIDAS_FEED_CREATE_USER, $usersFile[0]);
+        $feed = $this->Feed->createFeed($usersFile[0], MIDAS_FEED_CREATE_USER, $usersFile[0]);
         $this->assertEquals(true, $feed->saved);
-        $this->Feed->addCommunity($feed, $communityFile [0]);
+        $this->Feed->addCommunity($feed, $communityFile[0]);
         $communities = $feed->getCommunities();
         if (($communities[0]->getKey() != $communityFile[0]->getKey())) {
             $this->fail('Unable to add dao');

@@ -415,6 +415,12 @@ class BrowseController extends AppController
         if (!isset($id) || !isset($element)) {
             throw new Zend_Exception('Please double check the parameters');
         }
+
+        $validator = new Zend_Validate_Digits();
+        if (!$validator->isValid($id)) {
+            throw new Zend_Exception('Must specify an id parameter');
+        }
+
         $jsonContent = array('type' => $element);
         switch ($element) {
             case 'community':
@@ -502,6 +508,12 @@ class BrowseController extends AppController
         if (!isset($id) || !isset($type)) {
             throw new Zend_Exception('Must pass id and type parameters');
         }
+
+        $validator = new Zend_Validate_Digits();
+        if (!$validator->isValid($id)) {
+            throw new Zend_Exception('Must specify an id parameter');
+        }
+
         switch (strtolower($type)) {
             case 'folder':
                 $maxpolicy = $this->Folder->getMaxPolicy($id, $this->userSession->Dao);

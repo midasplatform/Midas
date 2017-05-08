@@ -43,6 +43,12 @@ class Scheduler_RunController extends Scheduler_AppController
         $this->Setting->setConfig('lastrun', $startTime, $this->moduleName);
 
         $id = $this->getParam('id');
+
+        $validator = new Zend_Validate_Digits();
+        if (!$validator->isValid($id)) {
+            throw new Zend_Exception('Must specify an id parameter');
+        }
+
         if (isset($id)) {
             $jobs = $this->Scheduler_Job->load($id);
             if ($jobs == false) {

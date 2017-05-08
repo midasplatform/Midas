@@ -134,7 +134,6 @@ abstract class Tracker_TrendModelBase extends Tracker_AppModel
         $trendDao = $this->getMatch($producerId, $metricName, $configItemId, $testDatasetId, $truthDatasetId);
 
         if ($trendDao === false) {
-
             /** @var Tracker_TrendGroupModel $trendGroupModel */
             $trendGroupModel = MidasLoader::loadModel('Trendgroup', $this->moduleName);
 

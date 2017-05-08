@@ -208,7 +208,6 @@ class Pvw_ParaviewComponent extends AppComponent
                 }
             } elseif (!UtilityComponent::isPortListening($portEntry)
             ) { // single port check
-
                 return $portEntry;
             }
         }
