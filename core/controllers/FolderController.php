@@ -48,6 +48,12 @@ class FolderController extends AppController
         if (!isset($folderId)) {
             throw new Zend_Exception('Must pass id parameter');
         }
+
+        $validator = new Zend_Validate_Digits();
+        if (!$validator->isValid($folderId)) {
+            throw new Zend_Exception('Must specify an id parameter');
+        }
+
         $folder = $this->Folder->load($folderId);
         if (!$folder) {
             throw new Zend_Exception('Invalid folderId', 404);
@@ -69,6 +75,12 @@ class FolderController extends AppController
         if (!isset($folderId)) {
             throw new Zend_Exception('Must pass id parameter');
         }
+
+        $validator = new Zend_Validate_Digits();
+        if (!$validator->isValid($folderId)) {
+            throw new Zend_Exception('Must specify an id parameter');
+        }
+
         $folder = $this->Folder->load($folderId);
         if (!$folder) {
             throw new Zend_Exception('Invalid folderId', 404);

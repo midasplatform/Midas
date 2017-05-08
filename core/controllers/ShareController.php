@@ -297,6 +297,11 @@ class ShareController extends AppController
         $type = $this->getParam('type');
         $id = $this->getParam('id');
 
+        $validator = new Zend_Validate_Digits();
+        if (!$validator->isValid($id)) {
+            throw new Zend_Exception('Must specify an id parameter');
+        }
+
         switch ($type) {
             case 'folder':
                 $dao = $this->Folder->load($id);
