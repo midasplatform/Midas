@@ -143,7 +143,6 @@ abstract class ItemModelBase extends AppModel
         }
 
         if ($feeddao != null && $feeddao instanceof FeedDao) {
-
             /** @var FeedpolicygroupModel $FeedpolicygroupModel */
             $FeedpolicygroupModel = MidasLoader::loadModel('Feedpolicygroup');
             foreach ($groupPolicies as $key => $policy) {

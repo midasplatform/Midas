@@ -143,7 +143,6 @@ class ImportController extends AppController
             }
 
             if ($fileInfo->isDir()) { // we have a directory
-
                 // If the the directory actually doesn't exist at this point,
                 // skip it.
                 if (!file_exists($fileInfo->getPathName())) {

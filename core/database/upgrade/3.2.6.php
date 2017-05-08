@@ -83,7 +83,6 @@ class Upgrade_3_2_6 extends MIDASUpgrade
 
         $oldpath = BASE_PATH.'/'.$thumbnail;
         if (!file_exists($oldpath)) { //thumbnail file no longer exists, so we remove its reference
-
             return;
         }
 

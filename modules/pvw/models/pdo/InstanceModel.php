@@ -31,7 +31,7 @@ class Pvw_InstanceModel extends Pvw_InstanceModelBase
         $rows = $this->database->fetchAll($this->database->select()->setIntegrityCheck(false));
         $daos = array();
         foreach ($rows as $row) {
-            $daos [] = $this->initDao('Instance', $row, $this->moduleName);
+            $daos[] = $this->initDao('Instance', $row, $this->moduleName);
         }
 
         return $daos;

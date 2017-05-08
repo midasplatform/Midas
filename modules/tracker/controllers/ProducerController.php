@@ -133,7 +133,6 @@ class Tracker_ProducerController extends Tracker_AppController
                 'text' => $producerDao->getDisplayName(),
                 'icon' => $this->view->baseUrl('core/public/images/icons/cog_go.png'),
             ),
-
         );
         $this->Component->Breadcrumb->setBreadcrumbHeader($breadcrumbs, $this->view);
     }
