@@ -122,7 +122,7 @@ endfunction()
 add_midas_style_test(StyleTests ${CMAKE_SOURCE_DIR}/tests)
 
 if(MIDAS_RUN_SECURITY_CHECKS)
-    add_test(NAME SecurityCheck COMMAND ${CMAKE_SOURCE_DIR}/vendor/bin/security-checker --no-interaction security:check WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+    add_test(NAME SecurityCheck COMMAND ${CMAKE_SOURCE_DIR}/vendor/bin/security-checker --no-interaction security:check --end-point=http://security.sensiolabs.org/check_lock WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 endif()
 
 if(MIDAS_RUN_STYLE_TESTS)
