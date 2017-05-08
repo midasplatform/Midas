@@ -89,7 +89,6 @@ abstract class Tracker_ScalarModelBase extends Tracker_AppModel
      */
     public function addToTrend($trendDao, $submissionDao, $value)
     {
-
         /** @var Tracker_ScalarDao $scalarDao */
         $scalarDao = MidasLoader::newDao('ScalarDao', $this->moduleName);
 

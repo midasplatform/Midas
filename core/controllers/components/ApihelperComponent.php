@@ -224,7 +224,6 @@ class ApihelperComponent extends AppComponent
         );
         foreach ($modules as $retval) {
             if ($retval['status'] === true) { // module has handled the event, so we don't have to
-
                 return;
             }
         }

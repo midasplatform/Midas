@@ -77,7 +77,6 @@ class Scheduler_JobModel extends Scheduler_JobModelBase
         $minPriority = MIDAS_EVENT_PRIORITY_LOW;
         if (!empty($load)) {
             if ($load[0] > 80 || $load[1] > 80) { // don't run anything
-
                 return array();
             }
             $minPriority = MIDAS_EVENT_PRIORITY_HIGH;
