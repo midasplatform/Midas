@@ -51,6 +51,11 @@ class ItemController extends AppController
         }
 
         $itemId = $this->getParam('itemId');
+        $validator = new Zend_Validate_Digits();
+        if (!$validator->isValid($itemId)) {
+            throw new Zend_Exception('Must specify a itemId parameter');
+        }
+
         $metadataId = $this->getParam('metadataId');
         $itemDao = $this->Item->load($itemId);
         if ($itemDao === false) {
@@ -102,6 +107,12 @@ class ItemController extends AppController
     {
         $this->view->Date = $this->Component->Date;
         $itemId = $this->getParam('itemId');
+
+        $validator = new Zend_Validate_Digits();
+        if (!$validator->isValid($itemId)) {
+            throw new Zend_Exception('Must specify an itemId parameter');
+        }
+
         if (!isset($itemId) || !is_numeric($itemId)) {
             throw new Zend_Exception('itemId should be a number');
         }
@@ -319,6 +330,16 @@ class ItemController extends AppController
     {
         $this->disableLayout();
         $item_id = $this->getParam('itemId');
+
+        if(isset($item_id))
+          {
+          $validator = new Zend_Validate_Digits();
+          if (!$validator->isValid($item_id))
+            {
+            throw new Zend_Exception('Must specify an itemId parameter');
+            }
+          }
+
         $item = $this->Item->load($item_id);
         if (!isset($item_id)) {
             throw new Zend_Exception('Please set the itemId.');

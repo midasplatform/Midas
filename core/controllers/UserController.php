@@ -706,6 +706,14 @@ class UserController extends AppController
         }
 
         $userId = $this->getParam('userId');
+
+        if (isset($userId)) {
+            $validator = new Zend_Validate_Digits();
+            if (!$validator->isValid($userId)) {
+                throw new Zend_Exception('Must specify a userId parameter');
+            }
+        }
+
         if (isset($userId) && $userId != $this->userSession->Dao->getKey() && !$this->userSession->Dao->isAdmin()
         ) {
             throw new Zend_Exception(MIDAS_ADMIN_PRIVILEGES_REQUIRED);

@@ -104,6 +104,12 @@ class FolderController extends AppController
     {
         $this->disableLayout();
         $folder_id = $this->getParam('folderId');
+
+        $validator = new Zend_Validate_Digits();
+        if (!$validator->isValid($folder_id)) {
+            throw new Zend_Exception('Must specify a folderId parameter');
+        }
+
         $folder = $this->Folder->load($folder_id);
         if (!isset($folder_id)) {
             throw new Zend_Exception('Please set the folderId.');
