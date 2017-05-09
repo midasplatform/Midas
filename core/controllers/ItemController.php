@@ -344,14 +344,12 @@ class ItemController extends AppController
         $this->disableLayout();
         $item_id = $this->getParam('itemId');
 
-        if(isset($item_id))
-          {
-          $validator = new Zend_Validate_Digits();
-          if (!$validator->isValid($item_id))
-            {
-            throw new Zend_Exception('Must specify an itemId parameter');
+        if (isset($item_id)) {
+            $validator = new Zend_Validate_Digits();
+            if (!$validator->isValid($item_id)) {
+                throw new Zend_Exception('Must specify an itemId parameter');
             }
-          }
+        }
 
         $item = $this->Item->load($item_id);
         if (!isset($item_id)) {
