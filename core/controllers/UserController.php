@@ -260,8 +260,8 @@ class UserController extends AppController
                 $newUser = $this->User->createUser(
                     $email,
                     $form->getValue('password1'),
-                    $form->getValue('firstname'),
-                    $form->getValue('lastname')
+                    htmlEntities(trim($form->getValue('firstname'))),
+                    htmlEntities(trim($form->getValue('lastname')))
                 );
 
                 if ($adminCreate) {
@@ -307,8 +307,8 @@ class UserController extends AppController
             } else {
                 $pendingUser = $this->PendingUser->createPendingUser(
                     $email,
-                    $form->getValue('firstname'),
-                    $form->getValue('lastname'),
+                    htmlEntities(trim($form->getValue('firstname'))),
+                    htmlEntities(trim($form->getValue('lastname'))),
                     $form->getValue('password1')
                 );
 
@@ -373,8 +373,8 @@ class UserController extends AppController
                 $email = strtolower(trim($form->getValue('email')));
                 $pendingUser = $this->PendingUser->createPendingUser(
                     $email,
-                    htmlEntities($form->getValue('firstname')),
-                    htmlEntities($form->getValue('lastname')),
+                    htmlEntities(trim($form->getValue('firstname'))),
+                    htmlEntities(trim($form->getValue('lastname'))),
                     $form->getValue('password1')
                 );
 
@@ -662,8 +662,8 @@ class UserController extends AppController
     /**
      * Test whether a given user already exists or not.
      *
-     * @param entry The email/login to test.
-     * @return Echoes "true" or "false".
+     * @param entry The email/login to test
+     * @return Echoes "true" or "false"
      */
     public function userexistsAction()
     {
@@ -699,7 +699,7 @@ class UserController extends AppController
     /** Settings page action */
     public function settingsAction()
     {
-        if (!$this->logged || $this->isDemoMode()) {
+        if (!$this->logged) {
             $this->disableView();
 
             return false;
@@ -799,15 +799,15 @@ class UserController extends AppController
             }
 
             if (isset($modifyAccount) && $this->logged) {
-                $newEmail = trim($this->getParam('email'));
-                $firtname = htmlentities(trim($this->getParam('firstname')));
-                $lastname = htmlentities(trim($this->getParam('lastname')));
-                $company = htmlentities(trim($this->getParam('company')));
-                $privacy = htmlentities($this->getParam('privacy'));
-                $city = htmlentities($this->getParam('city'));
-                $country = htmlentities($this->getParam('country'));
-                $website = htmlentities($this->getParam('website'));
-                $biography = htmlentities($this->getParam('biography'));
+                $newEmail = $this->getSafeParam('email', /* trim = */ true);
+                $firtname = $this->getSafeParam('firstname', /* trim = */ true);
+                $lastname = $this->getSafeParam('lastname', /* trim = */ true);
+                $company = $this->getSafeParam('company', /* trim = */ true);
+                $privacy = $this->getSafeParam('privacy');
+                $city = $this->getSafeParam('city');
+                $country = $this->getSafeParam('country');
+                $website = $this->getSafeParam('website');
+                $biography = $this->getSafeParam('biography');
 
                 if (!$accountForm->isValid($this->getRequest()->getPost())) {
                     echo JsonComponent::encode(array(false, 'Invalid form value'));
@@ -1253,8 +1253,8 @@ class UserController extends AppController
         if ($this->_request->isPost()) {
             $this->disableLayout();
             $this->disableView();
-            $firstName = trim($this->getParam('firstName'));
-            $lastName = trim($this->getParam('lastName'));
+            $firstName = htmlEntities(trim($this->getParam('firstName')));
+            $lastName = htmlEntities(trim($this->getParam('lastName')));
             $password = $this->getParam('password1');
             $password2 = $this->getParam('password2');
 
