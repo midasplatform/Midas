@@ -57,6 +57,13 @@ class ItemController extends AppController
         }
 
         $metadataId = $this->getParam('metadataId');
+        if (isset($metadataId)) {
+            $validator = new Zend_Validate_Digits();
+            if (!$validator->isValid($metadataId)) {
+                throw new Zend_Exception('Must specify a metadataId parameter');
+            }
+        }
+
         $itemDao = $this->Item->load($itemId);
         if ($itemDao === false) {
             throw new Zend_Exception("This item doesn't exist.", 404);
@@ -143,18 +150,24 @@ class ItemController extends AppController
             if (isset($deleteMetadata) && !empty($deleteMetadata) && $this->view->isModerator) { // delete metadata field
                 $this->disableView();
                 $this->disableLayout();
-                $metadataId = $this->getParam('element');
+                $metadataId = $this->getSafeParam('element');
+
+                $validator = new Zend_Validate_Digits();
+                if (!$validator->isValid($metadataId)) {
+                    throw new Zend_Exception('Must specify an element parameter');
+                }
+
                 $this->ItemRevision->deleteMetadata($metadataItemRevision, $metadataId);
                 echo JsonComponent::encode(array(true, $this->t('Changes saved')));
 
                 return;
             }
             if (isset($editMetadata) && !empty($editMetadata) && $this->view->isModerator) { // add metadata field
-                $metadatatype = $this->getParam('metadatatype');
-                $element = $this->getParam('element');
-                $qualifier = $this->getParam('qualifier');
-                $value = $this->getParam('value');
-                $updateMetadata = $this->getParam('updateMetadata');
+                $metadatatype = $this->getSafeParam('metadatatype');
+                $element = $this->getSafeParam('element');
+                $qualifier = $this->getSafeParam('qualifier');
+                $value = $this->getSafeParam('value');
+                $updateMetadata = $this->getSafeParam('updateMetadata');
                 $metadataDao = $this->Metadata->getMetadata($metadatatype, $element, $qualifier);
                 if ($metadataDao == false) {
                     $metadataDao = $this->Metadata->addMetadata($metadatatype, $element, $qualifier, '');
