@@ -260,8 +260,8 @@ class UserController extends AppController
                 $newUser = $this->User->createUser(
                     $email,
                     $form->getValue('password1'),
-                    htmlEntities(trim($form->getValue('firstname'))),
-                    htmlEntities(trim($form->getValue('lastname')))
+                    htmlentities(trim($form->getValue('firstname'))),
+                    htmlentities(trim($form->getValue('lastname')))
                 );
 
                 if ($adminCreate) {
@@ -307,8 +307,8 @@ class UserController extends AppController
             } else {
                 $pendingUser = $this->PendingUser->createPendingUser(
                     $email,
-                    htmlEntities(trim($form->getValue('firstname'))),
-                    htmlEntities(trim($form->getValue('lastname'))),
+                    htmlentities(trim($form->getValue('firstname'))),
+                    htmlentities(trim($form->getValue('lastname'))),
                     $form->getValue('password1')
                 );
 
@@ -363,8 +363,8 @@ class UserController extends AppController
                 $this->userSession->Dao = $this->User->createUser(
                     trim($form->getValue('email')),
                     $form->getValue('password1'),
-                    htmlEntities(trim($form->getValue('firstname'))),
-                    htmlEntities(trim($form->getValue('lastname')))
+                    htmlentities(trim($form->getValue('firstname'))),
+                    htmlentities(trim($form->getValue('lastname')))
                 );
                 session_write_close();
 
@@ -373,8 +373,8 @@ class UserController extends AppController
                 $email = strtolower(trim($form->getValue('email')));
                 $pendingUser = $this->PendingUser->createPendingUser(
                     $email,
-                    htmlEntities(trim($form->getValue('firstname'))),
-                    htmlEntities(trim($form->getValue('lastname'))),
+                    htmlentities(trim($form->getValue('firstname'))),
+                    htmlentities(trim($form->getValue('lastname'))),
                     $form->getValue('password1')
                 );
 
@@ -1261,8 +1261,8 @@ class UserController extends AppController
         if ($this->_request->isPost()) {
             $this->disableLayout();
             $this->disableView();
-            $firstName = htmlEntities(trim($this->getParam('firstName')));
-            $lastName = htmlEntities(trim($this->getParam('lastName')));
+            $firstName = htmlentities(trim($this->getParam('firstName')));
+            $lastName = htmlentities(trim($this->getParam('lastName')));
             $password = $this->getParam('password1');
             $password2 = $this->getParam('password2');
 
