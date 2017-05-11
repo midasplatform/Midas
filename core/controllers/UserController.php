@@ -260,8 +260,8 @@ class UserController extends AppController
                 $newUser = $this->User->createUser(
                     $email,
                     $form->getValue('password1'),
-                    $form->getValue('firstname'),
-                    $form->getValue('lastname')
+                    htmlentities(trim($form->getValue('firstname'))),
+                    htmlentities(trim($form->getValue('lastname')))
                 );
 
                 if ($adminCreate) {
@@ -307,8 +307,8 @@ class UserController extends AppController
             } else {
                 $pendingUser = $this->PendingUser->createPendingUser(
                     $email,
-                    $form->getValue('firstname'),
-                    $form->getValue('lastname'),
+                    htmlentities(trim($form->getValue('firstname'))),
+                    htmlentities(trim($form->getValue('lastname'))),
                     $form->getValue('password1')
                 );
 
@@ -363,8 +363,8 @@ class UserController extends AppController
                 $this->userSession->Dao = $this->User->createUser(
                     trim($form->getValue('email')),
                     $form->getValue('password1'),
-                    trim($form->getValue('firstname')),
-                    trim($form->getValue('lastname'))
+                    htmlentities(trim($form->getValue('firstname'))),
+                    htmlentities(trim($form->getValue('lastname')))
                 );
                 session_write_close();
 
@@ -373,8 +373,8 @@ class UserController extends AppController
                 $email = strtolower(trim($form->getValue('email')));
                 $pendingUser = $this->PendingUser->createPendingUser(
                     $email,
-                    $form->getValue('firstname'),
-                    $form->getValue('lastname'),
+                    htmlentities(trim($form->getValue('firstname'))),
+                    htmlentities(trim($form->getValue('lastname'))),
                     $form->getValue('password1')
                 );
 
@@ -706,6 +706,14 @@ class UserController extends AppController
         }
 
         $userId = $this->getParam('userId');
+
+        if (isset($userId)) {
+            $validator = new Zend_Validate_Digits();
+            if (!$validator->isValid($userId)) {
+                throw new Zend_Exception('Must specify a userId parameter');
+            }
+        }
+
         if (isset($userId) && $userId != $this->userSession->Dao->getKey() && !$this->userSession->Dao->isAdmin()
         ) {
             throw new Zend_Exception(MIDAS_ADMIN_PRIVILEGES_REQUIRED);
@@ -799,15 +807,15 @@ class UserController extends AppController
             }
 
             if (isset($modifyAccount) && $this->logged) {
-                $newEmail = trim($this->getParam('email'));
-                $firtname = trim($this->getParam('firstname'));
-                $lastname = trim($this->getParam('lastname'));
-                $company = trim($this->getParam('company'));
-                $privacy = $this->getParam('privacy');
-                $city = $this->getParam('city');
-                $country = $this->getParam('country');
-                $website = $this->getParam('website');
-                $biography = $this->getParam('biography');
+                $newEmail = $this->getSafeParam('email', /* trim = */ true);
+                $firtname = $this->getSafeParam('firstname', /* trim = */ true);
+                $lastname = $this->getSafeParam('lastname', /* trim = */ true);
+                $company = $this->getSafeParam('company', /* trim = */ true);
+                $privacy = $this->getSafeParam('privacy');
+                $city = $this->getSafeParam('city');
+                $country = $this->getSafeParam('country');
+                $website = $this->getSafeParam('website');
+                $biography = $this->getSafeParam('biography');
 
                 if (!$accountForm->isValid($this->getRequest()->getPost())) {
                     echo JsonComponent::encode(array(false, 'Invalid form value'));
@@ -1253,8 +1261,8 @@ class UserController extends AppController
         if ($this->_request->isPost()) {
             $this->disableLayout();
             $this->disableView();
-            $firstName = trim($this->getParam('firstName'));
-            $lastName = trim($this->getParam('lastName'));
+            $firstName = $this->getSafeParam('firstName', /* trim = */ true);
+            $lastName = $this->getSafeParam('lastName', /* trim = */ true);
             $password = $this->getParam('password1');
             $password2 = $this->getParam('password2');
 

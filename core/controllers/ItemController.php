@@ -51,7 +51,19 @@ class ItemController extends AppController
         }
 
         $itemId = $this->getParam('itemId');
+        $validator = new Zend_Validate_Digits();
+        if (!$validator->isValid($itemId)) {
+            throw new Zend_Exception('Must specify a itemId parameter');
+        }
+
         $metadataId = $this->getParam('metadataId');
+        if (isset($metadataId)) {
+            $validator = new Zend_Validate_Digits();
+            if (!$validator->isValid($metadataId)) {
+                throw new Zend_Exception('Must specify a metadataId parameter');
+            }
+        }
+
         $itemDao = $this->Item->load($itemId);
         if ($itemDao === false) {
             throw new Zend_Exception("This item doesn't exist.", 404);
@@ -102,6 +114,12 @@ class ItemController extends AppController
     {
         $this->view->Date = $this->Component->Date;
         $itemId = $this->getParam('itemId');
+
+        $validator = new Zend_Validate_Digits();
+        if (!$validator->isValid($itemId)) {
+            throw new Zend_Exception('Must specify an itemId parameter');
+        }
+
         if (!isset($itemId) || !is_numeric($itemId)) {
             throw new Zend_Exception('itemId should be a number');
         }
@@ -132,18 +150,24 @@ class ItemController extends AppController
             if (isset($deleteMetadata) && !empty($deleteMetadata) && $this->view->isModerator) { // delete metadata field
                 $this->disableView();
                 $this->disableLayout();
-                $metadataId = $this->getParam('element');
+                $metadataId = $this->getSafeParam('element');
+
+                $validator = new Zend_Validate_Digits();
+                if (!$validator->isValid($metadataId)) {
+                    throw new Zend_Exception('Must specify an element parameter');
+                }
+
                 $this->ItemRevision->deleteMetadata($metadataItemRevision, $metadataId);
                 echo JsonComponent::encode(array(true, $this->t('Changes saved')));
 
                 return;
             }
             if (isset($editMetadata) && !empty($editMetadata) && $this->view->isModerator) { // add metadata field
-                $metadatatype = $this->getParam('metadatatype');
-                $element = $this->getParam('element');
-                $qualifier = $this->getParam('qualifier');
-                $value = $this->getParam('value');
-                $updateMetadata = $this->getParam('updateMetadata');
+                $metadatatype = $this->getSafeParam('metadatatype');
+                $element = $this->getSafeParam('element');
+                $qualifier = $this->getSafeParam('qualifier');
+                $value = $this->getSafeParam('value');
+                $updateMetadata = $this->getSafeParam('updateMetadata');
                 $metadataDao = $this->Metadata->getMetadata($metadatatype, $element, $qualifier);
                 if ($metadataDao == false) {
                     $metadataDao = $this->Metadata->addMetadata($metadatatype, $element, $qualifier, '');
@@ -319,6 +343,14 @@ class ItemController extends AppController
     {
         $this->disableLayout();
         $item_id = $this->getParam('itemId');
+
+        if (isset($item_id)) {
+            $validator = new Zend_Validate_Digits();
+            if (!$validator->isValid($item_id)) {
+                throw new Zend_Exception('Must specify an itemId parameter');
+            }
+        }
+
         $item = $this->Item->load($item_id);
         if (!isset($item_id)) {
             throw new Zend_Exception('Please set the itemId.');
