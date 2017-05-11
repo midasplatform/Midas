@@ -1261,8 +1261,8 @@ class UserController extends AppController
         if ($this->_request->isPost()) {
             $this->disableLayout();
             $this->disableView();
-            $firstName = htmlentities(trim($this->getParam('firstName')));
-            $lastName = htmlentities(trim($this->getParam('lastName')));
+            $firstName = $this->getSafeParam('firstName', /* trim = */ true);
+            $lastName = $this->getSafeParam('lastName', /* trim = */ true);
             $password = $this->getParam('password1');
             $password2 = $this->getParam('password2');
 
