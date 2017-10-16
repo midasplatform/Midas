@@ -160,7 +160,9 @@ class FolderController extends AppController
         $folder_id = $this->getParam('folderId');
         $folder = $this->Folder->load($folder_id);
 
-        if (!isset($folder_id)) {
+        if (!$this->_request->isGet()) {
+            throw new Zend_Exception('Only HTTP Get requests are accepted', 400);
+        } elseif (!isset($folder_id)) {
             throw new Zend_Exception('Please set the folderId.');
         } elseif ($folder === false) {
             throw new Zend_Exception("The folder doesn't exist.", 404);

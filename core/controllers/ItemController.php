@@ -112,6 +112,10 @@ class ItemController extends AppController
      */
     public function viewAction()
     {
+        if (!($this->_request->isGet() || $this->_request->isPost())) {
+            throw new Zend_Exception('Only HTTP Get or Post requests are accepted', 400);
+        }
+
         $this->view->Date = $this->Component->Date;
         $itemId = $this->getParam('itemId');
 
