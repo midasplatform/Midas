@@ -699,6 +699,10 @@ class UserController extends AppController
     /** Settings page action */
     public function settingsAction()
     {
+        if (!($this->_request->isGet() || $this->_request->isPost())) {
+            throw new Zend_Exception('Only HTTP Get or Post requests are accepted', 400);
+        }
+
         if (!$this->logged) {
             $this->disableView();
 
@@ -1061,6 +1065,9 @@ class UserController extends AppController
     /** User page action */
     public function userpageAction()
     {
+        if (!$this->_request->isGet()) {
+            throw new Zend_Exception('Only HTTP Get requests are accepted', 400);
+        }
         $this->view->Date = $this->Component->Date;
         $user_id = $this->getParam('user_id');
 
