@@ -41,7 +41,7 @@ Vagrant.configure(2) do |config|
         vmware_workstation.vmx['memsize'] = 4096
         vmware_workstation.vmx['numvcpus'] = 2
     end
-    config.vm.provision 'ansible' do |ansible|
+    config.vm.provision 'ansible_local' do |ansible|
         ansible.playbook = 'provisioning/ansible/site.yml'
     end
 end
