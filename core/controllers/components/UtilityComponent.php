@@ -390,7 +390,7 @@ class UtilityComponent extends AppComponent
                 $db->query($query);
             } catch (Zend_Exception $exception) {
                 if (trim($query) != '') {
-                    throw new Zend_Exception('Unable to connect.');
+                    throw $exception;
                 }
             }
         }
