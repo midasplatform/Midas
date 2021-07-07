@@ -28,8 +28,18 @@ class Comments_ItemcommentModel extends Comments_ItemcommentModelBase
      */
     public function getComments($item, $limit = 10, $offset = 0)
     {
+        /**
+         * Change the order of the retrieval based upon the user setting.
+         * This changes the display order of the comments.
+         * 'ASC' shows the oldest comment first, 'DESC' shows the newest first.
+         */
+        if (MidasLoader::loadModel('Setting')->getValueByName('sortSelect', 'comments') == COMMENTS_OLDEST_FIRST) {
+            $commentSort = 'ASC';
+        } else {
+            $commentSort = 'DESC';
+        }
         $sql = $this->database->select()->where('item_id = ?', $item->getKey())->limit($limit, $offset)->order(
-            'date ASC'
+            'date '.$commentSort
         );
 
         $rowset = $this->database->fetchAll($sql);
