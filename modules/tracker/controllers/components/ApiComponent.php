@@ -336,6 +336,412 @@ class Tracker_ApiComponent extends AppComponent
     }
 
     /**
+     * Parses a valid associative array from a string containing a json document.
+     *
+     * @param string jsonString string that should be a json document
+     * @return mixed associative array of the parsed json document
+     * @throws Exception
+     */
+    protected function _parseValidJson($jsonString)
+    {
+        $json = json_decode($jsonString, true);
+        $jsonLastError = json_last_error();
+        if ($jsonLastError !== JSON_ERROR_NONE) {
+            $this->getLogger()->info('The jsonString is invalid JSON: '.$jsonLastError);
+        }
+
+        return $json;
+    }
+
+    /**
+     * Validates a string against a json-schema found at schemaPath.
+     *
+     * @param string documentString string that should be a json document
+     * @param string schemaPath filesystem path to a json-schema document
+     * @return bool true if a valid json document parsed from documentString
+     * can be validated by the valid json-schema file found at schemaPath,
+     * false otherwise
+     * @throws Exception
+     */
+    protected function _validateJson($documentString, $schemaPath)
+    {
+        $documentJson = $this->_parseValidJson($documentString);
+        if ($documentJson === null) {
+            $this->getLogger()->info('The document is invalid JSON.');
+
+            return false;
+        }
+        $schemaString = file_get_contents($schemaPath);
+        $schemaJson = $this->_parseValidJson($schemaString);
+        if ($schemaJson === null) {
+            $this->getLogger()->info('The schema is invalid JSON.');
+
+            return false;
+        }
+        $refResolver = new JsonSchema\RefResolver(new JsonSchema\Uri\UriRetriever(), new JsonSchema\Uri\UriResolver());
+        $schema = $refResolver->resolve('file://'.realpath($schemaPath));
+        $validator = new JsonSchema\Validator();
+        $validator->check(json_decode($documentString), $schema);
+        $valid = $validator->isValid();
+        if (!$valid) {
+            $this->getLogger()->warn('The supplied document JSON does not validate. Violations:\n');
+            foreach ($validator->getErrors() as $error) {
+                $this->getLogger()->warn(sprintf("[%s] %s\n", $error['property'], $error['message']));
+                echo sprintf("[%s] %s\n", $error['property'], $error['message']);
+            }
+
+            return false;
+        }
+
+        return $documentJson;
+    }
+
+    /**
+     * Finds an Item by name, ensuring that the user has read access.
+     *
+     * @param string name Name of the item
+     * @param UserDao userDao User to check permissions for
+     * @return ItemDao Found and readable item
+     * @throws Exception
+     */
+    protected function _findReadableItemByName($name, $userDao)
+    {
+        if ($name === '' || $name === false) {
+            throw new Exception('Invalid item', 404);
+        }
+        /** @var ItemModel $itemModel */
+        $itemModel = MidasLoader::loadModel('Item');
+        /** @var array $itemDaos */
+        $itemDaos = $itemModel->getByName($name);
+        if (count($itemDaos) < 1) {
+            throw new Exception('Invalid item with name '.$name, 404);
+        }
+        /** @var ItemDao $itemDao */
+        $itemDao = $itemDaos[0];
+        if (!$itemModel->policyCheck($itemDao, $userDao, MIDAS_POLICY_READ)) {
+            throw new Exception('Read permission on the dataset item required', 403);
+        }
+
+        return $itemDao;
+    }
+
+    /**
+     * Ingest the values of a submission document to the database.
+     *
+     * @param mixed submissionJson associative array of the submission json document
+     * @param UserDao userDao User adding the scalars
+     * @param Tracker_ProducerDao producerDao The matching Producer to be updated
+     * @param Tracker_SubmissionDao submissionDao The matching Submission to be updated
+     * @throws Exception
+     */
+    protected function _ingestSubmission($submissionJson, $userDao, $producerDao, $submissionDao)
+    {
+        $testDatasetName = $submissionJson['test_dataset'];
+        /** @var ItemDao $testDatasetItemDao */
+        $testDatasetItemDao = $this->_findReadableItemByName($testDatasetName, $userDao);
+
+        /** @var ItemDao $truthDatasetItemDao */
+        $truthDatasetItemDao = null;
+        if (array_key_exists('truth_dataset', $submissionJson)) {
+            $truthDatasetName = $submissionJson['truth_dataset'];
+            $truthDatasetItemDao = $this->_findReadableItemByName($truthDatasetName, $userDao);
+        }
+
+        /** @var ItemDao $configItemDao */
+        $configItemDao = null;
+        if (array_key_exists('config_dataset', $submissionJson)) {
+            $configDatasetName = $submissionJson['config_dataset'];
+            $configItemDao = $this->_findReadableItemByName($configDatasetName, $userDao);
+        }
+
+        $submissionMetrics = array();
+        if (array_key_exists('metrics', $submissionJson)) {
+            $submissionMetrics = $submissionJson['metrics'];
+        }
+        /** @var Tracker_TrendModel $trendModel */
+        $trendModel = MidasLoader::loadModel('Trend', 'tracker');
+        /** @var Tracker_ScalarModel $scalarModel */
+        $scalarModel = MidasLoader::loadModel('Scalar', 'tracker');
+        /** @var mixed $metric */
+        foreach ($submissionMetrics as $metric) {
+            if (array_key_exists('unit', $metric)) {
+                $unit = $metric['unit'];
+            } else {
+                $unit = false;
+            }
+
+            /** @var Tracker_TrendDao $trendDao */
+            $trendDao = $trendModel->createIfNeeded(
+                $producerDao->getKey(),
+                $metric['name'],
+                $configItemDao === null ? null : $configItemDao->getKey(),
+                $testDatasetItemDao->getKey(),
+                $truthDatasetItemDao === null ? null : $truthDatasetItemDao->getKey(),
+                $unit
+            );
+            /** @var Tracker_ScalarDao $scalarDao */
+            $scalarDao = $scalarModel->addToTrend($trendDao, $submissionDao, $metric['value']);
+        }
+    }
+
+    /**
+     * Update the Producer fields based on an updated producer definition.
+     *
+     * @param mixed producerDefinition An associative array containing the producer definition
+     * @param string newDefinitionHash The md5 hash of the string yielding producerDefinition
+     * @param Tracker_ProducerDao producerDao The matching Producer to be updated
+     */
+    protected function _updateTopLevelProducerDefinition($producerDefinition, $newDefinitionHash, $producerDao)
+    {
+        /** @var Tracker_ProducerModel $producerModel */
+        $producerModel = MidasLoader::loadModel('Producer', 'tracker');
+        // Update top level fields on the producer based on the definition.
+        if (array_key_exists('histogram_max_x', $producerDefinition)) {
+            $producerDao->setHistogramMaxX($producerDefinition['histogram_max_x']);
+        }
+        if (array_key_exists('grid_across_metric_groups', $producerDefinition)) {
+            $producerDao->setGridAcrossMetricGroups($producerDefinition['grid_across_metric_groups']);
+        }
+        if (array_key_exists('histogram_number_of_bins', $producerDefinition)) {
+            $producerDao->setHistogramNumberOfBins($producerDefinition['histogram_number_of_bins']);
+        }
+        $producerDao->setProducerDefinition($newDefinitionHash);
+        $producerModel->save($producerDao);
+    }
+
+    /**
+     * Update the definition of the Producer as stored in the database, adding
+     * any new key_metrics as needed.
+     *
+     * @param string producerDocument The string storing the json of the producer definition
+     * @param mixed producerDefinition An already parsed associative array, should be the
+     * equivalent of calling `json_encode($producerDocument, true)
+     * @param Tracker_ProducerDao producerDao The matching Producer to be updated
+     * @return Tracker_ProducerDao producerDao The updated Producer
+     * @throws Exception
+     */
+    protected function _updateProducerDefinition($producerDocument, $producerDefinition, $producerDao)
+    {
+        /** @var Tracker_TrendModel $trendModel */
+        $trendModel = MidasLoader::loadModel('Trend', 'tracker');
+        // Save a hash of the producer definition, compare this incoming
+        // definition and only update if necessary.
+        $newDefinitionHash = md5(trim($producerDocument));
+        if ($producerDao->getProducerDefinition() !== $newDefinitionHash) {
+            $this->_updateTopLevelProducerDefinition($producerDefinition, $newDefinitionHash, $producerDao);
+
+            $defaults = $producerDefinition['defaults'];
+            if (!isset($defaults)) {
+                $defaults = array();
+            }
+            /**
+             * Helper function to populate a metric based on the overall
+             * metrics defaults, overriding any default values with any
+             * specified in the metric itself, populating all properties with
+             * some unassigned (false or null) value if no other value is found.
+             * @param stdClass $metric the metric with specific values
+             * @return array populated metric values
+             */
+            $populateMetricValues = function ($metric) use ($defaults) {
+                $populatedMetricUnassigned = array(
+                    'abbreviation' => false,
+                    'min' => false,
+                    'max' => false,
+                    'warning' => false,
+                    'fail' => false,
+                    // Special handling as false is meaningful in this case.
+                    'lower_is_better' => null,
+                );
+                $populatedMetric = array();
+                /** @var string $key */
+                /** @var mixed $unassignedValue */
+                foreach ($populatedMetricUnassigned as $key => $unassignedValue) {
+                    if (array_key_exists($key, $metric)) {
+                        $populatedMetric[$key] = $metric[$key];
+                    } elseif (array_key_exists($key, $defaults)) {
+                        $populatedMetric[$key] = $defaults[$key];
+                    } else {
+                        $populatedMetric[$key] = $unassignedValue;
+                    }
+                }
+                if ($populatedMetric['lower_is_better'] === null &&
+                    $populatedMetric['warning'] !== false &&
+                    $populatedMetric['fail'] !== false) {
+                    // We can infer in this case.
+                    $populatedMetric['lower_is_better'] =
+                        $populatedMetric['warning'] < $populatedMetric['fail'];
+                }
+
+                return $populatedMetric;
+            };
+
+            // Add or update any key metrics and thresholds.
+            /** @var Tracker_TrendThresholdModel $trendThresholdModel */
+            $trendThresholdModel = MidasLoader::loadModel('TrendThreshold', 'tracker');
+            $keyMetrics = $producerDefinition['key_metrics'];
+            /** @var mixed $keyMetric */
+            foreach ($keyMetrics as $keyMetric) {
+                // Set any needed trends to be key_metrics.
+                $trendModel->setAggregatableTrendAsKeyMetrics($producerDao, $keyMetric['name']);
+                $metricValues = $populateMetricValues($keyMetric);
+                $trendThresholdModel->upsert(
+                    $producerDao,
+                    $keyMetric['name'],
+                    $metricValues['abbreviation'],
+                    $metricValues['warning'],
+                    $metricValues['fail'],
+                    $metricValues['min'],
+                    $metricValues['max'],
+                    $metricValues['lower_is_better']
+                );
+            }
+
+            // Add or update any aggregate metrics and thresholds, based on matching
+            // the producer and spec.
+            $aggregateMetrics = $producerDefinition['aggregate_metrics'];
+            /** @var Tracker_AggregateMetricSpecModel $aggregateMetricSpecModel */
+            $aggregateMetricSpecModel = MidasLoader::loadModel('AggregateMetricSpec', 'tracker');
+            /** @var Tracker_AggregateMetricNotificationModel $aggregateMetricNotificationModel */
+            $aggregateMetricNotificationModel = MidasLoader::loadModel('AggregateMetricNotification', 'tracker');
+            /** @var UserModel $userModel */
+            $userModel = MidasLoader::loadModel('User');
+            /** @var stdClass $aggregateMetric */
+            foreach ($aggregateMetrics as $aggregateMetric) {
+                $metricValues = $populateMetricValues($aggregateMetric);
+                /** @var Tracker_AggregateMetricSpecDao $aggregateMetricSpecDao */
+                $aggregateMetricSpecDao = $aggregateMetricSpecModel->upsert(
+                    $producerDao,
+                    $aggregateMetric['name'],
+                    $aggregateMetric['definition'],
+                    $metricValues['abbreviation'],
+                    // Set empty string for description.
+                    '',
+                    $metricValues['warning'],
+                    $metricValues['fail'],
+                    $metricValues['min'],
+                    $metricValues['max'],
+                    $metricValues['lower_is_better']
+                );
+                // Delete any notifications tied to this Aggregate Metric, and create any
+                // as needed.
+                $staleNotifications = $aggregateMetricNotificationModel->findBy('aggregate_metric_spec_id', $aggregateMetricSpecDao->getAggregateMetricSpecId());
+                /** @var Tracker_AggregateMetricNotificationDao $staleNotification */
+                foreach ($staleNotifications as $staleNotification) {
+                    $aggregateMetricNotificationModel->delete($staleNotification);
+                }
+                if (isset($aggregateMetric['notifications'])) {
+                    /** @var stdClass $notification */
+                    foreach ($aggregateMetric['notifications'] as $notification) {
+                        /** @var Tracker_AggregateMetricNotificationDao $aggregateMetricNotificationDao */
+                        $aggregateMetricNotificationDao = MidasLoader::newDao('AggregateMetricNotificationDao', $this->moduleName);
+                        $aggregateMetricNotificationDao->setAggregateMetricSpecId($aggregateMetricSpecDao->getAggregateMetricSpecId());
+                        $aggregateMetricNotificationDao->setBranch($notification['branch']);
+                        $aggregateMetricNotificationDao->setComparison($notification['comparison']);
+                        $aggregateMetricNotificationDao->setValue($notification['value']);
+                        $aggregateMetricNotificationModel->save($aggregateMetricNotificationDao);
+                        if (isset($notification['emails'])) {
+                            foreach ($notification['emails'] as $email) {
+                                // We can only add notifications for valid users.
+                                $userDao = $userModel->getByEmail($email);
+                                if ($userDao !== false) {
+                                    $aggregateMetricNotificationModel->createUserNotification($aggregateMetricNotificationDao, $userDao);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            // Even if the producer definition hasn't changed, we need to run through
+            // the below logic to set key_metrics.  It's possible a submission includes
+            // a dataset not yet seen, which will create a trend on the fly, but
+            // that trend will not be correctly set as a key_metric until here.
+            $keyMetrics = $producerDefinition['key_metrics'];
+            /** @var mixed $keyMetric */
+            foreach ($keyMetrics as $keyMetric) {
+                // Set any needed trends to be key_metrics.
+                $trendModel->setAggregatableTrendAsKeyMetrics($producerDao, $keyMetric['name']);
+            }
+        }
+    }
+
+    /**
+     * Add the values of a submission document based on a producer document to the database.
+     *
+     * @throws Exception
+     */
+    public function submissionAddFromArchive($args)
+    {
+        // TODO need to get the JSON documents somehow.
+        $userDao = $this->_getUser($args);
+
+        // Validate the Submission and Producer documents.
+        // TODO Somehow get the submission document
+        // this should come from GCS or somewhere
+        // TODO HACK
+        $submissionDocumentPath = '/home/vagrant/test_sub.json';
+        $submissionDocument = file_get_contents($submissionDocumentPath);
+        $submissionSchemaPath = BASE_PATH.'/modules/tracker/schema/submission.json';
+        $submissionJson = $this->_validateJson($submissionDocument, $submissionSchemaPath);
+        if (!$submissionJson) {
+            throw new Exception('Submission document is invalid', 401);
+        }
+        // TODO Somehow get the producer document
+        // this should come from GCS or somewhere
+        // TODO HACK
+        $producerDocumentPath = '/home/vagrant/test_pipeline.json';
+        $producerDocument = file_get_contents($producerDocumentPath);
+        $producerSchemaPath = BASE_PATH.'/modules/tracker/schema/producer.json';
+        $producerJson = $this->_validateJson($producerDocument, $producerSchemaPath);
+        if (!$producerJson) {
+            throw new Exception('Producer document is invalid', 401);
+        }
+
+        // Load the producer and community.
+        /** @var CommunityModel $communityModel */
+        $communityModel = MidasLoader::loadModel('Community');
+        /** @var CommunityDao $communityDao */
+        if (array_key_exists('server_information', $producerJson)) {
+            $communityName = $producerJson['server_information']['community'];
+            $producerDisplayName = $producerJson['server_information']['producer'];
+        } else {
+            $communityName = $producerJson['community'];
+            $producerDisplayName = $producerJson['producer'];
+        }
+        $communityDao = $communityModel->getByName($communityName);
+        if ($communityDao === false || !$communityModel->policyCheck($communityDao, $userDao, MIDAS_POLICY_WRITE)
+        ) {
+            throw new Exception(
+                "This community doesn't exist or you don't have the permissions.", MIDAS_INVALID_POLICY
+            );
+        }
+        /** @var Tracker_ProducerModel $producerModel */
+        $producerModel = MidasLoader::loadModel('Producer', 'tracker');
+        /** @var Tracker_ProducerDao $producerDao */
+        $producerDao = $producerModel->createIfNeeded($communityDao->getKey(), $producerDisplayName);
+        if (!$producerModel->policyCheck($producerDao, $userDao, MIDAS_POLICY_WRITE)) {
+            throw new Exception('Write permission on the producer required', 403);
+        }
+        // Load the submission.
+        $uuid = $submissionJson['uuid'];
+        /** @var Tracker_SubmissionModel $submissionModel */
+        $submissionModel = MidasLoader::loadModel('Submission', 'tracker');
+        /** @var Tracker_SubmissionDao $submissionDao */
+        $submissionDao = $submissionModel->getOrCreateSubmission($producerDao, $uuid);
+        if ($submissionDao === false) {
+            throw new Zend_Exception('The submission does not exist', 403);
+        }
+
+        // At this point we have a valid submission, producer and community.
+        // Process the submission first, as that will create any needed trends
+        // in the case of a new dataset, so that when the producer definition is
+        // processed, all trends tied to this dataset will already exist so they can be
+        // set as key_metrics if need be.
+        $this->_ingestSubmission($submissionJson, $userDao, $producerDao, $submissionDao);
+        $this->_updateProducerDefinition($producerDocument, $producerJson, $producerDao);
+    }
+
+    /**
      * Validate the producer configuration and submission documents that are tied
      * to a submission, updating the properties of the producer based off of
      * the producer configuration.

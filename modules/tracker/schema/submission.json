@@ -1,9 +1,25 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Midas Tracker Submission",
-  "description": "A specification for submissions to Midas Tracker.",
+  "title": "Midas Submission",
+  "description": "A specification for submissions to Midas.",
   "type": "object",
   "properties": {
+    "uuid": {
+      "description": "uuid of the submission this dataset evaluation is attached to.",
+      "type": "string"
+    },
+    "test_dataset": {
+      "description": "test dataset evaluated to construct these results, perhaps a name, a path or a hash.",
+      "type": "string"
+    },
+    "truth_dataset": {
+      "description": "truth dataset evaluated to construct these results, perhaps a name, a path or a hash.",
+      "type": "string"
+    },
+    "config_dataset": {
+      "description": "config dataset evaluated to construct these results, perhaps a name, a path or a hash.",
+      "type": "string"
+    },
     "about": {
       "title": "About block",
       "description": "Miscellaneous values about the submission.",
@@ -75,6 +91,9 @@
             "name": {
               "type": "string"
             },
+            "title": {
+              "type": "string"
+            },
             "metric_group": {
               "type": "string"
             }
@@ -86,5 +105,9 @@
         }
       }
     }
-  }
+  },
+  "required": [
+    "uuid",
+    "test_dataset"
+  ]
 }
